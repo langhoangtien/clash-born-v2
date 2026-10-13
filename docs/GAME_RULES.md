@@ -407,7 +407,9 @@ Bảng ưu tiên (dòng trên thắng):
 
 ## CTL — Người chơi điều khiển
 
-- `CTL-01` Joystick/WASD: di chuyển tay, hủy lệnh đánh.
+- `CTL-01` Joystick/WASD: di chuyển tay (`MOVE_DIR`), hủy lệnh đánh; thả ra → `STOP`.
+  Chỉ gửi lệnh mới khi hướng đổi quá `input_angle_step` (3°), tối đa một lệnh mỗi tick.
+  Chạm map (điện thoại) / chuột phải (PC) → `MOVE_TO` điểm đó.
 - `CTL-02` Nút đánh: tự chọn mục tiêu theo thứ tự (quái/lính gần nhất trong
   `command_radius` → công trình mở khóa gần nhất) ; nút đánh hero: hero gần nhất.
 - `CTL-03` Chạm/click vào địch: khóa mục tiêu đến khi nó chết, mất nhắm được, hoặc ra lệnh khác.
@@ -427,18 +429,22 @@ Bảng ưu tiên (dòng trên thắng):
   dần. Công trình không bao giờ bị đẩy. Bị đẩy lệch khỏi đường mà không còn đi thẳng
   tới điểm kế tiếp được thì tìm đường lại.
 - `MOV-05` Không bao giờ đi hoặc bị đẩy vào vật cản (INV-01).
+- `MOV-06` Đi theo hướng (lệnh `MOVE_DIR`, D-42): đi thẳng theo hướng, không tìm đường.
+  Bước thẳng bị chặn thì **trượt dọc mép**: thử lệch ±15°, ±30°, ±45°, ±60°, ±75° (góc
+  nhỏ trước, cùng góc thì + trước −), đi quãng = bước × cos(góc). Không góc nào đi được
+  thì đứng yên tick đó. Lệnh không tự xong; dừng khi có lệnh khác (`STOP`).
 
 ## CMD — Lệnh (Command)
 
 Người chơi, bot và controller (lính, trụ, quái) đều điều khiển đơn vị bằng lệnh.
 - `CMD-01` Lệnh gửi trong tick N được áp ở pha COMMAND của tick N+1, theo đúng thứ tự gửi.
 - `CMD-02` Lệnh không hợp lệ bị bỏ, kèm lý do đọc được: `UNKNOWN_UNIT` (đơn vị không tồn
-  tại), `POINT_OUTSIDE_MAP` (điểm ngoài map hoặc không phải số hữu hạn). Thêm lý do khi
-  thêm loại lệnh.
+  tại), `POINT_OUTSIDE_MAP` (điểm ngoài map hoặc không phải số hữu hạn), `BAD_DIRECTION`
+  (hướng dài 0 hoặc không hữu hạn). Thêm lý do khi thêm loại lệnh.
 - `CMD-03` Lệnh hợp lệ thay lệnh hiện tại (Order) của đơn vị. `STOP` → đứng yên.
 - `CMD-04` Mọi lệnh đã áp được ghi vào nhật ký kèm tick; phát lại nhật ký trên World cùng
   seed cho ra đúng trận đó (D-30).
-- `CMD-05` Loại lệnh hiện có: `MOVE_TO(điểm)`, `STOP`. Đánh, dùng chiêu, mua đồ thêm ở
+- `CMD-05` Loại lệnh hiện có: `MOVE_TO(điểm)`, `MOVE_DIR(hướng)`, `STOP`. Đánh, dùng chiêu, mua đồ thêm ở
   mốc của chúng.
 
 ## BOT — Bot hero

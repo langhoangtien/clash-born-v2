@@ -206,3 +206,69 @@ func test_D_30_movement_replays_identically() -> void:
 			elif w.state_hash() != hashes[t]:
 				fail("lệch ở tick %d" % w.tick)
 				return
+
+
+func test_MOV_06_move_dir_goes_straight_at_speed() -> void:
+	var w: World = _world()
+	var start: Vector2 = _map.fountain_point(0)
+	var h: Entity = _unit(w, start, 300.0)
+	w.submit(Command.move_dir(h.id, Vector2(1, -1)))
+	for t: int in range(30):
+		w.step()
+	assert_near(h.position.distance_to(start), 300.0, 1.0)
+	assert_near((h.position - start).normalized().dot(Vector2(1, -1).normalized()), 1.0, 0.001)
+	assert_false(h.order.finished, "đi theo hướng không tự xong")
+
+
+func test_MOV_06_slides_along_obstacle_never_enters() -> void:
+	var w: World = _world()
+	var nav: MapNavigation = w.navigation(HERO_R)
+	var h: Entity = _unit(w, _map.fountain_point(0))
+	# Đi chéo lên trái tới mép map/vách rồi giữ hướng: phải trượt chứ không kẹt cứng.
+	w.submit(Command.move_dir(h.id, Vector2(-1, -0.3)))
+	var positions: Array[Vector2] = []
+	for t: int in range(240):
+		w.step()
+		assert_true(nav.point_is_clear(h.position), "tick %d vào vật cản" % w.tick)
+		positions.append(h.position)
+	var last_second: float = positions[-1].distance_to(positions[-31])
+	assert_true(last_second > 20.0, "vẫn trượt dọc mép (%.1f trong 1 s cuối)" % last_second)
+
+
+func test_MOV_06_stop_ends_direct_move() -> void:
+	var w: World = _world()
+	var h: Entity = _unit(w, _map.fountain_point(0))
+	w.submit(Command.move_dir(h.id, Vector2.RIGHT))
+	for t: int in range(5):
+		w.step()
+	w.submit(Command.stop(h.id))
+	w.step()
+	var at: Vector2 = h.position
+	w.step()
+	assert_eq(h.position, at)
+
+
+func test_CMD_02_bad_direction_rejected() -> void:
+	var w: World = _world()
+	var h: Entity = _unit(w, _map.fountain_point(0))
+	w.submit(Command.move_dir(h.id, Vector2.ZERO))
+	w.submit(Command.move_dir(h.id, Vector2(NAN, 1)))
+	w.step()
+	assert_eq(w.rejected_commands.size(), 2)
+	assert_eq(w.rejected_commands[0].reject_reason, Command.Reject.BAD_DIRECTION)
+
+
+func test_D_30_direct_moves_replay_identically() -> void:
+	var hashes: Array[PackedByteArray] = []
+	for run: int in range(2):
+		var w: World = _world(8)
+		var h: Entity = _unit(w, _map.fountain_point(0))
+		for t: int in range(300):
+			if t % 40 == 0:
+				w.submit(Command.move_dir(h.id, Vector2.from_angle(t * 0.37)))
+			w.step()
+			if run == 0:
+				hashes.append(w.state_hash())
+			elif w.state_hash() != hashes[t]:
+				fail("lệch ở tick %d" % w.tick)
+				return

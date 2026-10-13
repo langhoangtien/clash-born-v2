@@ -1,6 +1,6 @@
 extends Node2D
-## Màn trận (M1.4): World + map + đơn vị, camera theo hero.
-## TẠM (bỏ ở M1.5 khi có điều khiển): hero tự đi tuần lane giữa để thấy chuyển động.
+## Màn trận: World + map + đơn vị, camera theo hero, điều khiển (CTL-01):
+## WASD/mũi tên hoặc joystick ảo → đi theo hướng; chuột phải / chạm map → đi tới điểm.
 
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
 const HERO_ID: StringName = &"brakk"
@@ -10,13 +10,12 @@ const SEED: int = 1
 @onready var units_view: UnitsView = $UnitsView
 @onready var camera: Camera2D = $Camera2D
 @onready var hud: Label = $Hud/Info
+@onready var joystick: TouchJoystick = $Hud/Joystick
 
 var world: World
 var runner: SimRunner
 var hero: Entity
-
-var _patrol: PackedVector2Array = PackedVector2Array()
-var _patrol_index: int = 0
+var input: MatchInput = MatchInput.new()
 
 
 func _ready() -> void:
@@ -26,13 +25,15 @@ func _ready() -> void:
 	var library: ContentLibrary = ContentLibrary.load_dir()
 	hero = UnitFactory.hero(world, library.heroes[HERO_ID], 0, world.map.fountain_point(0))
 	units_view.world = world
+	input.world = world
+	input.hero = hero
 	runner = SimRunner.new(world)
 	runner.before_step.connect(_before_step)
-	_patrol = world.map.route("MID", 0)
 	camera.position = hero.position
 
 
 func _process(delta: float) -> void:
+	input.set_direction(_held_direction())
 	tick_frame(delta)
 
 
@@ -41,22 +42,35 @@ func tick_frame(delta: float) -> void:
 	runner.advance(delta)
 	units_view.alpha = runner.alpha()
 	camera.position = units_view.display_position(hero)
-	hud.text = "tick %d · %s · máu %.0f · Esc: quay lại" % [world.tick, hero.art_id, hero.health]
+	hud.text = "tick %d · %s · máu %.0f · WASD/joystick: đi · chuột phải/chạm: đi tới · Esc: quay lại" % [
+		world.tick, hero.art_id, hero.health]
 
 
 func _before_step() -> void:
 	units_view.capture_previous()
-	_patrol_step()
+	input.flush()
 
 
-## TẠM (M1.4): đi lần lượt qua các điểm của lane giữa, hết thì quay đầu.
-func _patrol_step() -> void:
-	if hero.order.type == Order.Type.MOVE and not hero.order.finished:
-		return
-	_patrol_index = (_patrol_index + 1) % _patrol.size()
-	world.submit(Command.move_to(hero.id, _patrol[_patrol_index]))
+## Joystick ảo ưu tiên; không chạm thì đọc WASD / mũi tên.
+func _held_direction() -> Vector2:
+	if joystick.active:
+		return joystick.direction
+	var dir: Vector2 = Vector2.ZERO
+	if Input.is_physical_key_pressed(KEY_A) or Input.is_physical_key_pressed(KEY_LEFT):
+		dir.x -= 1
+	if Input.is_physical_key_pressed(KEY_D) or Input.is_physical_key_pressed(KEY_RIGHT):
+		dir.x += 1
+	if Input.is_physical_key_pressed(KEY_W) or Input.is_physical_key_pressed(KEY_UP):
+		dir.y -= 1
+	if Input.is_physical_key_pressed(KEY_S) or Input.is_physical_key_pressed(KEY_DOWN):
+		dir.y += 1
+	return dir
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and (event as InputEventKey).keycode == KEY_ESCAPE:
 		get_tree().change_scene_to_file("res://app/main.tscn")
+	elif event is InputEventMouseButton and event.pressed and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_RIGHT:
+		input.tap_world_point(get_global_mouse_position())
+	elif event is InputEventScreenTouch and event.pressed:
+		input.tap_world_point(get_canvas_transform().affine_inverse() * (event as InputEventScreenTouch).position)

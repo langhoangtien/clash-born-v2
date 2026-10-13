@@ -44,5 +44,6 @@ func test_match_scene_builds_with_a_hero_and_follows_it() -> void:
 	assert_eq(hero.kind, Entity.Kind.HERO)
 	scene.tick_frame(1.0)
 	assert_eq(scene.world.tick, SimRunner.MAX_STEPS_PER_FRAME)
+	assert_true(hero.order.type == Order.Type.IDLE, "không còn tự đi tuần: chỉ đi khi người chơi ra lệnh")
 	assert_true(scene.camera.position.distance_to(scene.units_view.display_position(hero)) < 0.01, "camera theo hero")
 	scene.free()

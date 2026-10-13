@@ -41,6 +41,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-39 | 2026-10-14 | Làm chậm khác nguồn cộng dồn (nhân), thay EFF-03 cũ; bỏ nhóm `slow`. Tốc chạy tối thiểu 0. Máu/giáp cấp 1 theo khung: STR 500–700 / 1–5, AGI 400–600 / 2–7, INT 400–600 / 1–4; mỗi Trí tuệ cho giáp phép như Nhanh nhẹn cho giáp | Theo yêu cầu; hai món giống nhau vẫn chỉ tính một lần (ITM-04) |
 | D-40 | 2026-10-14 | Modifier MULTIPLY cộng phần trăm với nhau: hệ số = 1 + Σ(mᵢ − 1), không dưới 0. Chậm 30% + 50% = chậm 80% | Theo yêu cầu; giống Dota; tăng tốc và làm chậm bù trừ nhau dễ hiểu |
 | D-41 | 2026-10-14 | Đơn vị chạm nhau thì tự đẩy nhẹ cho tách ra (kể cả đơn vị đứng yên), không bao giờ vào vật cản, thứ tự theo id (MOV-04) | Hero len qua đám lính như Liên Quân; xác định cho online |
+| D-42 | 2026-10-14 | Joystick/WASD dùng lệnh `MOVE_DIR` đi thẳng theo hướng và trượt dọc mép vật cản (MOV-06); chạm/chuột phải dùng `MOVE_TO` có tìm đường | Joystick mà dùng tìm đường thì gặp rừng hero có thể vòng ngược; trượt mép cho cảm giác như Liên Quân |
 
 ## Chờ chốt
 

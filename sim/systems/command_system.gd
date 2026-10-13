@@ -16,6 +16,8 @@ func run(world: World) -> void:
 		match command.type:
 			Command.Type.MOVE_TO:
 				unit.order = Order.move(command.point)
+			Command.Type.MOVE_DIR:
+				unit.order = Order.direct(command.direction)
 			Command.Type.STOP:
 				unit.order = Order.idle()
 		world.command_log.append(command)
@@ -29,4 +31,7 @@ func _check(world: World, command: Command, unit: Entity) -> Command.Reject:
 			return Command.Reject.POINT_OUTSIDE_MAP
 		if world.map != null and not world.map.world_rect().has_point(command.point):
 			return Command.Reject.POINT_OUTSIDE_MAP
+	if command.type == Command.Type.MOVE_DIR:
+		if not command.direction.is_finite() or command.direction.length() < 0.000001:
+			return Command.Reject.BAD_DIRECTION
 	return Command.Reject.NONE

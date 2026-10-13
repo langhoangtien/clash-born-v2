@@ -104,7 +104,7 @@ func state_hash() -> PackedByteArray:
 	for e: Entity in entities:
 		ctx.update(PackedInt64Array([e.id, e.team, e.kind, e.order.type, int(e.order.finished)]).to_byte_array())
 		ctx.update(PackedFloat64Array([e.position.x, e.position.y, e.radius, e.health, e.mana,
-			e.order.point.x, e.order.point.y]).to_byte_array())
+			e.order.point.x, e.order.point.y, e.order.direction.x, e.order.direction.y]).to_byte_array())
 		if e.stats != null:
 			ctx.update(e.stats.values().to_byte_array())
 	return ctx.finish()

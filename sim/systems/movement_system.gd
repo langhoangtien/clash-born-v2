@@ -5,6 +5,8 @@ extends SimSystem
 
 ## Hằng số kỹ thuật: hai tâm gần hơn mức này coi như trùng nhau.
 const SAME_SPOT: float = 0.001
+## MOV-06: góc thử khi trượt dọc mép (độ), góc nhỏ trước, + trước −.
+const SLIDE_ANGLES: Array[float] = [15.0, -15.0, 30.0, -30.0, 45.0, -45.0, 60.0, -60.0, 75.0, -75.0]
 
 ## Số lần một bước đi bị chặn vì sẽ vào vật cản (phải luôn bằng 0 nếu tìm đường đúng;
 ## test kiểm tra). Khi xảy ra, đơn vị đứng lại và tìm đường lại ở tick sau.
@@ -15,6 +17,8 @@ func run(world: World) -> void:
 	for e: Entity in world.entities:
 		if e.order.type == Order.Type.MOVE and not e.order.finished:
 			_advance(world, e)
+		elif e.order.type == Order.Type.DIRECT:
+			_advance_direct(world, e)
 	_separate(world)
 
 
@@ -43,6 +47,30 @@ func _advance(world: World, e: Entity) -> void:
 	if e.path_index >= e.path.size():
 		e.order.finished = true  # MOV-03
 		e.path = PackedVector2Array()
+
+
+## MOV-06: đi thẳng theo hướng; bị chặn thì trượt dọc mép.
+func _advance_direct(world: World, e: Entity) -> void:
+	var nav: MapNavigation = world.navigation(e.radius)
+	var budget: float = e.stats.get_stat(StatId.Id.MOVEMENT_SPEED) * SimClock.TICK_SECONDS
+	e.facing = e.order.direction
+	if budget <= 0.0:
+		return
+	var step: Vector2 = e.order.direction * budget
+	if _try_step(nav, e, step):
+		return
+	for angle: float in SLIDE_ANGLES:
+		var radians: float = deg_to_rad(angle)
+		if _try_step(nav, e, step.rotated(radians) * cos(radians)):
+			return
+
+
+func _try_step(nav: MapNavigation, e: Entity, offset: Vector2) -> bool:
+	var target: Vector2 = e.position + offset
+	if not nav.point_is_clear(target) or not nav.has_line_of_walk(e.position, target):
+		return false
+	e.position = target
+	return true
 
 
 ## MOV-02: điểm đến không đứng được thì lấy điểm đứng được gần nhất.

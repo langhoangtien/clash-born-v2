@@ -65,8 +65,10 @@ clashborn_v2/
     map/                   MapView, MapPainter (vẽ tạm bằng hình phẳng)
     units/                 UnitsView: vẽ đơn vị, nội suy giữa hai tick, y-sort
     art/                   ArtLibrary: res://assets/art/<art_id>.png, thiếu → hình tạm
+    hud/                   TouchJoystick (joystick ảo; tên VirtualJoystick trùng lớp có sẵn của Godot 4.7)
   app/                     scene chính, luồng màn hình, màn xem map, màn trận;
-                           SimRunner: chạy World 30 tick/giây theo thời gian thật
+                           SimRunner: chạy World 30 tick/giây theo thời gian thật;
+                           MatchInput: joystick/WASD/chạm → Command (CTL-01)
   tests/                   test (framework nhỏ tự viết, xem mục 9)
   tools/                   script ngoài Godot (build map...)
 ```

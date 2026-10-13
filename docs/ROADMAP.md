@@ -160,4 +160,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M1.2 | Xong | 2026-10-14 | 145 test xanh (+10); luật CMD-01..05; tiêu chí "đi tới nơi" dời sang M1.3 |
 | M1.3 | Xong | 2026-10-14 | 155 test xanh (+9); luật MOV-01..05, đẩy nhau D-41; 30 đơn vị đi ngẫu nhiên 60 s không vào vật cản, không bị kẹt; sửa tìm đường để không cắt góc |
 | M1.4 | Xong | 2026-10-14 | 167 test xanh (+12); UnitFactory, SimRunner 30 tick/s, UnitsView (nội suy, y-sort, bóng, hình tạm), ArtLibrary; nút "Vào trận (thử)"; Brakk đi tuần lane giữa (tạm) |
-| M1.5 | Chờ duyệt kế hoạch | | |
+| M1.5 | Chờ chơi thử | 2026-10-14 | 178 test xanh (+11); lệnh MOVE_DIR + trượt mép (MOV-06, D-42), WASD/joystick ảo/chuột phải/chạm; đã xóa đi tuần tạm. **Còn: bạn chơi thử** |
