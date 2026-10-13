@@ -4,6 +4,7 @@ extends Control
 
 const VERSION_TEXT: String = "Clashborn v2 — M0"
 const MAP_VIEWER: String = "res://app/map_viewer.tscn"
+const MATCH_SCENE: String = "res://app/match_scene.tscn"
 
 
 func _ready() -> void:
@@ -24,4 +25,10 @@ func _ready() -> void:
 	button.add_theme_font_size_override("font_size", 36)
 	button.pressed.connect(func() -> void: get_tree().change_scene_to_file(MAP_VIEWER))
 	box.add_child(button)
+	var match_button: Button = Button.new()
+	match_button.name = "MatchButton"
+	match_button.text = "Vào trận (thử)"
+	match_button.add_theme_font_size_override("font_size", 36)
+	match_button.pressed.connect(func() -> void: get_tree().change_scene_to_file(MATCH_SCENE))
+	box.add_child(match_button)
 	print(VERSION_TEXT + " ready")

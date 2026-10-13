@@ -517,6 +517,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | reincarnate_delay | 3 s | | match_target_minutes | 15–20 (D-29) |
 | evasion_cap | 1.0 (không giới hạn) | | tower_body_radius | 52 |
 | minimum_movement_speed | 0 (bị chậm hết thì đứng yên) | | separation_speed | 400 / s |
+| attribute_bonus | 2 | | | |
 
 Mục tiêu đo được: trung vị thời lượng trận bot đấu bot nằm trong `match_target_minutes`,
 hero đạt cấp 20 trong khoảng phút 14–17. Lệch thì chỉnh số trong bảng này, không sửa luật.

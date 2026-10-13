@@ -51,7 +51,7 @@ clashborn_v2/
   data/maps/               map đã build (từ tools/map_build)
   sim/                     tầng SIM
     core/                  công thức (mang từ v1): stat, sát thương, trúng/né
-    world/                 World (pha tick, state_hash), Entity, StatBlock, StatModifier, StatId,
+    world/                 World (pha tick, state_hash), Entity, UnitFactory, StatBlock, StatModifier, StatId,
                            UnitState; EffectContainer ở M3
     systems/               mỗi file một hệ thống, chạy theo thứ tự cố định
     defs/                  khuôn dữ liệu: HeroDef, AbilityDef, EffectDef, TalentDef, ItemDef, UnitDef…
@@ -63,7 +63,10 @@ clashborn_v2/
   view/                    vẽ đơn vị, map, hiệu ứng, HUD, điều khiển cảm ứng;
                            ArtLibrary: tra hình theo id, thiếu thì hình tạm (ART.md)
     map/                   MapView, MapPainter (vẽ tạm bằng hình phẳng)
-  app/                     scene chính, luồng màn hình, màn xem map
+    units/                 UnitsView: vẽ đơn vị, nội suy giữa hai tick, y-sort
+    art/                   ArtLibrary: res://assets/art/<art_id>.png, thiếu → hình tạm
+  app/                     scene chính, luồng màn hình, màn xem map, màn trận;
+                           SimRunner: chạy World 30 tick/giây theo thời gian thật
   tests/                   test (framework nhỏ tự viết, xem mục 9)
   tools/                   script ngoài Godot (build map...)
 ```

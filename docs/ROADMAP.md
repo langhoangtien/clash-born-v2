@@ -39,7 +39,7 @@ Chưa có gameplay; dựng khung để mọi thứ sau đứng vững.
 | M1.2 Command + Order + CommandSystem (MoveTo, Stop), nhật ký lệnh + phát lại | Test CMD-01..05; phát lại nhật ký trùng trạng thái từng tick |
 | M1.3 MovementSystem dùng MapNavigation, va chạm giữa đơn vị | Test: MoveTo → đơn vị tới nơi, không xuyên vật cản (dời từ M1.2); INV-01 với 30 đơn vị đi ngẫu nhiên |
 | M1.4 View: vẽ map + đơn vị từ World, camera theo hero, ArtLibrary + hình tạm (A0) | Chạy được, nhìn thấy |
-| M1.5 Input → Command: joystick ảo + WASD + chạm để đi | **Chơi thử: điều khiển hero chạy quanh map trên PC** |
+| M1.5 Input → Command: joystick ảo + WASD + chạm để đi; **xóa lệnh đi tuần tạm** trong `app/match_scene.gd` | **Chơi thử: điều khiển hero chạy quanh map trên PC** |
 
 ## M2 — Đánh nhau cơ bản: lính, trụ, thắng thua (L)
 
@@ -159,4 +159,5 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M1.1 | Xong | 2026-10-14 | 131 test xanh (+25); StatBlock (STAT-02/04/05, CMB-11), World 12 pha, StateSystem, băm trạng thái; 1000 tick hai lần cùng seed trùng từng tick |
 | M1.2 | Xong | 2026-10-14 | 145 test xanh (+10); luật CMD-01..05; tiêu chí "đi tới nơi" dời sang M1.3 |
 | M1.3 | Xong | 2026-10-14 | 155 test xanh (+9); luật MOV-01..05, đẩy nhau D-41; 30 đơn vị đi ngẫu nhiên 60 s không vào vật cản, không bị kẹt; sửa tìm đường để không cắt góc |
-| M1.4 | Chờ duyệt kế hoạch | | |
+| M1.4 | Xong | 2026-10-14 | 167 test xanh (+12); UnitFactory, SimRunner 30 tick/s, UnitsView (nội suy, y-sort, bóng, hình tạm), ArtLibrary; nút "Vào trận (thử)"; Brakk đi tuần lane giữa (tạm) |
+| M1.5 | Chờ duyệt kế hoạch | | |

@@ -30,6 +30,10 @@ extends Resource
 @export var status_resistance_cap: float
 @export var minimum_movement_speed: float
 
+@export_group("Hero")
+## ABL-04: mỗi lần đổi điểm thừa cộng chừng này vào cả 3 thuộc tính.
+@export var attribute_bonus: float
+
 @export_group("Di chuyển (MOV)")
 ## MOV-04: tốc độ tối đa một đơn vị bị đẩy ra khi chồng lên đơn vị khác.
 @export var separation_speed: float

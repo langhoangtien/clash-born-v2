@@ -11,6 +11,10 @@ var team: int = 0  # 0 Blue, 1 Red, 2 trung lập
 var kind: Kind = Kind.HERO
 var position: Vector2 = Vector2.ZERO
 var radius: float = 0.0
+## Hướng nhìn (MovementSystem ghi khi đi). VIEW dùng để quay hình.
+var facing: Vector2 = Vector2.RIGHT
+## Id hình (ART.md); SIM không biết đường dẫn file.
+var art_id: StringName
 var stats: StatBlock
 var health: float = 0.0
 var mana: float = 0.0

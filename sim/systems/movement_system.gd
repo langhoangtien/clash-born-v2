@@ -32,6 +32,8 @@ func _advance(world: World, e: Entity) -> void:
 			blocked_steps += 1
 			e.path_for = null  # MOV-05: không bước vào vật cản; tick sau tìm đường lại
 			return
+		if step_to != e.position:
+			e.facing = (step_to - e.position).normalized()
 		e.position = step_to
 		if gap <= budget:
 			budget -= gap
