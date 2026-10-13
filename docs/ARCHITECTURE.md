@@ -338,8 +338,9 @@ công thức của nó nhưng chia phần xử lý thành các hệ thống ở 
 
 ## 9. Test
 
-- Framework nhỏ tự viết (`tests/framework.gd`): mỗi file `test_*.gd` có các hàm
-  `test_*`, một lệnh chạy hết, báo xanh/đỏ, trả mã lỗi.
+- Framework nhỏ tự viết (`tests/framework/`): mỗi file `test_*.gd` `extends TestCase`
+  có các hàm `test_*`; `tests/run_all.gd` chạy hết, báo xanh/đỏ, trả mã lỗi. Lỗi
+  script trong test bị bắt (qua `Logger`) và tính là đỏ.
 - **Test kịch bản SIM**: dựng World bằng code (`WorldBuilder`), đặt đơn vị, chạy N
   tick, kiểm tra. Không cần scene, chạy nhanh.
 - **Test phát lại (replay)**: chạy trận hai lần với cùng seed và cùng nhật ký Command,

@@ -93,4 +93,11 @@ Dừng, mô tả tình huống, đề xuất 1–2 phương án luật kèm mã 
 powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1
 ```
 
-(Script được tạo ở M0.2: tự import dự án rồi chạy mọi test, báo tổng kết.)
+Chạy một phần: thêm `-Filter CRP_05` (lọc theo tên file:tên test), `-VerboseTests` để
+in từng test. Godot lấy từ `-Godot`, biến môi trường `GODOT`, hoặc đường dẫn mặc định
+trong script. Mã thoát: 0 xanh, 1 đỏ, 2 không có test nào chạy, 3 không thấy Godot.
+Trên Linux/macOS: `GODOT=... tools/run_tests.sh [--filter=...] [--verbose]`.
+
+Viết test: file `tests/**/test_*.gd`, `extends TestCase`, mỗi hàm `test_*` là một test;
+có `assert_true/false/eq/ne/near` và `fail`. Lỗi script trong test cũng tính là đỏ.
+`tests/fixtures/` chứa file cố ý sai cho chính khung test, không tự chạy.

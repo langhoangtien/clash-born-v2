@@ -150,4 +150,5 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | Việc | Trạng thái | Ngày | Ghi chú |
 |---|---|---|---|
 | M0.1 | Xong | 2026-10-14 | Project mở được, scene khởi động chạy; repo GitHub chờ bạn tạo |
-| M0.2 | Chờ duyệt kế hoạch | | |
+| M0.2 | Xong | 2026-10-14 | 5 test khung xanh; fixture cố ý sai bị bắt đỏ (sai assert, lỗi script, fail) |
+| M0.3 | Chờ duyệt kế hoạch | | |
