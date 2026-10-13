@@ -66,6 +66,38 @@ thuộc tính → máu/giáp/tốc đánh lấy từ v1 (`StatCalculator`).
 
 `STAT-03` Không gì được đổi chỉ số ngoài Modifier (ARCHITECTURE 3.2).
 
+`STAT-04` Lên cấp hero **chỉ** cộng Sức mạnh / Nhanh nhẹn / Trí tuệ theo tăng
+trưởng của hero (số lẻ được), cộng `attribute_bonus` khi đổi điểm thừa (ABL-04).
+Lên cấp **không** cộng thẳng sát thương, máu, giáp hay tốc đánh; các chỉ số đó tăng
+nhờ thuộc tính (D-35):
+
+| Thuộc tính | Cho mỗi điểm |
+|---|---|
+| Sức mạnh (STR) | `hp_per_strength` máu, `hp_regen_per_strength` hồi máu |
+| Nhanh nhẹn (AGI) | `armor_per_agility` giáp, `attack_speed_per_agility` tốc đánh |
+| Trí tuệ (INT) | `mana_per_intelligence` mana, `mana_regen_per_intelligence` hồi mana, `magic_armor_per_intelligence` giáp phép |
+| Thuộc tính chính | `primary_damage_coefficient` sát thương đòn đánh |
+
+Sát thương đòn đánh = sát thương gốc của hero + thuộc tính chính ×
+`primary_damage_coefficient` + modifier. Hệ số nằm ở
+`content/balance/balance_settings.tres`.
+
+`STAT-05` **Nhóm duy nhất** (`unique_group`): modifier và bị động có thể khai báo một
+nhóm. Trên một đơn vị, trong cùng nhóm chỉ **nguồn mạnh nhất** có tác dụng; nguồn khác
+bị bỏ qua hoàn toàn (không cộng chỉ số, không tung xúc xắc). "Mạnh nhất" = giá trị
+`unique_priority` khai báo trong dữ liệu (mặc định: giá trị modifier hoặc xác suất);
+hòa thì lấy nguồn có id nhỏ hơn. Không khai báo nhóm thì cộng dồn bình thường (D-34).
+
+| Nhóm | Thành viên bản đầu | Ví dụ |
+|---|---|---|
+| `bash` | Brakk nội tại, bị động Búa Choáng | Brakk mua Búa Choáng: chỉ bash mạnh nhất được tung; 2 Búa Choáng không tăng tỉ lệ (CMB-08) |
+| `move_speed_boots` | tốc chạy của mọi món giày (chưa có ở bản đầu) | 2 đôi giày chỉ tính đôi nhanh nhất |
+| `item:<id>` (tự động) | bị động của chính một món đồ | 2 món giống nhau: bị động chỉ tính một lần (ITM-04) |
+
+Kỹ năng và trang bị **khác nhóm** vẫn kết hợp bình thường (vd Ngọc Băng Sương làm chậm
+cùng chiêu làm chậm theo EFF-03). Riêng chí mạng không cần nhóm vì CMB-07 không bao
+giờ nhân hệ số với nhau.
+
 ---
 
 ## ST — Trạng thái
@@ -154,16 +186,24 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   thêm từ trigger (bash, phục kích…). Không chí mạng lên công trình.
 - `CMB-08` Bash (đòn choáng ngẫu nhiên): trigger `attack_landed` có xác suất → choáng +
   sát thương thêm. Không tác dụng lên công trình. Nhiều nguồn bash: chỉ một nguồn
-  được tung (nguồn có hệ số cao nhất), có thời gian chờ chung `bash_cooldown`.
+  được tung (nguồn có hệ số cao nhất, nhóm `bash` — STAT-05), có thời gian chờ chung
+  `bash_cooldown`.
 - `CMB-09` Sát thương phản hồi (phản đòn, trả đòn, phân tán) được đánh dấu `reflected`:
   không kích hoạt bất kỳ trigger phản hồi nào khác (tránh hai bên phản qua phản lại vô
   hạn), không hút máu, không chí mạng, không tính là giao tranh hero (DEF-11), có tính
   để ghi công hạ gục.
 - `CMB-10` Đốt mana: trừ mana của mục tiêu tối đa bằng số mana nó đang có; sự kiện
   mang lượng thực tế bị đốt (`event.burned_mana`) để hành động sau dùng.
-- `CMB-11` Né (evasion): đòn đánh có thể trượt theo chỉ số `evasion` của mục tiêu và
-  `accuracy` của kẻ đánh (công thức v1, PRD theo RNG-01). Đòn trượt không kích hoạt
-  `attack_landed`, chỉ `attack_missed`.
+- `CMB-11` Né và chính xác (D-33):
+  - Né từ nhiều nguồn **nhân dồn**: `evasion = 1 − Π(1 − né_i)`. Hai món né 50% →
+    trúng 0.5 × 0.5 = 25% → né 75%.
+  - Chính xác từ nhiều nguồn cũng **nhân dồn**: `accuracy = 1 − Π(1 − chính_xác_i)`.
+    Hai món chính xác 80% → 1 − 0.2 × 0.2 = 96%.
+  - Xác suất trượt = `evasion × (1 − accuracy)`. Mục tiêu né 100% (kiểu Windrun), kẻ
+    đánh có 80% chính xác → 100 đòn trúng 80; có hai món 80% → trượt 4%, trúng 96%.
+  - Né tối đa `evasion_cap` (1.0 = không giới hạn, như Dota).
+  - Tung trượt/trúng bằng PRD (RNG-01). Đòn trượt không kích hoạt `attack_landed`,
+    chỉ `attack_missed`.
 
 ## ABL — Kỹ năng
 
@@ -217,8 +257,9 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   hero, không có cấp, có thể có số lần dùng (`charges`).
 - `ITM-03` Dùng đồ chủ động: bị chặn bởi STUNNED, HEXED; **không** bị chặn bởi
   SILENCED (giống Dota). Không tốn mana trừ khi khai báo.
-- `ITM-04` Hai món cùng loại dùng chung hồi chiêu. Bị động "đòn đánh" cùng loại không
-  cộng dồn (chỉ tính một lần, tag `unique`).
+- `ITM-04` Hai món cùng loại dùng chung hồi chiêu. Chỉ số thường của đồ (sát thương,
+  thuộc tính…) cộng dồn; **bị động** của hai món cùng loại chỉ tính một lần (nhóm
+  `item:<id>`, STAT-05). Né và chính xác vẫn nhân dồn theo CMB-11.
 - `ITM-05` Giá trị khác nhau cho cận chiến/đánh xa khai báo bằng hai giá trị có tên
   (`chance_melee`, `chance_ranged`), không bằng code.
 - `ITM-06` Mua, bán, ghép đồ: ECO-06.
@@ -420,6 +461,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | attribute_bonus | +2 mọi thuộc tính | | attribute_bonus_max | 7 lần |
 | hex_move_speed | 140 | | bash_cooldown | 1.5 s |
 | reincarnate_delay | 3 s | | match_target_minutes | 15–20 (D-29) |
+| evasion_cap | 1.0 (không giới hạn) | | | |
 
 Mục tiêu đo được: trung vị thời lượng trận bot đấu bot nằm trong `match_target_minutes`,
 hero đạt cấp 20 trong khoảng phút 14–17. Lệch thì chỉnh số trong bảng này, không sửa luật.

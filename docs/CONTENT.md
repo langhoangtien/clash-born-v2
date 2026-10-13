@@ -65,7 +65,8 @@ vĩnh viễn, cơ chế đã có sẵn nhờ trang bị, nên không cần hero 
 Có thể làm nội tại cho hero thứ 5 hoặc talent về sau mà không cần code.
 
 Chỉ số gốc và tăng trưởng lấy từ hero v1 cùng tên (`tank_growth`, `mage_growth`,
-`assassin_growth`), cân lại sau khi chơi thử.
+`assassin_growth`), cân lại sau khi chơi thử. Tăng trưởng chỉ gồm STR/AGI/INT, không
+có sát thương mỗi cấp (STAT-04).
 
 ---
 

@@ -1,0 +1,50 @@
+class_name BalanceSettings
+extends Resource
+## Hệ số công thức chỉ số và sát thương (STAT-04, CMB-03, CMB-11). Giá trị nằm trong
+## content/balance/balance_settings.tres, không đặt trong code (AGENTS mục 4).
+
+@export_group("Thuộc tính → chỉ số (STAT-04)")
+@export var hp_per_strength: float
+@export var hp_regen_per_strength: float
+@export var armor_per_agility: float
+@export var attack_speed_per_agility: float
+@export var mana_per_intelligence: float
+@export var mana_regen_per_intelligence: float
+@export var magic_armor_per_intelligence: float
+@export var primary_damage_coefficient: float
+
+@export_group("Sát thương (CMB-03)")
+## Hệ số giáp: hệ số nhận = 1 / (1 + k × |giáp|), giáp âm đối xứng quanh 1.
+@export var armor_coefficient: float
+
+@export_group("Tốc đánh")
+@export var minimum_attacks_per_second: float
+@export var maximum_attacks_per_second: float
+## Trần thứ hai: không quá N lần tốc gốc (1 / base_attack_time).
+@export var maximum_attack_speed_multiplier: float
+@export var minimum_attack_interval: float
+
+@export_group("Giới hạn khác")
+## 1.0 = không giới hạn né (CMB-11, D-33).
+@export var evasion_cap: float
+@export var status_resistance_cap: float
+@export var minimum_movement_speed: float
+
+
+func validation_errors() -> PackedStringArray:
+	var errors: PackedStringArray = PackedStringArray()
+	if armor_coefficient <= 0.0:
+		errors.append("armor_coefficient phải > 0")
+	if minimum_attacks_per_second <= 0.0 or minimum_attacks_per_second > maximum_attacks_per_second:
+		errors.append("cần 0 < minimum_attacks_per_second ≤ maximum_attacks_per_second")
+	if maximum_attack_speed_multiplier < 1.0:
+		errors.append("maximum_attack_speed_multiplier phải ≥ 1")
+	if minimum_attack_interval <= 0.0:
+		errors.append("minimum_attack_interval phải > 0")
+	if evasion_cap < 0.0 or evasion_cap > 1.0:
+		errors.append("evasion_cap trong [0, 1]")
+	if status_resistance_cap < 0.0 or status_resistance_cap > 1.0:
+		errors.append("status_resistance_cap trong [0, 1]")
+	if hp_per_strength <= 0.0 or mana_per_intelligence < 0.0 or minimum_movement_speed < 0.0:
+		errors.append("hệ số thuộc tính / tốc chạy không hợp lệ")
+	return errors

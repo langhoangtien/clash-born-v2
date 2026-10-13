@@ -325,9 +325,9 @@ Cơ chế mới (state, action, loại đơn vị) phải trả lời đủ các
 
 | Mang sang | Cách |
 |---|---|
-| Công thức: `StatCalculator`, `DamageCalculator`, `HitCalculator`, `BalanceSettings`, `SimulationClock` | Chép nguyên, kèm test công thức của v1 |
+| Công thức: `StatCalculator`, `DamageCalculator`, `HitCalculator`, `BalanceSettings`, `SimulationClock` | Mang công thức và con số, viết lại thành hàm thuần có kiểu (`sim/core/*_formulas.gd`, D-32), kèm test công thức của v1 |
 | Đạn bay (`CombatProjectile`) | Chép, gắn vào AttackSystem |
-| Chỉ số và tăng trưởng hero (`*_growth.tres`) | Brakk, Myra, Noctis lấy từ hero v1 cùng tên; 9 hero còn lại giữ làm mẫu chỉ số cho hero sau |
+| Chỉ số và tăng trưởng hero (`*_growth.tres`) | Brakk, Myra, Noctis lấy từ hero v1 cùng tên, **bỏ** `physical_damage` mỗi cấp (D-35); 9 hero còn lại giữ làm mẫu chỉ số cho hero sau |
 | Trang bị (14 + 23 món) | `modifiers` của v1 chuyển thẳng thành Modifier |
 | Map: `tools/map_build`, `data/maps`, `MapLayout`, `MapNavigation`, `MapPainter` | Chép nguyên kèm `test_map` |
 | Âm thanh, icon | Chép |

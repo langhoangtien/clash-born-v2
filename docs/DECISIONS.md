@@ -31,6 +31,10 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-29 | 2026-10-14 | Một trận nhắm **15–20 phút** (trả lời D-05). Hero 1v1 phải lên được cấp 20 khoảng phút 14–17 để talent có ý nghĩa | Quyết định máu trụ, XP, vàng, thời gian hồi sinh; đo bằng soak bot đấu bot (M7.5), chỉnh số trong NUM chứ không đổi luật |
 | D-30 | 2026-10-14 | **Sẽ có chơi online người với người**, làm sau M8 (trả lời D-04). Từ bây giờ SIM phải xác định tuyệt đối: cùng seed + cùng nhật ký Command → cùng trạng thái từng tick. Chọn mô hình mạng (lockstep hay server quyết định) khi bắt đầu làm online | Không phải viết lại SIM khi làm online; có thêm lợi ích: phát lại trận để tái hiện lỗi |
 | D-31 | 2026-10-14 | Chốt D-06..D-09 theo đề xuất: joystick + nút đánh tự chọn mục tiêu (PC: WASD + phím); kiến trúc ARCHITECTURE.md; luật GAME_RULES.md với số NUM khởi đầu; dùng `class_name` cho kiểu chính của SIM, `run_tests` luôn import trước | Hết mục chờ chốt; bắt đầu code từ M0.1 |
+| D-32 | 2026-10-14 | Mang **công thức và con số** của v1 sang (chỉ số, sát thương, né), viết lại thành hàm thuần có kiểu trong `sim/core/`; không chép nguyên file. Tung xúc xắc trúng/chí mạng chờ PRD (M3.6b); bộ đếm tốc độ khung hình sang tầng APP | File v1 trả Dictionary, phụ thuộc lớp cũ và đọc thời gian khung hình — trái AGENTS mục 4 và D-30 |
+| D-33 | 2026-10-14 | Né và chính xác đều nhân dồn nhiều nguồn; trượt = né × (1 − chính xác); bỏ trần né 75% của v1 (`evasion_cap` = 1.0) | Theo yêu cầu: 2 món né 50% → 75%; né 100% gặp 80% chính xác → trúng 80%; 2 món 80% → trúng 96% (CMB-11) |
+| D-34 | 2026-10-14 | Thêm **nhóm duy nhất** `unique_group`: cùng nhóm chỉ nguồn mạnh nhất có tác dụng. Bash (hero + Búa Choáng), giày, bị động của 2 món giống nhau | Tránh cộng dồn quá mạnh hoặc quá hên xui; skill và đồ khác nhóm vẫn kết hợp (STAT-05) |
+| D-35 | 2026-10-14 | Lên cấp chỉ cộng STR/AGI/INT; bỏ "sát thương mỗi cấp" của v1. Sát thương, máu, giáp, tốc đánh tăng qua thuộc tính | Giống Dota; một nguồn tăng trưởng duy nhất, dễ cân bằng (STAT-04) |
 
 ## Chờ chốt
 

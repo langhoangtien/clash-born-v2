@@ -35,7 +35,7 @@ Chưa có gameplay; dựng khung để mọi thứ sau đứng vững.
 
 | Việc | Xong khi |
 |---|---|
-| M1.1 World, Entity, StatBlock (modifier), vòng tick theo ARCHITECTURE mục 4 (hệ thống rỗng) | Test: World chạy 1000 tick; chạy lại cùng seed + nhật ký Command → hash trạng thái trùng từng tick (D-30) |
+| M1.1 World, Entity, StatBlock (modifier, nhóm duy nhất STAT-05, thuộc tính → chỉ số STAT-04), vòng tick theo ARCHITECTURE mục 4 (hệ thống rỗng) | Test: World chạy 1000 tick; chạy lại cùng seed + nhật ký Command → hash trạng thái trùng từng tick (D-30) |
 | M1.2 Command + Order + CommandSystem (MoveTo, Stop) | Test: Command MoveTo → đơn vị tới nơi, không xuyên vật cản |
 | M1.3 MovementSystem dùng MapNavigation, va chạm giữa đơn vị | Test INV-01 với 30 đơn vị đi ngẫu nhiên |
 | M1.4 View: vẽ map + đơn vị từ World, camera theo hero, ArtLibrary + hình tạm (A0) | Chạy được, nhìn thấy |
@@ -151,4 +151,5 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 |---|---|---|---|
 | M0.1 | Xong | 2026-10-14 | Project mở được, scene khởi động chạy; repo GitHub chờ bạn tạo |
 | M0.2 | Xong | 2026-10-14 | 5 test khung xanh; fixture cố ý sai bị bắt đỏ (sai assert, lỗi script, fail) |
-| M0.3 | Chờ duyệt kế hoạch | | |
+| M0.3 | Xong | 2026-10-14 | 40 test xanh; công thức v1 thành hàm thuần (D-32); né/chính xác nhân dồn (D-33); luật nhóm duy nhất (D-34) và lên cấp chỉ cộng thuộc tính (D-35) ghi vào luật, code ở M1.1 |
+| M0.4 | Chờ duyệt kế hoạch | | |
