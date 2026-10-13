@@ -53,7 +53,9 @@ clashborn_v2/
     core/                  công thức (mang từ v1): stat, sát thương, trúng/né
     world/                 World, Entity, StatBlock, EffectContainer
     systems/               mỗi file một hệ thống, chạy theo thứ tự cố định
-    actions/               thư viện hành động dùng chung cho kỹ năng/hiệu ứng
+    defs/                  khuôn dữ liệu: HeroDef, AbilityDef, EffectDef, TalentDef, ItemDef, UnitDef…
+    content/               ContentLibrary (nạp content/), ContentValidator, RuleCatalog, ExprRules
+    actions/               hành động dùng chung cho kỹ năng/hiệu ứng (mỗi loại một khuôn)
     controllers/           AI: lính, trụ, quái rừng, bot — chỉ sinh Command
     commands/              định nghĩa Command và kiểm tra hợp lệ
     map/                   MapLayout, MapNavigation, MapValidator, MapShape (mang từ v1)
@@ -353,5 +355,8 @@ công thức của nó nhưng chia phần xử lý thành các hệ thống ở 
   chiếu tới effect/ability tồn tại, số theo rank đủ 5 phần tử.
 - Tên test chứa mã luật: `test_VIS_03_invisible_not_targeted_by_tower`.
 - **Nội dung chỉ dùng cho test** (`tests/content/`): hero thử nghiệm mang bị động trong
-  thư viện (CONTENT.md) để kiểm thử viên gạch trước khi có hero thật dùng nó. Game
+  thư viện (CONTENT.md) để kiểm thử viên gạch trước khi có hero thật dùng nó. Dựng
+  bằng code (`fixture_content.gd`), test lưu ra `.tres` tạm để kiểm tra lưu/nạp. Game
   không nạp thư mục này.
+- **Quy ước trong các Def**: trường `String` là biểu thức (EFF-09), tên/id là
+  `StringName`; validator duyệt mọi trường theo quy ước này nên khuôn mới tự được kiểm tra.

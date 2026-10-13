@@ -282,7 +282,8 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 - `EFF-01` Cách cộng dồn: REFRESH (làm mới thời gian), STACK (thêm stack tới
   `max_stacks`, làm mới thời gian), INDEPENDENT (mỗi lần áp một bản riêng).
 - `EFF-02` Hai hiệu ứng cùng id từ hai nguồn khác nhau là hai bản riêng, trừ khi id
-  có tag `unique` (chỉ giữ bản mạnh nhất).
+  có tag `unique` (chỉ giữ bản mạnh nhất). Tag có nghĩa trong luật: `debuff`, `buff`,
+  `passive`, `unique`, `dispellable`; thêm tag = thay đổi luật.
 - `EFF-03` Làm chậm: chỉ lấy mức mạnh nhất (giống v1). Giảm giáp: cộng dồn.
 - `EFF-04` Trigger lồng nhau tối đa 4 tầng.
 - `EFF-05` `removed_by` chỉ tính sự kiện xảy ra **sau** khi hiệu ứng được áp (dùng chiêu
@@ -299,10 +300,15 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 - `EFF-08` Trigger khai báo **vai** của chủ hiệu ứng trong sự kiện: `as: SOURCE` (mình
   gây ra, ví dụ mình đánh trúng) hoặc `as: TARGET` (mình bị, ví dụ mình bị đánh trúng).
   Cùng sự kiện `attack_landed` có thể kích hoạt nội tại của kẻ đánh và kẻ bị đánh.
+  Điều kiện (`condition`) cho phép: `target_not_structure`, `target_is_hero`; thêm điều
+  kiện = thay đổi luật.
 - `EFF-09` Giá trị trong hành động có thể là **biểu thức** gồm: số, giá trị có tên của
   skill, chỉ số của chủ hiệu ứng / mục tiêu (`self.strength`, `target.max_hp`…), dữ
   liệu của sự kiện (`event.damage`, `event.burned_mana`). Chỉ cộng, trừ, nhân, chia,
   min, max. Không có điều kiện if trong biểu thức; điều kiện nằm ở `condition` của trigger.
+  `self.` / `target.` đọc chỉ số STAT-01 và `current_hp`, `current_mana`, `level`;
+  `event.` đọc `damage`, `burned_mana`, `heal`. Danh sách nằm trong `RuleCatalog`, test
+  nội dung từ chối mọi tên khác.
 
 ## EVT — Sự kiện
 

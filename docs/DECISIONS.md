@@ -35,6 +35,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-33 | 2026-10-14 | Né và chính xác đều nhân dồn nhiều nguồn; trượt = né × (1 − chính xác); bỏ trần né 75% của v1 (`evasion_cap` = 1.0) | Theo yêu cầu: 2 món né 50% → 75%; né 100% gặp 80% chính xác → trúng 80%; 2 món 80% → trúng 96% (CMB-11) |
 | D-34 | 2026-10-14 | Thêm **nhóm duy nhất** `unique_group`: cùng nhóm chỉ nguồn mạnh nhất có tác dụng. Bash (hero + Búa Choáng), giày, bị động của 2 món giống nhau | Tránh cộng dồn quá mạnh hoặc quá hên xui; skill và đồ khác nhóm vẫn kết hợp (STAT-05) |
 | D-35 | 2026-10-14 | Lên cấp chỉ cộng STR/AGI/INT; bỏ "sát thương mỗi cấp" của v1. Sát thương, máu, giáp, tốc đánh tăng qua thuộc tính | Giống Dota; một nguồn tăng trưởng duy nhất, dễ cân bằng (STAT-04) |
+| D-36 | 2026-10-14 | Khuôn dữ liệu (M0.5): mỗi loại hành động một khuôn riêng; trong Def `String` = biểu thức, `StringName` = tên; id duy nhất toàn thư viện; `content/balance/` là thiết lập, không phải dữ liệu có id | Sửa trong Godot có ô đúng cho từng tham số; validator tự kiểm tra mọi khuôn theo quy ước, gõ sai tên bị test bắt |
 
 ## Chờ chốt
 
