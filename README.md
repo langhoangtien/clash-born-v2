@@ -4,6 +4,17 @@ MOBA 2D 1v1 với bot cho mobile, kiểu Dota 2 đơn giản hóa. Godot 4.7.2, 
 
 **Trạng thái:** thiết kế đã chốt (D-31). Đang làm mốc M0 — xem `docs/ROADMAP.md`.
 
+## Chạy game và test (Windows)
+
+Sau mỗi lần `git pull`, chạy game **bằng script**, không mở thẳng file exe: script
+cho Godot import trước để nhận các script mới (nếu không sẽ gặp lỗi
+`Identifier "..." not declared`). Mở dự án trong Godot Editor cũng tự import.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\run_game.ps1    # chạy game
+powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1   # chạy test
+```
+
 ## Đọc theo thứ tự
 
 | File | Để làm gì |

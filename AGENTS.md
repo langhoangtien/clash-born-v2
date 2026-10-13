@@ -87,7 +87,10 @@ làm theo dòng cơ chế mới.
 Dừng, mô tả tình huống, đề xuất 1–2 phương án luật kèm mã mới, chờ duyệt.
 **Không tự nghĩ ra hành vi rồi code.** Đây là nguồn gốc lỗi chồng chéo của v1.
 
-## 7. Chạy test
+## 7. Chạy game và test
+
+Chạy game: `tools\run_game.ps1` (import trước rồi mới chạy; bắt buộc sau khi có script
+mới, nếu không Godot báo `Identifier "..." not declared` vì danh sách class_name cũ).
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1
