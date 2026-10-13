@@ -147,3 +147,38 @@ func test_hero_needs_positive_attack_time() -> void:
 	var h: HeroDef = F.hero()
 	h.stats.base_attack_time = 0
 	_expect_error([h], "base_attack_time phải > 0")
+
+
+func test_ITM_05_base_name_resolves_melee_ranged_pair() -> void:
+	var a: AbilityDef = F.ability(&"test_pair", AbilityDef.Slot.ITEM, ["chance_melee", "chance_ranged"])
+	assert_true(a.value_names().has("chance"), "có cả _melee và _ranged → dùng được tên gốc")
+	a.values.erase(&"chance_ranged")
+	assert_false(a.value_names().has("chance"), "thiếu một bản → không có tên gốc")
+
+
+func test_EFF_08_effect_end_conditions_allowed() -> void:
+	for c: String in ["this_effect_depleted", "this_effect_ended"]:
+		assert_true(RuleCatalog.TRIGGER_CONDITIONS.has(c), c)
+
+
+func test_ABL_04_bot_skill_order_must_be_legal() -> void:
+	var h: HeroDef = F.hero()
+	var U := HeroDef.Upgrade
+	h.bot_skill_order = [U.Q, U.W, U.Q, U.W, U.Q, U.R, U.Q, U.W, U.Q, U.W, U.R, U.W, U.ATTRIBUTES, U.ATTRIBUTES, U.ATTRIBUTES, U.R, U.ATTRIBUTES, U.ATTRIBUTES, U.ATTRIBUTES, U.ATTRIBUTES]
+	assert_true(_errors([h]).is_empty(), "\n".join(_errors([h])))
+	h.bot_skill_order = [U.Q, U.Q]
+	_expect_error([h], "cấp 2 nâng Q lên 2")
+	h.bot_skill_order = [U.R]
+	_expect_error([h], "cấp 1 nâng R lên 1")
+	h.bot_skill_order = [U.Q, U.W, U.Q, U.W, U.Q, U.R, U.Q, U.W, U.Q, U.W, U.R, U.W, U.Q]
+	_expect_error([h], "Q quá cấp tối đa")
+	h.bot_skill_order = []
+	for i: int in range(8):
+		h.bot_skill_order.append(U.ATTRIBUTES)
+	_expect_error([h], "đổi thuộc tính quá 7 lần")
+
+
+func test_TAL_01_bot_talent_priority_lists_q_w_r_once() -> void:
+	var h: HeroDef = F.hero()
+	h.bot_talent_priority = [AbilityDef.Slot.Q, AbilityDef.Slot.Q, AbilityDef.Slot.W]
+	_expect_error([h], "bot_talent_priority phải gồm Q, W, R mỗi ô một lần")

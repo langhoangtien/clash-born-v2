@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_8x5vf"]
+[ext_resource type="Resource" path="res://content/effects/noctis_death_mark.tres" id="2_lhvrm"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_687e3"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_4a2rh"]
+[ext_resource type="Script" path="res://sim/defs/effect_patch_def.gd" id="5_2lsqt"]
+[ext_resource type="Resource" path="res://content/effects/silence.tres" id="6_sgiop"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="7_u4cem"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="8_kvld8"]
+
+[sub_resource type="Resource" id="Resource_w35g0"]
+script = ExtResource("3_687e3")
+effect = ExtResource("2_lhvrm")
+duration = "duration"
+
+[sub_resource type="Resource" id="Resource_gkx1q"]
+script = ExtResource("3_687e3")
+effect = ExtResource("6_sgiop")
+duration = "1.5"
+
+[sub_resource type="Resource" id="Resource_nvv2p"]
+script = ExtResource("8_kvld8")
+value_name = &"amplify"
+amount = 0.1
+
+[sub_resource type="Resource" id="Resource_kw77f"]
+script = ExtResource("7_u4cem")
+id = &"noctis_r_ii"
+display_name = "Án Tử"
+description = "Khuếch đại +10%; câm lặng mục tiêu 1.5 s"
+value_changes = Array[ExtResource("8_kvld8")]([SubResource("Resource_nvv2p")])
+extra_actions = Array[ExtResource("1_8x5vf")]([SubResource("Resource_gkx1q")])
+
+[resource]
+script = ExtResource("4_4a2rh")
+slot = 3
+targeting = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"amplify": PackedFloat32Array(0.15, 0.22, 0.3),
+&"cast_range": PackedFloat32Array(500, 500, 500),
+&"cooldown": PackedFloat32Array(60, 50, 40),
+&"duration": PackedFloat32Array(6, 6, 6),
+&"mana": PackedFloat32Array(100, 125, 150)
+})
+on_cast = Array[ExtResource("1_8x5vf")]([SubResource("Resource_w35g0")])
+talent = SubResource("Resource_kw77f")
+bot_usages = Array[int]([3])
+bot_conditions = Array[StringName]([&"before_engage"])
+id = &"noctis_r"
+display_name = "Dấu Tử Thần"
+art_id = &"noctis_r"

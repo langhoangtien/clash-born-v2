@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_qoqfn"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_vdjo0"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_lwhgd"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_rduyn"]
+
+[resource]
+script = ExtResource("3_lwhgd")
+tags = Array[StringName]([&"debuff"])
+states = Array[int]([5])
+id = &"revealed"
+display_name = "Lộ diện"
+art_id = &"revealed"

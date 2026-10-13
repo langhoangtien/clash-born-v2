@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_v54t3"]
+[ext_resource type="Resource" path="res://content/effects/stun_hammer_passive.tres" id="2_81qfw"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_80n4e"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_legji"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_o6v2r"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_j1ani"]
+
+[sub_resource type="Resource" id="Resource_hwojf"]
+script = ExtResource("3_80n4e")
+effect = ExtResource("2_81qfw")
+target = 0
+
+[sub_resource type="Resource" id="Resource_fqeu2"]
+script = ExtResource("4_legji")
+slot = 4
+targeting = 0
+values = Dictionary[StringName, PackedFloat32Array]({
+&"bonus_damage": PackedFloat32Array(100),
+&"chance_melee": PackedFloat32Array(0.2),
+&"chance_ranged": PackedFloat32Array(0.1),
+&"stun_duration": PackedFloat32Array(1.5)
+})
+on_learn = Array[ExtResource("1_v54t3")]([SubResource("Resource_hwojf")])
+id = &"stun_hammer_passive_ability"
+art_id = &"stun_hammer_passive_ability"
+
+[sub_resource type="Resource" id="Resource_m3yb7"]
+script = ExtResource("5_o6v2r")
+stat = &"physical_damage"
+value = "25"
+
+[resource]
+script = ExtResource("6_j1ani")
+cost = 2900
+modifiers = Array[ExtResource("5_o6v2r")]([SubResource("Resource_m3yb7")])
+ability = SubResource("Resource_fqeu2")
+id = &"stun_hammer"
+display_name = "Búa Choáng"
+art_id = &"stun_hammer"

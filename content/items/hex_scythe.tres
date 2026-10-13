@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_uiwt1"]
+[ext_resource type="Resource" path="res://content/effects/hex.tres" id="2_xgyqf"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_bj1vm"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_6xgf2"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_iu6vu"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_dinse"]
+
+[sub_resource type="Resource" id="Resource_2xds4"]
+script = ExtResource("3_bj1vm")
+effect = ExtResource("2_xgyqf")
+duration = "duration"
+
+[sub_resource type="Resource" id="Resource_pugi3"]
+script = ExtResource("4_6xgf2")
+slot = 4
+targeting = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cast_range": PackedFloat32Array(600),
+&"cooldown": PackedFloat32Array(22),
+&"duration": PackedFloat32Array(3.5)
+})
+on_cast = Array[ExtResource("1_uiwt1")]([SubResource("Resource_2xds4")])
+bot_usages = Array[int]([0])
+id = &"hex_scythe_active"
+art_id = &"hex_scythe_active"
+
+[sub_resource type="Resource" id="Resource_va20x"]
+script = ExtResource("5_iu6vu")
+stat = &"intelligence"
+value = "35"
+
+[sub_resource type="Resource" id="Resource_jnwik"]
+script = ExtResource("5_iu6vu")
+stat = &"strength"
+value = "10"
+
+[sub_resource type="Resource" id="Resource_wsm41"]
+script = ExtResource("5_iu6vu")
+stat = &"agility"
+value = "10"
+
+[resource]
+script = ExtResource("6_dinse")
+cost = 5600
+modifiers = Array[ExtResource("5_iu6vu")]([SubResource("Resource_va20x"), SubResource("Resource_jnwik"), SubResource("Resource_wsm41")])
+ability = SubResource("Resource_pugi3")
+id = &"hex_scythe"
+display_name = "Lưỡi Hái Biến Hình"
+art_id = &"hex_scythe"

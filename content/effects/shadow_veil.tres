@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_rhbdd"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_4on7a"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_knnry"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_434fg"]
+
+[sub_resource type="Resource" id="Resource_iipu1"]
+script = ExtResource("1_rhbdd")
+stat = &"movement_speed"
+op = 1
+value = "1 + move_bonus"
+
+[resource]
+script = ExtResource("3_knnry")
+tags = Array[StringName]([&"buff"])
+states = Array[int]([4])
+modifiers = Array[ExtResource("1_rhbdd")]([SubResource("Resource_iipu1")])
+removed_by = Array[StringName]([&"attack_started", &"ability_cast"])
+fade_in = "fade_in"
+id = &"shadow_veil"
+display_name = "Màn đêm"
+art_id = &"shadow_veil"

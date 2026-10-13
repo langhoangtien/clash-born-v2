@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_x8k83"]
+[ext_resource type="Resource" path="res://content/effects/ghost_form.tres" id="2_qhm53"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_lmlek"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_hwova"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_o5si0"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_jmkwk"]
+
+[sub_resource type="Resource" id="Resource_imhha"]
+script = ExtResource("3_lmlek")
+effect = ExtResource("2_qhm53")
+duration = "duration"
+target = 0
+
+[sub_resource type="Resource" id="Resource_x2g7q"]
+script = ExtResource("4_hwova")
+slot = 4
+target_team = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cooldown": PackedFloat32Array(22),
+&"duration": PackedFloat32Array(4)
+})
+on_cast = Array[ExtResource("1_x8k83")]([SubResource("Resource_imhha")])
+bot_usages = Array[int]([5])
+id = &"ghost_scepter_active"
+art_id = &"ghost_scepter_active"
+
+[sub_resource type="Resource" id="Resource_6nxta"]
+script = ExtResource("5_o5si0")
+stat = &"strength"
+value = "7.0"
+
+[sub_resource type="Resource" id="Resource_8nao2"]
+script = ExtResource("5_o5si0")
+stat = &"agility"
+value = "7.0"
+
+[sub_resource type="Resource" id="Resource_1vh3u"]
+script = ExtResource("5_o5si0")
+stat = &"intelligence"
+value = "7.0"
+
+[resource]
+script = ExtResource("6_jmkwk")
+cost = 1500
+modifiers = Array[ExtResource("5_o5si0")]([SubResource("Resource_6nxta"), SubResource("Resource_8nao2"), SubResource("Resource_1vh3u")])
+ability = SubResource("Resource_x2g7q")
+id = &"ghost_scepter"
+display_name = "Gậy Hồn Ma"
+art_id = &"ghost_scepter"

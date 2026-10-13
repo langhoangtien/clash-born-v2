@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_jbook"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_l45x8"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_vow5v"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_afeeb"]
+
+[resource]
+script = ExtResource("3_vow5v")
+tags = Array[StringName]([&"buff"])
+dispel = 2
+states = Array[int]([10])
+id = &"magic_immune"
+display_name = "Miễn phép"
+art_id = &"magic_immune"

@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_kj4kr"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_olwui"]
+[ext_resource type="Script" path="res://sim/actions/heal_action.gd" id="3_arc11"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="4_3m1hu"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="5_v83br"]
+
+[sub_resource type="Resource" id="Resource_6v6sa"]
+script = ExtResource("1_kj4kr")
+stat = &"movement_speed"
+op = 1
+value = "1 + move_bonus"
+
+[sub_resource type="Resource" id="Resource_yto0h"]
+script = ExtResource("3_arc11")
+amount = "self.max_hp * heal_fraction * 0.5 / duration"
+target = 0
+
+[resource]
+script = ExtResource("4_3m1hu")
+duration = "duration"
+tags = Array[StringName]([&"buff"])
+dispel = 2
+states = Array[int]([8])
+modifiers = Array[ExtResource("1_kj4kr")]([SubResource("Resource_6v6sa")])
+periodic_interval = "0.5"
+periodic_actions = Array[ExtResource("2_olwui")]([SubResource("Resource_yto0h")])
+id = &"brakk_undying"
+display_name = "Hồn Bất Diệt"
+art_id = &"brakk_undying"

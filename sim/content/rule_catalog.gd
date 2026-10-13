@@ -33,7 +33,9 @@ const UNIT_FIELDS: PackedStringArray = ["current_hp", "current_mana", "level"]
 const FUNCTIONS: PackedStringArray = ["min", "max"]
 
 ## Điều kiện của trigger (EFF-08). Thêm điều kiện = thay đổi luật.
-const TRIGGER_CONDITIONS: PackedStringArray = ["", "target_not_structure", "target_is_hero"]
+const TRIGGER_CONDITIONS: PackedStringArray = [
+	"", "target_not_structure", "target_is_hero", "this_effect_depleted", "this_effect_ended",
+]
 
 ## EFF-02, ST-09, ST-16…: tag hiệu ứng có ý nghĩa trong luật.
 const EFFECT_TAGS: PackedStringArray = ["debuff", "buff", "passive", "unique", "dispellable"]

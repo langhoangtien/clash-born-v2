@@ -1,0 +1,66 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_yyc4n"]
+[ext_resource type="Resource" path="res://content/effects/brakk_iron_shield.tres" id="2_1u2qo"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_784nb"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_ter0p"]
+[ext_resource type="Script" path="res://sim/defs/effect_patch_def.gd" id="5_xemnf"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="6_js58p"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="7_oluv4"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="8_60fou"]
+[ext_resource type="Script" path="res://sim/actions/area_action.gd" id="9_2ervp"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="10_7dxnn"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="11_eoknv"]
+
+[sub_resource type="Resource" id="Resource_6tuqs"]
+script = ExtResource("3_784nb")
+effect = ExtResource("2_1u2qo")
+target = 0
+
+[sub_resource type="Resource" id="Resource_g1dtv"]
+script = ExtResource("8_60fou")
+damage_type = 1
+amount = "shield"
+
+[sub_resource type="Resource" id="Resource_uwvag"]
+script = ExtResource("9_2ervp")
+radius = "300"
+actions = Array[ExtResource("1_yyc4n")]([SubResource("Resource_g1dtv")])
+target = 0
+
+[sub_resource type="Resource" id="Resource_rkto4"]
+script = ExtResource("7_oluv4")
+event = &"effect_removed"
+role = 1
+condition = &"this_effect_depleted"
+actions = Array[ExtResource("1_yyc4n")]([SubResource("Resource_uwvag")])
+
+[sub_resource type="Resource" id="Resource_1cwbc"]
+script = ExtResource("5_xemnf")
+effect = ExtResource("2_1u2qo")
+add_triggers = Array[ExtResource("7_oluv4")]([SubResource("Resource_rkto4")])
+
+[sub_resource type="Resource" id="Resource_p7ytn"]
+script = ExtResource("10_7dxnn")
+id = &"brakk_w_ii"
+display_name = "Giáp Nổ"
+description = "Khiên bị phá hết thì nổ: sát thương phép bằng lượng khiên, bán kính 300"
+effect_patches = Array[ExtResource("5_xemnf")]([SubResource("Resource_1cwbc")])
+
+[resource]
+script = ExtResource("4_ter0p")
+slot = 2
+target_team = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cooldown": PackedFloat32Array(18, 17, 16, 15, 14),
+&"duration": PackedFloat32Array(6, 6, 6, 6, 6),
+&"mana": PackedFloat32Array(80, 85, 90, 95, 100),
+&"shield": PackedFloat32Array(120, 180, 240, 300, 360)
+})
+on_cast = Array[ExtResource("1_yyc4n")]([SubResource("Resource_6tuqs")])
+talent = SubResource("Resource_p7ytn")
+bot_usages = Array[int]([5])
+bot_conditions = Array[StringName]([&"hp_below_70", &"taking_damage"])
+id = &"brakk_w"
+display_name = "Giáp Sắt"
+art_id = &"brakk_w"

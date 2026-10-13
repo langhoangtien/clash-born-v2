@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_xlhr1"]
+[ext_resource type="Resource" path="res://content/effects/cyclone.tres" id="2_eu0vr"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_l07ga"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_o7drl"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_ofink"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_8cc5j"]
+
+[sub_resource type="Resource" id="Resource_nw8kc"]
+script = ExtResource("3_l07ga")
+effect = ExtResource("2_eu0vr")
+duration = "duration"
+
+[sub_resource type="Resource" id="Resource_fb7lg"]
+script = ExtResource("4_o7drl")
+slot = 4
+targeting = 2
+target_team = 3
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cast_range": PackedFloat32Array(575),
+&"cooldown": PackedFloat32Array(23),
+&"duration": PackedFloat32Array(2.5)
+})
+on_cast = Array[ExtResource("1_xlhr1")]([SubResource("Resource_nw8kc")])
+bot_usages = Array[int]([4, 0])
+id = &"cyclone_staff_active"
+art_id = &"cyclone_staff_active"
+
+[sub_resource type="Resource" id="Resource_k2dll"]
+script = ExtResource("5_ofink")
+stat = &"intelligence"
+value = "10"
+
+[sub_resource type="Resource" id="Resource_upbdw"]
+script = ExtResource("5_ofink")
+stat = &"mana_regen"
+value = "2.5"
+
+[resource]
+script = ExtResource("6_8cc5j")
+cost = 2700
+modifiers = Array[ExtResource("5_ofink")]([SubResource("Resource_k2dll"), SubResource("Resource_upbdw")])
+ability = SubResource("Resource_fb7lg")
+id = &"cyclone_staff"
+display_name = "Gậy Lốc Xoáy"
+art_id = &"cyclone_staff"

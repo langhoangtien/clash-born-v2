@@ -32,10 +32,15 @@ const SYSTEM_VALUES: PackedStringArray = ["cooldown", "mana", "cast_range"]
 @export var bot_conditions: Array[StringName] = []
 
 
+## Tên dùng được trong biểu thức: mọi khóa của `values`, cộng tên gốc `x` khi có đủ
+## cặp `x_melee` / `x_ranged` (ITM-05).
 func value_names() -> PackedStringArray:
 	var out: PackedStringArray = PackedStringArray()
 	for key: StringName in values:
 		out.append(String(key))
+	for key: String in out.duplicate():
+		if key.ends_with("_melee") and out.has(key.trim_suffix("_melee") + "_ranged"):
+			out.append(key.trim_suffix("_melee"))
 	return out
 
 

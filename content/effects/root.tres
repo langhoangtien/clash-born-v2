@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_tfo4r"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_37w75"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_uwp8u"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_mg05k"]
+
+[resource]
+script = ExtResource("3_uwp8u")
+tags = Array[StringName]([&"debuff"])
+states = Array[int]([1])
+id = &"root"
+display_name = "Trói chân"
+art_id = &"root"

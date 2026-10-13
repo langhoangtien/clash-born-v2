@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_hc4sm"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_vmw32"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_v8ruh"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_h75wu"]
+[ext_resource type="Resource" path="res://content/effects/frost_orb_slow.tres" id="5_gruk7"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="6_qfk3b"]
+
+[sub_resource type="Resource" id="Resource_bj2dv"]
+script = ExtResource("6_qfk3b")
+effect = ExtResource("5_gruk7")
+duration = "duration"
+target = 3
+
+[sub_resource type="Resource" id="Resource_yobxt"]
+script = ExtResource("4_h75wu")
+event = &"attack_landed"
+actions = Array[ExtResource("2_vmw32")]([SubResource("Resource_bj2dv")])
+
+[resource]
+script = ExtResource("3_v8ruh")
+duration = "0"
+tags = Array[StringName]([&"passive"])
+dispel = 2
+triggers = Array[ExtResource("4_h75wu")]([SubResource("Resource_yobxt")])
+id = &"frost_orb_passive"
+art_id = &"frost_orb_passive"

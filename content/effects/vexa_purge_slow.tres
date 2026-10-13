@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_j0omy"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_phj6n"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_eotx8"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_1wcpr"]
+
+[sub_resource type="Resource" id="Resource_1uke8"]
+script = ExtResource("1_j0omy")
+stat = &"movement_speed"
+op = 1
+value = "1 - slow"
+unique_group = &"slow"
+unique_priority = "slow"
+
+[resource]
+script = ExtResource("3_eotx8")
+tags = Array[StringName]([&"debuff"])
+modifiers = Array[ExtResource("1_j0omy")]([SubResource("Resource_1uke8")])
+id = &"vexa_purge_slow"
+display_name = "Tước Phép"
+art_id = &"vexa_purge_slow"

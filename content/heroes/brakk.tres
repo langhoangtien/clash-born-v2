@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="HeroDef" format=3]
+
+[ext_resource type="Resource" path="res://content/abilities/brakk_innate.tres" id="1_x8cej"]
+[ext_resource type="Resource" path="res://content/abilities/brakk_q.tres" id="2_ha6wy"]
+[ext_resource type="Resource" path="res://content/abilities/brakk_r.tres" id="3_mcrmk"]
+[ext_resource type="Script" path="res://sim/defs/hero_def.gd" id="4_agb0r"]
+[ext_resource type="Script" path="res://sim/defs/combat_stats_def.gd" id="5_o1hbh"]
+[ext_resource type="Resource" path="res://content/abilities/brakk_w.tres" id="6_q76x5"]
+
+[sub_resource type="Resource" id="Resource_0t3o8"]
+script = ExtResource("5_o1hbh")
+base_hp = 1100.0
+base_mana = 200.0
+base_hp_regen = 4.0
+base_damage = 74.0
+physical_armor = 4.5
+base_attack_time = 2.0
+attack_point = 0.4
+attack_range = 150.0
+movement_speed = 290.0
+vision_range = 1200.0
+collision_radius = 32.0
+
+[resource]
+script = ExtResource("4_agb0r")
+base_strength = 30.0
+base_agility = 16.0
+base_intelligence = 15.0
+strength_growth = 3.8
+agility_growth = 1.5
+intelligence_growth = 1.4
+stats = SubResource("Resource_0t3o8")
+innate = ExtResource("1_x8cej")
+q = ExtResource("2_ha6wy")
+w = ExtResource("6_q76x5")
+r = ExtResource("3_mcrmk")
+bot_skill_order = Array[int]([0, 1, 0, 1, 0, 2, 0, 1, 0, 1, 2, 1, 3, 3, 3, 2, 3, 3, 3, 3])
+bot_talent_priority = Array[int]([1, 3, 2])
+id = &"brakk"
+display_name = "Brakk · Thiết Quyền"
+art_id = &"brakk"

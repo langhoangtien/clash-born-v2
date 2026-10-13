@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_qyreb"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="2_2omt7"]
+[ext_resource type="Resource" path="res://content/effects/stun.tres" id="3_pak1y"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="4_pncqb"]
+[ext_resource type="Script" path="res://sim/actions/area_action.gd" id="5_t75u3"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="6_hxh4i"]
+[ext_resource type="Script" path="res://sim/defs/effect_patch_def.gd" id="7_cijm4"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="8_6w2cx"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="9_2f1xk"]
+
+[sub_resource type="Resource" id="Resource_k1cga"]
+script = ExtResource("2_2omt7")
+amount = "damage"
+
+[sub_resource type="Resource" id="Resource_75h1d"]
+script = ExtResource("4_pncqb")
+effect = ExtResource("3_pak1y")
+duration = "stun_duration"
+
+[sub_resource type="Resource" id="Resource_oiur7"]
+script = ExtResource("5_t75u3")
+radius = "radius"
+actions = Array[ExtResource("1_qyreb")]([SubResource("Resource_k1cga"), SubResource("Resource_75h1d")])
+target = 0
+
+[sub_resource type="Resource" id="Resource_5h7d8"]
+script = ExtResource("9_2f1xk")
+value_name = &"radius"
+amount = 100.0
+
+[sub_resource type="Resource" id="Resource_rf4j7"]
+script = ExtResource("9_2f1xk")
+value_name = &"stun_duration"
+amount = 0.6
+
+[sub_resource type="Resource" id="Resource_yront"]
+script = ExtResource("8_6w2cx")
+id = &"brakk_q_ii"
+display_name = "Động Đất"
+description = "Bán kính +100, choáng +0.6 s"
+value_changes = Array[ExtResource("9_2f1xk")]([SubResource("Resource_5h7d8"), SubResource("Resource_rf4j7")])
+
+[resource]
+script = ExtResource("6_hxh4i")
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cooldown": PackedFloat32Array(14, 13, 12, 11, 10),
+&"damage": PackedFloat32Array(70, 110, 150, 190, 230),
+&"mana": PackedFloat32Array(90, 95, 100, 105, 110),
+&"radius": PackedFloat32Array(300, 300, 300, 300, 300),
+&"stun_duration": PackedFloat32Array(0.8, 1, 1.2, 1.4, 1.6)
+})
+cast_time = "0.3"
+on_cast = Array[ExtResource("1_qyreb")]([SubResource("Resource_oiur7")])
+talent = SubResource("Resource_yront")
+bot_usages = Array[int]([0])
+bot_conditions = Array[StringName]([&"enemy_hero_in_radius"])
+id = &"brakk_q"
+display_name = "Đấm Chấn Địa"
+art_id = &"brakk_q"

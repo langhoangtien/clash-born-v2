@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_0t14h"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_6qn24"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_1hwx0"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_3lkjb"]
+
+[resource]
+script = ExtResource("3_1hwx0")
+duration = "duration"
+tags = Array[StringName]([&"buff"])
+absorb = "shield"
+id = &"brakk_iron_shield"
+display_name = "Giáp Sắt"
+art_id = &"brakk_iron_shield"

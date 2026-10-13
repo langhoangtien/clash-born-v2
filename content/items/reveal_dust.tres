@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_yv6rb"]
+[ext_resource type="Resource" path="res://content/effects/revealed.tres" id="2_r801c"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_3p1yb"]
+[ext_resource type="Script" path="res://sim/actions/area_action.gd" id="4_b168m"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="5_5uwxu"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="6_h44e1"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="7_dshly"]
+
+[sub_resource type="Resource" id="Resource_7v3l7"]
+script = ExtResource("3_3p1yb")
+effect = ExtResource("2_r801c")
+duration = "duration"
+
+[sub_resource type="Resource" id="Resource_b3gsl"]
+script = ExtResource("4_b168m")
+radius = "radius"
+actions = Array[ExtResource("1_yv6rb")]([SubResource("Resource_7v3l7")])
+target = 0
+
+[sub_resource type="Resource" id="Resource_yr6g3"]
+script = ExtResource("5_5uwxu")
+slot = 4
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cooldown": PackedFloat32Array(30),
+&"duration": PackedFloat32Array(8),
+&"radius": PackedFloat32Array(900)
+})
+on_cast = Array[ExtResource("1_yv6rb")]([SubResource("Resource_b3gsl")])
+id = &"reveal_dust_active"
+art_id = &"reveal_dust_active"
+
+[resource]
+script = ExtResource("7_dshly")
+cost = 80
+ability = SubResource("Resource_yr6g3")
+charges = 2
+id = &"reveal_dust"
+display_name = "Bột Lộ Diện"
+art_id = &"reveal_dust"

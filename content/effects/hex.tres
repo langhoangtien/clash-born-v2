@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_ujnqo"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_phtbt"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_2o3nk"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_mwsmj"]
+
+[resource]
+script = ExtResource("3_2o3nk")
+tags = Array[StringName]([&"debuff"])
+dispel = 1
+states = Array[int]([11])
+id = &"hex"
+display_name = "Biến hình"
+art_id = &"hex"

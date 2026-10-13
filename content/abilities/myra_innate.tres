@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_ocufa"]
+[ext_resource type="Resource" path="res://content/effects/myra_rhythm_passive.tres" id="2_ac00s"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_fc7v1"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_dhenk"]
+
+[sub_resource type="Resource" id="Resource_rcb3g"]
+script = ExtResource("3_fc7v1")
+effect = ExtResource("2_ac00s")
+target = 0
+
+[resource]
+script = ExtResource("4_dhenk")
+slot = 0
+targeting = 0
+values = Dictionary[StringName, PackedFloat32Array]({
+&"attack_speed_per_stack": PackedFloat32Array(0.05, 0.06, 0.07, 0.08, 0.09, 0.1)
+})
+on_learn = Array[ExtResource("1_ocufa")]([SubResource("Resource_rcb3g")])
+bot_conditions = Array[StringName]([&"prefer_same_target"])
+id = &"myra_innate"
+display_name = "Nhịp Phép"
+art_id = &"myra_innate"

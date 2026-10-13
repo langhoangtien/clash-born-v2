@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_chy7v"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_tjmev"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_lmi3c"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_hend1"]
+
+[sub_resource type="Resource" id="Resource_qltk2"]
+script = ExtResource("1_chy7v")
+stat = &"attack_speed"
+value = "attack_speed_per_stack"
+
+[resource]
+script = ExtResource("3_lmi3c")
+duration = "4"
+stacking = 1
+max_stacks = 8
+tags = Array[StringName]([&"buff"])
+modifiers = Array[ExtResource("1_chy7v")]([SubResource("Resource_qltk2")])
+removed_by = Array[StringName]([&"attack_target_changed"])
+id = &"myra_rhythm_stack"
+display_name = "Nhịp Phép"
+art_id = &"myra_rhythm_stack"

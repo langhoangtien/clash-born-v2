@@ -1,0 +1,66 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_opuw6"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="2_yms10"]
+[ext_resource type="Resource" path="res://content/effects/root.tres" id="3_3rg68"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="4_ax4xp"]
+[ext_resource type="Script" path="res://sim/actions/area_action.gd" id="5_iu6lt"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="6_q0t3o"]
+[ext_resource type="Script" path="res://sim/defs/effect_patch_def.gd" id="7_g0h1w"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="8_rdwda"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="9_q5iyd"]
+
+[sub_resource type="Resource" id="Resource_nib2y"]
+script = ExtResource("2_yms10")
+damage_type = 1
+amount = "damage"
+
+[sub_resource type="Resource" id="Resource_nk1be"]
+script = ExtResource("4_ax4xp")
+effect = ExtResource("3_3rg68")
+duration = "root_duration"
+
+[sub_resource type="Resource" id="Resource_tyda7"]
+script = ExtResource("5_iu6lt")
+radius = "radius"
+delay = "delay"
+actions = Array[ExtResource("1_opuw6")]([SubResource("Resource_nib2y"), SubResource("Resource_nk1be")])
+
+[sub_resource type="Resource" id="Resource_2po6h"]
+script = ExtResource("9_q5iyd")
+value_name = &"delay"
+op = 2
+amount = 0.3
+
+[sub_resource type="Resource" id="Resource_y6608"]
+script = ExtResource("9_q5iyd")
+value_name = &"radius"
+amount = 100.0
+
+[sub_resource type="Resource" id="Resource_gfk57"]
+script = ExtResource("8_rdwda")
+id = &"myra_w_ii"
+display_name = "Phong Ấn Tức Thì"
+description = "Độ trễ còn 0.3 s, bán kính +100"
+value_changes = Array[ExtResource("9_q5iyd")]([SubResource("Resource_2po6h"), SubResource("Resource_y6608")])
+
+[resource]
+script = ExtResource("6_q0t3o")
+slot = 2
+targeting = 3
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cast_range": PackedFloat32Array(800, 800, 800, 800, 800),
+&"cooldown": PackedFloat32Array(16, 15, 14, 13, 12),
+&"damage": PackedFloat32Array(60, 100, 140, 180, 220),
+&"delay": PackedFloat32Array(0.8, 0.8, 0.8, 0.8, 0.8),
+&"mana": PackedFloat32Array(100, 110, 120, 130, 140),
+&"radius": PackedFloat32Array(280, 280, 280, 280, 280),
+&"root_duration": PackedFloat32Array(1, 1.25, 1.5, 1.75, 2)
+})
+on_cast = Array[ExtResource("1_opuw6")]([SubResource("Resource_tyda7")])
+talent = SubResource("Resource_gfk57")
+bot_usages = Array[int]([0])
+bot_conditions = Array[StringName]([&"enemy_hero_still_or_disabled"])
+id = &"myra_w"
+display_name = "Vòng Phong Ấn"
+art_id = &"myra_w"

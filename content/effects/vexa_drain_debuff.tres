@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_dh1ha"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_xajhq"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_hwoxh"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_h4mc2"]
+
+[sub_resource type="Resource" id="Resource_0abnx"]
+script = ExtResource("1_dh1ha")
+stat = &"intelligence"
+value = "-drain"
+
+[resource]
+script = ExtResource("3_hwoxh")
+stacking = 2
+tags = Array[StringName]([&"debuff"])
+dispel = 2
+modifiers = Array[ExtResource("1_dh1ha")]([SubResource("Resource_0abnx")])
+id = &"vexa_drain_debuff"
+display_name = "Bị hút Trí tuệ"
+art_id = &"vexa_drain_debuff"

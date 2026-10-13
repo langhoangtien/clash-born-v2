@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_x03b1"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_ajyyu"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_gubm3"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_u252r"]
+
+[resource]
+script = ExtResource("3_gubm3")
+duration = "0"
+tags = Array[StringName]([&"passive"])
+dispel = 2
+crit_chance = "crit_chance"
+crit_multiplier = "crit_multiplier"
+id = &"noctis_crit_passive"
+art_id = &"noctis_crit_passive"

@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="HeroDef" format=3]
+
+[ext_resource type="Resource" path="res://content/abilities/noctis_innate.tres" id="1_uy463"]
+[ext_resource type="Resource" path="res://content/abilities/noctis_q.tres" id="2_mwlye"]
+[ext_resource type="Resource" path="res://content/abilities/noctis_r.tres" id="3_6i8wu"]
+[ext_resource type="Script" path="res://sim/defs/hero_def.gd" id="4_3dsl8"]
+[ext_resource type="Script" path="res://sim/defs/combat_stats_def.gd" id="5_hv50o"]
+[ext_resource type="Resource" path="res://content/abilities/noctis_w.tres" id="6_6p4cf"]
+
+[sub_resource type="Resource" id="Resource_yd1lq"]
+script = ExtResource("5_hv50o")
+base_hp = 850.0
+base_mana = 200.0
+base_hp_regen = 4.0
+base_damage = 74.0
+physical_armor = 3.2
+base_attack_time = 1.7
+attack_point = 0.3
+attack_range = 150.0
+movement_speed = 305.0
+vision_range = 1200.0
+collision_radius = 32.0
+
+[resource]
+script = ExtResource("4_3dsl8")
+primary_attribute = 2
+base_strength = 20.0
+base_agility = 33.0
+base_intelligence = 15.0
+strength_growth = 1.9
+agility_growth = 4.2
+intelligence_growth = 1.3
+stats = SubResource("Resource_yd1lq")
+innate = ExtResource("1_uy463")
+q = ExtResource("2_mwlye")
+w = ExtResource("6_6p4cf")
+r = ExtResource("3_6i8wu")
+bot_skill_order = Array[int]([0, 1, 0, 1, 0, 2, 0, 1, 0, 1, 2, 1, 3, 3, 3, 2, 3, 3, 3, 3])
+bot_talent_priority = Array[int]([1, 3, 2])
+id = &"noctis"
+display_name = "Noctis · Sát Ảnh"
+art_id = &"noctis"

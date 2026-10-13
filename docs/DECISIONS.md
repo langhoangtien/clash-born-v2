@@ -36,6 +36,8 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-34 | 2026-10-14 | Thêm **nhóm duy nhất** `unique_group`: cùng nhóm chỉ nguồn mạnh nhất có tác dụng. Bash (hero + Búa Choáng), giày, bị động của 2 món giống nhau | Tránh cộng dồn quá mạnh hoặc quá hên xui; skill và đồ khác nhóm vẫn kết hợp (STAT-05) |
 | D-35 | 2026-10-14 | Lên cấp chỉ cộng STR/AGI/INT; bỏ "sát thương mỗi cấp" của v1. Sát thương, máu, giáp, tốc đánh tăng qua thuộc tính | Giống Dota; một nguồn tăng trưởng duy nhất, dễ cân bằng (STAT-04) |
 | D-36 | 2026-10-14 | Khuôn dữ liệu (M0.5): mỗi loại hành động một khuôn riêng; trong Def `String` = biểu thức, `StringName` = tên; id duy nhất toàn thư viện; `content/balance/` là thiết lập, không phải dữ liệu có id | Sửa trong Godot có ô đúng cho từng tham số; validator tự kiểm tra mọi khuôn theo quy ước, gõ sai tên bị test bắt |
+| D-37 | 2026-10-14 | Bổ sung luật khi nhập 4 hero: vùng chữ nhật theo hướng (ABL-13); cờ của hành động là giá trị có tên (ABL-14); `removed_by` chỉ tính sự kiện do chủ hiệu ứng gây ra, trigger chạy trước khi xóa (EFF-05); điều kiện `this_effect_depleted`, `this_effect_ended` (EFF-08); tên gốc chọn bản `_melee`/`_ranged` (ITM-05) | Vexa W, Myra Q II, Noctis W, Brakk W II / R II, Ngọc Băng Sương và Búa Choáng cần; không thêm hệ thống mới |
+| D-38 | 2026-10-14 | Chỉnh thiết kế để khỏi thêm cơ chế: Noctis Q II hồi Q khi Noctis hạ gục bất kỳ ai trong cửa sổ sau Q; Vexa R II đặt làm chậm = 0 và thêm trói 2 s; Búa Choáng dùng thời gian chờ bash chung (CMB-08) | Kết quả trong 1v1 như thiết kế cũ; xác suất và % lưu dạng phân số (0.15 = 15%) trong dữ liệu |
 
 ## Chờ chốt
 

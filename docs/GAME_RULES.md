@@ -241,6 +241,11 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   gian định sẵn; trong lúc bị dời nó STUNNED; dừng sớm khi chạm vách đá, rừng hoặc thân
   trụ; không bao giờ đi xuyên vật cản. Hủy lệnh và chiêu đang tung của nó. Bị chặn
   bởi MAGIC_IMMUNE trừ khi nguồn xuyên miễn phép.
+- `ABL-13` Vùng có hai hình (D-37): **tròn** (tâm + `radius`) hoặc **chữ nhật theo
+  hướng** — bắt đầu từ chủ kỹ năng, dài `length`, rộng `width`, theo hướng đã chọn
+  lúc tung. Luật trúng của ABL-06/07 áp như nhau cho cả hai hình.
+- `ABL-14` Cờ bật/tắt của hành động (vd đạn `pierce`) là giá trị có tên (0 = tắt,
+  khác 0 = bật) để talent đổi được (TAL-02a).
 
 ## RNG — Ngẫu nhiên
 
@@ -261,7 +266,8 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   thuộc tính…) cộng dồn; **bị động** của hai món cùng loại chỉ tính một lần (nhóm
   `item:<id>`, STAT-05). Né và chính xác vẫn nhân dồn theo CMB-11.
 - `ITM-05` Giá trị khác nhau cho cận chiến/đánh xa khai báo bằng hai giá trị có tên
-  (`chance_melee`, `chance_ranged`), không bằng code.
+  (`chance_melee`, `chance_ranged`), không bằng code. Biểu thức ghi tên gốc (`chance`);
+  hệ thống chọn bản `_melee` hay `_ranged` theo kiểu đánh của chủ kỹ năng.
 - `ITM-06` Mua, bán, ghép đồ: ECO-06.
 
 ## TAL — Talent
@@ -287,7 +293,10 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 - `EFF-03` Làm chậm: chỉ lấy mức mạnh nhất (giống v1). Giảm giáp: cộng dồn.
 - `EFF-04` Trigger lồng nhau tối đa 4 tầng.
 - `EFF-05` `removed_by` chỉ tính sự kiện xảy ra **sau** khi hiệu ứng được áp (dùng chiêu
-  tàng hình không tự làm mất tàng hình).
+  tàng hình không tự làm mất tàng hình), và chỉ sự kiện mà **chủ hiệu ứng là kẻ gây
+  ra** (Noctis đánh thì mất tàng hình; Noctis bị đánh thì không). Cùng một sự kiện vừa
+  kích hoạt trigger vừa xóa hiệu ứng: trigger chạy trước, xóa sau (đòn phục kích gây
+  sát thương rồi mới tự mất) (D-37).
 - `EFF-06` Khiên (`absorb`): hiệu ứng có lượng khiên hút sát thương mọi loại trước khi
   trừ máu, sau giáp và sau `damage_taken_multiplier`. Nhiều khiên: trừ khiên áp sớm
   nhất trước. Khiên về 0 → hiệu ứng bị xóa với lý do `depleted`.
@@ -300,8 +309,10 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 - `EFF-08` Trigger khai báo **vai** của chủ hiệu ứng trong sự kiện: `as: SOURCE` (mình
   gây ra, ví dụ mình đánh trúng) hoặc `as: TARGET` (mình bị, ví dụ mình bị đánh trúng).
   Cùng sự kiện `attack_landed` có thể kích hoạt nội tại của kẻ đánh và kẻ bị đánh.
-  Điều kiện (`condition`) cho phép: `target_not_structure`, `target_is_hero`; thêm điều
-  kiện = thay đổi luật.
+  Điều kiện (`condition`) cho phép: `target_not_structure`, `target_is_hero`,
+  `this_effect_depleted` (sự kiện `effect_removed` của chính hiệu ứng này, lý do
+  `depleted`), `this_effect_ended` (`effect_removed` của chính hiệu ứng này, lý do bất kỳ
+  trừ `owner_died`); thêm điều kiện = thay đổi luật.
 - `EFF-09` Giá trị trong hành động có thể là **biểu thức** gồm: số, giá trị có tên của
   skill, chỉ số của chủ hiệu ứng / mục tiêu (`self.strength`, `target.max_hp`…), dữ
   liệu của sự kiện (`event.damage`, `event.burned_mana`). Chỉ cộng, trừ, nhân, chia,

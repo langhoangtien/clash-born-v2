@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_gxe5a"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_fvqfo"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_liswp"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_8x0oj"]
+[ext_resource type="Script" path="res://sim/actions/modify_cooldown_action.gd" id="5_8qqnm"]
+
+[sub_resource type="Resource" id="Resource_lfjgx"]
+script = ExtResource("5_8qqnm")
+amount = "-cooldown"
+target = 0
+
+[sub_resource type="Resource" id="Resource_0o0dh"]
+script = ExtResource("4_8x0oj")
+event = &"kill_credited"
+actions = Array[ExtResource("2_fvqfo")]([SubResource("Resource_lfjgx")])
+
+[resource]
+script = ExtResource("3_liswp")
+duration = "1.3"
+tags = Array[StringName]([&"buff"])
+dispel = 2
+triggers = Array[ExtResource("4_8x0oj")]([SubResource("Resource_0o0dh")])
+removed_by = Array[StringName]([&"kill_credited"])
+id = &"noctis_hunt_window"
+display_name = "Săn mồi"
+art_id = &"noctis_hunt_window"

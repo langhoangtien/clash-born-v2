@@ -4,6 +4,8 @@
 > Đây là bản thiết kế nội dung. Số liệu thật nằm trong `content/heroes/`,
 > `content/abilities/`, `content/effects/`, `content/items/`. Khi hai nơi lệch nhau, sửa file này cho
 > khớp dữ liệu sau mỗi lần cân bằng.
+> Trong dữ liệu, % và xác suất lưu dạng phân số (15% → `0.15`) (D-38). Bản đầu nhập
+> ở M0.6: 4 hero, 9 món đồ; 14 món đồ chỉ số của v1 để M8.
 
 ## Khung chung (luật ở GAME_RULES mục ABL, TAL)
 
@@ -254,7 +256,7 @@ của địch về sau) và chỉ số `damage_taken_multiplier` tăng.
 
 | Talent | Thay đổi |
 |---|---|
-| Q II — Lưỡi Săn Mồi | Sát thương +100; nếu mục tiêu chết trong 1 s sau đòn, hồi lại toàn bộ hồi chiêu Q |
+| Q II — Lưỡi Săn Mồi | Sát thương +100; nếu Noctis hạ gục bất kỳ ai trong 1.3 s kể từ lúc tung Q (lướt ~0.3 s + 1 s), hồi lại toàn bộ hồi chiêu Q (D-38) |
 | W II — Bóng Không Hình | Fade in 0 s; khi tàng hình hồi 3% máu tối đa mỗi giây |
 | R II — Án Tử | Khuếch đại +10%; khi đánh dấu, câm lặng mục tiêu 1.5 s |
 
@@ -320,7 +322,7 @@ bị tước gây thêm sát thương phép. Sau đó làm chậm.
 |---|---|
 | Q II — Ếch Khốn Khổ | Mục tiêu đang HEXED nhận thêm 20% sát thương mọi nguồn |
 | W II — Bão Táp | Rộng +100, sát thương +100, đẩy lùi +150 |
-| R II — Phong Ấn | Hồi chiêu −20; thay làm chậm bằng ROOTED 2 s |
+| R II — Phong Ấn | Hồi chiêu −20; làm chậm = 0% và thêm ROOTED 2 s (D-38) |
 
 ## Thư viện bị động (dành sẵn cho hero sau)
 
@@ -389,7 +391,7 @@ là đề xuất, cân lại khi chơi thử.
 | Lưỡi Ẩn Thân | `shadow_blade` | 2800 | +25 sát thương, +30% tốc đánh | **Chủ động** (hồi 28 s): dùng lại hiệu ứng `shadow_veil` + `ambush_ready` của Noctis W (cấp 2) với thời gian 12 s |
 | Lưỡi Hái Biến Hình | `hex_scythe` | 5600 | +35 INT, +10 STR, +10 AGI | **Chủ động** (hồi 22 s, tầm 600): HEXED mục tiêu 3.5 s |
 | Bùa Thanh Tẩy | `cleansing_charm` | 1800 | +6 giáp, +4 hồi máu | **Chủ động** (hồi 18 s): thanh tẩy cơ bản bản thân |
-| Búa Choáng | `stun_hammer` | 2900 | +25 sát thương | **Bị động**: đòn đánh 20% (cận chiến) / 10% (đánh xa) choáng 1.5 s, +100 sát thương vật lý; hồi 2.3 s |
+| Búa Choáng | `stun_hammer` | 2900 | +25 sát thương | **Bị động**: đòn đánh 20% (cận chiến) / 10% (đánh xa) choáng 1.5 s, +100 sát thương vật lý; nhóm `bash`, thời gian chờ chung `bash_cooldown` (CMB-08, D-38) |
 
 Luật của trang bị: GAME_RULES mục ITM.
 

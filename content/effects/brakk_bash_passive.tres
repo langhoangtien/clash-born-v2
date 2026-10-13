@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_8v0i3"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_u5vgu"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_bqtoi"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_5oche"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="5_2vudr"]
+[ext_resource type="Resource" path="res://content/effects/stun.tres" id="6_hfteq"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="7_6u33h"]
+
+[sub_resource type="Resource" id="Resource_pewjw"]
+script = ExtResource("5_2vudr")
+amount = "bonus_damage"
+target = 3
+
+[sub_resource type="Resource" id="Resource_qtbxf"]
+script = ExtResource("7_6u33h")
+effect = ExtResource("6_hfteq")
+duration = "stun_duration"
+target = 3
+
+[sub_resource type="Resource" id="Resource_ce1vf"]
+script = ExtResource("4_5oche")
+event = &"attack_landed"
+chance = "chance"
+condition = &"target_not_structure"
+unique_group = &"bash"
+unique_priority = "chance"
+actions = Array[ExtResource("2_u5vgu")]([SubResource("Resource_pewjw"), SubResource("Resource_qtbxf")])
+
+[resource]
+script = ExtResource("3_bqtoi")
+duration = "0"
+tags = Array[StringName]([&"passive"])
+dispel = 2
+triggers = Array[ExtResource("4_5oche")]([SubResource("Resource_ce1vf")])
+id = &"brakk_bash_passive"
+art_id = &"brakk_bash_passive"

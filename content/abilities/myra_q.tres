@@ -1,0 +1,63 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_opol0"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="2_xdodl"]
+[ext_resource type="Resource" path="res://content/effects/myra_frost_slow.tres" id="3_lrpbd"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="4_l31uk"]
+[ext_resource type="Script" path="res://sim/actions/projectile_action.gd" id="5_rifa6"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="6_lid3w"]
+[ext_resource type="Script" path="res://sim/defs/effect_patch_def.gd" id="7_x5tsl"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="8_061mh"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="9_ftds8"]
+
+[sub_resource type="Resource" id="Resource_kabbf"]
+script = ExtResource("2_xdodl")
+damage_type = 1
+amount = "damage"
+
+[sub_resource type="Resource" id="Resource_usj4i"]
+script = ExtResource("4_l31uk")
+effect = ExtResource("3_lrpbd")
+duration = "slow_duration"
+
+[sub_resource type="Resource" id="Resource_j8wcy"]
+script = ExtResource("5_rifa6")
+travel_range = "cast_range"
+width = "120"
+speed = "1400"
+pierce = "pierce"
+on_hit = Array[ExtResource("1_opol0")]([SubResource("Resource_kabbf"), SubResource("Resource_usj4i")])
+target = 0
+
+[sub_resource type="Resource" id="Resource_l1mun"]
+script = ExtResource("9_ftds8")
+value_name = &"pierce"
+op = 2
+amount = 1.0
+
+[sub_resource type="Resource" id="Resource_2xwg1"]
+script = ExtResource("8_061mh")
+id = &"myra_q_ii"
+display_name = "Tia Xuyên Băng"
+description = "Đạn xuyên qua mọi kẻ địch"
+value_changes = Array[ExtResource("9_ftds8")]([SubResource("Resource_l1mun")])
+
+[resource]
+script = ExtResource("6_lid3w")
+targeting = 4
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cast_range": PackedFloat32Array(1000, 1000, 1000, 1000, 1000),
+&"cooldown": PackedFloat32Array(8, 7.5, 7, 6.5, 6),
+&"damage": PackedFloat32Array(90, 140, 190, 240, 290),
+&"mana": PackedFloat32Array(80, 90, 100, 110, 120),
+&"pierce": PackedFloat32Array(0, 0, 0, 0, 0),
+&"slow": PackedFloat32Array(0.3, 0.3, 0.3, 0.3, 0.3),
+&"slow_duration": PackedFloat32Array(1.5, 1.75, 2, 2.25, 2.5)
+})
+on_cast = Array[ExtResource("1_opol0")]([SubResource("Resource_j8wcy")])
+talent = SubResource("Resource_2xwg1")
+bot_usages = Array[int]([1])
+bot_conditions = Array[StringName]([&"enemy_hero_in_range", &"predict_position"])
+id = &"myra_q"
+display_name = "Tia Băng"
+art_id = &"myra_q"

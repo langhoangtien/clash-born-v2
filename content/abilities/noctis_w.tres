@@ -1,0 +1,68 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_3b6uw"]
+[ext_resource type="Resource" path="res://content/effects/shadow_veil.tres" id="2_rp5ar"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_6m8x3"]
+[ext_resource type="Resource" path="res://content/effects/ambush_ready.tres" id="4_pioja"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="5_chh4a"]
+[ext_resource type="Script" path="res://sim/defs/effect_patch_def.gd" id="6_l06la"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="7_fqxg2"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="8_yib8v"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="9_jxqe0"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="10_lmujc"]
+
+[sub_resource type="Resource" id="Resource_hl3oy"]
+script = ExtResource("3_6m8x3")
+effect = ExtResource("2_rp5ar")
+duration = "duration"
+target = 0
+
+[sub_resource type="Resource" id="Resource_6okht"]
+script = ExtResource("3_6m8x3")
+effect = ExtResource("4_pioja")
+duration = "duration"
+target = 0
+
+[sub_resource type="Resource" id="Resource_h3w8l"]
+script = ExtResource("7_fqxg2")
+stat = &"hp_regen"
+value = "self.max_hp * 0.03"
+
+[sub_resource type="Resource" id="Resource_yl33r"]
+script = ExtResource("6_l06la")
+effect = ExtResource("2_rp5ar")
+add_modifiers = Array[ExtResource("7_fqxg2")]([SubResource("Resource_h3w8l")])
+
+[sub_resource type="Resource" id="Resource_hg4vk"]
+script = ExtResource("10_lmujc")
+value_name = &"fade_in"
+op = 2
+
+[sub_resource type="Resource" id="Resource_oh3o7"]
+script = ExtResource("9_jxqe0")
+id = &"noctis_w_ii"
+display_name = "Bóng Không Hình"
+description = "Fade in 0 s; khi tàng hình hồi 3% máu tối đa mỗi giây"
+value_changes = Array[ExtResource("10_lmujc")]([SubResource("Resource_hg4vk")])
+effect_patches = Array[ExtResource("6_l06la")]([SubResource("Resource_yl33r")])
+
+[resource]
+script = ExtResource("5_chh4a")
+slot = 2
+target_team = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"ambush_damage": PackedFloat32Array(60, 90, 120, 150, 180),
+&"cooldown": PackedFloat32Array(20, 19, 18, 17, 16),
+&"disarm_duration": PackedFloat32Array(1, 1.2, 1.4, 1.6, 1.8),
+&"duration": PackedFloat32Array(6, 7, 8, 9, 10),
+&"fade_in": PackedFloat32Array(0.6, 0.6, 0.6, 0.6, 0.6),
+&"mana": PackedFloat32Array(80, 80, 80, 80, 80),
+&"move_bonus": PackedFloat32Array(0.1, 0.15, 0.2, 0.25, 0.3)
+})
+on_cast = Array[ExtResource("1_3b6uw")]([SubResource("Resource_hl3oy"), SubResource("Resource_6okht")])
+talent = SubResource("Resource_oh3o7")
+bot_usages = Array[int]([3, 4])
+bot_conditions = Array[StringName]([&"preparing_engage", &"hp_below_30"])
+id = &"noctis_w"
+display_name = "Màn Đêm"
+art_id = &"noctis_w"

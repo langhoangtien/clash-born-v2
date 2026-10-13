@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_6b6hm"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_y2ort"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_muuv3"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_v3y85"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="5_1k7pq"]
+[ext_resource type="Resource" path="res://content/effects/disarm.tres" id="6_sjx76"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="7_wfakc"]
+
+[sub_resource type="Resource" id="Resource_qd0gi"]
+script = ExtResource("5_1k7pq")
+amount = "ambush_damage"
+target = 3
+
+[sub_resource type="Resource" id="Resource_kwj5h"]
+script = ExtResource("7_wfakc")
+effect = ExtResource("6_sjx76")
+duration = "disarm_duration"
+target = 3
+
+[sub_resource type="Resource" id="Resource_nbk5f"]
+script = ExtResource("4_v3y85")
+event = &"attack_landed"
+actions = Array[ExtResource("2_y2ort")]([SubResource("Resource_qd0gi"), SubResource("Resource_kwj5h")])
+
+[resource]
+script = ExtResource("3_muuv3")
+tags = Array[StringName]([&"buff"])
+triggers = Array[ExtResource("4_v3y85")]([SubResource("Resource_nbk5f")])
+removed_by = Array[StringName]([&"attack_landed", &"ability_cast"])
+id = &"ambush_ready"
+display_name = "Phục kích"
+art_id = &"ambush_ready"

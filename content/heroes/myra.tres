@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="HeroDef" format=3]
+
+[ext_resource type="Resource" path="res://content/abilities/myra_innate.tres" id="1_o8q44"]
+[ext_resource type="Resource" path="res://content/abilities/myra_q.tres" id="2_urlr1"]
+[ext_resource type="Resource" path="res://content/abilities/myra_r.tres" id="3_jy6ew"]
+[ext_resource type="Script" path="res://sim/defs/hero_def.gd" id="4_4a4bx"]
+[ext_resource type="Script" path="res://sim/defs/combat_stats_def.gd" id="5_n5q0r"]
+[ext_resource type="Resource" path="res://content/abilities/myra_w.tres" id="6_0wqin"]
+
+[sub_resource type="Resource" id="Resource_7ar06"]
+script = ExtResource("5_n5q0r")
+base_hp = 850.0
+base_mana = 320.0
+base_hp_regen = 4.0
+base_damage = 38.0
+physical_armor = 2.6
+base_attack_time = 2.0
+attack_point = 0.4
+attack_range = 550.0
+projectile_speed = 1100.0
+movement_speed = 290.0
+vision_range = 1200.0
+collision_radius = 32.0
+
+[resource]
+script = ExtResource("4_4a4bx")
+primary_attribute = 3
+base_strength = 18.0
+base_agility = 18.0
+base_intelligence = 30.0
+strength_growth = 1.7
+agility_growth = 1.8
+intelligence_growth = 3.7
+stats = SubResource("Resource_7ar06")
+innate = ExtResource("1_o8q44")
+q = ExtResource("2_urlr1")
+w = ExtResource("6_0wqin")
+r = ExtResource("3_jy6ew")
+bot_skill_order = Array[int]([0, 1, 0, 1, 0, 2, 0, 1, 0, 1, 2, 1, 3, 3, 3, 2, 3, 3, 3, 3])
+bot_talent_priority = Array[int]([3, 2, 1])
+id = &"myra"
+display_name = "Myra · Pháp sư"
+art_id = &"myra"

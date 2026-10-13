@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_hsmej"]
+[ext_resource type="Script" path="res://sim/actions/dispel_action.gd" id="2_mdr6s"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="3_q85y1"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="4_s10lq"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="5_f7avq"]
+
+[sub_resource type="Resource" id="Resource_cdyvf"]
+script = ExtResource("2_mdr6s")
+target = 0
+
+[sub_resource type="Resource" id="Resource_3lnmt"]
+script = ExtResource("3_q85y1")
+slot = 4
+target_team = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cooldown": PackedFloat32Array(18)
+})
+on_cast = Array[ExtResource("1_hsmej")]([SubResource("Resource_cdyvf")])
+bot_usages = Array[int]([5])
+id = &"cleansing_charm_active"
+art_id = &"cleansing_charm_active"
+
+[sub_resource type="Resource" id="Resource_8lg7y"]
+script = ExtResource("4_s10lq")
+stat = &"physical_armor"
+value = "6"
+
+[sub_resource type="Resource" id="Resource_flbis"]
+script = ExtResource("4_s10lq")
+stat = &"hp_regen"
+value = "4"
+
+[resource]
+script = ExtResource("5_f7avq")
+cost = 1800
+modifiers = Array[ExtResource("4_s10lq")]([SubResource("Resource_8lg7y"), SubResource("Resource_flbis")])
+ability = SubResource("Resource_3lnmt")
+id = &"cleansing_charm"
+display_name = "Bùa Thanh Tẩy"
+art_id = &"cleansing_charm"

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_rp4bk"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_n0r3x"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_axkg8"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_mal0v"]
+
+[resource]
+script = ExtResource("3_axkg8")
+tags = Array[StringName]([&"debuff"])
+states = Array[int]([3])
+id = &"disarm"
+display_name = "Cấm đánh"
+art_id = &"disarm"

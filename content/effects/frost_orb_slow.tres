@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_5xnny"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_5s125"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_rhfsn"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_c5kkb"]
+
+[sub_resource type="Resource" id="Resource_usl7h"]
+script = ExtResource("1_5xnny")
+stat = &"movement_speed"
+op = 1
+value = "1 - slow"
+unique_group = &"slow"
+unique_priority = "slow"
+
+[sub_resource type="Resource" id="Resource_epp4t"]
+script = ExtResource("1_5xnny")
+stat = &"attack_speed"
+value = "-slow"
+
+[resource]
+script = ExtResource("3_rhfsn")
+tags = Array[StringName]([&"debuff"])
+modifiers = Array[ExtResource("1_5xnny")]([SubResource("Resource_usl7h"), SubResource("Resource_epp4t")])
+id = &"frost_orb_slow"
+display_name = "Băng Sương"
+art_id = &"frost_orb_slow"

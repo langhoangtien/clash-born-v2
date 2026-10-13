@@ -1,0 +1,74 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_8r84e"]
+[ext_resource type="Resource" path="res://content/effects/brakk_undying.tres" id="2_a13hh"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_dpbw2"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_crpup"]
+[ext_resource type="Script" path="res://sim/defs/effect_patch_def.gd" id="5_e76kh"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="6_jy3dw"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="7_d5g1t"]
+[ext_resource type="Resource" path="res://content/effects/stun.tres" id="8_pe6fs"]
+[ext_resource type="Script" path="res://sim/actions/area_action.gd" id="9_x4t3o"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="10_jnm15"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="11_knwmu"]
+
+[sub_resource type="Resource" id="Resource_1noc4"]
+script = ExtResource("3_dpbw2")
+effect = ExtResource("2_a13hh")
+duration = "duration"
+target = 0
+
+[sub_resource type="Resource" id="Resource_r1txo"]
+script = ExtResource("3_dpbw2")
+effect = ExtResource("8_pe6fs")
+duration = "1"
+
+[sub_resource type="Resource" id="Resource_6kerr"]
+script = ExtResource("9_x4t3o")
+radius = "300"
+actions = Array[ExtResource("1_8r84e")]([SubResource("Resource_r1txo")])
+target = 0
+
+[sub_resource type="Resource" id="Resource_s572k"]
+script = ExtResource("7_d5g1t")
+event = &"effect_removed"
+role = 1
+condition = &"this_effect_ended"
+actions = Array[ExtResource("1_8r84e")]([SubResource("Resource_6kerr")])
+
+[sub_resource type="Resource" id="Resource_iauqv"]
+script = ExtResource("5_e76kh")
+effect = ExtResource("2_a13hh")
+add_triggers = Array[ExtResource("7_d5g1t")]([SubResource("Resource_s572k")])
+
+[sub_resource type="Resource" id="Resource_hhgjk"]
+script = ExtResource("11_knwmu")
+value_name = &"duration"
+amount = 2.0
+
+[sub_resource type="Resource" id="Resource_6q25y"]
+script = ExtResource("10_jnm15")
+id = &"brakk_r_ii"
+display_name = "Hồn Trở Về"
+description = "GHOST +2 s; khi kết thúc, choáng kẻ địch trong 300 trong 1 s"
+value_changes = Array[ExtResource("11_knwmu")]([SubResource("Resource_hhgjk")])
+effect_patches = Array[ExtResource("5_e76kh")]([SubResource("Resource_iauqv")])
+
+[resource]
+script = ExtResource("4_crpup")
+slot = 3
+target_team = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cooldown": PackedFloat32Array(90, 80, 70),
+&"duration": PackedFloat32Array(4, 5, 6),
+&"heal_fraction": PackedFloat32Array(0.2, 0.3, 0.4),
+&"mana": PackedFloat32Array(150, 175, 200),
+&"move_bonus": PackedFloat32Array(0.2, 0.25, 0.3)
+})
+on_cast = Array[ExtResource("1_8r84e")]([SubResource("Resource_1noc4")])
+talent = SubResource("Resource_6q25y")
+bot_usages = Array[int]([4])
+bot_conditions = Array[StringName]([&"hp_below_30_or_tower_targeted"])
+id = &"brakk_r"
+display_name = "Hồn Bất Diệt"
+art_id = &"brakk_r"

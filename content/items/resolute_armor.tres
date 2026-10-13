@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_ypo7f"]
+[ext_resource type="Script" path="res://sim/actions/dispel_action.gd" id="2_u77j8"]
+[ext_resource type="Resource" path="res://content/effects/magic_immune.tres" id="3_ea5iw"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="4_tej5e"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="5_mc4gq"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="6_aj6eu"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="7_fb7oi"]
+
+[sub_resource type="Resource" id="Resource_s10p2"]
+script = ExtResource("2_u77j8")
+target = 0
+
+[sub_resource type="Resource" id="Resource_q1t56"]
+script = ExtResource("4_tej5e")
+effect = ExtResource("3_ea5iw")
+duration = "duration"
+target = 0
+
+[sub_resource type="Resource" id="Resource_si4ov"]
+script = ExtResource("5_mc4gq")
+slot = 4
+target_team = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cooldown": PackedFloat32Array(70),
+&"duration": PackedFloat32Array(6)
+})
+on_cast = Array[ExtResource("1_ypo7f")]([SubResource("Resource_s10p2"), SubResource("Resource_q1t56")])
+bot_usages = Array[int]([5])
+id = &"resolute_armor_active"
+art_id = &"resolute_armor_active"
+
+[sub_resource type="Resource" id="Resource_3f0e4"]
+script = ExtResource("6_aj6eu")
+stat = &"strength"
+value = "10"
+
+[sub_resource type="Resource" id="Resource_8vgbl"]
+script = ExtResource("6_aj6eu")
+stat = &"physical_damage"
+value = "24"
+
+[resource]
+script = ExtResource("7_fb7oi")
+cost = 4000
+modifiers = Array[ExtResource("6_aj6eu")]([SubResource("Resource_3f0e4"), SubResource("Resource_8vgbl")])
+ability = SubResource("Resource_si4ov")
+id = &"resolute_armor"
+display_name = "Giáp Bất Khuất"
+art_id = &"resolute_armor"

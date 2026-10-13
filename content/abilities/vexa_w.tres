@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_b0nuk"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="2_25l8d"]
+[ext_resource type="Script" path="res://sim/actions/push_action.gd" id="3_k5863"]
+[ext_resource type="Script" path="res://sim/actions/area_action.gd" id="4_edwtr"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="5_xhxfl"]
+[ext_resource type="Script" path="res://sim/defs/effect_patch_def.gd" id="6_0nvx3"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="7_sa7dx"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="8_7d2xn"]
+
+[sub_resource type="Resource" id="Resource_au420"]
+script = ExtResource("2_25l8d")
+damage_type = 1
+amount = "damage"
+
+[sub_resource type="Resource" id="Resource_oni3b"]
+script = ExtResource("3_k5863")
+distance = "push"
+duration = "0.3"
+
+[sub_resource type="Resource" id="Resource_fnnk3"]
+script = ExtResource("4_edwtr")
+shape = 1
+length = "length"
+width = "width"
+actions = Array[ExtResource("1_b0nuk")]([SubResource("Resource_au420"), SubResource("Resource_oni3b")])
+target = 0
+
+[sub_resource type="Resource" id="Resource_kjpmf"]
+script = ExtResource("8_7d2xn")
+value_name = &"width"
+amount = 100.0
+
+[sub_resource type="Resource" id="Resource_feo5c"]
+script = ExtResource("8_7d2xn")
+value_name = &"damage"
+amount = 100.0
+
+[sub_resource type="Resource" id="Resource_r4qb5"]
+script = ExtResource("8_7d2xn")
+value_name = &"push"
+amount = 150.0
+
+[sub_resource type="Resource" id="Resource_6jucs"]
+script = ExtResource("7_sa7dx")
+id = &"vexa_w_ii"
+display_name = "Bão Táp"
+description = "Rộng +100, sát thương +100, đẩy lùi +150"
+value_changes = Array[ExtResource("8_7d2xn")]([SubResource("Resource_kjpmf"), SubResource("Resource_feo5c"), SubResource("Resource_r4qb5")])
+
+[resource]
+script = ExtResource("5_xhxfl")
+slot = 2
+targeting = 4
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cooldown": PackedFloat32Array(14, 13, 12, 11, 10),
+&"damage": PackedFloat32Array(60, 100, 140, 180, 220),
+&"length": PackedFloat32Array(700, 700, 700, 700, 700),
+&"mana": PackedFloat32Array(90, 95, 100, 105, 110),
+&"push": PackedFloat32Array(300, 300, 300, 300, 300),
+&"width": PackedFloat32Array(250, 250, 250, 250, 250)
+})
+on_cast = Array[ExtResource("1_b0nuk")]([SubResource("Resource_fnnk3")])
+talent = SubResource("Resource_6jucs")
+bot_usages = Array[int]([4, 1])
+bot_conditions = Array[StringName]([&"enemy_hero_too_close", &"hits_multiple"])
+id = &"vexa_w"
+display_name = "Sóng Gió"
+art_id = &"vexa_w"

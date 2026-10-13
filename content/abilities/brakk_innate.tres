@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_0u6yp"]
+[ext_resource type="Resource" path="res://content/effects/brakk_bash_passive.tres" id="2_p34vv"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_jf334"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_s6jc3"]
+
+[sub_resource type="Resource" id="Resource_ps684"]
+script = ExtResource("3_jf334")
+effect = ExtResource("2_p34vv")
+target = 0
+
+[resource]
+script = ExtResource("4_s6jc3")
+slot = 0
+targeting = 0
+values = Dictionary[StringName, PackedFloat32Array]({
+&"bonus_damage": PackedFloat32Array(30, 40, 50, 60, 70, 80),
+&"chance": PackedFloat32Array(0.15, 0.17, 0.19, 0.21, 0.23, 0.25),
+&"stun_duration": PackedFloat32Array(0.5, 0.6, 0.7, 0.8, 0.9, 1)
+})
+on_learn = Array[ExtResource("1_0u6yp")]([SubResource("Resource_ps684")])
+id = &"brakk_innate"
+display_name = "Đòn Chấn Động"
+art_id = &"brakk_innate"

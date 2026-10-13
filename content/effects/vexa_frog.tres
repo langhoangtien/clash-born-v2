@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_6ypl0"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_lebc6"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_mi1kb"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_sxxfq"]
+
+[resource]
+script = ExtResource("3_mi1kb")
+tags = Array[StringName]([&"debuff"])
+dispel = 1
+states = Array[int]([11])
+id = &"vexa_frog"
+display_name = "Hóa Ếch"
+art_id = &"vexa_frog"

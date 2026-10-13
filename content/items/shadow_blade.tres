@@ -1,0 +1,57 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_sx3bd"]
+[ext_resource type="Resource" path="res://content/effects/shadow_veil.tres" id="2_4exm6"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_8jwta"]
+[ext_resource type="Resource" path="res://content/effects/ambush_ready.tres" id="4_vrb5l"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="5_ys2gn"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="6_sehxx"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="7_0ge31"]
+
+[sub_resource type="Resource" id="Resource_03o0t"]
+script = ExtResource("3_8jwta")
+effect = ExtResource("2_4exm6")
+duration = "duration"
+target = 0
+
+[sub_resource type="Resource" id="Resource_xd7g1"]
+script = ExtResource("3_8jwta")
+effect = ExtResource("4_vrb5l")
+duration = "duration"
+target = 0
+
+[sub_resource type="Resource" id="Resource_x164q"]
+script = ExtResource("5_ys2gn")
+slot = 4
+target_team = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"ambush_damage": PackedFloat32Array(90),
+&"cooldown": PackedFloat32Array(28),
+&"disarm_duration": PackedFloat32Array(1.2),
+&"duration": PackedFloat32Array(12),
+&"fade_in": PackedFloat32Array(0.6),
+&"move_bonus": PackedFloat32Array(0.15)
+})
+on_cast = Array[ExtResource("1_sx3bd")]([SubResource("Resource_03o0t"), SubResource("Resource_xd7g1")])
+bot_usages = Array[int]([3, 4])
+id = &"shadow_blade_active"
+art_id = &"shadow_blade_active"
+
+[sub_resource type="Resource" id="Resource_8jnhv"]
+script = ExtResource("6_sehxx")
+stat = &"physical_damage"
+value = "25"
+
+[sub_resource type="Resource" id="Resource_5cp40"]
+script = ExtResource("6_sehxx")
+stat = &"attack_speed"
+value = "0.3"
+
+[resource]
+script = ExtResource("7_0ge31")
+cost = 2800
+modifiers = Array[ExtResource("6_sehxx")]([SubResource("Resource_8jnhv"), SubResource("Resource_5cp40")])
+ability = SubResource("Resource_x164q")
+id = &"shadow_blade"
+display_name = "Lưỡi Ẩn Thân"
+art_id = &"shadow_blade"

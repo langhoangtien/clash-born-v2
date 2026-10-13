@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_ov6c8"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="2_j0csi"]
+[ext_resource type="Script" path="res://sim/actions/purge_action.gd" id="3_nkkyr"]
+[ext_resource type="Resource" path="res://content/effects/vexa_purge_slow.tres" id="4_hb2gl"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="5_1cpuw"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="6_ln5dd"]
+[ext_resource type="Script" path="res://sim/defs/effect_patch_def.gd" id="7_bypcj"]
+[ext_resource type="Resource" path="res://content/effects/root.tres" id="8_sv8pi"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="9_m87kc"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="10_mfkye"]
+
+[sub_resource type="Resource" id="Resource_4jj18"]
+script = ExtResource("2_j0csi")
+damage_type = 1
+amount = "damage_per_buff"
+
+[sub_resource type="Resource" id="Resource_bngml"]
+script = ExtResource("3_nkkyr")
+on_each = Array[ExtResource("1_ov6c8")]([SubResource("Resource_4jj18")])
+
+[sub_resource type="Resource" id="Resource_mnl6x"]
+script = ExtResource("5_1cpuw")
+effect = ExtResource("4_hb2gl")
+duration = "slow_duration"
+
+[sub_resource type="Resource" id="Resource_goydu"]
+script = ExtResource("5_1cpuw")
+effect = ExtResource("8_sv8pi")
+duration = "2"
+
+[sub_resource type="Resource" id="Resource_v0w4d"]
+script = ExtResource("10_mfkye")
+value_name = &"cooldown"
+amount = -20.0
+
+[sub_resource type="Resource" id="Resource_5fysa"]
+script = ExtResource("10_mfkye")
+value_name = &"slow"
+op = 2
+
+[sub_resource type="Resource" id="Resource_hb0ao"]
+script = ExtResource("9_m87kc")
+id = &"vexa_r_ii"
+display_name = "Phong Ấn"
+description = "Hồi chiêu −20; làm chậm = 0 và trói 2 s"
+value_changes = Array[ExtResource("10_mfkye")]([SubResource("Resource_v0w4d"), SubResource("Resource_5fysa")])
+extra_actions = Array[ExtResource("1_ov6c8")]([SubResource("Resource_goydu")])
+
+[resource]
+script = ExtResource("6_ln5dd")
+slot = 3
+targeting = 2
+pierces_magic_immunity = true
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cast_range": PackedFloat32Array(700, 700, 700),
+&"cooldown": PackedFloat32Array(70, 60, 50),
+&"damage_per_buff": PackedFloat32Array(80, 120, 160),
+&"mana": PackedFloat32Array(150, 175, 200),
+&"slow": PackedFloat32Array(0.5, 0.6, 0.7),
+&"slow_duration": PackedFloat32Array(3, 3.5, 4)
+})
+on_cast = Array[ExtResource("1_ov6c8")]([SubResource("Resource_bngml"), SubResource("Resource_mnl6x")])
+talent = SubResource("Resource_hb0ao")
+bot_usages = Array[int]([0])
+bot_conditions = Array[StringName]([&"enemy_has_purgeable_buff", &"enemy_fleeing"])
+id = &"vexa_r"
+display_name = "Tước Phép"
+art_id = &"vexa_r"

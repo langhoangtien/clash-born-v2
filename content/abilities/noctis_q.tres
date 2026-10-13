@@ -1,0 +1,55 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_h8cb7"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="2_e56vj"]
+[ext_resource type="Script" path="res://sim/actions/dash_action.gd" id="3_dj2hs"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_aelf1"]
+[ext_resource type="Script" path="res://sim/defs/effect_patch_def.gd" id="5_wqbh8"]
+[ext_resource type="Resource" path="res://content/effects/noctis_hunt_window.tres" id="6_woqh8"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="7_3fd32"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="8_57mok"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="9_htnw1"]
+
+[sub_resource type="Resource" id="Resource_tv6ed"]
+script = ExtResource("2_e56vj")
+amount = "damage"
+
+[sub_resource type="Resource" id="Resource_c0fgm"]
+script = ExtResource("3_dj2hs")
+speed = "2000"
+on_arrive = Array[ExtResource("1_h8cb7")]([SubResource("Resource_tv6ed")])
+
+[sub_resource type="Resource" id="Resource_tey01"]
+script = ExtResource("7_3fd32")
+effect = ExtResource("6_woqh8")
+target = 0
+
+[sub_resource type="Resource" id="Resource_d4ahd"]
+script = ExtResource("9_htnw1")
+value_name = &"damage"
+amount = 100.0
+
+[sub_resource type="Resource" id="Resource_ktwi5"]
+script = ExtResource("8_57mok")
+id = &"noctis_q_ii"
+display_name = "Lưỡi Săn Mồi"
+description = "Sát thương +100; hạ gục trong 1.3 s sau khi tung thì hồi lại Q"
+value_changes = Array[ExtResource("9_htnw1")]([SubResource("Resource_d4ahd")])
+extra_actions = Array[ExtResource("1_h8cb7")]([SubResource("Resource_tey01")])
+
+[resource]
+script = ExtResource("4_aelf1")
+targeting = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cast_range": PackedFloat32Array(600, 600, 600, 600, 600),
+&"cooldown": PackedFloat32Array(12, 11, 10, 9, 8),
+&"damage": PackedFloat32Array(80, 120, 160, 200, 240),
+&"mana": PackedFloat32Array(70, 75, 80, 85, 90)
+})
+on_cast = Array[ExtResource("1_h8cb7")]([SubResource("Resource_c0fgm")])
+talent = SubResource("Resource_ktwi5")
+bot_usages = Array[int]([3])
+bot_conditions = Array[StringName]([&"target_hp_below_50", &"destination_safe"])
+id = &"noctis_q"
+display_name = "Lưỡi Bóng"
+art_id = &"noctis_q"

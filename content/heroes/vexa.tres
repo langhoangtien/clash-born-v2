@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="HeroDef" format=3]
+
+[ext_resource type="Resource" path="res://content/abilities/vexa_innate.tres" id="1_gc431"]
+[ext_resource type="Resource" path="res://content/abilities/vexa_q.tres" id="2_27uoh"]
+[ext_resource type="Resource" path="res://content/abilities/vexa_r.tres" id="3_e1sd6"]
+[ext_resource type="Script" path="res://sim/defs/hero_def.gd" id="4_d67yk"]
+[ext_resource type="Script" path="res://sim/defs/combat_stats_def.gd" id="5_ktj56"]
+[ext_resource type="Resource" path="res://content/abilities/vexa_w.tres" id="6_6td7s"]
+
+[sub_resource type="Resource" id="Resource_elelc"]
+script = ExtResource("5_ktj56")
+base_hp = 850.0
+base_mana = 360.0
+base_hp_regen = 4.0
+base_damage = 36.0
+physical_armor = 2.4
+base_attack_time = 2.0
+attack_point = 0.45
+attack_range = 550.0
+projectile_speed = 1100.0
+movement_speed = 290.0
+vision_range = 1200.0
+collision_radius = 32.0
+
+[resource]
+script = ExtResource("4_d67yk")
+primary_attribute = 3
+base_strength = 18.0
+base_agility = 16.0
+base_intelligence = 28.0
+strength_growth = 1.8
+agility_growth = 1.6
+intelligence_growth = 3.4
+stats = SubResource("Resource_elelc")
+innate = ExtResource("1_gc431")
+q = ExtResource("2_27uoh")
+w = ExtResource("6_6td7s")
+r = ExtResource("3_e1sd6")
+bot_skill_order = Array[int]([1, 0, 1, 0, 1, 2, 1, 0, 1, 0, 2, 0, 3, 3, 3, 2, 3, 3, 3, 3])
+bot_talent_priority = Array[int]([2, 3, 1])
+id = &"vexa"
+display_name = "Vexa · Phù Thủy"
+art_id = &"vexa"

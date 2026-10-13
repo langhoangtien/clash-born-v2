@@ -1,0 +1,69 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_jarcr"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="2_is2vb"]
+[ext_resource type="Resource" path="res://content/effects/silence.tres" id="3_hi4y2"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="4_36ydo"]
+[ext_resource type="Script" path="res://sim/actions/area_action.gd" id="5_mtj55"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="6_jvac1"]
+[ext_resource type="Script" path="res://sim/defs/effect_patch_def.gd" id="7_6umnn"]
+[ext_resource type="Script" path="res://sim/actions/zone_action.gd" id="8_66kyw"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="9_1q0vk"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="10_bypea"]
+
+[sub_resource type="Resource" id="Resource_ipjhn"]
+script = ExtResource("2_is2vb")
+damage_type = 1
+amount = "damage"
+
+[sub_resource type="Resource" id="Resource_fhbp6"]
+script = ExtResource("4_36ydo")
+effect = ExtResource("3_hi4y2")
+duration = "silence_duration"
+
+[sub_resource type="Resource" id="Resource_lqmds"]
+script = ExtResource("5_mtj55")
+radius = "radius"
+delay = "delay"
+actions = Array[ExtResource("1_jarcr")]([SubResource("Resource_ipjhn"), SubResource("Resource_fhbp6")])
+
+[sub_resource type="Resource" id="Resource_0r4jp"]
+script = ExtResource("2_is2vb")
+damage_type = 1
+amount = "60"
+
+[sub_resource type="Resource" id="Resource_ckapc"]
+script = ExtResource("8_66kyw")
+delay = "delay"
+radius = "radius"
+duration = "4"
+interval = "1"
+actions = Array[ExtResource("1_jarcr")]([SubResource("Resource_0r4jp")])
+
+[sub_resource type="Resource" id="Resource_1a6df"]
+script = ExtResource("9_1q0vk")
+id = &"myra_r_ii"
+display_name = "Hỏa Ngục"
+description = "Để lại vùng cháy 4 s, 60 sát thương phép mỗi giây"
+extra_actions = Array[ExtResource("1_jarcr")]([SubResource("Resource_ckapc")])
+
+[resource]
+script = ExtResource("6_jvac1")
+slot = 3
+targeting = 3
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cast_range": PackedFloat32Array(900, 900, 900),
+&"cooldown": PackedFloat32Array(80, 70, 60),
+&"damage": PackedFloat32Array(250, 375, 500),
+&"delay": PackedFloat32Array(1, 1, 1),
+&"mana": PackedFloat32Array(150, 200, 250),
+&"radius": PackedFloat32Array(400, 400, 400),
+&"silence_duration": PackedFloat32Array(2, 2.5, 3)
+})
+on_cast = Array[ExtResource("1_jarcr")]([SubResource("Resource_lqmds")])
+talent = SubResource("Resource_1a6df")
+bot_usages = Array[int]([2, 6])
+bot_conditions = Array[StringName]([&"enemy_hp_below_damage", &"two_enemies_in_area"])
+id = &"myra_r"
+display_name = "Mưa Sao Băng"
+art_id = &"myra_r"

@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_gndkg"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_c08ux"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_rbqlb"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_h1s1q"]
+[ext_resource type="Resource" path="res://content/effects/vexa_drain_debuff.tres" id="5_l1jd6"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="6_naji3"]
+[ext_resource type="Resource" path="res://content/effects/vexa_drain_buff.tres" id="7_d8snn"]
+
+[sub_resource type="Resource" id="Resource_brepf"]
+script = ExtResource("6_naji3")
+effect = ExtResource("5_l1jd6")
+duration = "duration"
+target = 3
+
+[sub_resource type="Resource" id="Resource_nvon0"]
+script = ExtResource("6_naji3")
+effect = ExtResource("7_d8snn")
+duration = "duration"
+target = 0
+
+[sub_resource type="Resource" id="Resource_gl28c"]
+script = ExtResource("4_h1s1q")
+event = &"attack_landed"
+condition = &"target_is_hero"
+actions = Array[ExtResource("2_c08ux")]([SubResource("Resource_brepf"), SubResource("Resource_nvon0")])
+
+[resource]
+script = ExtResource("3_rbqlb")
+duration = "0"
+tags = Array[StringName]([&"passive"])
+dispel = 2
+triggers = Array[ExtResource("4_h1s1q")]([SubResource("Resource_gl28c")])
+id = &"vexa_drain_passive"
+art_id = &"vexa_drain_passive"

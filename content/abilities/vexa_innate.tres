@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_1gkko"]
+[ext_resource type="Resource" path="res://content/effects/vexa_drain_passive.tres" id="2_oh1ij"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_4q7qm"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_q51xi"]
+
+[sub_resource type="Resource" id="Resource_wkkw0"]
+script = ExtResource("3_4q7qm")
+effect = ExtResource("2_oh1ij")
+target = 0
+
+[resource]
+script = ExtResource("4_q51xi")
+slot = 0
+targeting = 0
+values = Dictionary[StringName, PackedFloat32Array]({
+&"drain": PackedFloat32Array(1, 1, 2, 2, 3, 3),
+&"duration": PackedFloat32Array(20, 20, 25, 25, 30, 30)
+})
+on_learn = Array[ExtResource("1_1gkko")]([SubResource("Resource_wkkw0")])
+id = &"vexa_innate"
+display_name = "Hút Trí Tuệ"
+art_id = &"vexa_innate"

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_2tby0"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_wgvtt"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_8dnml"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_c04ri"]
+
+[resource]
+script = ExtResource("3_8dnml")
+tags = Array[StringName]([&"debuff"])
+dispel = 1
+states = Array[int]([0])
+id = &"stun"
+display_name = "Choáng"
+art_id = &"stun"

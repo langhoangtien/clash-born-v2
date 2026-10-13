@@ -1,0 +1,50 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_ohkvc"]
+[ext_resource type="Resource" path="res://content/effects/vexa_frog.tres" id="2_gxy6n"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_dek52"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_yoxtj"]
+[ext_resource type="Script" path="res://sim/defs/effect_patch_def.gd" id="5_i1tak"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="6_yo58a"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="7_hsgwf"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="8_ohm4r"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="9_fseej"]
+
+[sub_resource type="Resource" id="Resource_aq7w5"]
+script = ExtResource("3_dek52")
+effect = ExtResource("2_gxy6n")
+duration = "hex_duration"
+
+[sub_resource type="Resource" id="Resource_s82a2"]
+script = ExtResource("6_yo58a")
+stat = &"damage_taken_multiplier"
+value = "0.2"
+
+[sub_resource type="Resource" id="Resource_d2mhp"]
+script = ExtResource("5_i1tak")
+effect = ExtResource("2_gxy6n")
+add_modifiers = Array[ExtResource("6_yo58a")]([SubResource("Resource_s82a2")])
+
+[sub_resource type="Resource" id="Resource_njlwj"]
+script = ExtResource("8_ohm4r")
+id = &"vexa_q_ii"
+display_name = "Ếch Khốn Khổ"
+description = "Mục tiêu đang HEXED nhận thêm 20% sát thương"
+effect_patches = Array[ExtResource("5_i1tak")]([SubResource("Resource_d2mhp")])
+
+[resource]
+script = ExtResource("4_yoxtj")
+targeting = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cast_range": PackedFloat32Array(600, 600, 600, 600, 600),
+&"cooldown": PackedFloat32Array(20, 18, 16, 14, 12),
+&"hex_duration": PackedFloat32Array(1.5, 2, 2.5, 3, 3.5),
+&"mana": PackedFloat32Array(100, 110, 120, 130, 140)
+})
+on_cast = Array[ExtResource("1_ohkvc")]([SubResource("Resource_aq7w5")])
+talent = SubResource("Resource_njlwj")
+bot_usages = Array[int]([0])
+bot_conditions = Array[StringName]([&"enemy_hero_in_range", &"prefer_engaging_enemy"])
+id = &"vexa_q"
+display_name = "Hóa Ếch"
+art_id = &"vexa_q"

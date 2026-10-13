@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_nwiep"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_ug0sh"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_s7ley"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_lrcim"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="5_fss51"]
+[ext_resource type="Resource" path="res://content/effects/stun.tres" id="6_y4al2"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="7_5elmn"]
+
+[sub_resource type="Resource" id="Resource_difmp"]
+script = ExtResource("5_fss51")
+amount = "bonus_damage"
+target = 3
+
+[sub_resource type="Resource" id="Resource_edlt3"]
+script = ExtResource("7_5elmn")
+effect = ExtResource("6_y4al2")
+duration = "stun_duration"
+target = 3
+
+[sub_resource type="Resource" id="Resource_4u35s"]
+script = ExtResource("4_lrcim")
+event = &"attack_landed"
+chance = "chance"
+condition = &"target_not_structure"
+unique_group = &"bash"
+unique_priority = "chance"
+actions = Array[ExtResource("2_ug0sh")]([SubResource("Resource_difmp"), SubResource("Resource_edlt3")])
+
+[resource]
+script = ExtResource("3_s7ley")
+duration = "0"
+tags = Array[StringName]([&"passive"])
+dispel = 2
+triggers = Array[ExtResource("4_lrcim")]([SubResource("Resource_4u35s")])
+id = &"stun_hammer_passive"
+art_id = &"stun_hammer_passive"

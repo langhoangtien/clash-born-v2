@@ -30,6 +30,7 @@ func _check_hero(hero: HeroDef) -> void:
 		_fail(where, "thiếu stats")
 	elif hero.stats.base_attack_time <= 0.0:
 		_fail(where, "base_attack_time phải > 0")
+	_check_bot_order(hero, where)
 	var slots: Array[AbilityDef.Slot] = [AbilityDef.Slot.INNATE, AbilityDef.Slot.Q, AbilityDef.Slot.W, AbilityDef.Slot.R]
 	var abilities: Array[AbilityDef] = hero.abilities()
 	for i: int in range(4):
@@ -131,3 +132,28 @@ func _check_names(res: Resource, where: String) -> void:
 
 func _fail(where: String, message: String) -> void:
 	_errors.append("%s: %s" % [where, message])
+
+
+## BOT-14 + ABL-04: thứ tự nâng của bot phải hợp lệ ở từng cấp.
+func _check_bot_order(hero: HeroDef, where: String) -> void:
+	var ranks: Dictionary[HeroDef.Upgrade, int] = {HeroDef.Upgrade.Q: 0, HeroDef.Upgrade.W: 0, HeroDef.Upgrade.R: 0, HeroDef.Upgrade.ATTRIBUTES: 0}
+	var limits: Dictionary[HeroDef.Upgrade, int] = {HeroDef.Upgrade.Q: 5, HeroDef.Upgrade.W: 5, HeroDef.Upgrade.R: 3, HeroDef.Upgrade.ATTRIBUTES: 7}
+	const R_LEVELS: Array[int] = [6, 11, 16]
+	if hero.bot_skill_order.size() > 20:
+		_fail(where, "bot_skill_order dài hơn 20 cấp")
+	for i: int in range(hero.bot_skill_order.size()):
+		var level: int = i + 1
+		var up: HeroDef.Upgrade = hero.bot_skill_order[i]
+		var name: String = HeroDef.Upgrade.keys()[up]
+		ranks[up] += 1
+		var rank: int = ranks[up]
+		if rank > limits[up]:
+			_fail(where, "đổi thuộc tính quá 7 lần" if up == HeroDef.Upgrade.ATTRIBUTES else "%s quá cấp tối đa" % name)
+		elif up == HeroDef.Upgrade.R and level < R_LEVELS[rank - 1]:
+			_fail(where, "cấp %d nâng R lên %d (cần cấp %d)" % [level, rank, R_LEVELS[rank - 1]])
+		elif (up == HeroDef.Upgrade.Q or up == HeroDef.Upgrade.W) and level < 2 * rank - 1:
+			_fail(where, "cấp %d nâng %s lên %d (cần cấp %d)" % [level, name, rank, 2 * rank - 1])
+	var talents: Array[AbilityDef.Slot] = hero.bot_talent_priority.duplicate()
+	talents.sort()
+	if talents != [AbilityDef.Slot.Q, AbilityDef.Slot.W, AbilityDef.Slot.R]:
+		_fail(where, "bot_talent_priority phải gồm Q, W, R mỗi ô một lần")

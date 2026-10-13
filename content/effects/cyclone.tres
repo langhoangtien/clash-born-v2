@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_1utkq"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_d4wk1"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_3ttl1"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_ibwp7"]
+
+[resource]
+script = ExtResource("3_3ttl1")
+dispel = 2
+states = Array[int]([6, 9, 0])
+id = &"cyclone"
+display_name = "Lốc xoáy"
+art_id = &"cyclone"

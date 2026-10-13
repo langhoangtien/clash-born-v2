@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_uibdk"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_g7vd7"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="3_jwwin"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_r6efe"]
+
+[sub_resource type="Resource" id="Resource_n8hj2"]
+script = ExtResource("1_uibdk")
+stat = &"damage_taken_multiplier"
+value = "amplify"
+
+[resource]
+script = ExtResource("3_jwwin")
+tags = Array[StringName]([&"debuff"])
+states = Array[int]([5])
+modifiers = Array[ExtResource("1_uibdk")]([SubResource("Resource_n8hj2")])
+id = &"noctis_death_mark"
+display_name = "Dấu Tử Thần"
+art_id = &"noctis_death_mark"
