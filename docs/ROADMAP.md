@@ -36,8 +36,8 @@ Chưa có gameplay; dựng khung để mọi thứ sau đứng vững.
 | Việc | Xong khi |
 |---|---|
 | M1.1 World, Entity, StatBlock (modifier, nhóm duy nhất STAT-05, thuộc tính → chỉ số STAT-04), vòng tick theo ARCHITECTURE mục 4 (hệ thống rỗng) | Test: World chạy 1000 tick; chạy lại cùng seed + nhật ký Command → hash trạng thái trùng từng tick (D-30) |
-| M1.2 Command + Order + CommandSystem (MoveTo, Stop) | Test: Command MoveTo → đơn vị tới nơi, không xuyên vật cản |
-| M1.3 MovementSystem dùng MapNavigation, va chạm giữa đơn vị | Test INV-01 với 30 đơn vị đi ngẫu nhiên |
+| M1.2 Command + Order + CommandSystem (MoveTo, Stop), nhật ký lệnh + phát lại | Test CMD-01..05; phát lại nhật ký trùng trạng thái từng tick |
+| M1.3 MovementSystem dùng MapNavigation, va chạm giữa đơn vị | Test: MoveTo → đơn vị tới nơi, không xuyên vật cản (dời từ M1.2); INV-01 với 30 đơn vị đi ngẫu nhiên |
 | M1.4 View: vẽ map + đơn vị từ World, camera theo hero, ArtLibrary + hình tạm (A0) | Chạy được, nhìn thấy |
 | M1.5 Input → Command: joystick ảo + WASD + chạm để đi | **Chơi thử: điều khiển hero chạy quanh map trên PC** |
 
@@ -157,4 +157,5 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M0.6 | Xong | 2026-10-14 | 106 test xanh; 4 hero (16 kỹ năng, 12 talent), 9 món đồ, 30 hiệu ứng; luật bổ sung D-37, chỉnh thiết kế D-38; đồ chỉ số v1 để M8 |
 | **Hết M0** | | | |
 | M1.1 | Xong | 2026-10-14 | 131 test xanh (+25); StatBlock (STAT-02/04/05, CMB-11), World 12 pha, StateSystem, băm trạng thái; 1000 tick hai lần cùng seed trùng từng tick |
-| M1.2 | Chờ duyệt kế hoạch | | |
+| M1.2 | Xong | 2026-10-14 | 145 test xanh (+10); luật CMD-01..05; tiêu chí "đi tới nơi" dời sang M1.3 |
+| M1.3 | Chờ duyệt kế hoạch | | |

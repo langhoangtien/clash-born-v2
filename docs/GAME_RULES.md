@@ -411,6 +411,19 @@ Bảng ưu tiên (dòng trên thắng):
 - `CTL-03` Chạm/click vào địch: khóa mục tiêu đến khi nó chết, mất nhắm được, hoặc ra lệnh khác.
 - `CTL-04` Người chơi không bao giờ tự về nhà.
 
+## CMD — Lệnh (Command)
+
+Người chơi, bot và controller (lính, trụ, quái) đều điều khiển đơn vị bằng lệnh.
+- `CMD-01` Lệnh gửi trong tick N được áp ở pha COMMAND của tick N+1, theo đúng thứ tự gửi.
+- `CMD-02` Lệnh không hợp lệ bị bỏ, kèm lý do đọc được: `UNKNOWN_UNIT` (đơn vị không tồn
+  tại), `POINT_OUTSIDE_MAP` (điểm ngoài map hoặc không phải số hữu hạn). Thêm lý do khi
+  thêm loại lệnh.
+- `CMD-03` Lệnh hợp lệ thay lệnh hiện tại (Order) của đơn vị. `STOP` → đứng yên.
+- `CMD-04` Mọi lệnh đã áp được ghi vào nhật ký kèm tick; phát lại nhật ký trên World cùng
+  seed cho ra đúng trận đó (D-30).
+- `CMD-05` Loại lệnh hiện có: `MOVE_TO(điểm)`, `STOP`. Đánh, dùng chiêu, mua đồ thêm ở
+  mốc của chúng.
+
 ## BOT — Bot hero
 
 Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` để đánh giá an toàn.

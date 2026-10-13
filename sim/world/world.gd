@@ -9,16 +9,25 @@ enum Phase { COMMAND, EFFECT, STATE, VISION, CONTROLLER, MOVEMENT, ABILITY, ATTA
 var tick: int = 0
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var balance: BalanceSettings
+## Map của trận; null trong test không cần map.
+var map: MapLayout
 ## Luôn sắp theo id tăng dần.
 var entities: Array[Entity] = []
 
+## Lệnh đã áp, theo thứ tự (CMD-04). Đủ để phát lại trận (D-30).
+var command_log: Array[Command] = []
+## Lệnh bị từ chối ở tick vừa chạy, kèm lý do (CMD-02).
+var rejected_commands: Array[Command] = []
+
 var _next_id: int = 1
+var _pending: Array[Command] = []
 var _systems: Array[Array] = []  # [phase, thứ tự đăng ký, SimSystem]
 
 
 func _init(seed_value: int, p_balance: BalanceSettings) -> void:
 	rng.seed = seed_value
 	balance = p_balance
+	add_system(CommandSystem.new(), Phase.COMMAND)
 	add_system(StateSystem.new(), Phase.STATE)
 
 
@@ -39,6 +48,33 @@ func add_entity(e: Entity) -> Entity:
 	return e
 
 
+## Gửi lệnh; áp ở pha COMMAND của tick kế tiếp (CMD-01).
+func submit(command: Command) -> void:
+	_pending.append(command)
+
+
+func take_pending_commands() -> Array[Command]:
+	var out: Array[Command] = _pending
+	_pending = []
+	return out
+
+
+## Tìm theo id (danh sách sắp theo id nên tìm nhị phân).
+func find_entity(entity_id: int) -> Entity:
+	var lo: int = 0
+	var hi: int = entities.size() - 1
+	while lo <= hi:
+		var mid: int = (lo + hi) / 2
+		var e: Entity = entities[mid]
+		if e.id == entity_id:
+			return e
+		if e.id < entity_id:
+			lo = mid + 1
+		else:
+			hi = mid - 1
+	return null
+
+
 func remove_entity(e: Entity) -> void:
 	entities.erase(e)
 
@@ -55,8 +91,9 @@ func state_hash() -> PackedByteArray:
 	ctx.start(HashingContext.HASH_SHA256)
 	ctx.update(PackedInt64Array([tick, rng.seed, rng.state, entities.size()]).to_byte_array())
 	for e: Entity in entities:
-		ctx.update(PackedInt64Array([e.id, e.team, e.kind]).to_byte_array())
-		ctx.update(PackedFloat64Array([e.position.x, e.position.y, e.radius, e.health, e.mana]).to_byte_array())
+		ctx.update(PackedInt64Array([e.id, e.team, e.kind, e.order.type]).to_byte_array())
+		ctx.update(PackedFloat64Array([e.position.x, e.position.y, e.radius, e.health, e.mana,
+			e.order.point.x, e.order.point.y]).to_byte_array())
 		if e.stats != null:
 			ctx.update(e.stats.values().to_byte_array())
 	return ctx.finish()

@@ -14,3 +14,5 @@ var radius: float = 0.0
 var stats: StatBlock
 var health: float = 0.0
 var mana: float = 0.0
+## Lệnh hiện tại (CMD-03); chỉ CommandSystem đặt.
+var order: Order = Order.idle()

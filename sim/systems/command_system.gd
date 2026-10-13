@@ -1,0 +1,32 @@
+class_name CommandSystem
+extends SimSystem
+## Pha 1: áp lệnh đang chờ theo thứ tự gửi (CMD-01), từ chối lệnh không hợp lệ kèm lý
+## do (CMD-02), lệnh mới thay lệnh cũ (CMD-03), ghi nhật ký (CMD-04).
+
+
+func run(world: World) -> void:
+	world.rejected_commands.clear()
+	for command: Command in world.take_pending_commands():
+		command.tick = world.tick
+		var unit: Entity = world.find_entity(command.entity_id)
+		command.reject_reason = _check(world, command, unit)
+		if command.reject_reason != Command.Reject.NONE:
+			world.rejected_commands.append(command)
+			continue
+		match command.type:
+			Command.Type.MOVE_TO:
+				unit.order = Order.move(command.point)
+			Command.Type.STOP:
+				unit.order = Order.idle()
+		world.command_log.append(command)
+
+
+func _check(world: World, command: Command, unit: Entity) -> Command.Reject:
+	if unit == null:
+		return Command.Reject.UNKNOWN_UNIT
+	if command.type == Command.Type.MOVE_TO:
+		if not command.point.is_finite():
+			return Command.Reject.POINT_OUTSIDE_MAP
+		if world.map != null and not world.map.world_rect().has_point(command.point):
+			return Command.Reject.POINT_OUTSIDE_MAP
+	return Command.Reject.NONE

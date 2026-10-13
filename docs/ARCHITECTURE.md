@@ -58,7 +58,7 @@ clashborn_v2/
     content/               ContentLibrary (nạp content/), ContentValidator, RuleCatalog, ExprRules
     actions/               hành động dùng chung cho kỹ năng/hiệu ứng (mỗi loại một khuôn)
     controllers/           AI: lính, trụ, quái rừng, bot — chỉ sinh Command
-    commands/              định nghĩa Command và kiểm tra hợp lệ
+    commands/              Command, Order, CommandReplay (phát lại nhật ký); kiểm tra ở CommandSystem
     map/                   MapLayout, MapNavigation, MapValidator, MapShape (mang từ v1)
   view/                    vẽ đơn vị, map, hiệu ứng, HUD, điều khiển cảm ứng;
                            ArtLibrary: tra hình theo id, thiếu thì hình tạm (ART.md)
