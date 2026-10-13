@@ -62,6 +62,8 @@ test bằng tình huống thật:
 | Bị động: cộng chỉ số thẳng (vd +% sát thương gốc) | (modifier thường — xem ghi chú) | mọi món đồ |
 | Giả ngẫu nhiên PRD (RNG-01) | Brakk, Noctis nội tại | Búa Choáng |
 
+Ghi chú: % tăng/giảm (MULTIPLY) của nhiều nguồn cộng với nhau (STAT-02, D-40).
+
 Ghi chú: bị động kiểu "+10/15/20/25/30/35% sát thương gốc" chỉ là một modifier
 vĩnh viễn, cơ chế đã có sẵn nhờ trang bị, nên không cần hero riêng để kiểm chứng.
 Có thể làm nội tại cho hero thứ 5 hoặc talent về sau mà không cần code.

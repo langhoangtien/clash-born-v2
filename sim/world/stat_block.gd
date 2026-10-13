@@ -1,7 +1,7 @@
 class_name StatBlock
 extends RefCounted
 ## Cách DUY NHẤT để có chỉ số cuối (STAT-02, STAT-03). Gộp: gốc → (thuộc tính, STAT-04)
-## → ADD → MULTIPLY → OVERRIDE (cái thêm sau cùng) → giới hạn. Nhóm duy nhất: STAT-05.
+## → ADD → MULTIPLY (phần trăm cộng nhau, D-40) → OVERRIDE (cái thêm sau cùng) → giới hạn. Nhóm duy nhất: STAT-05.
 ## Né và chính xác gộp nhân dồn (CMB-11).
 
 const S = StatId.Id
@@ -110,7 +110,7 @@ func _combine(stat: int, base: float, active: Array[StatModifier]) -> float:
 			ModifierDef.Op.ADD:
 				adds.append(m.value)
 			ModifierDef.Op.MULTIPLY:
-				factor *= m.value
+				factor += m.value - 1.0  # D-40: phần trăm cộng với nhau
 			ModifierDef.Op.OVERRIDE:
 				override_value = m.value
 	var value: float = base
@@ -120,7 +120,7 @@ func _combine(stat: int, base: float, active: Array[StatModifier]) -> float:
 	else:
 		for a: float in adds:
 			value += a
-	value *= factor
+	value *= maxf(0.0, factor)
 	return value if is_nan(override_value) else override_value
 
 

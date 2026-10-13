@@ -60,8 +60,10 @@ damage_taken_multiplier`.
 `damage_taken_multiplier` (mặc định 1.0) nhân vào sát thương cuối cùng mà đơn vị
 nhận, sau giáp (CMB-02).
 
-`STAT-02` Chỉ số cuối = base (hero + tăng cấp) → cộng mọi ADD → nhân mọi MULTIPLY
-→ OVERRIDE (nếu nhiều, lấy cái áp sau cùng theo id hiệu ứng) → giới hạn. Công thức
+`STAT-02` Chỉ số cuối = base (hero + tăng cấp) → cộng mọi ADD → nhân với hệ số
+MULTIPLY → OVERRIDE (nếu nhiều, lấy cái áp sau cùng theo id hiệu ứng) → giới hạn.
+Các MULTIPLY **cộng phần trăm với nhau** rồi mới nhân (kiểu Dota): hệ số = 1 + Σ(mᵢ − 1),
+không dưới 0. Ví dụ tăng tốc +20% (1.2) và chậm 30% (0.7) → ×0.9 (D-40). Công thức
 thuộc tính → máu/giáp/tốc đánh lấy từ v1 (`StatCalculator`).
 
 `STAT-03` Không gì được đổi chỉ số ngoài Modifier (ARCHITECTURE 3.2).
@@ -290,10 +292,10 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 - `EFF-02` Hai hiệu ứng cùng id từ hai nguồn khác nhau là hai bản riêng, trừ khi id
   có tag `unique` (chỉ giữ bản mạnh nhất). Tag có nghĩa trong luật: `debuff`, `buff`,
   `passive`, `unique`, `dispellable`; thêm tag = thay đổi luật.
-- `EFF-03` Làm chậm từ **các nguồn khác nhau cộng dồn** theo kiểu nhân: chậm 30% và
-  chậm 50% → còn 0.7 × 0.5 = 35% tốc chạy (chậm 65%). Hai món đồ giống nhau chỉ tính
-  một lần (ITM-04); cùng một hiệu ứng áp lại thì làm mới (EFF-01). Giảm giáp: cộng dồn
-  (D-39).
+- `EFF-03` Làm chậm từ **các nguồn khác nhau cộng dồn** theo kiểu cộng (STAT-02): chậm
+  30% và chậm 50% → chậm 80%; tổng từ 100% trở lên thì đứng yên. Hai món đồ giống nhau
+  chỉ tính một lần (ITM-04); cùng một hiệu ứng áp lại thì làm mới (EFF-01). Giảm giáp:
+  cộng dồn (D-39, D-40).
 - `EFF-04` Trigger lồng nhau tối đa 4 tầng.
 - `EFF-05` `removed_by` chỉ tính sự kiện xảy ra **sau** khi hiệu ứng được áp (dùng chiêu
   tàng hình không tự làm mất tàng hình), và chỉ sự kiện mà **chủ hiệu ứng là kẻ gây

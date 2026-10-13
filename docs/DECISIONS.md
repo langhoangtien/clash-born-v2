@@ -39,6 +39,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-37 | 2026-10-14 | Bổ sung luật khi nhập 4 hero: vùng chữ nhật theo hướng (ABL-13); cờ của hành động là giá trị có tên (ABL-14); `removed_by` chỉ tính sự kiện do chủ hiệu ứng gây ra, trigger chạy trước khi xóa (EFF-05); điều kiện `this_effect_depleted`, `this_effect_ended` (EFF-08); tên gốc chọn bản `_melee`/`_ranged` (ITM-05) | Vexa W, Myra Q II, Noctis W, Brakk W II / R II, Ngọc Băng Sương và Búa Choáng cần; không thêm hệ thống mới |
 | D-38 | 2026-10-14 | Chỉnh thiết kế để khỏi thêm cơ chế: Noctis Q II hồi Q khi Noctis hạ gục bất kỳ ai trong cửa sổ sau Q; Vexa R II đặt làm chậm = 0 và thêm trói 2 s; Búa Choáng dùng thời gian chờ bash chung (CMB-08) | Kết quả trong 1v1 như thiết kế cũ; xác suất và % lưu dạng phân số (0.15 = 15%) trong dữ liệu |
 | D-39 | 2026-10-14 | Làm chậm khác nguồn cộng dồn (nhân), thay EFF-03 cũ; bỏ nhóm `slow`. Tốc chạy tối thiểu 0. Máu/giáp cấp 1 theo khung: STR 500–700 / 1–5, AGI 400–600 / 2–7, INT 400–600 / 1–4; mỗi Trí tuệ cho giáp phép như Nhanh nhẹn cho giáp | Theo yêu cầu; hai món giống nhau vẫn chỉ tính một lần (ITM-04) |
+| D-40 | 2026-10-14 | Modifier MULTIPLY cộng phần trăm với nhau: hệ số = 1 + Σ(mᵢ − 1), không dưới 0. Chậm 30% + 50% = chậm 80% | Theo yêu cầu; giống Dota; tăng tốc và làm chậm bù trừ nhau dễ hiểu |
 
 ## Chờ chốt
 
