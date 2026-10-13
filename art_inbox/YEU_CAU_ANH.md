@@ -68,14 +68,14 @@ trong các đợt sau phải **cùng thiết kế** với ảnh neo này (cùng 
 
 ---
 
-## Đợt 1 — Môi trường (map) — ✅ ĐÃ DUYỆT 2026-10-14, trừ 3 ảnh làm lại
+## Đợt 1 — Môi trường (map) — ✅ ĐÃ DUYỆT 2026-10-14 (kể cả 3 ảnh làm lại)
 
 **Làm lại** (lý do: bản đỏ khác hình dáng bản xanh). Đính kèm bản xanh tương ứng làm
 tham chiếu, chỉ đổi màu phe sang đỏ, giữ nguyên mọi thứ khác:
 
-- [ ] `01_env/tower_red.png` — phải cùng hình dáng `tower_blue.png` (tháp vuông, lỗ châu mai, cờ treo trước, pha lê trên đỉnh), chỉ đổi pha lê, cờ, viền sang đỏ.
-- [ ] `01_env/tower_red_destroyed.png` — cùng hình dáng `tower_blue_destroyed.png`, chỉ đổi màu.
-- [ ] `01_env/guard_red.png` — cùng hình dáng `guard_blue.png` (ba ngọn tháp pha lê), chỉ đổi màu.
+- [x] `01_env/tower_red.png` — phải cùng hình dáng `tower_blue.png` (tháp vuông, lỗ châu mai, cờ treo trước, pha lê trên đỉnh), chỉ đổi pha lê, cờ, viền sang đỏ.
+- [x] `01_env/tower_red_destroyed.png` — cùng hình dáng `tower_blue_destroyed.png`, chỉ đổi màu.
+- [x] `01_env/guard_red.png` — cùng hình dáng `guard_blue.png` (ba ngọn tháp pha lê), chỉ đổi màu.
 
 Còn lại đạt: ô nền ghép liền không lộ đường nối (đã đo), cây, đá, cầu, bậc thang,
 nhà chính, fountain, cờ dùng được.
@@ -137,21 +137,24 @@ nhà chính, fountain, cờ dùng được.
 
 ---
 
-## Đợt 2 — Lính và quái rừng (nền trong suốt, quay sang phải)
+## Đợt 2 — Lính và quái rừng (nền trong suốt, quay sang phải) — ✅ ĐÃ DUYỆT 2026-10-14
+
+Ghi chú duyệt: vài ảnh cách mép dưới 8% nhưng không bị cắt; công cụ nhập ảnh sẽ tự
+căn lề, không cần làm lại. Đợt sau vẫn giữ lề 8%.
 
 | Xong | File | Kích thước | Mô tả |
 |---|---|---|---|
-| [ ] | `02_units/creep_melee_blue.png` | 256 × 256 | Exactly the blue minion from style_sheet.png: chibi knight, closed helmet with blue plume, blue scarf and tabard, short sword |
-| [ ] | `02_units/creep_melee_red.png` | 256 × 256 | Exactly the red minion from style_sheet.png (same knight, red plume, scarf and tabard) |
-| [ ] | `02_units/creep_ranged_blue.png` | 256 × 256 | Chibi archer in the same armor style as the minions: open helmet with blue plume, blue scarf, leather vest, short bow |
-| [ ] | `02_units/creep_ranged_red.png` | 256 × 256 | Same archer with red plume and scarf |
-| [ ] | `02_units/creep_siege_blue.png` | 384 × 384 | Small wooden catapult on wheels with blue cloth |
-| [ ] | `02_units/creep_siege_red.png` | 384 × 384 | Same catapult with red cloth |
-| [ ] | `02_units/neutral_small.png` | 256 × 256 | Forest wolf pup, grey-brown |
-| [ ] | `02_units/neutral_medium.png` | 384 × 384 | Mossy forest golem, small |
-| [ ] | `02_units/neutral_large.png` | 512 × 512 | Big horned forest beast |
-| [ ] | `02_units/neutral_boss.png` | 768 × 768 | Ancient stone-and-vine guardian, huge, glowing green eyes |
-| [ ] | `02_units/hex_frog.png` | 256 × 256 | Cute green frog (the form a hexed hero turns into) |
+| [x] | `02_units/creep_melee_blue.png` | 256 × 256 | Exactly the blue minion from style_sheet.png: chibi knight, closed helmet with blue plume, blue scarf and tabard, short sword |
+| [x] | `02_units/creep_melee_red.png` | 256 × 256 | Exactly the red minion from style_sheet.png (same knight, red plume, scarf and tabard) |
+| [x] | `02_units/creep_ranged_blue.png` | 256 × 256 | Chibi archer in the same armor style as the minions: open helmet with blue plume, blue scarf, leather vest, short bow |
+| [x] | `02_units/creep_ranged_red.png` | 256 × 256 | Same archer with red plume and scarf |
+| [x] | `02_units/creep_siege_blue.png` | 384 × 384 | Small wooden catapult on wheels with blue cloth |
+| [x] | `02_units/creep_siege_red.png` | 384 × 384 | Same catapult with red cloth |
+| [x] | `02_units/neutral_small.png` | 256 × 256 | Forest wolf pup, grey-brown |
+| [x] | `02_units/neutral_medium.png` | 384 × 384 | Mossy forest golem, small |
+| [x] | `02_units/neutral_large.png` | 512 × 512 | Big horned forest beast |
+| [x] | `02_units/neutral_boss.png` | 768 × 768 | Ancient stone-and-vine guardian, huge, glowing green eyes |
+| [x] | `02_units/hex_frog.png` | 256 × 256 | Cute green frog (the form a hexed hero turns into) |
 
 ---
 
@@ -177,7 +180,7 @@ Mỗi hero 3 ảnh (thay `<id>` bằng id ở trên):
 
 Danh sách đánh dấu:
 
-- [ ] brakk_sheet  - [ ] brakk_body  - [ ] brakk_portrait
+- [x] brakk_sheet  - [ ] brakk_body  - [ ] brakk_portrait
 - [ ] myra_sheet  - [ ] myra_body  - [ ] myra_portrait
 - [ ] noctis_sheet  - [ ] noctis_body  - [ ] noctis_portrait
 - [ ] vexa_sheet  - [ ] vexa_body  - [ ] vexa_portrait
