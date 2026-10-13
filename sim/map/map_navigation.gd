@@ -5,9 +5,8 @@ extends RefCounted
 ## chạm thân trụ. Đường từ AStarGrid2D rồi kéo thẳng bằng kiểm tra tầm đi, nên đơn vị
 ## đi đường thẳng thay vì zig-zag theo ô. Mỗi bán kính một instance. Xác định (D-30).
 
-## Hằng số kỹ thuật: biên an toàn khi đánh dấu ô, bước lấy mẫu khi kiểm tra đường thẳng.
+## Hằng số kỹ thuật: biên an toàn khi đánh dấu ô, số vòng ô tìm ô bắt đầu.
 const SAFETY_MARGIN: float = 4.0
-const LINE_STEP: float = 12.0
 const START_SEARCH_RINGS: int = 3
 
 var layout: MapLayout
@@ -35,12 +34,22 @@ func _init(map: MapLayout, radius: float, tower_radius: float) -> void:
 	_mark_towers()
 
 
+## Ô đi được khi MỌI pixel khoảng trống trong ô đủ rộng, nên mọi điểm trong ô đều đứng
+## được và đi giữa hai ô kề nhau không bao giờ cắt vật cản (MOV-05).
 func _mark_terrain(cells: Vector2i) -> void:
-	var needed: float = agent_radius + SAFETY_MARGIN
+	var per_cell: int = maxi(1, roundi(cell_size / layout.clearance_pixel))
 	for y: int in range(cells.y):
 		for x: int in range(cells.x):
-			if layout.clearance_at(_center(Vector2i(x, y))) < needed:
+			if _cell_min_clearance(Vector2i(x, y), per_cell) < agent_radius:
 				grid.set_point_solid(Vector2i(x, y), true)
+
+
+func _cell_min_clearance(cell: Vector2i, per_cell: int) -> float:
+	var lowest: float = INF
+	for py: int in range(per_cell):
+		for px: int in range(per_cell):
+			lowest = minf(lowest, _pixel_clearance(cell * per_cell + Vector2i(px, py)))
+	return lowest
 
 
 ## Thân trụ là vật cản cố định khi lập đường.
@@ -72,12 +81,49 @@ func nearest_clear(point: Vector2, max_distance: float = 1600.0) -> Vector2:
 
 
 ## Đi thẳng từ a tới b không chạm địa hình và trụ.
+## Kiểm tra chính xác: mọi pixel của trường khoảng trống mà đoạn thẳng đi qua (duyệt
+## theo lưới, không lấy mẫu) và khoảng cách từ đoạn tới mọi thân trụ.
 func has_line_of_walk(a: Vector2, b: Vector2) -> bool:
-	var steps: int = maxi(1, ceili(a.distance_to(b) / LINE_STEP))
-	for i: int in range(1, steps + 1):
-		if not point_is_clear(a.lerp(b, float(i) / steps)):
+	if not a.is_finite() or not b.is_finite():
+		return false
+	for tower: Vector2 in layout.tower_points:
+		if Geometry2D.get_closest_point_to_segment(tower, a, b).distance_to(tower) < tower_body_radius + agent_radius:
 			return false
+	return _terrain_clear_along(a, b)
+
+
+func _terrain_clear_along(a: Vector2, b: Vector2) -> bool:
+	var size: float = layout.clearance_pixel
+	var pa: Vector2 = a / size
+	var pb: Vector2 = b / size
+	var cell: Vector2i = Vector2i(floori(pa.x), floori(pa.y))
+	var last: Vector2i = Vector2i(floori(pb.x), floori(pb.y))
+	var d: Vector2 = pb - pa
+	var step: Vector2i = Vector2i(signi(int(signf(d.x))), signi(int(signf(d.y))))
+	var t_delta: Vector2 = Vector2(absf(1.0 / d.x) if d.x != 0.0 else INF, absf(1.0 / d.y) if d.y != 0.0 else INF)
+	var t_max: Vector2 = Vector2(
+		((cell.x + 1 - pa.x) if step.x > 0 else (pa.x - cell.x)) * t_delta.x if d.x != 0.0 else INF,
+		((cell.y + 1 - pa.y) if step.y > 0 else (pa.y - cell.y)) * t_delta.y if d.y != 0.0 else INF)
+	var guard: int = absi(last.x - cell.x) + absi(last.y - cell.y) + 2
+	while guard > 0:
+		if _pixel_clearance(cell) < agent_radius:
+			return false
+		if cell == last:
+			return true
+		if t_max.x < t_max.y:
+			cell.x += step.x
+			t_max.x += t_delta.x
+		else:
+			cell.y += step.y
+			t_max.y += t_delta.y
+		guard -= 1
 	return true
+
+
+func _pixel_clearance(pixel: Vector2i) -> float:
+	if pixel.x < 0 or pixel.y < 0 or pixel.x >= layout.clearance_size.x or pixel.y >= layout.clearance_size.y:
+		return 0.0
+	return float(layout.clearance_bytes[pixel.y * layout.clearance_size.x + pixel.x]) * layout.clearance_unit
 
 
 ## Đường từ `from` tới `to`; rỗng khi `to` không đứng được hoặc không tới được.
@@ -95,9 +141,13 @@ func path(from: Vector2, to: Vector2) -> PackedVector2Array:
 	if cells.is_empty():
 		return PackedVector2Array()
 	var raw: PackedVector2Array = PackedVector2Array([from])
-	for i: int in range(1, cells.size()):
+	# Đoạn đầu/cuối nối điểm thật với lưới: không đi thẳng được thì đi qua tâm ô.
+	var first: int = 1 if cells.size() > 1 and has_line_of_walk(from, cells[1]) else 0
+	for i: int in range(first, cells.size()):
 		raw.append(cells[i])
 	if raw[-1].distance_to(to) > 0.001:
+		if not has_line_of_walk(raw[-1], to):
+			return PackedVector2Array()  # điểm đến chỉ tới được bằng cách cắt góc
 		raw.append(to)
 	return _smooth(raw)
 

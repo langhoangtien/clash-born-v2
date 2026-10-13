@@ -413,6 +413,21 @@ Bảng ưu tiên (dòng trên thắng):
 - `CTL-03` Chạm/click vào địch: khóa mục tiêu đến khi nó chết, mất nhắm được, hoặc ra lệnh khác.
 - `CTL-04` Người chơi không bao giờ tự về nhà.
 
+## MOV — Di chuyển
+
+- `MOV-01` Đơn vị có lệnh MOVE đi theo đường ngắn nhất né rừng, vách và thân trụ
+  (MapNavigation, MAP-01), mỗi giây đi `movement_speed` đơn vị.
+- `MOV-02` Điểm đến không đứng được → đi tới điểm đứng được gần nhất (tìm trong 1600);
+  không có điểm nào → lệnh xong ngay, đứng yên.
+- `MOV-03` Tới điểm đến → lệnh xong, đứng yên. Đổi lệnh → tìm đường lại.
+- `MOV-04` Đẩy nhau (D-41): hai đơn vị chồng lên nhau (khoảng cách tâm < tổng bán kính)
+  bị đẩy tách theo đường nối tâm, mỗi bên một nửa phần chồng, mỗi tick tối đa
+  `separation_speed` × thời gian tick. Bên nào bị vật cản chặn thì bên kia nhận hết.
+  Đơn vị đứng yên cũng bị đẩy (hero len qua được đám lính). Xét từng cặp theo id tăng
+  dần. Công trình không bao giờ bị đẩy. Bị đẩy lệch khỏi đường mà không còn đi thẳng
+  tới điểm kế tiếp được thì tìm đường lại.
+- `MOV-05` Không bao giờ đi hoặc bị đẩy vào vật cản (INV-01).
+
 ## CMD — Lệnh (Command)
 
 Người chơi, bot và controller (lính, trụ, quái) đều điều khiển đơn vị bằng lệnh.
@@ -456,7 +471,9 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 
 - `MAP-01` Hình vẽ, va chạm, tìm đường dùng chung polygon từ `tools/map_build`. Va chạm
   và tìm đường đọc trường khoảng trống (clearance) dựng từ chính các polygon đó; không
-  dùng vật lý Godot. Thân trụ chặn đứng/đi với bán kính `tower_body_radius`.
+  dùng vật lý Godot. Thân trụ chặn đứng/đi với bán kính `tower_body_radius`. Ô lưới tìm
+  đường chỉ đi được khi mọi pixel khoảng trống trong ô đủ rộng; kiểm tra đường thẳng duyệt
+  từng pixel mà đoạn đi qua (không lấy mẫu), nên đường đi không bao giờ cắt góc vật cản.
 - `MAP-02` Map 8448 × 8448; Blue dưới–trái, Red trên–phải; 3 lane; sông; vách đá chỉ
   qua ở dốc; 11 trụ mỗi đội; 13 trại thường + 1 boss pit.
 
@@ -499,7 +516,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | hex_move_speed | 140 | | bash_cooldown | 1.5 s |
 | reincarnate_delay | 3 s | | match_target_minutes | 15–20 (D-29) |
 | evasion_cap | 1.0 (không giới hạn) | | tower_body_radius | 52 |
-| minimum_movement_speed | 0 (bị chậm hết thì đứng yên) | | | |
+| minimum_movement_speed | 0 (bị chậm hết thì đứng yên) | | separation_speed | 400 / s |
 
 Mục tiêu đo được: trung vị thời lượng trận bot đấu bot nằm trong `match_target_minutes`,
 hero đạt cấp 20 trong khoảng phút 14–17. Lệch thì chỉnh số trong bảng này, không sửa luật.

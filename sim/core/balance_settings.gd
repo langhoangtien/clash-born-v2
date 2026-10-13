@@ -30,6 +30,12 @@ extends Resource
 @export var status_resistance_cap: float
 @export var minimum_movement_speed: float
 
+@export_group("Di chuyển (MOV)")
+## MOV-04: tốc độ tối đa một đơn vị bị đẩy ra khi chồng lên đơn vị khác.
+@export var separation_speed: float
+## MAP-01: bán kính thân trụ chặn đứng/đi.
+@export var tower_body_radius: float
+
 
 func validation_errors() -> PackedStringArray:
 	var errors: PackedStringArray = PackedStringArray()
@@ -45,6 +51,8 @@ func validation_errors() -> PackedStringArray:
 		errors.append("evasion_cap trong [0, 1]")
 	if status_resistance_cap < 0.0 or status_resistance_cap > 1.0:
 		errors.append("status_resistance_cap trong [0, 1]")
+	if separation_speed <= 0.0 or tower_body_radius <= 0.0:
+		errors.append("separation_speed và tower_body_radius phải > 0")
 	if hp_per_strength <= 0.0 or mana_per_intelligence < 0.0 or minimum_movement_speed < 0.0:
 		errors.append("hệ số thuộc tính / tốc chạy không hợp lệ")
 	return errors

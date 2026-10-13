@@ -21,4 +21,6 @@ static func make() -> BalanceSettings:
 	b.evasion_cap = 1.0
 	b.status_resistance_cap = 0.6
 	b.minimum_movement_speed = 100.0
+	b.separation_speed = 400.0
+	b.tower_body_radius = 52.0
 	return b

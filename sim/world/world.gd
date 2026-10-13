@@ -19,6 +19,9 @@ var command_log: Array[Command] = []
 ## Lệnh bị từ chối ở tick vừa chạy, kèm lý do (CMD-02).
 var rejected_commands: Array[Command] = []
 
+## Lưới tìm đường dựng sẵn, dùng chung giữa các World cùng map (dựng mất ~1 s).
+static var _nav_cache: Dictionary[String, MapNavigation] = {}
+
 var _next_id: int = 1
 var _pending: Array[Command] = []
 var _systems: Array[Array] = []  # [phase, thứ tự đăng ký, SimSystem]
@@ -46,6 +49,14 @@ func add_entity(e: Entity) -> Entity:
 		e.mana = e.stats.get_stat(StatId.Id.MAX_MANA)
 	entities.append(e)
 	return e
+
+
+## Tìm đường cho đơn vị bán kính `radius` trên map của trận (MAP-01).
+func navigation(radius: float) -> MapNavigation:
+	var key: String = "%d:%s:%s" % [map.get_instance_id(), radius, balance.tower_body_radius]
+	if not _nav_cache.has(key):
+		_nav_cache[key] = MapNavigation.new(map, radius, balance.tower_body_radius)
+	return _nav_cache[key]
 
 
 ## Gửi lệnh; áp ở pha COMMAND của tick kế tiếp (CMD-01).
@@ -91,7 +102,7 @@ func state_hash() -> PackedByteArray:
 	ctx.start(HashingContext.HASH_SHA256)
 	ctx.update(PackedInt64Array([tick, rng.seed, rng.state, entities.size()]).to_byte_array())
 	for e: Entity in entities:
-		ctx.update(PackedInt64Array([e.id, e.team, e.kind, e.order.type]).to_byte_array())
+		ctx.update(PackedInt64Array([e.id, e.team, e.kind, e.order.type, int(e.order.finished)]).to_byte_array())
 		ctx.update(PackedFloat64Array([e.position.x, e.position.y, e.radius, e.health, e.mana,
 			e.order.point.x, e.order.point.y]).to_byte_array())
 		if e.stats != null:

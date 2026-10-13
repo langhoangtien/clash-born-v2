@@ -6,6 +6,8 @@ enum Type { IDLE, MOVE }
 
 var type: Type = Type.IDLE
 var point: Vector2 = Vector2.ZERO
+## Hệ thống thực hiện lệnh đánh dấu xong (MOV-03); lệnh vẫn còn đến khi có lệnh mới.
+var finished: bool = false
 
 
 static func idle() -> Order:

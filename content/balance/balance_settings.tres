@@ -20,3 +20,5 @@ minimum_attack_interval = 0.1
 evasion_cap = 1.0
 status_resistance_cap = 0.6
 minimum_movement_speed = 0.0
+separation_speed = 400.0
+tower_body_radius = 52.0

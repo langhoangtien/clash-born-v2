@@ -158,4 +158,5 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | **Hết M0** | | | |
 | M1.1 | Xong | 2026-10-14 | 131 test xanh (+25); StatBlock (STAT-02/04/05, CMB-11), World 12 pha, StateSystem, băm trạng thái; 1000 tick hai lần cùng seed trùng từng tick |
 | M1.2 | Xong | 2026-10-14 | 145 test xanh (+10); luật CMD-01..05; tiêu chí "đi tới nơi" dời sang M1.3 |
-| M1.3 | Chờ duyệt kế hoạch | | |
+| M1.3 | Xong | 2026-10-14 | 155 test xanh (+9); luật MOV-01..05, đẩy nhau D-41; 30 đơn vị đi ngẫu nhiên 60 s không vào vật cản, không bị kẹt; sửa tìm đường để không cắt góc |
+| M1.4 | Chờ duyệt kế hoạch | | |

@@ -16,3 +16,9 @@ var health: float = 0.0
 var mana: float = 0.0
 ## Lệnh hiện tại (CMD-03); chỉ CommandSystem đặt.
 var order: Order = Order.idle()
+## Đường đang đi (chỉ MovementSystem ghi). `path_for` = lệnh mà đường này phục vụ.
+var path: PackedVector2Array = PackedVector2Array()
+var path_index: int = 0
+var path_for: Order
+## Bị đẩy lệch (MOV-04): tick sau kiểm tra còn đi thẳng tới điểm kế tiếp được không.
+var path_dirty: bool = false
