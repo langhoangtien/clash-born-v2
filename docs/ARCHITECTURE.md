@@ -51,7 +51,8 @@ clashborn_v2/
   data/maps/               map đã build (từ tools/map_build)
   sim/                     tầng SIM
     core/                  công thức (mang từ v1): stat, sát thương, trúng/né
-    world/                 World, Entity, StatBlock, EffectContainer
+    world/                 World (pha tick, state_hash), Entity, StatBlock, StatModifier, StatId,
+                           UnitState; EffectContainer ở M3
     systems/               mỗi file một hệ thống, chạy theo thứ tự cố định
     defs/                  khuôn dữ liệu: HeroDef, AbilityDef, EffectDef, TalentDef, ItemDef, UnitDef…
     content/               ContentLibrary (nạp content/), ContentValidator, RuleCatalog, ExprRules
@@ -238,6 +239,9 @@ có thể dùng lại làm skill/talent cho hero sau. Ví dụ: Cuồng Tốc = 
 11. DeathSystem        chết, thưởng vàng/XP, hồi sinh, phá công trình
 12. Spawn/Match        đợt lính, trại rừng, điều kiện thắng
 ```
+
+Thứ tự này là `World.Phase` trong code; hệ thống đăng ký vào một pha, World tự chạy
+đúng thứ tự (test kiểm tra danh sách pha khớp bảng trên).
 
 Quy tắc:
 - **Mỗi hệ thống chỉ ghi phần dữ liệu của mình.** Ví dụ chỉ DamageSystem trừ máu,

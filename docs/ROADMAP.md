@@ -155,4 +155,6 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M0.4 | Xong | 2026-10-14 | 67 test xanh (+27 test map); build lại map ra đúng từng byte; màn xem map từ nút "Xem map" |
 | M0.5 | Xong | 2026-10-14 | 92 test xanh (+25); 11 khuôn dữ liệu + 13 khuôn hành động, thư viện nội dung và bộ kiểm tra; điều kiện bot (`bot_conditions`) chưa kiểm tra, để M7 |
 | M0.6 | Xong | 2026-10-14 | 106 test xanh; 4 hero (16 kỹ năng, 12 talent), 9 món đồ, 30 hiệu ứng; luật bổ sung D-37, chỉnh thiết kế D-38; đồ chỉ số v1 để M8 |
-| **Hết M0** | | | Tiếp theo: M1.1 |
+| **Hết M0** | | | |
+| M1.1 | Xong | 2026-10-14 | 131 test xanh (+25); StatBlock (STAT-02/04/05, CMB-11), World 12 pha, StateSystem, băm trạng thái; 1000 tick hai lần cùng seed trùng từng tick |
+| M1.2 | Chờ duyệt kế hoạch | | |
