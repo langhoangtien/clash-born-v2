@@ -26,7 +26,7 @@ func test_brakk_level1_from_content() -> void:
 	assert_near(e.stats.get_stat(StatId.Id.MAX_HP), 650.0, 0.01)
 	assert_near(e.health, 650.0, 0.01, "vào trận đầy máu")
 	assert_near(e.stats.get_stat(StatId.Id.PHYSICAL_ARMOR), 3.4, 0.01)
-	assert_near(e.stats.get_stat(StatId.Id.MOVEMENT_SPEED), 290.0, 0.01)
+	assert_near(e.stats.get_stat(StatId.Id.MOVEMENT_SPEED), 255.0, 0.01)
 	assert_near(e.stats.get_stat(StatId.Id.PHYSICAL_DAMAGE), 74 + 30, 0.01)
 	assert_near(e.stats.get_stat(StatId.Id.ATTACK_RANGE), 150.0, 0.01)
 

@@ -411,6 +411,9 @@ Bản hiện tại: Brakk 650 máu / 3.4 giáp; Noctis 500 / 5.5; Myra 460 / 2.7
 Vexa 460 / 2.4 (giáp phép 4.2). Máu gốc 50–100, phần còn lại từ Sức mạnh (20 máu mỗi
 điểm); hồi máu gốc 1.5/giây.
 
+Tốc chạy gốc: 250–270 (Brakk, Myra, Vexa 255; Noctis 265), giảm ~12% sau lần chơi thử
+đầu tiên để còn chỗ cho giày và skill tăng tốc.
+
 ## Mẫu cho hero mới
 
 Thêm hero mới: sao chép một mục ở trên, điền bảng số, ghi rõ:
