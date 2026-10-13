@@ -75,7 +75,7 @@ nhờ thuộc tính (D-35):
 |---|---|
 | Sức mạnh (STR) | `hp_per_strength` máu, `hp_regen_per_strength` hồi máu |
 | Nhanh nhẹn (AGI) | `armor_per_agility` giáp, `attack_speed_per_agility` tốc đánh |
-| Trí tuệ (INT) | `mana_per_intelligence` mana, `mana_regen_per_intelligence` hồi mana, `magic_armor_per_intelligence` giáp phép |
+| Trí tuệ (INT) | `mana_per_intelligence` mana, `mana_regen_per_intelligence` hồi mana, `magic_armor_per_intelligence` giáp phép (cùng hệ số và cùng công thức giảm sát thương với giáp vật lý) |
 | Thuộc tính chính | `primary_damage_coefficient` sát thương đòn đánh |
 
 Sát thương đòn đánh = sát thương gốc của hero + thuộc tính chính ×
@@ -290,7 +290,10 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 - `EFF-02` Hai hiệu ứng cùng id từ hai nguồn khác nhau là hai bản riêng, trừ khi id
   có tag `unique` (chỉ giữ bản mạnh nhất). Tag có nghĩa trong luật: `debuff`, `buff`,
   `passive`, `unique`, `dispellable`; thêm tag = thay đổi luật.
-- `EFF-03` Làm chậm: chỉ lấy mức mạnh nhất (giống v1). Giảm giáp: cộng dồn.
+- `EFF-03` Làm chậm từ **các nguồn khác nhau cộng dồn** theo kiểu nhân: chậm 30% và
+  chậm 50% → còn 0.7 × 0.5 = 35% tốc chạy (chậm 65%). Hai món đồ giống nhau chỉ tính
+  một lần (ITM-04); cùng một hiệu ứng áp lại thì làm mới (EFF-01). Giảm giáp: cộng dồn
+  (D-39).
 - `EFF-04` Trigger lồng nhau tối đa 4 tầng.
 - `EFF-05` `removed_by` chỉ tính sự kiện xảy ra **sau** khi hiệu ứng được áp (dùng chiêu
   tàng hình không tự làm mất tàng hình), và chỉ sự kiện mà **chủ hiệu ứng là kẻ gây
@@ -481,6 +484,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | hex_move_speed | 140 | | bash_cooldown | 1.5 s |
 | reincarnate_delay | 3 s | | match_target_minutes | 15–20 (D-29) |
 | evasion_cap | 1.0 (không giới hạn) | | tower_body_radius | 52 |
+| minimum_movement_speed | 0 (bị chậm hết thì đứng yên) | | | |
 
 Mục tiêu đo được: trung vị thời lượng trận bot đấu bot nằm trong `match_target_minutes`,
 hero đạt cấp 20 trong khoảng phút 14–17. Lệch thì chỉnh số trong bảng này, không sửa luật.

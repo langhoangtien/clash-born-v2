@@ -10,8 +10,6 @@ script = ExtResource("1_5mjsy")
 stat = &"movement_speed"
 op = 1
 value = "1 - slow"
-unique_group = &"slow"
-unique_priority = "slow"
 
 [resource]
 script = ExtResource("3_q6ms5")

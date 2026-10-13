@@ -104,12 +104,20 @@ func test_STAT_05_two_boots_only_fastest_counts() -> void:
 	assert_near(b.get_stat(StatId.Id.MOVEMENT_SPEED), 365.0, EPS)
 
 
-func test_STAT_05_strongest_slow_only() -> void:
+func test_STAT_05_same_item_twice_passive_counts_once() -> void:
 	var b: StatBlock = _block()
-	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.MULTIPLY, 0.7, 1, &"slow", 0.3))
-	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.MULTIPLY, 0.5, 2, &"slow", 0.5))
+	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.MULTIPLY, 0.7, 1, &"item:frost_orb", 0.3))
+	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.MULTIPLY, 0.7, 2, &"item:frost_orb", 0.3))
 	b.recompute()
-	assert_near(b.get_stat(StatId.Id.MOVEMENT_SPEED), 150.0, EPS, "chỉ chậm 50%")
+	assert_near(b.get_stat(StatId.Id.MOVEMENT_SPEED), 210.0, EPS, "2 Ngọc Băng Sương chỉ chậm 30%")
+
+
+func test_EFF_03_slows_from_different_sources_multiply() -> void:
+	var b: StatBlock = _block()
+	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.MULTIPLY, 0.7, 1))
+	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.MULTIPLY, 0.5, 2))
+	b.recompute()
+	assert_near(b.get_stat(StatId.Id.MOVEMENT_SPEED), 300 * 0.7 * 0.5, EPS, "chậm 30% và 50% → còn 35%")
 
 
 func test_STAT_05_group_winner_keeps_its_other_modifiers_loser_drops_all() -> void:

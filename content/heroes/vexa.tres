@@ -9,11 +9,11 @@
 
 [sub_resource type="Resource" id="Resource_elelc"]
 script = ExtResource("5_ktj56")
-base_hp = 850.0
+base_hp = 100.0
 base_mana = 360.0
-base_hp_regen = 4.0
+base_hp_regen = 1.5
 base_damage = 36.0
-physical_armor = 2.4
+physical_armor = 0.0
 base_attack_time = 2.0
 attack_point = 0.45
 attack_range = 550.0

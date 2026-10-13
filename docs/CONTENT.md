@@ -395,6 +395,20 @@ là đề xuất, cân lại khi chơi thử.
 
 Luật của trang bị: GAME_RULES mục ITM.
 
+## Khung chỉ số cấp 1 (D-39)
+
+Máu và giáp **cấp 1, đã tính thuộc tính** phải nằm trong khung (test kiểm tra mọi hero):
+
+| Thuộc tính chính | Máu | Giáp |
+|---|---|---|
+| Sức mạnh | 500–700 | 1–5 |
+| Nhanh nhẹn | 400–600 | 2–7 |
+| Trí tuệ | 400–600 | 1–4 |
+
+Bản hiện tại: Brakk 650 máu / 3.4 giáp; Noctis 500 / 5.5; Myra 460 / 2.7 (giáp phép 4.5);
+Vexa 460 / 2.4 (giáp phép 4.2). Máu gốc 50–100, phần còn lại từ Sức mạnh (20 máu mỗi
+điểm); hồi máu gốc 1.5/giây.
+
 ## Mẫu cho hero mới
 
 Thêm hero mới: sao chép một mục ở trên, điền bảng số, ghi rõ:

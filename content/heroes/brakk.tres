@@ -9,11 +9,11 @@
 
 [sub_resource type="Resource" id="Resource_0t3o8"]
 script = ExtResource("5_o1hbh")
-base_hp = 1100.0
+base_hp = 50.0
 base_mana = 200.0
-base_hp_regen = 4.0
+base_hp_regen = 1.5
 base_damage = 74.0
-physical_armor = 4.5
+physical_armor = 1.0
 base_attack_time = 2.0
 attack_point = 0.4
 attack_range = 150.0

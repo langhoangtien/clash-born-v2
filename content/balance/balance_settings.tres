@@ -19,4 +19,4 @@ maximum_attack_speed_multiplier = 7.0
 minimum_attack_interval = 0.1
 evasion_cap = 1.0
 status_resistance_cap = 0.6
-minimum_movement_speed = 100.0
+minimum_movement_speed = 0.0
