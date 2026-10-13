@@ -104,3 +104,32 @@ func _forest_center() -> Vector2:
 		if Geometry2D.is_point_in_polygon(center, shape.outer) and map.clearance_at(center) == 0.0:
 			return center
 	return Vector2.ZERO
+
+
+## MAP-03 (D-43): không có khe trông như lối đi mà hero không lọt.
+func test_MAP_03_no_misleading_narrow_gaps() -> void:
+	const VISIBLE_GAP: float = 12.0
+	const HERO: float = 32.0
+	const REACH_PX: int = 3  # 48 đơn vị thế giới
+	var size: Vector2i = map.clearance_size
+	var bad: Array[Vector2i] = []
+	for y: int in range(size.y):
+		for x: int in range(size.x):
+			var c: float = _pixel(x, y)
+			if c >= VISIBLE_GAP and c < HERO and not _standable_near(x, y, REACH_PX, HERO):
+				bad.append(Vector2i(x, y))
+	assert_true(bad.is_empty(), "%d điểm khe hẹp, vd %s" % [bad.size(), bad.slice(0, 5).map(func(p: Vector2i) -> Vector2: return Vector2(p) * map.clearance_pixel)])
+
+
+func _pixel(x: int, y: int) -> float:
+	if x < 0 or y < 0 or x >= map.clearance_size.x or y >= map.clearance_size.y:
+		return 0.0
+	return float(map.clearance_bytes[y * map.clearance_size.x + x]) * map.clearance_unit
+
+
+func _standable_near(x: int, y: int, reach: int, need: float) -> bool:
+	for dy: int in range(-reach, reach + 1):
+		for dx: int in range(-reach, reach + 1):
+			if dx * dx + dy * dy <= reach * reach and _pixel(x + dx, y + dy) >= need:
+				return true
+	return false

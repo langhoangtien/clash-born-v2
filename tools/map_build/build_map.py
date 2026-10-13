@@ -125,6 +125,28 @@ lab, n = ndi.label(forest)
 sizes = ndi.sum(forest, lab, range(1, n + 1))
 forest = np.isin(lab, [i + 1 for i, s in enumerate(sizes) if s >= 20])
 
+# ---------------------------------------------------------------- readability (D-43)
+# Không để khe trông như đi được mà hero không lọt: chỗ trống hẹp hơn gap_min_world
+# bị lấp thành rừng; vùng trống không nối với phần map chính (hốc kín) cũng lấp.
+GAP_MIN = SRC.get("gap_min_world", 112)
+gap_r = int(math.ceil(GAP_MIN / 2 / SCALE))
+protect = bases | lane_corridor
+for (cx, cy), r in keep_clear:
+    protect |= disk(cx, cy, r)
+for ramp in SRC["ramps"]:
+    protect |= disk(ramp[0], ramp[1], ramp[2] if len(ramp) > 2 else SRC["ramp_radius"])
+gap_disk = disk(gap_r, gap_r, gap_r)[: 2 * gap_r + 1, : 2 * gap_r + 1]
+open_area = inside & ~forest & ~cliffs
+opened = ndi.binary_opening(open_area, structure=gap_disk)
+narrow = open_area & ~opened & ~protect
+forest |= narrow
+open_area = inside & ~forest & ~cliffs
+lab, n = ndi.label(open_area)
+fx, fy = SRC["fountains"][0]
+pockets = open_area & (lab != lab[int(fy), int(fx)]) & ~protect
+forest |= pockets
+print(f"readability: filled {int(narrow.sum())} narrow-gap px and {int(pockets.sum())} closed-pocket px (guide units)")
+
 # ---------------------------------------------------------------- vectorize
 def vectorize(mask, simplify=0.45, min_area=6.0, smooth=True):
     big = cv2.resize(mask.astype(np.float32), (Wd * UP, H * UP), interpolation=cv2.INTER_LINEAR if smooth else cv2.INTER_NEAREST)

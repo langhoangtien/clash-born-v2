@@ -2,6 +2,7 @@
   "_comment": "Hand-authored semantic layer for the Clashborn map. Coordinates use the 600x600 reference-guide space (origin top-left). build_map.py multiplies by 'scale' to get Godot world units. Terrain shapes (trees, cliffs, river) are traced from reference_guide.png; everything gameplay-relevant is listed here explicitly.",
   "scale": 16,
   "frame": [36, 36, 564, 564],
+  "gap_min_world": 112,
   "nav_cell": 32,
   "lane_half_width": 9,
   "border_forest": {"left": 52, "top": 72, "right": 545, "bottom": 535},

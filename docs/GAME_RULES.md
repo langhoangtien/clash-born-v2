@@ -480,6 +480,10 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   dùng vật lý Godot. Thân trụ chặn đứng/đi với bán kính `tower_body_radius`. Ô lưới tìm
   đường chỉ đi được khi mọi pixel khoảng trống trong ô đủ rộng; kiểm tra đường thẳng duyệt
   từng pixel mà đoạn đi qua (không lấy mẫu), nên đường đi không bao giờ cắt góc vật cản.
+- `MAP-03` Map phải đọc được (D-43): chỗ trống hẹp hơn `gap_min_world` (112) giữa rừng/vách
+  bị lấp thành rừng khi build; vùng trống kín không vào được cũng lấp. Kiểm tra: mọi điểm
+  trống rộng ≥ 12 phải cách chỗ hero đứng được không quá 48 — tức không có khe nào
+  trông như lối đi mà hero không lọt.
 - `MAP-02` Map 8448 × 8448; Blue dưới–trái, Red trên–phải; 3 lane; sông; vách đá chỉ
   qua ở dốc; 11 trụ mỗi đội; 13 trại thường + 1 boss pit.
 
