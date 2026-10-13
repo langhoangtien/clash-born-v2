@@ -1,0 +1,9 @@
+# Godot
+.godot/
+*.tmp
+export_presets.cfg
+*.apk
+*.aab
+# Máy cá nhân
+_to_delete/
+.local/

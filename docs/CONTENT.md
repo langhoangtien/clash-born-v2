@@ -1,0 +1,401 @@
+# Thiết kế nội dung: hero và trang bị
+
+> Trạng thái: **ĐỀ XUẤT — chờ chốt số liệu sau khi chơi thử.**
+> Đây là bản thiết kế nội dung. Số liệu thật nằm trong `content/heroes/`,
+> `content/abilities/`, `content/effects/`, `content/items/`. Khi hai nơi lệch nhau, sửa file này cho
+> khớp dữ liệu sau mỗi lần cân bằng.
+
+## Khung chung (luật ở GAME_RULES mục ABL, TAL)
+
+- Mỗi hero có 3 skill: **Q** và **W** (5 cấp), **R** là ultimate (3 cấp), cộng một
+  **nội tại** (bị động) có sẵn từ đầu, tự lên 6 bậc ở hero cấp 1/4/8/12/16/20,
+  không tốn điểm (ABL-11).
+- Lên cấp hero nhận 1 điểm. Q/W cấp n cần hero cấp 2n−1 (1, 3, 5, 7, 9).
+  R cần hero cấp 6 / 11 / 16. Điểm cũng có thể đổi lấy **+2 mọi thuộc tính**
+  (tối đa 7 lần). 13 điểm skill + 7 điểm thuộc tính = 20 cấp.
+- Cấp 20: chọn **1 trong 3 talent**, mỗi talent nâng một skill lên "tầng II".
+- Talent chỉ được sửa con số và thêm hành động; **không được đổi cách một state
+  vận hành** (TAL-03).
+
+Mỗi hero được chọn để mang vào game một nhóm cơ chế. Làm xong 4 hero này và các
+món đồ ở cuối tài liệu thì gần như mọi hero, món đồ sau chỉ còn là dữ liệu.
+
+| Hero | Vai trò | Cơ chế mang vào game |
+|---|---|---|
+| Brakk · Thiết Quyền | Đỡ đòn, cận chiến, Sức mạnh | Vùng quanh mình, STUNNED, khiên (SHIELD), GHOST, hồi máu theo thời gian |
+| Myra · Pháp sư | Phép, đánh xa, Trí tuệ | Đạn định hướng (skillshot), vùng có độ trễ, làm chậm, ROOTED, SILENCED, vùng cháy (talent) |
+| Noctis · Sát Ảnh | Sát thủ, cận chiến, Nhanh nhẹn | Lướt (DASH, UNTARGETABLE), INVISIBLE, REVEALED, DISARMED, khuếch đại sát thương nhận vào, hồi chiêu khi hạ gục (talent) |
+| Vexa · Phù Thủy | Khống chế, đánh xa, Trí tuệ | HEXED (biến hình), đẩy lùi (KNOCKBACK), tước bỏ hiệu ứng có lợi (PURGE), skill xuyên miễn phép |
+
+## Bảng phủ hiệu ứng
+
+Mỗi hiệu ứng trong luật phải có ít nhất một nguồn trong bản đầu, để được code và
+test bằng tình huống thật:
+
+| Hiệu ứng (GAME_RULES) | Nguồn hero | Nguồn trang bị |
+|---|---|---|
+| STUNNED | Brakk Q, R II | Búa Choáng (bị động) |
+| ROOTED | Myra W | — |
+| SILENCED | Myra R, Noctis R II | — |
+| DISARMED | Noctis W | — |
+| Làm chậm (modifier) | Myra Q, Vexa R | Ngọc Băng Sương |
+| INVISIBLE | Noctis W | Lưỡi Ẩn Thân |
+| REVEALED | Noctis R | Bột Lộ Diện |
+| GHOST | Brakk R | Gậy Hồn Ma |
+| UNTARGETABLE | Noctis Q (lúc lướt) | Gậy Lốc Xoáy |
+| INVULNERABLE | — | Gậy Lốc Xoáy |
+| MAGIC_IMMUNE | — | Giáp Bất Khuất |
+| HEXED | Vexa Q | Lưỡi Hái Biến Hình |
+| Khiên (EFF-06) | Brakk W | — |
+| Đẩy lùi (ABL-10) | Vexa W | — |
+| Thanh tẩy cơ bản / mạnh (EFF-07) | Vexa R (tước của địch) | Giáp Bất Khuất, Bùa Thanh Tẩy (của mình) |
+| Xuyên miễn phép (ST-15) | Vexa R | — |
+| Khuếch đại sát thương nhận | Noctis R | — |
+| Sát thương theo thời gian | Myra R II | — |
+| Hồi máu | Brakk R | — |
+| Bị động: bash (choáng ngẫu nhiên, CMB-08) | Brakk nội tại | Búa Choáng |
+| Bị động: chí mạng (CMB-07) | Noctis nội tại | — |
+| Bị động: cộng dồn tốc đánh, mất khi đổi mục tiêu | Myra nội tại | — |
+| Bị động: hút chỉ số (của mình tăng, của địch giảm) | Vexa nội tại | — |
+| Bị động: cộng chỉ số thẳng (vd +% sát thương gốc) | (modifier thường — xem ghi chú) | mọi món đồ |
+| Giả ngẫu nhiên PRD (RNG-01) | Brakk, Noctis nội tại | Búa Choáng |
+
+Ghi chú: bị động kiểu "+10/15/20/25/30/35% sát thương gốc" chỉ là một modifier
+vĩnh viễn, cơ chế đã có sẵn nhờ trang bị, nên không cần hero riêng để kiểm chứng.
+Có thể làm nội tại cho hero thứ 5 hoặc talent về sau mà không cần code.
+
+Chỉ số gốc và tăng trưởng lấy từ hero v1 cùng tên (`tank_growth`, `mage_growth`,
+`assassin_growth`), cân lại sau khi chơi thử.
+
+---
+
+## Brakk · Thiết Quyền
+
+Cận chiến (tầm 150), thuộc tính chính Sức mạnh. Máu cao, lao vào khống chế, chịu đòn.
+
+### Nội tại — Đòn Chấn Động (kiểu Faceless Void)
+
+| Bậc (hero cấp) | 1 (1) | 2 (4) | 3 (8) | 4 (12) | 5 (16) | 6 (20) |
+|---|---:|---:|---:|---:|---:|---:|
+| Xác suất (PRD) | 15% | 17% | 19% | 21% | 23% | 25% |
+| Sát thương vật lý thêm | 30 | 40 | 50 | 60 | 70 | 80 |
+| Choáng (giây) | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1.0 |
+
+Đòn đánh trúng hero/lính/quái (không phải công trình) có xác suất choáng và gây
+thêm sát thương. Thời gian chờ chung `bash_cooldown` (CMB-08).
+
+### Q — Đấm Chấn Địa (không chọn mục tiêu, vùng quanh mình)
+
+| Cấp | 1 | 2 | 3 | 4 | 5 |
+|---|---:|---:|---:|---:|---:|
+| Sát thương vật lý | 70 | 110 | 150 | 190 | 230 |
+| Choáng (giây) | 0.8 | 1.0 | 1.2 | 1.4 | 1.6 |
+| Hồi chiêu (giây) | 14 | 13 | 12 | 11 | 10 |
+| Mana | 90 | 95 | 100 | 105 | 110 |
+
+Bán kính 300 quanh Brakk, trúng mọi kẻ địch (không trúng công trình). Thời gian
+tung 0.3 s.
+Hành động: `AreaAt(self, 300) → Damage(PHYSICAL, damage) + ApplyEffect(stun, stun_duration)`.
+
+### W — Giáp Sắt (không chọn mục tiêu, bản thân)
+
+| Cấp | 1 | 2 | 3 | 4 | 5 |
+|---|---:|---:|---:|---:|---:|
+| Khiên chặn sát thương | 120 | 180 | 240 | 300 | 360 |
+| Thời gian (giây) | 6 | 6 | 6 | 6 | 6 |
+| Hồi chiêu | 18 | 17 | 16 | 15 | 14 |
+| Mana | 80 | 85 | 90 | 95 | 100 |
+
+Khiên hút sát thương mọi loại trước khi trừ máu. Hết lượng khiên hoặc hết giờ thì
+mất. Dùng lại khi còn khiên thì làm mới khiên.
+
+### R — Hồn Bất Diệt (ultimate, bản thân)
+
+| Cấp | 1 | 2 | 3 |
+|---|---:|---:|---:|
+| Thời gian GHOST (giây) | 4 | 5 | 6 |
+| Hồi máu theo % máu tối đa trong thời gian đó | 20% | 30% | 40% |
+| Tốc chạy | +20% | +25% | +30% |
+| Hồi chiêu | 90 | 80 | 70 |
+| Mana | 150 | 175 | 200 |
+
+Brakk thành GHOST: miễn sát thương vật lý, không đánh thường được, nhận thêm
+sát thương phép (ST-11). Hồi máu chia đều mỗi 0.5 s.
+
+### Talent cấp 20 (chọn 1)
+
+| Talent | Thay đổi |
+|---|---|
+| Q II — Động Đất | Bán kính +100, choáng +0.6 s |
+| W II — Giáp Nổ | Khi khiên **bị phá hết** (không phải hết giờ): nổ gây sát thương phép bằng lượng khiên ban đầu, bán kính 300 |
+| R II — Hồn Trở Về | GHOST +2 s; khi GHOST kết thúc, choáng kẻ địch trong 300 trong 1 s |
+
+---
+
+## Myra · Pháp sư
+
+Đánh xa (tầm 550), thuộc tính chính Trí tuệ. Gây sát thương phép từ xa và khống chế.
+
+### Nội tại — Nhịp Phép (kiểu Troll Warlord)
+
+| Bậc (hero cấp) | 1 (1) | 2 (4) | 3 (8) | 4 (12) | 5 (16) | 6 (20) |
+|---|---:|---:|---:|---:|---:|---:|
+| Tốc đánh mỗi lần cộng dồn | +5% | +6% | +7% | +8% | +9% | +10% |
+| Tối đa cộng dồn | 8 | 8 | 8 | 8 | 8 | 8 |
+
+Mỗi đòn đánh trúng **cùng một mục tiêu** thêm 1 lần cộng dồn (giữ 4 s). Đổi mục
+tiêu thì mất hết (`removed_by attack_target_changed`).
+
+### Q — Tia Băng (chọn hướng, đạn định hướng)
+
+| Cấp | 1 | 2 | 3 | 4 | 5 |
+|---|---:|---:|---:|---:|---:|
+| Sát thương phép | 90 | 140 | 190 | 240 | 290 |
+| Làm chậm | 30% | 30% | 30% | 30% | 30% |
+| Thời gian chậm (giây) | 1.5 | 1.75 | 2.0 | 2.25 | 2.5 |
+| Hồi chiêu | 8 | 7.5 | 7 | 6.5 | 6 |
+| Mana | 80 | 90 | 100 | 110 | 120 |
+
+Đạn bay thẳng 1000, rộng 120, tốc 1400, trúng kẻ địch **đầu tiên** (không phải
+công trình) thì dừng.
+
+### W — Vòng Phong Ấn (chọn điểm, vùng có độ trễ)
+
+| Cấp | 1 | 2 | 3 | 4 | 5 |
+|---|---:|---:|---:|---:|---:|
+| Sát thương phép | 60 | 100 | 140 | 180 | 220 |
+| Trói chân (giây) | 1.0 | 1.25 | 1.5 | 1.75 | 2.0 |
+| Hồi chiêu | 16 | 15 | 14 | 13 | 12 |
+| Mana | 100 | 110 | 120 | 130 | 140 |
+
+Tầm dùng 800, bán kính 280. Vòng hiện cho cả hai bên thấy, **sau 0.8 s** mới tác
+dụng lên kẻ địch đang đứng trong vòng lúc đó (né được).
+
+### R — Mưa Sao Băng (ultimate, chọn điểm)
+
+| Cấp | 1 | 2 | 3 |
+|---|---:|---:|---:|
+| Sát thương phép | 250 | 375 | 500 |
+| Câm lặng (giây) | 2.0 | 2.5 | 3.0 |
+| Hồi chiêu | 80 | 70 | 60 |
+| Mana | 150 | 200 | 250 |
+
+Tầm dùng 900, bán kính 400, độ trễ 1.0 s.
+
+### Talent cấp 20 (chọn 1)
+
+| Talent | Thay đổi |
+|---|---|
+| Q II — Tia Xuyên Băng | Đạn xuyên qua mọi kẻ địch trên đường, không dừng ở mục tiêu đầu |
+| W II — Phong Ấn Tức Thì | Độ trễ còn 0.3 s, bán kính +100 |
+| R II — Hỏa Ngục | Sau khi rơi, để lại vùng cháy 4 s, 60 sát thương phép mỗi giây |
+
+---
+
+## Noctis · Sát Ảnh
+
+Cận chiến (tầm 150), thuộc tính chính Nhanh nhẹn. Ẩn mình, áp sát, hạ mục tiêu yếu.
+
+### Nội tại — Tử Kiếm (kiểu Phantom Assassin)
+
+| Bậc (hero cấp) | 1 (1) | 2 (4) | 3 (8) | 4 (12) | 5 (16) | 6 (20) |
+|---|---:|---:|---:|---:|---:|---:|
+| Xác suất chí mạng (PRD) | 10% | 12% | 14% | 16% | 18% | 20% |
+| Hệ số chí mạng | 1.6× | 1.8× | 2.0× | 2.2× | 2.4× | 2.6× |
+
+Chí mạng theo CMB-07: chỉ nhân sát thương vật lý của đòn đánh, không nhân đòn
+phục kích của W. Không chí mạng lên công trình.
+
+### Q — Lưỡi Bóng (chọn đơn vị địch, lướt)
+
+| Cấp | 1 | 2 | 3 | 4 | 5 |
+|---|---:|---:|---:|---:|---:|
+| Sát thương vật lý | 80 | 120 | 160 | 200 | 240 |
+| Hồi chiêu | 12 | 11 | 10 | 9 | 8 |
+| Mana | 70 | 75 | 80 | 85 | 90 |
+
+Tầm dùng 600. Lướt tới mục tiêu với tốc 2000; trong lúc lướt Noctis là
+UNTARGETABLE. Tới nơi gây sát thương.
+
+### W — Màn Đêm (không chọn mục tiêu, bản thân)
+
+| Cấp | 1 | 2 | 3 | 4 | 5 |
+|---|---:|---:|---:|---:|---:|
+| Thời gian tàng hình (giây) | 6 | 7 | 8 | 9 | 10 |
+| Tốc chạy khi tàng hình | +10% | +15% | +20% | +25% | +30% |
+| Sát thương đòn phục kích | 60 | 90 | 120 | 150 | 180 |
+| Cấm đánh lên mục tiêu (giây) | 1.0 | 1.2 | 1.4 | 1.6 | 1.8 |
+| Hồi chiêu | 20 | 19 | 18 | 17 | 16 |
+| Mana | 80 | 80 | 80 | 80 | 80 |
+
+Sau 0.6 s (fade in) Noctis INVISIBLE. Đánh hoặc dùng chiêu thì hiện hình. Đòn đánh
+đầu tiên trong thời gian này (dù đã hiện hình vì chính đòn đó) gây thêm sát thương
+vật lý và DISARMED mục tiêu.
+
+Biểu diễn bằng hai hiệu ứng áp cùng lúc:
+- `shadow_veil`: INVISIBLE, modifier tốc chạy, `removed_by [attack_started, ability_cast]`.
+- `ambush_ready`: không có state; trigger `attack_landed` → Damage + ApplyEffect(disarm) →
+  tự xóa; `removed_by [ability_cast]`.
+
+### R — Dấu Tử Thần (ultimate, chọn đơn vị địch)
+
+| Cấp | 1 | 2 | 3 |
+|---|---:|---:|---:|
+| Mục tiêu nhận thêm sát thương (mọi nguồn) | 15% | 22% | 30% |
+| Thời gian (giây) | 6 | 6 | 6 |
+| Hồi chiêu | 60 | 50 | 40 |
+| Mana | 100 | 125 | 150 |
+
+Tầm dùng 500. Mục tiêu bị đánh dấu: REVEALED với đội Noctis (khắc chế tàng hình
+của địch về sau) và chỉ số `damage_taken_multiplier` tăng.
+
+### Talent cấp 20 (chọn 1)
+
+| Talent | Thay đổi |
+|---|---|
+| Q II — Lưỡi Săn Mồi | Sát thương +100; nếu mục tiêu chết trong 1 s sau đòn, hồi lại toàn bộ hồi chiêu Q |
+| W II — Bóng Không Hình | Fade in 0 s; khi tàng hình hồi 3% máu tối đa mỗi giây |
+| R II — Án Tử | Khuếch đại +10%; khi đánh dấu, câm lặng mục tiêu 1.5 s |
+
+---
+
+## Vexa · Phù Thủy
+
+Đánh xa (tầm 550), thuộc tính chính Trí tuệ. Không gây nhiều sát thương, nhưng
+khống chế mạnh và phá các hiệu ứng có lợi của đối thủ. Chỉ số gốc lấy từ mẫu
+`mage_growth` của v1, giảm sát thương phép, tăng mana.
+
+### Nội tại — Hút Trí Tuệ (kiểu Slark, hút Trí tuệ)
+
+| Bậc (hero cấp) | 1 (1) | 2 (4) | 3 (8) | 4 (12) | 5 (16) | 6 (20) |
+|---|---:|---:|---:|---:|---:|---:|
+| Trí tuệ hút mỗi đòn | 1 | 1 | 2 | 2 | 3 | 3 |
+| Thời gian (giây) | 20 | 20 | 25 | 25 | 30 | 30 |
+
+Mỗi đòn đánh trúng **hero** địch: hero địch −x Trí tuệ, Vexa +x Trí tuệ, mỗi lần là
+một bản riêng hết hạn riêng (INDEPENDENT). Không bị thanh tẩy (`dispel: NONE`).
+Biểu diễn bằng hai hiệu ứng áp cùng lúc; không cần action "hút" riêng.
+
+### Q — Hóa Ếch (chọn đơn vị địch)
+
+| Cấp | 1 | 2 | 3 | 4 | 5 |
+|---|---:|---:|---:|---:|---:|
+| Biến hình (giây) | 1.5 | 2.0 | 2.5 | 3.0 | 3.5 |
+| Hồi chiêu | 20 | 18 | 16 | 14 | 12 |
+| Mana | 100 | 110 | 120 | 130 | 140 |
+
+Tầm dùng 600. Mục tiêu bị HEXED (ST-16): thành con ếch, không đánh, không dùng
+chiêu/đồ, tốc chạy cố định thấp, bị động tắt.
+
+### W — Sóng Gió (chọn hướng)
+
+| Cấp | 1 | 2 | 3 | 4 | 5 |
+|---|---:|---:|---:|---:|---:|
+| Sát thương phép | 60 | 100 | 140 | 180 | 220 |
+| Đẩy lùi (khoảng cách) | 300 | 300 | 300 | 300 | 300 |
+| Hồi chiêu | 14 | 13 | 12 | 11 | 10 |
+| Mana | 90 | 95 | 100 | 105 | 110 |
+
+Vùng hình chữ nhật dài 700, rộng 250 phía trước Vexa, tác dụng ngay. Mọi kẻ địch
+trong vùng nhận sát thương và bị đẩy ra xa Vexa 300 trong 0.3 s (ABL-10).
+
+### R — Tước Phép (ultimate, chọn đơn vị địch)
+
+| Cấp | 1 | 2 | 3 |
+|---|---:|---:|---:|
+| Làm chậm | 50% | 60% | 70% |
+| Thời gian chậm (giây) | 3 | 3.5 | 4 |
+| Sát thương phép mỗi hiệu ứng bị tước | 80 | 120 | 160 |
+| Hồi chiêu | 70 | 60 | 50 |
+| Mana | 150 | 175 | 200 |
+
+Tầm dùng 700. **Xuyên miễn phép** (ST-15). Tước mọi hiệu ứng có lợi trên mục tiêu
+mà mức thanh tẩy cơ bản gỡ được (EFF-07): khiên, tàng hình, tăng tốc… Mỗi hiệu ứng
+bị tước gây thêm sát thương phép. Sau đó làm chậm.
+
+### Talent cấp 20 (chọn 1)
+
+| Talent | Thay đổi |
+|---|---|
+| Q II — Ếch Khốn Khổ | Mục tiêu đang HEXED nhận thêm 20% sát thương mọi nguồn |
+| W II — Bão Táp | Rộng +100, sát thương +100, đẩy lùi +150 |
+| R II — Phong Ấn | Hồi chiêu −20; thay làm chậm bằng ROOTED 2 s |
+
+## Thư viện bị động (dành sẵn cho hero sau)
+
+Bị động kiểu Dota không cần làm hết ngay. Cần làm ngay là **các viên gạch** để mọi
+bị động dưới đây chỉ còn là dữ liệu. Mỗi bị động trong bảng được kiểm thử bằng một
+**hero thử nghiệm** chỉ có trong `tests/` (không xuất hiện trong game), nên viên gạch
+được test thật mà không phải thiết kế hero hoàn chỉnh.
+
+| Bị động (giống) | Biểu diễn bằng dữ liệu | Viên gạch cần | Trạng thái |
+|---|---|---|---|
+| Né đòn (PA Blur) | Modifier `evasion` | Né của v1 (CMB-11) | Có sẵn |
+| +% sát thương gốc | Modifier `physical_damage` MULTIPLY | Modifier | Có sẵn |
+| Bash (Void) | Brakk nội tại | PRD, CMB-08 | Làm ở M3 với Brakk |
+| Chí mạng (PA) | Noctis nội tại | CMB-07 | M5 với Noctis |
+| Cộng dồn tốc đánh (Troll) | Myra nội tại | `removed_by attack_target_changed` | M4 với Myra |
+| Hút chỉ số (Slark) | Vexa nội tại | INDEPENDENT, 2 hiệu ứng | M6 với Vexa |
+| Trả đòn theo Sức mạnh (Centaur Return) | Trigger `attack_landed as TARGET` → Damage(attacker, PHYSICAL, `20 + 0.3 * self.strength`), `reflected` | Vai trigger (EFF-08), biểu thức (EFF-09), CMB-09 | Gạch ở M3, hero thử nghiệm |
+| Xoáy phản công (Axe Counter Helix) | Trigger `attack_landed as TARGET`, chance 20% PRD → AreaAt(self, 275) Damage PURE | Vai trigger, PRD | Gạch ở M3, hero thử nghiệm |
+| Phân tán sát thương (Spectre Dispersion) | Modifier `damage_taken_multiplier` −x%; trigger `damage_taken as TARGET` → AreaAt(self, 1100, giảm dần theo khoảng cách) Damage(`event.damage * x`), `reflected` | Biểu thức có `event.*`, vùng giảm dần, CMB-09 | Gạch ở M3, hero thử nghiệm |
+| Đốt mana (Anti-Mage Mana Break) | Trigger `attack_landed as SOURCE` → ManaBurn(target, 30) → Damage(target, PHYSICAL, `event.burned_mana * 0.5`) | Action ManaBurn (CMB-10), biểu thức | Gạch ở M3, hero thử nghiệm |
+| Tái sinh 2 mạng (Wraith King) | Hiệu ứng `prevent_death`, hồi chiêu 120 s, tốn 160 mana | Móc chặn chết (DTH-01..03) | M6, hero thử nghiệm |
+| Phản sát thương (đồ kiểu Blade Mail, có từ v1) | Modifier `damage_reflect` | CMB-09 | M3 |
+
+Khi muốn một hero mới có bị động trong bảng: chép dòng đó vào thiết kế hero, chỉnh
+số, thêm test kịch bản. Không cần code.
+
+## Cách bot dùng skill
+
+Bot không có code riêng cho từng skill. Mỗi skill khai báo `bot_usage` trong dữ
+liệu, bot chỉ có logic cho từng **loại** (GAME_RULES BOT-13):
+
+| Skill | bot_usage | Điều kiện dữ liệu |
+|---|---|---|
+| Brakk Q | DISABLE | ≥ 1 hero địch trong bán kính |
+| Brakk W | SELF_DEFENSE | Máu < 70% và đang nhận sát thương |
+| Brakk R | ESCAPE | Máu < 30% hoặc bị trụ nhắm |
+| Myra Q | POKE | Hero địch trong tầm, dự đoán vị trí |
+| Myra W | DISABLE | Hero địch đứng yên hoặc đang bị khống chế |
+| Myra R | FINISH / TEAMFIGHT | Hero địch máu < sát thương skill, hoặc ≥ 2 kẻ địch trong vùng |
+| Noctis Q | ENGAGE | Máu mục tiêu < 50% và vị trí đích an toàn |
+| Noctis W | ENGAGE / ESCAPE | Chuẩn bị áp sát, hoặc máu < 30% |
+| Noctis R | ENGAGE | Trước khi áp sát mục tiêu |
+| Vexa Q | DISABLE | Hero địch trong tầm, ưu tiên khi nó đang áp sát |
+| Vexa W | ESCAPE / POKE | Hero địch quá gần, hoặc trúng được nhiều kẻ địch |
+| Vexa R | DISABLE | Hero địch có ≥ 1 hiệu ứng có lợi gỡ được, hoặc đang bỏ chạy |
+
+Nội tại không cần `bot_usage` vì tự kích hoạt. Riêng Myra: bot ưu tiên giữ nguyên mục
+tiêu để không mất cộng dồn Nhịp Phép (điều kiện dữ liệu `prefer_same_target`).
+
+## Trang bị có kỹ năng
+
+Kỹ năng chủ động và bị động của đồ dùng **đúng hệ thống của skill hero**
+(`AbilityDef`, `EffectDef`). Một món đồ chỉ khác ở chỗ gắn vào ô đồ thay vì ô skill,
+có thể có số lần dùng, và không có cấp. Vì vậy nhiều món dùng lại hiệu ứng của hero.
+
+Chỉ số cộng thêm (máu, sát thương, thuộc tính…) lấy theo thang trang bị v1. Giá chỉ
+là đề xuất, cân lại khi chơi thử.
+
+| Món | id | Giá | Chỉ số | Chủ động / bị động |
+|---|---|---:|---|---|
+| Gậy Hồn Ma | `ghost_scepter` | 1500 | +7 mọi thuộc tính | **Chủ động** (hồi 22 s): bản thân GHOST 4 s |
+| Giáp Bất Khuất | `resolute_armor` | 4000 | +10 STR, +24 sát thương | **Chủ động** (hồi 70 s): thanh tẩy cơ bản bản thân rồi MAGIC_IMMUNE 6 s |
+| Ngọc Băng Sương | `frost_orb` | 2200 | +250 máu, +10 mọi thuộc tính | **Bị động**: đòn đánh làm chậm 20% tốc chạy và 20% tốc đánh trong 2 s (đánh xa) / 3 s (cận chiến) |
+| Bột Lộ Diện | `reveal_dust` | 80 | — | **Chủ động**, 2 lần dùng (hồi 30 s): REVEALED mọi kẻ địch trong 900 quanh mình 8 s |
+| Gậy Lốc Xoáy | `cyclone_staff` | 2700 | +10 INT, +2.5 hồi mana | **Chủ động** (hồi 23 s, tầm 575): một đơn vị bị nhấc lên 2.5 s — INVULNERABLE + UNTARGETABLE + STUNNED. Dùng lên bản thân để né; dùng lên địch đang MAGIC_IMMUNE thì không được |
+| Lưỡi Ẩn Thân | `shadow_blade` | 2800 | +25 sát thương, +30% tốc đánh | **Chủ động** (hồi 28 s): dùng lại hiệu ứng `shadow_veil` + `ambush_ready` của Noctis W (cấp 2) với thời gian 12 s |
+| Lưỡi Hái Biến Hình | `hex_scythe` | 5600 | +35 INT, +10 STR, +10 AGI | **Chủ động** (hồi 22 s, tầm 600): HEXED mục tiêu 3.5 s |
+| Bùa Thanh Tẩy | `cleansing_charm` | 1800 | +6 giáp, +4 hồi máu | **Chủ động** (hồi 18 s): thanh tẩy cơ bản bản thân |
+| Búa Choáng | `stun_hammer` | 2900 | +25 sát thương | **Bị động**: đòn đánh 20% (cận chiến) / 10% (đánh xa) choáng 1.5 s, +100 sát thương vật lý; hồi 2.3 s |
+
+Luật của trang bị: GAME_RULES mục ITM.
+
+## Mẫu cho hero mới
+
+Thêm hero mới: sao chép một mục ở trên, điền bảng số, ghi rõ:
+1. Skill nào dùng cơ chế **chưa có** trong GAME_RULES (xem bảng phủ hiệu ứng). Có thì đó là việc "cơ chế mới"
+   (AGENTS mục 3), phải làm trước.
+2. `bot_usage` của từng skill.
+3. Một kịch bản test cho mỗi skill và mỗi talent.
