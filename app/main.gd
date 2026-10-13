@@ -3,14 +3,25 @@ extends Control
 ## Tầng APP: được dùng VIEW và SIM, không ngược lại (ARCHITECTURE mục 1).
 
 const VERSION_TEXT: String = "Clashborn v2 — M0"
+const MAP_VIEWER: String = "res://app/map_viewer.tscn"
 
 
 func _ready() -> void:
+	var box: VBoxContainer = VBoxContainer.new()
+	box.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	box.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	box.grow_vertical = Control.GROW_DIRECTION_BOTH
+	box.add_theme_constant_override("separation", 32)
+	add_child(box)
 	var label: Label = Label.new()
 	label.text = VERSION_TEXT
 	label.add_theme_font_size_override("font_size", 48)
-	label.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	label.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	label.grow_vertical = Control.GROW_DIRECTION_BOTH
-	add_child(label)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(label)
+	var button: Button = Button.new()
+	button.name = "MapButton"
+	button.text = "Xem map"
+	button.add_theme_font_size_override("font_size", 36)
+	button.pressed.connect(func() -> void: get_tree().change_scene_to_file(MAP_VIEWER))
+	box.add_child(button)
 	print(VERSION_TEXT + " ready")

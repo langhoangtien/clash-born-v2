@@ -4,6 +4,12 @@ extends SceneTree
 
 
 func _initialize() -> void:
+	# Chạy sau khi cây cảnh sẵn sàng: trong _initialize, root chưa ở trong cây nên
+	# node thêm vào không nhận _ready (test cảnh của VIEW cần điều đó).
+	_run.call_deferred()
+
+
+func _run() -> void:
 	var name_filter: String = ""
 	var runner: TestRunner = TestRunner.new()
 	for arg: String in OS.get_cmdline_user_args():

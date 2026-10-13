@@ -419,7 +419,9 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 
 ## MAP — Bản đồ
 
-- `MAP-01` Hình vẽ, va chạm, tìm đường dùng chung polygon từ `tools/map_build`.
+- `MAP-01` Hình vẽ, va chạm, tìm đường dùng chung polygon từ `tools/map_build`. Va chạm
+  và tìm đường đọc trường khoảng trống (clearance) dựng từ chính các polygon đó; không
+  dùng vật lý Godot. Thân trụ chặn đứng/đi với bán kính `tower_body_radius`.
 - `MAP-02` Map 8448 × 8448; Blue dưới–trái, Red trên–phải; 3 lane; sông; vách đá chỉ
   qua ở dốc; 11 trụ mỗi đội; 13 trại thường + 1 boss pit.
 
@@ -461,7 +463,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | attribute_bonus | +2 mọi thuộc tính | | attribute_bonus_max | 7 lần |
 | hex_move_speed | 140 | | bash_cooldown | 1.5 s |
 | reincarnate_delay | 3 s | | match_target_minutes | 15–20 (D-29) |
-| evasion_cap | 1.0 (không giới hạn) | | | |
+| evasion_cap | 1.0 (không giới hạn) | | tower_body_radius | 52 |
 
 Mục tiêu đo được: trung vị thời lượng trận bot đấu bot nằm trong `match_target_minutes`,
 hero đạt cấp 20 trong khoảng phút 14–17. Lệch thì chỉnh số trong bảng này, không sửa luật.

@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="MapLayout" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://sim/map/map_layout.gd" id="1_map"]
+
+[resource]
+script = ExtResource("1_map")
+data_path = "res://data/maps/clashborn_map.json"

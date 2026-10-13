@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://app/map_viewer.gd" id="1_viewer"]
+[ext_resource type="Script" path="res://view/map/map_view.gd" id="2_view"]
+[ext_resource type="Resource" path="res://data/maps/clashborn.tres" id="3_map"]
+
+[node name="MapViewer" type="Node2D"]
+script = ExtResource("1_viewer")
+
+[node name="MapView" type="Node2D" parent="."]
+script = ExtResource("2_view")
+layout = ExtResource("3_map")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Hud" type="CanvasLayer" parent="."]
+
+[node name="Help" type="Label" parent="Hud"]
+offset_left = 24.0
+offset_top = 16.0
+offset_right = 1200.0
+offset_bottom = 60.0
+theme_override_font_sizes/font_size = 28
+text = "Kéo: di chuyển · Cuộn/chụm: phóng to · 1 trụ · 2 lane · 3 trại · 4 điểm sinh · 5 ô đi được · 0 vừa màn · Esc: quay lại"

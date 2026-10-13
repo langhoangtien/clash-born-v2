@@ -152,4 +152,5 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M0.1 | Xong | 2026-10-14 | Project mở được, scene khởi động chạy; repo GitHub chờ bạn tạo |
 | M0.2 | Xong | 2026-10-14 | 5 test khung xanh; fixture cố ý sai bị bắt đỏ (sai assert, lỗi script, fail) |
 | M0.3 | Xong | 2026-10-14 | 40 test xanh; công thức v1 thành hàm thuần (D-32); né/chính xác nhân dồn (D-33); luật nhóm duy nhất (D-34) và lên cấp chỉ cộng thuộc tính (D-35) ghi vào luật, code ở M1.1 |
-| M0.4 | Chờ duyệt kế hoạch | | |
+| M0.4 | Xong | 2026-10-14 | 67 test xanh (+27 test map); build lại map ra đúng từng byte; màn xem map từ nút "Xem map" |
+| M0.5 | Chờ duyệt kế hoạch | | |

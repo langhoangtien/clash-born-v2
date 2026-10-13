@@ -56,10 +56,11 @@ clashborn_v2/
     actions/               thư viện hành động dùng chung cho kỹ năng/hiệu ứng
     controllers/           AI: lính, trụ, quái rừng, bot — chỉ sinh Command
     commands/              định nghĩa Command và kiểm tra hợp lệ
-    map/                   MapLayout, MapNavigation (mang từ v1)
+    map/                   MapLayout, MapNavigation, MapValidator, MapShape (mang từ v1)
   view/                    vẽ đơn vị, map, hiệu ứng, HUD, điều khiển cảm ứng;
                            ArtLibrary: tra hình theo id, thiếu thì hình tạm (ART.md)
-  app/                     scene chính, luồng màn hình
+    map/                   MapView, MapPainter (vẽ tạm bằng hình phẳng)
+  app/                     scene chính, luồng màn hình, màn xem map
   tests/                   test (framework nhỏ tự viết, xem mục 9)
   tools/                   script ngoài Godot (build map...)
 ```
@@ -329,7 +330,7 @@ Cơ chế mới (state, action, loại đơn vị) phải trả lời đủ các
 | Đạn bay (`CombatProjectile`) | Chép, gắn vào AttackSystem |
 | Chỉ số và tăng trưởng hero (`*_growth.tres`) | Brakk, Myra, Noctis lấy từ hero v1 cùng tên, **bỏ** `physical_damage` mỗi cấp (D-35); 9 hero còn lại giữ làm mẫu chỉ số cho hero sau |
 | Trang bị (14 + 23 món) | `modifiers` của v1 chuyển thẳng thành Modifier |
-| Map: `tools/map_build`, `data/maps`, `MapLayout`, `MapNavigation`, `MapPainter` | Chép nguyên kèm `test_map` |
+| Map: `tools/map_build`, `data/maps`, `MapLayout`, `MapNavigation`, `MapPainter` | Công cụ build và dữ liệu chép nguyên (build lại ra đúng từng byte). Code gõ kiểu lại; bỏ va chạm vật lý Godot và nút trụ trong scene của v1 (MAP-01); bán kính thân trụ thành tham số. Test dữ liệu và tìm đường của `test_map` mang sang |
 | Âm thanh, icon | Chép |
 | **Không mang:** `CombatEngine.step`, `moba_match.gd`, AI, sandbox, UI cũ | Viết mới theo kiến trúc này |
 

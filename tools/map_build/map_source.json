@@ -1,0 +1,76 @@
+{
+  "_comment": "Hand-authored semantic layer for the Clashborn map. Coordinates use the 600x600 reference-guide space (origin top-left). build_map.py multiplies by 'scale' to get Godot world units. Terrain shapes (trees, cliffs, river) are traced from reference_guide.png; everything gameplay-relevant is listed here explicitly.",
+  "scale": 16,
+  "frame": [36, 36, 564, 564],
+  "nav_cell": 32,
+  "lane_half_width": 9,
+  "border_forest": {"left": 52, "top": 72, "right": 545, "bottom": 535},
+  "bases": [
+    {"team": 0, "polygon": [[36,410],[95,410],[150,445],[168,470],[176,500],[176,564],[36,564]]},
+    {"team": 1, "polygon": [[407,36],[407,140],[477,210],[564,210],[564,36]]}
+  ],
+  "fountains": [[54,538], [546,62]],
+  "cores": [[64.3,517.0], [530.7,87.0]],
+  "lane_spawns": {
+    "0": {"TOP": [64,454], "MID": [112,468], "BOT": [140,524]},
+    "1": {"TOP": [470,84], "MID": [472,140], "BOT": [534,165]}
+  },
+  "lanes": {
+    "TOP": [[64,454],[64,110],[67,96],[77,86],[95,81],[400,81],[470,84]],
+    "MID": [[112,468],[145,440],[292,309],[436,177],[472,140]],
+    "BOT": [[140,524],[500,524],[518,521],[530,512],[534,495],[534,165]]
+  },
+  "towers": [
+    {"id": "blue_top_t1", "team": 0, "lane": "TOP", "tier": 1, "pos": [62,221]},
+    {"id": "blue_top_t2", "team": 0, "lane": "TOP", "tier": 2, "pos": [58,337]},
+    {"id": "blue_top_t3", "team": 0, "lane": "TOP", "tier": 3, "pos": [58,420]},
+    {"id": "blue_mid_t1", "team": 0, "lane": "MID", "tier": 1, "pos": [247,338]},
+    {"id": "blue_mid_t2", "team": 0, "lane": "MID", "tier": 2, "pos": [181,401]},
+    {"id": "blue_mid_t3", "team": 0, "lane": "MID", "tier": 3, "pos": [131,445]},
+    {"id": "blue_bot_t1", "team": 0, "lane": "BOT", "tier": 1, "pos": [495,511]},
+    {"id": "blue_bot_t2", "team": 0, "lane": "BOT", "tier": 2, "pos": [286,525]},
+    {"id": "blue_bot_t3", "team": 0, "lane": "BOT", "tier": 3, "pos": [161,520]},
+    {"id": "blue_base_guard_left", "team": 0, "lane": "BASE", "tier": 4, "pos": [73,490]},
+    {"id": "blue_base_guard_right", "team": 0, "lane": "BASE", "tier": 4, "pos": [90,505]},
+    {"id": "red_top_t1", "team": 1, "lane": "TOP", "tier": 1, "pos": [115,78]},
+    {"id": "red_top_t2", "team": 1, "lane": "TOP", "tier": 2, "pos": [322,88]},
+    {"id": "red_top_t3", "team": 1, "lane": "TOP", "tier": 3, "pos": [434,90]},
+    {"id": "red_mid_t1", "team": 1, "lane": "MID", "tier": 1, "pos": [310,282]},
+    {"id": "red_mid_t2", "team": 1, "lane": "MID", "tier": 2, "pos": [402,214]},
+    {"id": "red_mid_t3", "team": 1, "lane": "MID", "tier": 3, "pos": [450,166]},
+    {"id": "red_bot_t1", "team": 1, "lane": "BOT", "tier": 1, "pos": [532,371]},
+    {"id": "red_bot_t2", "team": 1, "lane": "BOT", "tier": 2, "pos": [533,288]},
+    {"id": "red_bot_t3", "team": 1, "lane": "BOT", "tier": 3, "pos": [533,195]},
+    {"id": "red_base_guard_left", "team": 1, "lane": "BASE", "tier": 4, "pos": [505,101]},
+    {"id": "red_base_guard_right", "team": 1, "lane": "BASE", "tier": 4, "pos": [527,116]}
+  ],
+  "camps": [
+    {"id": "camp_blue_01", "side": 0, "kind": "large",  "pos": [187,290]},
+    {"id": "camp_blue_02", "side": 0, "kind": "medium", "pos": [286,412]},
+    {"id": "camp_blue_03", "side": 0, "kind": "small",  "pos": [258,439]},
+    {"id": "camp_blue_04", "side": 0, "kind": "medium", "pos": [363,428]},
+    {"id": "camp_blue_05", "side": 0, "kind": "small",  "pos": [422,425]},
+    {"id": "camp_blue_06", "side": 0, "kind": "large",  "pos": [419,468]},
+    {"id": "camp_red_01",  "side": 1, "kind": "large",  "pos": [188,129]},
+    {"id": "camp_red_02",  "side": 1, "kind": "medium", "pos": [141,163]},
+    {"id": "camp_red_03",  "side": 1, "kind": "medium", "pos": [287,162]},
+    {"id": "camp_red_04",  "side": 1, "kind": "small",  "pos": [343,168]},
+    {"id": "camp_red_05",  "side": 1, "kind": "small",  "pos": [244,197]},
+    {"id": "camp_red_06",  "side": 1, "kind": "large",  "pos": [477,286]},
+    {"id": "camp_red_07",  "side": 1, "kind": "medium", "pos": [448,327]},
+    {"id": "boss_pit",     "side": -1, "kind": "boss",  "pos": [121,312]}
+  ],
+  "ramps": [
+    [65,371],[65,405],[182,369],[145,440],[181,524],[239,524],[270,447],[296,387],[339,387],
+    [386,355],[379,376],[387,424],[437,429],[497,401],[422,322],
+    [184,160],[91,202],[144,221],[194,226],[179,244],[230,171],[254,161],[272,191],[244,244],
+    [296,242],[231,274],[216,286],[288,303,12],[270,320,12],
+    [357,85],[404,85],[357,149],[436,175],[534,214],[534,261],[340,212],[437,250]
+  ],
+  "ramp_radius": 11,
+  "erase_rects": [[104,298,138,326]],
+  "clear_circles": [
+    {"pos": [54,538], "r": 20}, {"pos": [546,62], "r": 20},
+    {"pos": [64.3,517.0], "r": 12}, {"pos": [530.7,87.0], "r": 12}
+  ]
+}
