@@ -107,7 +107,7 @@ func test_ECO_01_passive_gold_every_interval_even_when_dead() -> void:
 	for t: int in range(every):
 		w.step()
 	assert_false(me.alive)
-	assert_eq(me.gold, 2)
+	assert_eq(me.gold, 1, "chết mất 25 × cấp (còn 0, ECO-05) rồi vẫn nhận vàng thụ động")
 
 
 func test_ECO_07_tower_gold_to_every_enemy_hero_whoever_kills() -> void:

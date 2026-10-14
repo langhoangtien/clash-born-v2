@@ -36,6 +36,11 @@ var respawn_tick: int = -1
 ## Kinh tế (ECO-01/07): vàng thưởng khi bị hạ (từ dữ liệu), vàng và số last hit của hero,
 ## kẻ gây đòn chết (DamageSystem ghi).
 var bounty_gold: int = 0
+var bounty_xp: int = 0
+## Hero (ABL-04): XP trong cấp hiện tại, điểm chưa dùng, số lần đã đổi lấy thuộc tính.
+var xp: float = 0.0
+var skill_points: int = 0
+var attribute_bonus_count: int = 0
 var gold: int = 0
 var last_hits: int = 0
 var killer_id: int = -1

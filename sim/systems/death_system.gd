@@ -30,6 +30,7 @@ func run(world: World) -> void:
 func _hero_waits(world: World, e: Entity) -> void:
 	if e.respawn_tick < 0:
 		Effects.remove_on_death(world, e)  # D-56
+		_hero_kill_rewards(world, e)
 		var wait: float = world.balance.respawn_base + world.balance.respawn_per_level * e.stats.level()
 		e.respawn_tick = world.tick + SimClock.seconds_to_ticks(wait)
 		e.order = Order.idle()
@@ -70,3 +71,39 @@ func _reward(world: World, e: Entity) -> void:
 	if killer != null and killer.kind == Entity.Kind.HERO and killer.team != e.team:
 		killer.gold += e.bounty_gold
 		killer.last_hits += 1
+	_share_xp(world, e, e.bounty_xp, null)
+
+
+## ECO-03: XP chia đều cho hero phe kia còn sống trong `xp_share_range` (kẻ hạ là hero thì
+## luôn được tính). Trả về danh sách hero được chia, theo id.
+func _share_xp(world: World, dead: Entity, amount: float, killer: Entity) -> Array[Entity]:
+	var takers: Array[Entity] = []
+	for h: Entity in world.entities:
+		if h.kind != Entity.Kind.HERO or not h.alive or h.team == dead.team:
+			continue
+		if h == killer or h.position.distance_to(dead.position) <= world.balance.xp_share_range:
+			takers.append(h)
+	for h: Entity in takers:
+		if amount > 0.0:
+			Progression.add_xp(world, h, amount / takers.size())
+	return takers
+
+
+## Hạ hero: XP và vàng cho kẻ hạ (hoặc chia cho hero phe kia gần đó nếu trụ/lính hạ);
+## nạn nhân mất vàng (ECO-05).
+func _hero_kill_rewards(world: World, e: Entity) -> void:
+	var b: BalanceSettings = world.balance
+	var level: int = e.stats.level()
+	var killer: Entity = world.find_entity(e.killer_id)
+	if killer != null and (killer.kind != Entity.Kind.HERO or killer.team == e.team):
+		killer = null
+	var takers: Array[Entity] = _share_xp(world, e, b.hero_kill_xp_base + b.hero_kill_xp_per_level * level, killer)
+	var gold: int = b.hero_kill_gold_base + b.hero_kill_gold_per_level * level
+	var paid: Array[Entity] = takers
+	if killer != null:
+		paid = [killer]
+	for h: Entity in paid:
+		h.gold += gold / paid.size()
+	if not paid.is_empty():
+		world.emit(&"kill_credited", paid[0].id, e.id, gold)
+	e.gold = maxi(0, e.gold - b.death_gold_per_level * level)

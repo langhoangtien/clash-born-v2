@@ -17,6 +17,7 @@ static func hero(world: World, def: HeroDef, team: int, position: Vector2, level
 		Vector3(def.base_strength, def.base_agility, def.base_intelligence),
 		Vector3(def.strength_growth, def.agility_growth, def.intelligence_growth))
 	e.stats.set_level(level, 0, world.balance.attribute_bonus)
+	e.skill_points = 1  # ABL-04: cấp 1 có 1 điểm
 	world.add_entity(e)
 	Abilities.setup_hero(world, e, def)
 	return e
@@ -34,6 +35,7 @@ static func unit(world: World, def: UnitDef, kind: Entity.Kind, team: int, posit
 	e.projectile_speed = def.stats.projectile_speed
 	e.stats = stats_from(world.balance, def.stats)
 	e.bounty_gold = def.bounty_gold
+	e.bounty_xp = def.bounty_xp
 	return world.add_entity(e)
 
 

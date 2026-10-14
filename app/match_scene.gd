@@ -25,6 +25,7 @@ var runner: SimRunner
 var hero: Entity
 var input: MatchInput = MatchInput.new()
 var result: ResultPanel
+var hero_def: HeroDef
 
 
 func _ready() -> void:
@@ -34,7 +35,8 @@ func _ready() -> void:
 	var library: ContentLibrary = ContentLibrary.load_dir()
 	MatchSetup.spawn_structures(world, library)
 	MatchSetup.add_lane_creeps(world, library, true)
-	hero = UnitFactory.hero(world, library.heroes[HERO_ID], 0, world.map.fountain_point(0))
+	hero_def = library.heroes[HERO_ID]
+	hero = UnitFactory.hero(world, hero_def, 0, world.map.fountain_point(0))
 	units_view.world = world
 	input.world = world
 	input.hero = hero
@@ -80,6 +82,9 @@ func cycle_speed() -> void:
 func _before_step() -> void:
 	units_view.capture_previous()
 	input.flush()
+	var slot: int = AutoSkill.pick(world, hero, hero_def.bot_skill_order)  # tạm tới M3.8
+	if slot != -2:
+		world.submit(Command.level_up(hero.id, slot))
 
 
 ## Joystick ảo ưu tiên; không chạm thì đọc WASD / mũi tên.

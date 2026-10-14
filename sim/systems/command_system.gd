@@ -14,6 +14,10 @@ func run(world: World) -> void:
 		if command.reject_reason != Command.Reject.NONE:
 			world.rejected_commands.append(command)
 			continue
+		if command.type == Command.Type.LEVEL_UP:
+			Progression.spend_point(world, unit, command.slot)  # không đổi lệnh hiện tại
+			world.command_log.append(command)
+			continue
 		var order: Order = _order_for(world, command, unit)
 		if unit.cast != null:
 			unit.queued_order = order  # D-59: đang tung chiêu, lệnh chờ tới khi tung xong
@@ -52,8 +56,8 @@ func _clamped_point(unit: Entity, command: Command) -> Vector2:
 func _check(world: World, command: Command, unit: Entity) -> Command.Reject:
 	if unit == null:
 		return Command.Reject.UNKNOWN_UNIT
-	if not unit.alive:
-		return Command.Reject.UNIT_DEAD
+	if not unit.alive and command.type != Command.Type.LEVEL_UP:
+		return Command.Reject.UNIT_DEAD  # cộng điểm được cả khi đang chờ hồi sinh
 	if command.type == Command.Type.MOVE_TO:
 		if not command.point.is_finite():
 			return Command.Reject.POINT_OUTSIDE_MAP
@@ -66,6 +70,8 @@ func _check(world: World, command: Command, unit: Entity) -> Command.Reject:
 			return Command.Reject.BAD_DIRECTION
 	if command.type == Command.Type.CAST:
 		return _check_cast(world, command, unit)
+	if command.type == Command.Type.LEVEL_UP:
+		return Progression.level_problem(world, unit, command.slot)
 	return Command.Reject.NONE
 
 

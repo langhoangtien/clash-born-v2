@@ -22,4 +22,5 @@ stats = SubResource("Resource_6fuol")
 id = &"creep_melee"
 display_name = "Lính cận chiến"
 art_id = &"creep_melee"
+bounty_xp = 57
 bounty_gold = 36

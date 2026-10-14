@@ -3,9 +3,12 @@ extends RefCounted
 ## Yêu cầu từ người chơi, bot hoặc controller (ARCHITECTURE mục 1). Không đổi trận
 ## trực tiếp; CommandSystem kiểm tra rồi mới thành Order (CMD-01..05).
 
-enum Type { MOVE_TO, MOVE_DIR, STOP, ATTACK, ATTACK_AUTO, CAST }
+enum Type { MOVE_TO, MOVE_DIR, STOP, ATTACK, ATTACK_AUTO, CAST, LEVEL_UP }
 enum Reject { NONE, UNKNOWN_UNIT, POINT_OUTSIDE_MAP, BAD_DIRECTION, BAD_TARGET, UNIT_DEAD,
-	NOT_LEARNED, ON_COOLDOWN, NO_MANA, CANNOT_CAST }
+	NOT_LEARNED, ON_COOLDOWN, NO_MANA, CANNOT_CAST, NO_SKILL_POINT, CANNOT_LEVEL }
+
+## LEVEL_UP: ô đặc biệt = đổi điểm lấy thuộc tính (ABL-04).
+const ATTRIBUTES: int = -1
 
 var type: Type
 var entity_id: int
@@ -67,6 +70,15 @@ static func cast(id: int, ability_slot: int, target: int = -1, at: Vector2 = Vec
 	c.target_id = target
 	c.point = at
 	c.direction = dir
+	return c
+
+
+## ABL-04: dùng một điểm nâng kỹ năng ô `ability_slot` (hoặc ATTRIBUTES).
+static func level_up(id: int, ability_slot: int) -> Command:
+	var c: Command = Command.new()
+	c.type = Type.LEVEL_UP
+	c.entity_id = id
+	c.slot = ability_slot
 	return c
 
 

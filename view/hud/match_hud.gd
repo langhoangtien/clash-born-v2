@@ -46,7 +46,11 @@ func _draw() -> void:
 	var max_mana: float = maxf(1.0, hero.stats.get_stat(StatId.Id.MAX_MANA))
 	_bar(font, Vector2(x, 30), hero.health, max_hp, HP_COLOR)
 	_bar(font, Vector2(x, 60), hero.mana, max_mana, MANA_COLOR)
-	_text(font, Vector2(x, 120), "Vàng %d    Last hit %d" % [hero.gold, hero.last_hits], 24, Color(1, 0.85, 0.3), false)
+	_text(font, Vector2(x, 120), "Cấp %d   Vàng %d   Last hit %d" % [hero.stats.level(), hero.gold, hero.last_hits], 24, Color(1, 0.85, 0.3), false)
+	if hero.stats.level() < world.balance.hero_max_level:
+		var need: float = float(Progression.xp_to_next(world, hero.stats.level()))
+		draw_rect(Rect2(Vector2(x, 88), Vector2(BAR.x, 6)), Color(0, 0, 0, 0.7))
+		draw_rect(Rect2(Vector2(x, 88), Vector2(BAR.x * clampf(hero.xp / need, 0, 1), 6)), Color(0.75, 0.5, 1.0))
 	var wait: String = respawn_text(world, hero)
 	if wait != "":
 		_text(font, Vector2(size.x * 0.5, size.y * 0.4), wait, 48, Color(1, 0.4, 0.4), true)

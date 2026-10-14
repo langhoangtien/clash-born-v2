@@ -52,6 +52,12 @@ extends Resource
 @export_group("Hero")
 ## ABL-04: mỗi lần đổi điểm thừa cộng chừng này vào cả 3 thuộc tính.
 @export var attribute_bonus: float
+## ABL-04: số lần đổi điểm lấy thuộc tính tối đa; cấp tối đa.
+@export var attribute_bonus_max: int
+@export var hero_max_level: int
+## XP để lên cấp kế: xp_base + xp_per_level × (cấp hiện tại − 1).
+@export var xp_base: int
+@export var xp_per_level: int
 ## ECO-04: hồi sinh sau respawn_base + respawn_per_level × cấp giây.
 @export var respawn_base: float
 @export var respawn_per_level: float
@@ -64,6 +70,15 @@ extends Resource
 ## ECO-01: cứ passive_gold_interval giây mỗi hero được passive_gold vàng.
 @export var passive_gold: int
 @export var passive_gold_interval: float
+## ECO-03: XP chia cho hero phe kia trong tầm này khi đơn vị chết.
+@export var xp_share_range: float
+## Hạ hero: XP = base + per_level × cấp nạn nhân; vàng = base + per_level × cấp nạn nhân.
+@export var hero_kill_xp_base: float
+@export var hero_kill_xp_per_level: float
+@export var hero_kill_gold_base: int
+@export var hero_kill_gold_per_level: int
+## ECO-05: chết mất death_gold_per_level × cấp vàng.
+@export var death_gold_per_level: int
 
 @export_group("Điều khiển (CTL)")
 ## CTL-02: tầm tìm mục tiêu = tầm đánh + chừng này.

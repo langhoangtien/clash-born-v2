@@ -230,7 +230,9 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 - `ABL-04` Lên cấp hero nhận 1 điểm. Điểm dùng để: nâng Q/W lên cấp n khi hero
   đạt cấp `2n − 1`; nâng R lên cấp 1/2/3 khi hero đạt cấp 6/11/16; hoặc đổi lấy
   `attribute_bonus` mọi thuộc tính (tối đa `attribute_bonus_max` lần). Điểm chưa
-  dùng được giữ lại.
+  dùng được giữ lại. Cấp 1 có sẵn 1 điểm; cộng điểm được cả khi chờ hồi sinh (lệnh
+  `LEVEL_UP`, không đổi lệnh đang làm). Lên cấp / cộng thuộc tính: máu và mana hiện tại
+  cộng đúng phần tối đa tăng thêm.
 - `ABL-05` Đạn định hướng (skillshot): bay thẳng theo hướng chọn tới tầm tối đa,
   trúng kẻ địch **đầu tiên** chạm phải (theo khoảng cách dọc đường bay; hòa thì id
   nhỏ hơn), không trúng công trình, trừ khi kỹ năng khai báo `pierce`. Đạn định
@@ -446,9 +448,14 @@ Bảng ưu tiên (dòng trên thắng):
   Vàng thụ động: cứ `passive_gold_interval` giây (tính từ tick 0) mỗi hero được
   `passive_gold` vàng, kể cả khi đang chờ hồi sinh.
 - `ECO-07` Trụ đổ (ai phá cũng vậy): mọi hero đội kia nhận `bounty_gold` của trụ.
-- `ECO-02` Chặn (deny): đánh lính phe mình dưới `deny_hp_fraction` máu; kẻ địch chỉ
-  nhận `deny_xp_fraction` XP.
-- `ECO-03` XP chia cho hero trong `xp_share_range` khi đơn vị địch chết.
+- `ECO-02` ~~Chặn (deny)~~ — bỏ (D-60): không đánh được lính phe mình.
+- `ECO-03` Đơn vị chết → `bounty_xp` (hero: `hero_kill_xp_base + hero_kill_xp_per_level ×
+  cấp nạn nhân`) chia đều cho hero **phe kia, còn sống**, trong `xp_share_range` quanh nơi
+  chết; hero hạ được luôn được tính. XP lên cấp kế: `xp_base + xp_per_level × (cấp − 1)`;
+  tối đa `hero_max_level` (20), tới cấp tối đa không giữ XP.
+- `ECO-08` Hạ hero: kẻ hạ (hero) nhận `hero_kill_gold_base + hero_kill_gold_per_level × cấp
+  nạn nhân` vàng, sự kiện `kill_credited`; trụ/lính/fountain hạ thì vàng chia đều cho hero
+  phe kia nhận XP (ECO-03).
 - `ECO-04` Hero chết không bị gỡ khỏi trận: nằm chờ (không nhắm được, không đi, không
   chiếm chỗ, mọi lệnh bị từ chối `UNIT_DEAD`), hết khóa mục tiêu. Sau
   `respawn_base + respawn_per_level × cấp` giây hồi sinh tại fountain phe mình, đầy máu và
@@ -596,9 +603,10 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | hero_structure_damage | 0.5 | | jungle_respawn_check | 60 s |
 | creep_structure_damage | 0.65 | | jungle_leash | 600 |
 | siege_structure_damage | 1.25 | | jungle_aggro_time | 5 s |
+| hero_kill_gold base / per_level | 150 / 10 | | hero_max_level | 20 |
 | passive_gold / interval | 1 / 2 s | | camp_spawn_box | 300 |
-| deny_hp_fraction | 0.5 | | bot_retreat_hp / recover_hp | 0.30 / 0.80 |
-| deny_xp_fraction | 0.5 | | bot_kill_hp / kill_range | 0.35 / 900 |
+| xp_base / xp_per_level | 120 / 30 | | bot_retreat_hp / recover_hp | 0.30 / 0.80 |
+| hero_kill_xp base / per_level | 60 / 30 | | bot_kill_hp / kill_range | 0.35 / 900 |
 | xp_share_range | 1200 | | bot_chase_leash | 1200 |
 | respawn_base / per_level | 5 / 2 s | | bot_trade_window | 3 s |
 | death_gold_per_level | 25 | | bot_lane_offset | 350 |

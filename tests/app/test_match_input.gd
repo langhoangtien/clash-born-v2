@@ -195,3 +195,22 @@ func test_CTL_02_attack_buttons_hit_test() -> void:
 	b.release(0)
 	assert_false(b.is_held(Rules.AttackMode.CREEP))
 	b.free()
+
+
+func test_ABL_04_auto_skill_follows_suggested_order() -> void:
+	var lib: ContentLibrary = ContentLibrary.load_dir()
+	var w: World = World.new(1, load("res://content/balance/balance_settings.tres") as BalanceSettings)
+	var def: HeroDef = lib.heroes[&"brakk"]
+	var hero: Entity = UnitFactory.hero(w, def, 0, Vector2(500, 500))
+	var picks: Array[int] = []
+	for level: int in range(1, 21):
+		if level > 1:
+			Progression.add_xp(w, hero, Progression.xp_to_next(w, level - 1))
+		var slot: int = AutoSkill.pick(w, hero, def.bot_skill_order)
+		picks.append(slot)
+		Progression.spend_point(w, hero, slot)
+	assert_eq(picks[0], AbilityDef.Slot.Q)
+	assert_eq(picks[5], AbilityDef.Slot.R, "cấp 6 lên R")
+	assert_eq(Abilities.of(hero, AbilityDef.Slot.Q).rank, 5)
+	assert_eq(Abilities.of(hero, AbilityDef.Slot.R).rank, 3)
+	assert_eq(hero.skill_points, 0)
