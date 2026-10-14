@@ -506,7 +506,12 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   trống rộng ≥ 12 phải cách chỗ hero đứng được không quá 48 — tức không có khe nào
   trông như lối đi mà hero không lọt.
 - `MAP-02` Map 8448 × 8448; Blue dưới–trái, Red trên–phải; 3 lane; sông; vách đá chỉ
-  qua ở dốc; 11 trụ mỗi đội; 13 trại thường + 1 boss pit.
+  qua ở dốc; 11 trụ mỗi đội; 6 trại mỗi phe + 1 boss pit trên trục sông.
+- `MAP-04` Cân bằng (D-49): map **đối xứng xoay 180°** quanh tâm (công cụ build giữ nửa
+  Blue, sinh nửa Red). Lane an toàn của Blue là BOT, của Red là TOP: ở lane an toàn đợt
+  lính đầu gặp nhau ngay ngoài tầm trụ 1 của phe mình (`tower_layout` BOT 760), lane khó
+  xa trụ 1 (TOP 2000), mid gặp ở giữa sông, trụ 1 mid cách đều (1200). Đợt đầu luôn
+  gặp ngoài tầm mọi trụ 1; tâm trụ cách rừng/vách ≥ 160.
 
 ## INV — Bất biến (test soak kiểm tra mỗi tick)
 

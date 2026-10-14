@@ -48,6 +48,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-46 | 2026-10-14 | Nút ĐÁNH không có mục tiêu trong tầm tìm → đánh gió tại chỗ (trong mô phỏng, tốn một nhịp đánh). PC dùng J/K/L giả lập 3 nút đánh; chưa cần APK Android | Giống Liên Quân; đánh gió nằm trong SIM để online và phát lại thấy giống nhau |
 | D-47 | 2026-10-14 | Chỉ số công trình: T1 1800 máu/10 giáp/110 sát thương, T2 2200/12/130, T3 2500/14/150, T4 2600/15/150, cùng 1 đòn/giây tầm 550; nhà chính 4000/15, không bắn | Đã duyệt; cân lại sau chơi thử |
 | D-48 | 2026-10-14 | Lính đường theo Dota: cận chiến 450 máu/20 sát thương/giáp 2/BAT 1.0/tầm 100; đánh xa 300/24/0/BAT 1.0/tầm 500; công thành 800/40/0/BAT 2.7/tầm 690; tốc chạy 240 (công thành 220); đợt đầu giây 15 | BAT lấy theo Dota (lính 1.0, xe 2.7) để buff tốc đánh diện rộng tác dụng đúng tỉ lệ |
+| D-49 | 2026-10-14 | Map đối xứng xoay 180° (giữ nửa Blue), vai lane kiểu Dota: lane an toàn gặp gần trụ 1 phe mình nhưng ngoài tầm, lane khó xa trụ, mid gặp giữa sông; boss pit trên trục sông cách đều hai base; 6 trại mỗi phe. Có test MAP-04 | Sau chơi thử: chỗ gặp lính và tầm nhìn đường gank qua sông lệch giữa hai phe |
 
 ## Chờ chốt
 

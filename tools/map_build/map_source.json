@@ -3,6 +3,9 @@
   "scale": 16,
   "frame": [36, 36, 564, 564],
   "gap_min_world": 112,
+  "symmetry": "rotate180",
+  "tower_clear_radius": 12,
+  "tower_layout": {"_note": "D-49: khoảng cách (thế giới) từ điểm gặp của lane tới T1 Blue; Red xoay 180°", "TOP": 2000, "MID": 1200, "BOT": 760, "lateral": 150},
   "nav_cell": 32,
   "lane_half_width": 9,
   "border_forest": {"left": 52, "top": 72, "right": 545, "bottom": 535},
@@ -23,8 +26,8 @@
   },
   "towers": [
     {"id": "blue_top_t1", "team": 0, "lane": "TOP", "tier": 1, "pos": [62,221]},
-    {"id": "blue_top_t2", "team": 0, "lane": "TOP", "tier": 2, "pos": [58,337]},
-    {"id": "blue_top_t3", "team": 0, "lane": "TOP", "tier": 3, "pos": [58,420]},
+    {"id": "blue_top_t2", "team": 0, "lane": "TOP", "tier": 2, "pos": [74,337]},
+    {"id": "blue_top_t3", "team": 0, "lane": "TOP", "tier": 3, "pos": [74,420]},
     {"id": "blue_mid_t1", "team": 0, "lane": "MID", "tier": 1, "pos": [247,338]},
     {"id": "blue_mid_t2", "team": 0, "lane": "MID", "tier": 2, "pos": [181,401]},
     {"id": "blue_mid_t3", "team": 0, "lane": "MID", "tier": 3, "pos": [131,445]},
@@ -59,7 +62,7 @@
     {"id": "camp_red_05",  "side": 1, "kind": "small",  "pos": [244,197]},
     {"id": "camp_red_06",  "side": 1, "kind": "large",  "pos": [477,286]},
     {"id": "camp_red_07",  "side": 1, "kind": "medium", "pos": [448,327]},
-    {"id": "boss_pit",     "side": -1, "kind": "boss",  "pos": [121,312]}
+    {"id": "boss_pit", "side": -1, "kind": "boss", "pos": [236, 236], "_note": "D-49: trên trục sông, cách đều hai base"}
   ],
   "ramps": [
     [65,371],[65,405],[182,369],[145,440],[181,524],[239,524],[270,447],[296,387],[339,387],

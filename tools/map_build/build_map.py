@@ -25,6 +25,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 OUT_DIR = os.path.join(ROOT, "data", "maps")
 SRC = json.load(open(os.path.join(HERE, "map_source.json")))
+sys.path.insert(0, HERE)
+from symmetry import Sym, place_t1  # noqa: E402
+SYM = Sym(SRC["frame"]) if SRC.get("symmetry") == "rotate180" else None
+if SYM:
+    SRC = SYM.source(SRC)
 
 SCALE = SRC["scale"]
 FX0, FY0, FX1, FY1 = SRC["frame"]
@@ -58,6 +63,8 @@ sizes = ndi.sum(water, lab, range(1, n + 1))
 river = np.isin(lab, [i + 1 for i, s in enumerate(sizes) if s >= 300])
 tree |= ndi.binary_fill_holes(water & ~river)
 water = ndi.binary_fill_holes(river)
+if SYM:
+    black, water, tree = SYM.mask(black), SYM.mask(water), SYM.mask(tree)
 
 def disk(cx, cy, r):
     return (xx - cx) ** 2 + (yy - cy) ** 2 <= r * r
@@ -86,6 +93,20 @@ sizes = ndi.sum(black, lab, range(1, n + 1))
 cliffs = np.isin(lab, [i + 1 for i, s in enumerate(sizes) if s >= 6])
 cliffs = ndi.binary_dilation(cliffs, iterations=1) & inside
 
+# ---------------------------------------------------------------- towers (D-49)
+if SYM:
+    _blocked = (tree | black | ~inside)
+    _dist = ndi.distance_transform_edt(~_blocked)
+    def _clear(p):
+        x, y = int(p[0]), int(p[1])
+        return _dist[y, x] if 0 <= x < Wd and 0 <= y < H else 0.0
+    layout = SRC["tower_layout"]
+    blue = [dict(t) for t in SRC["towers"] if t["team"] == 0]
+    for t in blue:
+        if t["tier"] == 1:
+            t["pos"] = place_t1(SYM, SRC["lanes"][t["lane"]], layout[t["lane"]], layout["lateral"], _clear, SCALE)
+    SRC["towers"] = SYM.towers(blue)
+
 # polygons of semantic areas in guide space
 base_polys = [Polygon(b["polygon"]) for b in SRC["bases"]]
 lane_lines = {k: LineString(v) for k, v in SRC["lanes"].items()}
@@ -108,7 +129,7 @@ bases = raster(unary_union(base_polys))
 # trees: never inside bases (open Dota-style base), never on lanes or key points
 tree &= ~bases & ~lane_corridor
 keep_clear = [(c["pos"], c["r"]) for c in SRC["clear_circles"]]
-keep_clear += [(t["pos"], 6) for t in SRC["towers"]]
+keep_clear += [(t["pos"], SRC.get("tower_clear_radius", 6)) for t in SRC["towers"]]
 keep_clear += [(c["pos"], 8) for c in SRC["camps"]]
 for team in ("0", "1"):
     keep_clear += [(p, 7) for p in SRC["lane_spawns"][team].values()]
@@ -116,6 +137,8 @@ for (cx, cy), r in keep_clear:
     tree &= ~disk(cx, cy, r)
 for c in SRC["clear_circles"]:
     cliffs &= ~disk(c["pos"][0], c["pos"][1], c["r"])
+for t in SRC["towers"]:  # D-49: quanh trụ không có vách (MAP-04)
+    cliffs &= ~disk(t["pos"][0], t["pos"][1], SRC.get("tower_clear_radius", 6))
 
 bf = SRC["border_forest"]
 border = inside & ((xx < bf["left"]) | (yy < bf["top"]) | (xx > bf["right"]) | (yy > bf["bottom"]))
@@ -124,6 +147,9 @@ forest = tree | border
 lab, n = ndi.label(forest)
 sizes = ndi.sum(forest, lab, range(1, n + 1))
 forest = np.isin(lab, [i + 1 for i, s in enumerate(sizes) if s >= 20])
+
+if SYM:
+    forest, cliffs = SYM.mask(forest), SYM.mask(cliffs)
 
 # ---------------------------------------------------------------- readability (D-43)
 # Không để khe trông như đi được mà hero không lọt: chỗ trống hẹp hơn gap_min_world

@@ -56,9 +56,11 @@ func test_MAP_02_tower_prerequisites() -> void:
 	assert_eq(map.tower_prerequisites[map.tower_index("red_base_guard_left")].size(), 3, "T4 cần một trong ba T3")
 
 
-func test_MAP_02_thirteen_camps_plus_boss_pit() -> void:
-	assert_eq(map.camp_points.size(), 14)
+func test_MAP_02_six_camps_per_side_plus_boss_pit() -> void:
+	assert_eq(map.camp_points.size(), 13)
 	assert_eq(map.camp_kinds.count("boss"), 1)
+	assert_eq(Array(map.camp_sides).count(0), 6)
+	assert_eq(Array(map.camp_sides).count(1), 6)
 
 
 func test_MAP_02_three_distinct_lanes_from_spawn_to_enemy_spawn() -> void:
@@ -133,3 +135,50 @@ func _standable_near(x: int, y: int, reach: int, need: float) -> bool:
 			if dx * dx + dy * dy <= reach * reach and _pixel(x + dx, y + dy) >= need:
 				return true
 	return false
+
+
+## MAP-04 (D-49): map đối xứng xoay 180° quanh tâm; lane an toàn Blue (BOT) ↔ Red (TOP).
+func test_MAP_04_rotational_symmetry() -> void:
+	var size: Vector2 = map.world_size()
+	var rot: Callable = func(p: Vector2) -> Vector2: return size - p
+	assert_true(map.fountain_point(1).distance_to(rot.call(map.fountain_point(0))) < 1.0)
+	assert_true(map.core_point(1).distance_to(rot.call(map.core_point(0))) < 1.0)
+	var swap: Dictionary = {"top": "bot", "mid": "mid", "bot": "top"}
+	for lane: String in ["top", "mid", "bot"]:
+		for tier: int in [1, 2, 3]:
+			var blue: Vector2 = map.tower_point("blue_%s_t%d" % [lane, tier])
+			var red: Vector2 = map.tower_point("red_%s_t%d" % [swap[lane], tier])
+			assert_true(red.distance_to(rot.call(blue)) < 1.0, "trụ %s T%d đối xứng" % [lane, tier])
+	for i: int in range(1, 40):
+		var p: Vector2 = Vector2(size.x * i / 40.0, size.y * (i * 7 % 40) / 40.0)
+		# Sai số làm tròn khi vẽ polygon và gộp pixel: tối đa 2 bậc (8 đơn vị).
+		assert_near(map.clearance_at(p), map.clearance_at(rot.call(p) - Vector2(0.01, 0.01)), 8.0, "địa hình đối xứng tại %s" % p)
+
+
+## MAP-04: đợt lính đầu gặp nhau ngoài tầm mọi trụ 1; trụ cách rừng/vách đủ xa.
+func test_MAP_04_first_meeting_point_out_of_tower_range() -> void:
+	var reach: float = 550.0 + 52.0 + 22.0
+	for lane: String in MapLayout.LANES:
+		var route: PackedVector2Array = map.route(lane, 0)
+		var meet: Vector2 = _midpoint(route)
+		for i: int in range(map.tower_ids.size()):
+			if map.tower_lanes[i] == lane and map.tower_tiers[i] == 1:
+				assert_true(map.tower_points[i].distance_to(meet) > reach + 50.0, "%s cách điểm gặp %.0f" % [map.tower_ids[i], map.tower_points[i].distance_to(meet)])
+
+
+func test_MAP_04_towers_clear_of_forest_and_cliffs() -> void:
+	for i: int in range(map.tower_ids.size()):
+		assert_true(map.clearance_at(map.tower_points[i]) >= 160.0, "%s chỉ cách vật cản %.0f" % [map.tower_ids[i], map.clearance_at(map.tower_points[i])])
+
+
+func _midpoint(route: PackedVector2Array) -> Vector2:
+	var total: float = 0.0
+	for i: int in range(1, route.size()):
+		total += route[i - 1].distance_to(route[i])
+	var half: float = total * 0.5
+	for i: int in range(1, route.size()):
+		var seg: float = route[i - 1].distance_to(route[i])
+		if half <= seg:
+			return route[i - 1].lerp(route[i], half / seg)
+		half -= seg
+	return route[-1]
