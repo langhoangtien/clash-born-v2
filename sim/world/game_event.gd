@@ -10,6 +10,11 @@ var target_id: int = -1
 var amount: float = 0.0
 ## Lý do (vd `effect_removed`: expired, depleted, removed_by_event, dispelled, owner_died).
 var reason: StringName
+## Số thứ tự toàn trận (World cấp) và tầng trigger đã sinh ra nó (EFF-04; 0 = sự kiện gốc).
+var seq: int = 0
+var depth: int = 0
+## `effect_removed`: bản hiệu ứng vừa bị gỡ (điều kiện this_effect_*).
+var effect: EffectInstance
 
 
 static func make(p_type: StringName, p_tick: int, p_source: int, p_target: int, p_amount: float = 0.0, p_reason: StringName = &"") -> GameEvent:

@@ -5,6 +5,11 @@ extends SimSystem
 
 
 func run(world: World) -> void:
+	resolve(world)
+
+
+## Xử lý mọi yêu cầu đang chờ (TriggerSystem cũng gọi để sát thương của trigger có ngay).
+static func resolve(world: World) -> void:
 	var requests: Array[DamageRequest] = world.damage_requests
 	world.damage_requests = []
 	for r: DamageRequest in requests:
@@ -19,11 +24,12 @@ func run(world: World) -> void:
 		var factor: float = Rules.damage_factor(world, target, r.damage_type)  # ST-07, ST-11
 		if factor <= 0.0:
 			continue
-		amount = Effects.absorb(world, target, amount * factor)  # EFF-06
+		amount *= factor
 		if r.is_attack:
 			world.emit(&"attack_landed", r.source_id, r.target_id, amount)
 			if source != null and source.kind == Entity.Kind.HERO and target.kind == Entity.Kind.HERO and source.team != target.team:
 				world.emit(&"hero_attacked_hero", r.source_id, r.target_id)  # DEF-11
+		amount = Effects.absorb(world, target, amount)  # EFF-06
 		target.health -= amount
 		world.emit(&"damage_taken", r.source_id, r.target_id, amount)
 		if target.health <= 0.0:
@@ -34,7 +40,7 @@ func run(world: World) -> void:
 
 
 ## CMB-04: hệ số sát thương lên công trình theo loại kẻ gây.
-func _structure_factor(world: World, source: Entity, target: Entity) -> float:
+static func _structure_factor(world: World, source: Entity, target: Entity) -> float:
 	if not Rules.is_structure(target) or source == null:
 		return 1.0
 	match source.kind:

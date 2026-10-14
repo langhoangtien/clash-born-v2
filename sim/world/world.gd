@@ -43,6 +43,11 @@ static var _nav_cache: Dictionary[String, MapNavigation] = {}
 
 var _next_id: int = 1
 var _next_serial: int = 0
+## Số thứ tự sự kiện cuối cùng và tầng trigger hiện tại (TriggerSystem đặt, EFF-04).
+var event_seq: int = 0
+var emit_depth: int = 0
+## Vùng có độ trễ đang chờ (AreaAction), TriggerSystem chạy khi tới tick.
+var pending_areas: Array[PendingArea] = []
 var _pending: Array[Command] = []
 var _systems: Array[Array] = []  # [phase, thứ tự đăng ký, SimSystem]
 
@@ -57,6 +62,7 @@ func _init(seed_value: int, p_balance: BalanceSettings) -> void:
 	add_system(AttackSystem.new(), Phase.ATTACK)
 	add_system(FountainSystem.new(), Phase.ATTACK)
 	add_system(DamageSystem.new(), Phase.DAMAGE)
+	add_system(TriggerSystem.new(), Phase.TRIGGER)
 	add_system(DeathSystem.new(), Phase.DEATH)
 	add_system(EconomySystem.new(), Phase.SPAWN)
 
@@ -131,8 +137,13 @@ func remove_entity(e: Entity) -> void:
 	entities.erase(e)
 
 
-func emit(type: StringName, source_id: int, target_id: int, amount: float = 0.0, reason: StringName = &"") -> void:
-	events.append(GameEvent.make(type, tick, source_id, target_id, amount, reason))
+func emit(type: StringName, source_id: int, target_id: int, amount: float = 0.0, reason: StringName = &"") -> GameEvent:
+	var ev: GameEvent = GameEvent.make(type, tick, source_id, target_id, amount, reason)
+	event_seq += 1
+	ev.seq = event_seq
+	ev.depth = emit_depth
+	events.append(ev)
+	return ev
 
 
 ## Số thứ tự toàn trận cho bản hiệu ứng (EffectInstance.serial), tăng dần.

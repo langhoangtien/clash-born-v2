@@ -340,6 +340,15 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   hạn (3 s, chu kỳ 1 s → 3 lần). Sát thương chu kỳ tính cho kẻ áp hiệu ứng.
 - `EFF-12` STACK: modifier nhân theo số tầng (ADD × tầng; MULTIPLY: phần trăm × tầng, vd
   +10% × 3 tầng = +30%).
+- `EFF-14` (M3.3) Xử lý trigger (pha TRIGGER, sau DAMAGE): sự kiện theo thứ tự phát, kể cả
+  sự kiện do trigger sinh ra. Mỗi sự kiện: trigger vai SOURCE trên kẻ gây, rồi vai TARGET
+  trên đối tượng; sát thương do trigger gây ra tính ngay (có thể kích hoạt tiếp tới tầng 4,
+  EFF-04); rồi mới gỡ hiệu ứng `removed_by` (EFF-05). Sự kiện phát sau pha TRIGGER (chết,
+  hồi sinh…) xử lý ở tick sau. Chủ hiệu ứng phải còn sống. Xác suất tạm dùng ngẫu nhiên có
+  seed; PRD ở M3.6b (RNG-01). Hành động trong trigger tính kẻ gây là chủ hiệu ứng.
+- `EFF-15` Kỹ năng vùng (AreaAction) trúng đơn vị **phe địch, không phải công trình**, nhắm
+  được (DEF-05), mép thân trong vùng; tâm/hướng chốt lúc tung, có `delay` thì nổ sau đó;
+  đơn vị trúng xử lý theo id.
 - `EFF-13` Chủ hiệu ứng chết → mọi hiệu ứng bị gỡ (lý do `owner_died`), trừ hiệu ứng có tag
   `passive` (D-56).
 
@@ -351,7 +360,7 @@ kill_credited, structure_destroyed, unit_spawned, gold_changed, level_up,
 skill_leveled, talent_chosen, dash_finished, projectile_hit, item_used,
 knockback_finished, dispelled, attack_target_changed, innate_ranked, mana_burned,
 lethal_damage, reincarnated`.
-`effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `dispelled`, `owner_died`.
+`effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `removed` (hành động RemoveEffect), `dispelled`, `owner_died`.
 Thêm sự kiện = thay đổi luật.
 
 ---

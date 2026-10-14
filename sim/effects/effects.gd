@@ -27,6 +27,7 @@ static func apply(world: World, owner: Entity, def: EffectDef, source: Entity, v
 	elif def.stacking == EffectDef.Stacking.STACK:
 		inst.stacks = mini(inst.stacks + 1, maxi(1, def.max_stacks))
 	inst.values = values.duplicate()
+	inst.applied_seq = world.event_seq  # EFF-05: chỉ sự kiện sau mốc này làm mất
 	_start(world, owner, inst, duration)
 	refresh_states(owner)
 	world.emit(&"effect_applied", source_id, owner.id, inst.stacks)
@@ -40,7 +41,7 @@ static func remove(world: World, owner: Entity, inst: EffectInstance, reason: St
 	owner.effects.erase(inst)
 	owner.stats.remove_source(inst.serial)
 	refresh_states(owner)
-	world.emit(&"effect_removed", inst.source_id, owner.id, inst.stacks, reason)
+	world.emit(&"effect_removed", inst.source_id, owner.id, inst.stacks, reason).effect = inst
 
 
 ## ST: trạng thái = hợp các state của mọi hiệu ứng đang có.

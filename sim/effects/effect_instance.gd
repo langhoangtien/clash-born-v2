@@ -19,3 +19,6 @@ var period_ticks: int = 0
 var next_period_tick: int = -1
 ## Ô đồ của nguồn (STAT-05, D-55), 0 = không phải đồ.
 var item_slot: int = 0
+## EFF-05: số thứ tự sự kiện lúc áp; trigger: tick sẵn sàng lại theo chỉ số trigger.
+var applied_seq: int = 0
+var trigger_ready: Dictionary[int, int] = {}
