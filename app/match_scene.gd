@@ -24,6 +24,7 @@ func _ready() -> void:
 	world.map = map_view.layout
 	world.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
 	var library: ContentLibrary = ContentLibrary.load_dir()
+	MatchSetup.spawn_structures(world, library)
 	hero = UnitFactory.hero(world, library.heroes[HERO_ID], 0, world.map.fountain_point(0))
 	_spawn_training_dummy()
 	units_view.world = world

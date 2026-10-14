@@ -23,3 +23,7 @@ minimum_movement_speed = 0.0
 separation_speed = 400.0
 tower_body_radius = 52.0
 attribute_bonus = 2.0
+hero_structure_damage = 0.5
+creep_structure_damage = 0.65
+siege_structure_damage = 1.25
+tower_aggro_time = 4.0

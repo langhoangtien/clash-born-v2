@@ -416,7 +416,10 @@ chơi và bot (`Rules.pick_attack_target`), nút trên màn hình chỉ gọi h�
 - `CTL-02` Nút ĐÁNH: giữ là đánh liên tục. Mỗi lần cần mục tiêu mới, chọn trong tầm tìm
   `attack_range + attack_search_bonus` theo thứ tự: (1) mục tiêu đang khóa nếu còn nhắm
   được; (2) hero địch — **máu thấp nhất** (cài đặt đổi được: gần nhất, % máu thấp nhất);
-  (3) lính/quái gần nhất; (4) công trình đã mở khóa gần nhất. Không có ai → không làm gì.
+  (3) lính/quái gần nhất; (4) công trình đã mở khóa gần nhất. Không có ai → **đánh gió**
+  (D-46): vung đòn tại chỗ theo hướng đang nhìn, không gây sát thương, vẫn tốn một nhịp
+  đánh; joystick hủy như đòn thường. Mục tiêu ngoài tầm đánh nhưng trong tầm tìm → tự
+  tiến lại đánh. PC: phím **J** = ĐÁNH, **K** = đánh lính, **L** = đánh trụ (giả lập 3 nút).
 - `CTL-03` Hai nút nhỏ cạnh nút đánh: **đánh lính** (lính/quái máu thấp nhất trong tầm tìm,
   để kết liễu lấy tiền) và **đánh trụ** (công trình mở khóa gần nhất).
 - `CTL-04` Chạm vào đơn vị địch (điện thoại) / chuột phải vào địch (PC): khóa mục tiêu và
@@ -510,7 +513,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 
 ---
 
-## NUM — Tham số (giá trị nằm trong `content/balance/match_rules.tres`)
+## NUM — Tham số (giá trị nằm trong `content/balance/balance_settings.tres`)
 
 | Tham số | Khởi đầu | | Tham số | Khởi đầu |
 |---|---:|---|---|---:|

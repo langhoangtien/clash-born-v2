@@ -16,6 +16,13 @@ var radius: float = 0.0
 var facing: Vector2 = Vector2.RIGHT
 ## Id hình (ART.md); SIM không biết đường dẫn file.
 var art_id: StringName
+## Công trình: id trên map (vd "blue_mid_t1", "core_0"), bậc (1–4, nhà chính 5), khóa (STR-02).
+var structure_id: StringName
+var tier: int = 0
+var locked: bool = false
+## Trụ: hero địch vừa gây giao tranh hero phe trụ và hạn nhớ (STR-01, StructureController ghi).
+var aggro_target_id: int = -1
+var aggro_until_tick: int = 0
 var stats: StatBlock
 var health: float = 0.0
 var mana: float = 0.0

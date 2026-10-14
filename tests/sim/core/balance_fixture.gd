@@ -23,5 +23,9 @@ static func make() -> BalanceSettings:
 	b.minimum_movement_speed = 100.0
 	b.separation_speed = 400.0
 	b.attribute_bonus = 2.0
+	b.hero_structure_damage = 0.5
+	b.creep_structure_damage = 0.65
+	b.siege_structure_damage = 1.25
+	b.tower_aggro_time = 4.0
 	b.tower_body_radius = 52.0
 	return b

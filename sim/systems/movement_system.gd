@@ -17,6 +17,8 @@ var blocked_steps: int = 0
 
 func run(world: World) -> void:
 	for e: Entity in world.entities:
+		if Rules.is_structure(e):
+			continue  # công trình không bao giờ di chuyển
 		if e.order.type == Order.Type.MOVE and not e.order.finished:
 			_advance(world, e)
 		elif e.order.type == Order.Type.DIRECT:

@@ -148,7 +148,9 @@ func test_DTH_death_removes_unit_finishes_order_and_emits_events_in_order() -> v
 			seen.append(ev.type)
 	assert_eq(w.find_entity(b.id), null, "chết thì bị gỡ")
 	assert_true(a.order.finished, "lệnh đánh xong khi mục tiêu chết")
-	assert_eq(seen, [&"attack_started", &"attack_landed", &"damage_taken", &"attack_started", &"attack_landed", &"damage_taken", &"unit_died"])
+	# Hai đơn vị đều là hero (mặc định) khác đội → có thêm hero_attacked_hero (DEF-11).
+	assert_eq(seen, [&"attack_started", &"attack_landed", &"hero_attacked_hero", &"damage_taken",
+		&"attack_started", &"attack_landed", &"hero_attacked_hero", &"damage_taken", &"unit_died"])
 
 
 func test_CMD_02_attack_needs_valid_enemy_target() -> void:

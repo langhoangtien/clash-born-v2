@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="UnitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="1_un2f7"]
+[ext_resource type="Script" path="res://sim/defs/unit_def.gd" id="2_1l2b4"]
+[ext_resource type="Script" path="res://sim/defs/combat_stats_def.gd" id="3_6jrim"]
+
+[sub_resource type="Resource" id="Resource_5mvbl"]
+script = ExtResource("3_6jrim")
+base_hp = 4000.0
+physical_armor = 15.0
+base_attack_time = 1.0
+attack_point = 0.1
+vision_range = 1200.0
+collision_radius = 80.0
+
+[resource]
+script = ExtResource("2_1l2b4")
+kind = 5
+stats = SubResource("Resource_5mvbl")
+id = &"core"
+display_name = "Nhà chính"
+art_id = &"core"

@@ -52,6 +52,9 @@ func _draw_unit(e: Entity, at: Vector2) -> void:
 	draw_set_transform(at + Vector2(0, e.radius * 0.15), 0.0, Vector2(1.0, 0.45))
 	draw_circle(Vector2.ZERO, e.radius * 1.05, Color(0, 0, 0, 0.3))
 	draw_set_transform(Vector2.ZERO)
+	if Rules.is_structure(e):
+		_draw_structure(e, at, color)
+		return
 	var tex: Texture2D = ArtLibrary.texture(e.art_id)
 	var height: float = e.radius * BODY_HEIGHT * (3.0 if tex != null else 1.0)
 	if tex != null:
@@ -77,6 +80,20 @@ func _draw_placeholder(e: Entity, at: Vector2, color: Color, height: float) -> v
 	if e.attack_phase == Entity.AttackPhase.WINDUP:
 		# Vung tay (CMB-06): cung trắng phía trước, hình chỉ đọc trạng thái SIM.
 		draw_arc(at, r * 1.6, e.facing.angle() - 0.7, e.facing.angle() + 0.7, 12, Color(1, 1, 1, 0.9), 5.0, true)
+
+
+## Hình tạm công trình: khối vuông màu đội; đang khóa (STR-02) thì có viền xám và ổ khóa.
+func _draw_structure(e: Entity, at: Vector2, color: Color) -> void:
+	var r: float = e.radius
+	var body: Rect2 = Rect2(at - Vector2(r, r * 2.4), Vector2(r * 2, r * 2.4))
+	draw_rect(body, color.darkened(0.35))
+	draw_rect(body, Color(0, 0, 0, 0.8), false, 4.0)
+	draw_circle(at - Vector2(0, r * 2.6), r * 0.45, color.lightened(0.4))
+	if e.locked:
+		draw_rect(body, Color(0.5, 0.5, 0.5, 0.45))
+		draw_rect(Rect2(at - Vector2(10, r * 1.4), Vector2(20, 16)), Color(0.9, 0.9, 0.9))
+		draw_arc(at - Vector2(0, r * 1.4), 8, PI, TAU, 8, Color(0.9, 0.9, 0.9), 3.0)
+	_draw_health(e, at - Vector2(0, r * 3.4), color)
 
 
 func _draw_health(e: Entity, center: Vector2, color: Color) -> void:

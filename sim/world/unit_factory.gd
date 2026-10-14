@@ -20,6 +20,20 @@ static func hero(world: World, def: HeroDef, team: int, position: Vector2, level
 	return world.add_entity(e)
 
 
+## Lính, quái, công trình từ UnitDef.
+static func unit(world: World, def: UnitDef, kind: Entity.Kind, team: int, position: Vector2) -> Entity:
+	var e: Entity = Entity.new()
+	e.kind = kind
+	e.team = team
+	e.position = position
+	e.radius = def.stats.collision_radius
+	e.art_id = def.art_id
+	e.attack_point = def.stats.attack_point
+	e.projectile_speed = def.stats.projectile_speed
+	e.stats = stats_from(world.balance, def.stats)
+	return world.add_entity(e)
+
+
 ## Chỉ số gốc dùng chung cho hero và đơn vị khác (STAT-01).
 static func stats_from(balance: BalanceSettings, s: CombatStatsDef) -> StatBlock:
 	var b: StatBlock = StatBlock.new(balance)

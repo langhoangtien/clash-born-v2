@@ -163,4 +163,5 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M1.5 | Xong | 2026-10-14 | Đã chơi thử: giảm tốc chạy 12%, sửa map (D-43, D-44) |
 | **Hết M1** | | | |
 | M2.1 | Xong | 2026-10-14 | 192 test xanh (+13); lệnh ATTACK, vung tay/hồi đòn (hủy không tốn hồi đòn), đạn bay, DamageSystem, DeathSystem, sự kiện; điều khiển kiểu Liên Quân ghi vào luật (D-45); hình nộm đỏ tạm để thử |
-| M2.2 | Chờ duyệt kế hoạch | | |
+| M2.2 | Xong | 2026-10-14 | 205 test xanh (+13); 22 trụ + 2 nhà chính từ content (D-47), khóa STR-02, trụ chọn mục tiêu STR-01, hệ số CMB-04, sự kiện giao tranh hero; luật đánh gió + phím J/K/L ghi vào CTL-02 (D-46, làm ở M2.4) |
+| M2.3 | Chờ duyệt kế hoạch | | |

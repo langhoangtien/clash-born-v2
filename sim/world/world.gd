@@ -19,8 +19,12 @@ var command_log: Array[Command] = []
 ## Lệnh bị từ chối ở tick vừa chạy, kèm lý do (CMD-02).
 var rejected_commands: Array[Command] = []
 
-## Sự kiện của tick vừa chạy (EVT); xóa đầu mỗi tick.
+## Sự kiện của tick vừa chạy (EVT); xóa đầu mỗi tick. `previous_events`: của tick trước
+## (controller chạy ở pha 5, trước khi tick này có sự kiện sát thương).
 var events: Array[GameEvent] = []
+var previous_events: Array[GameEvent] = []
+## Công trình đã đổ, theo structure_id (STR-02).
+var destroyed_structures: Dictionary[StringName, bool] = {}
 ## Sát thương chờ DamageSystem xử lý trong tick này.
 var damage_requests: Array[DamageRequest] = []
 ## Đạn đánh thường đang bay (AttackSystem quản lý).
@@ -39,6 +43,7 @@ func _init(seed_value: int, p_balance: BalanceSettings) -> void:
 	balance = p_balance
 	add_system(CommandSystem.new(), Phase.COMMAND)
 	add_system(StateSystem.new(), Phase.STATE)
+	add_system(StructureController.new(), Phase.CONTROLLER)
 	add_system(AttackSystem.new(), Phase.ATTACK)
 	add_system(DamageSystem.new(), Phase.DAMAGE)
 	add_system(DeathSystem.new(), Phase.DEATH)
@@ -106,7 +111,8 @@ func emit(type: StringName, source_id: int, target_id: int, amount: float = 0.0)
 
 func step() -> void:
 	tick += 1
-	events.clear()
+	previous_events = events
+	events = []
 	for entry: Array in _systems:
 		(entry[2] as SimSystem).run(self)
 
@@ -118,7 +124,7 @@ func state_hash() -> PackedByteArray:
 	ctx.update(PackedInt64Array([tick, rng.seed, rng.state, entities.size()]).to_byte_array())
 	for e: Entity in entities:
 		ctx.update(PackedInt64Array([e.id, e.team, e.kind, e.order.type, int(e.order.finished), e.order.target_id,
-			int(e.alive), e.attack_phase, e.attack_target_id, e.attack_start_tick, e.attack_release_tick, e.next_attack_tick]).to_byte_array())
+			int(e.alive), int(e.locked), e.aggro_target_id, e.aggro_until_tick, e.attack_phase, e.attack_target_id, e.attack_start_tick, e.attack_release_tick, e.next_attack_tick]).to_byte_array())
 		ctx.update(PackedFloat64Array([e.position.x, e.position.y, e.radius, e.health, e.mana,
 			e.order.point.x, e.order.point.y, e.order.direction.x, e.order.direction.y]).to_byte_array())
 		if e.stats != null:

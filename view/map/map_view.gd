@@ -13,7 +13,7 @@ const GOLD: Color = Color(1.0, 0.85, 0.25)
 
 @export var layout: MapLayout
 
-var show_structures: bool = true
+@export var show_structures: bool = true
 var show_lanes: bool = false
 var show_camps: bool = true
 var show_spawns: bool = false

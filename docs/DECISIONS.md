@@ -45,6 +45,8 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-43 | 2026-10-14 | Sau chơi thử: lấp mọi khe hẹp hơn 112 và hốc kín thành rừng (công cụ build map), thêm luật MAP-03 có test | Khe trông như đi được mà không lọt gây hiểu lầm; chọn lấp hẳn thay vì nới rộng từng chỗ để giữ bố cục map |
 | D-44 | 2026-10-14 | Mở 2 lối rừng ra lane bot gần `blue_bot_t1`: cắt đôi dải rừng dài phía trên lane bot (khe ~230) và nới khe sát góc lane (bằng `clear_circles` trong `map_source.json`) | Sau chơi thử: từ rừng ra lane bot phải vòng quá xa |
 | D-45 | 2026-10-14 | Điều khiển đánh kiểu Liên Quân: nút ĐÁNH tự chọn mục tiêu (ưu tiên hero máu thấp nhất, rồi lính/quái gần nhất, rồi trụ), nút nhỏ đánh lính / đánh trụ, chạm địch để khóa; bỏ chạm map để đi trên điện thoại (PC giữ chuột phải). Chọn mục tiêu là hàm luật dùng chung với bot. Thay CTL-01..04 cũ | Chọn mục tiêu bằng tay khó trên điện thoại; Liên Quân đã chứng minh cách này hợp mobile |
+| D-46 | 2026-10-14 | Nút ĐÁNH không có mục tiêu trong tầm tìm → đánh gió tại chỗ (trong mô phỏng, tốn một nhịp đánh). PC dùng J/K/L giả lập 3 nút đánh; chưa cần APK Android | Giống Liên Quân; đánh gió nằm trong SIM để online và phát lại thấy giống nhau |
+| D-47 | 2026-10-14 | Chỉ số công trình: T1 1800 máu/10 giáp/110 sát thương, T2 2200/12/130, T3 2500/14/150, T4 2600/15/150, cùng 1 đòn/giây tầm 550; nhà chính 4000/15, không bắn | Đã duyệt; cân lại sau chơi thử |
 
 ## Chờ chốt
 

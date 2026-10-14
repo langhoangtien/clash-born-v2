@@ -30,6 +30,13 @@ extends Resource
 @export var status_resistance_cap: float
 @export var minimum_movement_speed: float
 
+@export_group("Công trình (CMB-04, STR)")
+@export var hero_structure_damage: float
+@export var creep_structure_damage: float
+@export var siege_structure_damage: float
+## STR-01: trụ nhớ hero gây giao tranh hero trong chừng này giây.
+@export var tower_aggro_time: float
+
 @export_group("Hero")
 ## ABL-04: mỗi lần đổi điểm thừa cộng chừng này vào cả 3 thuộc tính.
 @export var attribute_bonus: float

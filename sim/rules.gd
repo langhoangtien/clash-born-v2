@@ -14,6 +14,11 @@ static func in_attack_range(a: Entity, b: Entity) -> bool:
 	return edge_distance(a, b) <= a.stats.get_stat(StatId.Id.ATTACK_RANGE)
 
 
-## DEF-05 (bản M2.1): còn sống và khác đội. Tầm nhìn, state, khóa công trình thêm sau.
+static func is_structure(e: Entity) -> bool:
+	return e.kind == Entity.Kind.TOWER or e.kind == Entity.Kind.CORE
+
+
+## DEF-05 (bản M2.2): còn sống, khác đội, không phải công trình đang khóa (STR-02).
+## Tầm nhìn và state thêm ở M3.
 static func is_targetable(by: Entity, target: Entity) -> bool:
-	return target != null and target.alive and target.team != by.team
+	return target != null and target.alive and target.team != by.team and not target.locked
