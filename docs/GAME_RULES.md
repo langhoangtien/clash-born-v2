@@ -512,6 +512,9 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   lính đầu gặp nhau ngay ngoài tầm trụ 1 của phe mình (`tower_layout` BOT 760), lane khó
   xa trụ 1 (TOP 2000), mid gặp ở giữa sông, trụ 1 mid cách đều (1200). Đợt đầu luôn
   gặp ngoài tầm mọi trụ 1; tâm trụ cách rừng/vách ≥ 160.
+- `MAP-05` Khúc sông giữa (D-50): quanh chỗ lane giữa cắt sông (±1250 dọc sông) sông là một
+  dải trơn đối xứng, không có vách, bậc thang hay mỏm rừng lồi vào; dải sông và hai bờ
+  (thêm 400) để trống cho giao tranh.
 
 ## INV — Bất biến (test soak kiểm tra mỗi tick)
 

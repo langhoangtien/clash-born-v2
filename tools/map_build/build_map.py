@@ -27,6 +27,7 @@ OUT_DIR = os.path.join(ROOT, "data", "maps")
 SRC = json.load(open(os.path.join(HERE, "map_source.json")))
 sys.path.insert(0, HERE)
 from symmetry import Sym, place_t1  # noqa: E402
+import river_cross  # noqa: E402
 SYM = Sym(SRC["frame"]) if SRC.get("symmetry") == "rotate180" else None
 if SYM:
     SRC = SYM.source(SRC)
@@ -65,6 +66,10 @@ tree |= ndi.binary_fill_holes(water & ~river)
 water = ndi.binary_fill_holes(river)
 if SYM:
     black, water, tree = SYM.mask(black), SYM.mask(water), SYM.mask(tree)
+if SRC.get("river_cross"):  # MAP-05: khúc sông giữa trơn, không vách lồi
+    _c = [(FX0 + FX1) / 2, (FY0 + FY1) / 2]
+    water, black, tree, _zone = river_cross.apply(SRC["river_cross"], xx, yy, _c, SCALE, water, black, tree)
+    SRC["ramps"] = [r for r in SRC["ramps"] if river_cross.keeps_ramp(r, _zone)]
 
 def disk(cx, cy, r):
     return (xx - cx) ** 2 + (yy - cy) ** 2 <= r * r
