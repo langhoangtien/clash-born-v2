@@ -43,6 +43,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-41 | 2026-10-14 | Đơn vị chạm nhau thì tự đẩy nhẹ cho tách ra (kể cả đơn vị đứng yên), không bao giờ vào vật cản, thứ tự theo id (MOV-04) | Hero len qua đám lính như Liên Quân; xác định cho online |
 | D-42 | 2026-10-14 | Joystick/WASD dùng lệnh `MOVE_DIR` đi thẳng theo hướng và trượt dọc mép vật cản (MOV-06); chạm/chuột phải dùng `MOVE_TO` có tìm đường | Joystick mà dùng tìm đường thì gặp rừng hero có thể vòng ngược; trượt mép cho cảm giác như Liên Quân |
 | D-43 | 2026-10-14 | Sau chơi thử: lấp mọi khe hẹp hơn 112 và hốc kín thành rừng (công cụ build map), thêm luật MAP-03 có test | Khe trông như đi được mà không lọt gây hiểu lầm; chọn lấp hẳn thay vì nới rộng từng chỗ để giữ bố cục map |
+| D-44 | 2026-10-14 | Mở 2 lối rừng ra lane bot gần `blue_bot_t1`: cắt đôi dải rừng dài phía trên lane bot (khe ~230) và nới khe sát góc lane (bằng `clear_circles` trong `map_source.json`) | Sau chơi thử: từ rừng ra lane bot phải vòng quá xa |
 
 ## Chờ chốt
 
