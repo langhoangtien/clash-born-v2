@@ -17,6 +17,11 @@ static func resolve(world: World) -> void:
 		if target == null or not target.alive or target.locked:
 			continue  # STR-02: công trình khóa không nhận sát thương
 		var source: Entity = world.find_entity(r.source_id)
+		if r.is_attack and _misses(world, source, target):
+			world.emit(&"attack_missed", r.source_id, r.target_id)
+			world.recent_misses = world.recent_misses.filter(func(m: Array) -> bool: return world.tick - m[1] < 30)
+			world.recent_misses.append([target.position, world.tick])
+			continue
 		var s: StatBlock = target.stats
 		var amount: float = DamageFormulas.final_damage(r.raw * _structure_factor(world, source, target), r.damage_type,
 			s.get_stat(StatId.Id.PHYSICAL_ARMOR), s.get_stat(StatId.Id.MAGIC_ARMOR),
@@ -26,7 +31,7 @@ static func resolve(world: World) -> void:
 			continue
 		amount *= factor
 		if r.is_attack:
-			world.emit(&"attack_landed", r.source_id, r.target_id, amount)
+			world.emit(&"attack_landed", r.source_id, r.target_id, amount, &"crit" if r.crit else &"")
 			if source != null and source.kind == Entity.Kind.HERO and target.kind == Entity.Kind.HERO and source.team != target.team:
 				world.emit(&"hero_attacked_hero", r.source_id, r.target_id)  # DEF-11
 		amount = Effects.absorb(world, target, amount)  # EFF-06
@@ -49,3 +54,12 @@ static func _structure_factor(world: World, source: Entity, target: Entity) -> f
 		Entity.Kind.LANE_CREEP:
 			return world.balance.siege_structure_damage if source.siege else world.balance.creep_structure_damage  # CRP-10
 	return 1.0
+
+
+## CMB-11: trượt = né × (1 − chính xác), tung PRD theo mục tiêu lúc đòn chạm. Công trình không né.
+static func _misses(world: World, source: Entity, target: Entity) -> bool:
+	if Rules.is_structure(target):
+		return false
+	var accuracy: float = source.stats.get_stat(StatId.Id.ACCURACY) if source != null and source.stats != null else 0.0
+	var chance: float = HitFormulas.miss_chance(target.stats.get_stat(StatId.Id.EVASION), accuracy)
+	return chance > 0.0 and Prd.roll(world, Prd.key(target.id, 999), chance)

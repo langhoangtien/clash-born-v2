@@ -195,8 +195,8 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   thêm từ trigger (bash, phục kích…). Không chí mạng lên công trình.
 - `CMB-08` Bash (đòn choáng ngẫu nhiên): trigger `attack_landed` có xác suất → choáng +
   sát thương thêm. Không tác dụng lên công trình. Nhiều nguồn bash: chỉ một nguồn
-  được tung (nhóm `bash`, chọn nguồn theo STAT-05), có thời gian chờ chung
-  `bash_cooldown`.
+  được tung (nhóm `bash`, chọn nguồn theo STAT-05). Thời gian chờ **do từng nguồn khai
+  báo** (`cooldown` của trigger): có bash có chờ, có bash không (D-63).
 - `CMB-09` Sát thương phản hồi (phản đòn, trả đòn, phân tán) được đánh dấu `reflected`:
   không kích hoạt bất kỳ trigger phản hồi nào khác (tránh hai bên phản qua phản lại vô
   hạn), không hút máu, không chí mạng, không tính là giao tranh hero (DEF-11), có tính
@@ -211,8 +211,8 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   - Xác suất trượt = `evasion × (1 − accuracy)`. Mục tiêu né 100% (kiểu Windrun), kẻ
     đánh có 80% chính xác → 100 đòn trúng 80; có hai món 80% → trượt 4%, trúng 96%.
   - Né tối đa `evasion_cap` (1.0 = không giới hạn, như Dota).
-  - Tung trượt/trúng bằng PRD (RNG-01). Đòn trượt không kích hoạt `attack_landed`,
-    chỉ `attack_missed`.
+  - Tung trượt/trúng bằng PRD (RNG-01) lúc đòn chạm (cả đạn bay). Đòn trượt không kích
+    hoạt `attack_landed`, chỉ `attack_missed`; công trình không né.
 
 ## ABL — Kỹ năng
 
@@ -270,7 +270,11 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 - `RNG-01` Mọi xác suất của bị động (chí mạng, bash, né…) dùng **giả ngẫu nhiên
   (PRD)** như Dota: mỗi lần không trúng, xác suất lần sau tăng dần; trúng thì về lại
   mức đầu. Trung bình vẫn đúng con số khai báo nhưng tránh chuỗi trúng/trượt liên
-  tục — quan trọng cho 1v1. Bộ đếm PRD riêng cho mỗi (đơn vị, nguồn).
+  tục — quan trọng cho 1v1. Bộ đếm PRD riêng cho mỗi (đơn vị, nguồn). Lần thử thứ n kể
+  từ lần trúng trước có xác suất min(1, C × n), C chọn sao cho tỉ lệ trung bình đúng p
+  (vd 25% → C ≈ 0.085). Chí mạng tung lúc bắt đầu vung (theo kẻ đánh và nguồn); né tung
+  lúc đòn chạm (theo mục tiêu); trigger có `chance` theo (chủ hiệu ứng, nguồn). Bộ đếm
+  thuộc trạng thái trận (D-30).
 - `RNG-02` Mọi số ngẫu nhiên lấy từ `world.rng` có seed (INV-08).
 
 ## ITM — Trang bị
@@ -616,7 +620,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | attack_search_bonus / lock_break_range | 100 / 1400 | | tower_tank_creeps / dive_min_hp | 2 / 0.6 |
 | ghost_magic_amp | 0.4 | | talent_level | 20 |
 | attribute_bonus | +2 mọi thuộc tính | | attribute_bonus_max | 7 lần |
-| hex_move_speed | 140 | | bash_cooldown | 1.5 s |
+| hex_move_speed | 140 | | | |
 | reincarnate_delay | 3 s | | match_target_minutes | 15–20 (D-29) |
 | first_wave_time | 15 s | | creep_front_margin | 200 |
 | fountain_regen | 0.05 / s | | fountain_damage / attack_interval | 300 / 1 s |

@@ -52,6 +52,13 @@ func _draw() -> void:
 			var col: Color = (BLUE if r[3] == 0 else RED).lightened(0.4)
 			draw_circle(r[0], r[1], Color(col, 0.35 * (1.0 - age)))
 			draw_arc(r[0], r[1], 0, TAU, 48, Color(col, 0.9 * (1.0 - age)), 4.0, true)
+	var font: Font = ThemeDB.fallback_font
+	for m: Array in world.recent_misses:
+		var age: float = (world.tick - m[1]) / 20.0
+		if age < 1.0:
+			var at: Vector2 = m[0] - Vector2(28, 90 + 30 * age)
+			draw_string_outline(font, at, "Trượt", HORIZONTAL_ALIGNMENT_LEFT, -1, 24, 5, Color(0, 0, 0, 0.8 * (1.0 - age)))
+			draw_string(font, at, "Trượt", HORIZONTAL_ALIGNMENT_LEFT, -1, 24, Color(1, 1, 1, 1.0 - age))
 	for p: Projectile in world.projectiles:
 		draw_circle(p.position, 7.0, Color(1, 0.95, 0.6))
 

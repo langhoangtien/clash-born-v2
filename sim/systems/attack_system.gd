@@ -63,7 +63,23 @@ func _start_windup(world: World, e: Entity, target: Entity) -> void:
 	e.attack_release_tick = world.tick + maxi(1, SimClock.seconds_to_ticks(e.attack_point / speed))
 	if target != null and target.position != e.position:
 		e.facing = (target.position - e.position).normalized()
-	world.emit(&"attack_started", e.id, e.attack_target_id)
+	e.attack_crit = _roll_crit(world, e, target)
+	world.emit(&"attack_started", e.id, e.attack_target_id, e.attack_crit)
+
+
+## CMB-07: mỗi nguồn chí mạng tung PRD riêng; nhiều nguồn trúng thì lấy hệ số cao nhất.
+## Không chí mạng lên công trình và đánh gió.
+func _roll_crit(world: World, e: Entity, target: Entity) -> float:
+	if target == null or Rules.is_structure(target):
+		return 1.0
+	var best: float = 1.0
+	for inst: EffectInstance in e.effects:
+		if inst.def.crit_chance.is_empty():
+			continue
+		var ctx: ExprContext = Effects.context(world, e, inst)
+		if Prd.roll(world, Prd.key(e.id, inst.serial * 16 + 15), ExprEval.evaluate(inst.def.crit_chance, ctx)):
+			best = maxf(best, ExprEval.evaluate(inst.def.crit_multiplier, ctx))
+	return best
 
 
 ## Hồi đòn chỉ tính khi đòn đã ra (CMB-06): đòn bị hủy không tốn hồi đòn.
@@ -75,6 +91,8 @@ func _finish_attack(e: Entity) -> void:
 func _release(world: World, e: Entity, target: Entity) -> void:
 	_finish_attack(e)
 	var request: DamageRequest = DamageRequest.attack(e, target.id)
+	request.raw *= e.attack_crit
+	request.crit = e.attack_crit > 1.0
 	if e.projectile_speed <= 0.0:
 		world.damage_requests.append(request)
 		return

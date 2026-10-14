@@ -50,6 +50,10 @@ var emit_depth: int = 0
 var pending_areas: Array[PendingArea] = []
 ## Chỉ để VIEW vẽ: vùng vừa nổ gần đây [tâm, bán kính, tick, đội]. Không thuộc trạng thái trận.
 var recent_areas: Array = []
+## Chỉ để VIEW: đòn trượt gần đây [vị trí, tick] (CMB-11).
+var recent_misses: Array = []
+## RNG-01: bộ đếm PRD theo khóa (Prd.key).
+var prd_counters: Dictionary[int, int] = {}
 var _pending: Array[Command] = []
 var _systems: Array[Array] = []  # [phase, thứ tự đăng ký, SimSystem]
 
@@ -187,6 +191,10 @@ func state_hash() -> PackedByteArray:
 		for inst: EffectInstance in e.effects:
 			ctx.update(PackedInt64Array([inst.serial, inst.def.id.hash(), inst.source_id, inst.stacks, inst.end_tick, inst.next_period_tick]).to_byte_array())
 			ctx.update(PackedFloat64Array([inst.absorb_left]).to_byte_array())
+	var keys: Array = prd_counters.keys()
+	keys.sort()
+	for k: int in keys:
+		ctx.update(PackedInt64Array([k, prd_counters[k]]).to_byte_array())
 	for p: Projectile in projectiles:
 		ctx.update(PackedFloat64Array([p.source_id, p.target_id, p.position.x, p.position.y, p.request.raw]).to_byte_array())
 	return ctx.finish()

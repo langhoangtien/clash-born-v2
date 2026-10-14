@@ -61,6 +61,8 @@ var projectile_speed: float = 0.0
 ## Trạng thái đánh (chỉ AttackSystem ghi).
 var attack_phase: AttackPhase = AttackPhase.NONE
 var attack_target_id: int = -1
+## CMB-07: hệ số chí mạng của đòn đang vung (1 = không chí mạng), tung lúc bắt đầu vung.
+var attack_crit: float = 1.0
 var attack_start_tick: int = 0
 var attack_release_tick: int = 0
 var next_attack_tick: int = 0

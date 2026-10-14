@@ -79,8 +79,8 @@ func _fire_instance(world: World, ev: GameEvent, owner: Entity, other: Entity, i
 		if world.tick < inst.trigger_ready.get(index, 0) or not _group_winner(owner, inst, t):
 			continue
 		var ctx: ExprContext = _context(world, ev, owner, other, inst)
-		if not t.chance.is_empty() and world.rng.randf() >= ExprEval.evaluate(t.chance, ctx):
-			continue
+		if not t.chance.is_empty() and not Prd.roll(world, Prd.key(owner.id, inst.serial * 16 + index), ExprEval.evaluate(t.chance, ctx)):
+			continue  # RNG-01
 		if not t.cooldown.is_empty():
 			inst.trigger_ready[index] = world.tick + SimClock.seconds_to_ticks(ExprEval.evaluate(t.cooldown, ctx))
 		ActionRunner.run(world, t.actions, ctx, owner.id)
