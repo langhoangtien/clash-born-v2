@@ -32,3 +32,14 @@ static func _current(hero: Entity, slot: int) -> int:
 		return hero.attribute_bonus_count
 	var a: AbilityInstance = Abilities.of(hero, slot)
 	return a.rank if a != null else 0
+
+
+## TAL-01 (tạm tới M3.8): talent theo thứ tự ưu tiên của hero; -2 nếu chưa / đã chọn.
+static func pick_talent(hero: Entity, priority: Array[AbilityDef.Slot]) -> int:
+	if hero.talent_slot >= 0:
+		return -2
+	for slot: AbilityDef.Slot in priority:
+		var a: AbilityInstance = Abilities.of(hero, slot)
+		if a != null and a.rank > 0 and a.def.talent != null:
+			return slot
+	return -2

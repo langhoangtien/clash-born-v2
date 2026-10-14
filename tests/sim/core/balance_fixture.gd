@@ -40,6 +40,7 @@ static func make() -> BalanceSettings:
 	b.tower_body_radius = 52.0
 	b.respawn_base = 5.0
 	b.attribute_bonus_max = 7
+	b.talent_level = 20
 	b.hero_max_level = 20
 	b.xp_base = 120
 	b.xp_per_level = 30

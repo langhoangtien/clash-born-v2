@@ -95,6 +95,10 @@ func _before_step() -> void:
 	var slot: int = AutoSkill.pick(world, hero, hero_def.bot_skill_order)  # tạm tới M3.8
 	if slot != -2:
 		world.submit(Command.level_up(hero.id, slot))
+	if hero.stats.level() >= world.balance.talent_level:
+		var talent: int = AutoSkill.pick_talent(hero, hero_def.bot_talent_priority)  # tạm tới M3.8
+		if talent != -2:
+			world.submit(Command.choose_talent(hero.id, talent))
 
 
 ## Joystick ảo ưu tiên; không chạm thì đọc WASD / mũi tên.

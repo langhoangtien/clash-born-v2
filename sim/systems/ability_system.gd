@@ -64,7 +64,7 @@ func _release(world: World, e: Entity) -> void:
 	var ctx: ExprContext = Abilities.context(e, c.ability, target)
 	ctx.point = c.point
 	ctx.direction = c.direction if c.direction != Vector2.ZERO else e.facing
-	ActionRunner.run(world, c.ability.def.on_cast, ctx, e.id)
+	ActionRunner.run(world, Abilities.cast_actions(c.ability), ctx, e.id)
 	world.emit(&"ability_finished", e.id, c.target_id, c.ability.slot)
 	_end(e, false)
 

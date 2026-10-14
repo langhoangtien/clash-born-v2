@@ -9,3 +9,6 @@ var rank: int = 0
 var ready_tick: int = 0
 ## Hiệu ứng do `on_learn` áp (bị động); gỡ và áp lại khi lên cấp.
 var learned_effects: Array[EffectInstance] = []
+## TAL: talent của kỹ năng này đã chọn; bản hiệu ứng đã vá theo talent (TAL-02c), nhớ theo hiệu ứng gốc.
+var talent_active: bool = false
+var patched: Dictionary[EffectDef, EffectDef] = {}

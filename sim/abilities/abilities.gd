@@ -34,6 +34,16 @@ static func values(e: Entity, a: AbilityInstance) -> Dictionary:
 	for key: StringName in a.def.values:
 		var arr: PackedFloat32Array = a.def.values[key]
 		out[key] = float(arr[mini(index, arr.size() - 1)]) if arr.size() > 0 else 0.0
+	if a.talent_active:  # TAL-02a
+		for change: ValueChangeDef in a.def.talent.value_changes:
+			var v: float = out.get(change.value_name, 0.0)
+			match change.op:
+				ValueChangeDef.Op.ADD:
+					out[change.value_name] = v + change.amount
+				ValueChangeDef.Op.MULTIPLY:
+					out[change.value_name] = v * change.amount
+				ValueChangeDef.Op.SET:
+					out[change.value_name] = change.amount
 	var suffix: String = "_melee" if e.projectile_speed <= 0.0 else "_ranged"
 	for key: StringName in out.keys():
 		if String(key).ends_with(suffix):
@@ -100,3 +110,29 @@ static func accepts(caster: Entity, def: AbilityDef, t: Entity) -> bool:
 		Entity.Kind.NEUTRAL:
 			return def.hits_neutrals
 	return def.hits_structures
+
+
+## TAL-02c: hiệu ứng `def` do `source` áp, đã vá theo talent đã chọn (thêm trigger/modifier).
+static func patched(source: Entity, def: EffectDef) -> EffectDef:
+	if source == null or source.talent_slot < 0:
+		return def
+	var a: AbilityInstance = of(source, source.talent_slot)
+	if a == null or not a.talent_active:
+		return def
+	if a.patched.has(def):
+		return a.patched[def]
+	for patch: EffectPatchDef in a.def.talent.effect_patches:
+		if patch.effect == def:
+			var copy: EffectDef = def.duplicate(false)
+			copy.triggers = def.triggers + patch.add_triggers
+			copy.modifiers = def.modifiers + patch.add_modifiers
+			a.patched[def] = copy
+			return copy
+	return def
+
+
+## Hành động khi tung: on_cast, nối thêm hành động của talent (TAL-02b).
+static func cast_actions(a: AbilityInstance) -> Array[ActionDef]:
+	if a.talent_active and not a.def.talent.extra_actions.is_empty():
+		return a.def.on_cast + a.def.talent.extra_actions
+	return a.def.on_cast

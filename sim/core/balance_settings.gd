@@ -54,6 +54,8 @@ extends Resource
 @export var attribute_bonus: float
 ## ABL-04: số lần đổi điểm lấy thuộc tính tối đa; cấp tối đa.
 @export var attribute_bonus_max: int
+## TAL-01: cấp chọn talent.
+@export var talent_level: int
 @export var hero_max_level: int
 ## XP để lên cấp kế: xp_base + xp_per_level × (cấp hiện tại − 1).
 @export var xp_base: int

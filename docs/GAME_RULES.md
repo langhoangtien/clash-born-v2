@@ -298,8 +298,11 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   ứng vào skill.
 - `TAL-03` Talent **không được** đổi luật của một state (ví dụ cho GHOST đánh thường
   được). Muốn khác luật thì tạo state/cơ chế mới theo quy trình cơ chế mới.
-- `TAL-04` Talent áp ngay lúc chọn, kể cả lên hiệu ứng của skill đang còn tác dụng
-  ở lần dùng sau.
+- `TAL-04` Talent áp ngay lúc chọn: bị động áp lại ngay với giá trị mới; chiêu chủ động
+  mạnh lên từ lần dùng sau; hiệu ứng đang chạy giữ nguyên bản cũ (D-62). Chọn bằng lệnh
+  `CHOOSE_TALENT(ô)`, cần cấp `talent_level`, kỹ năng đã học; được chọn cả khi chờ hồi
+  sinh; sai thì từ chối `CANNOT_CHOOSE_TALENT`. Vá hiệu ứng (TAL-02c) áp cho hiệu ứng do
+  chính hero đó áp; sự kiện `talent_chosen`.
 
 ## EFF — Hiệu ứng
 

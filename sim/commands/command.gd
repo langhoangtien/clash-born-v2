@@ -3,9 +3,10 @@ extends RefCounted
 ## Yêu cầu từ người chơi, bot hoặc controller (ARCHITECTURE mục 1). Không đổi trận
 ## trực tiếp; CommandSystem kiểm tra rồi mới thành Order (CMD-01..05).
 
-enum Type { MOVE_TO, MOVE_DIR, STOP, ATTACK, ATTACK_AUTO, CAST, LEVEL_UP }
+enum Type { MOVE_TO, MOVE_DIR, STOP, ATTACK, ATTACK_AUTO, CAST, LEVEL_UP, CHOOSE_TALENT }
 enum Reject { NONE, UNKNOWN_UNIT, POINT_OUTSIDE_MAP, BAD_DIRECTION, BAD_TARGET, UNIT_DEAD,
-	NOT_LEARNED, ON_COOLDOWN, NO_MANA, CANNOT_CAST, NO_SKILL_POINT, CANNOT_LEVEL }
+	NOT_LEARNED, ON_COOLDOWN, NO_MANA, CANNOT_CAST, NO_SKILL_POINT, CANNOT_LEVEL,
+	CANNOT_CHOOSE_TALENT }
 
 ## LEVEL_UP: ô đặc biệt = đổi điểm lấy thuộc tính (ABL-04).
 const ATTRIBUTES: int = -1
@@ -79,6 +80,13 @@ static func level_up(id: int, ability_slot: int) -> Command:
 	c.type = Type.LEVEL_UP
 	c.entity_id = id
 	c.slot = ability_slot
+	return c
+
+
+## TAL-01: chọn talent của kỹ năng ô `ability_slot`.
+static func choose_talent(id: int, ability_slot: int) -> Command:
+	var c: Command = level_up(id, ability_slot)
+	c.type = Type.CHOOSE_TALENT
 	return c
 
 

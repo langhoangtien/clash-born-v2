@@ -51,6 +51,9 @@ func _draw() -> void:
 		var need: float = float(Progression.xp_to_next(world, hero.stats.level()))
 		draw_rect(Rect2(Vector2(x, 88), Vector2(BAR.x, 6)), Color(0, 0, 0, 0.7))
 		draw_rect(Rect2(Vector2(x, 88), Vector2(BAR.x * clampf(hero.xp / need, 0, 1), 6)), Color(0.75, 0.5, 1.0))
+	if hero.talent_slot >= 0:
+		var a: AbilityInstance = Abilities.of(hero, hero.talent_slot)
+		_text(font, Vector2(x, PANEL.end.y + 30), "Talent: " + a.def.talent.display_name, 22, Color(0.8, 0.6, 1.0), false)
 	var wait: String = respawn_text(world, hero)
 	if wait != "":
 		_text(font, Vector2(size.x * 0.5, size.y * 0.4), wait, 48, Color(1, 0.4, 0.4), true)

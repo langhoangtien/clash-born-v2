@@ -66,3 +66,23 @@ static func spend_point(world: World, hero: Entity, slot: int) -> void:
 		var a: AbilityInstance = Abilities.of(hero, slot)
 		Abilities.set_rank(world, hero, a, a.rank + 1)
 	world.emit(&"skill_leveled", hero.id, hero.id, slot)
+
+
+## TAL-01: chọn được talent ô `slot` không.
+static func talent_problem(world: World, hero: Entity, slot: int) -> Command.Reject:
+	var a: AbilityInstance = Abilities.of(hero, slot)
+	if hero.talent_slot >= 0 or hero.stats.level() < world.balance.talent_level:
+		return Command.Reject.CANNOT_CHOOSE_TALENT
+	if a == null or a.def.talent == null or a.rank <= 0:
+		return Command.Reject.CANNOT_CHOOSE_TALENT
+	return Command.Reject.NONE
+
+
+## TAL-04: có hiệu lực ngay; bị động áp lại với giá trị mới, hiệu ứng đang chạy giữ nguyên.
+static func choose_talent(world: World, hero: Entity, slot: int) -> void:
+	var a: AbilityInstance = Abilities.of(hero, slot)
+	hero.talent_slot = slot
+	a.talent_active = true
+	if not a.def.on_learn.is_empty():
+		Abilities.set_rank(world, hero, a, a.rank)
+	world.emit(&"talent_chosen", hero.id, hero.id, slot)

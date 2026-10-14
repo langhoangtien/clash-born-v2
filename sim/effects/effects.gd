@@ -9,6 +9,7 @@ extends RefCounted
 static func apply(world: World, owner: Entity, def: EffectDef, source: Entity, values: Dictionary = {},
 		duration: String = "", item_slot: int = 0) -> EffectInstance:
 	var source_id: int = source.id if source != null else -1
+	def = Abilities.patched(source, def)  # TAL-02c
 	if def.tags.has(&"debuff") and source != null and source.team != owner.team \
 			and Rules.has_state(owner, UnitState.Id.INVULNERABLE):
 		return null  # ST-17: bất tử chặn debuff mới từ phe địch
