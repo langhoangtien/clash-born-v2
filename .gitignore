@@ -7,3 +7,4 @@ export_presets.cfg
 # Máy cá nhân
 _to_delete/
 .local/
+__pycache__/
