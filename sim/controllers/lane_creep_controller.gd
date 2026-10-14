@@ -62,19 +62,19 @@ func _think(world: World, c: Entity) -> void:
 func _pick(world: World, c: Entity) -> Entity:
 	if world.tick <= c.aggro_until_tick:
 		var bully: Entity = world.find_entity(c.aggro_target_id)
-		if Rules.is_targetable(c, bully):
+		if Rules.is_attackable(c, bully):
 			return bully  # CRP-01
 	var current: Entity = world.find_entity(c.order.target_id) if c.order.type == Order.Type.ATTACK and not c.order.finished else null
-	if current != null and Rules.is_targetable(c, current) and current.kind == Entity.Kind.LANE_CREEP:
+	if current != null and Rules.is_attackable(c, current) and current.kind == Entity.Kind.LANE_CREEP:
 		return current  # CRP-02 + CRP-06
 	var nearest: Array[Entity] = _nearest_creep_and_hero(world, c)
 	if nearest[0] != null:
 		return nearest[0]
 	var structure: Entity = _next_structure(world, c)
-	if structure != null and Rules.is_targetable(c, structure) \
+	if structure != null and Rules.is_attackable(c, structure) \
 			and (Rules.edge_distance(c, structure) <= world.balance.creep_acquire_range or Rules.in_attack_range(c, structure)):
 		return structure  # CRP-03
-	if current != null and Rules.is_targetable(c, current) and current.kind == Entity.Kind.HERO \
+	if current != null and Rules.is_attackable(c, current) and current.kind == Entity.Kind.HERO \
 			and Rules.edge_distance(c, current) <= world.balance.creep_acquire_range:
 		return current  # CRP-04 + CRP-06
 	return nearest[1]
@@ -98,7 +98,7 @@ func _nearest_creep_and_hero(world: World, c: Entity) -> Array[Entity]:
 	var acquire: float = world.balance.creep_acquire_range
 	for e: Entity in world.spatial_near(c.position, acquire + c.radius, World.Phase.CONTROLLER, false):
 		var slot: int = 0 if e.kind == Entity.Kind.LANE_CREEP else (1 if e.kind == Entity.Kind.HERO else -1)
-		if slot < 0 or not Rules.is_targetable(c, e):
+		if slot < 0 or not Rules.is_attackable(c, e):
 			continue
 		var d: float = Rules.edge_distance(c, e)
 		if d <= acquire and (d < best_d[slot] or (d == best_d[slot] and e.id < best[slot].id)):

@@ -22,13 +22,17 @@ func _update_attacker(world: World, e: Entity) -> void:
 		e.attack_phase = Entity.AttackPhase.NONE  # CMB-06: hủy
 	if e.attack_phase == Entity.AttackPhase.RECOVERY and world.tick >= e.next_attack_tick:
 		e.attack_phase = Entity.AttackPhase.NONE
+	if not Rules.can_attack(e):
+		if e.attack_phase == Entity.AttackPhase.WINDUP:
+			e.attack_phase = Entity.AttackPhase.NONE  # ST-01/04/11: hủy, không tốn hồi đòn
+		return
 	if e.order.type == Order.Type.SWING and not e.order.finished:
 		_update_swing(world, e)
 		return
 	if not attacking:
 		return
 	var target: Entity = world.find_entity(e.order.target_id)
-	if not Rules.is_targetable(e, target):
+	if not Rules.is_attackable(e, target):
 		e.order.finished = true
 		e.attack_phase = Entity.AttackPhase.NONE if e.attack_phase == Entity.AttackPhase.WINDUP else e.attack_phase
 		return

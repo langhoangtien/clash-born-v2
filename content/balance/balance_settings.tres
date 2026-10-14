@@ -47,3 +47,4 @@ fountain_damage = 300.0
 fountain_attack_interval = 1.0
 passive_gold = 1
 passive_gold_interval = 2.0
+ghost_magic_amp = 0.4

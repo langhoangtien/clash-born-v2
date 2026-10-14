@@ -172,3 +172,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M2.6 | Xong | 2026-10-14 | 259 test xanh (+2) + 3 soak; soak 10 phút (lính, trụ, 2 hero dùng nút đánh) giữ INV-01..05 mỗi tick, chạy lại khớp từng mốc 30 s (INV-08), không bước nào bị chặn; sửa 2 lỗi lính (D-54); tick 3.25 → 2.85 ms |
 | **Hết M2** | | | |
 | M3.1 | Xong | 2026-10-14 | 275 test xanh (+15); hiệu ứng: biểu thức EFF-09, thời hạn, cộng dồn REFRESH/STACK/INDEPENDENT, nhiều nguồn, chu kỳ (Damage/Heal), khiên, gỡ khi chết (D-56); nhóm duy nhất theo ô đồ (D-55) |
+| M3.2 | Xong | 2026-10-14 | 291 test xanh (+16); state từ hiệu ứng, `Rules.has_state/can_move/can_attack/can_cast/is_attackable/damage_factor`; choáng, trói, câm lặng, cấm đánh, bất tử (chặn debuff địch), ma, chết; kháng hiệu ứng ST-09; dấu hiệu trạng thái trên hình (D-57) |

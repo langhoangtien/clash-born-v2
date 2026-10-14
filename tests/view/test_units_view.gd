@@ -47,3 +47,22 @@ func test_match_scene_builds_with_a_hero_and_follows_it() -> void:
 	assert_true(hero.order.type == Order.Type.IDLE, "không còn tự đi tuần: chỉ đi khi người chơi ra lệnh")
 	assert_true(scene.camera.position.distance_to(scene.units_view.display_position(hero)) < 0.01, "camera theo hero")
 	scene.free()
+
+
+func test_ST_state_marks_detect_slow() -> void:
+	var w: World = World.new(1, BalanceSettings.new())
+	var e: Entity = Entity.new()
+	e.stats = StatBlock.new(w.balance)
+	w.add_entity(e)
+	assert_false(StateMarks.is_slowed(e))
+	var d: EffectDef = EffectDef.new()
+	d.id = &"slow"
+	d.duration = "1"
+	d.tags = [&"debuff"]
+	var m: ModifierDef = ModifierDef.new()
+	m.stat = &"movement_speed"
+	m.op = ModifierDef.Op.MULTIPLY
+	m.value = "0.7"
+	d.modifiers = [m]
+	Effects.apply(w, e, d, null)
+	assert_true(StateMarks.is_slowed(e))

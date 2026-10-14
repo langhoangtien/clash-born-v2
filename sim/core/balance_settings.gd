@@ -56,6 +56,10 @@ extends Resource
 @export var respawn_base: float
 @export var respawn_per_level: float
 
+@export_group("Trạng thái (ST)")
+## ST-11: GHOST nhận sát thương phép × (1 + ghost_magic_amp).
+@export var ghost_magic_amp: float
+
 @export_group("Kinh tế (ECO)")
 ## ECO-01: cứ passive_gold_interval giây mỗi hero được passive_gold vàng.
 @export var passive_gold: int

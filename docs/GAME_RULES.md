@@ -153,6 +153,12 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   chặn mọi sát thương và mọi debuff mới từ phe địch; các state đi cùng trong **cùng
   một hiệu ứng** (ví dụ Gậy Lốc Xoáy: INVULNERABLE + UNTARGETABLE + STUNNED) vẫn có tác dụng.
 
+`ST-18` (M3.2) State tính từ hiệu ứng đang có, không gán tay; hệ thống chỉ hỏi
+  `Rules.has_state / can_move / can_attack / can_cast / is_attackable / damage_factor`.
+  Bị chặn hành động thì **lệnh vẫn giữ**: hết choáng/trói đơn vị làm tiếp lệnh cũ. Đòn
+  đang vung bị hủy khi mất quyền đánh, không tốn hồi đòn (như CMB-06). Hệ số sát thương
+  theo state nhân sau giáp, trước khiên.
+
 ---
 
 ## VIS — Tầm nhìn

@@ -49,7 +49,7 @@ func click_world_point(point: Vector2, allow_move: bool) -> void:
 func _enemy_at(point: Vector2) -> Entity:
 	var best: Entity = null
 	for e: Entity in world.entities:
-		if Rules.is_targetable(hero, e) and e.position.distance_to(point) <= e.radius * PICK_RADIUS_SCALE:
+		if Rules.is_attackable(hero, e) and e.position.distance_to(point) <= e.radius * PICK_RADIUS_SCALE:
 			if best == null or e.position.distance_to(point) < best.position.distance_to(point):
 				best = e
 	return best

@@ -42,14 +42,14 @@ func _choose(world: World, tower: Entity) -> void:
 
 func _valid(world: World, tower: Entity, id: int) -> Entity:
 	var e: Entity = world.find_entity(id)
-	return e if Rules.is_targetable(tower, e) and Rules.in_attack_range(tower, e) else null
+	return e if Rules.is_attackable(tower, e) and Rules.in_attack_range(tower, e) else null
 
 
 func _in_range(world: World, tower: Entity) -> Array[Entity]:
 	var out: Array[Entity] = []
 	var reach: float = tower.stats.get_stat(StatId.Id.ATTACK_RANGE) + tower.radius
 	for e: Entity in world.spatial_near(tower.position, reach, World.Phase.CONTROLLER, false):
-		if Rules.is_targetable(tower, e) and Rules.in_attack_range(tower, e):
+		if Rules.is_attackable(tower, e) and Rules.in_attack_range(tower, e):
 			out.append(e)
 	return out
 

@@ -42,6 +42,8 @@ var killer_id: int = -1
 var stats: StatBlock
 ## Hiệu ứng đang có, theo thứ tự áp (chỉ Effects thêm/bỏ).
 var effects: Array[EffectInstance] = []
+## Trạng thái ST (bit theo UnitState.Id), tính từ hiệu ứng; chỉ Effects ghi. Hỏi qua Rules.
+var states: int = 0
 var health: float = 0.0
 var mana: float = 0.0
 ## Còn sống; chỉ DamageSystem đặt false. DeathSystem gỡ đơn vị sau đó, trừ hero (chờ hồi sinh, ECO-04).

@@ -39,6 +39,7 @@ static func make() -> BalanceSettings:
 	b.creep_front_margin = 200.0
 	b.tower_body_radius = 52.0
 	b.respawn_base = 5.0
+	b.ghost_magic_amp = 0.4
 	b.respawn_per_level = 2.0
 	b.attack_search_bonus = 100.0
 	b.lock_break_range = 1400.0

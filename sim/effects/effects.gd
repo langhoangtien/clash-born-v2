@@ -9,6 +9,9 @@ extends RefCounted
 static func apply(world: World, owner: Entity, def: EffectDef, source: Entity, values: Dictionary = {},
 		duration: String = "", item_slot: int = 0) -> EffectInstance:
 	var source_id: int = source.id if source != null else -1
+	if def.tags.has(&"debuff") and source != null and source.team != owner.team \
+			and Rules.has_state(owner, UnitState.Id.INVULNERABLE):
+		return null  # ST-17: bất tử chặn debuff mới từ phe địch
 	var inst: EffectInstance = null
 	if def.stacking != EffectDef.Stacking.INDEPENDENT:
 		inst = _find(owner, def, source_id)  # EFF-02: nguồn khác → bản khác
@@ -25,6 +28,7 @@ static func apply(world: World, owner: Entity, def: EffectDef, source: Entity, v
 		inst.stacks = mini(inst.stacks + 1, maxi(1, def.max_stacks))
 	inst.values = values.duplicate()
 	_start(world, owner, inst, duration)
+	refresh_states(owner)
 	world.emit(&"effect_applied", source_id, owner.id, inst.stacks)
 	return inst
 
@@ -35,7 +39,17 @@ static func remove(world: World, owner: Entity, inst: EffectInstance, reason: St
 		return
 	owner.effects.erase(inst)
 	owner.stats.remove_source(inst.serial)
+	refresh_states(owner)
 	world.emit(&"effect_removed", inst.source_id, owner.id, inst.stacks, reason)
+
+
+## ST: trạng thái = hợp các state của mọi hiệu ứng đang có.
+static func refresh_states(owner: Entity) -> void:
+	var bits: int = 0
+	for inst: EffectInstance in owner.effects:
+		for state: UnitState.Id in inst.def.states:
+			bits |= 1 << state
+	owner.states = bits
 
 
 ## DTH: chết thì gỡ mọi hiệu ứng trừ tag `passive` (D-56).
@@ -78,6 +92,8 @@ static func _start(world: World, owner: Entity, inst: EffectInstance, duration: 
 	var ctx: ExprContext = ExprContext.make(owner, owner, inst.values)
 	var length: String = def.duration if not def.duration.is_empty() else duration
 	var seconds: float = ExprEval.evaluate(length, ctx)
+	if def.tags.has(&"debuff") and seconds > 0.0:  # ST-09
+		seconds *= 1.0 - owner.stats.get_stat(StatId.Id.STATUS_RESISTANCE)
 	inst.start_tick = world.tick
 	inst.end_tick = world.tick + maxi(1, SimClock.seconds_to_ticks(seconds)) if seconds > 0.0 else -1
 	if not def.absorb.is_empty():

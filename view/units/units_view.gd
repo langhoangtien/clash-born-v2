@@ -66,6 +66,7 @@ func _draw_unit(e: Entity, at: Vector2) -> void:
 			else draw_texture_rect(tex, Rect2(at + Vector2(size.x * 0.5, -size.y * 0.85), Vector2(-size.x, size.y)), false)
 	else:
 		_draw_placeholder(e, at, color, height)
+	StateMarks.draw(self, e, at, height, world.tick)
 	_draw_health(e, at - Vector2(0, height + 14), color)
 
 
