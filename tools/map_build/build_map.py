@@ -66,9 +66,9 @@ tree |= ndi.binary_fill_holes(water & ~river)
 water = ndi.binary_fill_holes(river)
 if SYM:
     black, water, tree = SYM.mask(black), SYM.mask(water), SYM.mask(tree)
-if SRC.get("river_cross"):  # MAP-05: khúc sông giữa trơn, không vách lồi
+if SRC.get("mid_crossing_clear"):  # MAP-05: bỏ vách lồi sát chỗ mid cắt sông
     _c = [(FX0 + FX1) / 2, (FY0 + FY1) / 2]
-    water, black, tree, _zone = river_cross.apply(SRC["river_cross"], xx, yy, _c, SCALE, water, black, tree)
+    black, _zone = river_cross.apply(SRC["mid_crossing_clear"], xx, yy, _c, SCALE, black)
     SRC["ramps"] = [r for r in SRC["ramps"] if river_cross.keeps_ramp(r, _zone)]
 
 def disk(cx, cy, r):

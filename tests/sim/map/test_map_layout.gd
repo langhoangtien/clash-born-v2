@@ -172,17 +172,14 @@ func test_MAP_04_towers_clear_of_forest_and_cliffs() -> void:
 
 
 
-## MAP-05 (D-50): khúc sông giữa trống, không vách/rừng lồi vào khu giao tranh.
-func test_MAP_05_river_crossing_is_open() -> void:
+## MAP-05 (D-50): chỗ mid cắt sông không còn vách lồi; quanh tâm map trống.
+func test_MAP_05_mid_river_crossing_is_open() -> void:
 	var c: Vector2 = map.world_size() * 0.5
-	var along: Vector2 = Vector2(1, 1).normalized()
-	var across: Vector2 = Vector2(1, -1).normalized()
-	for ti: int in range(-10, 11):
-		var t: float = ti * 100.0
-		var off: float = 130.0 * t / 1250.0
-		for ni: int in range(-4, 5):
-			var p: Vector2 = c + along * t + across * (off + ni * 100.0)
-			assert_true(map.clearance_at(p) >= 120.0, "sông giữa bị chắn tại %s (%.0f)" % [p, map.clearance_at(p)])
+	for x: int in range(-3, 4):
+		for y: int in range(-3, 4):
+			var p: Vector2 = c + Vector2(x, y) * 100.0
+			if p.distance_to(c) <= 300.0:
+				assert_true(map.clearance_at(p) >= 120.0, "giữa sông bị chắn tại %s (%.0f)" % [p, map.clearance_at(p)])
 
 func _midpoint(route: PackedVector2Array) -> Vector2:
 	var total: float = 0.0

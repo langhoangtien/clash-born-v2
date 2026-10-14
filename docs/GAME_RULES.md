@@ -527,9 +527,8 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   lính đầu gặp nhau ngay ngoài tầm trụ 1 của phe mình (`tower_layout` BOT 760), lane khó
   xa trụ 1 (TOP 2000), mid gặp ở giữa sông, trụ 1 mid cách đều (1200). Đợt đầu luôn
   gặp ngoài tầm mọi trụ 1; tâm trụ cách rừng/vách ≥ 160.
-- `MAP-05` Khúc sông giữa (D-50): quanh chỗ lane giữa cắt sông (±1250 dọc sông) sông là một
-  dải trơn đối xứng, không có vách, bậc thang hay mỏm rừng lồi vào; dải sông và hai bờ
-  (thêm 400) để trống cho giao tranh.
+- `MAP-05` Chỗ mid cắt sông (D-50): trong bán kính 460 quanh tâm map không có vách hay bậc
+  dốc (khu giao tranh mid để trống); sông, bờ kè và các dốc xa hơn giữ nguyên.
 
 ## INV — Bất biến (test soak kiểm tra mỗi tick)
 
@@ -564,7 +563,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | xp_share_range | 1200 | | bot_chase_leash | 1200 |
 | respawn_base / per_level | 5 / 2 s | | bot_trade_window | 3 s |
 | death_gold_per_level | 25 | | bot_lane_offset | 350 |
-| attack_search_bonus / lock_break_range | 200 / 1400 | | tower_tank_creeps / dive_min_hp | 2 / 0.6 |
+| attack_search_bonus / lock_break_range | 100 / 1400 | | tower_tank_creeps / dive_min_hp | 2 / 0.6 |
 | ghost_magic_amp | 0.4 | | talent_level | 20 |
 | attribute_bonus | +2 mọi thuộc tính | | attribute_bonus_max | 7 lần |
 | hex_move_speed | 140 | | bash_cooldown | 1.5 s |

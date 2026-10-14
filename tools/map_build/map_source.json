@@ -5,7 +5,7 @@
   "gap_min_world": 112,
   "symmetry": "rotate180",
   "tower_clear_radius": 12,
-  "river_cross": {"half_len": 1250, "half_width": 290, "half_width_end": 350, "offset_end": 130, "clear": 400},
+  "mid_crossing_clear": {"radius": 460},
   "tower_layout": {"_note": "D-49: khoảng cách (thế giới) từ điểm gặp của lane tới T1 Blue; Red xoay 180°", "TOP": 2000, "MID": 1200, "BOT": 760, "lateral": 150},
   "nav_cell": 32,
   "lane_half_width": 9,

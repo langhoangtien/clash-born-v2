@@ -59,7 +59,7 @@ func test_CTL_02_enemy_hero_lowest_hp_before_creeps() -> void:
 	hurt.health = 400.0
 	_at_edge(me, creep, 20)
 	_at_edge(me, full, 50, 90)
-	_at_edge(me, hurt, 300, 180)
+	_at_edge(me, hurt, 220, 180)
 	assert_eq(_pick(w, me), hurt.id, "hero máu thấp nhất trước, dù xa hơn và có lính gần")
 
 
@@ -91,10 +91,10 @@ func test_CTL_02_structure_last_and_only_when_unlocked() -> void:
 	var t1: Entity = _structure(w, &"red_mid_t1")
 	var t2: Entity = _structure(w, &"red_mid_t2")
 	var me: Entity = _unit(w, 0, Entity.Kind.HERO, Vector2.ZERO)
-	_at_edge(t1, me, 250, 135)
+	_at_edge(t1, me, 200, 135)
 	assert_eq(_pick(w, me), t1.id)
 	var creep: Entity = _unit(w, 1, Entity.Kind.LANE_CREEP, Vector2.ZERO)
-	_at_edge(me, creep, 300, 45)
+	_at_edge(me, creep, 230, 45)
 	assert_eq(_pick(w, me), creep.id, "lính trước công trình")
 	me.position = t2.position + (me.position - t1.position)
 	creep.position = Vector2.ZERO
@@ -110,16 +110,28 @@ func test_CTL_03_creep_mode_lowest_hp_creep_ignores_heroes_and_lock() -> void:
 	far_low.health = 60.0
 	_at_edge(me, hero, 10)
 	_at_edge(me, near_full, 20, 90)
-	_at_edge(me, far_low, 300, 180)
+	_at_edge(me, far_low, 220, 180)
 	me.lock_target_id = hero.id
 	assert_eq(_pick(w, me, Rules.AttackMode.CREEP), far_low.id)
 
+
+
+## D-52: lính đánh xa ít máu đứng sau (gần trụ) không kéo hero vượt lính cận chiến đang đánh.
+func test_D_52_ranged_creep_behind_melee_not_picked() -> void:
+	var w: World = _world()
+	var me: Entity = _unit(w, 0, Entity.Kind.HERO, _center())
+	var melee: Entity = _unit(w, 1, Entity.Kind.LANE_CREEP, Vector2.ZERO, 450)
+	var ranged: Entity = _unit(w, 1, Entity.Kind.LANE_CREEP, Vector2.ZERO, 300)
+	_at_edge(me, melee, 40)
+	_at_edge(me, ranged, 330)
+	for mode: Rules.AttackMode in [Rules.AttackMode.ALL, Rules.AttackMode.CREEP]:
+		assert_eq(_pick(w, me, mode), melee.id)
 
 func test_CTL_03_structure_mode_nearest_unlocked_structure() -> void:
 	var w: World = _world(true)
 	var t1: Entity = _structure(w, &"red_mid_t1")
 	var me: Entity = _unit(w, 0, Entity.Kind.HERO, Vector2.ZERO)
-	_at_edge(t1, me, 300, 135)
+	_at_edge(t1, me, 220, 135)
 	var creep: Entity = _unit(w, 1, Entity.Kind.LANE_CREEP, Vector2.ZERO)
 	_at_edge(me, creep, 10, 45)
 	assert_eq(_pick(w, me, Rules.AttackMode.STRUCTURE), t1.id)

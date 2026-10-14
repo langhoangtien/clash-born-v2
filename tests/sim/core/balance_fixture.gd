@@ -40,6 +40,6 @@ static func make() -> BalanceSettings:
 	b.tower_body_radius = 52.0
 	b.respawn_base = 5.0
 	b.respawn_per_level = 2.0
-	b.attack_search_bonus = 200.0
+	b.attack_search_bonus = 100.0
 	b.lock_break_range = 1400.0
 	return b
