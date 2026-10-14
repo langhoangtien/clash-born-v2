@@ -1,8 +1,8 @@
 class_name DeathSystem
 extends SimSystem
 ## Pha 11: gỡ đơn vị đã chết. Công trình đổ → ghi vào `destroyed_structures`, phát
-## `structure_destroyed`, tính lại khóa (STR-02). Hero không bị gỡ: chờ rồi hồi sinh ở
-## fountain (ECO-04). Thưởng vàng/XP ở M2.5.
+## `structure_destroyed`, tính lại khóa (STR-02); nhà chính đổ → kết thúc trận (STR-05).
+## Hero không bị gỡ: chờ rồi hồi sinh ở fountain (ECO-04). Thưởng vàng ECO-01/07; XP ở M3.5.
 
 
 func run(world: World) -> void:
@@ -18,6 +18,7 @@ func run(world: World) -> void:
 			world.destroyed_structures[e.structure_id] = true
 			world.emit(&"structure_destroyed", -1, e.id)
 			structure_fell = true
+		_reward(world, e)
 		gone.append(e)
 	for e: Entity in gone:
 		world.remove_entity(e)
@@ -48,3 +49,22 @@ func _respawn(world: World, e: Entity) -> void:
 	e.mana = e.stats.get_stat(StatId.Id.MAX_MANA)
 	e.order = Order.idle()
 	world.emit(&"hero_respawned", -1, e.id)
+
+
+## ECO-01: last hit của hero lấy vàng lính/quái. ECO-07: trụ đổ → mọi hero đội kia nhận
+## vàng trụ. STR-05: nhà chính đổ → đội kia thắng.
+func _reward(world: World, e: Entity) -> void:
+	if e.kind == Entity.Kind.CORE:
+		if world.winner < 0:
+			world.winner = 1 - e.team
+			world.emit(&"match_ended", -1, e.id)
+		return
+	if e.kind == Entity.Kind.TOWER:
+		for hero: Entity in world.entities:
+			if hero.kind == Entity.Kind.HERO and hero.team != e.team:
+				hero.gold += e.bounty_gold
+		return
+	var killer: Entity = world.find_entity(e.killer_id)
+	if killer != null and killer.kind == Entity.Kind.HERO and killer.team != e.team:
+		killer.gold += e.bounty_gold
+		killer.last_hits += 1

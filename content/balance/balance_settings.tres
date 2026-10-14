@@ -45,3 +45,5 @@ fountain_radius = 600.0
 fountain_regen = 0.05
 fountain_damage = 300.0
 fountain_attack_interval = 1.0
+passive_gold = 1
+passive_gold_interval = 2.0

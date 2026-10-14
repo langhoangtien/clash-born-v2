@@ -379,7 +379,8 @@ Bảng ưu tiên (dòng trên thắng):
   `fountain_radius` quanh điểm fountain; cứ `fountain_attack_interval` giây gây
   `fountain_damage` sát thương thuần lên **mỗi** hero địch còn sống trong vùng (sự kiện
   `fountain_shot`).
-- `STR-05` Nhà chính bị phá → đội đó thua.
+- `STR-05` Nhà chính bị phá → đội đó thua: trận ghi đội thắng, phát `match_ended`; từ đó
+  `World.step()` không chạy nữa (tick đứng yên).
 
 ## JGL — Quái rừng
 
@@ -407,8 +408,11 @@ Bảng ưu tiên (dòng trên thắng):
 
 ## ECO — Kinh tế và hero
 
-- `ECO-01` Vàng từ lính/quái chỉ cho đòn kết liễu (last hit). Vàng thụ động
-  `passive_gold` mỗi giây.
+- `ECO-01` Vàng từ lính/quái chỉ cho đòn kết liễu (last hit): hero gây đòn chết nhận
+  `bounty_gold` của đơn vị đó và +1 last hit; lính/trụ/fountain kết liễu thì không ai được.
+  Vàng thụ động: cứ `passive_gold_interval` giây (tính từ tick 0) mỗi hero được
+  `passive_gold` vàng, kể cả khi đang chờ hồi sinh.
+- `ECO-07` Trụ đổ (ai phá cũng vậy): mọi hero đội kia nhận `bounty_gold` của trụ.
 - `ECO-02` Chặn (deny): đánh lính phe mình dưới `deny_hp_fraction` máu; kẻ địch chỉ
   nhận `deny_xp_fraction` XP.
 - `ECO-03` XP chia cho hero trong `xp_share_range` khi đơn vị địch chết.
@@ -557,7 +561,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | hero_structure_damage | 0.5 | | jungle_respawn_check | 60 s |
 | creep_structure_damage | 0.65 | | jungle_leash | 600 |
 | siege_structure_damage | 1.25 | | jungle_aggro_time | 5 s |
-| passive_gold | 1 / 2 s | | camp_spawn_box | 300 |
+| passive_gold / interval | 1 / 2 s | | camp_spawn_box | 300 |
 | deny_hp_fraction | 0.5 | | bot_retreat_hp / recover_hp | 0.30 / 0.80 |
 | deny_xp_fraction | 0.5 | | bot_kill_hp / kill_range | 0.35 / 900 |
 | xp_share_range | 1200 | | bot_chase_leash | 1200 |

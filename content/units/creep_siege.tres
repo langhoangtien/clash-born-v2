@@ -23,3 +23,4 @@ stats = SubResource("Resource_hbs72")
 id = &"creep_siege"
 display_name = "Lính công thành"
 art_id = &"creep_siege"
+bounty_gold = 70

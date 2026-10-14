@@ -25,6 +25,7 @@ func run(world: World) -> void:
 		if target.health <= 0.0:
 			target.health = 0.0
 			target.alive = false
+			target.killer_id = r.source_id
 			world.emit(&"unit_died", r.source_id, r.target_id)
 
 

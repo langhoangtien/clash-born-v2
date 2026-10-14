@@ -8,6 +8,9 @@ const HERO_ID: StringName = &"brakk"
 const SEED: int = 1
 ## CTL-02: phím PC giả lập nút ĐÁNH / đánh lính / đánh trụ (theo Rules.AttackMode).
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
+const SPEEDS: Array[int] = [1, 2, 4, 8]
+const MENU_SCENE: String = "res://app/main.tscn"
+const HELP: String = "J đánh · K lính · L trụ · WASD đi · chuột phải: đi tới / khóa địch · F tốc độ thử · Esc menu"
 
 @onready var map_view: MapView = $MapView
 @onready var units_view: UnitsView = $UnitsView
@@ -15,11 +18,13 @@ const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
 @onready var hud: Label = $Hud/Info
 @onready var joystick: TouchJoystick = $Hud/Joystick
 @onready var attack_buttons: AttackButtons = $Hud/AttackButtons
+@onready var match_hud: MatchHud = $Hud/MatchHud
 
 var world: World
 var runner: SimRunner
 var hero: Entity
 var input: MatchInput = MatchInput.new()
+var result: ResultPanel
 
 
 func _ready() -> void:
@@ -36,6 +41,9 @@ func _ready() -> void:
 	runner = SimRunner.new(world)
 	runner.before_step.connect(_before_step)
 	camera.position = hero.position
+	match_hud.world = world
+	match_hud.hero = hero
+	hud.text = HELP
 
 
 func _process(delta: float) -> void:
@@ -50,19 +58,23 @@ func tick_frame(delta: float) -> void:
 	runner.advance(delta)
 	units_view.alpha = runner.alpha()
 	camera.position = units_view.display_position(hero)
-	hud.text = "%s · %s · J đánh · K lính · L trụ · WASD đi · chuột phải: đi tới / khóa địch · Esc" % [
-		_clock(), _status()]
+	match_hud.speed = runner.speed
+	if world.winner >= 0 and result == null:
+		_show_result()
 
 
-func _clock() -> String:
-	var seconds: int = int(world.tick * SimClock.TICK_SECONDS)
-	return "%d:%02d" % [seconds / 60, seconds % 60]
+func _show_result() -> void:
+	result = ResultPanel.new()
+	$Hud.add_child(result)
+	result.show_result(world, hero)
+	result.replay_pressed.connect(func() -> void: get_tree().reload_current_scene())
+	result.menu_pressed.connect(func() -> void: get_tree().change_scene_to_file(MENU_SCENE))
 
 
-func _status() -> String:
-	if not hero.alive:
-		return "hồi sinh sau %.0f s" % ceilf(maxi(0, hero.respawn_tick - world.tick) * SimClock.TICK_SECONDS)
-	return "máu %.0f/%.0f" % [hero.health, hero.stats.get_stat(StatId.Id.MAX_HP)]
+## D-53: phím F đổi tốc độ chơi thử ×1 → ×2 → ×4 → ×8 → ×1.
+func cycle_speed() -> void:
+	var i: int = SPEEDS.find(runner.speed)
+	runner.speed = SPEEDS[(i + 1) % SPEEDS.size()]
 
 
 func _before_step() -> void:
@@ -87,8 +99,10 @@ func _held_direction() -> Vector2:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and (event as InputEventKey).keycode == KEY_ESCAPE:
-		get_tree().change_scene_to_file("res://app/main.tscn")
+	if event is InputEventKey and event.pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_F:
+		cycle_speed()
+	elif event is InputEventKey and event.pressed and (event as InputEventKey).keycode == KEY_ESCAPE:
+		get_tree().change_scene_to_file(MENU_SCENE)
 	elif event is InputEventMouseButton and event.pressed and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_RIGHT:
 		input.click_world_point(get_global_mouse_position(), true)
 	elif event is InputEventScreenTouch and event.pressed:

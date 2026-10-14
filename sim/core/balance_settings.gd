@@ -56,6 +56,11 @@ extends Resource
 @export var respawn_base: float
 @export var respawn_per_level: float
 
+@export_group("Kinh tế (ECO)")
+## ECO-01: cứ passive_gold_interval giây mỗi hero được passive_gold vàng.
+@export var passive_gold: int
+@export var passive_gold_interval: float
+
 @export_group("Điều khiển (CTL)")
 ## CTL-02: tầm tìm mục tiêu = tầm đánh + chừng này.
 @export var attack_search_bonus: float

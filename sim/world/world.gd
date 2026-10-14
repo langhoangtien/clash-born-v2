@@ -7,6 +7,8 @@ extends RefCounted
 enum Phase { COMMAND, EFFECT, STATE, VISION, CONTROLLER, MOVEMENT, ABILITY, ATTACK, DAMAGE, TRIGGER, DEATH, SPAWN }
 
 var tick: int = 0
+## Đội thắng (STR-05), -1 khi trận chưa xong. Đã có đội thắng thì step() không chạy nữa.
+var winner: int = -1
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var balance: BalanceSettings
 ## Map của trận; null trong test không cần map.
@@ -52,6 +54,7 @@ func _init(seed_value: int, p_balance: BalanceSettings) -> void:
 	add_system(FountainSystem.new(), Phase.ATTACK)
 	add_system(DamageSystem.new(), Phase.DAMAGE)
 	add_system(DeathSystem.new(), Phase.DEATH)
+	add_system(EconomySystem.new(), Phase.SPAWN)
 
 
 func add_system(system: SimSystem, phase: Phase) -> void:
@@ -121,6 +124,8 @@ func emit(type: StringName, source_id: int, target_id: int, amount: float = 0.0)
 
 
 func step() -> void:
+	if winner >= 0:
+		return
 	tick += 1
 	previous_events = events
 	events = []
@@ -132,11 +137,11 @@ func step() -> void:
 func state_hash() -> PackedByteArray:
 	var ctx: HashingContext = HashingContext.new()
 	ctx.start(HashingContext.HASH_SHA256)
-	ctx.update(PackedInt64Array([tick, rng.seed, rng.state, entities.size()]).to_byte_array())
+	ctx.update(PackedInt64Array([tick, rng.seed, rng.state, entities.size(), winner]).to_byte_array())
 	for e: Entity in entities:
 		ctx.update(PackedInt64Array([e.id, e.team, e.kind, e.order.type, int(e.order.finished), e.order.target_id,
 			int(e.alive), int(e.locked), int(e.returning), int(e.has_origin), e.aggro_target_id, e.aggro_until_tick, e.attack_phase, e.attack_target_id, e.attack_start_tick, e.attack_release_tick, e.next_attack_tick,
-			e.lock_target_id, e.respawn_tick]).to_byte_array())
+			e.lock_target_id, e.respawn_tick, e.gold, e.last_hits]).to_byte_array())
 		ctx.update(PackedFloat64Array([e.position.x, e.position.y, e.radius, e.health, e.mana,
 			e.order.point.x, e.order.point.y, e.order.direction.x, e.order.direction.y,
 			e.chase_origin.x, e.chase_origin.y]).to_byte_array())

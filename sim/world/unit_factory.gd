@@ -31,6 +31,7 @@ static func unit(world: World, def: UnitDef, kind: Entity.Kind, team: int, posit
 	e.attack_point = def.stats.attack_point
 	e.projectile_speed = def.stats.projectile_speed
 	e.stats = stats_from(world.balance, def.stats)
+	e.bounty_gold = def.bounty_gold
 	return world.add_entity(e)
 
 

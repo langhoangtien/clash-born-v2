@@ -23,3 +23,4 @@ stats = SubResource("Resource_56die")
 id = &"creep_ranged"
 display_name = "Lính đánh xa"
 art_id = &"creep_ranged"
+bounty_gold = 45

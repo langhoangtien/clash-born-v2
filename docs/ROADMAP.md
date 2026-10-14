@@ -50,7 +50,7 @@ Chưa có gameplay; dựng khung để mọi thứ sau đứng vững.
 | M2.3 Đợt lính + LaneCreepController (CRP-01..08); **xóa hình nộm tạm** trong `app/match_scene.gd` | Test từng dòng CRP; INV-03, INV-04 |
 | M2.4 Hero người chơi: nút ĐÁNH / đánh lính / đánh trụ, khóa mục tiêu (CTL-01..04, D-45, `Rules.pick_attack_target`), hồi sinh, fountain (STR-04) | Test CTL |
 | M2.5 Điều kiện thắng/thua, màn hình kết quả, HUD tối thiểu (máu, vàng, thời gian) | **Chơi thử: một mình đẩy lane phá nhà chính** |
-| M2.6 Test soak lính-đấu-lính 10 phút | Bất biến INV-01..05, INV-08 xanh |
+| M2.6 Test soak lính-đấu-lính 10 phút; đo và giảm thời gian một tick (hiện ~3 ms với 60 đơn vị, chủ yếu ở controller lính/trụ và đẩy nhau) | Bất biến INV-01..05, INV-08 xanh; tick đủ nhanh cho ×8 |
 
 ## M3 — Khung hiệu ứng, skill, talent + Brakk (L)
 
@@ -168,3 +168,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | Map D-49 | Xong | 2026-10-14 | Map đối xứng xoay 180°, trụ 1 theo vai lane, boss pit trên trục sông; 218 test xanh; đợt đầu không bị trụ bắn, hai trụ 1 lane an toàn bắt đầu bắn cùng giây 70 |
 | Map D-50 | Xong | 2026-10-14 | Bỏ 4 đoạn vách/bậc dốc sát chỗ mid cắt sông (MAP-05); sông và bờ kè giữ như D-49 |
 | M2.4 | Xong | 2026-10-14 | 244 test xanh (+25) + 2 soak; `Rules.pick_attack_target`, lệnh ATTACK_AUTO chọn mục tiêu lúc áp, đánh gió (SWING), khóa mục tiêu; nút ĐÁNH/Lính/Trụ + J/K/L, giữ để đánh liên tục; hero chết chờ rồi hồi sinh ở fountain (ECO-04); fountain hồi 5%/s, bắn 300/s (STR-04, D-51); sau chơi thử giảm tầm tìm mục tiêu còn +100 (D-52) |
+| M2.5 | Xong | 2026-10-14 | 257 test xanh (+12) + 2 soak; thắng/thua STR-05 (trận dừng), vàng last hit/trụ/thụ động ECO-01/07 (D-53), HUD (đồng hồ, máu, mana, vàng, last hit, đếm ngược hồi sinh), màn kết quả Chơi lại / Về menu, phím F tăng tốc thử |

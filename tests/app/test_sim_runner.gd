@@ -43,3 +43,17 @@ func test_step_callback_runs_before_each_tick() -> void:
 	r.before_step.connect(func() -> void: seen.append(r.world.tick))
 	r.advance(0.1)
 	assert_eq(seen, [0, 1, 2])
+
+
+func test_D_53_speed_runs_more_ticks_per_real_second() -> void:
+	var r: SimRunner = _runner()
+	r.speed = 4
+	for i: int in range(60):
+		r.advance(1.0 / 60.0)
+	assert_eq(r.world.tick, 120)
+
+
+func test_STR_05_runner_stops_when_match_ended() -> void:
+	var r: SimRunner = _runner()
+	r.world.winner = 1
+	assert_eq(r.advance(1.0), 0)

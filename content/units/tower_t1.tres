@@ -23,3 +23,4 @@ stats = SubResource("Resource_5kq16")
 id = &"tower_t1"
 display_name = "Trụ 1"
 art_id = &"tower"
+bounty_gold = 150
