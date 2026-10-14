@@ -25,6 +25,8 @@ var rejected_commands: Array[Command] = []
 ## (controller chạy ở pha 5, trước khi tick này có sự kiện sát thương).
 var events: Array[GameEvent] = []
 var previous_events: Array[GameEvent] = []
+var _fights_tick: int = -1
+var _fights: Array[GameEvent] = []
 ## Tra cứu đơn vị theo vị trí; hệ thống gọi `spatial_near` (tự dựng lại theo tick + pha).
 var spatial: SpatialGrid = SpatialGrid.new()
 ## Route lane đã dựng, theo "LANE:team" (LaneRoute.of).
@@ -86,6 +88,14 @@ func navigation(radius: float) -> MapNavigation:
 func spatial_near(point: Vector2, radius: float, phase: int, sorted: bool = true) -> Array[Entity]:
 	spatial.rebuild(entities, tick, phase)
 	return spatial.near(point, radius, sorted)
+
+
+## Sự kiện `hero_attacked_hero` của tick trước (DEF-11), lọc một lần mỗi tick cho controller.
+func previous_hero_fights() -> Array[GameEvent]:
+	if _fights_tick != tick:
+		_fights_tick = tick
+		_fights = previous_events.filter(func(ev: GameEvent) -> bool: return ev.type == &"hero_attacked_hero")
+	return _fights
 
 
 ## Gửi lệnh; áp ở pha COMMAND của tick kế tiếp (CMD-01).

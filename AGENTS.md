@@ -105,4 +105,4 @@ Viết test: file `tests/**/test_*.gd`, `extends TestCase`, mỗi hàm `test_*` 
 có `assert_true/false/eq/ne/near` và `fail`. Lỗi script trong test cũng tính là đỏ.
 `tests/fixtures/` chứa file cố ý sai cho chính khung test, không tự chạy.
 `tests/soak/` chứa test chạy lâu (mô phỏng nhiều phút), chỉ chạy khi thêm `-Soak`
-(`--soak` trên Linux); chạy trước khi đóng một mốc.
+(`--soak` trên Linux; khoảng 2–3 phút); chạy trước khi đóng một mốc.

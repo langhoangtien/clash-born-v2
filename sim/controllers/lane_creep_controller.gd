@@ -6,6 +6,9 @@ extends SimSystem
 ## hoặc mép trước → về lane (CRP-07), lúc về không nhận mục tiêu.
 
 
+## Hằng số kỹ thuật: cách điểm đích chừng này coi như đã tới (lính bị đẩy lệch khi tới góc lane).
+const ARRIVE: float = 16.0
+
 var _next_tick: int = -1
 var _next_cache: Dictionary[int, Entity] = {}
 
@@ -18,9 +21,7 @@ func run(world: World) -> void:
 
 
 func _remember_aggro(world: World, c: Entity) -> void:
-	for ev: GameEvent in world.previous_events:
-		if ev.type != &"hero_attacked_hero":
-			continue
+	for ev: GameEvent in world.previous_hero_fights():
 		var attacker: Entity = world.find_entity(ev.source_id)
 		var victim: Entity = world.find_entity(ev.target_id)
 		if attacker != null and victim != null and victim.team == c.team \
@@ -66,16 +67,17 @@ func _pick(world: World, c: Entity) -> Entity:
 	var current: Entity = world.find_entity(c.order.target_id) if c.order.type == Order.Type.ATTACK and not c.order.finished else null
 	if current != null and Rules.is_targetable(c, current) and current.kind == Entity.Kind.LANE_CREEP:
 		return current  # CRP-02 + CRP-06
-	var creep: Entity = _nearest(world, c, Entity.Kind.LANE_CREEP)
-	if creep != null:
-		return creep
+	var nearest: Array[Entity] = _nearest_creep_and_hero(world, c)
+	if nearest[0] != null:
+		return nearest[0]
 	var structure: Entity = _next_structure(world, c)
-	if structure != null and Rules.is_targetable(c, structure) and Rules.edge_distance(c, structure) <= world.balance.creep_acquire_range:
+	if structure != null and Rules.is_targetable(c, structure) \
+			and (Rules.edge_distance(c, structure) <= world.balance.creep_acquire_range or Rules.in_attack_range(c, structure)):
 		return structure  # CRP-03
 	if current != null and Rules.is_targetable(c, current) and current.kind == Entity.Kind.HERO \
 			and Rules.edge_distance(c, current) <= world.balance.creep_acquire_range:
 		return current  # CRP-04 + CRP-06
-	return _nearest(world, c, Entity.Kind.HERO)
+	return nearest[1]
 
 
 ## DEF-06, nhớ theo (đội, lane) trong một tick để khỏi duyệt lại danh sách đơn vị.
@@ -89,16 +91,19 @@ func _next_structure(world: World, c: Entity) -> Entity:
 	return _next_cache[key]
 
 
-func _nearest(world: World, c: Entity, kind: Entity.Kind) -> Entity:
-	var best: Entity = null
-	var best_d: float = INF
-	for e: Entity in world.spatial_near(c.position, world.balance.creep_acquire_range + c.radius, World.Phase.CONTROLLER, false):
-		if e.kind != kind or not Rules.is_targetable(c, e):
+## Lính địch và hero địch gần nhất trong `creep_acquire_range` (một lần tra lưới cho cả hai).
+func _nearest_creep_and_hero(world: World, c: Entity) -> Array[Entity]:
+	var best: Array[Entity] = [null, null]
+	var best_d: Array[float] = [INF, INF]
+	var acquire: float = world.balance.creep_acquire_range
+	for e: Entity in world.spatial_near(c.position, acquire + c.radius, World.Phase.CONTROLLER, false):
+		var slot: int = 0 if e.kind == Entity.Kind.LANE_CREEP else (1 if e.kind == Entity.Kind.HERO else -1)
+		if slot < 0 or not Rules.is_targetable(c, e):
 			continue
 		var d: float = Rules.edge_distance(c, e)
-		if d <= world.balance.creep_acquire_range and (d < best_d or (d == best_d and e.id < best.id)):
-			best = e
-			best_d = d
+		if d <= acquire and (d < best_d[slot] or (d == best_d[slot] and e.id < best[slot].id)):
+			best[slot] = e
+			best_d[slot] = d
 	return best
 
 
@@ -111,12 +116,15 @@ func _advance(world: World, c: Entity, route: LaneRoute) -> void:
 			world.submit(Command.stop(c.id))
 		return
 	var goal: float = minf(route.next_vertex_after(progress), limit)
+	if goal < limit and c.position.distance_to(route.point_at(goal)) <= ARRIVE:
+		goal = minf(route.next_vertex_after(goal), limit)  # đã tới góc (bị đẩy lệch) → góc kế
 	_move(world, c, route.point_at(goal))
 
 
 func _move(world: World, c: Entity, point: Vector2) -> void:
 	if c.order.type == Order.Type.MOVE and not c.order.finished and c.order.point.distance_to(point) < 1.0:
 		return
-	if c.order.type == Order.Type.MOVE and c.order.finished and c.order.point.distance_to(point) < 1.0:
-		return
+	if c.order.type == Order.Type.MOVE and c.order.finished and c.order.point.distance_to(point) < 1.0 \
+			and c.position.distance_to(point) <= ARRIVE:
+		return  # đã tới; bị đẩy lệch xa hơn ARRIVE thì gửi lại để đi tiếp
 	world.submit(Command.move_to(c.id, point))

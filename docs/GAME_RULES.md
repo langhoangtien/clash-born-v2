@@ -347,7 +347,7 @@ Bảng ưu tiên (dòng trên thắng):
 |---|---|---|---|---|
 | CRP-01 | HERO_AGGRO | Có `hero_attacked_hero` mà nạn nhân là hero phe mình và lính trong `creep_hero_aggro_range` của nạn nhân | Đánh hero gây sự | Hết `creep_hero_aggro_time` (gia hạn nếu đánh tiếp), mục tiêu không nhắm được, vượt `creep_chase_leash` từ origin |
 | CRP-02 | LANE_COMBAT | Lính địch nhắm được trong `creep_acquire_range` | Đánh lính địch gần nhất | Mục tiêu mất, vượt leash |
-| CRP-03 | SIEGE | Công trình kế tiếp trong `creep_acquire_range` | Đánh nó | Công trình chết; có lính địch |
+| CRP-03 | SIEGE | Công trình kế tiếp trong `creep_acquire_range` hoặc trong tầm đánh của lính (lính công thành tầm 690 > 500) | Đánh nó | Công trình chết; có lính địch |
 | CRP-04 | HERO_NEARBY | Hero địch nhắm được trong `creep_acquire_range` | Đánh hero đó | Ra khỏi tầm, vượt leash |
 | CRP-05 | ADVANCE | Mặc định | Đi theo route, không vượt mép trước của lane (DEF-07) | — |
 

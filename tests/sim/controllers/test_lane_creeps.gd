@@ -102,6 +102,33 @@ func test_CRP_03_attacks_next_structure_when_no_creeps() -> void:
 	assert_true(tower.health < 1800.0)
 
 
+
+## M2.6 (soak tìm ra): lính công thành tầm 690 đứng ở mép trước của nó, trụ ngoài 500 vẫn phải đánh.
+func test_CRP_03_siege_attacks_structure_beyond_acquire_range_but_in_attack_range() -> void:
+	var w: World = _world(true)
+	var tower: Entity = Objectives.next_for_lane(w, 0, "MID")
+	var siege: Entity = _creep(w, 0, "MID", &"creep_siege", 0)
+	var route: LaneRoute = LaneRoute.of(w, "MID", 0)
+	siege.position = w.navigation(siege.radius).nearest_clear(route.point_at(LaneRoute.limit(w, siege)))
+	assert_true(Rules.edge_distance(siege, tower) > w.balance.creep_acquire_range, "ngoài tầm nhận mục tiêu")
+	_run(w, 3)
+	assert_eq(siege.order.type, Order.Type.ATTACK)
+	assert_eq(siege.order.target_id, tower.id)
+
+
+## M2.6 (soak tìm ra): tới góc lane rồi bị đẩy lệch thì vẫn đi tiếp, không đứng mãi.
+func test_CRP_05_pushed_off_finished_point_keeps_walking() -> void:
+	var w: World = _world(false)
+	var route: LaneRoute = LaneRoute.of(w, "BOT", 0)
+	var corner: float = route.next_vertex_after(route.length() * 0.4)
+	var c: Entity = _creep(w, 0, "BOT", &"creep_melee", corner)
+	c.order = Order.move(route.point_at(corner))
+	c.order.finished = true
+	c.position = w.navigation(c.radius).nearest_clear(route.point_at(corner) + Vector2(30, 30))
+	var start: float = route.progress_of(c.position)
+	_run(w, SimClock.seconds_to_ticks(2.0))
+	assert_true(route.progress_of(c.position) > start + 200.0, "lính đi tiếp dọc lane")
+
 func test_CRP_02_creeps_fight_each_other_and_keep_target() -> void:
 	var w: World = _world(false)
 	var route: LaneRoute = LaneRoute.of(w, "MID", 0)

@@ -108,9 +108,13 @@ func _separate(world: World) -> void:
 			continue
 		# Lưới dựng một lần ở đầu bước đẩy; vị trí đổi trong lúc đẩy chỉ làm lọc thô kém đi
 		# vài đơn vị, kết quả vẫn xác định vì thứ tự theo id.
-		for b: Entity in world.spatial_near(a.position, a.radius + SEPARATION_SLACK, World.Phase.MOVEMENT):
-			if b.id <= a.id:
-				continue
+		var later: Array[Entity] = []
+		for b: Entity in world.spatial_near(a.position, a.radius + SEPARATION_SLACK, World.Phase.MOVEMENT, false):
+			if b.id > a.id:
+				later.append(b)
+		if later.size() > 1:
+			later.sort_custom(func(x: Entity, y: Entity) -> bool: return x.id < y.id)
+		for b: Entity in later:
 			var overlap: float = a.radius + b.radius - a.position.distance_to(b.position)
 			if overlap > 0.0:
 				_push_pair(world, a, b, overlap, max_push)

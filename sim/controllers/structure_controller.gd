@@ -14,9 +14,7 @@ func run(world: World) -> void:
 
 
 func _remember_aggro(world: World, tower: Entity) -> void:
-	for ev: GameEvent in world.previous_events:
-		if ev.type != &"hero_attacked_hero":
-			continue
+	for ev: GameEvent in world.previous_hero_fights():
 		var attacker: Entity = world.find_entity(ev.source_id)
 		var victim: Entity = world.find_entity(ev.target_id)
 		if attacker == null or victim == null or victim.team != tower.team:

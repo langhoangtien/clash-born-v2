@@ -169,3 +169,5 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | Map D-50 | Xong | 2026-10-14 | Bỏ 4 đoạn vách/bậc dốc sát chỗ mid cắt sông (MAP-05); sông và bờ kè giữ như D-49 |
 | M2.4 | Xong | 2026-10-14 | 244 test xanh (+25) + 2 soak; `Rules.pick_attack_target`, lệnh ATTACK_AUTO chọn mục tiêu lúc áp, đánh gió (SWING), khóa mục tiêu; nút ĐÁNH/Lính/Trụ + J/K/L, giữ để đánh liên tục; hero chết chờ rồi hồi sinh ở fountain (ECO-04); fountain hồi 5%/s, bắn 300/s (STR-04, D-51); sau chơi thử giảm tầm tìm mục tiêu còn +100 (D-52) |
 | M2.5 | Xong | 2026-10-14 | 257 test xanh (+12) + 2 soak; thắng/thua STR-05 (trận dừng), vàng last hit/trụ/thụ động ECO-01/07 (D-53), HUD (đồng hồ, máu, mana, vàng, last hit, đếm ngược hồi sinh), màn kết quả Chơi lại / Về menu, phím F tăng tốc thử |
+| M2.6 | Xong | 2026-10-14 | 259 test xanh (+2) + 3 soak; soak 10 phút (lính, trụ, 2 hero dùng nút đánh) giữ INV-01..05 mỗi tick, chạy lại khớp từng mốc 30 s (INV-08), không bước nào bị chặn; sửa 2 lỗi lính (D-54); tick 3.25 → 2.85 ms |
+| **Hết M2** | | | |

@@ -11,8 +11,8 @@ func run(world: World) -> void:
 	var fires: bool = world.tick % interval == 0
 	for team: int in range(2):
 		var spot: Vector2 = world.map.fountain_point(team)
-		for e: Entity in world.spatial_near(spot, world.balance.fountain_radius, World.Phase.ATTACK):
-			if e.stats == null or Rules.is_structure(e) or e.position.distance_to(spot) > world.balance.fountain_radius:
+		for e: Entity in world.entities:  # theo id; ít đơn vị nên duyệt thẳng, khỏi dựng lại lưới
+			if not e.alive or e.stats == null or Rules.is_structure(e) or e.position.distance_to(spot) > world.balance.fountain_radius:
 				continue
 			if e.team == team:
 				_heal(world, e)
