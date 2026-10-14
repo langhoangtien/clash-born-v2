@@ -63,6 +63,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-61 | 2026-10-14 | Làm trước một phần M3.8 để chơi thử chiêu: nút chiêu Q/W/R (và phím 1/2/3) **tung nhanh, tự nhắm** — hero địch gần nhất trong tầm chiêu + tầm tìm, không có thì đơn vị địch gần nhất, không có ai thì theo hướng đang nhìn; nút hiện cấp và giây hồi chiêu. Hình tạm: vòng nổ của chiêu vùng, vòng khiên | Người chơi thử chưa dùng được chiêu; kéo để nhắm và chọn talent vẫn ở M3.8 |
 | D-62 | 2026-10-14 | M3.6 talent: chọn bằng lệnh ở cấp 20, một lần; giá trị có tên sửa theo talent, hành động thêm nối cuối chiêu, hiệu ứng do hero áp được vá thêm trigger/modifier; bị động áp lại ngay, hiệu ứng đang chạy giữ bản cũ. Hero người chơi tạm tự chọn theo ưu tiên của hero tới M3.8 | Đã duyệt; không đổi giữa chừng hiệu ứng đang chạy để kết quả dễ hiểu |
 | D-63 | 2026-10-14 | M3.6b: bỏ thời gian chờ bash chung (`bash_cooldown`); mỗi nguồn bash tự khai báo có chờ hay không. PRD kiểu Dota cho mọi xác suất bị động (bash, chí mạng, né); chí mạng lấy hệ số cao nhất khi nhiều nguồn trúng, không lên công trình, không nhân sát thương thêm từ trigger; né tung lúc đòn chạm | Theo yêu cầu (bash có loại có chờ, có loại không); PRD giảm chuỗi hên/xui trong 1v1 |
+| D-64 | 2026-10-14 | M3.6c: trigger phản hồi = trigger có hành động sát thương `reflected`, không chạy trên sự kiện sát thương phản hồi; đốt mana phát `mana_burned` mang lượng thực tế; vùng giảm dần tuyến tính theo khoảng cách tới tâm | Đủ để làm Centaur, Axe, Spectre, Anti-Mage chỉ bằng dữ liệu (đã thử trong test) |
 
 ## Chờ chốt
 

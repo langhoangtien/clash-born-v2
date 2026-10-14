@@ -76,6 +76,8 @@ func _fire_instance(world: World, ev: GameEvent, owner: Entity, other: Entity, i
 			continue
 		if not _condition_ok(t.condition, ev, inst, other, removed_self):
 			continue
+		if ev.reason == &"reflected" and _reflects(t):
+			continue  # CMB-09: phản hồi không kích hoạt phản hồi khác
 		if world.tick < inst.trigger_ready.get(index, 0) or not _group_winner(owner, inst, t):
 			continue
 		var ctx: ExprContext = _context(world, ev, owner, other, inst)
@@ -123,6 +125,8 @@ func _context(world: World, ev: GameEvent, owner: Entity, other: Entity, inst: E
 	ctx.event_target = world.find_entity(ev.target_id)
 	if ev.type == &"damage_taken" or ev.type == &"attack_landed":
 		ctx.event_damage = ev.amount
+	elif ev.type == &"mana_burned":
+		ctx.event_burned_mana = ev.amount
 	return ctx
 
 
@@ -132,3 +136,15 @@ func _remove_by_event(world: World, ev: GameEvent, owner: Entity) -> void:
 	for inst: EffectInstance in owner.effects.duplicate():
 		if inst.def.removed_by.has(ev.type) and ev.seq > inst.applied_seq:
 			Effects.remove(world, owner, inst, &"removed_by_event")
+
+
+## Trigger là phản hồi nếu có hành động gây sát thương `reflected` (kể cả trong vùng).
+static func _reflects(t: TriggerDef) -> bool:
+	var stack: Array[ActionDef] = t.actions.duplicate()
+	while not stack.is_empty():
+		var a: ActionDef = stack.pop_back()
+		if a is DamageAction and (a as DamageAction).reflected:
+			return true
+		if a is AreaAction:
+			stack.append_array((a as AreaAction).actions)
+	return false

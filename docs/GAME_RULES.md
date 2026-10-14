@@ -197,7 +197,9 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   sát thương thêm. Không tác dụng lên công trình. Nhiều nguồn bash: chỉ một nguồn
   được tung (nhóm `bash`, chọn nguồn theo STAT-05). Thời gian chờ **do từng nguồn khai
   báo** (`cooldown` của trigger): có bash có chờ, có bash không (D-63).
-- `CMB-09` Sát thương phản hồi (phản đòn, trả đòn, phân tán) được đánh dấu `reflected`:
+- `CMB-09` Sát thương phản hồi (phản đòn, trả đòn, phân tán) được đánh dấu `reflected`
+  (`damage_taken` mang lý do `reflected`; trigger nào có hành động sát thương `reflected` là
+  trigger phản hồi và bỏ qua sự kiện đó):
   không kích hoạt bất kỳ trigger phản hồi nào khác (tránh hai bên phản qua phản lại vô
   hạn), không hút máu, không chí mạng, không tính là giao tranh hero (DEF-11), có tính
   để ghi công hạ gục.
@@ -364,7 +366,8 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   seed; PRD ở M3.6b (RNG-01). Hành động trong trigger tính kẻ gây là chủ hiệu ứng.
 - `EFF-15` Kỹ năng vùng (AreaAction) trúng đơn vị theo bộ lọc của kỹ năng (ABL-07); vùng
   không thuộc kỹ năng (hiệu ứng, đồ) trúng **phe địch, không phải công trình**, nhắm được (DEF-05), mép thân trong vùng; tâm/hướng chốt lúc tung, có `delay` thì nổ sau đó;
-  đơn vị trúng xử lý theo id.
+  đơn vị trúng xử lý theo id. `falloff` f: sát thương nhân 1 − f × (khoảng cách tâm–tâm /
+  bán kính), tối thiểu ở mép (f = 1 → mép nhận 0).
 - `EFF-13` Chủ hiệu ứng chết → mọi hiệu ứng bị gỡ (lý do `owner_died`), trừ hiệu ứng có tag
   `passive` (D-56).
 

@@ -9,6 +9,8 @@ var damage_type: DamageFormulas.DamageType = DamageFormulas.DamageType.PHYSICAL
 var is_attack: bool = false
 ## CMB-07: đòn đánh chí mạng (đã nhân vào raw).
 var crit: bool = false
+## CMB-09: sát thương phản hồi.
+var reflected: bool = false
 
 
 static func attack(source: Entity, target_id: int) -> DamageRequest:

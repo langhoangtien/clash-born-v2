@@ -17,6 +17,8 @@ var point: Vector2 = Vector2.INF
 var direction: Vector2 = Vector2.ZERO
 ## Kỹ năng đang chạy (lọc đối tượng của vùng, ABL-07); null = hiệu ứng/đồ không có kỹ năng.
 var ability: AbilityDef
+## Vùng giảm dần (AreaAction.falloff): hệ số nhân sát thương cho đơn vị này.
+var scale: float = 1.0
 
 
 static func make(p_owner: Entity, p_target: Entity = null, p_values: Dictionary = {}) -> ExprContext:
@@ -41,4 +43,5 @@ func with_target(t: Entity) -> ExprContext:
 	c.point = point
 	c.direction = direction
 	c.ability = ability
+	c.scale = scale
 	return c

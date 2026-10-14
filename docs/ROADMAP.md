@@ -179,3 +179,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M3.8 (một phần) | Xong | 2026-10-14 | 330 test xanh (+3); nút chiêu Q/W/R + phím 1/2/3 tung nhanh tự nhắm, hiện cấp/hồi chiêu; vòng nổ chiêu vùng, vòng khiên (D-61). Còn lại: kéo để nhắm, chọn talent |
 | M3.6 | Xong | 2026-10-14 | 337 test xanh (+7); talent cấp 20 (TAL-01..04): sửa giá trị, thêm hành động, vá hiệu ứng; test bằng 3 talent thật của Brakk (Động Đất, Giáp Nổ, Hồn Trở Về) (D-62); HUD hiện talent; tạm tự chọn |
 | M3.6b | Xong | 2026-10-14 | 346 test xanh (+9); PRD (10.000 lần thử đúng ±1%, chuỗi trượt bị chặn), chí mạng CMB-07, né/trượt CMB-11 (chữ "Trượt"), bash chờ theo từng nguồn (D-63) |
+| M3.6c | Xong | 2026-10-14 | 353 test xanh (+7); phản hồi CMB-09 (không phản qua phản lại, không tính giao tranh hero, vẫn tính công), đốt mana CMB-10, vùng giảm dần; Centaur/Axe/Spectre/Anti-Mage làm bằng dữ liệu trong test (D-64) |

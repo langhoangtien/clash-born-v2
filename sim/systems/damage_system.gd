@@ -36,7 +36,7 @@ static func resolve(world: World) -> void:
 				world.emit(&"hero_attacked_hero", r.source_id, r.target_id)  # DEF-11
 		amount = Effects.absorb(world, target, amount)  # EFF-06
 		target.health -= amount
-		world.emit(&"damage_taken", r.source_id, r.target_id, amount)
+		world.emit(&"damage_taken", r.source_id, r.target_id, amount, &"reflected" if r.reflected else &"")
 		if target.health <= 0.0:
 			target.health = 0.0
 			target.alive = false

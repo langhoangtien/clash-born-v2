@@ -25,6 +25,8 @@ static func run(world: World, actions: Array[ActionDef], ctx: ExprContext, sourc
 			for inst: EffectInstance in receiver.effects.duplicate():
 				if inst.def == (action as RemoveEffectAction).effect:
 					Effects.remove(world, receiver, inst, &"removed")
+		elif action is ManaBurnAction:
+			_mana_burn(world, receiver, ExprEval.evaluate((action as ManaBurnAction).amount, ctx), source_id)
 		elif action is DispelAction:
 			_strip(world, receiver, &"debuff", (action as DispelAction).level, ctx, [], source_id)
 		elif action is PurgeAction:
@@ -54,8 +56,9 @@ static func _damage(world: World, d: DamageAction, ctx: ExprContext, receiver: E
 	var r: DamageRequest = DamageRequest.new()
 	r.source_id = source_id
 	r.target_id = receiver.id
-	r.raw = ExprEval.evaluate(d.amount, ctx)
+	r.raw = ExprEval.evaluate(d.amount, ctx) * ctx.scale
 	r.damage_type = d.damage_type
+	r.reflected = d.reflected
 	world.damage_requests.append(r)
 
 
@@ -114,7 +117,10 @@ static func fire_area(world: World, p: PendingArea) -> void:
 			var along: float = rel.dot(dir.normalized())
 			hit = along >= -e.radius and along <= length + e.radius and absf(rel.cross(dir.normalized())) <= half_width + e.radius
 		if hit:
-			run(world, a.actions, p.ctx.with_target(e), p.source_id)
+			var each: ExprContext = p.ctx.with_target(e)
+			if not a.falloff.is_empty() and radius > 0.0:  # giảm dần theo khoảng cách tới tâm
+				each.scale = 1.0 - ExprEval.evaluate(a.falloff, p.ctx) * clampf(e.position.distance_to(p.center) / radius, 0.0, 1.0)
+			run(world, a.actions, each, p.source_id)
 
 
 ## ABL-07: vùng của kỹ năng lọc theo target_filter; không có kỹ năng → địch không phải công trình (EFF-15).
@@ -122,3 +128,10 @@ static func _area_accepts(ctx: ExprContext, owner: Entity, e: Entity) -> bool:
 	if ctx.ability != null:
 		return Abilities.accepts(owner, ctx.ability, e)
 	return not Rules.is_structure(e) and Rules.is_targetable(owner, e)
+
+
+## CMB-10: đốt tối đa bằng mana đang có; sự kiện mang lượng thực tế (`event.burned_mana`).
+static func _mana_burn(world: World, receiver: Entity, amount: float, source_id: int) -> void:
+	var burned: float = clampf(amount, 0.0, receiver.mana)
+	receiver.mana -= burned
+	world.emit(&"mana_burned", source_id, receiver.id, burned)
