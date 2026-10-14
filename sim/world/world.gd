@@ -19,6 +19,13 @@ var command_log: Array[Command] = []
 ## Lệnh bị từ chối ở tick vừa chạy, kèm lý do (CMD-02).
 var rejected_commands: Array[Command] = []
 
+## Sự kiện của tick vừa chạy (EVT); xóa đầu mỗi tick.
+var events: Array[GameEvent] = []
+## Sát thương chờ DamageSystem xử lý trong tick này.
+var damage_requests: Array[DamageRequest] = []
+## Đạn đánh thường đang bay (AttackSystem quản lý).
+var projectiles: Array[Projectile] = []
+
 ## Lưới tìm đường dựng sẵn, dùng chung giữa các World cùng map (dựng mất ~1 s).
 static var _nav_cache: Dictionary[String, MapNavigation] = {}
 
@@ -32,6 +39,9 @@ func _init(seed_value: int, p_balance: BalanceSettings) -> void:
 	balance = p_balance
 	add_system(CommandSystem.new(), Phase.COMMAND)
 	add_system(StateSystem.new(), Phase.STATE)
+	add_system(AttackSystem.new(), Phase.ATTACK)
+	add_system(DamageSystem.new(), Phase.DAMAGE)
+	add_system(DeathSystem.new(), Phase.DEATH)
 
 
 func add_system(system: SimSystem, phase: Phase) -> void:
@@ -90,8 +100,13 @@ func remove_entity(e: Entity) -> void:
 	entities.erase(e)
 
 
+func emit(type: StringName, source_id: int, target_id: int, amount: float = 0.0) -> void:
+	events.append(GameEvent.make(type, tick, source_id, target_id, amount))
+
+
 func step() -> void:
 	tick += 1
+	events.clear()
 	for entry: Array in _systems:
 		(entry[2] as SimSystem).run(self)
 
@@ -102,9 +117,12 @@ func state_hash() -> PackedByteArray:
 	ctx.start(HashingContext.HASH_SHA256)
 	ctx.update(PackedInt64Array([tick, rng.seed, rng.state, entities.size()]).to_byte_array())
 	for e: Entity in entities:
-		ctx.update(PackedInt64Array([e.id, e.team, e.kind, e.order.type, int(e.order.finished)]).to_byte_array())
+		ctx.update(PackedInt64Array([e.id, e.team, e.kind, e.order.type, int(e.order.finished), e.order.target_id,
+			int(e.alive), e.attack_phase, e.attack_target_id, e.attack_start_tick, e.attack_release_tick, e.next_attack_tick]).to_byte_array())
 		ctx.update(PackedFloat64Array([e.position.x, e.position.y, e.radius, e.health, e.mana,
 			e.order.point.x, e.order.point.y, e.order.direction.x, e.order.direction.y]).to_byte_array())
 		if e.stats != null:
 			ctx.update(e.stats.values().to_byte_array())
+	for p: Projectile in projectiles:
+		ctx.update(PackedFloat64Array([p.source_id, p.target_id, p.position.x, p.position.y, p.request.raw]).to_byte_array())
 	return ctx.finish()

@@ -51,7 +51,9 @@ clashborn_v2/
   data/maps/               map đã build (từ tools/map_build)
   sim/                     tầng SIM
     core/                  công thức (mang từ v1): stat, sát thương, trúng/né
-    world/                 World (pha tick, state_hash), Entity, UnitFactory, StatBlock, StatModifier, StatId,
+    rules.gd               Rules: khoảng cách mép–mép, trong tầm, nhắm được (DEF, ST)
+    world/                 World (pha tick, events, damage_requests, projectiles, state_hash), Entity,
+                           GameEvent, DamageRequest, Projectile, UnitFactory, StatBlock, StatModifier, StatId,
                            UnitState; EffectContainer ở M3
     systems/               mỗi file một hệ thống, chạy theo thứ tự cố định
     defs/                  khuôn dữ liệu: HeroDef, AbilityDef, EffectDef, TalentDef, ItemDef, UnitDef…

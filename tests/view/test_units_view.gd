@@ -39,7 +39,7 @@ func test_match_scene_builds_with_a_hero_and_follows_it() -> void:
 	var tree: SceneTree = Engine.get_main_loop() as SceneTree
 	var scene: Node = (load("res://app/match_scene.tscn") as PackedScene).instantiate()
 	tree.root.add_child(scene)
-	assert_eq(scene.world.entities.size(), 1)
+	assert_eq(scene.world.entities.size(), 2, "hero + hình nộm tạm (M2.1)")
 	var hero: Entity = scene.world.entities[0]
 	assert_eq(hero.kind, Entity.Kind.HERO)
 	scene.tick_frame(1.0)

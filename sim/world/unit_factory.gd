@@ -10,6 +10,8 @@ static func hero(world: World, def: HeroDef, team: int, position: Vector2, level
 	e.position = position
 	e.radius = def.stats.collision_radius
 	e.art_id = def.art_id
+	e.attack_point = def.stats.attack_point
+	e.projectile_speed = def.stats.projectile_speed
 	e.stats = stats_from(world.balance, def.stats)
 	e.stats.set_attributes(def.primary_attribute,
 		Vector3(def.base_strength, def.base_agility, def.base_intelligence),

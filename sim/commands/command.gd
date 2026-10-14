@@ -3,13 +3,14 @@ extends RefCounted
 ## Yêu cầu từ người chơi, bot hoặc controller (ARCHITECTURE mục 1). Không đổi trận
 ## trực tiếp; CommandSystem kiểm tra rồi mới thành Order (CMD-01..05).
 
-enum Type { MOVE_TO, MOVE_DIR, STOP }
-enum Reject { NONE, UNKNOWN_UNIT, POINT_OUTSIDE_MAP, BAD_DIRECTION }
+enum Type { MOVE_TO, MOVE_DIR, STOP, ATTACK }
+enum Reject { NONE, UNKNOWN_UNIT, POINT_OUTSIDE_MAP, BAD_DIRECTION, BAD_TARGET }
 
 var type: Type
 var entity_id: int
 var point: Vector2 = Vector2.ZERO
 var direction: Vector2 = Vector2.ZERO
+var target_id: int = -1
 ## Tick mà lệnh được áp (World điền khi áp; dùng cho nhật ký và phát lại).
 var tick: int = -1
 var reject_reason: Reject = Reject.NONE
@@ -32,6 +33,15 @@ static func move_dir(id: int, dir: Vector2) -> Command:
 	return c
 
 
+## CMB-01: đánh thường một mục tiêu (đi tới khi vào tầm).
+static func attack(id: int, target: int) -> Command:
+	var c: Command = Command.new()
+	c.type = Type.ATTACK
+	c.entity_id = id
+	c.target_id = target
+	return c
+
+
 static func stop(id: int) -> Command:
 	var c: Command = Command.new()
 	c.type = Type.STOP
@@ -46,4 +56,5 @@ func copy() -> Command:
 	c.entity_id = entity_id
 	c.point = point
 	c.direction = direction
+	c.target_id = target_id
 	return c

@@ -44,6 +44,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-42 | 2026-10-14 | Joystick/WASD dùng lệnh `MOVE_DIR` đi thẳng theo hướng và trượt dọc mép vật cản (MOV-06); chạm/chuột phải dùng `MOVE_TO` có tìm đường | Joystick mà dùng tìm đường thì gặp rừng hero có thể vòng ngược; trượt mép cho cảm giác như Liên Quân |
 | D-43 | 2026-10-14 | Sau chơi thử: lấp mọi khe hẹp hơn 112 và hốc kín thành rừng (công cụ build map), thêm luật MAP-03 có test | Khe trông như đi được mà không lọt gây hiểu lầm; chọn lấp hẳn thay vì nới rộng từng chỗ để giữ bố cục map |
 | D-44 | 2026-10-14 | Mở 2 lối rừng ra lane bot gần `blue_bot_t1`: cắt đôi dải rừng dài phía trên lane bot (khe ~230) và nới khe sát góc lane (bằng `clear_circles` trong `map_source.json`) | Sau chơi thử: từ rừng ra lane bot phải vòng quá xa |
+| D-45 | 2026-10-14 | Điều khiển đánh kiểu Liên Quân: nút ĐÁNH tự chọn mục tiêu (ưu tiên hero máu thấp nhất, rồi lính/quái gần nhất, rồi trụ), nút nhỏ đánh lính / đánh trụ, chạm địch để khóa; bỏ chạm map để đi trên điện thoại (PC giữ chuột phải). Chọn mục tiêu là hàm luật dùng chung với bot. Thay CTL-01..04 cũ | Chọn mục tiêu bằng tay khó trên điện thoại; Liên Quân đã chứng minh cách này hợp mobile |
 
 ## Chờ chốt
 

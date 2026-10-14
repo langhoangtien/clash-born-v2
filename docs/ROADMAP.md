@@ -47,8 +47,8 @@ Chưa có gameplay; dựng khung để mọi thứ sau đứng vững.
 |---|---|
 | M2.1 AttackSystem (có vung tay/thu tay CMB-06) + DamageSystem + đạn bay (công thức v1), DeathSystem | Test CMB-01..06 |
 | M2.2 Objectives (STR-02) + trụ, T4, nhà chính, StructureController (STR-01) | Test từng dòng STR-01, STR-02 |
-| M2.3 Đợt lính + LaneCreepController (CRP-01..08) | Test từng dòng CRP; INV-03, INV-04 |
-| M2.4 Hero người chơi: lệnh đánh (CTL-02, CTL-03), hồi sinh, fountain (STR-04) | Test CTL |
+| M2.3 Đợt lính + LaneCreepController (CRP-01..08); **xóa hình nộm tạm** trong `app/match_scene.gd` | Test từng dòng CRP; INV-03, INV-04 |
+| M2.4 Hero người chơi: nút ĐÁNH / đánh lính / đánh trụ, khóa mục tiêu (CTL-01..04, D-45, `Rules.pick_attack_target`), hồi sinh, fountain (STR-04) | Test CTL |
 | M2.5 Điều kiện thắng/thua, màn hình kết quả, HUD tối thiểu (máu, vàng, thời gian) | **Chơi thử: một mình đẩy lane phá nhà chính** |
 | M2.6 Test soak lính-đấu-lính 10 phút | Bất biến INV-01..05, INV-08 xanh |
 
@@ -160,4 +160,7 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M1.2 | Xong | 2026-10-14 | 145 test xanh (+10); luật CMD-01..05; tiêu chí "đi tới nơi" dời sang M1.3 |
 | M1.3 | Xong | 2026-10-14 | 155 test xanh (+9); luật MOV-01..05, đẩy nhau D-41; 30 đơn vị đi ngẫu nhiên 60 s không vào vật cản, không bị kẹt; sửa tìm đường để không cắt góc |
 | M1.4 | Xong | 2026-10-14 | 167 test xanh (+12); UnitFactory, SimRunner 30 tick/s, UnitsView (nội suy, y-sort, bóng, hình tạm), ArtLibrary; nút "Vào trận (thử)"; Brakk đi tuần lane giữa (tạm) |
-| M1.5 | Chờ chơi thử | 2026-10-14 | 178 test xanh (+11); lệnh MOVE_DIR + trượt mép (MOV-06, D-42), WASD/joystick ảo/chuột phải/chạm; đã xóa đi tuần tạm. **Còn: bạn chơi thử** |
+| M1.5 | Xong | 2026-10-14 | Đã chơi thử: giảm tốc chạy 12%, sửa map (D-43, D-44) |
+| **Hết M1** | | | |
+| M2.1 | Xong | 2026-10-14 | 192 test xanh (+13); lệnh ATTACK, vung tay/hồi đòn (hủy không tốn hồi đòn), đạn bay, DamageSystem, DeathSystem, sự kiện; điều khiển kiểu Liên Quân ghi vào luật (D-45); hình nộm đỏ tạm để thử |
+| M2.2 | Chờ duyệt kế hoạch | | |

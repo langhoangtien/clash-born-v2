@@ -43,6 +43,8 @@ func _draw() -> void:
 	order.sort_custom(func(a: Entity, b: Entity) -> bool: return display_position(a).y < display_position(b).y)
 	for e: Entity in order:
 		_draw_unit(e, display_position(e))
+	for p: Projectile in world.projectiles:
+		draw_circle(p.position, 7.0, Color(1, 0.95, 0.6))
 
 
 func _draw_unit(e: Entity, at: Vector2) -> void:
@@ -72,6 +74,9 @@ func _draw_placeholder(e: Entity, at: Vector2, color: Color, height: float) -> v
 	draw_arc(body, r * 0.8, 0, TAU, 24, color.darkened(0.6), 3.0, true)
 	var tip: Vector2 = at + e.facing * r * 1.3
 	draw_line(at, tip, Color(1, 1, 1, 0.85), 4.0, true)
+	if e.attack_phase == Entity.AttackPhase.WINDUP:
+		# Vung tay (CMB-06): cung trắng phía trước, hình chỉ đọc trạng thái SIM.
+		draw_arc(at, r * 1.6, e.facing.angle() - 0.7, e.facing.angle() + 0.7, 12, Color(1, 1, 1, 0.9), 5.0, true)
 
 
 func _draw_health(e: Entity, center: Vector2, color: Color) -> void:

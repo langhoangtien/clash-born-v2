@@ -407,13 +407,21 @@ Bảng ưu tiên (dòng trên thắng):
 
 ## CTL — Người chơi điều khiển
 
-- `CTL-01` Joystick/WASD: di chuyển tay (`MOVE_DIR`), hủy lệnh đánh; thả ra → `STOP`.
-  Chỉ gửi lệnh mới khi hướng đổi quá `input_angle_step` (3°), tối đa một lệnh mỗi tick.
-  Chạm map (điện thoại) / chuột phải (PC) → `MOVE_TO` điểm đó.
-- `CTL-02` Nút đánh: tự chọn mục tiêu theo thứ tự (quái/lính gần nhất trong
-  `command_radius` → công trình mở khóa gần nhất) ; nút đánh hero: hero gần nhất.
-- `CTL-03` Chạm/click vào địch: khóa mục tiêu đến khi nó chết, mất nhắm được, hoặc ra lệnh khác.
-- `CTL-04` Người chơi không bao giờ tự về nhà.
+Điều khiển kiểu Liên Quân (D-45). Chọn mục tiêu là một hàm luật dùng chung cho người
+chơi và bot (`Rules.pick_attack_target`), nút trên màn hình chỉ gọi hàm đó rồi gửi lệnh.
+
+- `CTL-01` Joystick/WASD: di chuyển tay (`MOVE_DIR`), hủy lệnh đánh và đòn đang vung;
+  thả ra → `STOP`. Chỉ gửi lệnh mới khi hướng đổi quá `input_angle_step` (3°), tối đa một
+  lệnh mỗi tick. PC: chuột phải chỗ trống → `MOVE_TO`. **Điện thoại không có chạm map để đi.**
+- `CTL-02` Nút ĐÁNH: giữ là đánh liên tục. Mỗi lần cần mục tiêu mới, chọn trong tầm tìm
+  `attack_range + attack_search_bonus` theo thứ tự: (1) mục tiêu đang khóa nếu còn nhắm
+  được; (2) hero địch — **máu thấp nhất** (cài đặt đổi được: gần nhất, % máu thấp nhất);
+  (3) lính/quái gần nhất; (4) công trình đã mở khóa gần nhất. Không có ai → không làm gì.
+- `CTL-03` Hai nút nhỏ cạnh nút đánh: **đánh lính** (lính/quái máu thấp nhất trong tầm tìm,
+  để kết liễu lấy tiền) và **đánh trụ** (công trình mở khóa gần nhất).
+- `CTL-04` Chạm vào đơn vị địch (điện thoại) / chuột phải vào địch (PC): khóa mục tiêu và
+  đánh; khóa giữ đến khi nó chết, mất nhắm được, hoặc ra khỏi `lock_break_range`.
+- `CTL-05` Người chơi không bao giờ tự về nhà.
 
 ## MOV — Di chuyển
 
@@ -440,11 +448,13 @@ Người chơi, bot và controller (lính, trụ, quái) đều điều khiển 
 - `CMD-01` Lệnh gửi trong tick N được áp ở pha COMMAND của tick N+1, theo đúng thứ tự gửi.
 - `CMD-02` Lệnh không hợp lệ bị bỏ, kèm lý do đọc được: `UNKNOWN_UNIT` (đơn vị không tồn
   tại), `POINT_OUTSIDE_MAP` (điểm ngoài map hoặc không phải số hữu hạn), `BAD_DIRECTION`
-  (hướng dài 0 hoặc không hữu hạn). Thêm lý do khi thêm loại lệnh.
+  (hướng dài 0 hoặc không hữu hạn), `BAD_TARGET` (mục tiêu không nhắm được: không tồn
+  tại, đã chết, cùng đội). Thêm lý do khi thêm loại lệnh.
 - `CMD-03` Lệnh hợp lệ thay lệnh hiện tại (Order) của đơn vị. `STOP` → đứng yên.
 - `CMD-04` Mọi lệnh đã áp được ghi vào nhật ký kèm tick; phát lại nhật ký trên World cùng
   seed cho ra đúng trận đó (D-30).
-- `CMD-05` Loại lệnh hiện có: `MOVE_TO(điểm)`, `MOVE_DIR(hướng)`, `STOP`. Đánh, dùng chiêu, mua đồ thêm ở
+- `CMD-05` Loại lệnh hiện có: `MOVE_TO(điểm)`, `MOVE_DIR(hướng)`, `STOP`, `ATTACK(mục tiêu)`
+  (ngoài tầm thì đi tới, vào tầm thì đứng đánh; mục tiêu chết/không nhắm được → lệnh xong). Đánh, dùng chiêu, mua đồ thêm ở
   mốc của chúng.
 
 ## BOT — Bot hero
@@ -520,7 +530,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | xp_share_range | 1200 | | bot_chase_leash | 1200 |
 | respawn_base / per_level | 5 / 2 s | | bot_trade_window | 3 s |
 | death_gold_per_level | 25 | | bot_lane_offset | 350 |
-| command_radius | 650 | | tower_tank_creeps / dive_min_hp | 2 / 0.6 |
+| attack_search_bonus / lock_break_range | 200 / 1400 | | tower_tank_creeps / dive_min_hp | 2 / 0.6 |
 | ghost_magic_amp | 0.4 | | talent_level | 20 |
 | attribute_bonus | +2 mọi thuộc tính | | attribute_bonus_max | 7 lần |
 | hex_move_speed | 140 | | bash_cooldown | 1.5 s |

@@ -5,6 +5,8 @@ extends SimSystem
 
 ## Hằng số kỹ thuật: hai tâm gần hơn mức này coi như trùng nhau.
 const SAME_SPOT: float = 0.001
+## Lệnh đánh: mục tiêu dịch đi quá chừng này (đơn vị thế giới) thì tìm đường lại.
+const RETARGET_DISTANCE: float = 48.0
 ## MOV-06: góc thử khi trượt dọc mép (độ), góc nhỏ trước, + trước −.
 const SLIDE_ANGLES: Array[float] = [15.0, -15.0, 30.0, -30.0, 45.0, -45.0, 60.0, -60.0, 75.0, -75.0]
 
@@ -19,6 +21,8 @@ func run(world: World) -> void:
 			_advance(world, e)
 		elif e.order.type == Order.Type.DIRECT:
 			_advance_direct(world, e)
+		elif e.order.type == Order.Type.ATTACK and not e.order.finished:
+			_advance_attack(world, e)
 	_separate(world)
 
 
@@ -27,26 +31,30 @@ func _advance(world: World, e: Entity) -> void:
 	if e.path_for != e.order or (e.path_dirty and not _path_still_walkable(nav, e)):
 		_plan(nav, e)
 	e.path_dirty = false
-	var budget: float = e.stats.get_stat(StatId.Id.MOVEMENT_SPEED) * SimClock.TICK_SECONDS
-	while budget > 0.0 and e.path_index < e.path.size():
-		var next: Vector2 = e.path[e.path_index]
-		var gap: float = e.position.distance_to(next)
-		var step_to: Vector2 = next if gap <= budget else e.position + (next - e.position) / gap * budget
-		if not nav.point_is_clear(step_to):
-			blocked_steps += 1
-			e.path_for = null  # MOV-05: không bước vào vật cản; tick sau tìm đường lại
-			return
-		if step_to != e.position:
-			e.facing = (step_to - e.position).normalized()
-		e.position = step_to
-		if gap <= budget:
-			budget -= gap
-			e.path_index += 1
-		else:
-			budget = 0.0
+	_walk_path(nav, e, e.stats.get_stat(StatId.Id.MOVEMENT_SPEED) * SimClock.TICK_SECONDS, null)
 	if e.path_index >= e.path.size():
 		e.order.finished = true  # MOV-03
 		e.path = PackedVector2Array()
+
+
+## CMB-01: lệnh đánh — mục tiêu ngoài tầm thì đi tới, vào tầm (hoặc đang vung tay) thì đứng.
+## Mục tiêu dịch đi quá RETARGET_DISTANCE thì tìm đường lại.
+func _advance_attack(world: World, e: Entity) -> void:
+	var target: Entity = world.find_entity(e.order.target_id)
+	if target == null or e.attack_phase == Entity.AttackPhase.WINDUP or Rules.in_attack_range(e, target):
+		e.path = PackedVector2Array()
+		e.path_index = 0
+		return
+	var nav: MapNavigation = world.navigation(e.radius)
+	if e.path_for != e.order or e.path_goal.distance_to(target.position) > RETARGET_DISTANCE \
+			or e.path_index >= e.path.size() or (e.path_dirty and not _path_still_walkable(nav, e)):
+		e.path_for = e.order
+		e.path_goal = target.position
+		e.path_index = 1
+		var goal: Vector2 = target.position if nav.point_is_clear(target.position) else nav.nearest_clear(target.position)
+		e.path = nav.path(e.position, goal)
+	e.path_dirty = false
+	_walk_path(nav, e, e.stats.get_stat(StatId.Id.MOVEMENT_SPEED) * SimClock.TICK_SECONDS, target)
 
 
 ## MOV-06: đi thẳng theo hướng; bị chặn thì trượt dọc mép.
@@ -127,3 +135,23 @@ func _try_push(world: World, e: Entity, offset: Vector2) -> bool:
 	e.path_dirty = true
 	return true
 
+## Đi dọc đường hiện có với quãng `budget`; dừng sớm khi `stop_near` vào tầm đánh.
+func _walk_path(nav: MapNavigation, e: Entity, budget: float, stop_near: Entity) -> void:
+	while budget > 0.0 and e.path_index < e.path.size():
+		var next: Vector2 = e.path[e.path_index]
+		var gap: float = e.position.distance_to(next)
+		var step_to: Vector2 = next if gap <= budget else e.position + (next - e.position) / gap * budget
+		if not nav.point_is_clear(step_to):
+			blocked_steps += 1
+			e.path_for = null  # MOV-05: không bước vào vật cản; tick sau tìm đường lại
+			return
+		if step_to != e.position:
+			e.facing = (step_to - e.position).normalized()
+		e.position = step_to
+		if gap <= budget:
+			budget -= gap
+			e.path_index += 1
+		else:
+			budget = 0.0
+		if stop_near != null and Rules.in_attack_range(e, stop_near):
+			return

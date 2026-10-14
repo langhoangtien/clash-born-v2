@@ -55,10 +55,10 @@ func test_CTL_01_release_sends_stop() -> void:
 	assert_eq(sent[1].type, Command.Type.STOP)
 
 
-func test_CTL_01_tap_sends_move_to_and_joystick_overrides() -> void:
+func test_CTL_01_pc_click_on_ground_sends_move_to_and_joystick_overrides() -> void:
 	var s: Array = _setup()
 	var input: MatchInput = s[2]
-	input.tap_world_point(Vector2(500, 600))
+	input.click_world_point(Vector2(500, 600), true)
 	input.flush()
 	var sent: Array[Command] = _sent(s[0])
 	assert_eq(sent.size(), 1)
@@ -82,3 +82,30 @@ func test_touch_joystick_direction_and_dead_zone() -> void:
 	assert_eq(stick.direction_for(Vector2(50, 0)), Vector2.RIGHT)
 	assert_near(stick.direction_for(Vector2(300, 300)).length(), 1.0, 0.0001)
 	stick.free()
+
+
+func test_CTL_01_mobile_tap_on_ground_does_nothing() -> void:
+	var s: Array = _setup()
+	var input: MatchInput = s[2]
+	input.click_world_point(Vector2(500, 600), false)
+	input.flush()
+	assert_true(_sent(s[0]).is_empty(), "điện thoại không có chạm map để đi (D-45)")
+
+
+func test_CTL_04_click_on_enemy_locks_and_attacks() -> void:
+	var s: Array = _setup()
+	var w: World = s[0]
+	var input: MatchInput = s[2]
+	var enemy: Entity = Entity.new()
+	enemy.team = 1
+	enemy.radius = 24.0
+	enemy.position = Vector2(500, 600)
+	enemy.stats = StatBlock.new(w.balance)
+	w.add_entity(enemy)
+	for allow_move: bool in [false, true]:
+		input.click_world_point(Vector2(510, 590), allow_move)
+		input.flush()
+		var sent: Array[Command] = _sent(w)
+		assert_eq(sent.size(), 1)
+		assert_eq(sent[0].type, Command.Type.ATTACK)
+		assert_eq(sent[0].target_id, enemy.id)
