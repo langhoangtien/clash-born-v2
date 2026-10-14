@@ -1,7 +1,7 @@
 class_name AttackButtons
 extends Control
 ## Cụm nút góc dưới phải kiểu Liên Quân (CTL-02/03): nút ĐÁNH lớn, hai nút nhỏ đánh lính /
-## đánh trụ, ba ô chiêu (chờ M3, chưa bấm được). Chỉ đọc chạm/chuột và báo nút nào đang
+## đánh trụ, ba ô chiêu Q/W/R (bấm là tung nhanh, kéo nhắm làm ở M3.8; phím 1/2/3). Chỉ đọc chạm/chuột và báo nút nào đang
 ## giữ; không biết gì về trận đấu. Nhiều ngón cùng lúc được (mỗi ngón một nút).
 
 ## Hằng số giao diện (px màn hình, tính từ góc dưới phải của khung).
@@ -19,7 +19,14 @@ const KEYS: Array[String] = ["J", "K", "L"]
 ## Con trỏ chuột dùng số này (chạm dùng chỉ số ngón tay ≥ 0).
 const MOUSE_POINTER: int = -1
 
+## Mã nút chiêu trả về từ button_at: SKILL_BASE + 0/1/2 (Q/W/R).
+const SKILL_BASE: int = 10
+
+signal skill_pressed(index: int)
+
 var _pointers: Dictionary[int, int] = {}
+## Trạng thái ô chiêu để vẽ (APP đặt mỗi khung): [cấp, giây hồi chiêu còn lại, dùng được].
+var skill_view: Array = [[0, 0.0, false], [0, 0.0, false], [0, 0.0, false]]
 
 
 func button_center(mode: int) -> Vector2:
@@ -42,6 +49,9 @@ func button_at(local: Vector2) -> int:
 	for mode: int in range(LABELS.size()):
 		if local.distance_to(button_center(mode)) <= button_radius(mode):
 			return mode
+	for i: int in range(SKILL_ANGLES.size()):
+		if local.distance_to(skill_center(i)) <= SKILL_RADIUS:
+			return SKILL_BASE + i
 	return -1
 
 
@@ -51,7 +61,9 @@ func is_held(mode: int) -> bool:
 
 func press_at(pointer: int, local: Vector2) -> void:
 	var mode: int = button_at(local)
-	if mode >= 0:
+	if mode >= SKILL_BASE:
+		skill_pressed.emit(mode - SKILL_BASE)
+	elif mode >= 0:
 		_pointers[pointer] = mode
 		queue_redraw()
 
@@ -87,9 +99,18 @@ func _draw() -> void:
 	var font: Font = ThemeDB.fallback_font
 	for i: int in range(SKILL_ANGLES.size()):
 		var c: Vector2 = skill_center(i)
-		draw_circle(c, SKILL_RADIUS, Color(0.15, 0.15, 0.2, 0.45))
-		draw_arc(c, SKILL_RADIUS, 0, TAU, 40, Color(1, 1, 1, 0.2), 3.0, true)
-		_label(font, c, str(i + 1), 30, Color(1, 1, 1, 0.3))
+		var view: Array = skill_view[i]
+		var learned: bool = view[0] > 0
+		var ready: bool = learned and view[2]
+		draw_circle(c, SKILL_RADIUS, Color(0.2, 0.35, 0.6, 0.7) if ready else Color(0.15, 0.15, 0.2, 0.45))
+		draw_arc(c, SKILL_RADIUS, 0, TAU, 40, Color(1, 1, 1, 0.7 if ready else 0.2), 3.0, true)
+		if view[1] > 0.0:
+			_label(font, c - Vector2(0, 10), "%d" % ceili(view[1]), 30, Color(1, 0.85, 0.3))
+		else:
+			_label(font, c - Vector2(0, 10), ["Q", "W", "R"][i], 26, Color(1, 1, 1, 0.9 if learned else 0.3))
+		_label(font, c + Vector2(0, 22), str(i + 1), 16, Color(1, 1, 1, 0.5))
+		for r: int in range(view[0]):
+			draw_circle(c + Vector2(-16 + r * 8, SKILL_RADIUS - 10), 3.0, Color(1, 0.85, 0.3))
 	for mode: int in range(LABELS.size()):
 		var c: Vector2 = button_center(mode)
 		var r: float = button_radius(mode)

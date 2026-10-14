@@ -20,6 +20,8 @@ var _attack_id: int = -1
 var _held: Array[bool] = [false, false, false]
 var _active_mode: int = -1
 var _press: bool = false
+## Ô chiêu vừa bấm (AbilityDef.Slot), -1 = không.
+var _skill: int = -1
 
 
 func set_direction(dir: Vector2) -> void:
@@ -34,6 +36,11 @@ func set_attack_held(mode: int, held: bool) -> void:
 	_held[mode] = held
 	if not held and _active_mode == mode:
 		_active_mode = _held.find(true)
+
+
+## Nút chiêu / phím 1-2-3: tung nhanh (tự nhắm), kéo để nhắm làm ở M3.8.
+func press_skill(slot: int) -> void:
+	_skill = slot
 
 
 ## Chạm/click vào map (CTL-01, CTL-04): trúng đơn vị địch → khóa và đánh; chỗ trống →
@@ -67,8 +74,14 @@ func _next_command() -> Command:
 		_tap = Vector2.INF
 		_attack_id = -1
 		_press = false
+		_skill = -1
 		_sent_direction = Vector2.ZERO
 		return null
+	if _skill >= 0:
+		var slot: int = _skill
+		_skill = -1
+		_sent_direction = Vector2.ZERO  # tung xong thì joystick gửi lại hướng
+		return QuickCast.command(world, hero, slot)
 	if _direction != Vector2.ZERO:
 		_tap = Vector2.INF
 		_attack_id = -1

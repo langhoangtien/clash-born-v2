@@ -48,6 +48,8 @@ var event_seq: int = 0
 var emit_depth: int = 0
 ## Vùng có độ trễ đang chờ (AreaAction), TriggerSystem chạy khi tới tick.
 var pending_areas: Array[PendingArea] = []
+## Chỉ để VIEW vẽ: vùng vừa nổ gần đây [tâm, bán kính, tick, đội]. Không thuộc trạng thái trận.
+var recent_areas: Array = []
 var _pending: Array[Command] = []
 var _systems: Array[Array] = []  # [phase, thứ tự đăng ký, SimSystem]
 

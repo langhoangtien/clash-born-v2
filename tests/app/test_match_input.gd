@@ -214,3 +214,64 @@ func test_ABL_04_auto_skill_follows_suggested_order() -> void:
 	assert_eq(Abilities.of(hero, AbilityDef.Slot.Q).rank, 5)
 	assert_eq(Abilities.of(hero, AbilityDef.Slot.R).rank, 3)
 	assert_eq(hero.skill_points, 0)
+
+
+func test_M38_skill_button_and_key_quick_cast() -> void:
+	var lib: ContentLibrary = ContentLibrary.load_dir()
+	var w: World = World.new(1, load("res://content/balance/balance_settings.tres") as BalanceSettings)
+	var hero: Entity = UnitFactory.hero(w, lib.heroes[&"brakk"], 0, Vector2(500, 500))
+	var input: MatchInput = MatchInput.new()
+	input.world = w
+	input.hero = hero
+	input.set_direction(Vector2.LEFT)
+	input.flush()
+	w.take_pending_commands()
+	input.press_skill(AbilityDef.Slot.Q)
+	input.flush()
+	var sent: Array[Command] = w.take_pending_commands()
+	assert_eq(sent.size(), 1)
+	assert_eq(sent[0].type, Command.Type.CAST, "chiêu thắng joystick")
+	assert_eq(sent[0].slot, AbilityDef.Slot.Q)
+	input.flush()
+	assert_eq(w.take_pending_commands()[0].type, Command.Type.MOVE_DIR, "sau đó joystick gửi lại hướng")
+
+
+func test_M38_quick_cast_aims_at_enemy_hero_first() -> void:
+	var w: World = World.new(1, load("res://content/balance/balance_settings.tres") as BalanceSettings)
+	var me: Entity = _unit_at(w, 0, Vector2(500, 500), Entity.Kind.HERO)
+	var creep: Entity = _unit_at(w, 1, Vector2(560, 500), Entity.Kind.LANE_CREEP)
+	var foe: Entity = _unit_at(w, 1, Vector2(800, 500), Entity.Kind.HERO)
+	var d: AbilityDef = AbilityDef.new()
+	d.slot = AbilityDef.Slot.Q
+	d.targeting = AbilityDef.Targeting.UNIT
+	d.values = {&"cast_range": PackedFloat32Array([400, 400, 400, 400, 400])}
+	var a: AbilityInstance = AbilityInstance.new()
+	a.def = d
+	a.slot = AbilityDef.Slot.Q
+	a.rank = 1
+	me.abilities.append(a)
+	assert_eq(QuickCast.command(w, me, AbilityDef.Slot.Q).target_id, foe.id)
+	foe.position = Vector2(2000, 500)
+	assert_eq(QuickCast.command(w, me, AbilityDef.Slot.Q).target_id, creep.id, "không có hero thì lính gần nhất")
+
+
+func _unit_at(w: World, team: int, at: Vector2, kind: Entity.Kind) -> Entity:
+	var e: Entity = Entity.new()
+	e.team = team
+	e.kind = kind
+	e.radius = 24.0
+	e.position = at
+	e.stats = StatBlock.new(w.balance)
+	return w.add_entity(e)
+
+
+func test_M38_skill_buttons_hit_test() -> void:
+	var b: AttackButtons = AttackButtons.new()
+	b.size = Vector2(640, 640)
+	assert_eq(b.button_at(b.skill_center(1)), AttackButtons.SKILL_BASE + 1)
+	var got: Array[int] = []
+	b.skill_pressed.connect(func(i: int) -> void: got.append(i))
+	b.press_at(0, b.skill_center(2))
+	assert_eq(got, [2])
+	assert_false(b.is_held(AttackButtons.SKILL_BASE + 2), "nút chiêu không giữ như nút đánh")
+	b.free()

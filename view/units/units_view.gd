@@ -46,6 +46,12 @@ func _draw() -> void:
 	for e: Entity in order:
 		if e.alive:  # hero chờ hồi sinh không vẽ (ECO-04)
 			_draw_unit(e, display_position(e))
+	for r: Array in world.recent_areas:
+		var age: float = (world.tick - r[2]) / 15.0
+		if age < 1.0:
+			var col: Color = (BLUE if r[3] == 0 else RED).lightened(0.4)
+			draw_circle(r[0], r[1], Color(col, 0.35 * (1.0 - age)))
+			draw_arc(r[0], r[1], 0, TAU, 48, Color(col, 0.9 * (1.0 - age)), 4.0, true)
 	for p: Projectile in world.projectiles:
 		draw_circle(p.position, 7.0, Color(1, 0.95, 0.6))
 

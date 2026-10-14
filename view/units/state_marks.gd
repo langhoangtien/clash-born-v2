@@ -22,6 +22,10 @@ static func draw(ci: CanvasItem, e: Entity, at: Vector2, height: float, tick: in
 	var r: float = e.radius
 	if is_slowed(e):
 		ci.draw_arc(at, r * 1.15, 0, TAU, 24, Color(0.45, 0.75, 1.0, 0.9), 4.0, true)
+	for inst: EffectInstance in e.effects:
+		if inst.absorb_left > 0.0:  # khiên (EFF-06)
+			ci.draw_arc(at - Vector2(0, r), r * 1.5, 0, TAU, 32, Color(0.5, 0.9, 1.0, 0.9), 5.0, true)
+			break
 	if Rules.has_state(e, S.ROOTED):
 		ci.draw_arc(at, r * 1.35, 0, TAU, 24, Color(0.35, 0.8, 0.3), 5.0, true)
 	if Rules.has_state(e, S.INVULNERABLE):
