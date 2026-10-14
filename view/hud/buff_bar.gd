@@ -29,11 +29,20 @@ static func entries(w: World, e: Entity) -> Array:
 	return buffs + debuffs
 
 
+## Cỡ ô: thu nhỏ khi quá nhiều hiệu ứng để cả hàng vẫn nằm bên trái nút Q.
+func icon_size(count: int) -> float:
+	if count <= 0:
+		return ICON
+	var room: float = minf(right_limit, size.x) - GAP - maxi(0, count - 1) * GAP
+	return clampf(room / count, 16.0, ICON)
+
+
 func row_rect(count: int) -> Rect2:
-	var width: float = count * ICON + maxi(0, count - 1) * GAP
+	var icon: float = icon_size(count)
+	var width: float = count * icon + maxi(0, count - 1) * GAP
 	var left: float = size.x * 0.5 - width * 0.5
 	left = minf(left, right_limit - GAP - width)
-	return Rect2(Vector2(maxf(left, 0.0), size.y - BOTTOM_MARGIN - ICON), Vector2(width, ICON))
+	return Rect2(Vector2(maxf(left, 0.0), size.y - BOTTOM_MARGIN - icon), Vector2(width, icon))
 
 
 func _ready() -> void:
@@ -50,8 +59,9 @@ func _draw() -> void:
 	var list: Array = entries(world, hero)
 	var row: Rect2 = row_rect(list.size())
 	var font: Font = ThemeDB.fallback_font
+	var icon: float = row.size.y
 	for i: int in range(list.size()):
-		var box: Rect2 = Rect2(row.position + Vector2(i * (ICON + GAP), 0), Vector2(ICON, ICON))
+		var box: Rect2 = Rect2(row.position + Vector2(i * (icon + GAP), 0), Vector2(icon, icon))
 		_draw_icon(font, box, list[i])
 
 
