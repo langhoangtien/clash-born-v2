@@ -14,6 +14,7 @@ func run(world: World) -> void:
 		if e.kind == Entity.Kind.HERO:
 			_hero_waits(world, e)
 			continue
+		Effects.remove_on_death(world, e)
 		if Rules.is_structure(e):
 			world.destroyed_structures[e.structure_id] = true
 			world.emit(&"structure_destroyed", -1, e.id)
@@ -28,6 +29,7 @@ func run(world: World) -> void:
 
 func _hero_waits(world: World, e: Entity) -> void:
 	if e.respawn_tick < 0:
+		Effects.remove_on_death(world, e)  # D-56
 		var wait: float = world.balance.respawn_base + world.balance.respawn_per_level * e.stats.level()
 		e.respawn_tick = world.tick + SimClock.seconds_to_ticks(wait)
 		e.order = Order.idle()

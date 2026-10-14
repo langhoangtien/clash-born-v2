@@ -16,6 +16,7 @@ func run(world: World) -> void:
 		var amount: float = DamageFormulas.final_damage(r.raw * _structure_factor(world, source, target), r.damage_type,
 			s.get_stat(StatId.Id.PHYSICAL_ARMOR), s.get_stat(StatId.Id.MAGIC_ARMOR),
 			s.get_stat(StatId.Id.DAMAGE_TAKEN_MULTIPLIER), world.balance)
+		amount = Effects.absorb(world, target, amount)  # EFF-06
 		if r.is_attack:
 			world.emit(&"attack_landed", r.source_id, r.target_id, amount)
 			if source != null and source.kind == Entity.Kind.HERO and target.kind == Entity.Kind.HERO and source.team != target.team:

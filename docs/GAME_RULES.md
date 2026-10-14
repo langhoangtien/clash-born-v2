@@ -325,7 +325,17 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   min, max. Không có điều kiện if trong biểu thức; điều kiện nằm ở `condition` của trigger.
   `self.` / `target.` đọc chỉ số STAT-01 và `current_hp`, `current_mana`, `level`;
   `event.` đọc `damage`, `burned_mana`, `heal`. Danh sách nằm trong `RuleCatalog`, test
-  nội dung từ chối mọi tên khác.
+  nội dung từ chối mọi tên khác. Giá trị có tên được **chụp lúc áp** hiệu ứng: nâng cấp
+  skill sau đó không đổi bản đang chạy.
+- `EFF-10` Thời hạn (D-56): `duration` d giây → hiệu ứng có tác dụng đúng d giây (gỡ ở pha
+  EFFECT của tick áp + d, lý do `expired`); `"0"` = vĩnh viễn; rỗng = thời lượng do hành
+  động áp truyền vào.
+- `EFF-11` Hiệu ứng chu kỳ: hành động chạy lần đầu sau một chu kỳ, lần cuối đúng lúc hết
+  hạn (3 s, chu kỳ 1 s → 3 lần). Sát thương chu kỳ tính cho kẻ áp hiệu ứng.
+- `EFF-12` STACK: modifier nhân theo số tầng (ADD × tầng; MULTIPLY: phần trăm × tầng, vd
+  +10% × 3 tầng = +30%).
+- `EFF-13` Chủ hiệu ứng chết → mọi hiệu ứng bị gỡ (lý do `owner_died`), trừ hiệu ứng có tag
+  `passive` (D-56).
 
 ## EVT — Sự kiện
 

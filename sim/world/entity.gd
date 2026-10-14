@@ -40,6 +40,8 @@ var gold: int = 0
 var last_hits: int = 0
 var killer_id: int = -1
 var stats: StatBlock
+## Hiệu ứng đang có, theo thứ tự áp (chỉ Effects thêm/bỏ).
+var effects: Array[EffectInstance] = []
 var health: float = 0.0
 var mana: float = 0.0
 ## Còn sống; chỉ DamageSystem đặt false. DeathSystem gỡ đơn vị sau đó, trừ hero (chờ hồi sinh, ECO-04).

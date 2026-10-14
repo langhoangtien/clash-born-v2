@@ -171,3 +171,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M2.5 | Xong | 2026-10-14 | 257 test xanh (+12) + 2 soak; thắng/thua STR-05 (trận dừng), vàng last hit/trụ/thụ động ECO-01/07 (D-53), HUD (đồng hồ, máu, mana, vàng, last hit, đếm ngược hồi sinh), màn kết quả Chơi lại / Về menu, phím F tăng tốc thử |
 | M2.6 | Xong | 2026-10-14 | 259 test xanh (+2) + 3 soak; soak 10 phút (lính, trụ, 2 hero dùng nút đánh) giữ INV-01..05 mỗi tick, chạy lại khớp từng mốc 30 s (INV-08), không bước nào bị chặn; sửa 2 lỗi lính (D-54); tick 3.25 → 2.85 ms |
 | **Hết M2** | | | |
+| M3.1 | Xong | 2026-10-14 | 275 test xanh (+15); hiệu ứng: biểu thức EFF-09, thời hạn, cộng dồn REFRESH/STACK/INDEPENDENT, nhiều nguồn, chu kỳ (Damage/Heal), khiên, gỡ khi chết (D-56); nhóm duy nhất theo ô đồ (D-55) |

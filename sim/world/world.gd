@@ -42,6 +42,7 @@ var projectiles: Array[Projectile] = []
 static var _nav_cache: Dictionary[String, MapNavigation] = {}
 
 var _next_id: int = 1
+var _next_serial: int = 0
 var _pending: Array[Command] = []
 var _systems: Array[Array] = []  # [phase, thứ tự đăng ký, SimSystem]
 
@@ -50,6 +51,7 @@ func _init(seed_value: int, p_balance: BalanceSettings) -> void:
 	rng.seed = seed_value
 	balance = p_balance
 	add_system(CommandSystem.new(), Phase.COMMAND)
+	add_system(EffectSystem.new(), Phase.EFFECT)
 	add_system(StateSystem.new(), Phase.STATE)
 	add_system(StructureController.new(), Phase.CONTROLLER)
 	add_system(AttackSystem.new(), Phase.ATTACK)
@@ -129,8 +131,14 @@ func remove_entity(e: Entity) -> void:
 	entities.erase(e)
 
 
-func emit(type: StringName, source_id: int, target_id: int, amount: float = 0.0) -> void:
-	events.append(GameEvent.make(type, tick, source_id, target_id, amount))
+func emit(type: StringName, source_id: int, target_id: int, amount: float = 0.0, reason: StringName = &"") -> void:
+	events.append(GameEvent.make(type, tick, source_id, target_id, amount, reason))
+
+
+## Số thứ tự toàn trận cho bản hiệu ứng (EffectInstance.serial), tăng dần.
+func next_serial() -> int:
+	_next_serial += 1
+	return _next_serial
 
 
 func step() -> void:
@@ -157,6 +165,9 @@ func state_hash() -> PackedByteArray:
 			e.chase_origin.x, e.chase_origin.y]).to_byte_array())
 		if e.stats != null:
 			ctx.update(e.stats.values().to_byte_array())
+		for inst: EffectInstance in e.effects:
+			ctx.update(PackedInt64Array([inst.serial, inst.def.id.hash(), inst.source_id, inst.stacks, inst.end_tick, inst.next_period_tick]).to_byte_array())
+			ctx.update(PackedFloat64Array([inst.absorb_left]).to_byte_array())
 	for p: Projectile in projectiles:
 		ctx.update(PackedFloat64Array([p.source_id, p.target_id, p.position.x, p.position.y, p.request.raw]).to_byte_array())
 	return ctx.finish()
