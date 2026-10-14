@@ -48,6 +48,7 @@ func setup(w: World, h: Entity) -> void:
 	terrain.painter = func(ci: CanvasItem) -> void:
 		MapPainter.paint_ground(ci, world.map, false)
 		MapPainter.paint_obstacles(ci, world.map, false)
+		MapPainter.paint_bushes(ci, world.map, false)
 	_content.add_child(terrain)
 	_fog = FogView.new()
 	_fog.world = world

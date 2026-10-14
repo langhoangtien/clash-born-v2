@@ -60,3 +60,4 @@ hero_kill_gold_per_level = 10
 death_gold_per_level = 25
 talent_level = 20
 assist_window = 15.0
+bush_reveal_time = 1.0

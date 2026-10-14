@@ -22,6 +22,9 @@ const CLIFF_TOP := Color("4f5f63")
 const RAMP := Color("7f9b82")
 const RAMP_LINE := Color("63806a")
 const CAMP_CLEARING := Color("446f53")
+const BUSH := Color("6f9a3a")
+const BUSH_DARK := Color("4e7428")
+const BUSH_LIGHT := Color("94c05a")
 
 ## Nền, base, sông, dốc, lane: mọi thứ đơn vị đi lên được.
 static func paint_ground(ci: CanvasItem, layout: MapLayout, detail: bool = true) -> void:
@@ -117,3 +120,25 @@ static func _thick_line(ci: CanvasItem, points: PackedVector2Array, color: Color
 	ci.draw_polyline(points, color, width, true)
 	# Round joints and caps: draw_polyline has square joints only.
 	for point in points: ci.draw_circle(point, width * 0.5, color)
+
+
+## VIS-06: bụi cỏ — khối cỏ cao, viền đậm; `detail` thêm các ngọn cỏ.
+static func paint_bushes(ci: CanvasItem, layout: MapLayout, detail: bool = true) -> void:
+	for poly: PackedVector2Array in layout.bushes.polygons:
+		ci.draw_colored_polygon(poly, BUSH)
+		var closed: PackedVector2Array = poly.duplicate()
+		closed.append(poly[0])
+		ci.draw_polyline(closed, BUSH_DARK, 10.0 if detail else 40.0, true)
+		if not detail:
+			continue
+		var rng := RandomNumberGenerator.new()
+		rng.seed = int(poly[0].x * 31.0 + poly[0].y)
+		var box := Rect2(poly[0], Vector2.ZERO)
+		for p in poly:
+			box = box.expand(p)
+		for i in range(60):
+			var at := box.position + Vector2(rng.randf(), rng.randf()) * box.size
+			if Geometry2D.is_point_in_polygon(at, poly):
+				var h := rng.randf_range(18.0, 34.0)
+				ci.draw_line(at, at + Vector2(-6, -h), BUSH_DARK, 4.0, true)
+				ci.draw_line(at + Vector2(4, 0), at + Vector2(6, -h * 0.9), BUSH_LIGHT, 3.0, true)

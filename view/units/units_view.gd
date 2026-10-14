@@ -95,6 +95,11 @@ func seen(e: Entity) -> bool:
 	return viewer_team < 0 or e.team == viewer_team or Rules.is_structure(e) or Rules.is_visible(viewer_team, e)
 
 
+## Vẽ mờ: GHOST (ST-11), hoặc đơn vị phe mình đang núp trong bụi (VIS-06).
+func faded(e: Entity) -> bool:
+	return Rules.has_state(e, UnitState.Id.GHOST) or (viewer_team >= 0 and e.team == viewer_team and e.bush_id >= 0)
+
+
 func _draw_unit(e: Entity, at: Vector2) -> void:
 	var color: Color = _team_color(e.team)
 	draw_set_transform(at + Vector2(0, e.radius * 0.15), 0.0, Vector2(1.0, 0.45))
@@ -107,11 +112,11 @@ func _draw_unit(e: Entity, at: Vector2) -> void:
 	var height: float = e.radius * BODY_HEIGHT * (3.0 if tex != null else 1.0)
 	if tex != null:
 		var size: Vector2 = Vector2(height, height)
-		var tint: Color = Color(1, 1, 1, 0.45) if Rules.has_state(e, UnitState.Id.GHOST) else Color.WHITE
+		var tint: Color = Color(1, 1, 1, 0.45) if faded(e) else Color.WHITE
 		draw_texture_rect(tex, Rect2(at - Vector2(size.x * 0.5, size.y * 0.85), size), false, tint) if e.facing.x >= 0.0 \
 			else draw_texture_rect(tex, Rect2(at + Vector2(size.x * 0.5, -size.y * 0.85), Vector2(-size.x, size.y)), false, tint)
 	else:
-		_draw_placeholder(e, at, Color(color, 0.45) if Rules.has_state(e, UnitState.Id.GHOST) else color, height)
+		_draw_placeholder(e, at, Color(color, 0.45) if faded(e) else color, height)
 	StateMarks.draw(self, e, at, height, world.tick)
 	_draw_health(e, at - Vector2(0, height + 14), color)
 

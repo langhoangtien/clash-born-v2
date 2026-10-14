@@ -39,6 +39,7 @@ func _ready() -> void:
 		return
 	_add_layer("Ground", func(ci: CanvasItem) -> void: MapPainter.paint_ground(ci, layout, true))
 	_add_layer("Obstacles", func(ci: CanvasItem) -> void: MapPainter.paint_obstacles(ci, layout, true))
+	_add_layer("Bushes", func(ci: CanvasItem) -> void: MapPainter.paint_bushes(ci, layout, true))
 	_overlay = _add_layer("Overlay", _paint_overlay)
 
 

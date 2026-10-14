@@ -71,6 +71,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-69 | 2026-10-14 | M4.4: Myra đủ bộ. Đổi mục tiêu tính lúc **bắt đầu vung** vào mục tiêu khác (giống Troll), mất hết tầng Nhịp Phép ngay lúc đó; đánh trụ cũng cộng tầng. Màn khởi động tạm có nút vào trận cho từng tướng chơi thử (Brakk, Myra) tới khi có màn chọn tướng M8 | Đã duyệt |
 | D-70 | 2026-10-14 | Sửa giật ở giây 15: lưới tìm đường của lính (bán kính 22) dựng sẵn lúc vào trận thay vì lúc đợt lính đầu xuất hiện (tick 450 từ 277 ms còn 12 ms); hình đơn vị cũng nạp sẵn lúc vào trận | Người chơi báo giật khi lính xuất hiện |
 | D-71 | 2026-10-14 | M5.1: tầm nhìn tính mỗi tick, hình tròn, rừng không che; `Rules.is_targetable` cần thấy, `is_hittable` (vùng, đạn kỹ năng) không cần. Sương mù vẽ bằng shader; địch không thấy thì không vẽ, công trình địch luôn vẽ. Minimap góc trên trái, giữ ngón để xem chỗ khác, thả thì camera về hero (kiểu Liên Quân). Bụi cỏ làm riêng sau khi duyệt luật | Đã duyệt |
+| D-72 | 2026-10-15 | M5.1b: bụi cỏ kiểu Liên Quân. Trong bụi thì địch chỉ thấy khi có người cùng bụi (thấy cả bụi) hoặc mình vừa ra tay (lộ `bush_reveal_time` = 1 s); trụ cũng không nhìn vào bụi; bụi không chặn đi lại, đạn, vùng. 14 bụi (7 cặp xoay 180°): sông giữa hai bên lối mid, bờ sông, cửa rừng, cạnh lane; mép bụi ngoài tầm bắn trụ. Phe mình trong bụi vẽ mờ | Đã duyệt |
 
 ## Chờ chốt
 

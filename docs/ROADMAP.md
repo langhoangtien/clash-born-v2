@@ -189,3 +189,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M4.4 | Xong | 2026-10-14 | 386 test xanh (+10); Myra: nội tại Nhịp Phép với sự kiện `attack_target_changed` (CMB-12), Q/W/R đúng bảng, 3 talent; chọn tướng ở màn khởi động để chơi thử (D-69) |
 | **Hết M4** | | | |
 | M5.1 | Xong | 2026-10-14 | 397 test xanh (+10); tầm nhìn VIS-01/05, INV-07; sương mù; minimap giữ để xem (D-71); sửa giật đợt lính đầu (D-70) |
+| M5.1b | Xong | 2026-10-15 | 404 test xanh (+7); bụi cỏ VIS-06/07: 14 bụi trên map, ẩn/lộ, cùng bụi, ra tay lộ 1 s, trụ không thấy vào bụi (D-72) |

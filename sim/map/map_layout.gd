@@ -50,6 +50,8 @@ var forest_shapes: Array[MapShape] = []
 var cliff_shapes: Array[MapShape] = []
 var water_shapes: Array[MapShape] = []
 var collision_polygons: Array[PackedVector2Array] = []
+## VIS-06: bụi cỏ.
+var bushes: MapBushes = MapBushes.new()
 
 # Trường khoảng trống: khoảng cách (đơn vị thế giới) từ mỗi pixel tới vật cản gần nhất.
 var clearance_bytes: PackedByteArray = PackedByteArray()
@@ -211,6 +213,7 @@ func _load_terrain(d: Dictionary) -> void:
 	forest_shapes = _shapes(render["forest"])
 	cliff_shapes = _shapes(render["cliffs"])
 	water_shapes = _shapes(render["water"])
+	bushes.load_from(d.get("bushes", []))
 	collision_polygons.clear()
 	for polygon: Array in d["collision"]:
 		collision_polygons.append(_points(polygon))

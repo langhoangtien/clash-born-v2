@@ -166,12 +166,19 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 - `VIS-01` Đội T thấy đơn vị E khi có ít nhất một đơn vị sống của T có khoảng cách
   tâm–tâm tới E ≤ `vision_range` của đơn vị đó. Mọi đơn vị (hero, lính, trụ, nhà chính)
   cho tầm nhìn theo dữ liệu; luôn thấy đồng đội; rừng và vách không che. Tính mỗi tick ở
-  pha VISION (D-71). Map hiện chưa có bụi cỏ.
+  pha VISION (D-71).
 - `VIS-02` E đang INVISIBLE thì đội địch chỉ thấy khi E có REVEALED đối với đội đó
   (từ true sight hoặc hiệu ứng làm lộ).
 - `VIS-03` Fountain có true sight bán kính `fountain_true_sight`. (Trụ không có, giống Dota.)
 - `VIS-04` Hiệu ứng tàng hình mặc định bị xóa khi chủ nhân bắt đầu đánh hoặc dùng
   chiêu (khai báo `removed_by`). Có `fade_in`: trong thời gian này vẫn bị thấy.
+- `VIS-06` Bụi cỏ (D-72, kiểu Liên Quân): đơn vị E có tâm nằm trong bụi B thì đội T khác
+  đội E chỉ thấy E khi (a) T có đơn vị sống cũng đứng trong B (thấy cả bụi, không cần
+  tầm), hoặc (b) E đang lộ (VIS-07) và VIS-01 thỏa. Áp cho mọi đội, cả trụ và nhà
+  chính. Bụi không chặn đi lại, đạn hay vùng kỹ năng. Đứng ngoài bụi thì như VIS-01.
+- `VIS-07` Ra tay thì lộ: bắt đầu vung đòn đánh (`attack_started`) hoặc tung chiêu
+  (`ability_cast`) → lộ `bush_reveal_time` giây, tính từ tick sau sự kiện. Đang lộ thì
+  bụi không che (vẫn cần trong tầm nhìn VIS-01).
 - `VIS-05` Mất tầm nhìn tới mục tiêu: lệnh đánh/chiêu nhắm đơn vị bị hủy; đạn đã bay
   vẫn trúng. Không ra lệnh đánh / chiêu nhắm đơn vị lên kẻ không thấy (BAD_TARGET); nút
   đánh, lính, trụ chỉ chọn kẻ đang thấy. Vùng và đạn kỹ năng vẫn trúng kẻ không thấy (ABL-07).
@@ -647,7 +654,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | attack_search_bonus / lock_break_range | 100 / 1400 | | tower_tank_creeps / dive_min_hp | 2 / 0.6 |
 | ghost_magic_amp | 0.4 | | talent_level | 20 |
 | attribute_bonus | +2 mọi thuộc tính | | attribute_bonus_max | 7 lần |
-| hex_move_speed | 140 | | | |
+| hex_move_speed | 140 | | bush_reveal_time | 1 s |
 | reincarnate_delay | 3 s | | match_target_minutes | 15–20 (D-29) |
 | first_wave_time | 15 s | | creep_front_margin | 200 |
 | fountain_regen | 0.05 / s | | fountain_damage / attack_interval | 300 / 1 s |

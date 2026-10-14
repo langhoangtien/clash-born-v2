@@ -84,6 +84,10 @@ extends Resource
 ## ECO-09: hero gây sát thương lên hero địch trong chừng này giây trước khi nó chết được tính hỗ trợ.
 @export var assist_window: float
 
+@export_group("Tầm nhìn (VIS)")
+## VIS-07: ra tay trong bụi thì lộ chừng này giây.
+@export var bush_reveal_time: float
+
 @export_group("Điều khiển (CTL)")
 ## CTL-02: tầm tìm mục tiêu = tầm đánh + chừng này.
 @export var attack_search_bonus: float

@@ -71,6 +71,20 @@ if SRC.get("mid_crossing_clear"):  # MAP-05: bỏ vách lồi sát chỗ mid c�
     black, _zone = river_cross.apply(SRC["mid_crossing_clear"], xx, yy, _c, SCALE, black)
     SRC["ramps"] = [r for r in SRC["ramps"] if river_cross.keeps_ramp(r, _zone)]
 
+def bush_polygons():
+    """M5.1b (D-72): elip bụi cỏ (nửa xanh) + bản xoay 180°, tọa độ guide."""
+    out = []
+    for b in SRC.get("bushes", []):
+        for c in ([b["pos"], SYM.rot(b["pos"])] if SYM else [b["pos"]]):
+            a = math.radians(b.get("angle", 0)); pts = []
+            for i in range(16):
+                t = 2 * math.pi * i / 16
+                x, y = b["rx"] * math.cos(t), b["ry"] * math.sin(t)
+                pts.append((c[0] + x * math.cos(a) - y * math.sin(a), c[1] + x * math.sin(a) + y * math.cos(a)))
+            out.append(pts)
+    return out
+
+
 def disk(cx, cy, r):
     return (xx - cx) ** 2 + (yy - cy) ** 2 <= r * r
 
@@ -356,6 +370,7 @@ data = {
     "camps": [dict(id=c["id"], side=c["side"], kind=c["kind"], pos=W(c["pos"])) for c in SRC["camps"]],
     "bases": [dict(team=b["team"], polygon=[W(p) for p in b["polygon"]]) for b in SRC["bases"]],
     "ramps": [{"pos": W(p), "angle": round(a, 4)} for p, a in zip(SRC["ramps"], ramp_angles)],
+    "bushes": [[W(p) for p in poly] for poly in bush_polygons()],
     "render": {
         "forest": render_polys(forest_polys),
         "cliffs": render_polys(cliff_polys),
@@ -382,6 +397,8 @@ for p in forest_polys:
     d.polygon(gp(p.exterior.coords), fill=(31, 74, 58), outline=(16, 40, 30))
 for p in cliff_polys:
     d.polygon(gp(p.exterior.coords), fill=(20, 26, 30))
+for poly in bush_polygons():
+    d.polygon(gp(poly), fill=(120, 200, 60, 170), outline=(220, 255, 120))
 for r in SRC["ramps"]:
     x, y = (r[0] - FX0) * S, (r[1] - FY0) * S
     d.ellipse((x - 5, y - 5, x + 5, y + 5), outline=(255, 255, 255, 180))

@@ -79,3 +79,21 @@ func test_minimap_hold_to_peek_then_release() -> void:
 	m._gui_input(press)
 	assert_false(m.peeking, "thả tay thì camera về hero")
 	m.free()
+
+
+func test_VIS_06_own_unit_in_bush_drawn_faded() -> void:
+	var w: World = _world()
+	var poly: PackedVector2Array = w.map.bushes.polygons[0]
+	var c: Vector2 = Vector2.ZERO
+	for p: Vector2 in poly:
+		c += p
+	c /= poly.size()
+	var me: Entity = _unit(w, 0, c, 1200.0)
+	var out: Entity = _unit(w, 0, c + Vector2(2000, 0), 1200.0)
+	w.step()
+	var view: UnitsView = UnitsView.new()
+	view.world = w
+	view.viewer_team = 0
+	assert_true(view.faded(me), "phe mình trong bụi vẽ mờ")
+	assert_false(view.faded(out))
+	view.free()

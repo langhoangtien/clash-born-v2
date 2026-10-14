@@ -238,7 +238,7 @@ có thể dùng lại làm skill/talent cho hero sau. Ví dụ: Cuồng Tốc = 
  1. CommandSystem      nhận Command (người chơi, bot, controller) → kiểm tra hợp lệ → Order
  2. EffectSystem       hết hạn hiệu ứng, chạy periodic
  3. StateSystem        tính lại StateSet + StatBlock của đơn vị có thay đổi
- 4. VisionSystem       ai thấy ai (dùng StateSet: INVISIBLE, REVEALED)
+ 4. VisionSystem       ai thấy ai (bụi cỏ MapBushes; StateSet: INVISIBLE, REVEALED)
  5. ControllerSystem   lính, trụ, quái, bot đọc snapshot → sinh Command cho tick sau
  6. MovementSystem     di chuyển theo Order, va chạm, tìm đường
  7. AbilitySystem      tiến trình tung chiêu, chạy on_cast; đạn kỹ năng, vùng trễ,
