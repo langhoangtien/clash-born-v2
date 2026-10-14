@@ -58,6 +58,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-56 | 2026-10-14 | M3.1: thời hạn hiệu ứng tính đúng d giây (EFF-10); chu kỳ chạy sau mỗi chu kỳ, gồm cả lúc hết hạn (EFF-11); STACK nhân modifier theo tầng (EFF-12); chết gỡ mọi hiệu ứng trừ `passive` (EFF-13); giá trị có tên chụp lúc áp | Giống Dota; số lần đốt/hồi dễ đoán (3 s / 1 s = 3 lần) |
 | D-57 | 2026-10-14 | M3.2: state tính từ hiệu ứng; đánh thường dùng `Rules.is_attackable` (GHOST không bị đánh thường), chiêu dùng `is_targetable`; bị khống chế thì giữ lệnh, hết thì làm tiếp; hệ số sát thương theo state nhân sau giáp, trước khiên (ST-18) | Giống Dota; một chỗ duy nhất hỏi trạng thái |
 | D-58 | 2026-10-14 | M3.3: trigger xử lý ở pha TRIGGER, sát thương trigger tính ngay, tối đa 4 tầng; sự kiện sau pha TRIGGER để tick sau (EFF-14); vùng chỉ trúng địch không phải công trình (EFF-15); thêm lý do gỡ `removed`; xác suất tạm ngẫu nhiên có seed tới khi có PRD (M3.6b) | Một vòng xử lý duy nhất, thứ tự xác định; phản đòn qua lại dừng ở tầng 4 |
+| D-59 | 2026-10-14 | M3.4 điều khiển chiêu kiểu Liên Quân: (a) chiêu nhắm đơn vị ngoài tầm thì tự đi tới rồi tung; (b) điểm xa quá tầm kéo về mép tầm, tung ngay; (c) đang tung chiêu thì joystick/lệnh mới không hủy, chờ tung xong mới áp. Thêm hồi máu/mana theo giây (ABL-16). Nội tại có sẵn cấp 1 ngay khi vào trận | Đã duyệt; chiêu tung nhanh nên khóa ngắn không khó chịu, tránh mất chiêu vì kéo joystick vội |
 
 ## Chờ chốt
 

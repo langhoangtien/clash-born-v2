@@ -19,14 +19,16 @@ var blocked_steps: int = 0
 
 func run(world: World) -> void:
 	for e: Entity in world.entities:
-		if Rules.is_structure(e) or not Rules.can_move(e):
-			continue  # công trình không bao giờ di chuyển; hero chờ hồi sinh nằm yên (ECO-04)
+		if Rules.is_structure(e) or not Rules.can_move(e) or e.cast != null:
+			continue  # đang tung chiêu thì đứng (ABL-02)  # công trình không bao giờ di chuyển; hero chờ hồi sinh nằm yên (ECO-04)
 		if e.order.type == Order.Type.MOVE and not e.order.finished:
 			_advance(world, e)
 		elif e.order.type == Order.Type.DIRECT:
 			_advance_direct(world, e)
 		elif e.order.type == Order.Type.ATTACK and not e.order.finished:
 			_advance_attack(world, e)
+		elif e.order.type == Order.Type.CAST and not e.order.finished and e.order.target_id >= 0:
+			_advance_cast(world, e)
 	_separate(world)
 
 
@@ -59,6 +61,24 @@ func _advance_attack(world: World, e: Entity) -> void:
 		e.path = nav.path(e.position, goal)
 	e.path_dirty = false
 	_walk_path(nav, e, e.stats.get_stat(StatId.Id.MOVEMENT_SPEED) * SimClock.TICK_SECONDS, target)
+
+
+## D-59: chiêu nhắm đơn vị ngoài tầm → đi tới mép tầm chiêu rồi AbilitySystem tung.
+func _advance_cast(world: World, e: Entity) -> void:
+	var target: Entity = world.find_entity(e.order.target_id)
+	var a: AbilityInstance = Abilities.of(e, e.order.slot)
+	if target == null or a == null or AbilitySystem.in_cast_range(e, a, target):
+		e.path = PackedVector2Array()
+		return
+	var nav: MapNavigation = world.navigation(e.radius)
+	if e.path_for != e.order or e.path_goal.distance_to(target.position) > RETARGET_DISTANCE or e.path_index >= e.path.size():
+		e.path_for = e.order
+		e.path_goal = target.position
+		e.path_index = 1
+		var goal: Vector2 = target.position if nav.point_is_clear(target.position) else nav.nearest_clear(target.position)
+		e.path = nav.path(e.position, goal)
+	e.path_dirty = false
+	_walk_path(nav, e, e.stats.get_stat(StatId.Id.MOVEMENT_SPEED) * SimClock.TICK_SECONDS, target, Abilities.value(e, a, &"cast_range"))
 
 
 ## MOV-06: đi thẳng theo hướng; bị chặn thì trượt dọc mép.
@@ -147,7 +167,7 @@ func _try_push(world: World, e: Entity, offset: Vector2) -> bool:
 	return true
 
 ## Đi dọc đường hiện có với quãng `budget`; dừng sớm khi `stop_near` vào tầm đánh.
-func _walk_path(nav: MapNavigation, e: Entity, budget: float, stop_near: Entity) -> void:
+func _walk_path(nav: MapNavigation, e: Entity, budget: float, stop_near: Entity, stop_reach: float = -1.0) -> void:
 	while budget > 0.0 and e.path_index < e.path.size():
 		var next: Vector2 = e.path[e.path_index]
 		var gap: float = e.position.distance_to(next)
@@ -164,5 +184,5 @@ func _walk_path(nav: MapNavigation, e: Entity, budget: float, stop_near: Entity)
 			e.path_index += 1
 		else:
 			budget = 0.0
-		if stop_near != null and Rules.in_attack_range(e, stop_near):
+		if stop_near != null and (Rules.edge_distance(e, stop_near) <= stop_reach if stop_reach >= 0.0 else Rules.in_attack_range(e, stop_near)):
 			return

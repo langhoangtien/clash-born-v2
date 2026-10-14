@@ -17,7 +17,9 @@ static func hero(world: World, def: HeroDef, team: int, position: Vector2, level
 		Vector3(def.base_strength, def.base_agility, def.base_intelligence),
 		Vector3(def.strength_growth, def.agility_growth, def.intelligence_growth))
 	e.stats.set_level(level, 0, world.balance.attribute_bonus)
-	return world.add_entity(e)
+	world.add_entity(e)
+	Abilities.setup_hero(world, e, def)
+	return e
 
 
 ## Lính, quái, công trình từ UnitDef.

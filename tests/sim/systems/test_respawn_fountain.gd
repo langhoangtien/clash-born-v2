@@ -99,8 +99,10 @@ func test_STR_04_fountain_heals_own_units_five_percent_per_second() -> void:
 	hero.mana = 0.0
 	for t: int in range(30):
 		w.step()
-	assert_near(hero.health, max_hp * 0.55, 0.5)
-	assert_near(hero.mana, max_mana * 0.05, 0.5)
+	var regen: float = hero.stats.get_stat(StatId.Id.HP_REGEN)
+	var mana_regen: float = hero.stats.get_stat(StatId.Id.MANA_REGEN)
+	assert_near(hero.health, max_hp * 0.55 + regen, 0.5, "5%/s cộng hồi máu thường")
+	assert_near(hero.mana, max_mana * 0.05 + mana_regen, 0.5)
 	for t: int in range(30 * 20):
 		w.step()
 	assert_near(hero.health, max_hp, EPS, "không quá máu tối đa")
@@ -113,7 +115,7 @@ func test_STR_04_no_heal_outside_radius_or_for_enemies() -> void:
 	outside.health = 100.0
 	for t: int in range(30):
 		w.step()
-	assert_near(outside.health, 100.0, EPS)
+	assert_near(outside.health, 100.0 + outside.stats.get_stat(StatId.Id.HP_REGEN), EPS, "chỉ hồi máu thường")
 
 
 func test_STR_04_fountain_shoots_enemy_heroes_in_radius() -> void:
@@ -130,7 +132,7 @@ func test_STR_04_fountain_shoots_enemy_heroes_in_radius() -> void:
 		for ev: GameEvent in w.events:
 			shots += int(ev.type == &"fountain_shot" and ev.target_id == enemy.id)
 	assert_eq(shots, 2, "mỗi giây một phát")
-	assert_near(enemy.health, 5000.0 - 2.0 * w.balance.fountain_damage, EPS, "sát thương thuần")
+	assert_near(enemy.health, 5000.0 - 2.0 * w.balance.fountain_damage + 2.0 * enemy.stats.get_stat(StatId.Id.HP_REGEN), 0.01, "sát thương thuần")
 	assert_true(hp > 0.0)
 
 

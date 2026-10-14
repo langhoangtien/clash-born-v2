@@ -1,0 +1,102 @@
+class_name Abilities
+extends RefCounted
+## Kỹ năng trên đơn vị: dựng từ HeroDef, giá trị theo cấp (ABL-09, ITM-05), học/lên cấp
+## (bị động áp lại hiệu ứng on_learn), kiểm tra dùng được (ABL-02).
+
+## Lý do không dùng được (khớp Command.Reject).
+enum Problem { NONE, NOT_LEARNED, ON_COOLDOWN, NO_MANA, CANNOT_CAST, BAD_TARGET }
+
+
+static func setup_hero(world: World, e: Entity, def: HeroDef) -> void:
+	for pair: Array in [[AbilityDef.Slot.INNATE, def.innate], [AbilityDef.Slot.Q, def.q], [AbilityDef.Slot.W, def.w], [AbilityDef.Slot.R, def.r]]:
+		if pair[1] == null:
+			continue
+		var a: AbilityInstance = AbilityInstance.new()
+		a.def = pair[1]
+		a.slot = pair[0]
+		e.abilities.append(a)
+	var innate: AbilityInstance = of(e, AbilityDef.Slot.INNATE)
+	if innate != null:
+		set_rank(world, e, innate, 1)  # ABL-11: nội tại có từ cấp 1
+
+
+static func of(e: Entity, slot: int) -> AbilityInstance:
+	for a: AbilityInstance in e.abilities:
+		if a.slot == slot:
+			return a
+	return null
+
+
+## Giá trị có tên ở cấp hiện tại; tên gốc `x` lấy `x_melee` / `x_ranged` theo đơn vị (ITM-05).
+static func values(e: Entity, a: AbilityInstance) -> Dictionary:
+	var out: Dictionary = {}
+	var index: int = clampi(a.rank - 1, 0, a.def.expected_ranks() - 1)
+	for key: StringName in a.def.values:
+		var arr: PackedFloat32Array = a.def.values[key]
+		out[key] = float(arr[mini(index, arr.size() - 1)]) if arr.size() > 0 else 0.0
+	var suffix: String = "_melee" if e.projectile_speed <= 0.0 else "_ranged"
+	for key: StringName in out.keys():
+		if String(key).ends_with(suffix):
+			out[StringName(String(key).trim_suffix(suffix))] = out[key]
+	return out
+
+
+static func value(e: Entity, a: AbilityInstance, name: StringName) -> float:
+	return values(e, a).get(name, 0.0)
+
+
+## Học / lên cấp: hiệu ứng bị động cũ gỡ, chạy lại on_learn với giá trị cấp mới.
+static func set_rank(world: World, e: Entity, a: AbilityInstance, rank: int) -> void:
+	a.rank = rank
+	for inst: EffectInstance in a.learned_effects:
+		Effects.remove(world, e, inst, &"removed")
+	a.learned_effects.clear()
+	if rank <= 0 or a.def.on_learn.is_empty():
+		return
+	var before: Array[EffectInstance] = e.effects.duplicate()
+	ActionRunner.run(world, a.def.on_learn, context(e, a, e), e.id)
+	for inst: EffectInstance in e.effects:
+		if not before.has(inst):
+			a.learned_effects.append(inst)
+
+
+static func context(e: Entity, a: AbilityInstance, target: Entity) -> ExprContext:
+	var ctx: ExprContext = ExprContext.make(e, target, values(e, a))
+	ctx.ability = a.def
+	return ctx
+
+
+## ABL-02: dùng được ngay bây giờ chưa (không xét tầm).
+static func problem(world: World, e: Entity, a: AbilityInstance) -> Problem:
+	if a == null or a.rank <= 0:
+		return Problem.NOT_LEARNED
+	if a.def.targeting == AbilityDef.Targeting.PASSIVE or not Rules.can_cast(e):
+		return Problem.CANNOT_CAST
+	if world.tick < a.ready_tick:
+		return Problem.ON_COOLDOWN
+	if e.mana < value(e, a, &"mana"):
+		return Problem.NO_MANA
+	return Problem.NONE
+
+
+## ABL-07 / target_filter: đơn vị `t` có phải đối tượng hợp lệ của kỹ năng do `caster` dùng.
+static func accepts(caster: Entity, def: AbilityDef, t: Entity) -> bool:
+	if t == null or not t.alive:
+		return false
+	match def.target_team:
+		AbilityDef.Team.ENEMY:
+			if not Rules.is_targetable(caster, t):
+				return false
+		AbilityDef.Team.ALLY:
+			if t.team != caster.team:
+				return false
+		AbilityDef.Team.SELF:
+			return t == caster
+	match t.kind:
+		Entity.Kind.HERO:
+			return def.hits_heroes
+		Entity.Kind.LANE_CREEP:
+			return def.hits_creeps
+		Entity.Kind.NEUTRAL:
+			return def.hits_neutrals
+	return def.hits_structures

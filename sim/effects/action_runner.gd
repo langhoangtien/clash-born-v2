@@ -101,7 +101,7 @@ static func fire_area(world: World, p: PendingArea) -> void:
 	var reach: float = radius if a.shape == AreaAction.Shape.CIRCLE else length + half_width
 	var around: Vector2 = p.center if a.shape == AreaAction.Shape.CIRCLE else start
 	for e: Entity in world.spatial_near(around, reach, World.Phase.TRIGGER):
-		if Rules.is_structure(e) or not Rules.is_targetable(owner, e):
+		if not _area_accepts(p.ctx, owner, e):
 			continue
 		var hit: bool
 		if a.shape == AreaAction.Shape.CIRCLE:
@@ -112,3 +112,10 @@ static func fire_area(world: World, p: PendingArea) -> void:
 			hit = along >= -e.radius and along <= length + e.radius and absf(rel.cross(dir.normalized())) <= half_width + e.radius
 		if hit:
 			run(world, a.actions, p.ctx.with_target(e), p.source_id)
+
+
+## ABL-07: vùng của kỹ năng lọc theo target_filter; không có kỹ năng → địch không phải công trình (EFF-15).
+static func _area_accepts(ctx: ExprContext, owner: Entity, e: Entity) -> bool:
+	if ctx.ability != null:
+		return Abilities.accepts(owner, ctx.ability, e)
+	return not Rules.is_structure(e) and Rules.is_targetable(owner, e)

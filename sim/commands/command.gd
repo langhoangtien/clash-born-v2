@@ -3,8 +3,9 @@ extends RefCounted
 ## Yêu cầu từ người chơi, bot hoặc controller (ARCHITECTURE mục 1). Không đổi trận
 ## trực tiếp; CommandSystem kiểm tra rồi mới thành Order (CMD-01..05).
 
-enum Type { MOVE_TO, MOVE_DIR, STOP, ATTACK, ATTACK_AUTO }
-enum Reject { NONE, UNKNOWN_UNIT, POINT_OUTSIDE_MAP, BAD_DIRECTION, BAD_TARGET, UNIT_DEAD }
+enum Type { MOVE_TO, MOVE_DIR, STOP, ATTACK, ATTACK_AUTO, CAST }
+enum Reject { NONE, UNKNOWN_UNIT, POINT_OUTSIDE_MAP, BAD_DIRECTION, BAD_TARGET, UNIT_DEAD,
+	NOT_LEARNED, ON_COOLDOWN, NO_MANA, CANNOT_CAST }
 
 var type: Type
 var entity_id: int
@@ -14,6 +15,8 @@ var target_id: int = -1
 ## ATTACK: khóa mục tiêu (CTL-04). ATTACK_AUTO: chế độ chọn mục tiêu (Rules.AttackMode).
 var lock: bool = false
 var mode: int = 0
+## CAST: ô kỹ năng (AbilityDef.Slot).
+var slot: int = 0
 ## Tick mà lệnh được áp (World điền khi áp; dùng cho nhật ký và phát lại).
 var tick: int = -1
 var reject_reason: Reject = Reject.NONE
@@ -55,6 +58,18 @@ static func attack_auto(id: int, attack_mode: int) -> Command:
 	return c
 
 
+## ABL-02: dùng kỹ năng ô `slot`. Tùy kiểu nhắm: `target` (UNIT), `point` (POINT), `dir` (DIRECTION).
+static func cast(id: int, ability_slot: int, target: int = -1, at: Vector2 = Vector2.INF, dir: Vector2 = Vector2.ZERO) -> Command:
+	var c: Command = Command.new()
+	c.type = Type.CAST
+	c.entity_id = id
+	c.slot = ability_slot
+	c.target_id = target
+	c.point = at
+	c.direction = dir
+	return c
+
+
 static func stop(id: int) -> Command:
 	var c: Command = Command.new()
 	c.type = Type.STOP
@@ -72,4 +87,5 @@ func copy() -> Command:
 	c.target_id = target_id
 	c.lock = lock
 	c.mode = mode
+	c.slot = slot
 	return c

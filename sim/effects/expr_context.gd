@@ -15,6 +15,8 @@ var event_target: Entity
 ## Điểm và hướng lúc tung (kỹ năng POINT/DIRECTION; vùng RECT). INF = không có điểm.
 var point: Vector2 = Vector2.INF
 var direction: Vector2 = Vector2.ZERO
+## Kỹ năng đang chạy (lọc đối tượng của vùng, ABL-07); null = hiệu ứng/đồ không có kỹ năng.
+var ability: AbilityDef
 
 
 static func make(p_owner: Entity, p_target: Entity = null, p_values: Dictionary = {}) -> ExprContext:
@@ -38,4 +40,5 @@ func with_target(t: Entity) -> ExprContext:
 	c.event_target = event_target
 	c.point = point
 	c.direction = direction
+	c.ability = ability
 	return c

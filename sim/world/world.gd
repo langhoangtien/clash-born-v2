@@ -58,7 +58,9 @@ func _init(seed_value: int, p_balance: BalanceSettings) -> void:
 	add_system(CommandSystem.new(), Phase.COMMAND)
 	add_system(EffectSystem.new(), Phase.EFFECT)
 	add_system(StateSystem.new(), Phase.STATE)
+	add_system(RegenSystem.new(), Phase.STATE)
 	add_system(StructureController.new(), Phase.CONTROLLER)
+	add_system(AbilitySystem.new(), Phase.ABILITY)
 	add_system(AttackSystem.new(), Phase.ATTACK)
 	add_system(FountainSystem.new(), Phase.ATTACK)
 	add_system(DamageSystem.new(), Phase.DAMAGE)
@@ -176,6 +178,10 @@ func state_hash() -> PackedByteArray:
 			e.chase_origin.x, e.chase_origin.y]).to_byte_array())
 		if e.stats != null:
 			ctx.update(e.stats.values().to_byte_array())
+		for a: AbilityInstance in e.abilities:
+			ctx.update(PackedInt64Array([a.slot, a.rank, a.ready_tick]).to_byte_array())
+		if e.cast != null:
+			ctx.update(PackedInt64Array([e.cast.ability.slot, e.cast.release_tick, e.cast.target_id]).to_byte_array())
 		for inst: EffectInstance in e.effects:
 			ctx.update(PackedInt64Array([inst.serial, inst.def.id.hash(), inst.source_id, inst.stacks, inst.end_tick, inst.next_period_tick]).to_byte_array())
 			ctx.update(PackedFloat64Array([inst.absorb_left]).to_byte_array())

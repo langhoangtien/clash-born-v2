@@ -2,7 +2,7 @@ class_name CommandSystem
 extends SimSystem
 ## Pha 1: áp lệnh đang chờ theo thứ tự gửi (CMD-01), từ chối lệnh không hợp lệ kèm lý
 ## do (CMD-02), lệnh mới thay lệnh cũ (CMD-03), ghi nhật ký (CMD-04). ATTACK_AUTO chọn
-## mục tiêu lúc áp (CMD-05, CTL-02/03), khóa mục tiêu (CTL-04).
+## mục tiêu lúc áp (CMD-05, CTL-02/03), khóa mục tiêu (CTL-04). CAST kiểm tra ABL-02.
 
 
 func run(world: World) -> void:
@@ -14,20 +14,39 @@ func run(world: World) -> void:
 		if command.reject_reason != Command.Reject.NONE:
 			world.rejected_commands.append(command)
 			continue
-		match command.type:
-			Command.Type.MOVE_TO:
-				unit.order = Order.move(command.point)
-			Command.Type.MOVE_DIR:
-				unit.order = Order.direct(command.direction)
-			Command.Type.ATTACK:
-				unit.order = Order.attack(command.target_id)
-				if command.lock:
-					unit.lock_target_id = command.target_id
-			Command.Type.ATTACK_AUTO:
-				unit.order = _auto_order(world, unit, command.mode)
-			Command.Type.STOP:
-				unit.order = Order.idle()
+		var order: Order = _order_for(world, command, unit)
+		if unit.cast != null:
+			unit.queued_order = order  # D-59: đang tung chiêu, lệnh chờ tới khi tung xong
+		else:
+			unit.order = order
 		world.command_log.append(command)
+
+
+func _order_for(world: World, command: Command, unit: Entity) -> Order:
+	match command.type:
+		Command.Type.MOVE_TO:
+			return Order.move(command.point)
+		Command.Type.MOVE_DIR:
+			return Order.direct(command.direction)
+		Command.Type.ATTACK:
+			if command.lock:
+				unit.lock_target_id = command.target_id
+			return Order.attack(command.target_id)
+		Command.Type.ATTACK_AUTO:
+			return _auto_order(world, unit, command.mode)
+		Command.Type.CAST:
+			return Order.cast(command.slot, command.target_id, _clamped_point(unit, command), command.direction)
+	return Order.idle()
+
+
+## D-59 (kiểu Liên Quân): điểm xa quá tầm chiêu kéo về mép tầm, tung ngay tại đó.
+func _clamped_point(unit: Entity, command: Command) -> Vector2:
+	if not command.point.is_finite():
+		return command.point
+	var a: AbilityInstance = Abilities.of(unit, command.slot)
+	var reach: float = Abilities.value(unit, a, &"cast_range")
+	var offset: Vector2 = command.point - unit.position
+	return unit.position + offset.limit_length(reach) if reach > 0.0 else command.point
 
 
 func _check(world: World, command: Command, unit: Entity) -> Command.Reject:
@@ -45,6 +64,28 @@ func _check(world: World, command: Command, unit: Entity) -> Command.Reject:
 	if command.type == Command.Type.MOVE_DIR:
 		if not command.direction.is_finite() or command.direction.length() < 0.000001:
 			return Command.Reject.BAD_DIRECTION
+	if command.type == Command.Type.CAST:
+		return _check_cast(world, command, unit)
+	return Command.Reject.NONE
+
+
+## ABL-02 + kiểu nhắm của kỹ năng.
+func _check_cast(world: World, command: Command, unit: Entity) -> Command.Reject:
+	var a: AbilityInstance = Abilities.of(unit, command.slot)
+	var problem: Abilities.Problem = Abilities.problem(world, unit, a)
+	if problem != Abilities.Problem.NONE:
+		return [Command.Reject.NONE, Command.Reject.NOT_LEARNED, Command.Reject.ON_COOLDOWN,
+			Command.Reject.NO_MANA, Command.Reject.CANNOT_CAST, Command.Reject.BAD_TARGET][problem]
+	match a.def.targeting:
+		AbilityDef.Targeting.UNIT:
+			if not Abilities.accepts(unit, a.def, world.find_entity(command.target_id)):
+				return Command.Reject.BAD_TARGET
+		AbilityDef.Targeting.POINT:
+			if not command.point.is_finite() or (world.map != null and not world.map.world_rect().has_point(command.point)):
+				return Command.Reject.POINT_OUTSIDE_MAP
+		AbilityDef.Targeting.DIRECTION:
+			if not command.direction.is_finite() or command.direction.length() < 0.000001:
+				return Command.Reject.BAD_DIRECTION
 	return Command.Reject.NONE
 
 

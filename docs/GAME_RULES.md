@@ -253,6 +253,13 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 - `ABL-13` Vùng có hai hình (D-37): **tròn** (tâm + `radius`) hoặc **chữ nhật theo
   hướng** — bắt đầu từ chủ kỹ năng, dài `length`, rộng `width`, theo hướng đã chọn
   lúc tung. Luật trúng của ABL-06/07 áp như nhau cho cả hai hình.
+- `ABL-15` (D-59, kiểu Liên Quân) Chiêu nhắm đơn vị ngoài tầm: đi tới mép `cast_range` rồi
+  tung. Chiêu nhắm điểm xa quá tầm: điểm kéo về mép tầm, tung ngay. Đang tung chiêu
+  (`cast_time`) thì lệnh mới không hủy chiêu mà chờ, tung xong (hoặc bị hủy) mới áp. Vùng
+  của kỹ năng lọc đối tượng theo `target_team` và các cờ `hits_*` (ABL-07). Nội tại học
+  sẵn cấp 1; bị động lên cấp thì gỡ hiệu ứng cũ, áp lại với giá trị cấp mới.
+- `ABL-16` Hồi máu / mana: mỗi tick cộng `hp_regen` / `mana_regen` (mỗi giây) × thời gian
+  tick, không quá tối đa; đơn vị chết không hồi.
 - `ABL-14` Cờ bật/tắt của hành động (vd đạn `pierce`) là giá trị có tên (0 = tắt,
   khác 0 = bật) để talent đổi được (TAL-02a).
 
@@ -346,8 +353,8 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   EFF-04); rồi mới gỡ hiệu ứng `removed_by` (EFF-05). Sự kiện phát sau pha TRIGGER (chết,
   hồi sinh…) xử lý ở tick sau. Chủ hiệu ứng phải còn sống. Xác suất tạm dùng ngẫu nhiên có
   seed; PRD ở M3.6b (RNG-01). Hành động trong trigger tính kẻ gây là chủ hiệu ứng.
-- `EFF-15` Kỹ năng vùng (AreaAction) trúng đơn vị **phe địch, không phải công trình**, nhắm
-  được (DEF-05), mép thân trong vùng; tâm/hướng chốt lúc tung, có `delay` thì nổ sau đó;
+- `EFF-15` Kỹ năng vùng (AreaAction) trúng đơn vị theo bộ lọc của kỹ năng (ABL-07); vùng
+  không thuộc kỹ năng (hiệu ứng, đồ) trúng **phe địch, không phải công trình**, nhắm được (DEF-05), mép thân trong vùng; tâm/hướng chốt lúc tung, có `delay` thì nổ sau đó;
   đơn vị trúng xử lý theo id.
 - `EFF-13` Chủ hiệu ứng chết → mọi hiệu ứng bị gỡ (lý do `owner_died`), trừ hiệu ứng có tag
   `passive` (D-56).
@@ -500,7 +507,8 @@ Người chơi, bot và controller (lính, trụ, quái) đều điều khiển 
 - `CMD-02` Lệnh không hợp lệ bị bỏ, kèm lý do đọc được: `UNKNOWN_UNIT` (đơn vị không tồn
   tại), `POINT_OUTSIDE_MAP` (điểm ngoài map hoặc không phải số hữu hạn), `BAD_DIRECTION`
   (hướng dài 0 hoặc không hữu hạn), `BAD_TARGET` (mục tiêu không nhắm được: không tồn
-  tại, đã chết, cùng đội), `UNIT_DEAD` (đơn vị ra lệnh đang chờ hồi sinh). Thêm lý do khi
+  tại, đã chết, cùng đội), `UNIT_DEAD` (đơn vị ra lệnh đang chờ hồi sinh), `NOT_LEARNED`, `ON_COOLDOWN`, `NO_MANA`,
+  `CANNOT_CAST` (bị động, hoặc đang STUNNED/SILENCED). Thêm lý do khi
   thêm loại lệnh.
 - `CMD-03` Lệnh hợp lệ thay lệnh hiện tại (Order) của đơn vị. `STOP` → đứng yên.
 - `CMD-04` Mọi lệnh đã áp được ghi vào nhật ký kèm tick; phát lại nhật ký trên World cùng
@@ -510,7 +518,8 @@ Người chơi, bot và controller (lính, trụ, quái) đều điều khiển 
   cờ `lock` = khóa mục tiêu CTL-04), `ATTACK_AUTO(chế độ ALL / CREEP / STRUCTURE)` — chọn
   mục tiêu bằng `Rules.pick_attack_target` **lúc áp lệnh** (CTL-02/03); không có ai →
   lệnh SWING (đánh gió, D-46: vung một đòn tại chỗ, không sát thương, tốn nhịp đánh như
-  đòn thường, xong thì lệnh xong). Đánh, dùng chiêu, mua đồ thêm ở
+  đòn thường, xong thì lệnh xong), `CAST(ô, mục tiêu | điểm | hướng)` — dùng kỹ năng (ABL-02,
+  ABL-15). Đánh, dùng chiêu, mua đồ thêm ở
   mốc của chúng.
 
 ## BOT — Bot hero

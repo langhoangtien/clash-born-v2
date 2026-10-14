@@ -57,6 +57,7 @@ clashborn_v2/
                            SpatialGrid (tra đơn vị gần), StatBlock, StatModifier, StatId,
                            UnitState; EffectContainer ở M3
     systems/               mỗi file một hệ thống, chạy theo thứ tự cố định
+    abilities/             Abilities (kỹ năng trên đơn vị, giá trị theo cấp), AbilityInstance, CastState
     effects/               Effects (áp/gỡ), EffectInstance, ExprEval (EFF-09), ActionRunner
     defs/                  khuôn dữ liệu: HeroDef, AbilityDef, EffectDef, TalentDef, ItemDef, UnitDef…
     content/               ContentLibrary (nạp content/), ContentValidator, RuleCatalog, ExprRules

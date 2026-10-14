@@ -57,8 +57,13 @@ var attack_target_id: int = -1
 var attack_start_tick: int = 0
 var attack_release_tick: int = 0
 var next_attack_tick: int = 0
-## Lệnh hiện tại (CMD-03); chỉ CommandSystem đặt.
+## Lệnh hiện tại (CMD-03); chỉ CommandSystem đặt. Đang tung chiêu thì lệnh mới chờ ở
+## `queued_order`, tung xong mới áp (D-59).
 var order: Order = Order.idle()
+var queued_order: Order
+## Kỹ năng (ABL) và chiêu đang tung (AbilitySystem ghi).
+var abilities: Array[AbilityInstance] = []
+var cast: CastState
 ## Đường đang đi (chỉ MovementSystem ghi). `path_for` = lệnh mà đường này phục vụ.
 var path: PackedVector2Array = PackedVector2Array()
 var path_index: int = 0
