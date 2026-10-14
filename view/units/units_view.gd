@@ -52,6 +52,12 @@ func _draw() -> void:
 			var col: Color = (BLUE if r[3] == 0 else RED).lightened(0.4)
 			draw_circle(r[0], r[1], Color(col, 0.35 * (1.0 - age)))
 			draw_arc(r[0], r[1], 0, TAU, 48, Color(col, 0.9 * (1.0 - age)), 4.0, true)
+	for s: SkillShot in world.skill_shots:  # đạn kỹ năng (ABL-05)
+		var col: Color = (BLUE if s.team == 0 else RED).lightened(0.5)
+		var tail: Vector2 = s.position - s.direction * minf(90.0, s.travelled + 1.0)
+		draw_line(tail, s.position, Color(col, 0.35), s.half_width * 1.2, true)
+		draw_line(tail, s.position, Color(col, 0.9), s.half_width * 0.4, true)
+		draw_circle(s.position, s.half_width * 0.45, Color(1, 1, 1, 0.9))
 	FloatingText.draw(self, world)
 	for p: Projectile in world.projectiles:
 		draw_circle(p.position, 7.0, Color(1, 0.95, 0.6))

@@ -238,7 +238,9 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 - `ABL-05` Đạn định hướng (skillshot): bay thẳng theo hướng chọn tới tầm tối đa,
   trúng kẻ địch **đầu tiên** chạm phải (theo khoảng cách dọc đường bay; hòa thì id
   nhỏ hơn), không trúng công trình, trừ khi kỹ năng khai báo `pierce`. Đạn định
-  hướng bị chặn bởi vách đá và rừng.
+  hướng bị chặn bởi vách đá và rừng (không bị thân trụ chặn). Trúng khi thân đơn vị chạm
+  dải đạn quét qua trong tick (bề rộng `width`); `pierce` khác 0 thì xuyên, mỗi đơn vị trúng
+  một lần; trúng thì chạy `on_hit` lên đơn vị đó, sự kiện `projectile_hit` (D-67).
 - `ABL-06` Vùng có độ trễ: chọn điểm lúc tung; hiện cho **cả hai đội** thấy; sau
   `delay` mới xét ai đang đứng trong vùng (né được).
 - `ABL-07` Kỹ năng vùng trúng mọi đơn vị theo `target_filter` trong vùng **tại thời

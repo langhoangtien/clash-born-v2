@@ -73,7 +73,7 @@ Chưa có gameplay; dựng khung để mọi thứ sau đứng vững.
 |---|---|
 | M4.1 Action SpawnProjectile (đạn định hướng, pierce, chặn bởi địa hình) (ABL-05) | Test ABL-05 |
 | M4.2 Vùng có độ trễ hiện cho hai đội (ABL-06), SpawnZone | Test ABL-06 |
-| M4.3 Ngắm skill trên cảm ứng: kéo nút để chọn hướng/điểm | Chơi thử trên màn cảm ứng |
+| M4.3 Ngắm skill trên cảm ứng: kéo nút để chọn hướng/điểm (**đã làm ở M3.8**) | Chơi thử trên màn cảm ứng |
 | M4.4 **Myra** đầy đủ: nội tại (sự kiện `attack_target_changed`), Q, W, R + 3 talent | Test; **chơi thử Myra** |
 
 ## M5 — Tầm nhìn, quái rừng, Noctis (L)
@@ -184,3 +184,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M3.8 | Xong | 2026-10-14 | 361 test xanh (+2); kéo nút chiêu để nhắm + vạch nhắm, ô Hủy, nút + / +TT cộng điểm, bảng talent cấp 20, phím PC nhắm theo chuột (D-65) |
 | **Hết M3** | | | |
 | M4.0 | Xong | 2026-10-14 | 364 test xanh (+3); hàng buff/debuff đáy màn hình, KDA + hỗ trợ 15 s (ECO-09), tỷ số hai đội (D-66) |
+| M4.1 | Xong | 2026-10-14 | 370 test xanh (+6); đạn kỹ năng định hướng ABL-05: kẻ đầu tiên / xuyên, bề rộng, tầm, tốc độ, rừng/vách chặn, không trúng trụ/đồng minh (D-67) |

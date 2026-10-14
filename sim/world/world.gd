@@ -48,6 +48,8 @@ var event_seq: int = 0
 var emit_depth: int = 0
 ## Vùng có độ trễ đang chờ (AreaAction), TriggerSystem chạy khi tới tick.
 var pending_areas: Array[PendingArea] = []
+## Đạn kỹ năng đang bay (ABL-05), SkillShotSystem cập nhật.
+var skill_shots: Array[SkillShot] = []
 ## Chỉ để VIEW vẽ: vùng vừa nổ gần đây [tâm, bán kính, tick, đội]. Không thuộc trạng thái trận.
 var recent_areas: Array = []
 ## Chỉ để VIEW: chữ nổi gần đây [loại, vị trí, giá trị, tick] (miss, damage, crit, stun).
@@ -68,6 +70,7 @@ func _init(seed_value: int, p_balance: BalanceSettings) -> void:
 	add_system(RegenSystem.new(), Phase.STATE)
 	add_system(StructureController.new(), Phase.CONTROLLER)
 	add_system(AbilitySystem.new(), Phase.ABILITY)
+	add_system(SkillShotSystem.new(), Phase.ABILITY)
 	add_system(AttackSystem.new(), Phase.ATTACK)
 	add_system(FountainSystem.new(), Phase.ATTACK)
 	add_system(DamageSystem.new(), Phase.DAMAGE)
@@ -203,6 +206,8 @@ func state_hash() -> PackedByteArray:
 	keys.sort()
 	for k: int in keys:
 		ctx.update(PackedInt64Array([k, prd_counters[k]]).to_byte_array())
+	for s: SkillShot in skill_shots:
+		ctx.update(PackedFloat64Array([s.source_id, s.position.x, s.position.y, s.direction.x, s.direction.y, s.travelled, s.hit_ids.size()]).to_byte_array())
 	for p: Projectile in projectiles:
 		ctx.update(PackedFloat64Array([p.source_id, p.target_id, p.position.x, p.position.y, p.request.raw]).to_byte_array())
 	return ctx.finish()

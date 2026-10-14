@@ -10,6 +10,9 @@ static func run(world: World, actions: Array[ActionDef], ctx: ExprContext, sourc
 		if action is AreaAction:
 			_area(world, action, ctx, source_id)
 			continue
+		if action is ProjectileAction:
+			_skill_shot(world, action, ctx, source_id)
+			continue
 		var receiver: Entity = receiver_of(action.target, ctx)
 		if receiver == null or not receiver.alive:
 			continue
@@ -135,3 +138,26 @@ static func _mana_burn(world: World, receiver: Entity, amount: float, source_id:
 	var burned: float = clampf(amount, 0.0, receiver.mana)
 	receiver.mana -= burned
 	world.emit(&"mana_burned", source_id, receiver.id, burned)
+
+
+## ABL-05: đạn bay từ chủ kỹ năng theo hướng lúc tung (không có thì về phía mục tiêu / hướng nhìn).
+static func _skill_shot(world: World, a: ProjectileAction, ctx: ExprContext, source_id: int) -> void:
+	var owner: Entity = ctx.owner
+	var dir: Vector2 = ctx.direction
+	if dir.length() < 0.001 and ctx.target != null and ctx.target != owner:
+		dir = ctx.target.position - owner.position
+	if dir.length() < 0.001:
+		dir = owner.facing
+	var s: SkillShot = SkillShot.new()
+	s.source_id = source_id
+	s.origin = owner.position
+	s.position = owner.position
+	s.direction = dir.normalized()
+	s.speed = ExprEval.evaluate(a.speed, ctx)
+	s.max_range = ExprEval.evaluate(a.travel_range, ctx)
+	s.half_width = ExprEval.evaluate(a.width, ctx) * 0.5
+	s.pierce = ExprEval.evaluate(a.pierce, ctx) != 0.0
+	s.actions = a.on_hit
+	s.ctx = ctx
+	s.team = owner.team
+	world.skill_shots.append(s)
