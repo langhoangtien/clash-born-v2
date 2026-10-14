@@ -43,6 +43,11 @@ var skill_points: int = 0
 var attribute_bonus_count: int = 0
 ## TAL-01: ô kỹ năng đã chọn talent (-1 = chưa).
 var talent_slot: int = -1
+## ECO-09: hạ / chết / hỗ trợ; hero địch đã gây sát thương lên mình → tick gần nhất.
+var kills: int = 0
+var deaths: int = 0
+var assists: int = 0
+var damaged_by: Dictionary[int, int] = {}
 var gold: int = 0
 var last_hits: int = 0
 var killer_id: int = -1

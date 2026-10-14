@@ -471,6 +471,9 @@ Bảng ưu tiên (dòng trên thắng):
   `respawn_base + respawn_per_level × cấp` giây hồi sinh tại fountain phe mình, đầy máu và
   mana, lệnh IDLE (sự kiện `hero_died`, `hero_respawned`).
 - `ECO-05` Chết mất `death_gold_per_level × cấp` vàng.
+- `ECO-09` KDA (M4.0): hero hạ (ECO-08) +1 hạ; nạn nhân +1 chết; mỗi hero phe kia đã gây
+  sát thương lên nạn nhân trong `assist_window` (15 s) trước khi chết, trừ kẻ hạ, +1 hỗ trợ.
+  Tỷ số đội = tổng số lần hero đội kia chết (kể cả bị trụ/lính hạ).
 - `ECO-06` 6 ô trang bị; ghép đồ trừ giá thành phần đang có (như v1).
 
 ## CTL — Người chơi điều khiển

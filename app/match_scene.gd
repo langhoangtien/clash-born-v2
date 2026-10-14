@@ -22,6 +22,7 @@ const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm the
 @onready var skill_buttons: SkillButtons = $Hud/SkillButtons
 @onready var talent_panel: TalentPanel = $Hud/TalentPanel
 @onready var aim_indicator: AimIndicator = $AimIndicator
+@onready var buff_bar: BuffBar = $Hud/BuffBar
 
 var world: World
 var runner: SimRunner
@@ -55,6 +56,8 @@ func _ready() -> void:
 	skills.talents = talent_panel
 	skills.connect_signals()
 	match_hud.world = world
+	buff_bar.world = world
+	buff_bar.hero = hero
 	match_hud.hero = hero
 	hud.text = HELP
 
@@ -73,6 +76,7 @@ func tick_frame(delta: float) -> void:
 	camera.position = units_view.display_position(hero)
 	match_hud.speed = runner.speed
 	skills.refresh()
+	buff_bar.right_limit = skill_buttons.global_position.x + skill_buttons.skill_center(0).x - SkillButtons.SKILL_RADIUS
 	if world.winner >= 0 and result == null:
 		_show_result()
 

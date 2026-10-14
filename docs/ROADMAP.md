@@ -114,7 +114,7 @@ Chưa có gameplay; dựng khung để mọi thứ sau đứng vững.
 | Việc | Xong khi |
 |---|---|
 | M8.1 Command BuyItem/SellItem + ghép đồ (ECO-06); bot mua đồ | Test |
-| M8.2 Shop UI, bảng chỉ số, màn chọn hero | Chơi thử |
+| M8.2 Shop UI, bảng chỉ số (bảng tỷ số chi tiết: KDA, đồ, vàng từng hero), màn chọn hero | Chơi thử |
 | M8.3 UI co giãn theo màn hình, hoàn thiện điều khiển cảm ứng | Chạy trên điện thoại |
 | M8.4 Xuất Android, đo hiệu năng (60 fps, 40+ đơn vị) | File APK chạy trên máy thật |
 
@@ -183,3 +183,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M3.7 | Xong | 2026-10-14 | 359 test xanh (+6); Brakk đối chiếu bảng thiết kế (mọi bậc), kịch bản nội tại (không bash trụ, tỉ lệ đúng bậc), Q (mép 300, không trúng trụ, choáng theo cấp), W (hút, làm mới, hết giờ), R (GHOST, hồi 20%, +20% tốc); chữ nổi sát thương/chí mạng/CHOÁNG/Trượt, Brakk mờ khi GHOST |
 | M3.8 | Xong | 2026-10-14 | 361 test xanh (+2); kéo nút chiêu để nhắm + vạch nhắm, ô Hủy, nút + / +TT cộng điểm, bảng talent cấp 20, phím PC nhắm theo chuột (D-65) |
 | **Hết M3** | | | |
+| M4.0 | Xong | 2026-10-14 | 364 test xanh (+3); hàng buff/debuff đáy màn hình, KDA + hỗ trợ 15 s (ECO-09), tỷ số hai đội (D-66) |

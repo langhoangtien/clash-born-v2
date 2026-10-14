@@ -64,3 +64,40 @@ func test_M38_scene_manual_levels_and_talent_panel() -> void:
 	assert_eq(hero.talent_slot, AbilityDef.Slot.W)
 	assert_false(scene.talent_panel.visible)
 	scene.free()
+
+
+func test_M40_buff_bar_entries_and_layout() -> void:
+	var w: World = World.new(1, BalanceSettings.new())
+	var e: Entity = Entity.new()
+	e.stats = StatBlock.new(w.balance)
+	w.add_entity(e)
+	var passive: EffectDef = EffectDef.new()
+	passive.id = &"innate"
+	passive.duration = "0"
+	passive.tags = [&"passive"]
+	var slow: EffectDef = EffectDef.new()
+	slow.id = &"slow"
+	slow.display_name = "Băng giá"
+	slow.duration = "2"
+	slow.tags = [&"debuff"]
+	var shield: EffectDef = EffectDef.new()
+	shield.id = &"shield"
+	shield.display_name = "Giáp Sắt"
+	shield.duration = "4"
+	shield.tags = [&"buff"]
+	Effects.apply(w, e, passive, e)
+	Effects.apply(w, e, slow, null)
+	Effects.apply(w, e, shield, e)
+	var entries: Array = BuffBar.entries(w, e)
+	assert_eq(entries.size(), 2, "nội tại (passive) không hiện")
+	assert_eq(entries[0][0], shield, "buff trước, debuff sau")
+	assert_true(entries[1][1], "debuff")
+	assert_near(entries[0][2], 1.0, 0.01, "còn đủ thời gian")
+	var bar: BuffBar = BuffBar.new()
+	bar.size = Vector2(1280, 720)
+	bar.right_limit = 900.0
+	var row: Rect2 = bar.row_rect(3)
+	assert_near(row.get_center().x, 640.0, 1.0, "căn giữa màn hình")
+	bar.right_limit = 680.0
+	assert_true(bar.row_rect(12).end.x <= 680.0, "nhiều icon thì dồn sang trái, không đè nút Q")
+	bar.free()

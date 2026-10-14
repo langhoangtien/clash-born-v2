@@ -81,6 +81,8 @@ extends Resource
 @export var hero_kill_gold_per_level: int
 ## ECO-05: chết mất death_gold_per_level × cấp vàng.
 @export var death_gold_per_level: int
+## ECO-09: hero gây sát thương lên hero địch trong chừng này giây trước khi nó chết được tính hỗ trợ.
+@export var assist_window: float
 
 @export_group("Điều khiển (CTL)")
 ## CTL-02: tầm tìm mục tiêu = tầm đánh + chừng này.

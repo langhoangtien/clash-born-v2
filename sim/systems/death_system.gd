@@ -106,4 +106,21 @@ func _hero_kill_rewards(world: World, e: Entity) -> void:
 		h.gold += gold / paid.size()
 	if not paid.is_empty():
 		world.emit(&"kill_credited", paid[0].id, e.id, gold)
+	_count_kda(world, e, killer)
 	e.gold = maxi(0, e.gold - b.death_gold_per_level * level)
+
+
+## ECO-09: kẻ hạ (hero) +1 hạ; nạn nhân +1 chết; hero địch khác đã gây sát thương trong
+## `assist_window` giây +1 hỗ trợ.
+func _count_kda(world: World, victim: Entity, killer: Entity) -> void:
+	victim.deaths += 1
+	if killer != null:
+		killer.kills += 1
+	var since: int = world.tick - SimClock.seconds_to_ticks(world.balance.assist_window)
+	var ids: Array = victim.damaged_by.keys()
+	ids.sort()
+	for id: int in ids:
+		var h: Entity = world.find_entity(id)
+		if h != null and h != killer and victim.damaged_by[id] >= since:
+			h.assists += 1
+	victim.damaged_by.clear()

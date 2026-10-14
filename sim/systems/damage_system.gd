@@ -34,6 +34,8 @@ static func resolve(world: World) -> void:
 			if source != null and source.kind == Entity.Kind.HERO and target.kind == Entity.Kind.HERO and source.team != target.team:
 				world.emit(&"hero_attacked_hero", r.source_id, r.target_id)  # DEF-11
 		amount = Effects.absorb(world, target, amount)  # EFF-06
+		if source != null and source.kind == Entity.Kind.HERO and target.kind == Entity.Kind.HERO and source.team != target.team:
+			target.damaged_by[source.id] = world.tick  # ECO-09
 		target.health -= amount
 		if amount > 0.0 and (target.kind == Entity.Kind.HERO or (source != null and source.kind == Entity.Kind.HERO)):
 			world.note(&"crit" if r.crit else &"damage", target.position, amount)
