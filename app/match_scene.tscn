@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://app/match_scene.gd" id="1_match"]
 [ext_resource type="Script" path="res://view/map/map_view.gd" id="2_map"]
 [ext_resource type="Script" path="res://view/units/units_view.gd" id="3_units"]
 [ext_resource type="Resource" path="res://data/maps/clashborn.tres" id="4_map"]
 [ext_resource type="Script" path="res://view/hud/touch_joystick.gd" id="5_stick"]
+[ext_resource type="Script" path="res://view/hud/attack_buttons.gd" id="6_attack"]
 
 [node name="MatchScene" type="Node2D"]
 script = ExtResource("1_match")
@@ -38,3 +39,16 @@ offset_right = 640.0
 grow_vertical = 0
 mouse_filter = 0
 script = ExtResource("5_stick")
+
+[node name="AttackButtons" type="Control" parent="Hud"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -640.0
+offset_top = -640.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 0
+script = ExtResource("6_attack")

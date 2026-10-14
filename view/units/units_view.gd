@@ -11,6 +11,8 @@ const NEUTRAL: Color = Color(0.85, 0.75, 0.4)
 const BODY_HEIGHT: float = 2.4
 const BAR_WIDTH: float = 2.2
 const BAR_HEIGHT: float = 9.0
+## Một tick dời xa hơn chừng này coi là dịch chuyển tức thời.
+const TELEPORT_DISTANCE: float = 300.0
 
 var world: World
 ## 0..1: phần đã trôi giữa tick trước và tick hiện tại.
@@ -27,8 +29,8 @@ func capture_previous() -> void:
 
 
 func display_position(e: Entity) -> Vector2:
-	if not _previous.has(e.id):
-		return e.position
+	if not _previous.has(e.id) or _previous[e.id].distance_to(e.position) > TELEPORT_DISTANCE:
+		return e.position  # hồi sinh / dịch chuyển: không nội suy kéo vệt
 	return _previous[e.id].lerp(e.position, alpha)
 
 
@@ -42,7 +44,8 @@ func _draw() -> void:
 	var order: Array[Entity] = world.entities.duplicate()
 	order.sort_custom(func(a: Entity, b: Entity) -> bool: return display_position(a).y < display_position(b).y)
 	for e: Entity in order:
-		_draw_unit(e, display_position(e))
+		if e.alive:  # hero chờ hồi sinh không vẽ (ECO-04)
+			_draw_unit(e, display_position(e))
 	for p: Projectile in world.projectiles:
 		draw_circle(p.position, 7.0, Color(1, 0.95, 0.6))
 

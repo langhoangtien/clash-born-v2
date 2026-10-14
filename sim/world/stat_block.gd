@@ -41,6 +41,10 @@ func set_attributes(primary: StatFormulas.Attribute, base: Vector3, growth: Vect
 	dirty = true
 
 
+func level() -> int:
+	return _level
+
+
 func set_level(level: int, bonus_count: int, bonus_per_count: float) -> void:
 	_level = level
 	_bonus_count = bonus_count

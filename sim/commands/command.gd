@@ -3,14 +3,17 @@ extends RefCounted
 ## Yêu cầu từ người chơi, bot hoặc controller (ARCHITECTURE mục 1). Không đổi trận
 ## trực tiếp; CommandSystem kiểm tra rồi mới thành Order (CMD-01..05).
 
-enum Type { MOVE_TO, MOVE_DIR, STOP, ATTACK }
-enum Reject { NONE, UNKNOWN_UNIT, POINT_OUTSIDE_MAP, BAD_DIRECTION, BAD_TARGET }
+enum Type { MOVE_TO, MOVE_DIR, STOP, ATTACK, ATTACK_AUTO }
+enum Reject { NONE, UNKNOWN_UNIT, POINT_OUTSIDE_MAP, BAD_DIRECTION, BAD_TARGET, UNIT_DEAD }
 
 var type: Type
 var entity_id: int
 var point: Vector2 = Vector2.ZERO
 var direction: Vector2 = Vector2.ZERO
 var target_id: int = -1
+## ATTACK: khóa mục tiêu (CTL-04). ATTACK_AUTO: chế độ chọn mục tiêu (Rules.AttackMode).
+var lock: bool = false
+var mode: int = 0
 ## Tick mà lệnh được áp (World điền khi áp; dùng cho nhật ký và phát lại).
 var tick: int = -1
 var reject_reason: Reject = Reject.NONE
@@ -33,12 +36,22 @@ static func move_dir(id: int, dir: Vector2) -> Command:
 	return c
 
 
-## CMB-01: đánh thường một mục tiêu (đi tới khi vào tầm).
-static func attack(id: int, target: int) -> Command:
+## CMB-01: đánh thường một mục tiêu (đi tới khi vào tầm); `lock` = khóa mục tiêu (CTL-04).
+static func attack(id: int, target: int, lock_target: bool = false) -> Command:
 	var c: Command = Command.new()
 	c.type = Type.ATTACK
 	c.entity_id = id
 	c.target_id = target
+	c.lock = lock_target
+	return c
+
+
+## CTL-02/03: nút đánh — chọn mục tiêu lúc áp lệnh; không có ai thì đánh gió (D-46).
+static func attack_auto(id: int, attack_mode: int) -> Command:
+	var c: Command = Command.new()
+	c.type = Type.ATTACK_AUTO
+	c.entity_id = id
+	c.mode = attack_mode
 	return c
 
 
@@ -57,4 +70,6 @@ func copy() -> Command:
 	c.point = point
 	c.direction = direction
 	c.target_id = target_id
+	c.lock = lock
+	c.mode = mode
 	return c

@@ -136,7 +136,7 @@ func test_CMB_03_damage_through_armor_and_taken_multiplier() -> void:
 	assert_near(b.health, 1000.0 - 62.5 * 1.2, EPS, "100 vào giáp 10 = 62.5, ×1.2")
 
 
-func test_DTH_death_removes_unit_finishes_order_and_emits_events_in_order() -> void:
+func test_DTH_hero_death_finishes_order_and_emits_events_in_order() -> void:
 	var w: World = _world()
 	var a: Entity = _fighter(w, 0, _origin(), 600.0)
 	var b: Entity = _fighter(w, 1, _origin() + Vector2(100, 0))
@@ -146,11 +146,12 @@ func test_DTH_death_removes_unit_finishes_order_and_emits_events_in_order() -> v
 		w.step()
 		for ev: GameEvent in w.events:
 			seen.append(ev.type)
-	assert_eq(w.find_entity(b.id), null, "chết thì bị gỡ")
+	assert_eq(w.find_entity(b.id), b, "hero chết nằm chờ hồi sinh (ECO-04), không bị gỡ")
+	assert_false(b.alive)
 	assert_true(a.order.finished, "lệnh đánh xong khi mục tiêu chết")
 	# Hai đơn vị đều là hero (mặc định) khác đội → có thêm hero_attacked_hero (DEF-11).
 	assert_eq(seen, [&"attack_started", &"attack_landed", &"hero_attacked_hero", &"damage_taken",
-		&"attack_started", &"attack_landed", &"hero_attacked_hero", &"damage_taken", &"unit_died"])
+		&"attack_started", &"attack_landed", &"hero_attacked_hero", &"damage_taken", &"unit_died", &"hero_died"])
 
 
 func test_CMD_02_attack_needs_valid_enemy_target() -> void:

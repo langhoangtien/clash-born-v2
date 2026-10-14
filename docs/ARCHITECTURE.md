@@ -241,7 +241,8 @@ có thể dùng lại làm skill/talent cho hero sau. Ví dụ: Cuồng Tốc = 
  6. MovementSystem     di chuyển theo Order, va chạm, tìm đường
  7. AbilitySystem      tiến trình tung chiêu, chạy on_cast; đạn kỹ năng, vùng trễ,
                        vùng cháy, lướt (ABL-05..08)
- 8. AttackSystem       đòn đánh thường, đạn bay, tạo DamageRequest
+ 8. AttackSystem       đòn đánh thường, đánh gió, đạn bay, tạo DamageRequest
+    FountainSystem     fountain hồi máu/mana phe mình, bắn hero địch (STR-04)
  9. DamageSystem       giáp, né, chí mạng → trừ máu (công thức v1), phát sự kiện
 10. TriggerSystem      xử lý trigger theo thứ tự sự kiện (có giới hạn độ sâu)
 11. DeathSystem        chết, thưởng vàng/XP, hồi sinh, phá công trình

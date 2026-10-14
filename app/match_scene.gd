@@ -1,17 +1,20 @@
 extends Node2D
-## Màn trận: World + map + đơn vị, camera theo hero, điều khiển (CTL-01):
-## WASD/mũi tên hoặc joystick ảo → đi theo hướng; PC chuột phải → đi tới / đánh địch;
-## điện thoại chạm vào địch → đánh (D-45). Nút ĐÁNH ở M2.4.
+## Màn trận: World + map + đơn vị, camera theo hero, điều khiển (CTL-01..04):
+## WASD/mũi tên hoặc joystick ảo → đi theo hướng; nút ĐÁNH / Lính / Trụ hoặc J/K/L → đánh
+## (giữ là đánh liên tục); PC chuột phải → đi tới / khóa địch; chạm vào địch → khóa (D-45).
 
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
 const HERO_ID: StringName = &"brakk"
 const SEED: int = 1
+## CTL-02: phím PC giả lập nút ĐÁNH / đánh lính / đánh trụ (theo Rules.AttackMode).
+const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
 
 @onready var map_view: MapView = $MapView
 @onready var units_view: UnitsView = $UnitsView
 @onready var camera: Camera2D = $Camera2D
 @onready var hud: Label = $Hud/Info
 @onready var joystick: TouchJoystick = $Hud/Joystick
+@onready var attack_buttons: AttackButtons = $Hud/AttackButtons
 
 var world: World
 var runner: SimRunner
@@ -37,6 +40,8 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	input.set_direction(_held_direction())
+	for mode: int in range(ATTACK_KEYS.size()):
+		input.set_attack_held(mode, attack_buttons.is_held(mode) or Input.is_physical_key_pressed(ATTACK_KEYS[mode]))
 	tick_frame(delta)
 
 
@@ -45,8 +50,19 @@ func tick_frame(delta: float) -> void:
 	runner.advance(delta)
 	units_view.alpha = runner.alpha()
 	camera.position = units_view.display_position(hero)
-	hud.text = "tick %d · %s · máu %.0f · WASD/joystick: đi · chuột phải: đi tới / đánh địch · Esc: quay lại" % [
-		world.tick, hero.art_id, hero.health]
+	hud.text = "%s · %s · J đánh · K lính · L trụ · WASD đi · chuột phải: đi tới / khóa địch · Esc" % [
+		_clock(), _status()]
+
+
+func _clock() -> String:
+	var seconds: int = int(world.tick * SimClock.TICK_SECONDS)
+	return "%d:%02d" % [seconds / 60, seconds % 60]
+
+
+func _status() -> String:
+	if not hero.alive:
+		return "hồi sinh sau %.0f s" % ceilf(maxi(0, hero.respawn_tick - world.tick) * SimClock.TICK_SECONDS)
+	return "máu %.0f/%.0f" % [hero.health, hero.stats.get_stat(StatId.Id.MAX_HP)]
 
 
 func _before_step() -> void:

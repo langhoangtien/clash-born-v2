@@ -2,7 +2,8 @@ class_name Order
 extends RefCounted
 ## Lệnh hiện tại của một đơn vị, do CommandSystem đặt (CMD-03). MovementSystem đọc nó.
 
-enum Type { IDLE, MOVE, DIRECT, ATTACK }
+## SWING: đánh gió một đòn tại chỗ (D-46).
+enum Type { IDLE, MOVE, DIRECT, ATTACK, SWING }
 
 var type: Type = Type.IDLE
 var point: Vector2 = Vector2.ZERO
@@ -28,6 +29,12 @@ static func attack(target: int) -> Order:
 	var o: Order = Order.new()
 	o.type = Type.ATTACK
 	o.target_id = target
+	return o
+
+
+static func swing() -> Order:
+	var o: Order = Order.new()
+	o.type = Type.SWING
 	return o
 
 

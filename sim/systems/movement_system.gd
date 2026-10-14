@@ -19,8 +19,8 @@ var blocked_steps: int = 0
 
 func run(world: World) -> void:
 	for e: Entity in world.entities:
-		if Rules.is_structure(e):
-			continue  # công trình không bao giờ di chuyển
+		if Rules.is_structure(e) or not e.alive:
+			continue  # công trình không bao giờ di chuyển; hero chờ hồi sinh nằm yên (ECO-04)
 		if e.order.type == Order.Type.MOVE and not e.order.finished:
 			_advance(world, e)
 		elif e.order.type == Order.Type.DIRECT:
@@ -104,6 +104,8 @@ func _path_still_walkable(nav: MapNavigation, e: Entity) -> bool:
 func _separate(world: World) -> void:
 	var max_push: float = world.balance.separation_speed * SimClock.TICK_SECONDS
 	for a: Entity in world.entities:
+		if not a.alive:
+			continue
 		# Lưới dựng một lần ở đầu bước đẩy; vị trí đổi trong lúc đẩy chỉ làm lọc thô kém đi
 		# vài đơn vị, kết quả vẫn xác định vì thứ tự theo id.
 		for b: Entity in world.spatial_near(a.position, a.radius + SEPARATION_SLACK, World.Phase.MOVEMENT):

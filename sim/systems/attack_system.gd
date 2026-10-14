@@ -3,7 +3,8 @@ extends SimSystem
 ## Pha 8: đánh thường (CMB-01, CMB-06). Vung tay `attack_point / tốc đánh`, cuối lúc vung
 ## ra đòn: cận chiến tạo DamageRequest ngay, đánh xa bắn đạn bay theo mục tiêu. Hai đòn
 ## cách nhau `1 / số đòn mỗi giây`. Đổi lệnh hoặc mục tiêu ra khỏi tầm khi đang vung → hủy,
-## không tính hồi đòn. Chỉ hệ thống này ghi trạng thái đánh và danh sách đạn.
+## không tính hồi đòn. Lệnh SWING: đánh gió tại chỗ, không sát thương (D-46). Chỉ hệ thống
+## này ghi trạng thái đánh và danh sách đạn.
 
 
 func run(world: World) -> void:
@@ -15,10 +16,15 @@ func run(world: World) -> void:
 
 func _update_attacker(world: World, e: Entity) -> void:
 	var attacking: bool = e.order.type == Order.Type.ATTACK and not e.order.finished
-	if e.attack_phase == Entity.AttackPhase.WINDUP and (not attacking or e.order.target_id != e.attack_target_id):
+	var swinging: bool = e.order.type == Order.Type.SWING and not e.order.finished
+	var wanted: int = e.order.target_id if attacking else -1
+	if e.attack_phase == Entity.AttackPhase.WINDUP and (not (attacking or swinging) or wanted != e.attack_target_id):
 		e.attack_phase = Entity.AttackPhase.NONE  # CMB-06: hủy
 	if e.attack_phase == Entity.AttackPhase.RECOVERY and world.tick >= e.next_attack_tick:
 		e.attack_phase = Entity.AttackPhase.NONE
+	if e.order.type == Order.Type.SWING and not e.order.finished:
+		_update_swing(world, e)
+		return
 	if not attacking:
 		return
 	var target: Entity = world.find_entity(e.order.target_id)
@@ -36,21 +42,34 @@ func _update_attacker(world: World, e: Entity) -> void:
 		_start_windup(world, e, target)
 
 
+## D-46: chờ hết hồi đòn, vung theo hướng đang nhìn, ra đòn không trúng ai rồi xong lệnh.
+func _update_swing(world: World, e: Entity) -> void:
+	if e.attack_phase == Entity.AttackPhase.NONE and world.tick >= e.next_attack_tick:
+		_start_windup(world, e, null)
+	elif e.attack_phase == Entity.AttackPhase.WINDUP and world.tick >= e.attack_release_tick:
+		_finish_attack(e)
+		e.order.finished = true
+
+
 func _start_windup(world: World, e: Entity, target: Entity) -> void:
 	var speed: float = maxf(0.01, e.stats.get_stat(StatId.Id.ATTACK_SPEED))
 	e.attack_phase = Entity.AttackPhase.WINDUP
-	e.attack_target_id = target.id
+	e.attack_target_id = target.id if target != null else -1
 	e.attack_start_tick = world.tick
 	e.attack_release_tick = world.tick + maxi(1, SimClock.seconds_to_ticks(e.attack_point / speed))
-	if target.position != e.position:
+	if target != null and target.position != e.position:
 		e.facing = (target.position - e.position).normalized()
-	world.emit(&"attack_started", e.id, target.id)
+	world.emit(&"attack_started", e.id, e.attack_target_id)
+
+
+## Hồi đòn chỉ tính khi đòn đã ra (CMB-06): đòn bị hủy không tốn hồi đòn.
+func _finish_attack(e: Entity) -> void:
+	e.attack_phase = Entity.AttackPhase.RECOVERY
+	e.next_attack_tick = e.attack_start_tick + maxi(1, SimClock.seconds_to_ticks(1.0 / e.stats.attacks_per_second()))
 
 
 func _release(world: World, e: Entity, target: Entity) -> void:
-	e.attack_phase = Entity.AttackPhase.RECOVERY
-	# Hồi đòn chỉ tính khi đòn đã ra (CMB-06): đòn bị hủy không tốn hồi đòn.
-	e.next_attack_tick = e.attack_start_tick + maxi(1, SimClock.seconds_to_ticks(1.0 / e.stats.attacks_per_second()))
+	_finish_attack(e)
 	var request: DamageRequest = DamageRequest.attack(e, target.id)
 	if e.projectile_speed <= 0.0:
 		world.damage_requests.append(request)

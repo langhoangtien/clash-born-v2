@@ -19,6 +19,8 @@ func rebuild(entities: Array[Entity], tick: int, phase: int) -> void:
 	_cells.clear()
 	_max_radius = 0.0
 	for e: Entity in entities:
+		if not e.alive:
+			continue  # hero chờ hồi sinh không chiếm chỗ, không bị tìm thấy (ECO-04)
 		var key: Vector2i = _key(e.position)
 		if not _cells.has(key):
 			_cells[key] = []

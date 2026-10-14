@@ -1,5 +1,6 @@
 extends TestCase
 ## M1.5: CTL-01 — hướng joystick/WASD → MOVE_DIR / STOP; chạm map → MOVE_TO.
+## M2.4: CTL-02..04 — nút đánh (J/K/L), giữ để đánh liên tục, khóa mục tiêu.
 
 const Fixture = preload("res://tests/sim/core/balance_fixture.gd")
 
@@ -109,3 +110,88 @@ func test_CTL_04_click_on_enemy_locks_and_attacks() -> void:
 		assert_eq(sent.size(), 1)
 		assert_eq(sent[0].type, Command.Type.ATTACK)
 		assert_eq(sent[0].target_id, enemy.id)
+		assert_true(sent[0].lock, "chạm địch là khóa (CTL-04)")
+
+
+func test_CTL_02_press_attack_sends_attack_auto_once_while_attacking() -> void:
+	var s: Array = _setup()
+	var e: Entity = s[1]
+	var input: MatchInput = s[2]
+	input.set_attack_held(Rules.AttackMode.ALL, true)
+	input.flush()
+	var sent: Array[Command] = _sent(s[0])
+	assert_eq(sent.size(), 1)
+	assert_eq(sent[0].type, Command.Type.ATTACK_AUTO)
+	assert_eq(sent[0].mode, Rules.AttackMode.ALL)
+	e.order = Order.attack(99)
+	input.flush()
+	assert_true(_sent(s[0]).is_empty(), "đang đánh thì giữ nút không gửi lại")
+	e.order.finished = true
+	input.flush()
+	assert_eq(_sent(s[0]).size(), 1, "mục tiêu chết mà vẫn giữ → chọn tiếp")
+	e.order = Order.swing()
+	input.set_attack_held(Rules.AttackMode.ALL, false)
+	e.order.finished = true
+	input.flush()
+	assert_true(_sent(s[0]).is_empty(), "thả nút thì thôi")
+
+
+func test_CTL_02_joystick_cancels_attack_then_holding_resumes() -> void:
+	var s: Array = _setup()
+	var input: MatchInput = s[2]
+	input.set_attack_held(Rules.AttackMode.ALL, true)
+	input.set_direction(Vector2.LEFT)
+	input.flush()
+	assert_eq(_sent(s[0])[0].type, Command.Type.MOVE_DIR, "joystick thắng")
+	input.set_direction(Vector2.ZERO)
+	input.flush()
+	assert_eq(_sent(s[0])[0].type, Command.Type.STOP)
+	input.flush()
+	assert_eq(_sent(s[0])[0].type, Command.Type.ATTACK_AUTO, "thả joystick mà vẫn giữ nút → đánh tiếp")
+
+
+func test_CTL_03_last_pressed_button_wins() -> void:
+	var s: Array = _setup()
+	var e: Entity = s[1]
+	var input: MatchInput = s[2]
+	input.set_attack_held(Rules.AttackMode.ALL, true)
+	input.flush()
+	_sent(s[0])
+	e.order = Order.attack(99)
+	input.set_attack_held(Rules.AttackMode.CREEP, true)
+	input.flush()
+	var sent: Array[Command] = _sent(s[0])
+	assert_eq(sent.size(), 1, "nhấn nút mới thì gửi ngay")
+	assert_eq(sent[0].mode, Rules.AttackMode.CREEP)
+	input.set_attack_held(Rules.AttackMode.CREEP, false)
+	e.order.finished = true
+	input.flush()
+	assert_eq(_sent(s[0])[0].mode, Rules.AttackMode.ALL, "thả nút lính, còn giữ ĐÁNH")
+
+
+func test_ECO_04_dead_hero_sends_nothing() -> void:
+	var s: Array = _setup()
+	var e: Entity = s[1]
+	var input: MatchInput = s[2]
+	e.alive = false
+	input.set_direction(Vector2.LEFT)
+	input.set_attack_held(Rules.AttackMode.ALL, true)
+	input.flush()
+	assert_true(_sent(s[0]).is_empty())
+	e.alive = true
+	input.flush()
+	assert_eq(_sent(s[0])[0].type, Command.Type.MOVE_DIR, "sống lại mà vẫn giữ joystick thì đi tiếp")
+
+
+func test_CTL_02_attack_buttons_hit_test() -> void:
+	var b: AttackButtons = AttackButtons.new()
+	b.size = Vector2(640, 640)
+	assert_eq(b.button_at(b.button_center(Rules.AttackMode.ALL)), Rules.AttackMode.ALL)
+	assert_eq(b.button_at(b.button_center(Rules.AttackMode.CREEP) + Vector2(5, 5)), Rules.AttackMode.CREEP)
+	assert_eq(b.button_at(b.button_center(Rules.AttackMode.STRUCTURE)), Rules.AttackMode.STRUCTURE)
+	assert_eq(b.button_at(Vector2(2, 2)), -1)
+	b.press_at(0, b.button_center(Rules.AttackMode.CREEP))
+	assert_true(b.is_held(Rules.AttackMode.CREEP))
+	b.release(0)
+	assert_false(b.is_held(Rules.AttackMode.CREEP))
+	b.free()

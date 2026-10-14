@@ -30,10 +30,13 @@ var has_origin: bool = false
 var chase_origin: Vector2 = Vector2.ZERO
 var aggro_target_id: int = -1
 var aggro_until_tick: int = 0
+## Hero: mục tiêu đang khóa (CTL-04, CommandSystem ghi), tick hồi sinh (ECO-04, DeathSystem ghi; -1 = không chờ).
+var lock_target_id: int = -1
+var respawn_tick: int = -1
 var stats: StatBlock
 var health: float = 0.0
 var mana: float = 0.0
-## Còn sống; chỉ DamageSystem đặt false (DeathSystem gỡ đơn vị sau đó).
+## Còn sống; chỉ DamageSystem đặt false. DeathSystem gỡ đơn vị sau đó, trừ hero (chờ hồi sinh, ECO-04).
 var alive: bool = true
 ## Nhịp đánh (CMB-06), từ dữ liệu: thời điểm ra đòn (giây, trước tốc đánh); tốc đạn (0 = cận chiến).
 var attack_point: float = 0.0

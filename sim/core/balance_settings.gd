@@ -52,6 +52,22 @@ extends Resource
 @export_group("Hero")
 ## ABL-04: mỗi lần đổi điểm thừa cộng chừng này vào cả 3 thuộc tính.
 @export var attribute_bonus: float
+## ECO-04: hồi sinh sau respawn_base + respawn_per_level × cấp giây.
+@export var respawn_base: float
+@export var respawn_per_level: float
+
+@export_group("Điều khiển (CTL)")
+## CTL-02: tầm tìm mục tiêu = tầm đánh + chừng này.
+@export var attack_search_bonus: float
+## CTL-04: mục tiêu khóa cách mép xa hơn chừng này thì bỏ khóa.
+@export var lock_break_range: float
+
+@export_group("Fountain (STR-04)")
+@export var fountain_radius: float
+## Phần máu/mana tối đa hồi mỗi giây.
+@export var fountain_regen: float
+@export var fountain_damage: float
+@export var fountain_attack_interval: float
 
 @export_group("Di chuyển (MOV)")
 ## MOV-04: tốc độ tối đa một đơn vị bị đẩy ra khi chồng lên đơn vị khác.

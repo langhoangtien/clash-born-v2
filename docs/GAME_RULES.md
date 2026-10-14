@@ -374,8 +374,11 @@ Bảng ưu tiên (dòng trên thắng):
   trình khóa không nhận sát thương và không nhắm được.
 - `STR-03` (Clashborn, mốc sau) Chống backdoor: công trình nhận `backdoor_multiplier`
   sát thương khi không có lính phe tấn công trong `backdoor_radius`.
-- `STR-04` Fountain hồi `fountain_regen` máu/mana mỗi giây cho phe mình trong
-  `fountain_radius`, bắn hero địch trong vùng.
+- `STR-04` Fountain (không phải đơn vị, không nhắm được): mỗi tick hồi
+  `fountain_regen` × máu/mana tối đa mỗi giây cho đơn vị phe mình (trừ công trình) trong
+  `fountain_radius` quanh điểm fountain; cứ `fountain_attack_interval` giây gây
+  `fountain_damage` sát thương thuần lên **mỗi** hero địch còn sống trong vùng (sự kiện
+  `fountain_shot`).
 - `STR-05` Nhà chính bị phá → đội đó thua.
 
 ## JGL — Quái rừng
@@ -409,7 +412,10 @@ Bảng ưu tiên (dòng trên thắng):
 - `ECO-02` Chặn (deny): đánh lính phe mình dưới `deny_hp_fraction` máu; kẻ địch chỉ
   nhận `deny_xp_fraction` XP.
 - `ECO-03` XP chia cho hero trong `xp_share_range` khi đơn vị địch chết.
-- `ECO-04` Hồi sinh sau `respawn_base + respawn_per_level × cấp` giây, tại fountain.
+- `ECO-04` Hero chết không bị gỡ khỏi trận: nằm chờ (không nhắm được, không đi, không
+  chiếm chỗ, mọi lệnh bị từ chối `UNIT_DEAD`), hết khóa mục tiêu. Sau
+  `respawn_base + respawn_per_level × cấp` giây hồi sinh tại fountain phe mình, đầy máu và
+  mana, lệnh IDLE (sự kiện `hero_died`, `hero_respawned`).
 - `ECO-05` Chết mất `death_gold_per_level × cấp` vàng.
 - `ECO-06` 6 ô trang bị; ghép đồ trừ giá thành phần đang có (như v1).
 
@@ -424,12 +430,16 @@ chơi và bot (`Rules.pick_attack_target`), nút trên màn hình chỉ gọi h�
 - `CTL-02` Nút ĐÁNH: giữ là đánh liên tục. Mỗi lần cần mục tiêu mới, chọn trong tầm tìm
   `attack_range + attack_search_bonus` theo thứ tự: (1) mục tiêu đang khóa nếu còn nhắm
   được; (2) hero địch — **máu thấp nhất** (cài đặt đổi được: gần nhất, % máu thấp nhất);
-  (3) lính/quái gần nhất; (4) công trình đã mở khóa gần nhất. Không có ai → **đánh gió**
+  (3) lính/quái gần nhất; (4) công trình đã mở khóa gần nhất. Hòa thì gần hơn, rồi id
+  nhỏ hơn. Không có ai → **đánh gió**
   (D-46): vung đòn tại chỗ theo hướng đang nhìn, không gây sát thương, vẫn tốn một nhịp
   đánh; joystick hủy như đòn thường. Mục tiêu ngoài tầm đánh nhưng trong tầm tìm → tự
   tiến lại đánh. PC: phím **J** = ĐÁNH, **K** = đánh lính, **L** = đánh trụ (giả lập 3 nút).
 - `CTL-03` Hai nút nhỏ cạnh nút đánh: **đánh lính** (lính/quái máu thấp nhất trong tầm tìm,
-  để kết liễu lấy tiền) và **đánh trụ** (công trình mở khóa gần nhất).
+  để kết liễu lấy tiền) và **đánh trụ** (công trình mở khóa gần nhất). Hai nút này bỏ qua
+  mục tiêu khóa; không có ai thì cũng đánh gió.
+- Giữ nút: khi hero không còn đòn/lệnh đánh dang dở (mục tiêu chết, đánh gió xong) thì
+  gửi lại lệnh của nút đó; mục tiêu đang đánh còn hợp lệ thì giữ, không đổi giữa chừng.
 - `CTL-04` Chạm vào đơn vị địch (điện thoại) / chuột phải vào địch (PC): khóa mục tiêu và
   đánh; khóa giữ đến khi nó chết, mất nhắm được, hoặc ra khỏi `lock_break_range`.
 - `CTL-05` Người chơi không bao giờ tự về nhà.
@@ -460,12 +470,17 @@ Người chơi, bot và controller (lính, trụ, quái) đều điều khiển 
 - `CMD-02` Lệnh không hợp lệ bị bỏ, kèm lý do đọc được: `UNKNOWN_UNIT` (đơn vị không tồn
   tại), `POINT_OUTSIDE_MAP` (điểm ngoài map hoặc không phải số hữu hạn), `BAD_DIRECTION`
   (hướng dài 0 hoặc không hữu hạn), `BAD_TARGET` (mục tiêu không nhắm được: không tồn
-  tại, đã chết, cùng đội). Thêm lý do khi thêm loại lệnh.
+  tại, đã chết, cùng đội), `UNIT_DEAD` (đơn vị ra lệnh đang chờ hồi sinh). Thêm lý do khi
+  thêm loại lệnh.
 - `CMD-03` Lệnh hợp lệ thay lệnh hiện tại (Order) của đơn vị. `STOP` → đứng yên.
 - `CMD-04` Mọi lệnh đã áp được ghi vào nhật ký kèm tick; phát lại nhật ký trên World cùng
   seed cho ra đúng trận đó (D-30).
 - `CMD-05` Loại lệnh hiện có: `MOVE_TO(điểm)`, `MOVE_DIR(hướng)`, `STOP`, `ATTACK(mục tiêu)`
-  (ngoài tầm thì đi tới, vào tầm thì đứng đánh; mục tiêu chết/không nhắm được → lệnh xong). Đánh, dùng chiêu, mua đồ thêm ở
+  (ngoài tầm thì đi tới, vào tầm thì đứng đánh; mục tiêu chết/không nhắm được → lệnh xong;
+  cờ `lock` = khóa mục tiêu CTL-04), `ATTACK_AUTO(chế độ ALL / CREEP / STRUCTURE)` — chọn
+  mục tiêu bằng `Rules.pick_attack_target` **lúc áp lệnh** (CTL-02/03); không có ai →
+  lệnh SWING (đánh gió, D-46: vung một đòn tại chỗ, không sát thương, tốn nhịp đánh như
+  đòn thường, xong thì lệnh xong). Đánh, dùng chiêu, mua đồ thêm ở
   mốc của chúng.
 
 ## BOT — Bot hero
@@ -537,7 +552,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | wave_melee / wave_ranged | 3 / 1 | | tower_aggro_time | 4 s |
 | siege_every_waves | 5 | | tower_danger_margin | 100 |
 | creep_acquire_range | 500 | | backdoor_multiplier / radius | 0.5 / 900 |
-| creep_chase_leash | 800 | | fountain_radius | 250 |
+| creep_chase_leash | 800 | | fountain_radius | 600 |
 | creep_hero_aggro_range | 500 | | fountain_true_sight | 900 |
 | creep_hero_aggro_time | 2.5 s | | jungle_first_spawn | 30 s |
 | hero_structure_damage | 0.5 | | jungle_respawn_check | 60 s |
@@ -555,6 +570,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | hex_move_speed | 140 | | bash_cooldown | 1.5 s |
 | reincarnate_delay | 3 s | | match_target_minutes | 15–20 (D-29) |
 | first_wave_time | 15 s | | creep_front_margin | 200 |
+| fountain_regen | 0.05 / s | | fountain_damage / attack_interval | 300 / 1 s |
 | evasion_cap | 1.0 (không giới hạn) | | tower_body_radius | 52 |
 | minimum_movement_speed | 0 (bị chậm hết thì đứng yên) | | separation_speed | 400 / s |
 
