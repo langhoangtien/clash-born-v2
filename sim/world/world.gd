@@ -40,6 +40,8 @@ var projectiles: Array[Projectile] = []
 
 ## Lưới tìm đường dựng sẵn, dùng chung giữa các World cùng map (dựng mất ~1 s).
 static var _nav_cache: Dictionary[String, MapNavigation] = {}
+## Số lần đã dựng lưới tìm đường (để test việc dựng sẵn lúc vào trận).
+static var nav_builds: int = 0
 
 var _next_id: int = 1
 var _next_serial: int = 0
@@ -103,6 +105,7 @@ func navigation(radius: float) -> MapNavigation:
 	var key: String = "%d:%s:%s" % [map.get_instance_id(), radius, balance.tower_body_radius]
 	if not _nav_cache.has(key):
 		_nav_cache[key] = MapNavigation.new(map, radius, balance.tower_body_radius)
+		nav_builds += 1
 	return _nav_cache[key]
 
 

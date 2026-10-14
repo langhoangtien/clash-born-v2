@@ -42,6 +42,8 @@ func _ready() -> void:
 	MatchSetup.spawn_structures(world, library)
 	MatchSetup.add_lane_creeps(world, library, true)
 	hero_def = library.heroes[hero_id]
+	for def: GameDef in library.units.values() + library.heroes.values():
+		ArtLibrary.texture(def.art_id)  # nạp sẵn hình lúc vào trận, không để lần xuất hiện đầu bị giật
 	hero = UnitFactory.hero(world, hero_def, 0, world.map.fountain_point(0))
 	units_view.world = world
 	input.world = world

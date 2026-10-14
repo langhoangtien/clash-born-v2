@@ -22,6 +22,10 @@ static func add_lane_creeps(world: World, library: ContentLibrary, waves: bool) 
 	world.add_system(LaneCreepController.new(), World.Phase.CONTROLLER)
 	if waves:
 		world.add_system(WaveSpawner.new(library), World.Phase.SPAWN)
+		# Dựng sẵn lưới tìm đường của lính lúc vào trận (~0.3 s), không để đợt lính đầu bị giật.
+		for def: UnitDef in library.units.values():
+			if def.kind in [UnitDef.Kind.CREEP_MELEE, UnitDef.Kind.CREEP_RANGED, UnitDef.Kind.CREEP_SIEGE]:
+				world.navigation(def.stats.collision_radius)
 
 
 static func spawn_creep(world: World, library: ContentLibrary, def_id: StringName, team: int, lane: String, at: Vector2) -> Entity:
