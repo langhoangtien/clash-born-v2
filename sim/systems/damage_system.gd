@@ -19,8 +19,7 @@ static func resolve(world: World) -> void:
 		var source: Entity = world.find_entity(r.source_id)
 		if r.is_attack and _misses(world, source, target):
 			world.emit(&"attack_missed", r.source_id, r.target_id)
-			world.recent_misses = world.recent_misses.filter(func(m: Array) -> bool: return world.tick - m[1] < 30)
-			world.recent_misses.append([target.position, world.tick])
+			world.note(&"miss", target.position)
 			continue
 		var s: StatBlock = target.stats
 		var amount: float = DamageFormulas.final_damage(r.raw * _structure_factor(world, source, target), r.damage_type,
@@ -36,6 +35,8 @@ static func resolve(world: World) -> void:
 				world.emit(&"hero_attacked_hero", r.source_id, r.target_id)  # DEF-11
 		amount = Effects.absorb(world, target, amount)  # EFF-06
 		target.health -= amount
+		if amount > 0.0 and (target.kind == Entity.Kind.HERO or (source != null and source.kind == Entity.Kind.HERO)):
+			world.note(&"crit" if r.crit else &"damage", target.position, amount)
 		world.emit(&"damage_taken", r.source_id, r.target_id, amount, &"reflected" if r.reflected else &"")
 		if target.health <= 0.0:
 			target.health = 0.0

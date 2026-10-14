@@ -52,13 +52,7 @@ func _draw() -> void:
 			var col: Color = (BLUE if r[3] == 0 else RED).lightened(0.4)
 			draw_circle(r[0], r[1], Color(col, 0.35 * (1.0 - age)))
 			draw_arc(r[0], r[1], 0, TAU, 48, Color(col, 0.9 * (1.0 - age)), 4.0, true)
-	var font: Font = ThemeDB.fallback_font
-	for m: Array in world.recent_misses:
-		var age: float = (world.tick - m[1]) / 20.0
-		if age < 1.0:
-			var at: Vector2 = m[0] - Vector2(28, 90 + 30 * age)
-			draw_string_outline(font, at, "Trượt", HORIZONTAL_ALIGNMENT_LEFT, -1, 24, 5, Color(0, 0, 0, 0.8 * (1.0 - age)))
-			draw_string(font, at, "Trượt", HORIZONTAL_ALIGNMENT_LEFT, -1, 24, Color(1, 1, 1, 1.0 - age))
+	FloatingText.draw(self, world)
 	for p: Projectile in world.projectiles:
 		draw_circle(p.position, 7.0, Color(1, 0.95, 0.6))
 
@@ -75,10 +69,11 @@ func _draw_unit(e: Entity, at: Vector2) -> void:
 	var height: float = e.radius * BODY_HEIGHT * (3.0 if tex != null else 1.0)
 	if tex != null:
 		var size: Vector2 = Vector2(height, height)
-		draw_texture_rect(tex, Rect2(at - Vector2(size.x * 0.5, size.y * 0.85), size), false) if e.facing.x >= 0.0 \
-			else draw_texture_rect(tex, Rect2(at + Vector2(size.x * 0.5, -size.y * 0.85), Vector2(-size.x, size.y)), false)
+		var tint: Color = Color(1, 1, 1, 0.45) if Rules.has_state(e, UnitState.Id.GHOST) else Color.WHITE
+		draw_texture_rect(tex, Rect2(at - Vector2(size.x * 0.5, size.y * 0.85), size), false, tint) if e.facing.x >= 0.0 \
+			else draw_texture_rect(tex, Rect2(at + Vector2(size.x * 0.5, -size.y * 0.85), Vector2(-size.x, size.y)), false, tint)
 	else:
-		_draw_placeholder(e, at, color, height)
+		_draw_placeholder(e, at, Color(color, 0.45) if Rules.has_state(e, UnitState.Id.GHOST) else color, height)
 	StateMarks.draw(self, e, at, height, world.tick)
 	_draw_health(e, at - Vector2(0, height + 14), color)
 

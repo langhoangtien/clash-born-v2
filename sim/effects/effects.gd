@@ -31,6 +31,8 @@ static func apply(world: World, owner: Entity, def: EffectDef, source: Entity, v
 	inst.applied_seq = world.event_seq  # EFF-05: chỉ sự kiện sau mốc này làm mất
 	_start(world, owner, inst, duration)
 	refresh_states(owner)
+	if def.states.has(UnitState.Id.STUNNED):
+		world.note(&"stun", owner.position)
 	world.emit(&"effect_applied", source_id, owner.id, inst.stacks)
 	return inst
 

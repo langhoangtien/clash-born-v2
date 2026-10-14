@@ -50,8 +50,9 @@ var emit_depth: int = 0
 var pending_areas: Array[PendingArea] = []
 ## Chỉ để VIEW vẽ: vùng vừa nổ gần đây [tâm, bán kính, tick, đội]. Không thuộc trạng thái trận.
 var recent_areas: Array = []
-## Chỉ để VIEW: đòn trượt gần đây [vị trí, tick] (CMB-11).
-var recent_misses: Array = []
+## Chỉ để VIEW: chữ nổi gần đây [loại, vị trí, giá trị, tick] (miss, damage, crit, stun).
+## Không thuộc trạng thái trận.
+var recent_notes: Array = []
 ## RNG-01: bộ đếm PRD theo khóa (Prd.key).
 var prd_counters: Dictionary[int, int] = {}
 var _pending: Array[Command] = []
@@ -152,6 +153,13 @@ func emit(type: StringName, source_id: int, target_id: int, amount: float = 0.0,
 	ev.depth = emit_depth
 	events.append(ev)
 	return ev
+
+
+## Ghi chữ nổi cho VIEW (không ảnh hưởng trận).
+func note(kind: StringName, at: Vector2, value: float = 0.0) -> void:
+	if recent_notes.size() > 60:
+		recent_notes = recent_notes.filter(func(n: Array) -> bool: return tick - n[3] < 30)
+	recent_notes.append([kind, at, value, tick])
 
 
 ## Số thứ tự toàn trận cho bản hiệu ứng (EffectInstance.serial), tăng dần.

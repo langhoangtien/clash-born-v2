@@ -87,7 +87,7 @@ Cận chiến (tầm 150), thuộc tính chính Sức mạnh. Máu cao, lao vào
 | Choáng (giây) | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1.0 |
 
 Đòn đánh trúng hero/lính/quái (không phải công trình) có xác suất choáng và gây
-thêm sát thương. Thời gian chờ chung `bash_cooldown` (CMB-08).
+thêm sát thương. Không có thời gian chờ (bash của Brakk; mỗi nguồn bash tự khai báo, D-63).
 
 ### Q — Đấm Chấn Địa (không chọn mục tiêu, vùng quanh mình)
 
