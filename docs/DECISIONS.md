@@ -67,6 +67,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-65 | 2026-10-14 | M3.8: điều khiển chiêu kiểu Liên Quân (chạm = tung nhanh, kéo = nhắm, ô Hủy), vạch nhắm trên map, nút "+" cộng điểm và bảng chọn talent; bỏ tự cộng điểm / tự chọn talent cho người chơi (vẫn dùng cho bot). PC: 1/2/3 nhắm theo chuột, Ctrl+1..4 cộng điểm (CTL-06) | Đã duyệt; người chơi tự quyết như Liên Quân |
 | D-66 | 2026-10-14 | M4.0 (chèn trước Myra): hàng buff/debuff của hero người chơi ở đáy màn hình, căn giữa, không vượt sang trái nút Q (kiểu Liên Quân); buff trước, debuff sau, không hiện nội tại; tạm chữ viết tắt tới khi có icon (ArtLibrary theo art_id). KDA với hỗ trợ trong 15 s (ECO-09), tỷ số hai đội cạnh đồng hồ. Mini map ở M5.1 (cùng tầm nhìn), bảng tỷ số chi tiết ở M8.2 | Theo yêu cầu; dữ liệu đã có sẵn |
 | D-67 | 2026-10-14 | M4.1: đạn kỹ năng định hướng bay từ chủ kỹ năng, bị rừng/vách chặn (thân trụ không chặn), trúng theo thứ tự dọc đường bay, không xuyên thì dừng ở kẻ đầu tiên; lọc đối tượng theo kỹ năng (mặc định không trúng công trình, đồng minh). M4.3 (kéo nhắm) đã làm ở M3.8 | Đã duyệt; núp sau rừng né được chiêu bắn thẳng |
+| D-68 | 2026-10-14 | M4.2: vùng có độ trễ hiện cho cả hai đội từ lúc tung (vòng báo trước, lõi lớn dần), tâm/bán kính chốt lúc tung, `delay` là giá trị có tên. Vùng tồn tại (ZoneAction): bắt đầu sau `delay`, mỗi `interval` tác dụng lên ai đang đứng trong, lần đầu ngay lúc bắt đầu; không trúng công trình/đồng minh; vùng chờ nổ và vùng tồn tại thuộc trạng thái trận (băm) | Đã duyệt |
 
 ## Chờ chốt
 

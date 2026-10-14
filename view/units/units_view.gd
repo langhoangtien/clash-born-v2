@@ -41,6 +41,7 @@ func _process(_delta: float) -> void:
 func _draw() -> void:
 	if world == null:
 		return
+	_draw_zones()
 	var order: Array[Entity] = world.entities.duplicate()
 	order.sort_custom(func(a: Entity, b: Entity) -> bool: return display_position(a).y < display_position(b).y)
 	for e: Entity in order:
@@ -61,6 +62,28 @@ func _draw() -> void:
 	FloatingText.draw(self, world)
 	for p: Projectile in world.projectiles:
 		draw_circle(p.position, 7.0, Color(1, 0.95, 0.6))
+
+
+## ABL-06/16: vòng báo trước của vùng có độ trễ (lõi lớn dần tới lúc nổ) và vùng tồn tại
+## (nhấp nháy), vẽ dưới đơn vị; cả hai đội đều thấy.
+func _draw_zones() -> void:
+	for p: PendingArea in world.pending_areas:
+		if p.radius <= 0.0:
+			continue
+		var col: Color = (BLUE if p.team == 0 else RED).lightened(0.35)
+		var t: float = clampf(float(world.tick - p.start_tick) / maxf(1.0, p.due_tick - p.start_tick), 0.0, 1.0)
+		draw_circle(p.center, p.radius, Color(col, 0.12))
+		draw_circle(p.center, p.radius * t, Color(col, 0.28))
+		draw_arc(p.center, p.radius, 0, TAU, 64, Color(col, 0.9), 4.0, true)
+	for z: ActiveZone in world.zones:
+		var col: Color = Color(1.0, 0.45, 0.1).lerp(BLUE if z.team == 0 else RED, 0.2)
+		if world.tick < z.start_tick:
+			draw_arc(z.center, z.radius, 0, TAU, 64, Color(col, 0.5), 2.0, true)
+			continue
+		var phase: float = float(world.tick - z.start_tick) / z.interval_ticks
+		var pulse: float = 1.0 - (phase - floorf(phase))
+		draw_circle(z.center, z.radius, Color(col, 0.22 + 0.2 * pulse))
+		draw_arc(z.center, z.radius, 0, TAU, 64, Color(col, 0.85), 3.0, true)
 
 
 func _draw_unit(e: Entity, at: Vector2) -> void:

@@ -209,7 +209,7 @@ Bốn hero và các món đồ đầu tiên cần đúng các action sau (CONTEN
 | `AreaAt(center, radius, delay, actions)` | Brakk Q, Myra W, Myra R |
 | `SpawnProjectile(direction, range, width, speed, pierce, on_hit)` | Myra Q |
 | `Dash(to_target, speed, on_arrive)` | Noctis Q |
-| `SpawnZone(center, radius, duration, periodic actions)` | Myra R II |
+| `ZoneAction(delay, radius, duration, interval, actions)` — world.zones, TriggerSystem cho tác dụng (ABL-17) | Myra R II |
 | `ModifyCooldown(slot, amount)` | Noctis Q II |
 | `Push(target, direction, distance, duration)` | Vexa W |
 | `Dispel(target, level)` / `Purge(target, level, on_each)` | Vexa R, Giáp Bất Khuất, Bùa Thanh Tẩy |

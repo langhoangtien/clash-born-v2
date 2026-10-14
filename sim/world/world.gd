@@ -48,6 +48,8 @@ var event_seq: int = 0
 var emit_depth: int = 0
 ## Vùng có độ trễ đang chờ (AreaAction), TriggerSystem chạy khi tới tick.
 var pending_areas: Array[PendingArea] = []
+## Vùng tồn tại (ZoneAction, ABL-17), kể cả vùng chưa bắt đầu; TriggerSystem cho tác dụng.
+var zones: Array[ActiveZone] = []
 ## Đạn kỹ năng đang bay (ABL-05), SkillShotSystem cập nhật.
 var skill_shots: Array[SkillShot] = []
 ## Chỉ để VIEW vẽ: vùng vừa nổ gần đây [tâm, bán kính, tick, đội]. Không thuộc trạng thái trận.
@@ -206,6 +208,10 @@ func state_hash() -> PackedByteArray:
 	keys.sort()
 	for k: int in keys:
 		ctx.update(PackedInt64Array([k, prd_counters[k]]).to_byte_array())
+	for a: PendingArea in pending_areas:
+		ctx.update(PackedFloat64Array([a.source_id, a.due_tick, a.center.x, a.center.y]).to_byte_array())
+	for z: ActiveZone in zones:
+		ctx.update(PackedFloat64Array([z.source_id, z.next_tick, z.end_tick, z.interval_ticks, z.center.x, z.center.y, z.radius]).to_byte_array())
 	for s: SkillShot in skill_shots:
 		ctx.update(PackedFloat64Array([s.source_id, s.position.x, s.position.y, s.direction.x, s.direction.y, s.travelled, s.hit_ids.size()]).to_byte_array())
 	for p: Projectile in projectiles:

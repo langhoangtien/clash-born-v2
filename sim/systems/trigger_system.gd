@@ -1,6 +1,6 @@
 class_name TriggerSystem
 extends SimSystem
-## Pha 10: vùng có độ trễ tới hạn, rồi xử lý sự kiện theo thứ tự (cả sự kiện do trigger sinh
+## Pha 10: vùng có độ trễ tới hạn và vùng tồn tại tới lượt (ABL-06/16), rồi xử lý sự kiện theo thứ tự (cả sự kiện do trigger sinh
 ## ra trong lúc xử lý). Mỗi sự kiện: trigger vai SOURCE trên kẻ gây, vai TARGET trên đối
 ## tượng (EFF-08); sát thương của trigger tính ngay; rồi gỡ hiệu ứng `removed_by` (EFF-05).
 ## Sự kiện tầng ≥ MAX_DEPTH không kích hoạt trigger nữa (EFF-04). Sự kiện phát sau pha này
@@ -33,7 +33,22 @@ func _fire_due_areas(world: World) -> void:
 	world.pending_areas = waiting
 	for p: PendingArea in due:
 		ActionRunner.fire_area(world, p)
+	_pulse_zones(world)
 	DamageSystem.resolve(world)
+
+
+## ABL-17: vùng tồn tại tới lượt thì tác dụng; lần cuối xong thì bỏ.
+func _pulse_zones(world: World) -> void:
+	if world.zones.is_empty():
+		return
+	var alive: Array[ActiveZone] = []
+	for z: ActiveZone in world.zones:
+		if world.tick >= z.next_tick:
+			ActionRunner.pulse_zone(world, z)
+			z.next_tick += z.interval_ticks
+		if z.next_tick < z.end_tick:
+			alive.append(z)
+	world.zones = alive
 
 
 func _handle(world: World, ev: GameEvent) -> void:
@@ -147,4 +162,6 @@ static func _reflects(t: TriggerDef) -> bool:
 			return true
 		if a is AreaAction:
 			stack.append_array((a as AreaAction).actions)
+		elif a is ZoneAction:
+			stack.append_array((a as ZoneAction).actions)
 	return false

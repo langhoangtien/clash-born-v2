@@ -185,3 +185,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | **Hết M3** | | | |
 | M4.0 | Xong | 2026-10-14 | 364 test xanh (+3); hàng buff/debuff đáy màn hình, KDA + hỗ trợ 15 s (ECO-09), tỷ số hai đội (D-66) |
 | M4.1 | Xong | 2026-10-14 | 370 test xanh (+6); đạn kỹ năng định hướng ABL-05: kẻ đầu tiên / xuyên, bề rộng, tầm, tốc độ, rừng/vách chặn, không trúng trụ/đồng minh (D-67) |
+| M4.2 | Xong | 2026-10-14 | 376 test xanh (+6); vùng có độ trễ hiện cho hai đội, né được, talent đổi độ trễ (ABL-06); vùng tồn tại ZoneAction tác dụng định kỳ (ABL-17, D-68) |

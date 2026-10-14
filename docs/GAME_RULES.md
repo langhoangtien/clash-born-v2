@@ -241,8 +241,10 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   hướng bị chặn bởi vách đá và rừng (không bị thân trụ chặn). Trúng khi thân đơn vị chạm
   dải đạn quét qua trong tick (bề rộng `width`); `pierce` khác 0 thì xuyên, mỗi đơn vị trúng
   một lần; trúng thì chạy `on_hit` lên đơn vị đó, sự kiện `projectile_hit` (D-67).
-- `ABL-06` Vùng có độ trễ: chọn điểm lúc tung; hiện cho **cả hai đội** thấy; sau
-  `delay` mới xét ai đang đứng trong vùng (né được).
+- `ABL-06` Vùng có độ trễ: chọn điểm lúc tung; hiện cho **cả hai đội** thấy ngay từ lúc
+  tung (vòng báo trước, lõi lớn dần tới lúc nổ); sau `delay` mới xét ai đang đứng trong
+  vùng (né được; bước vào đúng lúc nổ thì trúng). Tâm và bán kính chốt lúc tung. `delay`
+  là giá trị có tên nên talent đổi được (D-68).
 - `ABL-07` Kỹ năng vùng trúng mọi đơn vị theo `target_filter` trong vùng **tại thời
   điểm tác dụng**, kể cả INVISIBLE và UNTARGETABLE; không trúng công trình trừ khi
   khai báo `hits_structures`.
@@ -266,6 +268,11 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   sẵn cấp 1; bị động lên cấp thì gỡ hiệu ứng cũ, áp lại với giá trị cấp mới.
 - `ABL-16` Hồi máu / mana: mỗi tick cộng `hp_regen` / `mana_regen` (mỗi giây) × thời gian
   tick, không quá tối đa; đơn vị chết không hồi.
+- `ABL-17` Vùng tồn tại (ZoneAction, D-68): tâm, bán kính chốt lúc tung; bắt đầu sau
+  `delay`, tồn tại `duration`; từ lúc bắt đầu cứ mỗi `interval` chạy `actions` lên mọi
+  đơn vị hợp lệ có thân chạm vùng lúc đó (lọc như ABL-07). Lần đầu ngay lúc bắt đầu, lần
+  cuối trước khi hết: đứng trong vùng 4 s, mỗi 1 s một lần → đúng 4 lần. Hai đội đều
+  thấy, kể cả trước lúc bắt đầu. Chủ vùng chết thì vùng vẫn còn.
 - `ABL-14` Cờ bật/tắt của hành động (vd đạn `pierce`) là giá trị có tên (0 = tắt,
   khác 0 = bật) để talent đổi được (TAL-02a).
 

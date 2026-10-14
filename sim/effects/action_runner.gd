@@ -13,6 +13,9 @@ static func run(world: World, actions: Array[ActionDef], ctx: ExprContext, sourc
 		if action is ProjectileAction:
 			_skill_shot(world, action, ctx, source_id)
 			continue
+		if action is ZoneAction:
+			_zone(world, action, ctx, source_id)
+			continue
 		var receiver: Entity = receiver_of(action.target, ctx)
 		if receiver == null or not receiver.alive:
 			continue
@@ -86,13 +89,47 @@ static func _area(world: World, a: AreaAction, ctx: ExprContext, source_id: int)
 	p.action = a
 	p.ctx = ctx
 	p.source_id = source_id
-	p.center = ctx.point if ctx.point.is_finite() else (anchor.position if anchor != null else Vector2.ZERO)
+	p.center = _center_of(ctx, anchor)
+	p.radius = ExprEval.evaluate(a.radius, ctx)
+	p.team = ctx.owner.team
+	p.start_tick = world.tick
 	var delay: float = ExprEval.evaluate(a.delay, ctx)
 	p.due_tick = world.tick + SimClock.seconds_to_ticks(delay)
 	if delay <= 0.0:
 		fire_area(world, p)
 	else:
 		world.pending_areas.append(p)
+
+
+static func _center_of(ctx: ExprContext, anchor: Entity) -> Vector2:
+	return ctx.point if ctx.point.is_finite() else (anchor.position if anchor != null else Vector2.ZERO)
+
+
+## ABL-17: vùng tồn tại; chốt tâm, bán kính, thời điểm lúc tung, ZoneSystem cho tác dụng định kỳ.
+static func _zone(world: World, a: ZoneAction, ctx: ExprContext, source_id: int) -> void:
+	var z: ActiveZone = ActiveZone.new()
+	z.action = a
+	z.ctx = ctx
+	z.source_id = source_id
+	z.center = _center_of(ctx, receiver_of(a.target, ctx))
+	z.radius = ExprEval.evaluate(a.radius, ctx)
+	z.team = ctx.owner.team
+	z.start_tick = world.tick + SimClock.seconds_to_ticks(maxf(0.0, ExprEval.evaluate(a.delay, ctx)))
+	z.end_tick = z.start_tick + SimClock.seconds_to_ticks(ExprEval.evaluate(a.duration, ctx))
+	z.interval_ticks = maxi(1, SimClock.seconds_to_ticks(ExprEval.evaluate(a.interval, ctx)))
+	z.next_tick = z.start_tick
+	if z.end_tick > z.start_tick:
+		world.zones.append(z)
+
+
+## Một lần tác dụng của vùng tồn tại: đơn vị hợp lệ có thân chạm vùng, theo id.
+static func pulse_zone(world: World, z: ActiveZone) -> void:
+	var owner: Entity = z.ctx.owner
+	for e: Entity in world.spatial_near(z.center, z.radius, World.Phase.TRIGGER):
+		if _area_accepts(z.ctx, owner, e) and e.position.distance_to(z.center) - e.radius <= z.radius:
+			var each: ExprContext = z.ctx.with_target(e)
+			each.point = z.center
+			run(world, z.action.actions, each, z.source_id)
 
 
 ## Chạy vùng: mọi đơn vị địch (không phải công trình) trong vùng, theo id, thành `target`.
