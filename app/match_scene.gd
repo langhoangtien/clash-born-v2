@@ -4,7 +4,8 @@ extends Node2D
 ## (giữ là đánh liên tục); PC chuột phải → đi tới / khóa địch; chạm vào địch → khóa (D-45).
 
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
-const HERO_ID: StringName = &"brakk"
+## Tướng của người chơi; màn khởi động đặt trước khi vào trận (tạm, tới khi có màn chọn tướng M8).
+static var hero_id: StringName = &"brakk"
 const SEED: int = 1
 ## CTL-02: phím PC giả lập nút ĐÁNH / đánh lính / đánh trụ (theo Rules.AttackMode).
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
@@ -40,7 +41,7 @@ func _ready() -> void:
 	var library: ContentLibrary = ContentLibrary.load_dir()
 	MatchSetup.spawn_structures(world, library)
 	MatchSetup.add_lane_creeps(world, library, true)
-	hero_def = library.heroes[HERO_ID]
+	hero_def = library.heroes[hero_id]
 	hero = UnitFactory.hero(world, hero_def, 0, world.map.fountain_point(0))
 	units_view.world = world
 	input.world = world

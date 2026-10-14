@@ -64,6 +64,10 @@ func _start_windup(world: World, e: Entity, target: Entity) -> void:
 	if target != null and target.position != e.position:
 		e.facing = (target.position - e.position).normalized()
 	e.attack_crit = _roll_crit(world, e, target)
+	if target != null:
+		if e.last_attack_target_id >= 0 and e.last_attack_target_id != target.id:
+			world.emit(&"attack_target_changed", e.id, target.id)  # CMB-12
+		e.last_attack_target_id = target.id
 	world.emit(&"attack_started", e.id, e.attack_target_id, e.attack_crit)
 
 

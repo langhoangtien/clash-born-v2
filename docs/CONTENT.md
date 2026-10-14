@@ -149,7 +149,7 @@ sát thương phép (ST-11). Hồi máu chia đều mỗi 0.5 s.
 | Tối đa cộng dồn | 8 | 8 | 8 | 8 | 8 | 8 |
 
 Mỗi đòn đánh trúng **cùng một mục tiêu** thêm 1 lần cộng dồn (giữ 4 s). Đổi mục
-tiêu thì mất hết (`removed_by attack_target_changed`).
+tiêu thì mất hết (`removed_by attack_target_changed`), tính lúc bắt đầu vung vào mục tiêu khác (CMB-12). Đánh trụ cũng cộng.
 
 ### Q — Tia Băng (chọn hướng, đạn định hướng)
 

@@ -205,6 +205,10 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   để ghi công hạ gục.
 - `CMB-10` Đốt mana: trừ mana của mục tiêu tối đa bằng số mana nó đang có; sự kiện
   mang lượng thực tế bị đốt (`event.burned_mana`) để hành động sau dùng.
+- `CMB-12` Đổi mục tiêu đánh (D-69): khi bắt đầu vung đòn vào mục tiêu **khác** mục tiêu
+  của đòn vung trước (đánh gió không tính), phát `attack_target_changed` (kẻ gây = người
+  đánh, đối tượng = mục tiêu mới). Đòn đầu tiên không phát. Đạn của đòn cũ đang bay vẫn
+  trúng và vẫn tính như đòn trúng bình thường.
 - `CMB-11` Né và chính xác (D-33):
   - Né từ nhiều nguồn **nhân dồn**: `evasion = 1 − Π(1 − né_i)`. Hai món né 50% →
     trúng 0.5 × 0.5 = 25% → né 75%.
