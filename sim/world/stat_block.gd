@@ -128,15 +128,16 @@ func _combine(stat: int, base: float, active: Array[StatModifier]) -> float:
 	return value if is_nan(override_value) else override_value
 
 
-## STAT-05: trong mỗi nhóm chỉ giữ modifier của nguồn có ưu tiên cao nhất (hòa: id nhỏ hơn).
+## STAT-05 (D-55): trong mỗi nhóm chỉ giữ một nguồn: đồ thắng skill, đồ ô sau thắng ô trước;
+## hòa (không phải đồ) thì id nguồn nhỏ hơn.
 func _apply_unique_groups() -> Array[StatModifier]:
 	var winners: Dictionary[StringName, StatModifier] = {}
 	for m: StatModifier in _modifiers:
 		if m.unique_group.is_empty():
 			continue
 		var best: StatModifier = winners.get(m.unique_group)
-		if best == null or m.unique_priority > best.unique_priority \
-				or (m.unique_priority == best.unique_priority and m.source_id < best.source_id):
+		if best == null or m.item_slot > best.item_slot \
+				or (m.item_slot == best.item_slot and m.source_id < best.source_id):
 			winners[m.unique_group] = m
 	return _modifiers.filter(func(m: StatModifier) -> bool:
 		return m.unique_group.is_empty() or winners[m.unique_group].source_id == m.source_id)

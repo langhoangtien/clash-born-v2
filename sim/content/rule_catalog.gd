@@ -38,7 +38,7 @@ const TRIGGER_CONDITIONS: PackedStringArray = [
 ]
 
 ## EFF-02, ST-09, ST-16…: tag hiệu ứng có ý nghĩa trong luật.
-const EFFECT_TAGS: PackedStringArray = ["debuff", "buff", "passive", "unique", "dispellable"]
+const EFFECT_TAGS: PackedStringArray = ["debuff", "buff", "passive", "dispellable"]
 
 
 static func unit_field_ok(field: String) -> bool:

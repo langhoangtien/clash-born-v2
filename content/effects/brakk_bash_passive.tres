@@ -25,7 +25,6 @@ event = &"attack_landed"
 chance = "chance"
 condition = &"target_not_structure"
 unique_group = &"bash"
-unique_priority = "chance"
 actions = Array[ExtResource("2_u5vgu")]([SubResource("Resource_pewjw"), SubResource("Resource_qtbxf")])
 
 [resource]

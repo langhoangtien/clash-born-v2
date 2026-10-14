@@ -58,7 +58,7 @@ func test_phase_list_matches_architecture() -> void:
 func test_state_phase_recomputes_dirty_stats() -> void:
 	var w: World = _world(1)
 	var a: Entity = _unit(w, 0)
-	a.stats.add_modifier(StatModifier.make(StatId.Id.MAX_HP, ModifierDef.Op.ADD, 100, 1, &"", 100))
+	a.stats.add_modifier(StatModifier.make(StatId.Id.MAX_HP, ModifierDef.Op.ADD, 100, 1))
 	assert_true(a.stats.dirty)
 	w.step()
 	assert_false(a.stats.dirty)

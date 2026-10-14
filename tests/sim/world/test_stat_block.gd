@@ -20,8 +20,8 @@ func _block() -> StatBlock:
 	return b
 
 
-func _mod(stat: StatId.Id, op: ModifierDef.Op, value: float, source: int, group: StringName = &"", priority: float = NAN) -> StatModifier:
-	return StatModifier.make(stat, op, value, source, group, value if is_nan(priority) else priority)
+func _mod(stat: StatId.Id, op: ModifierDef.Op, value: float, source: int, group: StringName = &"", slot: int = 0) -> StatModifier:
+	return StatModifier.make(stat, op, value, source, group, slot)
 
 
 func test_STAT_02_base_then_add_then_multiply() -> void:
@@ -96,18 +96,26 @@ func test_STAT_04_attribute_modifier_flows_into_derived_stats() -> void:
 	assert_near(b.get_stat(StatId.Id.PHYSICAL_DAMAGE), 20, EPS)
 
 
-func test_STAT_05_two_boots_only_fastest_counts() -> void:
+func test_STAT_05_two_boots_later_slot_counts() -> void:
 	var b: StatBlock = _block()
-	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.ADD, 50, 1, &"move_speed_boots"))
-	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.ADD, 65, 2, &"move_speed_boots"))
+	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.ADD, 65, 1, &"move_speed_boots", 1))
+	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.ADD, 50, 2, &"move_speed_boots", 2))
 	b.recompute()
-	assert_near(b.get_stat(StatId.Id.MOVEMENT_SPEED), 365.0, EPS)
+	assert_near(b.get_stat(StatId.Id.MOVEMENT_SPEED), 350.0, EPS, "D-55: giày ô 2 thắng, dù chậm hơn")
+
+
+func test_STAT_05_item_beats_skill_in_same_group() -> void:
+	var b: StatBlock = _block()
+	b.add_modifier(_mod(StatId.Id.MAX_HP, ModifierDef.Op.ADD, 300, 1, &"g", 0))
+	b.add_modifier(_mod(StatId.Id.MAX_HP, ModifierDef.Op.ADD, 10, 7, &"g", 3))
+	b.recompute()
+	assert_near(b.get_stat(StatId.Id.MAX_HP), 510.0, EPS, "D-55: đồ thắng skill dù yếu hơn")
 
 
 func test_STAT_05_same_item_twice_passive_counts_once() -> void:
 	var b: StatBlock = _block()
-	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.MULTIPLY, 0.7, 1, &"item:frost_orb", 0.3))
-	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.MULTIPLY, 0.7, 2, &"item:frost_orb", 0.3))
+	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.MULTIPLY, 0.7, 1, &"item:frost_orb", 1))
+	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.MULTIPLY, 0.7, 2, &"item:frost_orb", 4))
 	b.recompute()
 	assert_near(b.get_stat(StatId.Id.MOVEMENT_SPEED), 210.0, EPS, "2 Ngọc Băng Sương chỉ chậm 30%")
 
@@ -135,10 +143,10 @@ func test_D_40_multiply_bonuses_and_slows_add_up_never_below_zero() -> void:
 
 func test_STAT_05_group_winner_keeps_its_other_modifiers_loser_drops_all() -> void:
 	var b: StatBlock = _block()
-	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.ADD, 10, 1, &"g", 10))
-	b.add_modifier(_mod(StatId.Id.MAX_HP, ModifierDef.Op.ADD, 100, 1, &"g", 10))
-	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.ADD, 40, 2, &"g", 40))
-	b.add_modifier(_mod(StatId.Id.MAX_HP, ModifierDef.Op.ADD, 5, 2, &"g", 40))
+	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.ADD, 10, 1, &"g", 1))
+	b.add_modifier(_mod(StatId.Id.MAX_HP, ModifierDef.Op.ADD, 100, 1, &"g", 1))
+	b.add_modifier(_mod(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.ADD, 40, 2, &"g", 5))
+	b.add_modifier(_mod(StatId.Id.MAX_HP, ModifierDef.Op.ADD, 5, 2, &"g", 5))
 	b.recompute()
 	assert_near(b.get_stat(StatId.Id.MOVEMENT_SPEED), 340.0, EPS)
 	assert_near(b.get_stat(StatId.Id.MAX_HP), 505.0, EPS)
@@ -146,8 +154,8 @@ func test_STAT_05_group_winner_keeps_its_other_modifiers_loser_drops_all() -> vo
 
 func test_STAT_05_tie_goes_to_smaller_source_id() -> void:
 	var b: StatBlock = _block()
-	b.add_modifier(_mod(StatId.Id.MAX_HP, ModifierDef.Op.ADD, 30, 9, &"g", 1))
-	b.add_modifier(_mod(StatId.Id.MAX_HP, ModifierDef.Op.ADD, 20, 4, &"g", 1))
+	b.add_modifier(_mod(StatId.Id.MAX_HP, ModifierDef.Op.ADD, 30, 9, &"g"))
+	b.add_modifier(_mod(StatId.Id.MAX_HP, ModifierDef.Op.ADD, 20, 4, &"g"))
 	b.recompute()
 	assert_near(b.get_stat(StatId.Id.MAX_HP), 520.0, EPS)
 

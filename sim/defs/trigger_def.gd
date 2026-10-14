@@ -11,6 +11,6 @@ enum Role { SOURCE, TARGET }
 @export var condition: StringName
 ## Thời gian chờ giữa hai lần kích hoạt (giây). Rỗng = không chờ.
 @export var cooldown: String
+## STAT-05 (D-55): cùng nhóm trên một đơn vị chỉ một nguồn tung (đồ thắng skill, ô sau thắng ô trước).
 @export var unique_group: StringName
-@export var unique_priority: String
 @export var actions: Array[ActionDef] = []

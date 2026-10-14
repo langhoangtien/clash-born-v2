@@ -85,15 +85,16 @@ Sát thương đòn đánh = sát thương gốc của hero + thuộc tính chí
 `content/balance/balance_settings.tres`.
 
 `STAT-05` **Nhóm duy nhất** (`unique_group`): modifier và bị động có thể khai báo một
-nhóm. Trên một đơn vị, trong cùng nhóm chỉ **nguồn mạnh nhất** có tác dụng; nguồn khác
-bị bỏ qua hoàn toàn (không cộng chỉ số, không tung xúc xắc). "Mạnh nhất" = giá trị
-`unique_priority` khai báo trong dữ liệu (mặc định: giá trị modifier hoặc xác suất);
-hòa thì lấy nguồn có id nhỏ hơn. Không khai báo nhóm thì cộng dồn bình thường (D-34).
+nhóm. Trên một đơn vị, trong cùng nhóm chỉ **một nguồn** có tác dụng; nguồn khác bị bỏ
+qua hoàn toàn (không cộng chỉ số, không tung xúc xắc). Chọn nguồn (D-55, không so mạnh
+yếu): **đồ thắng skill/nội tại**; hai món đồ thì **món ở ô sau** thắng (giày ô 2 thắng
+giày ô 1); còn hòa thì nguồn có id nhỏ hơn. Không khai báo nhóm thì cộng dồn bình
+thường (D-34).
 
 | Nhóm | Thành viên bản đầu | Ví dụ |
 |---|---|---|
-| `bash` | Brakk nội tại, bị động Búa Choáng | Brakk mua Búa Choáng: chỉ bash mạnh nhất được tung; 2 Búa Choáng không tăng tỉ lệ (CMB-08) |
-| `move_speed_boots` | tốc chạy của mọi món giày (chưa có ở bản đầu) | 2 đôi giày chỉ tính đôi nhanh nhất |
+| `bash` | Brakk nội tại, bị động Búa Choáng | Brakk mua Búa Choáng: chỉ bash của Búa Choáng được tung; 2 Búa Choáng không tăng tỉ lệ (CMB-08) |
+| `move_speed_boots` | tốc chạy của mọi món giày (chưa có ở bản đầu) | 2 đôi giày chỉ tính đôi ở ô sau |
 | `item:<id>` (tự động) | bị động của chính một món đồ | 2 món giống nhau: bị động chỉ tính một lần (ITM-04) |
 
 Kỹ năng và trang bị **khác nhóm** vẫn kết hợp bình thường (vd Ngọc Băng Sương làm chậm
@@ -188,7 +189,7 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   thêm từ trigger (bash, phục kích…). Không chí mạng lên công trình.
 - `CMB-08` Bash (đòn choáng ngẫu nhiên): trigger `attack_landed` có xác suất → choáng +
   sát thương thêm. Không tác dụng lên công trình. Nhiều nguồn bash: chỉ một nguồn
-  được tung (nguồn có hệ số cao nhất, nhóm `bash` — STAT-05), có thời gian chờ chung
+  được tung (nhóm `bash`, chọn nguồn theo STAT-05), có thời gian chờ chung
   `bash_cooldown`.
 - `CMB-09` Sát thương phản hồi (phản đòn, trả đòn, phân tán) được đánh dấu `reflected`:
   không kích hoạt bất kỳ trigger phản hồi nào khác (tránh hai bên phản qua phản lại vô
@@ -289,9 +290,9 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 
 - `EFF-01` Cách cộng dồn: REFRESH (làm mới thời gian), STACK (thêm stack tới
   `max_stacks`, làm mới thời gian), INDEPENDENT (mỗi lần áp một bản riêng).
-- `EFF-02` Hai hiệu ứng cùng id từ hai nguồn khác nhau là hai bản riêng, trừ khi id
-  có tag `unique` (chỉ giữ bản mạnh nhất). Tag có nghĩa trong luật: `debuff`, `buff`,
-  `passive`, `unique`, `dispellable`; thêm tag = thay đổi luật.
+- `EFF-02` Hai hiệu ứng cùng id từ hai nguồn khác nhau là hai bản riêng (không cộng dồn
+  tầng, hết hạn riêng); thứ không được tác dụng hai lần dùng nhóm STAT-05 (D-55). Tag có
+  nghĩa trong luật: `debuff`, `buff`, `passive`, `dispellable`; thêm tag = thay đổi luật.
 - `EFF-03` Làm chậm từ **các nguồn khác nhau cộng dồn** theo kiểu cộng (STAT-02): chậm
   30% và chậm 50% → chậm 80%; tổng từ 100% trở lên thì đứng yên. Hai món đồ giống nhau
   chỉ tính một lần (ITM-04); cùng một hiệu ứng áp lại thì làm mới (EFF-01). Giảm giáp:
