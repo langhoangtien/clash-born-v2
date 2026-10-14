@@ -9,11 +9,8 @@ const SEED: int = 1
 ## CTL-02: phím PC giả lập nút ĐÁNH / đánh lính / đánh trụ (theo Rules.AttackMode).
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
 const SPEEDS: Array[int] = [1, 2, 4, 8]
-## Phím 1/2/3 = nút chiêu Q/W/R.
-const SKILL_KEYS: Array[Key] = [KEY_1, KEY_2, KEY_3]
-const SKILL_SLOTS: Array[int] = [AbilityDef.Slot.Q, AbilityDef.Slot.W, AbilityDef.Slot.R]
 const MENU_SCENE: String = "res://app/main.tscn"
-const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu · WASD đi · chuột phải: đi tới / khóa địch · F tốc độ thử · Esc menu"
+const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · Esc"
 
 @onready var map_view: MapView = $MapView
 @onready var units_view: UnitsView = $UnitsView
@@ -22,6 +19,9 @@ const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu · WASD đi
 @onready var joystick: TouchJoystick = $Hud/Joystick
 @onready var attack_buttons: AttackButtons = $Hud/AttackButtons
 @onready var match_hud: MatchHud = $Hud/MatchHud
+@onready var skill_buttons: SkillButtons = $Hud/SkillButtons
+@onready var talent_panel: TalentPanel = $Hud/TalentPanel
+@onready var aim_indicator: AimIndicator = $AimIndicator
 
 var world: World
 var runner: SimRunner
@@ -29,6 +29,7 @@ var hero: Entity
 var input: MatchInput = MatchInput.new()
 var result: ResultPanel
 var hero_def: HeroDef
+var skills: SkillControls = SkillControls.new()
 
 
 func _ready() -> void:
@@ -46,7 +47,13 @@ func _ready() -> void:
 	runner = SimRunner.new(world)
 	runner.before_step.connect(_before_step)
 	camera.position = hero.position
-	attack_buttons.skill_pressed.connect(func(i: int) -> void: input.press_skill(SKILL_SLOTS[i]))
+	skills.world = world
+	skills.hero = hero
+	skills.input = input
+	skills.buttons = skill_buttons
+	skills.indicator = aim_indicator
+	skills.talents = talent_panel
+	skills.connect_signals()
 	match_hud.world = world
 	match_hud.hero = hero
 	hud.text = HELP
@@ -65,12 +72,7 @@ func tick_frame(delta: float) -> void:
 	units_view.alpha = runner.alpha()
 	camera.position = units_view.display_position(hero)
 	match_hud.speed = runner.speed
-	for i: int in range(SKILL_SLOTS.size()):
-		var a: AbilityInstance = Abilities.of(hero, SKILL_SLOTS[i])
-		var cd: float = maxf(0.0, (a.ready_tick - world.tick) * SimClock.TICK_SECONDS) if a != null else 0.0
-		var ok: bool = a != null and Abilities.problem(world, hero, a) == Abilities.Problem.NONE
-		attack_buttons.skill_view[i] = [a.rank if a != null else 0, cd, ok]
-	attack_buttons.queue_redraw()
+	skills.refresh()
 	if world.winner >= 0 and result == null:
 		_show_result()
 
@@ -92,13 +94,6 @@ func cycle_speed() -> void:
 func _before_step() -> void:
 	units_view.capture_previous()
 	input.flush()
-	var slot: int = AutoSkill.pick(world, hero, hero_def.bot_skill_order)  # tạm tới M3.8
-	if slot != -2:
-		world.submit(Command.level_up(hero.id, slot))
-	if hero.stats.level() >= world.balance.talent_level:
-		var talent: int = AutoSkill.pick_talent(hero, hero_def.bot_talent_priority)  # tạm tới M3.8
-		if talent != -2:
-			world.submit(Command.choose_talent(hero.id, talent))
 
 
 ## Joystick ảo ưu tiên; không chạm thì đọc WASD / mũi tên.
@@ -120,8 +115,8 @@ func _held_direction() -> Vector2:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_F:
 		cycle_speed()
-	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and SKILL_KEYS.has((event as InputEventKey).keycode):
-		input.press_skill(SKILL_SLOTS[SKILL_KEYS.find((event as InputEventKey).keycode)])
+	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and skills.handle_key(event, get_global_mouse_position()):
+		pass
 	elif event is InputEventKey and event.pressed and (event as InputEventKey).keycode == KEY_ESCAPE:
 		get_tree().change_scene_to_file(MENU_SCENE)
 	elif event is InputEventMouseButton and event.pressed and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_RIGHT:

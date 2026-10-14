@@ -38,3 +38,29 @@ func test_match_scene_speed_cycle_and_result_screen() -> void:
 	assert_true(scene.find_child("ReplayButton", true, false) != null)
 	assert_true(scene.find_child("MenuButton", true, false) != null)
 	scene.free()
+
+
+func test_M38_scene_manual_levels_and_talent_panel() -> void:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	var scene: Node = (load(SCENE) as PackedScene).instantiate()
+	tree.root.add_child(scene)
+	scene.set_process(false)
+	var w: World = scene.world
+	var hero: Entity = scene.hero
+	scene.tick_frame(0.0)
+	assert_true(scene.skill_buttons.skill_view[0][3], "cấp 1 có điểm: hiện + ở Q")
+	scene.skills.level_up(AbilityDef.Slot.Q)
+	w.step()
+	assert_eq(Abilities.of(hero, AbilityDef.Slot.Q).rank, 1, "cộng điểm bằng tay, không còn tự cộng")
+	Progression.add_xp(w, hero, 100000.0)
+	for slot: int in [AbilityDef.Slot.W, AbilityDef.Slot.R]:
+		Abilities.set_rank(w, hero, Abilities.of(hero, slot), 1)
+	scene.tick_frame(0.0)
+	assert_true(scene.talent_panel.visible, "cấp 20 hiện bảng talent")
+	assert_true(scene.talent_panel.find_child("Talent%d" % AbilityDef.Slot.W, true, false) != null)
+	scene.talent_panel.chosen.emit(AbilityDef.Slot.W)
+	w.step()
+	scene.tick_frame(0.0)
+	assert_eq(hero.talent_slot, AbilityDef.Slot.W)
+	assert_false(scene.talent_panel.visible)
+	scene.free()

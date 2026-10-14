@@ -265,13 +265,57 @@ func _unit_at(w: World, team: int, at: Vector2, kind: Entity.Kind) -> Entity:
 	return w.add_entity(e)
 
 
-func test_M38_skill_buttons_hit_test() -> void:
-	var b: AttackButtons = AttackButtons.new()
+func test_M38_skill_buttons_tap_drag_cancel_and_plus() -> void:
+	var b: SkillButtons = SkillButtons.new()
 	b.size = Vector2(640, 640)
-	assert_eq(b.button_at(b.skill_center(1)), AttackButtons.SKILL_BASE + 1)
-	var got: Array[int] = []
-	b.skill_pressed.connect(func(i: int) -> void: got.append(i))
-	b.press_at(0, b.skill_center(2))
-	assert_eq(got, [2])
-	assert_false(b.is_held(AttackButtons.SKILL_BASE + 2), "nút chiêu không giữ như nút đánh")
+	var taps: Array[int] = []
+	var aims: Array = []
+	var levels: Array[int] = []
+	b.skill_tapped.connect(func(i: int) -> void: taps.append(i))
+	b.skill_aimed.connect(func(i: int, aim: Vector2) -> void: aims.append([i, aim]))
+	b.level_pressed.connect(func(i: int) -> void: levels.append(i))
+	var c: Vector2 = b.skill_center(1)
+	b.press_at(0, c + Vector2(5, 0))
+	b.release_at(0, c + Vector2(8, 0))
+	assert_eq(taps, [1], "chạm tại chỗ = tung nhanh")
+	b.press_at(0, c)
+	b.drag_to(0, c + Vector2(80, 0))
+	assert_true(b.is_aiming())
+	b.release_at(0, c + Vector2(80, 0))
+	assert_eq(aims.size(), 1)
+	assert_near(aims[0][1].x, 0.5, 0.001, "kéo 80/160 = nửa tầm")
+	b.press_at(0, c)
+	b.drag_to(0, c + Vector2(400, 400))
+	b.release_at(0, b.cancel_center())
+	assert_eq(aims.size(), 1, "thả vào Hủy thì không tung")
+	assert_eq(taps.size(), 1)
+	b.press_at(0, b.plus_center(0))
+	assert_true(levels.is_empty(), "không nâng được thì không có nút +")
+	b.skill_view[0] = [1, 0.0, true, true]
+	b.attributes_can_level = true
+	b.press_at(0, b.plus_center(0))
+	b.press_at(1, b.plus_center(SkillButtons.ATTRIBUTES))
+	assert_eq(levels, [0, SkillButtons.ATTRIBUTES])
 	b.free()
+
+
+func test_M38_aimed_and_cursor_casts() -> void:
+	var w: World = World.new(1, load("res://content/balance/balance_settings.tres") as BalanceSettings)
+	var me: Entity = _unit_at(w, 0, Vector2(500, 500), Entity.Kind.HERO)
+	var near: Entity = _unit_at(w, 1, Vector2(700, 520), Entity.Kind.HERO)
+	var other: Entity = _unit_at(w, 1, Vector2(500, 750), Entity.Kind.HERO)
+	var a: AbilityInstance = AbilityInstance.new()
+	a.def = AbilityDef.new()
+	a.def.slot = AbilityDef.Slot.Q
+	a.def.targeting = AbilityDef.Targeting.POINT
+	a.def.values = {&"cast_range": PackedFloat32Array([600, 600, 600, 600, 600])}
+	a.slot = AbilityDef.Slot.Q
+	a.rank = 1
+	me.abilities.append(a)
+	var c: Command = QuickCast.aimed(w, me, AbilityDef.Slot.Q, Vector2(0.5, 0))
+	assert_eq(c.point, Vector2(800, 500), "nửa tầm theo hướng kéo")
+	a.def.targeting = AbilityDef.Targeting.DIRECTION
+	assert_eq(QuickCast.aimed(w, me, AbilityDef.Slot.Q, Vector2(0, -1)).direction.normalized(), Vector2(0, -1))
+	a.def.targeting = AbilityDef.Targeting.UNIT
+	assert_eq(QuickCast.at_point(w, me, AbilityDef.Slot.Q, Vector2(500, 760)).target_id, other.id, "đơn vị gần con trỏ nhất")
+	assert_eq(QuickCast.at_point(w, me, AbilityDef.Slot.Q, Vector2(710, 520)).target_id, near.id)

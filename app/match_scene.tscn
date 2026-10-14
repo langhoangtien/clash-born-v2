@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://app/match_scene.gd" id="1_match"]
 [ext_resource type="Script" path="res://view/map/map_view.gd" id="2_map"]
@@ -7,6 +7,9 @@
 [ext_resource type="Script" path="res://view/hud/touch_joystick.gd" id="5_stick"]
 [ext_resource type="Script" path="res://view/hud/attack_buttons.gd" id="6_attack"]
 [ext_resource type="Script" path="res://view/hud/match_hud.gd" id="7_hud"]
+[ext_resource type="Script" path="res://view/hud/skill_buttons.gd" id="8_skill"]
+[ext_resource type="Script" path="res://view/hud/talent_panel.gd" id="9_talent"]
+[ext_resource type="Script" path="res://view/hud/aim_indicator.gd" id="10_aim"]
 
 [node name="MatchScene" type="Node2D"]
 script = ExtResource("1_match")
@@ -18,6 +21,9 @@ show_structures = false
 
 [node name="UnitsView" type="Node2D" parent="."]
 script = ExtResource("3_units")
+
+[node name="AimIndicator" type="Node2D" parent="."]
+script = ExtResource("10_aim")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.75, 0.75)
@@ -61,3 +67,27 @@ grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 0
 script = ExtResource("6_attack")
+
+[node name="SkillButtons" type="Control" parent="Hud"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -640.0
+offset_top = -640.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 0
+script = ExtResource("8_skill")
+
+[node name="TalentPanel" type="Control" parent="Hud"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -560.0
+offset_top = 120.0
+offset_right = 560.0
+offset_bottom = 230.0
+grow_horizontal = 2
+script = ExtResource("9_talent")

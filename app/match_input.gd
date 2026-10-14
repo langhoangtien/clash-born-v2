@@ -20,8 +20,9 @@ var _attack_id: int = -1
 var _held: Array[bool] = [false, false, false]
 var _active_mode: int = -1
 var _press: bool = false
-## Ô chiêu vừa bấm (AbilityDef.Slot), -1 = không.
+## Ô chiêu vừa bấm (AbilityDef.Slot), -1 = không; lệnh CAST đã dựng sẵn (kéo nhắm / con trỏ).
 var _skill: int = -1
+var _skill_command: Command
 
 
 func set_direction(dir: Vector2) -> void:
@@ -41,6 +42,19 @@ func set_attack_held(mode: int, held: bool) -> void:
 ## Nút chiêu / phím 1-2-3: tung nhanh (tự nhắm), kéo để nhắm làm ở M3.8.
 func press_skill(slot: int) -> void:
 	_skill = slot
+	_skill_command = null
+
+
+## M3.8: thả nút chiêu sau khi kéo (aim 0..1 theo hướng kéo).
+func press_skill_aimed(slot: int, aim: Vector2) -> void:
+	_skill = slot
+	_skill_command = QuickCast.aimed(world, hero, slot, aim)
+
+
+## PC: phím 1/2/3 nhắm vào con trỏ chuột.
+func press_skill_at(slot: int, point: Vector2) -> void:
+	_skill = slot
+	_skill_command = QuickCast.at_point(world, hero, slot, point)
 
 
 ## Chạm/click vào map (CTL-01, CTL-04): trúng đơn vị địch → khóa và đánh; chỗ trống →
@@ -81,7 +95,9 @@ func _next_command() -> Command:
 		var slot: int = _skill
 		_skill = -1
 		_sent_direction = Vector2.ZERO  # tung xong thì joystick gửi lại hướng
-		return QuickCast.command(world, hero, slot)
+		var prepared: Command = _skill_command
+		_skill_command = null
+		return prepared if prepared != null else QuickCast.command(world, hero, slot)
 	if _direction != Vector2.ZERO:
 		_tap = Vector2.INF
 		_attack_id = -1

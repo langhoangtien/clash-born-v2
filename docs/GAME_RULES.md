@@ -497,6 +497,11 @@ chơi và bot (`Rules.pick_attack_target`), nút trên màn hình chỉ gọi h�
 - `CTL-04` Chạm vào đơn vị địch (điện thoại) / chuột phải vào địch (PC): khóa mục tiêu và
   đánh; khóa giữ đến khi nó chết, mất nhắm được, hoặc ra khỏi `lock_break_range`.
 - `CTL-05` Người chơi không bao giờ tự về nhà.
+- `CTL-06` (M3.8, D-65) Ô chiêu Q/W/R: chạm thả tại chỗ = tung nhanh, tự nhắm (hero địch gần
+  nhất trong tầm + tầm tìm, rồi đơn vị địch gần nhất, rồi hướng đang nhìn); kéo ra quá vùng
+  chết = nhắm (khoảng kéo tỉ lệ với tầm, không quá tầm), thả = tung; thả vào ô "Hủy" = không
+  tung. Có điểm chưa dùng thì hiện "+" trên ô nâng được và "+TT" (thuộc tính); cấp 20 hiện
+  bảng chọn talent. PC: phím 1/2/3 nhắm vào con trỏ chuột, Ctrl + 1/2/3/4 cộng điểm.
 
 ## MOV — Di chuyển
 
