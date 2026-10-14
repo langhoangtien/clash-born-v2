@@ -71,5 +71,5 @@ func _hits(world: World, s: SkillShot, start: Vector2, reach: float) -> Array[En
 
 func _accepts(s: SkillShot, owner: Entity, e: Entity) -> bool:
 	if s.ctx.ability != null:
-		return Abilities.accepts(owner, s.ctx.ability, e)
+		return Abilities.accepts(owner, s.ctx.ability, e, false)
 	return not Rules.is_structure(e) and e.alive and e.team != s.team and not e.locked

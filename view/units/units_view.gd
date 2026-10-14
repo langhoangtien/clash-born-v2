@@ -15,6 +15,8 @@ const BAR_HEIGHT: float = 9.0
 const TELEPORT_DISTANCE: float = 300.0
 
 var world: World
+## Phe người chơi (M5.1): hero/lính địch phe này không thấy thì không vẽ. -1 = vẽ hết.
+var viewer_team: int = -1
 ## 0..1: phần đã trôi giữa tick trước và tick hiện tại.
 var alpha: float = 1.0
 
@@ -45,7 +47,7 @@ func _draw() -> void:
 	var order: Array[Entity] = world.entities.duplicate()
 	order.sort_custom(func(a: Entity, b: Entity) -> bool: return display_position(a).y < display_position(b).y)
 	for e: Entity in order:
-		if e.alive:  # hero chờ hồi sinh không vẽ (ECO-04)
+		if e.alive and seen(e):  # hero chờ hồi sinh không vẽ (ECO-04)
 			_draw_unit(e, display_position(e))
 	for r: Array in world.recent_areas:
 		var age: float = (world.tick - r[2]) / 15.0
@@ -53,7 +55,9 @@ func _draw() -> void:
 			var col: Color = (BLUE if r[3] == 0 else RED).lightened(0.4)
 			draw_circle(r[0], r[1], Color(col, 0.35 * (1.0 - age)))
 			draw_arc(r[0], r[1], 0, TAU, 48, Color(col, 0.9 * (1.0 - age)), 4.0, true)
-	for s: SkillShot in world.skill_shots:  # đạn kỹ năng (ABL-05)
+	for s: SkillShot in world.skill_shots:  # đạn kỹ năng (ABL-05); của địch chỉ hiện trong tầm nhìn
+		if viewer_team >= 0 and s.team != viewer_team and not FogView.lit(world, viewer_team, s.position):
+			continue
 		var col: Color = (BLUE if s.team == 0 else RED).lightened(0.5)
 		var tail: Vector2 = s.position - s.direction * minf(90.0, s.travelled + 1.0)
 		draw_line(tail, s.position, Color(col, 0.35), s.half_width * 1.2, true)
@@ -84,6 +88,11 @@ func _draw_zones() -> void:
 		var pulse: float = 1.0 - (phase - floorf(phase))
 		draw_circle(z.center, z.radius, Color(col, 0.22 + 0.2 * pulse))
 		draw_arc(z.center, z.radius, 0, TAU, 64, Color(col, 0.85), 3.0, true)
+
+
+## Vẽ đơn vị này không: phe mình, công trình (vị trí cố định, như Dota) hoặc đang thấy.
+func seen(e: Entity) -> bool:
+	return viewer_team < 0 or e.team == viewer_team or Rules.is_structure(e) or Rules.is_visible(viewer_team, e)
 
 
 func _draw_unit(e: Entity, at: Vector2) -> void:

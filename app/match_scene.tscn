@@ -48,7 +48,7 @@ mouse_filter = 2
 script = ExtResource("11_buff")
 
 [node name="Info" type="Label" parent="Hud"]
-offset_left = 420.0
+offset_left = 700.0
 offset_top = 76.0
 offset_right = 1500.0
 offset_bottom = 110.0

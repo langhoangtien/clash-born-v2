@@ -21,6 +21,7 @@ func _world() -> World:
 	w.map = _map
 	w.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
 	MatchSetup.spawn_structures(w, _lib)
+	MatchSetup.add_vision(w)
 	MatchSetup.add_lane_creeps(w, _lib, true)
 	var mid: Vector2 = _map.world_size() * 0.5
 	UnitFactory.hero(w, _lib.heroes[&"brakk"], 0, w.navigation(32.0).nearest_clear(mid + Vector2(-600, 600)))

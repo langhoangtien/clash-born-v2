@@ -32,6 +32,8 @@ var input: MatchInput = MatchInput.new()
 var result: ResultPanel
 var hero_def: HeroDef
 var skills: SkillControls = SkillControls.new()
+var fog: FogView
+var minimap: Minimap
 
 
 func _ready() -> void:
@@ -40,12 +42,25 @@ func _ready() -> void:
 	world.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
 	var library: ContentLibrary = ContentLibrary.load_dir()
 	MatchSetup.spawn_structures(world, library)
+	MatchSetup.add_vision(world)
 	MatchSetup.add_lane_creeps(world, library, true)
 	hero_def = library.heroes[hero_id]
 	for def: GameDef in library.units.values() + library.heroes.values():
 		ArtLibrary.texture(def.art_id)  # nạp sẵn hình lúc vào trận, không để lần xuất hiện đầu bị giật
 	hero = UnitFactory.hero(world, hero_def, 0, world.map.fountain_point(0))
 	units_view.world = world
+	units_view.viewer_team = hero.team
+	fog = FogView.new()
+	fog.name = "Fog"
+	fog.world = world
+	fog.team = hero.team
+	fog.place = units_view.display_position
+	add_child(fog)
+	move_child(fog, units_view.get_index())  # trên map, dưới đơn vị
+	minimap = Minimap.new()
+	minimap.name = "Minimap"
+	$Hud.add_child(minimap)
+	minimap.setup(world, hero)
 	input.world = world
 	input.hero = hero
 	runner = SimRunner.new(world)
@@ -76,7 +91,9 @@ func _process(delta: float) -> void:
 func tick_frame(delta: float) -> void:
 	runner.advance(delta)
 	units_view.alpha = runner.alpha()
-	camera.position = units_view.display_position(hero)
+	camera.position = minimap.peek_point if minimap.peeking else units_view.display_position(hero)
+	var view_size: Vector2 = get_viewport_rect().size / camera.zoom
+	minimap.camera_rect = Rect2(camera.position - view_size * 0.5, view_size)
 	match_hud.speed = runner.speed
 	skills.refresh()
 	buff_bar.right_limit = skill_buttons.global_position.x + skill_buttons.skill_center(0).x - SkillButtons.SKILL_RADIUS

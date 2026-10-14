@@ -35,3 +35,8 @@ static func spawn_creep(world: World, library: ContentLibrary, def_id: StringNam
 	e.lane = lane
 	e.siege = def.kind == UnitDef.Kind.CREEP_SIEGE
 	return e
+
+
+## VIS-01: bật tầm nhìn cho trận (mọi trận thật; test cơ chế có thể bỏ qua để thấy hết).
+static func add_vision(world: World) -> void:
+	world.add_system(VisionSystem.new(), World.Phase.VISION)

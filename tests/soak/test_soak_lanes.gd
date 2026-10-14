@@ -17,6 +17,7 @@ func _world(with_structures: bool = true, waves: bool = false) -> World:
 	w.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
 	if with_structures:
 		MatchSetup.spawn_structures(w, _lib)
+		MatchSetup.add_vision(w)
 	MatchSetup.add_lane_creeps(w, _lib, waves)
 	return w
 

@@ -3,7 +3,8 @@ extends Control
 ## HUD tối thiểu (M2.5): đồng hồ trận, máu/mana, vàng, last hit, đếm ngược hồi sinh,
 ## tốc độ chơi thử. Tầng VIEW: chỉ đọc World và hero, không nhận chạm.
 
-const PANEL: Rect2 = Rect2(16, 16, 380, 132)
+## Bên phải minimap (Minimap.SIDE ở góc trên trái).
+const PANEL: Rect2 = Rect2(292, 16, 380, 132)
 const BAR: Vector2 = Vector2(340, 22)
 const HP_COLOR: Color = Color(0.3, 0.8, 0.35)
 const MANA_COLOR: Color = Color(0.3, 0.5, 1.0)

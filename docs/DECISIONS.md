@@ -70,6 +70,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-68 | 2026-10-14 | M4.2: vùng có độ trễ hiện cho cả hai đội từ lúc tung (vòng báo trước, lõi lớn dần), tâm/bán kính chốt lúc tung, `delay` là giá trị có tên. Vùng tồn tại (ZoneAction): bắt đầu sau `delay`, mỗi `interval` tác dụng lên ai đang đứng trong, lần đầu ngay lúc bắt đầu; không trúng công trình/đồng minh; vùng chờ nổ và vùng tồn tại thuộc trạng thái trận (băm) | Đã duyệt |
 | D-69 | 2026-10-14 | M4.4: Myra đủ bộ. Đổi mục tiêu tính lúc **bắt đầu vung** vào mục tiêu khác (giống Troll), mất hết tầng Nhịp Phép ngay lúc đó; đánh trụ cũng cộng tầng. Màn khởi động tạm có nút vào trận cho từng tướng chơi thử (Brakk, Myra) tới khi có màn chọn tướng M8 | Đã duyệt |
 | D-70 | 2026-10-14 | Sửa giật ở giây 15: lưới tìm đường của lính (bán kính 22) dựng sẵn lúc vào trận thay vì lúc đợt lính đầu xuất hiện (tick 450 từ 277 ms còn 12 ms); hình đơn vị cũng nạp sẵn lúc vào trận | Người chơi báo giật khi lính xuất hiện |
+| D-71 | 2026-10-14 | M5.1: tầm nhìn tính mỗi tick, hình tròn, rừng không che; `Rules.is_targetable` cần thấy, `is_hittable` (vùng, đạn kỹ năng) không cần. Sương mù vẽ bằng shader; địch không thấy thì không vẽ, công trình địch luôn vẽ. Minimap góc trên trái, giữ ngón để xem chỗ khác, thả thì camera về hero (kiểu Liên Quân). Bụi cỏ làm riêng sau khi duyệt luật | Đã duyệt |
 
 ## Chờ chốt
 

@@ -166,8 +166,8 @@ static func fire_area(world: World, p: PendingArea) -> void:
 ## ABL-07: vùng của kỹ năng lọc theo target_filter; không có kỹ năng → địch không phải công trình (EFF-15).
 static func _area_accepts(ctx: ExprContext, owner: Entity, e: Entity) -> bool:
 	if ctx.ability != null:
-		return Abilities.accepts(owner, ctx.ability, e)
-	return not Rules.is_structure(e) and Rules.is_targetable(owner, e)
+		return Abilities.accepts(owner, ctx.ability, e, false)
+	return not Rules.is_structure(e) and Rules.is_hittable(owner, e)
 
 
 ## CMB-10: đốt tối đa bằng mana đang có; sự kiện mang lượng thực tế (`event.burned_mana`).

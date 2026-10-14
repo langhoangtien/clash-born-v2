@@ -21,7 +21,17 @@ static func is_structure(e: Entity) -> bool:
 ## DEF-05: còn sống, khác đội, không phải công trình đang khóa (STR-02). Nhắm bằng chiêu.
 ## Tầm nhìn, UNTARGETABLE, MAGIC_IMMUNE thêm khi làm các trạng thái đó.
 static func is_targetable(by: Entity, target: Entity) -> bool:
+	return is_hittable(by, target) and is_visible(by.team, target)
+
+
+## Trúng được bởi vùng / đạn kỹ năng (ABL-07): như is_targetable nhưng không cần thấy.
+static func is_hittable(by: Entity, target: Entity) -> bool:
 	return target != null and target.alive and target.team != by.team and not target.locked
+
+
+## DEF-04 / VIS-01: đội `team` đang thấy `e`.
+static func is_visible(team: int, e: Entity) -> bool:
+	return e.team == team or e.visible_mask & (1 << team) != 0
 
 
 ## Nhắm được bằng đánh thường: như is_targetable, trừ GHOST (ST-11).

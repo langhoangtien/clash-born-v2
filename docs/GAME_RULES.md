@@ -164,14 +164,17 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 ## VIS — Tầm nhìn
 
 - `VIS-01` Đội T thấy đơn vị E khi có ít nhất một đơn vị sống của T có khoảng cách
-  tâm–tâm tới E ≤ `vision_range` của đơn vị đó. (Map hiện không có bụi.)
+  tâm–tâm tới E ≤ `vision_range` của đơn vị đó. Mọi đơn vị (hero, lính, trụ, nhà chính)
+  cho tầm nhìn theo dữ liệu; luôn thấy đồng đội; rừng và vách không che. Tính mỗi tick ở
+  pha VISION (D-71). Map hiện chưa có bụi cỏ.
 - `VIS-02` E đang INVISIBLE thì đội địch chỉ thấy khi E có REVEALED đối với đội đó
   (từ true sight hoặc hiệu ứng làm lộ).
 - `VIS-03` Fountain có true sight bán kính `fountain_true_sight`. (Trụ không có, giống Dota.)
 - `VIS-04` Hiệu ứng tàng hình mặc định bị xóa khi chủ nhân bắt đầu đánh hoặc dùng
   chiêu (khai báo `removed_by`). Có `fade_in`: trong thời gian này vẫn bị thấy.
 - `VIS-05` Mất tầm nhìn tới mục tiêu: lệnh đánh/chiêu nhắm đơn vị bị hủy; đạn đã bay
-  vẫn trúng.
+  vẫn trúng. Không ra lệnh đánh / chiêu nhắm đơn vị lên kẻ không thấy (BAD_TARGET); nút
+  đánh, lính, trụ chỉ chọn kẻ đang thấy. Vùng và đạn kỹ năng vẫn trúng kẻ không thấy (ABL-07).
 
 ---
 

@@ -187,3 +187,5 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M4.1 | Xong | 2026-10-14 | 370 test xanh (+6); đạn kỹ năng định hướng ABL-05: kẻ đầu tiên / xuyên, bề rộng, tầm, tốc độ, rừng/vách chặn, không trúng trụ/đồng minh (D-67) |
 | M4.2 | Xong | 2026-10-14 | 376 test xanh (+6); vùng có độ trễ hiện cho hai đội, né được, talent đổi độ trễ (ABL-06); vùng tồn tại ZoneAction tác dụng định kỳ (ABL-17, D-68) |
 | M4.4 | Xong | 2026-10-14 | 386 test xanh (+10); Myra: nội tại Nhịp Phép với sự kiện `attack_target_changed` (CMB-12), Q/W/R đúng bảng, 3 talent; chọn tướng ở màn khởi động để chơi thử (D-69) |
+| **Hết M4** | | | |
+| M5.1 | Xong | 2026-10-14 | 397 test xanh (+10); tầm nhìn VIS-01/05, INV-07; sương mù; minimap giữ để xem (D-71); sửa giật đợt lính đầu (D-70) |
