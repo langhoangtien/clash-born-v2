@@ -3,10 +3,13 @@ extends RefCounted
 ## Tìm và chạy test. File test: tests/**/test_*.gd, trừ thư mục fixtures/.
 
 const SKIP_DIRS: PackedStringArray = ["fixtures", "framework"]
+## Thư mục test chạy lâu (soak), chỉ chạy khi bật `include_soak`.
+const SOAK_DIR: String = "soak"
 
 static var _capture: ErrorCapture = null
 
 var verbose: bool = false
+var include_soak: bool = false
 
 
 func discover(root: String) -> PackedStringArray:
@@ -26,7 +29,7 @@ func run_files(paths: PackedStringArray, name_filter: String = "") -> TestReport
 
 func _walk(dir_path: String, found: PackedStringArray) -> void:
 	for sub: String in DirAccess.get_directories_at(dir_path):
-		if not SKIP_DIRS.has(sub) and not sub.begins_with("."):
+		if not SKIP_DIRS.has(sub) and not sub.begins_with(".") and (include_soak or sub != SOAK_DIR):
 			_walk(dir_path.path_join(sub), found)
 	for file: String in DirAccess.get_files_at(dir_path):
 		if file.begins_with("test_") and file.ends_with(".gd"):

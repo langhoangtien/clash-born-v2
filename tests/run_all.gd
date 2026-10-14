@@ -17,6 +17,8 @@ func _run() -> void:
 			name_filter = arg.trim_prefix("--filter=")
 		elif arg == "--verbose":
 			runner.verbose = true
+		elif arg == "--soak":
+			runner.include_soak = true
 	var report: TestReport = runner.run_files(runner.discover("res://tests"), name_filter)
 	_print_report(report)
 	if report.passed + report.failed == 0:

@@ -54,15 +54,15 @@ clashborn_v2/
     rules.gd               Rules: khoảng cách mép–mép, trong tầm, nhắm được (DEF, ST)
     world/                 World (pha tick, events, damage_requests, projectiles, state_hash), Entity,
                            GameEvent, DamageRequest, Projectile, UnitFactory, MatchSetup, Objectives (STR-02),
-                           StatBlock, StatModifier, StatId,
+                           SpatialGrid (tra đơn vị gần), StatBlock, StatModifier, StatId,
                            UnitState; EffectContainer ở M3
     systems/               mỗi file một hệ thống, chạy theo thứ tự cố định
     defs/                  khuôn dữ liệu: HeroDef, AbilityDef, EffectDef, TalentDef, ItemDef, UnitDef…
     content/               ContentLibrary (nạp content/), ContentValidator, RuleCatalog, ExprRules
     actions/               hành động dùng chung cho kỹ năng/hiệu ứng (mỗi loại một khuôn)
-    controllers/           AI: lính, trụ (StructureController), quái rừng, bot — chỉ sinh Command
+    controllers/           AI: lính (LaneCreepController), trụ (StructureController), quái rừng, bot — chỉ sinh Command
     commands/              Command, Order, CommandReplay (phát lại nhật ký); kiểm tra ở CommandSystem
-    map/                   MapLayout, MapNavigation, MapValidator, MapShape (mang từ v1)
+    map/                   MapLayout, MapNavigation, MapValidator, MapShape (mang từ v1), LaneRoute (tiến độ lane)
   view/                    vẽ đơn vị, map, hiệu ứng, HUD, điều khiển cảm ứng;
                            ArtLibrary: tra hình theo id, thiếu thì hình tạm (ART.md)
     map/                   MapView, MapPainter (vẽ tạm bằng hình phẳng)

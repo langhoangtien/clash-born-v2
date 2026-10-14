@@ -23,6 +23,10 @@ var rejected_commands: Array[Command] = []
 ## (controller chạy ở pha 5, trước khi tick này có sự kiện sát thương).
 var events: Array[GameEvent] = []
 var previous_events: Array[GameEvent] = []
+## Tra cứu đơn vị theo vị trí; hệ thống gọi `spatial_near` (tự dựng lại theo tick + pha).
+var spatial: SpatialGrid = SpatialGrid.new()
+## Route lane đã dựng, theo "LANE:team" (LaneRoute.of).
+var lane_routes: Dictionary[String, LaneRoute] = {}
 ## Công trình đã đổ, theo structure_id (STR-02).
 var destroyed_structures: Dictionary[StringName, bool] = {}
 ## Sát thương chờ DamageSystem xử lý trong tick này.
@@ -72,6 +76,12 @@ func navigation(radius: float) -> MapNavigation:
 	if not _nav_cache.has(key):
 		_nav_cache[key] = MapNavigation.new(map, radius, balance.tower_body_radius)
 	return _nav_cache[key]
+
+
+## Đơn vị gần `point` (lọc thô, sắp theo id). `phase` để dựng lại sau khi vị trí đổi.
+func spatial_near(point: Vector2, radius: float, phase: int, sorted: bool = true) -> Array[Entity]:
+	spatial.rebuild(entities, tick, phase)
+	return spatial.near(point, radius, sorted)
 
 
 ## Gửi lệnh; áp ở pha COMMAND của tick kế tiếp (CMD-01).
@@ -124,9 +134,10 @@ func state_hash() -> PackedByteArray:
 	ctx.update(PackedInt64Array([tick, rng.seed, rng.state, entities.size()]).to_byte_array())
 	for e: Entity in entities:
 		ctx.update(PackedInt64Array([e.id, e.team, e.kind, e.order.type, int(e.order.finished), e.order.target_id,
-			int(e.alive), int(e.locked), e.aggro_target_id, e.aggro_until_tick, e.attack_phase, e.attack_target_id, e.attack_start_tick, e.attack_release_tick, e.next_attack_tick]).to_byte_array())
+			int(e.alive), int(e.locked), int(e.returning), int(e.has_origin), e.aggro_target_id, e.aggro_until_tick, e.attack_phase, e.attack_target_id, e.attack_start_tick, e.attack_release_tick, e.next_attack_tick]).to_byte_array())
 		ctx.update(PackedFloat64Array([e.position.x, e.position.y, e.radius, e.health, e.mana,
-			e.order.point.x, e.order.point.y, e.order.direction.x, e.order.direction.y]).to_byte_array())
+			e.order.point.x, e.order.point.y, e.order.direction.x, e.order.direction.y,
+			e.chase_origin.x, e.chase_origin.y]).to_byte_array())
 		if e.stats != null:
 			ctx.update(e.stats.values().to_byte_array())
 	for p: Projectile in projectiles:

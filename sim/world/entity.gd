@@ -21,6 +21,13 @@ var structure_id: StringName
 var tier: int = 0
 var locked: bool = false
 ## Trụ: hero địch vừa gây giao tranh hero phe trụ và hạn nhớ (STR-01, StructureController ghi).
+## Lính đường: lane, có phải lính công thành (CRP-10), đang về lane (CRP-07), origin leash (DEF-08).
+var lane: String = ""
+var siege: bool = false
+var returning: bool = false
+var return_point: Vector2 = Vector2.ZERO
+var has_origin: bool = false
+var chase_origin: Vector2 = Vector2.ZERO
 var aggro_target_id: int = -1
 var aggro_until_tick: int = 0
 var stats: StatBlock

@@ -25,8 +25,8 @@ func _ready() -> void:
 	world.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
 	var library: ContentLibrary = ContentLibrary.load_dir()
 	MatchSetup.spawn_structures(world, library)
+	MatchSetup.add_lane_creeps(world, library, true)
 	hero = UnitFactory.hero(world, library.heroes[HERO_ID], 0, world.map.fountain_point(0))
-	_spawn_training_dummy()
 	units_view.world = world
 	input.world = world
 	input.hero = hero
@@ -45,22 +45,8 @@ func tick_frame(delta: float) -> void:
 	runner.advance(delta)
 	units_view.alpha = runner.alpha()
 	camera.position = units_view.display_position(hero)
-	hud.text = "tick %d · %s · máu %.0f · WASD/joystick: đi · chuột phải: đi tới / đánh hình nộm đỏ · Esc: quay lại" % [
+	hud.text = "tick %d · %s · máu %.0f · WASD/joystick: đi · chuột phải: đi tới / đánh địch · Esc: quay lại" % [
 		world.tick, hero.art_id, hero.health]
-
-
-## TẠM (M2.1, bỏ ở M2.3 khi có lính): hình nộm đỏ trước base để thử đánh thường.
-func _spawn_training_dummy() -> void:
-	var dummy: Entity = Entity.new()
-	dummy.team = 1
-	dummy.kind = Entity.Kind.NEUTRAL
-	dummy.radius = 32.0
-	dummy.position = world.navigation(dummy.radius).nearest_clear(world.map.fountain_point(0) + Vector2(900, -700))
-	dummy.stats = StatBlock.new(world.balance)
-	dummy.stats.set_base(StatId.Id.MAX_HP, 3000)
-	dummy.stats.set_base(StatId.Id.PHYSICAL_ARMOR, 2)
-	dummy.stats.set_base(StatId.Id.BASE_ATTACK_TIME, 1.0)
-	world.add_entity(dummy)
 
 
 func _before_step() -> void:

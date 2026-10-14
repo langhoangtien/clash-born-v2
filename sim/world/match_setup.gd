@@ -1,6 +1,6 @@
 class_name MatchSetup
 extends RefCounted
-## Dựng các đơn vị cố định của trận từ map + content (công trình). Lính, hero thêm sau.
+## Dựng trận từ map + content: công trình, lính đường (controller + đợt lính).
 
 
 static func spawn_structures(world: World, library: ContentLibrary) -> void:
@@ -15,3 +15,19 @@ static func spawn_structures(world: World, library: ContentLibrary) -> void:
 		core.structure_id = StringName("core_%d" % team)
 		core.tier = 5
 	Objectives.refresh_locks(world)
+
+
+## Gắn controller lính đường; `waves` = bật sinh đợt lính theo giờ (CRP-08).
+static func add_lane_creeps(world: World, library: ContentLibrary, waves: bool) -> void:
+	world.add_system(LaneCreepController.new(), World.Phase.CONTROLLER)
+	if waves:
+		world.add_system(WaveSpawner.new(library), World.Phase.SPAWN)
+
+
+static func spawn_creep(world: World, library: ContentLibrary, def_id: StringName, team: int, lane: String, at: Vector2) -> Entity:
+	var def: UnitDef = library.units[def_id]
+	var e: Entity = UnitFactory.unit(world, def, Entity.Kind.LANE_CREEP, team,
+		world.navigation(def.stats.collision_radius).nearest_clear(at))
+	e.lane = lane
+	e.siege = def.kind == UnitDef.Kind.CREEP_SIEGE
+	return e

@@ -7,6 +7,8 @@ extends SimSystem
 const SAME_SPOT: float = 0.001
 ## Lệnh đánh: mục tiêu dịch đi quá chừng này (đơn vị thế giới) thì tìm đường lại.
 const RETARGET_DISTANCE: float = 48.0
+## Lọc thô khi đẩy nhau: đơn vị có thể đã dời trong bước đẩy (tối đa 2 × separation một tick).
+const SEPARATION_SLACK: float = 32.0
 ## MOV-06: góc thử khi trượt dọc mép (độ), góc nhỏ trước, + trước −.
 const SLIDE_ANGLES: Array[float] = [15.0, -15.0, 30.0, -30.0, 45.0, -45.0, 60.0, -60.0, 75.0, -75.0]
 
@@ -101,11 +103,12 @@ func _path_still_walkable(nav: MapNavigation, e: Entity) -> bool:
 ## bên bị chặn đứng yên thì bên kia nhận hết.
 func _separate(world: World) -> void:
 	var max_push: float = world.balance.separation_speed * SimClock.TICK_SECONDS
-	var units: Array[Entity] = world.entities
-	for i: int in range(units.size()):
-		for j: int in range(i + 1, units.size()):
-			var a: Entity = units[i]
-			var b: Entity = units[j]
+	for a: Entity in world.entities:
+		# Lưới dựng một lần ở đầu bước đẩy; vị trí đổi trong lúc đẩy chỉ làm lọc thô kém đi
+		# vài đơn vị, kết quả vẫn xác định vì thứ tự theo id.
+		for b: Entity in world.spatial_near(a.position, a.radius + SEPARATION_SLACK, World.Phase.MOVEMENT):
+			if b.id <= a.id:
+				continue
 			var overlap: float = a.radius + b.radius - a.position.distance_to(b.position)
 			if overlap > 0.0:
 				_push_pair(world, a, b, overlap, max_push)

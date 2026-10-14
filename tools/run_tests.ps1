@@ -1,11 +1,13 @@
 ﻿# Chạy toàn bộ test Clashborn v2 (Windows).
 #   powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1
 #   powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1 -Filter CRP_05 -VerboseTests
+#   powershell -ExecutionPolicy Bypass -File tools\run_tests.ps1 -Soak   (thêm test chạy lâu trong tests/soak)
 # Đường dẫn Godot: tham số -Godot, hoặc biến môi trường GODOT, hoặc mặc định bên dưới.
 # Mã thoát: 0 = xanh, 1 = có test đỏ, 2 = không có test nào chạy, 3 = không tìm thấy Godot.
 param(
     [string]$Filter = "",
     [switch]$VerboseTests,
+    [switch]$Soak,
     [string]$Godot = ""
 )
 
@@ -36,6 +38,7 @@ Start-Process -FilePath $Godot -NoNewWindow -Wait `
 $UserArgs = @()
 if ($Filter -ne "") { $UserArgs += "--filter=$Filter" }
 if ($VerboseTests) { $UserArgs += "--verbose" }
+if ($Soak) { $UserArgs += "--soak" }
 $Proc = Start-Process -FilePath $Godot -NoNewWindow -Wait -PassThru `
     -ArgumentList (@("--headless", "--path", "`"$Root`"", "-s", "res://tests/run_all.gd", "--") + $UserArgs)
 $Code = $Proc.ExitCode

@@ -31,9 +31,10 @@ func _choose(world: World, tower: Entity) -> void:
 	if pick == null and tower.order.type == Order.Type.ATTACK and not tower.order.finished:
 		pick = _valid(world, tower, tower.order.target_id)
 	if pick == null:
-		pick = _nearest(world, tower, Entity.Kind.LANE_CREEP)
-	if pick == null:
-		pick = _nearest(world, tower, Entity.Kind.HERO)
+		var nearby: Array[Entity] = _in_range(world, tower)
+		pick = _nearest(tower, nearby, Entity.Kind.LANE_CREEP)
+		if pick == null:
+			pick = _nearest(tower, nearby, Entity.Kind.HERO)
 	var current: int = tower.order.target_id if tower.order.type == Order.Type.ATTACK and not tower.order.finished else -1
 	if pick != null and pick.id != current:
 		world.submit(Command.attack(tower.id, pick.id))
@@ -46,14 +47,23 @@ func _valid(world: World, tower: Entity, id: int) -> Entity:
 	return e if Rules.is_targetable(tower, e) and Rules.in_attack_range(tower, e) else null
 
 
-func _nearest(world: World, tower: Entity, kind: Entity.Kind) -> Entity:
+func _in_range(world: World, tower: Entity) -> Array[Entity]:
+	var out: Array[Entity] = []
+	var reach: float = tower.stats.get_stat(StatId.Id.ATTACK_RANGE) + tower.radius
+	for e: Entity in world.spatial_near(tower.position, reach, World.Phase.CONTROLLER, false):
+		if Rules.is_targetable(tower, e) and Rules.in_attack_range(tower, e):
+			out.append(e)
+	return out
+
+
+func _nearest(tower: Entity, candidates: Array[Entity], kind: Entity.Kind) -> Entity:
 	var best: Entity = null
 	var best_d: float = INF
-	for e: Entity in world.entities:
-		if e.kind != kind or not Rules.is_targetable(tower, e) or not Rules.in_attack_range(tower, e):
+	for e: Entity in candidates:
+		if e.kind != kind:
 			continue
 		var d: float = Rules.edge_distance(tower, e)
-		if d < best_d:
+		if d < best_d or (d == best_d and e.id < best.id):
 			best = e
 			best_d = d
 	return best

@@ -36,5 +36,5 @@ func _structure_factor(world: World, source: Entity, target: Entity) -> float:
 		Entity.Kind.HERO:
 			return world.balance.hero_structure_damage
 		Entity.Kind.LANE_CREEP:
-			return world.balance.creep_structure_damage
+			return world.balance.siege_structure_damage if source.siege else world.balance.creep_structure_damage  # CRP-10
 	return 1.0

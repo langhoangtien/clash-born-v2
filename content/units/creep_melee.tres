@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="UnitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="1_8giri"]
+[ext_resource type="Script" path="res://sim/defs/unit_def.gd" id="2_1g3fe"]
+[ext_resource type="Script" path="res://sim/defs/combat_stats_def.gd" id="3_hs8sm"]
+
+[sub_resource type="Resource" id="Resource_6fuol"]
+script = ExtResource("3_hs8sm")
+base_hp = 450.0
+base_damage = 20.0
+physical_armor = 2.0
+base_attack_time = 1.0
+attack_point = 0.467
+attack_range = 100.0
+movement_speed = 240.0
+vision_range = 800.0
+collision_radius = 22.0
+
+[resource]
+script = ExtResource("2_1g3fe")
+stats = SubResource("Resource_6fuol")
+id = &"creep_melee"
+display_name = "Lính cận chiến"
+art_id = &"creep_melee"

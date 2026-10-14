@@ -38,7 +38,7 @@
 | DEF-04 | Nhìn thấy | Theo VIS-01..05 | `Rules.is_visible(team, e)` |
 | DEF-05 | Nhắm được | Còn sống, khác đội (hoặc filter cho phép), nhìn thấy, không bị luật ST/STR chặn | `Rules.is_targetable(by, e)` |
 | DEF-06 | Công trình kế tiếp của lane | Trụ T1→T2→T3 còn sống đầu tiên của đối phương trên lane; hết thì T4 còn sống gần nhất; hết T4 thì nhà chính | `Objectives.next_for_lane` |
-| DEF-07 | Mép trước của lane | Tiến độ route của công trình kế tiếp trừ tầm đánh của lính | `Rules.lane_limit` |
+| DEF-07 | Mép trước của lane | Điểm route đầu tiên (đi về phía trước) mà từ đó công trình kế tiếp nằm trong tầm đánh của lính | `LaneRoute.limit` |
 | DEF-08 | Origin leash | Vị trí đơn vị ở **lần đầu** vào state đuổi; sự kiện mới chỉ gia hạn thời gian | lưu trong controller |
 | DEF-09 | Vùng nguy hiểm của trụ T với X | Trong `attack_range(T) + radius(X) + NUM tower_danger_margin` tính từ mép T | `Rules.tower_threat_at` |
 | DEF-10 | Vị trí an toàn cho hero X | Ngoài vùng nguy hiểm mọi trụ địch, **hoặc** trụ đó đang bắn đơn vị khác và có ≥ `tower_tank_creeps` lính phe X trong tầm nó và máu X ≥ `dive_min_hp`. Trụ đang nhắm X thì không bao giờ an toàn | `Rules.is_safe_for_hero` |
@@ -353,8 +353,16 @@ Bảng ưu tiên (dòng trên thắng):
 
 - `CRP-06` Giữ mục tiêu hiện tại khi còn hợp lệ; không đổi chỉ vì có mục tiêu gần hơn.
 - `CRP-07` Hết đuổi → về điểm gần nhất trên route rồi đi tiếp, không cắt qua rừng.
-- `CRP-08` Đợt lính mỗi `wave_interval`; mỗi lane `wave_melee` cận chiến + `wave_ranged`
-  đánh xa; lính công thành mỗi `siege_every_waves` đợt. Sinh ở cửa lane sau T3.
+- `CRP-08` Đợt lính đầu ở giây `first_wave_time`, sau đó mỗi `wave_interval`; mỗi lane
+  `wave_melee` cận chiến + `wave_ranged` đánh xa; đợt thứ `siege_every_waves`, 2×… có thêm
+  1 lính công thành. Sinh ở cửa lane sau T3.
+- `CRP-09` Thứ tự ưu tiên: dòng trên thắng dòng dưới; trong cùng một dòng giữ mục tiêu
+  hiện tại (CRP-06). Một mục tiêu bị bỏ khi: không nhắm được, lính cách origin quá
+  `creep_chase_leash`, hoặc lính vượt mép trước của lane quá `creep_front_margin` (INV-03).
+  Bỏ vì leash/mép trước → về điểm gần nhất trên route (CRP-07), trong lúc về không nhận
+  mục tiêu mới. ADVANCE đi lần lượt qua các điểm của route (không đi tắt qua rừng), dừng ở
+  mép trước của lane (DEF-07).
+- `CRP-10` Lính công thành gây `siege_structure_damage` lên công trình (CMB-04).
 
 ## STR — Công trình
 
@@ -538,6 +546,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | attribute_bonus | +2 mọi thuộc tính | | attribute_bonus_max | 7 lần |
 | hex_move_speed | 140 | | bash_cooldown | 1.5 s |
 | reincarnate_delay | 3 s | | match_target_minutes | 15–20 (D-29) |
+| first_wave_time | 15 s | | creep_front_margin | 200 |
 | evasion_cap | 1.0 (không giới hạn) | | tower_body_radius | 52 |
 | minimum_movement_speed | 0 (bị chậm hết thì đứng yên) | | separation_speed | 400 / s |
 

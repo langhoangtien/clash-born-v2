@@ -37,6 +37,18 @@ extends Resource
 ## STR-01: trụ nhớ hero gây giao tranh hero trong chừng này giây.
 @export var tower_aggro_time: float
 
+@export_group("Lính đường (CRP)")
+@export var first_wave_time: float
+@export var wave_interval: float
+@export var wave_melee: int
+@export var wave_ranged: int
+@export var siege_every_waves: int
+@export var creep_acquire_range: float
+@export var creep_chase_leash: float
+@export var creep_hero_aggro_range: float
+@export var creep_hero_aggro_time: float
+@export var creep_front_margin: float
+
 @export_group("Hero")
 ## ABL-04: mỗi lần đổi điểm thừa cộng chừng này vào cả 3 thuộc tính.
 @export var attribute_bonus: float

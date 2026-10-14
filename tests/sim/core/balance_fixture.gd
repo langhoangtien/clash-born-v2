@@ -27,5 +27,15 @@ static func make() -> BalanceSettings:
 	b.creep_structure_damage = 0.65
 	b.siege_structure_damage = 1.25
 	b.tower_aggro_time = 4.0
+	b.first_wave_time = 15.0
+	b.wave_interval = 30.0
+	b.wave_melee = 3
+	b.wave_ranged = 1
+	b.siege_every_waves = 5
+	b.creep_acquire_range = 500.0
+	b.creep_chase_leash = 800.0
+	b.creep_hero_aggro_range = 500.0
+	b.creep_hero_aggro_time = 2.5
+	b.creep_front_margin = 200.0
 	b.tower_body_radius = 52.0
 	return b

@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="UnitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="1_41suq"]
+[ext_resource type="Script" path="res://sim/defs/unit_def.gd" id="2_yy3oy"]
+[ext_resource type="Script" path="res://sim/defs/combat_stats_def.gd" id="3_m0miy"]
+
+[sub_resource type="Resource" id="Resource_hbs72"]
+script = ExtResource("3_m0miy")
+base_hp = 800.0
+base_damage = 40.0
+base_attack_time = 2.7
+attack_point = 0.7
+attack_range = 690.0
+projectile_speed = 700.0
+movement_speed = 220.0
+vision_range = 800.0
+collision_radius = 22.0
+
+[resource]
+script = ExtResource("2_yy3oy")
+kind = 2
+stats = SubResource("Resource_hbs72")
+id = &"creep_siege"
+display_name = "Lính công thành"
+art_id = &"creep_siege"
