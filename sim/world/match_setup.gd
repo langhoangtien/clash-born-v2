@@ -40,3 +40,23 @@ static func spawn_creep(world: World, library: ContentLibrary, def_id: StringNam
 ## VIS-01: bật tầm nhìn cho trận (mọi trận thật; test cơ chế có thể bỏ qua để thấy hết).
 static func add_vision(world: World) -> void:
 	world.add_system(VisionSystem.new(), World.Phase.VISION)
+
+
+## JGL: trại cho mọi loại trại trên map có CampDef (boss chưa có thì bỏ qua), controller và spawner.
+static func add_jungle(world: World, library: ContentLibrary) -> void:
+	var map: MapLayout = world.map
+	for i: int in range(map.camp_ids.size()):
+		var kind: StringName = StringName(map.camp_kinds[i])
+		if not library.camps.has(kind):
+			continue
+		var c: CampState = CampState.new()
+		c.index = i
+		c.kind = kind
+		c.center = map.camp_points[i]
+		c.def = library.camps[kind]
+		world.camps.append(c)
+	for def: CampDef in library.camps.values():
+		for u: UnitDef in def.units:
+			world.navigation(u.stats.collision_radius)  # dựng sẵn, không giật lúc trại xuất hiện (D-70)
+	world.add_system(JungleController.new(), World.Phase.CONTROLLER)
+	world.add_system(JungleSpawner.new(), World.Phase.SPAWN)

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CampDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/camp_def.gd" id="1_camp"]
+[ext_resource type="Script" path="res://sim/defs/unit_def.gd" id="2_unit"]
+[ext_resource type="Resource" path="res://content/units/neutral_buffalo.tres" id="3_neutral_buffalo"]
+[ext_resource type="Resource" path="res://content/units/neutral_wolf.tres" id="4_neutral_wolf"]
+
+[resource]
+script = ExtResource("1_camp")
+kind = &"large"
+units = Array[ExtResource("2_unit")]([ExtResource("3_neutral_buffalo"), ExtResource("4_neutral_wolf"), ExtResource("4_neutral_wolf")])
+id = &"camp_large"
+display_name = "Trại lớn"

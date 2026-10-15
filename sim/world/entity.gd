@@ -23,6 +23,9 @@ var locked: bool = false
 ## Trụ: hero địch vừa gây giao tranh hero phe trụ và hạn nhớ (STR-01, StructureController ghi).
 ## Lính đường: lane, có phải lính công thành (CRP-10), đang về lane (CRP-07), origin leash (DEF-08).
 var lane: String = ""
+## JGL: trại của quái rừng (-1 = không phải quái rừng) và chỗ đứng ở trại.
+var camp_index: int = -1
+var home_point: Vector2 = Vector2.ZERO
 ## VIS-01: đội nào thấy đơn vị này (bit = đội); VisionSystem ghi mỗi tick. Mặc định thấy hết.
 var visible_mask: int = -1
 ## VIS-06: bụi đang đứng (-1 = không); VIS-07: lộ tới hết tick này. VisionSystem ghi.

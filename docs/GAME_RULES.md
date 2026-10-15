@@ -442,7 +442,7 @@ Bảng ưu tiên (dòng trên thắng):
 | Mã | State | Vào khi | Làm gì | Thoát khi |
 |---|---|---|---|---|
 | CRP-01 | HERO_AGGRO | Có `hero_attacked_hero` mà nạn nhân là hero phe mình và lính trong `creep_hero_aggro_range` của nạn nhân | Đánh hero gây sự | Hết `creep_hero_aggro_time` (gia hạn nếu đánh tiếp), mục tiêu không nhắm được, vượt `creep_chase_leash` từ origin |
-| CRP-02 | LANE_COMBAT | Lính địch nhắm được trong `creep_acquire_range` | Đánh lính địch gần nhất | Mục tiêu mất, vượt leash |
+| CRP-02 | LANE_COMBAT | Lính địch hoặc quái rừng nhắm được trong `creep_acquire_range` | Đánh lính địch / quái gần nhất (D-76) | Mục tiêu mất, vượt leash |
 | CRP-03 | SIEGE | Công trình kế tiếp trong `creep_acquire_range` hoặc trong tầm đánh của lính (lính công thành tầm 690 > 500) | Đánh nó | Công trình chết; có lính địch |
 | CRP-04 | HERO_NEARBY | Hero địch nhắm được trong `creep_acquire_range` | Đánh hero đó | Ra khỏi tầm, vượt leash |
 | CRP-05 | ADVANCE | Mặc định | Đi theo route, không vượt mép trước của lane (DEF-07) | — |
@@ -480,16 +480,25 @@ Bảng ưu tiên (dòng trên thắng):
 
 ## JGL — Quái rừng
 
+Quái rừng thuộc đội trung lập (đội 2), là **kẻ địch của mọi phe**: hero, lính đường, trụ
+đánh được như đánh lính địch (D-76). Mỗi trại có trạng thái chung cho cả trại.
+
 | Mã | State | Vào khi | Làm gì | Thoát khi |
 |---|---|---|---|---|
-| JGL-01 | AGGRO | Bị gây sát thương | Cả trại đánh kẻ gây sát thương | Mục tiêu chết/không nhắm được; mục tiêu hoặc quái ra ngoài `jungle_leash` từ tâm trại; `jungle_aggro_time` không bị đánh |
-| JGL-02 | RETURN_HOME | Thoát AGGRO | Về tâm trại, không nhận mục tiêu, hồi đầy máu khi tới | Tới nơi |
+| JGL-01 | AGGRO | Quái trong trại bị gây sát thương | Cả trại đánh kẻ gây sát thương **gần đây nhất** (đổi sang kẻ mới nếu kẻ khác đánh) | Mục tiêu chết/không nhắm được; mục tiêu hoặc một con quái ra ngoài `jungle_leash` từ tâm trại; `jungle_aggro_time` giây không bị đánh |
+| JGL-02 | RETURN_HOME | Thoát AGGRO | Mỗi con về chỗ đứng của nó, không nhận mục tiêu (bị đánh cũng bỏ qua), tới nơi thì hồi đầy máu | Cả trại tới nơi |
 | JGL-03 | IDLE | Ở trại | Đứng yên | Bị đánh |
 
-- `JGL-04` Không chủ động đánh ai; không đánh lính đường.
-- `JGL-05` Trại hồi mỗi `jungle_respawn_check` giây nếu đã trống và không có đơn vị
-  nào trong `camp_spawn_box` quanh tâm trại. Lần đầu ở `jungle_first_spawn`.
-- `JGL-06` Loại trại (small/medium/large/boss) lấy từ dữ liệu map.
+- `JGL-04` Không chủ động đánh ai. Ai gây sát thương (hero, lính đường, trụ) thì bị đánh
+  lại theo JGL-01 — đây là cơ chế kéo quái (pull) kiểu Dota (D-76).
+- `JGL-05` Mọi trại xuất hiện ở `jungle_first_spawn`. Sau đó cứ mỗi `jungle_respawn_check`
+  giây tính từ lần đầu, trại đã trống hồi lại nếu không có đơn vị sống nào trong bán kính
+  `camp_spawn_box` quanh tâm trại.
+- `JGL-06` Loại trại (small/medium/large/boss) lấy từ dữ liệu map; quái của từng loại lấy
+  từ `content/camps` (CampDef). Loại không có CampDef (boss) thì chưa xuất hiện.
+- `JGL-07` Thưởng (D-76): hero kết liễu → vàng + last hit (ECO-01); XP chia cho hero **cùng
+  phe kẻ hạ** trong `xp_share_range` (ECO-03). Lính / trụ hạ → không ai được vàng, XP chia
+  cho hero phe kẻ hạ ở gần.
 
 ## DTH — Chết và hồi sinh tại chỗ
 
@@ -512,7 +521,7 @@ Bảng ưu tiên (dòng trên thắng):
 - `ECO-02` ~~Chặn (deny)~~ — bỏ (D-60): không đánh được lính phe mình.
 - `ECO-03` Đơn vị chết → `bounty_xp` (hero: `hero_kill_xp_base + hero_kill_xp_per_level ×
   cấp nạn nhân`) chia đều cho hero **phe kia, còn sống**, trong `xp_share_range` quanh nơi
-  chết; hero hạ được luôn được tính. XP lên cấp kế: `xp_base + xp_per_level × (cấp − 1)`;
+  chết (quái rừng: hero cùng phe kẻ hạ, JGL-07); hero hạ được luôn được tính. XP lên cấp kế: `xp_base + xp_per_level × (cấp − 1)`;
   tối đa `hero_max_level` (20), tới cấp tối đa không giữ XP.
 - `ECO-08` Hạ hero: kẻ hạ (hero) nhận `hero_kill_gold_base + hero_kill_gold_per_level × cấp
   nạn nhân` vàng, sự kiện `kill_credited`; trụ/lính/fountain hạ thì vàng chia đều cho hero

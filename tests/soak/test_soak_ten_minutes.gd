@@ -1,5 +1,5 @@
 extends TestCase
-## M2.6 soak (chạy riêng: run_tests -Soak): 10 phút trận đủ lính, trụ, 2 hero dùng nút đánh;
+## M2.6 soak (chạy riêng: run_tests -Soak): 10 phút trận đủ lính, trụ, quái rừng, 2 hero dùng nút đánh;
 ## kiểm tra bất biến INV-01..05 mỗi tick và INV-08 (chạy lại cùng lệnh ra cùng trạng thái).
 
 const MAP_PATH: String = "res://data/maps/clashborn.tres"
@@ -22,6 +22,7 @@ func _world() -> World:
 	w.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
 	MatchSetup.spawn_structures(w, _lib)
 	MatchSetup.add_vision(w)
+	MatchSetup.add_jungle(w, _lib)
 	MatchSetup.add_lane_creeps(w, _lib, true)
 	var mid: Vector2 = _map.world_size() * 0.5
 	UnitFactory.hero(w, _lib.heroes[&"brakk"], 0, w.navigation(32.0).nearest_clear(mid + Vector2(-600, 600)))
@@ -49,12 +50,20 @@ func test_INV_01_05_and_08_ten_minutes() -> void:
 	for t: int in range(ticks):
 		_press_buttons(w)
 		w.step()
+		for ev: GameEvent in w.events:  # D-76: đợt lính đi qua không tự đụng trại rừng
+			var src: Entity = w.find_entity(ev.source_id)
+			var dst: Entity = w.find_entity(ev.target_id)
+			if ev.type == &"damage_taken" and src != null and dst != null and src.kind == Entity.Kind.LANE_CREEP and dst.kind == Entity.Kind.NEUTRAL:
+				fail("tick %d: lính đường đánh quái rừng khi không ai kéo" % w.tick)
+				return
 		var problem: String = _check(w, still, last_pos)
 		if problem != "":
 			fail("tick %d (%s): %s" % [w.tick, MatchHud.clock_text(w.tick), problem])
 			return
 		if t % 900 == 899:
 			checkpoints.append(w.state_hash())
+		if w.tick == SimClock.seconds_to_ticks(w.balance.jungle_first_spawn) + 1:
+			assert_eq(w.entities.filter(func(e: Entity) -> bool: return e.kind == Entity.Kind.NEUTRAL).size(), 28, "12 trại đủ quái (JGL-05)")
 	assert_eq(mover.blocked_steps, 0, "MOV-05: không bước nào bị chặn vì vật cản")
 	var last_hits: int = 0
 	for e: Entity in w.entities:

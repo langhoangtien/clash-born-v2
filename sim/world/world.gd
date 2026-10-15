@@ -52,6 +52,8 @@ var emit_depth: int = 0
 var pending_areas: Array[PendingArea] = []
 ## Vùng tồn tại (ZoneAction, ABL-17), kể cả vùng chưa bắt đầu; TriggerSystem cho tác dụng.
 var zones: Array[ActiveZone] = []
+## Trại rừng (JGL), MatchSetup.add_jungle dựng.
+var camps: Array[CampState] = []
 ## Đạn kỹ năng đang bay (ABL-05), SkillShotSystem cập nhật.
 var skill_shots: Array[SkillShot] = []
 ## Chỉ để VIEW vẽ: vùng vừa nổ gần đây [tâm, bán kính, tick, đội]. Không thuộc trạng thái trận.
@@ -195,7 +197,7 @@ func state_hash() -> PackedByteArray:
 	for e: Entity in entities:
 		ctx.update(PackedInt64Array([e.id, e.team, e.kind, e.order.type, int(e.order.finished), e.order.target_id,
 			int(e.alive), int(e.locked), int(e.returning), int(e.has_origin), e.aggro_target_id, e.aggro_until_tick, e.attack_phase, e.attack_target_id, e.attack_start_tick, e.attack_release_tick, e.next_attack_tick,
-			e.lock_target_id, e.respawn_tick, e.gold, e.last_hits, e.skill_points, e.attribute_bonus_count, e.talent_slot, e.kills, e.deaths, e.assists, e.last_attack_target_id, e.visible_mask, e.bush_id, e.reveal_until_tick]).to_byte_array())
+			e.lock_target_id, e.respawn_tick, e.gold, e.last_hits, e.skill_points, e.attribute_bonus_count, e.talent_slot, e.kills, e.deaths, e.assists, e.last_attack_target_id, e.visible_mask, e.bush_id, e.reveal_until_tick, e.camp_index]).to_byte_array())
 		ctx.update(PackedFloat64Array([e.position.x, e.position.y, e.radius, e.health, e.mana,
 			e.order.point.x, e.order.point.y, e.order.direction.x, e.order.direction.y,
 			e.chase_origin.x, e.chase_origin.y, e.xp]).to_byte_array())
@@ -214,6 +216,8 @@ func state_hash() -> PackedByteArray:
 	keys.sort()
 	for k: int in keys:
 		ctx.update(PackedInt64Array([k, prd_counters[k]]).to_byte_array())
+	for c: CampState in camps:
+		ctx.update(PackedInt64Array([c.index, c.unit_ids.size(), c.target_id, c.aggro_until_tick, int(c.returning)]).to_byte_array())
 	for a: PendingArea in pending_areas:
 		ctx.update(PackedFloat64Array([a.source_id, a.due_tick, a.center.x, a.center.y]).to_byte_array())
 	for z: ActiveZone in zones:

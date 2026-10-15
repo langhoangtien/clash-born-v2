@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CampDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/camp_def.gd" id="1_camp"]
+[ext_resource type="Script" path="res://sim/defs/unit_def.gd" id="2_unit"]
+[ext_resource type="Resource" path="res://content/units/neutral_bear.tres" id="3_neutral_bear"]
+[ext_resource type="Resource" path="res://content/units/neutral_shaman.tres" id="4_neutral_shaman"]
+
+[resource]
+script = ExtResource("1_camp")
+kind = &"medium"
+units = Array[ExtResource("2_unit")]([ExtResource("3_neutral_bear"), ExtResource("4_neutral_shaman")])
+id = &"camp_medium"
+display_name = "Trại vừa"

@@ -71,6 +71,9 @@ func _reward(world: World, e: Entity) -> void:
 	if killer != null and killer.kind == Entity.Kind.HERO and killer.team != e.team:
 		killer.gold += e.bounty_gold
 		killer.last_hits += 1
+	if e.kind == Entity.Kind.NEUTRAL:
+		_share_neutral_xp(world, e, killer)  # JGL-07
+		return
 	_share_xp(world, e, e.bounty_xp, null)
 
 
@@ -124,3 +127,16 @@ func _count_kda(world: World, victim: Entity, killer: Entity) -> void:
 		if h != null and h != killer and victim.damaged_by[id] >= since:
 			h.assists += 1
 	victim.damaged_by.clear()
+
+
+## JGL-07: XP quái rừng chia cho hero sống cùng phe kẻ hạ trong `xp_share_range`.
+func _share_neutral_xp(world: World, dead: Entity, killer: Entity) -> void:
+	if killer == null:
+		return
+	var takers: Array[Entity] = []
+	for h: Entity in world.entities:
+		if h.kind == Entity.Kind.HERO and h.alive and h.team == killer.team \
+				and (h == killer or h.position.distance_to(dead.position) <= world.balance.xp_share_range):
+			takers.append(h)
+	for h: Entity in takers:
+		Progression.add_xp(world, h, float(dead.bounty_xp) / takers.size())

@@ -193,3 +193,5 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M5.2 | Xong | 2026-10-15 | 413 test xanh (+9); tàng hình + hiện dần, lộ diện kiểu Track, true sight fountain, UNTARGETABLE; bảng tương tác trong GAME_RULES (D-73) |
 | M5.3 | Xong | 2026-10-15 | 421 test xanh (+8); lướt ABL-08 (DashSystem): tới mép, xuyên đơn vị, bám mục tiêu, dừng ở địa hình/choáng/mất mục tiêu; ModifyCooldown ABL-18 (D-74) |
 | M5.4 | Xong | 2026-10-15 | 431 test xanh (+10); Noctis: chí mạng, Q lướt, W tàng hình + phục kích, R dấu tử thần, 3 talent; chiêu ưu tiên mục tiêu khóa (D-75). Chờ chơi thử |
+| M5.5 | Xong | 2026-10-15 | 441 test xanh (+10); 12 trại rừng, JGL-01..07, kéo quái (pull) ở trại 6, soak có quái rừng (D-76). Chờ chơi thử |
+| **Hết M5** | | | |

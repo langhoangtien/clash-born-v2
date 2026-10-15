@@ -49,6 +49,15 @@ extends Resource
 @export var creep_hero_aggro_time: float
 @export var creep_front_margin: float
 
+@export_group("Quái rừng (JGL)")
+## JGL-05: lần đầu xuất hiện, chu kỳ kiểm tra hồi trại (giây), bán kính phải trống quanh tâm trại.
+@export var jungle_first_spawn: float
+@export var jungle_respawn_check: float
+@export var camp_spawn_box: float
+## JGL-01: bỏ đuổi khi mục tiêu / quái ra xa tâm trại chừng này, hoặc chừng này giây không bị đánh.
+@export var jungle_leash: float
+@export var jungle_aggro_time: float
+
 @export_group("Hero")
 ## ABL-04: mỗi lần đổi điểm thừa cộng chừng này vào cả 3 thuộc tính.
 @export var attribute_bonus: float

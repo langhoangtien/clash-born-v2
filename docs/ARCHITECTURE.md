@@ -62,7 +62,7 @@ clashborn_v2/
     defs/                  khuôn dữ liệu: HeroDef, AbilityDef, EffectDef, TalentDef, ItemDef, UnitDef…
     content/               ContentLibrary (nạp content/), ContentValidator, RuleCatalog, ExprRules
     actions/               hành động dùng chung cho kỹ năng/hiệu ứng (mỗi loại một khuôn)
-    controllers/           AI: lính (LaneCreepController), trụ (StructureController), quái rừng, bot — chỉ sinh Command
+    controllers/           AI: lính (LaneCreepController), trụ (StructureController), quái rừng (JungleController + JungleSpawner, CampState), bot — chỉ sinh Command
     commands/              Command, Order, CommandReplay (phát lại nhật ký); kiểm tra ở CommandSystem
     map/                   MapLayout, MapNavigation, MapValidator, MapShape (mang từ v1), LaneRoute (tiến độ lane)
   view/                    vẽ đơn vị, map, hiệu ứng, HUD, điều khiển cảm ứng;

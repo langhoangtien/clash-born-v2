@@ -11,6 +11,7 @@ const MARGIN: Vector2 = Vector2(16, 16)
 const BLUE: Color = Color(0.35, 0.65, 1.0)
 const RED: Color = Color(1.0, 0.35, 0.3)
 const ME: Color = Color(1.0, 0.9, 0.3)
+const NEUTRAL: Color = Color(0.95, 0.75, 0.35)
 
 var world: World
 var hero: Entity
@@ -81,10 +82,12 @@ func _draw() -> void:
 ## Vẽ ở tọa độ map (layer đã thu nhỏ): bán kính chấm tính theo px minimap.
 func _paint_dots(ci: CanvasItem) -> void:
 	var px: float = 1.0 / map_scale()
+	for c: CampState in world.camps:  # JGL: chỗ trại (vòng nhỏ), quái đang thấy là chấm bên dưới
+		ci.draw_arc(c.center, 4.0 * px, 0, TAU, 12, Color(NEUTRAL, 0.7), px)
 	for e: Entity in world.entities:
 		if not e.alive:
 			continue
-		var color: Color = BLUE if e.team == team else RED
+		var color: Color = BLUE if e.team == team else (NEUTRAL if e.team == 2 else RED)
 		if Rules.is_structure(e):
 			var r: float = (6.0 if e.kind == Entity.Kind.CORE else 4.0) * px
 			ci.draw_rect(Rect2(e.position - Vector2(r, r), Vector2(r, r) * 2.0), color)

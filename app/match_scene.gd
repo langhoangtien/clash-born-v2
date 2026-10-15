@@ -43,6 +43,7 @@ func _ready() -> void:
 	var library: ContentLibrary = ContentLibrary.load_dir()
 	MatchSetup.spawn_structures(world, library)
 	MatchSetup.add_vision(world)
+	MatchSetup.add_jungle(world, library)
 	MatchSetup.add_lane_creeps(world, library, true)
 	hero_def = library.heroes[hero_id]
 	for def: GameDef in library.units.values() + library.heroes.values():

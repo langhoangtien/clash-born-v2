@@ -65,8 +65,8 @@ func _pick(world: World, c: Entity) -> Entity:
 		if Rules.is_attackable(c, bully):
 			return bully  # CRP-01
 	var current: Entity = world.find_entity(c.order.target_id) if c.order.type == Order.Type.ATTACK and not c.order.finished else null
-	if current != null and Rules.is_attackable(c, current) and current.kind == Entity.Kind.LANE_CREEP:
-		return current  # CRP-02 + CRP-06
+	if current != null and Rules.is_attackable(c, current) and current.kind in [Entity.Kind.LANE_CREEP, Entity.Kind.NEUTRAL]:
+		return current  # CRP-02 + CRP-06 (quái rừng như lính địch, D-76)
 	var nearest: Array[Entity] = _nearest_creep_and_hero(world, c)
 	if nearest[0] != null:
 		return nearest[0]
@@ -91,13 +91,13 @@ func _next_structure(world: World, c: Entity) -> Entity:
 	return _next_cache[key]
 
 
-## Lính địch và hero địch gần nhất trong `creep_acquire_range` (một lần tra lưới cho cả hai).
+## Lính địch (hoặc quái rừng, D-76) và hero địch gần nhất trong `creep_acquire_range` (một lần tra lưới cho cả hai).
 func _nearest_creep_and_hero(world: World, c: Entity) -> Array[Entity]:
 	var best: Array[Entity] = [null, null]
 	var best_d: Array[float] = [INF, INF]
 	var acquire: float = world.balance.creep_acquire_range
 	for e: Entity in world.spatial_near(c.position, acquire + c.radius, World.Phase.CONTROLLER, false):
-		var slot: int = 0 if e.kind == Entity.Kind.LANE_CREEP else (1 if e.kind == Entity.Kind.HERO else -1)
+		var slot: int = 0 if e.kind == Entity.Kind.LANE_CREEP or e.kind == Entity.Kind.NEUTRAL else (1 if e.kind == Entity.Kind.HERO else -1)
 		if slot < 0 or not Rules.is_attackable(c, e):
 			continue
 		var d: float = Rules.edge_distance(c, e)

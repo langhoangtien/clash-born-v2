@@ -12,6 +12,8 @@ var abilities: Dictionary[StringName, AbilityDef] = {}
 var effects: Dictionary[StringName, EffectDef] = {}
 var items: Dictionary[StringName, ItemDef] = {}
 var units: Dictionary[StringName, UnitDef] = {}
+## JGL-06: theo loại trại (CampDef.kind).
+var camps: Dictionary[StringName, CampDef] = {}
 var load_errors: PackedStringArray = PackedStringArray()
 
 var _all: Dictionary[StringName, String] = {}  # id → đường dẫn file
@@ -56,6 +58,8 @@ func _add(path: String, resource: Resource) -> void:
 		items[def.id] = def
 	elif def is UnitDef:
 		units[def.id] = def
+	elif def is CampDef:
+		camps[(def as CampDef).kind] = def
 
 
 ## Bản xuất (export) đổi .tres thành .remap; bỏ đuôi đó để nạp được ở cả hai.

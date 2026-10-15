@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/unit_def.gd" id="1_unit"]
+[ext_resource type="Script" path="res://sim/defs/combat_stats_def.gd" id="2_stats"]
+
+[sub_resource type="Resource" id="Resource_stats"]
+script = ExtResource("2_stats")
+base_hp = 1200.0
+base_damage = 50.0
+physical_armor = 4.0
+base_attack_time = 1.5
+attack_point = 0.5
+attack_range = 120.0
+movement_speed = 300.0
+vision_range = 800.0
+collision_radius = 36.0
+
+[resource]
+script = ExtResource("1_unit")
+kind = 3
+stats = SubResource("Resource_stats")
+id = &"neutral_buffalo"
+display_name = "Trâu rừng"
+art_id = &"neutral_buffalo"
+bounty_xp = 110
+bounty_gold = 90

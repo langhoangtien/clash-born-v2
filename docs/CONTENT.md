@@ -409,6 +409,26 @@ Số thật nằm trong `content/units/`. BAT = thời gian đánh gốc (giây/
 | Trụ 1 / 2 / 3 / 4 | 1800 / 2200 / 2500 / 2600 | 110 / 130 / 150 / 150 | 10 / 12 / 14 / 15 | 1.0 | 0.1 | 550 | — | 150 / 200 / 225 / 250 | 0 |
 | Nhà chính | 4000 | — | 15 | — | — | — | — | — | — |
 
+## Quái rừng (M5.5, D-76)
+
+Mỗi phe 6 trại: 2 nhỏ, 2 vừa, 2 lớn (boss pit để sau). Chỉ số không tăng theo thời gian.
+
+| Quái (`id`) | Máu | Sát thương | Giáp | Tốc đánh gốc | Tầm | Tốc chạy | Vàng / XP |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Sói con (`neutral_wolf`) | 350 | 18 | 1 | 1.2 | 100 | 320 | 30 / 40 |
+| Gấu đá (`neutral_bear`) | 700 | 32 | 3 | 1.35 | 100 | 300 | 55 / 70 |
+| Pháp sư rừng (`neutral_shaman`) | 400 | 26 | 0 | 1.5 | 450 | 300 | 45 / 60 |
+| Trâu rừng (`neutral_buffalo`) | 1200 | 50 | 4 | 1.5 | 120 | 300 | 90 / 110 |
+
+| Trại (`content/camps`) | Quái | Tổng vàng |
+|---|---|---:|
+| Nhỏ | 2 Sói con | 60 |
+| Vừa | Gấu đá + Pháp sư rừng | 100 |
+| Lớn | Trâu rừng + 2 Sói con | 150 |
+
+Tầm nhìn quái 800 (để thấy kẻ đánh mình). Trại lớn số 6 mỗi phe cách lane 896: điểm kéo
+quái (pull) của lane đó; các trại khác ≥ 1166, không pull được.
+
 ## Khung chỉ số cấp 1 (D-39)
 
 Máu và giáp **cấp 1, đã tính thuộc tính** phải nằm trong khung (test kiểm tra mọi hero):
