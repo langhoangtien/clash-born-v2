@@ -56,6 +56,8 @@ static func refresh_states(owner: Entity) -> void:
 			continue  # VIS-04: đang hiện dần, state chưa bật
 		for state: UnitState.Id in inst.def.states:
 			bits |= 1 << state
+	if owner.dash != null:
+		bits |= 1 << UnitState.Id.UNTARGETABLE  # ABL-08
 	owner.states = bits
 
 

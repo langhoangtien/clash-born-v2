@@ -16,6 +16,9 @@ static func run(world: World, actions: Array[ActionDef], ctx: ExprContext, sourc
 		if action is ZoneAction:
 			_zone(world, action, ctx, source_id)
 			continue
+		if action is DashAction:
+			_dash(world, action, ctx, source_id)
+			continue
 		var receiver: Entity = receiver_of(action.target, ctx)
 		if receiver == null or not receiver.alive:
 			continue
@@ -31,6 +34,8 @@ static func run(world: World, actions: Array[ActionDef], ctx: ExprContext, sourc
 			for inst: EffectInstance in receiver.effects.duplicate():
 				if inst.def == (action as RemoveEffectAction).effect:
 					Effects.remove(world, receiver, inst, &"removed")
+		elif action is ModifyCooldownAction:
+			_modify_cooldown(world, action, ctx, receiver)
 		elif action is ManaBurnAction:
 			_mana_burn(world, receiver, ExprEval.evaluate((action as ManaBurnAction).amount, ctx), source_id)
 		elif action is DispelAction:
@@ -198,3 +203,30 @@ static func _skill_shot(world: World, a: ProjectileAction, ctx: ExprContext, sou
 	s.ctx = ctx
 	s.team = owner.team
 	world.skill_shots.append(s)
+
+
+## ABL-08: chủ kỹ năng lướt tới đơn vị `target` (DashSystem đi từ tick sau).
+static func _dash(world: World, a: DashAction, ctx: ExprContext, source_id: int) -> void:
+	var target: Entity = receiver_of(a.target, ctx)
+	var owner: Entity = ctx.owner
+	if target == null or owner == null or target == owner or not owner.alive:
+		return
+	var d: DashState = DashState.new()
+	d.target_id = target.id
+	d.speed = ExprEval.evaluate(a.speed, ctx)
+	d.actions = a.on_arrive
+	d.ctx = ctx
+	d.source_id = source_id
+	owner.dash = d
+	owner.attack_phase = Entity.AttackPhase.NONE
+	Effects.refresh_states(owner)
+	world.emit(&"dash_started", owner.id, target.id)
+
+
+## ABL-18: cộng `amount` giây vào hồi chiêu còn lại của ô `slot`; không xuống dưới 0.
+static func _modify_cooldown(world: World, a: ModifyCooldownAction, ctx: ExprContext, receiver: Entity) -> void:
+	var ability: AbilityInstance = Abilities.of(receiver, a.slot)
+	if ability == null:
+		return
+	var delta: int = roundi(ExprEval.evaluate(a.amount, ctx) * SimClock.TICKS_PER_SECOND)
+	ability.ready_tick = maxi(world.tick, maxi(ability.ready_tick, world.tick) + delta)

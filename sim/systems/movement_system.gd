@@ -1,7 +1,8 @@
 class_name MovementSystem
 extends SimSystem
 ## Pha 6: đi theo lệnh MOVE (MOV-01..03) rồi đẩy tách các đơn vị chồng nhau (MOV-04).
-## Không bao giờ đặt đơn vị vào vật cản (MOV-05, INV-01). Chỉ hệ thống này đổi vị trí.
+## Không bao giờ đặt đơn vị vào vật cản (MOV-05, INV-01). Chỉ hệ thống này (và DashSystem khi
+## lướt, ABL-08) đổi vị trí. Đơn vị đang lướt xuyên qua đơn vị khác, không bị đẩy tách.
 
 ## Hằng số kỹ thuật: hai tâm gần hơn mức này coi như trùng nhau.
 const SAME_SPOT: float = 0.001
@@ -124,13 +125,13 @@ func _path_still_walkable(nav: MapNavigation, e: Entity) -> bool:
 func _separate(world: World) -> void:
 	var max_push: float = world.balance.separation_speed * SimClock.TICK_SECONDS
 	for a: Entity in world.entities:
-		if not a.alive:
+		if not a.alive or a.dash != null:
 			continue
 		# Lưới dựng một lần ở đầu bước đẩy; vị trí đổi trong lúc đẩy chỉ làm lọc thô kém đi
 		# vài đơn vị, kết quả vẫn xác định vì thứ tự theo id.
 		var later: Array[Entity] = []
 		for b: Entity in world.spatial_near(a.position, a.radius + SEPARATION_SLACK, World.Phase.MOVEMENT, false):
-			if b.id > a.id:
+			if b.id > a.id and b.dash == null:
 				later.append(b)
 		if later.size() > 1:
 			later.sort_custom(func(x: Entity, y: Entity) -> bool: return x.id < y.id)

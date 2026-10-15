@@ -48,17 +48,17 @@ static func has_state(e: Entity, state: UnitState.Id) -> bool:
 
 ## ST-01, 02, 08: được di chuyển.
 static func can_move(e: Entity) -> bool:
-	return e.alive and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.ROOTED) == 0
+	return e.alive and e.dash == null and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.ROOTED) == 0
 
 
 ## ST-01, 04, 08, 11: được đánh thường.
 static func can_attack(e: Entity) -> bool:
-	return e.alive and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.DISARMED | 1 << UnitState.Id.GHOST) == 0
+	return e.alive and e.dash == null and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.DISARMED | 1 << UnitState.Id.GHOST) == 0
 
 
 ## ST-01, 03, 08: được dùng chiêu (AbilitySystem dùng từ M3.4).
 static func can_cast(e: Entity) -> bool:
-	return e.alive and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.SILENCED) == 0
+	return e.alive and e.dash == null and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.SILENCED) == 0
 
 
 ## ST-07, 11: hệ số sát thương nhận theo loại (sau giáp, trước khiên).

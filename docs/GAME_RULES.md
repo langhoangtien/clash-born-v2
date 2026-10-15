@@ -284,10 +284,16 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `ABL-07` Kỹ năng vùng trúng mọi đơn vị theo `target_filter` trong vùng **tại thời
   điểm tác dụng**, kể cả INVISIBLE và UNTARGETABLE; không trúng công trình trừ khi
   khai báo `hits_structures`.
-- `ABL-08` Lướt (dash): di chuyển theo đường thẳng với tốc độ riêng, dừng ở mép
-  mục tiêu hoặc vật cản đầu tiên; trong lúc lướt đơn vị UNTARGETABLE; bị STUNNED
-  khi đang lướt thì dừng tại chỗ. Mục tiêu biến mất giữa chừng: dừng, không gây
-  sát thương, không hoàn mana.
+- `ABL-08` Lướt (dash, D-74): bắt đầu ở tick sau khi tung, mỗi tick đi thẳng `speed` × tick
+  về phía vị trí **hiện tại** của mục tiêu (bám theo nếu nó chạy), xuyên qua mọi đơn vị
+  (không đẩy tách); tới khi thân chạm mép mục tiêu thì chạy `on_arrive` lên mục tiêu
+  (sự kiện `dash_arrived`). Trong lúc lướt: UNTARGETABLE, không đi/đánh/dùng chiêu theo
+  lệnh; lệnh mới chờ tới khi lướt xong (như D-59). Dừng sớm, **không** chạy `on_arrive`,
+  không hoàn mana/hồi chiêu khi: gặp vách đá, rừng hoặc thân trụ (đứng ở chỗ còn đi
+  được cuối cùng); bị STUNNED (dừng tại chỗ); mục tiêu chết, biến mất, hoặc không còn
+  nhắm được (tàng hình, UNTARGETABLE…). Chết thì hết lướt.
+- `ABL-18` Chỉnh hồi chiêu (ModifyCooldownAction): cộng `amount` giây vào thời gian hồi
+  còn lại của ô `slot` trên đơn vị nhận; âm thì giảm, không xuống dưới 0 (sẵn sàng ngay).
 - `ABL-09` Mọi giá trị theo cấp skill là **giá trị có tên** (`damage`, `duration`…)
   khai báo trong skill; hành động đọc theo tên. Đây là chỗ talent can thiệp (TAL-02).
 - `ABL-10` Đẩy lùi (knockback): đơn vị bị dời theo hướng định sẵn một khoảng trong thời

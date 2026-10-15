@@ -48,6 +48,11 @@ func _draw() -> void:
 	order.sort_custom(func(a: Entity, b: Entity) -> bool: return display_position(a).y < display_position(b).y)
 	for e: Entity in order:
 		if e.alive and seen(e):  # hero chờ hồi sinh không vẽ (ECO-04)
+			if e.dash != null:  # ABL-08: vệt lướt
+				var at: Vector2 = display_position(e)
+				var col: Color = _team_color(e.team).lightened(0.4)
+				draw_line(at - e.facing * 110.0, at, Color(col, 0.25), e.radius * 1.6, true)
+				draw_line(at - e.facing * 70.0, at, Color(col, 0.5), e.radius * 0.8, true)
 			_draw_unit(e, display_position(e))
 	for r: Array in world.recent_areas:
 		var age: float = (world.tick - r[2]) / 15.0

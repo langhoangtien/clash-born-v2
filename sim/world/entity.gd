@@ -82,6 +82,8 @@ var next_attack_tick: int = 0
 ## `queued_order`, tung xong mới áp (D-59).
 var order: Order = Order.idle()
 var queued_order: Order
+## ABL-08: cú lướt đang diễn ra (DashSystem), null nếu không lướt.
+var dash: DashState
 ## Kỹ năng (ABL) và chiêu đang tung (AbilitySystem ghi).
 var abilities: Array[AbilityInstance] = []
 var cast: CastState

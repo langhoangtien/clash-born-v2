@@ -22,8 +22,8 @@ func run(world: World) -> void:
 			world.command_log.append(command)
 			continue
 		var order: Order = _order_for(world, command, unit)
-		if unit.cast != null:
-			unit.queued_order = order  # D-59: đang tung chiêu, lệnh chờ tới khi tung xong
+		if unit.cast != null or unit.dash != null:
+			unit.queued_order = order  # D-59, ABL-08: đang tung chiêu / lướt, lệnh chờ tới khi xong
 		else:
 			unit.order = order
 		world.command_log.append(command)
