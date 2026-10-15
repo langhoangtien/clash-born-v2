@@ -74,6 +74,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-72 | 2026-10-15 | M5.1b: bụi cỏ kiểu Liên Quân. Trong bụi thì địch chỉ thấy khi có người cùng bụi (thấy cả bụi) hoặc mình vừa ra tay (lộ `bush_reveal_time` = 1 s); trụ cũng không nhìn vào bụi; bụi không chặn đi lại, đạn, vùng. 14 bụi (7 cặp xoay 180°): sông giữa hai bên lối mid, bờ sông, cửa rừng, cạnh lane; mép bụi ngoài tầm bắn trụ. Phe mình trong bụi vẽ mờ | Đã duyệt |
 | D-73 | 2026-10-15 | M5.2: tàng hình mạnh hơn bụi, choáng/trúng đòn không làm lộ; `fade_in` chỉ hoãn state, modifier có ngay. REVEALED kiểu Track/Haze: đội kẻ áp thấy mục tiêu ở mọi nơi trên map, kể cả tàng hình và trong bụi. True sight fountain 900: đội chủ luôn thấy mọi kẻ địch quanh fountain. UNTARGETABLE: địch không nhắm được, vẫn được thấy, vùng/đạn kỹ năng vẫn trúng, đồng minh vẫn nhắm được | Đã duyệt |
 | D-74 | 2026-10-15 | M5.3: lướt bám theo vị trí hiện tại của mục tiêu, xuyên qua mọi đơn vị, chỉ địa hình và thân trụ chặn; vướng vật cản / bị choáng / mục tiêu mất hoặc hết nhắm được thì dừng, không gây sát thương, không hoàn mana; trong lúc lướt UNTARGETABLE, lệnh mới chờ tới khi xong. ModifyCooldownAction cộng/trừ hồi chiêu còn lại, không xuống dưới 0 | Đã duyệt |
+| D-75 | 2026-10-15 | M5.4: Noctis đủ bộ. Q II nghe `unit_died` (hạ bất kỳ ai, kể cả lính) thay vì `kill_credited` (chỉ hero). Chạm nhanh nút chiêu ưu tiên mục tiêu đang khóa / đang đánh nếu hợp lệ và trong tầm tìm (kiểu Liên Quân). Màn khởi động thêm nút vào trận Noctis | Đã duyệt |
 
 ## Chờ chốt
 

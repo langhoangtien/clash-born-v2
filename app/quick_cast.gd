@@ -27,9 +27,16 @@ static func command(world: World, hero: Entity, slot: int) -> Command:
 	return Command.cast(hero.id, slot)
 
 
-## Hero địch gần nhất trong tầm, rồi đơn vị địch hợp lệ gần nhất.
+## CTL-06: mục tiêu đang khóa / đang đánh (D-75), rồi hero địch gần nhất trong tầm, rồi đơn vị
+## địch hợp lệ gần nhất.
 static func target(world: World, hero: Entity, a: AbilityInstance, reach: float) -> Entity:
 	var search: float = (reach if reach > 0.0 else 600.0) + world.balance.attack_search_bonus
+	var focus: int = hero.lock_target_id
+	if focus < 0 and hero.order.type == Order.Type.ATTACK and not hero.order.finished:
+		focus = hero.order.target_id
+	var preferred: Entity = world.find_entity(focus) if focus >= 0 else null
+	if preferred != null and Abilities.accepts(hero, a.def, preferred) and Rules.edge_distance(hero, preferred) <= search:
+		return preferred
 	var best: Entity = null
 	for e: Entity in world.entities:
 		if not Abilities.accepts(hero, a.def, e) or Rules.edge_distance(hero, e) > search:

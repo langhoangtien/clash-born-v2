@@ -13,7 +13,7 @@ target = 0
 
 [sub_resource type="Resource" id="Resource_0o0dh"]
 script = ExtResource("4_8x0oj")
-event = &"kill_credited"
+event = &"unit_died"
 actions = Array[ExtResource("2_fvqfo")]([SubResource("Resource_lfjgx")])
 
 [resource]
@@ -22,7 +22,7 @@ duration = "1.3"
 tags = Array[StringName]([&"buff"])
 dispel = 2
 triggers = Array[ExtResource("4_8x0oj")]([SubResource("Resource_0o0dh")])
-removed_by = Array[StringName]([&"kill_credited"])
+removed_by = Array[StringName]([&"unit_died"])
 id = &"noctis_hunt_window"
 display_name = "Săn mồi"
 art_id = &"noctis_hunt_window"

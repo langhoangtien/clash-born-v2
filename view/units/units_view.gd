@@ -51,8 +51,8 @@ func _draw() -> void:
 			if e.dash != null:  # ABL-08: vệt lướt
 				var at: Vector2 = display_position(e)
 				var col: Color = _team_color(e.team).lightened(0.4)
-				draw_line(at - e.facing * 110.0, at, Color(col, 0.25), e.radius * 1.6, true)
-				draw_line(at - e.facing * 70.0, at, Color(col, 0.5), e.radius * 0.8, true)
+				draw_line(at - e.facing * 110.0, at, Color(col, 0.4), e.radius * 1.6, true)
+				draw_line(at - e.facing * 70.0, at, Color(col, 0.8), e.radius * 0.8, true)
 			_draw_unit(e, display_position(e))
 	for r: Array in world.recent_areas:
 		var age: float = (world.tick - r[2]) / 15.0

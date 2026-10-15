@@ -258,7 +258,7 @@ của địch về sau) và chỉ số `damage_taken_multiplier` tăng.
 
 | Talent | Thay đổi |
 |---|---|
-| Q II — Lưỡi Săn Mồi | Sát thương +100; nếu Noctis hạ gục bất kỳ ai trong 1.3 s kể từ lúc tung Q (lướt ~0.3 s + 1 s), hồi lại toàn bộ hồi chiêu Q (D-38) |
+| Q II — Lưỡi Săn Mồi | Sát thương +100; nếu Noctis hạ gục bất kỳ ai trong 1.3 s kể từ lúc tung Q (lướt ~0.3 s + 1 s), hồi lại toàn bộ hồi chiêu Q (D-38; nghe sự kiện `unit_died`, D-75) |
 | W II — Bóng Không Hình | Fade in 0 s; khi tàng hình hồi 3% máu tối đa mỗi giây |
 | R II — Án Tử | Khuếch đại +10%; khi đánh dấu, câm lặng mục tiêu 1.5 s |
 

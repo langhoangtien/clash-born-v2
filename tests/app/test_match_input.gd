@@ -255,6 +255,29 @@ func test_M38_quick_cast_aims_at_enemy_hero_first() -> void:
 	assert_eq(QuickCast.command(w, me, AbilityDef.Slot.Q).target_id, creep.id, "không có hero thì lính gần nhất")
 
 
+func test_CTL_06_quick_cast_prefers_locked_or_attacked_target() -> void:
+	var w: World = World.new(1, load("res://content/balance/balance_settings.tres") as BalanceSettings)
+	var me: Entity = _unit_at(w, 0, Vector2(500, 500), Entity.Kind.HERO)
+	var creep: Entity = _unit_at(w, 1, Vector2(700, 500), Entity.Kind.LANE_CREEP)
+	var foe: Entity = _unit_at(w, 1, Vector2(600, 500), Entity.Kind.HERO)
+	var d: AbilityDef = AbilityDef.new()
+	d.slot = AbilityDef.Slot.Q
+	d.targeting = AbilityDef.Targeting.UNIT
+	d.values = {&"cast_range": PackedFloat32Array([400, 400, 400, 400, 400])}
+	var a: AbilityInstance = AbilityInstance.new()
+	a.def = d
+	a.slot = AbilityDef.Slot.Q
+	a.rank = 1
+	me.abilities.append(a)
+	me.lock_target_id = creep.id
+	assert_eq(QuickCast.command(w, me, AbilityDef.Slot.Q).target_id, creep.id, "mục tiêu đang khóa trước hero gần nhất")
+	me.lock_target_id = -1
+	me.order = Order.attack(creep.id)
+	assert_eq(QuickCast.command(w, me, AbilityDef.Slot.Q).target_id, creep.id, "mục tiêu đang đánh")
+	creep.position = Vector2(2000, 500)
+	assert_eq(QuickCast.command(w, me, AbilityDef.Slot.Q).target_id, foe.id, "mục tiêu khóa ra ngoài tầm tìm thì về luật cũ")
+
+
 func _unit_at(w: World, team: int, at: Vector2, kind: Entity.Kind) -> Entity:
 	var e: Entity = Entity.new()
 	e.team = team

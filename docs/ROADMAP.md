@@ -192,3 +192,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M5.1b | Xong | 2026-10-15 | 404 test xanh (+7); bụi cỏ VIS-06/07: 14 bụi trên map, ẩn/lộ, cùng bụi, ra tay lộ 1 s, trụ không thấy vào bụi (D-72) |
 | M5.2 | Xong | 2026-10-15 | 413 test xanh (+9); tàng hình + hiện dần, lộ diện kiểu Track, true sight fountain, UNTARGETABLE; bảng tương tác trong GAME_RULES (D-73) |
 | M5.3 | Xong | 2026-10-15 | 421 test xanh (+8); lướt ABL-08 (DashSystem): tới mép, xuyên đơn vị, bám mục tiêu, dừng ở địa hình/choáng/mất mục tiêu; ModifyCooldown ABL-18 (D-74) |
+| M5.4 | Xong | 2026-10-15 | 431 test xanh (+10); Noctis: chí mạng, Q lướt, W tàng hình + phục kích, R dấu tử thần, 3 talent; chiêu ưu tiên mục tiêu khóa (D-75). Chờ chơi thử |
