@@ -190,3 +190,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | **Hết M4** | | | |
 | M5.1 | Xong | 2026-10-14 | 397 test xanh (+10); tầm nhìn VIS-01/05, INV-07; sương mù; minimap giữ để xem (D-71); sửa giật đợt lính đầu (D-70) |
 | M5.1b | Xong | 2026-10-15 | 404 test xanh (+7); bụi cỏ VIS-06/07: 14 bụi trên map, ẩn/lộ, cùng bụi, ra tay lộ 1 s, trụ không thấy vào bụi (D-72) |
+| M5.2 | Xong | 2026-10-15 | 413 test xanh (+9); tàng hình + hiện dần, lộ diện kiểu Track, true sight fountain, UNTARGETABLE; bảng tương tác trong GAME_RULES (D-73) |

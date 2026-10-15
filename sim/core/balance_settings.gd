@@ -87,6 +87,8 @@ extends Resource
 @export_group("Tầm nhìn (VIS)")
 ## VIS-07: ra tay trong bụi thì lộ chừng này giây.
 @export var bush_reveal_time: float
+## VIS-03: bán kính true sight quanh tâm fountain.
+@export var fountain_true_sight: float
 
 @export_group("Điều khiển (CTL)")
 ## CTL-02: tầm tìm mục tiêu = tầm đánh + chừng này.

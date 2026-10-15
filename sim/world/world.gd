@@ -205,7 +205,7 @@ func state_hash() -> PackedByteArray:
 		if e.cast != null:
 			ctx.update(PackedInt64Array([e.cast.ability.slot, e.cast.release_tick, e.cast.target_id]).to_byte_array())
 		for inst: EffectInstance in e.effects:
-			ctx.update(PackedInt64Array([inst.serial, inst.def.id.hash(), inst.source_id, inst.stacks, inst.end_tick, inst.next_period_tick]).to_byte_array())
+			ctx.update(PackedInt64Array([inst.serial, inst.def.id.hash(), inst.source_id, inst.stacks, inst.end_tick, inst.next_period_tick, inst.active_tick, inst.source_team]).to_byte_array())
 			ctx.update(PackedFloat64Array([inst.absorb_left]).to_byte_array())
 	var keys: Array = prd_counters.keys()
 	keys.sort()

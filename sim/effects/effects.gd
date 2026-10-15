@@ -22,6 +22,7 @@ static func apply(world: World, owner: Entity, def: EffectDef, source: Entity, v
 		inst.def = def
 		inst.owner_id = owner.id
 		inst.source_id = source_id
+		inst.source_team = source.team if source != null else -1
 		inst.item_slot = item_slot
 		inst.stacks = 1
 		owner.effects.append(inst)
@@ -51,6 +52,8 @@ static func remove(world: World, owner: Entity, inst: EffectInstance, reason: St
 static func refresh_states(owner: Entity) -> void:
 	var bits: int = 0
 	for inst: EffectInstance in owner.effects:
+		if inst.active_tick >= 0:
+			continue  # VIS-04: đang hiện dần, state chưa bật
 		for state: UnitState.Id in inst.def.states:
 			bits |= 1 << state
 	owner.states = bits
@@ -99,6 +102,8 @@ static func _start(world: World, owner: Entity, inst: EffectInstance, duration: 
 	if def.tags.has(&"debuff") and seconds > 0.0:  # ST-09
 		seconds *= 1.0 - owner.stats.get_stat(StatId.Id.STATUS_RESISTANCE)
 	inst.start_tick = world.tick
+	var fade: float = ExprEval.evaluate(def.fade_in, ctx) if not def.fade_in.is_empty() else 0.0
+	inst.active_tick = world.tick + SimClock.seconds_to_ticks(fade) if fade > 0.0 else -1
 	inst.end_tick = world.tick + maxi(1, SimClock.seconds_to_ticks(seconds)) if seconds > 0.0 else -1
 	if not def.absorb.is_empty():
 		inst.absorb_left = ExprEval.evaluate(def.absorb, ctx)

@@ -132,7 +132,22 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 `ST-13` GHOST và đánh thường: đòn đánh vật lý đang bay tới mục tiêu vừa thành GHOST thì
   mất tác dụng khi chạm. Đơn vị GHOST bị STUNNED vẫn là GHOST.
 
-`ST-14` UNTARGETABLE: lệnh đánh/chiêu đang nhắm đơn vị bị hủy như khi mất tầm nhìn (VIS-05).
+`ST-14` UNTARGETABLE: địch không ra được lệnh đánh / chiêu nhắm đơn vị lên nó (BAD_TARGET);
+lệnh đang nhắm nó bị hủy như khi mất tầm nhìn (VIS-05), đạn đã bay vẫn trúng. Vùng và
+đạn kỹ năng định hướng vẫn trúng (ABL-05/07). Đồng minh vẫn nhắm được. Vẫn được thấy.
+
+Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGETABLE (D-73):
+
+| Hỏi | INVISIBLE | REVEALED | UNTARGETABLE |
+|---|---|---|---|
+| Đi / đánh / chiêu | Được; đánh hoặc chiêu làm mất (VIS-04) | Không ảnh hưởng | Được |
+| Địch nhắm được | Không (trừ khi lộ / true sight) | Có, ở mọi nơi | Không |
+| Lệnh / đạn đang nhắm | Lệnh hủy, đạn đã bay vẫn trúng | — | Lệnh hủy, đạn đã bay vẫn trúng |
+| Trụ, lính, nút đánh | Không thấy → không chọn | Chọn được nếu trong tầm đánh | Không chọn |
+| Vùng / đạn kỹ năng | Trúng | Trúng | Trúng |
+| Hiển thị | Phe mình mờ 50%; địch và minimap không hiện | Như thường | Như thường |
+| Với state khác | REVEALED, true sight khử; STUNNED không làm lộ; mạnh hơn bụi | Khử INVISIBLE và bụi | — |
+| Mất khi | Hết giờ, đánh, dùng chiêu, chết | Hết giờ, chết | Hết giờ, chết |
 
 `ST-15` MAGIC_IMMUNE (miễn phép, kiểu BKB):
   - Khi bắt đầu: thanh tẩy cơ bản các debuff trên mình (EFF-07).
@@ -167,11 +182,18 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
   tâm–tâm tới E ≤ `vision_range` của đơn vị đó. Mọi đơn vị (hero, lính, trụ, nhà chính)
   cho tầm nhìn theo dữ liệu; luôn thấy đồng đội; rừng và vách không che. Tính mỗi tick ở
   pha VISION (D-71).
-- `VIS-02` E đang INVISIBLE thì đội địch chỉ thấy khi E có REVEALED đối với đội đó
-  (từ true sight hoặc hiệu ứng làm lộ).
-- `VIS-03` Fountain có true sight bán kính `fountain_true_sight`. (Trụ không có, giống Dota.)
-- `VIS-04` Hiệu ứng tàng hình mặc định bị xóa khi chủ nhân bắt đầu đánh hoặc dùng
-  chiêu (khai báo `removed_by`). Có `fade_in`: trong thời gian này vẫn bị thấy.
+- `VIS-02` E đang INVISIBLE thì đội địch không thấy E, kể cả trong tầm nhìn, cùng bụi
+  (tàng hình mạnh hơn bụi). Chỉ thấy khi E bị lộ (VIS-08) hoặc ở trong true sight
+  (VIS-03). Bị choáng, bị trúng đòn không làm lộ (D-73).
+- `VIS-03` Fountain có true sight bán kính `fountain_true_sight` quanh tâm fountain: đội
+  chủ fountain luôn thấy mọi kẻ địch trong vùng này, kể cả tàng hình, núp bụi, ngoài tầm
+  các đơn vị. (Trụ không có, giống Dota.)
+- `VIS-04` Hiệu ứng tàng hình bị xóa khi chủ nhân bắt đầu đánh hoặc dùng chiêu (khai báo
+  `removed_by`, EFF-05). `fade_in`: trong thời gian này hiệu ứng đã có (modifier có tác
+  dụng) nhưng **state** của nó chưa bật — với tàng hình là vẫn bị thấy.
+- `VIS-08` REVEALED (kiểu Track của Bounty Hunter, Haze của Slardar, D-73): đội của kẻ áp
+  hiệu ứng thấy E ở **mọi nơi trên map**, kể cả tàng hình, trong bụi, ngoài tầm nhìn.
+  Không có kẻ áp (vd fountain) thì mọi đội địch của E đều thấy.
 - `VIS-06` Bụi cỏ (D-72, kiểu Liên Quân): đơn vị E có tâm nằm trong bụi B thì đội T khác
   đội E chỉ thấy E khi (a) T có đơn vị sống cũng đứng trong B (thấy cả bụi, không cần
   tầm), hoặc (b) E đang lộ (VIS-07) và VIS-01 thỏa. Áp cho mọi đội, cả trụ và nhà

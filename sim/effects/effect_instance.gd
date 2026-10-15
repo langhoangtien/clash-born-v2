@@ -8,6 +8,10 @@ var def: EffectDef
 var owner_id: int
 ## Đơn vị áp hiệu ứng (-1 nếu không có); được tính là kẻ gây sát thương periodic.
 var source_id: int = -1
+## Đội của kẻ áp lúc áp (-1 nếu không có); REVEALED lộ cho đội này (VIS-08).
+var source_team: int = -1
+## VIS-04: tới tick này state của hiệu ứng mới bật (fade_in); -1 = bật ngay.
+var active_tick: int = -1
 var values: Dictionary = {}
 var stacks: int = 1
 var start_tick: int

@@ -13,6 +13,9 @@ func run(world: World) -> void:
 
 
 func _tick(world: World, e: Entity, inst: EffectInstance) -> void:
+	if inst.active_tick >= 0 and world.tick >= inst.active_tick:
+		inst.active_tick = -1  # VIS-04: hết hiện dần, bật state
+		Effects.refresh_states(e)
 	while inst.period_ticks > 0 and world.tick >= inst.next_period_tick \
 			and (inst.end_tick < 0 or inst.next_period_tick <= inst.end_tick):
 		inst.next_period_tick += inst.period_ticks

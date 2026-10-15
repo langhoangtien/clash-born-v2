@@ -19,9 +19,9 @@ static func is_structure(e: Entity) -> bool:
 
 
 ## DEF-05: còn sống, khác đội, không phải công trình đang khóa (STR-02). Nhắm bằng chiêu.
-## Tầm nhìn, UNTARGETABLE, MAGIC_IMMUNE thêm khi làm các trạng thái đó.
+## DEF-05: còn sống, khác đội, thấy được (VIS), không UNTARGETABLE (ST-12). MAGIC_IMMUNE thêm ở M6.
 static func is_targetable(by: Entity, target: Entity) -> bool:
-	return is_hittable(by, target) and is_visible(by.team, target)
+	return is_hittable(by, target) and is_visible(by.team, target) and not has_state(target, UnitState.Id.UNTARGETABLE)
 
 
 ## Trúng được bởi vùng / đạn kỹ năng (ABL-07): như is_targetable nhưng không cần thấy.

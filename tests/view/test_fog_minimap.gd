@@ -97,3 +97,19 @@ func test_VIS_06_own_unit_in_bush_drawn_faded() -> void:
 	assert_true(view.faded(me), "phe mình trong bụi vẽ mờ")
 	assert_false(view.faded(out))
 	view.free()
+
+
+func test_VIS_02_own_invisible_drawn_faded_enemy_invisible_not_drawn() -> void:
+	var w: World = _world()
+	var lib: ContentLibrary = ContentLibrary.load_dir()
+	var me: Entity = _unit(w, 0, Vector2(1000, 1000), 1200.0)
+	var foe: Entity = _unit(w, 1, Vector2(1300, 1000), 1200.0)
+	Effects.apply(w, me, lib.effects[&"shadow_veil"], me, {&"move_bonus": 0.1, &"fade_in": 0.0}, "5")
+	Effects.apply(w, foe, lib.effects[&"shadow_veil"], foe, {&"move_bonus": 0.1, &"fade_in": 0.0}, "5")
+	w.step()
+	var view: UnitsView = UnitsView.new()
+	view.world = w
+	view.viewer_team = 0
+	assert_true(view.faded(me), "phe mình tàng hình vẽ mờ")
+	assert_false(view.seen(foe), "địch tàng hình không vẽ")
+	view.free()
