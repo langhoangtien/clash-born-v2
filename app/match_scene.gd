@@ -11,7 +11,7 @@ const SEED: int = 1
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
 const SPEEDS: Array[int] = [1, 2, 4, 8]
 const MENU_SCENE: String = "res://app/main.tscn"
-const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · Esc"
+const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · F2 ký hiệu map · Esc"
 
 @onready var map_view: MapView = $MapView
 @onready var units_view: UnitsView = $UnitsView
@@ -140,6 +140,8 @@ func _held_direction() -> Vector2:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_F:
 		cycle_speed()
+	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_F2:
+		map_view.toggle_overlay(&"labels")  # D-77: ký hiệu map dev
 	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and skills.handle_key(event, get_global_mouse_position()):
 		pass
 	elif event is InputEventKey and event.pressed and (event as InputEventKey).keycode == KEY_ESCAPE:

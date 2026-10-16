@@ -1,6 +1,6 @@
 extends Node2D
 ## Màn xem map (M0.4). Kéo để di chuyển, cuộn chuột / chụm 2 ngón để phóng to,
-## phím 1–5 bật/tắt lớp đánh dấu, Esc quay lại.
+## phím 1–6 bật/tắt lớp đánh dấu (6 = ký hiệu map dev, D-77), Esc quay lại.
 
 const MAIN_SCENE: String = "res://app/main.tscn"
 const MIN_ZOOM: float = 0.06
@@ -44,7 +44,7 @@ func _on_key(event: InputEventKey) -> void:
 		get_tree().change_scene_to_file(MAIN_SCENE)
 	elif event.keycode == KEY_0:
 		_fit()
-	elif event.keycode >= KEY_1 and event.keycode <= KEY_5:
+	elif event.keycode >= KEY_1 and event.keycode <= KEY_6:
 		view.toggle_overlay(MapView.OVERLAYS[event.keycode - KEY_1])
 
 

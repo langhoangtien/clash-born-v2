@@ -97,6 +97,7 @@ Chưa có gameplay; dựng khung để mọi thứ sau đứng vững.
 | M6.5 Ô đồ, đồ chủ động/bị động (ITM-01..05), nút đồ trên HUD; cho đồ bằng lệnh debug | Test ITM |
 | M6.6 9 món đồ trong CONTENT.md | Test mỗi món một kịch bản |
 | M6.7 Móc chặn chết, tái sinh tại chỗ (DTH-01..03), hero thử nghiệm Wraith King | Test DTH; thưởng vàng/XP đúng |
+| M6.8 Ward: mắt vàng (tầm nhìn, tàng hình), mắt xanh (nguồn true sight, lộ ward địch), phá ward khi bị lộ (D-77) | Test từng dòng bảng tương tác; **chơi thử cắm/phá ward** |
 
 ## M7 — Bot hero (L)
 
@@ -194,4 +195,5 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M5.3 | Xong | 2026-10-15 | 421 test xanh (+8); lướt ABL-08 (DashSystem): tới mép, xuyên đơn vị, bám mục tiêu, dừng ở địa hình/choáng/mất mục tiêu; ModifyCooldown ABL-18 (D-74) |
 | M5.4 | Xong | 2026-10-15 | 431 test xanh (+10); Noctis: chí mạng, Q lướt, W tàng hình + phục kích, R dấu tử thần, 3 talent; chiêu ưu tiên mục tiêu khóa (D-75). Chờ chơi thử |
 | M5.5 | Xong | 2026-10-15 | 441 test xanh (+10); 12 trại rừng, JGL-01..07, kéo quái (pull) ở trại 6, soak có quái rừng (D-76). Chờ chơi thử |
+| M5.6 | Xong | 2026-10-16 | 444 test xanh (+3); ký hiệu map dev: lưới A1…P16, tên trụ/trại/bụi/dốc/rừng/khe, phím 6 / F2, docs/map_dev.png (D-77) |
 | **Hết M5** | | | |

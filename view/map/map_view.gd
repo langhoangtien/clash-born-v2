@@ -4,7 +4,8 @@ extends Node2D
 ## Tầng VIEW: chỉ đọc dữ liệu map, không đổi gì.
 
 const MapPainter = preload("res://view/map/map_painter.gd")
-const OVERLAYS: PackedStringArray = ["structures", "lanes", "camps", "spawns", "walkability"]
+const LabelPainter = preload("res://view/map/map_label_painter.gd")
+const OVERLAYS: PackedStringArray = ["structures", "lanes", "camps", "spawns", "walkability", "labels"]
 ## Hằng số hiển thị (chỉ để vẽ, không phải số gameplay).
 const TOWER_MARK_RADIUS: float = 52.0
 const BLUE: Color = Color(0.45, 0.75, 1.0)
@@ -18,6 +19,8 @@ var show_lanes: bool = false
 var show_camps: bool = true
 var show_spawns: bool = false
 var show_walkability: bool = false
+## M5.6: lớp ký hiệu map dev (D-77).
+var show_labels: bool = false
 
 var _overlay: _Layer
 var _walkability_texture: ImageTexture
@@ -79,6 +82,8 @@ func _paint_overlay(ci: CanvasItem) -> void:
 	if show_camps:
 		for point: Vector2 in layout.camp_points:
 			ci.draw_arc(point, 48, 0, TAU, 28, GOLD, 6, true)
+	if show_labels:
+		LabelPainter.paint(ci, layout)
 
 
 func _team_color(team: int) -> Color:

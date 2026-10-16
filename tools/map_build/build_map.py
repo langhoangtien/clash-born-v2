@@ -371,6 +371,8 @@ data = {
     "bases": [dict(team=b["team"], polygon=[W(p) for p in b["polygon"]]) for b in SRC["bases"]],
     "ramps": [{"pos": W(p), "angle": round(a, 4)} for p, a in zip(SRC["ramps"], ramp_angles)],
     "bushes": [[W(p) for p in poly] for poly in bush_polygons()],
+    "landmarks": [{"name": l["name"], "pos": W(l["pos"])} for l in SRC.get("landmarks", [])]
+                 + ([{"name": l["name"] + "'", "pos": W(SYM.rot(l["pos"]))} for l in SRC.get("landmarks", [])] if SYM else []),
     "render": {
         "forest": render_polys(forest_polys),
         "cliffs": render_polys(cliff_polys),

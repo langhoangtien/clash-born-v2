@@ -52,6 +52,9 @@ var water_shapes: Array[MapShape] = []
 var collision_polygons: Array[PackedVector2Array] = []
 ## VIS-06: bụi cỏ.
 var bushes: MapBushes = MapBushes.new()
+## M5.6: điểm có tên cho map dev (khe, lối…), chỉ để hiển thị.
+var landmark_names: PackedStringArray = PackedStringArray()
+var landmark_points: PackedVector2Array = PackedVector2Array()
 
 # Trường khoảng trống: khoảng cách (đơn vị thế giới) từ mỗi pixel tới vật cản gần nhất.
 var clearance_bytes: PackedByteArray = PackedByteArray()
@@ -214,6 +217,10 @@ func _load_terrain(d: Dictionary) -> void:
 	cliff_shapes = _shapes(render["cliffs"])
 	water_shapes = _shapes(render["water"])
 	bushes.load_from(d.get("bushes", []))
+	landmark_names.clear(); landmark_points.clear()
+	for mark: Dictionary in d.get("landmarks", []):
+		landmark_names.append(mark["name"])
+		landmark_points.append(_vec(mark["pos"]))
 	collision_polygons.clear()
 	for polygon: Array in d["collision"]:
 		collision_polygons.append(_points(polygon))

@@ -92,5 +92,10 @@
     {"pos": [340.0, 479.0], "rx": 13, "ry": 7, "angle": 0},
     {"pos": [416.0, 515.0], "rx": 13, "ry": 7, "angle": 0},
     {"pos": [194.0, 224.0], "rx": 12, "ry": 7, "angle": 20}
+  ],
+  "_landmarks_note": "M5.6 (D-77): ký hiệu cho map dev, nửa xanh; build_map.py thêm bản xoay 180° với dấu phẩy (K1').",
+  "landmarks": [
+    {"name": "K1", "pos": [502.5, 464.0], "_note": "lối rừng ra lane bot gần X-BOT-1 (D-44)"},
+    {"name": "K2", "pos": [439.0, 498.0], "_note": "khe cắt dải rừng trên lane bot, lối pull TX6 (D-44)"}
   ]
 }
