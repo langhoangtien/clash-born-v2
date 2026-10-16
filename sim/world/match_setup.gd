@@ -60,3 +60,9 @@ static func add_jungle(world: World, library: ContentLibrary) -> void:
 			world.navigation(u.stats.collision_radius)  # dựng sẵn, không giật lúc trại xuất hiện (D-70)
 	world.add_system(JungleController.new(), World.Phase.CONTROLLER)
 	world.add_system(JungleSpawner.new(), World.Phase.SPAWN)
+
+
+## SHOP (D-81): cửa hàng của trận là mọi món trong content.
+static func add_shop(world: World, library: ContentLibrary) -> void:
+	for id: StringName in library.items:
+		world.item_catalog[id] = library.items[id]

@@ -363,6 +363,22 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `ITM-08` Dùng đồ được khi còn sống, không lướt, không STUNNED, không HEXED (ITM-03); câm lặng
   không chặn. Tầm, mana, cách nhắm như chiêu (ABL-02).
 
+## SHOP — Mua bán (D-81, M6.5b)
+
+- `SHOP-01` Lệnh BUY(món) / SELL(ô). Không cần đứng ở shop với đồ thường (`shop: BASE`), mua
+  được cả khi đang chờ hồi sinh. Món vào ô trống đầu tiên. Từ chối: thiếu vàng
+  (NOT_ENOUGH_GOLD), hết ô (INVENTORY_FULL), món không có trong cửa hàng (BAD_ITEM).
+- `SHOP-02` Đồ shop ẩn (`shop: SECRET`): chỉ mua được khi hero còn sống và tâm hero cách tâm
+  một shop ẩn (S1 hoặc S1') không quá `shop_radius`; không thì NOT_IN_SHOP. Cả hai đội dùng
+  chung cả hai shop.
+- `SHOP-03` Đồ mở theo giờ (`unlock_time` giây > 0): trước thời điểm đó từ chối NOT_YET.
+- `SHOP-04` Đồ độc nhất (`unique`): trong trận chỉ một món tồn tại; đang có ai giữ thì từ
+  chối SOLD_OUT. Bán lại thì món về cửa hàng; chết không rơi đồ.
+- `SHOP-05` Bán: nhận `sell_ratio` × giá (làm tròn xuống); bán trong `sell_full_refund_time`
+  giây sau khi mua thì hoàn đủ. Bán được ở mọi nơi, cả khi đang chờ hồi sinh.
+- `SHOP-06` Thứ tự kiểm tra khi mua: món có trong cửa hàng → giờ mở → độc nhất → shop ẩn →
+  vàng → ô trống.
+
 ## TAL — Talent
 
 - `TAL-01` Khi hero đạt cấp `talent_level` (20): chọn đúng 1 trong 3 talent, mỗi
@@ -713,6 +729,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | ghost_magic_amp | 0.4 | | talent_level | 20 |
 | attribute_bonus | +2 mọi thuộc tính | | attribute_bonus_max | 7 lần |
 | hex_move_speed | 140 | | bush_reveal_time | 1 s |
+| shop_radius | 600 | | sell_ratio / sell_full_refund_time | 0.5 / 10 s |
 | reincarnate_delay | 3 s | | match_target_minutes | 15–20 (D-29) |
 | first_wave_time | 15 s | | creep_front_margin | 200 |
 | fountain_regen | 0.05 / s | | fountain_damage / attack_interval | 300 / 1 s |

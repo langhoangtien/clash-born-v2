@@ -142,3 +142,13 @@ static func paint_bushes(ci: CanvasItem, layout: MapLayout, detail: bool = true)
 				var h := rng.randf_range(18.0, 34.0)
 				ci.draw_line(at, at + Vector2(-6, -h), BUSH_DARK, 4.0, true)
 				ci.draw_line(at + Vector2(4, 0), at + Vector2(6, -h * 0.9), BUSH_LIGHT, 3.0, true)
+
+
+## SHOP-02: shop ẩn — mái nhà vàng và vòng bán kính mua.
+static func paint_shops(ci: CanvasItem, layout: MapLayout, radius: float, detail: bool = true) -> void:
+	for p: Vector2 in layout.shop_points:
+		if detail:
+			ci.draw_arc(p, radius, 0, TAU, 64, Color(1.0, 0.8, 0.2, 0.35), 6.0, true)
+		ci.draw_rect(Rect2(p - Vector2(50, 30), Vector2(100, 70)), Color("8a5a2b"))
+		ci.draw_colored_polygon(PackedVector2Array([p + Vector2(-70, -30), p + Vector2(70, -30), p + Vector2(0, -90)]), Color("d9a63a"))
+		ci.draw_rect(Rect2(p - Vector2(50, 30), Vector2(100, 70)), Color(0, 0, 0, 0.7), false, 6.0)

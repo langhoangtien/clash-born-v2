@@ -54,6 +54,8 @@ var pending_areas: Array[PendingArea] = []
 var zones: Array[ActiveZone] = []
 ## Trại rừng (JGL), MatchSetup.add_jungle dựng.
 var camps: Array[CampState] = []
+## SHOP: cửa hàng của trận (MatchSetup.add_shop), id → món.
+var item_catalog: Dictionary[StringName, ItemDef] = {}
 ## Đạn kỹ năng đang bay (ABL-05), SkillShotSystem cập nhật.
 var skill_shots: Array[SkillShot] = []
 ## Chỉ để VIEW vẽ: vùng vừa nổ gần đây [tâm, bán kính, tick, đội]. Không thuộc trạng thái trận.

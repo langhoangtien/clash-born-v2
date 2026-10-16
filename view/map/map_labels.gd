@@ -10,7 +10,7 @@ const COLUMNS: String = "ABCDEFGHIJKLMNOP"
 ## Khối rừng nhỏ hơn diện tích này (đơn vị²) không đặt tên.
 const FOREST_MIN_AREA: float = 250000.0
 
-enum Kind { TOWER, CAMP, BUSH, RAMP, FOREST, LANDMARK }
+enum Kind { TOWER, CAMP, BUSH, RAMP, FOREST, LANDMARK, SHOP }
 
 
 class Mark:
@@ -54,6 +54,8 @@ static func build(layout: MapLayout) -> Array[Mark]:
 		if absf(_area(shape.outer)) >= FOREST_MIN_AREA and not _is_border(layout, shape.outer):
 			forests.append(_inside_point(shape.outer))
 	out.append_array(_paired(layout, forests, "R", Kind.FOREST, 300.0))
+	for i: int in range(layout.shop_names.size()):
+		out.append(Mark.make(layout.shop_names[i], layout.shop_points[i], Kind.SHOP))
 	for i: int in range(layout.landmark_names.size()):
 		out.append(Mark.make(layout.landmark_names[i], layout.landmark_points[i], Kind.LANDMARK))
 	return out

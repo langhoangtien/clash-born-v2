@@ -11,7 +11,7 @@ const SEED: int = 1
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
 const SPEEDS: Array[int] = [1, 2, 4, 8]
 const MENU_SCENE: String = "res://app/main.tscn"
-const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · 4–9 dùng đồ · F2 ký hiệu map · Esc"
+const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · 4–9 dùng đồ · B shop · F2 ký hiệu map · Esc"
 
 @onready var map_view: MapView = $MapView
 @onready var units_view: UnitsView = $UnitsView
@@ -34,6 +34,7 @@ var hero_def: HeroDef
 var skills: SkillControls = SkillControls.new()
 var fog: FogView
 var minimap: Minimap
+var shop: ShopPanel
 
 
 func _ready() -> void:
@@ -44,6 +45,7 @@ func _ready() -> void:
 	MatchSetup.spawn_structures(world, library)
 	MatchSetup.add_vision(world)
 	MatchSetup.add_jungle(world, library)
+	MatchSetup.add_shop(world, library)
 	MatchSetup.add_lane_creeps(world, library, true)
 	hero_def = library.heroes[hero_id]
 	for def: GameDef in library.units.values() + library.heroes.values():
@@ -78,6 +80,14 @@ func _ready() -> void:
 	$Hud.add_child(item_buttons)
 	item_buttons.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	skills.items = item_buttons
+	shop = ShopPanel.new()
+	shop.name = "ShopPanel"
+	$Hud.add_child(shop)
+	shop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	shop.world = world
+	shop.hero = hero
+	shop.buy_pressed.connect(func(id: StringName) -> void: world.submit(Command.buy(hero.id, id)))  # SHOP-01
+	shop.sell_pressed.connect(func(i: int) -> void: world.submit(Command.sell(hero.id, i)))  # SHOP-05
 	skills.connect_signals()
 	match_hud.world = world
 	buff_bar.world = world
@@ -145,6 +155,8 @@ func _held_direction() -> Vector2:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_F:
 		cycle_speed()
+	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_B:
+		shop.toggle()  # D-81: bảng shop tạm
 	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_F2:
 		map_view.toggle_overlay(&"labels")  # D-77: ký hiệu map dev
 	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and skills.handle_key(event, get_global_mouse_position()):

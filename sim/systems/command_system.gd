@@ -14,6 +14,13 @@ func run(world: World) -> void:
 		if command.reject_reason != Command.Reject.NONE:
 			world.rejected_commands.append(command)
 			continue
+		if command.type == Command.Type.BUY or command.type == Command.Type.SELL:
+			if command.type == Command.Type.BUY:
+				Shop.buy(world, unit, command.item_id)  # SHOP-01
+			else:
+				Shop.sell(world, unit, command.slot)  # SHOP-05
+			world.command_log.append(command)
+			continue
 		if command.type == Command.Type.LEVEL_UP or command.type == Command.Type.CHOOSE_TALENT:
 			if command.type == Command.Type.LEVEL_UP:
 				Progression.spend_point(world, unit, command.slot)  # không đổi lệnh hiện tại
@@ -59,7 +66,7 @@ func _clamped_point(unit: Entity, command: Command) -> Vector2:
 func _check(world: World, command: Command, unit: Entity) -> Command.Reject:
 	if unit == null:
 		return Command.Reject.UNKNOWN_UNIT
-	if not unit.alive and command.type != Command.Type.LEVEL_UP and command.type != Command.Type.CHOOSE_TALENT:
+	if not unit.alive and not command.type in [Command.Type.LEVEL_UP, Command.Type.CHOOSE_TALENT, Command.Type.BUY, Command.Type.SELL]:
 		return Command.Reject.UNIT_DEAD  # cộng điểm được cả khi đang chờ hồi sinh
 	if command.type == Command.Type.MOVE_TO:
 		if not command.point.is_finite():
@@ -77,6 +84,10 @@ func _check(world: World, command: Command, unit: Entity) -> Command.Reject:
 		return Progression.level_problem(world, unit, command.slot)
 	if command.type == Command.Type.CHOOSE_TALENT:
 		return Progression.talent_problem(world, unit, command.slot)
+	if command.type == Command.Type.BUY:
+		return Shop.buy_problem(world, unit, command.item_id)
+	if command.type == Command.Type.SELL:
+		return Shop.sell_problem(unit, command.slot)
 	return Command.Reject.NONE
 
 

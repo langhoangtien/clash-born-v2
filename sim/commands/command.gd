@@ -3,10 +3,10 @@ extends RefCounted
 ## Yêu cầu từ người chơi, bot hoặc controller (ARCHITECTURE mục 1). Không đổi trận
 ## trực tiếp; CommandSystem kiểm tra rồi mới thành Order (CMD-01..05).
 
-enum Type { MOVE_TO, MOVE_DIR, STOP, ATTACK, ATTACK_AUTO, CAST, LEVEL_UP, CHOOSE_TALENT }
+enum Type { MOVE_TO, MOVE_DIR, STOP, ATTACK, ATTACK_AUTO, CAST, LEVEL_UP, CHOOSE_TALENT, BUY, SELL }
 enum Reject { NONE, UNKNOWN_UNIT, POINT_OUTSIDE_MAP, BAD_DIRECTION, BAD_TARGET, UNIT_DEAD,
 	NOT_LEARNED, ON_COOLDOWN, NO_MANA, CANNOT_CAST, NO_SKILL_POINT, CANNOT_LEVEL,
-	CANNOT_CHOOSE_TALENT }
+	CANNOT_CHOOSE_TALENT, BAD_ITEM, NOT_ENOUGH_GOLD, INVENTORY_FULL, NOT_IN_SHOP, NOT_YET, SOLD_OUT }
 
 ## LEVEL_UP: ô đặc biệt = đổi điểm lấy thuộc tính (ABL-04).
 const ATTRIBUTES: int = -1
@@ -21,6 +21,8 @@ var lock: bool = false
 var mode: int = 0
 ## CAST: ô kỹ năng (AbilityDef.Slot).
 var slot: int = 0
+## BUY: id món (SHOP-01). SELL dùng `slot` = chỉ số ô đồ 0..5.
+var item_id: StringName
 ## Tick mà lệnh được áp (World điền khi áp; dùng cho nhật ký và phát lại).
 var tick: int = -1
 var reject_reason: Reject = Reject.NONE
@@ -108,4 +110,22 @@ func copy() -> Command:
 	c.lock = lock
 	c.mode = mode
 	c.slot = slot
+	return c
+
+
+## SHOP-01: mua món `item` (id trong cửa hàng của trận).
+static func buy(id: int, item: StringName) -> Command:
+	var c: Command = Command.new()
+	c.type = Type.BUY
+	c.entity_id = id
+	c.item_id = item
+	return c
+
+
+## SHOP-05: bán món ở ô đồ `index` (0..5).
+static func sell(id: int, index: int) -> Command:
+	var c: Command = Command.new()
+	c.type = Type.SELL
+	c.entity_id = id
+	c.slot = index
 	return c

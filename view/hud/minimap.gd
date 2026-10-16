@@ -50,6 +50,7 @@ func setup(w: World, h: Entity) -> void:
 		MapPainter.paint_ground(ci, world.map, false)
 		MapPainter.paint_obstacles(ci, world.map, false)
 		MapPainter.paint_bushes(ci, world.map, false)
+		MapPainter.paint_shops(ci, world.map, world.balance.shop_radius, false)
 	_content.add_child(terrain)
 	_fog = FogView.new()
 	_fog.world = world

@@ -49,6 +49,13 @@ extends Resource
 @export var creep_hero_aggro_time: float
 @export var creep_front_margin: float
 
+@export_group("Cửa hàng (SHOP)")
+## SHOP-02: bán kính quanh shop ẩn.
+@export var shop_radius: float
+## SHOP-05: tỉ lệ tiền khi bán, và thời gian hoàn đủ sau khi mua (giây).
+@export var sell_ratio: float
+@export var sell_full_refund_time: float
+
 @export_group("Quái rừng (JGL)")
 ## JGL-05: lần đầu xuất hiện, chu kỳ kiểm tra hồi trại (giây), bán kính phải trống quanh tâm trại.
 @export var jungle_first_spawn: float

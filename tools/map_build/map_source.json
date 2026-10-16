@@ -97,5 +97,9 @@
   "landmarks": [
     {"name": "K1", "pos": [502.5, 464.0], "_note": "lối rừng ra lane bot gần X-BOT-1 (D-44)"},
     {"name": "K2", "pos": [439.0, 498.0], "_note": "khe cắt dải rừng trên lane bot, lối pull TX6 (D-44)"}
+  ],
+  "_shops_note": "M6.5b (D-81): shop ẩn nửa xanh cạnh khối rừng R1 (ô C7); build_map.py thêm bản xoay 180° (S1', ô N10).",
+  "shops": [
+    {"name": "S1", "pos": [122.0, 257.6]}
   ]
 }

@@ -21,6 +21,8 @@ var show_spawns: bool = false
 var show_walkability: bool = false
 ## M5.6: lớp ký hiệu map dev (D-77).
 var show_labels: bool = false
+## SHOP-02: bán kính vẽ quanh shop ẩn (hiển thị; khớp shop_radius trong BalanceSettings).
+var shop_radius: float = 600.0
 
 var _overlay: _Layer
 var _walkability_texture: ImageTexture
@@ -43,6 +45,7 @@ func _ready() -> void:
 	_add_layer("Ground", func(ci: CanvasItem) -> void: MapPainter.paint_ground(ci, layout, true))
 	_add_layer("Obstacles", func(ci: CanvasItem) -> void: MapPainter.paint_obstacles(ci, layout, true))
 	_add_layer("Bushes", func(ci: CanvasItem) -> void: MapPainter.paint_bushes(ci, layout, true))
+	_add_layer("Shops", func(ci: CanvasItem) -> void: MapPainter.paint_shops(ci, layout, shop_radius, true))
 	_overlay = _add_layer("Overlay", _paint_overlay)
 
 

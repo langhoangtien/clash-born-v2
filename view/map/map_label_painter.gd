@@ -11,6 +11,7 @@ const COLORS: Dictionary = {
 	MapLabels.Kind.RAMP: Color(0.8, 0.85, 0.9),
 	MapLabels.Kind.FOREST: Color(0.55, 0.9, 0.7),
 	MapLabels.Kind.LANDMARK: Color(1.0, 0.55, 0.9),
+	MapLabels.Kind.SHOP: Color(1.0, 0.8, 0.2),
 }
 ## Cỡ chữ theo đơn vị map (lớp nằm trong thế giới, phóng to thu nhỏ theo camera).
 const TEXT_SIZE: int = 72
