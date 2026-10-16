@@ -95,8 +95,8 @@ static func problem(world: World, e: Entity, a: AbilityInstance) -> Problem:
 ## ABL-07 / target_filter: đơn vị `t` có phải đối tượng hợp lệ của kỹ năng do `caster` dùng.
 ## `need_sight` = false cho vùng và đạn kỹ năng: trúng cả kẻ không thấy (ABL-07, VIS-05).
 static func accepts(caster: Entity, def: AbilityDef, t: Entity, need_sight: bool = true) -> bool:
-	if t == null or not t.alive:
-		return false
+	if t == null or not t.alive or t.kind == Entity.Kind.WARD:
+		return false  # WRD-04: chiêu không nhắm / không trúng ward
 	var as_enemy: bool = def.target_team == AbilityDef.Team.ENEMY or (def.target_team == AbilityDef.Team.ANY and t.team != caster.team)
 	if as_enemy:
 		if not (Rules.is_targetable(caster, t) if need_sight else Rules.is_hittable(caster, t)):

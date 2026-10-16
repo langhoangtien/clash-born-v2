@@ -9,6 +9,9 @@ func run(world: World) -> void:
 	var structure_fell: bool = false
 	var gone: Array[Entity] = []
 	for e: Entity in world.entities:
+		if e.kind == Entity.Kind.WARD and e.alive and e.expire_tick >= 0 and world.tick >= e.expire_tick:
+			e.alive = false  # WRD-02: hết giờ, không ai được thưởng
+			e.killer_id = -1
 		if e.alive:
 			if e.reincarnate_tick >= 0 and world.tick >= e.reincarnate_tick:
 				Reincarnation.stand_up(world, e)  # DTH-02
@@ -70,6 +73,10 @@ func _reward(world: World, e: Entity) -> void:
 				hero.gold += e.bounty_gold
 		return
 	var killer: Entity = world.find_entity(e.killer_id)
+	if e.kind == Entity.Kind.WARD:
+		if killer != null and killer.kind == Entity.Kind.HERO and killer.team != e.team:
+			killer.gold += e.bounty_gold  # WRD-05
+		return
 	if killer != null and killer.kind == Entity.Kind.HERO and killer.team != e.team:
 		killer.gold += e.bounty_gold
 		killer.last_hits += 1

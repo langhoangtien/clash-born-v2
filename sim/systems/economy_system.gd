@@ -5,6 +5,7 @@ extends SimSystem
 
 
 func run(world: World) -> void:
+	Shop.restock(world)  # SHOP-08
 	if world.balance.passive_gold_interval <= 0.0 or world.balance.passive_gold == 0:
 		return
 	if world.tick % maxi(1, SimClock.seconds_to_ticks(world.balance.passive_gold_interval)) != 0:

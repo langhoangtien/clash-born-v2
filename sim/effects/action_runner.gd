@@ -19,6 +19,9 @@ static func run(world: World, actions: Array[ActionDef], ctx: ExprContext, sourc
 		if action is DashAction:
 			_dash(world, action, ctx, source_id)
 			continue
+		if action is PlaceWardAction:
+			place_ward(world, (action as PlaceWardAction).ward, ctx.owner, ctx.point)
+			continue
 		var receiver: Entity = receiver_of(action.target, ctx)
 		if receiver == null or not receiver.alive:
 			continue
@@ -49,6 +52,18 @@ static func run(world: World, actions: Array[ActionDef], ctx: ExprContext, sourc
 			_strip(world, receiver, &"buff", p.level, ctx, p.on_each, source_id)
 		else:
 			push_error("ActionRunner: %s chưa làm" % action.get_script().get_global_name())
+
+
+## WRD-01/02: ward mới của phe `owner` ở đất đi được gần `at` nhất, tàng hình, hết hạn sau `lifetime`.
+static func place_ward(world: World, def: UnitDef, owner: Entity, at: Vector2) -> Entity:
+	var spot: Vector2 = world.navigation(def.stats.collision_radius).nearest_clear(at) if world.map != null else at
+	var w: Entity = UnitFactory.unit(world, def, Entity.Kind.WARD, owner.team, spot)
+	w.health = w.stats.get_stat(StatId.Id.MAX_HP)
+	w.true_sight_range = def.true_sight_range
+	w.expire_tick = world.tick + SimClock.seconds_to_ticks(def.lifetime) if def.lifetime > 0.0 else -1
+	Effects.refresh_states(w)
+	world.emit(&"unit_spawned", owner.id, w.id)
+	return w
 
 
 ## ST-15: hành động của kỹ năng có cờ xuyên miễn phép.
@@ -182,7 +197,7 @@ static func fire_area(world: World, p: PendingArea) -> void:
 static func _area_accepts(ctx: ExprContext, owner: Entity, e: Entity) -> bool:
 	if ctx.ability != null:
 		return Abilities.accepts(owner, ctx.ability, e, false)
-	return not Rules.is_structure(e) and Rules.is_hittable(owner, e)
+	return not Rules.is_structure(e) and e.kind != Entity.Kind.WARD and Rules.is_hittable(owner, e)
 
 
 ## CMB-10: đốt tối đa bằng mana đang có; sự kiện mang lượng thực tế (`event.burned_mana`).

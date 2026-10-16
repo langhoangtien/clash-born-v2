@@ -56,6 +56,8 @@ var zones: Array[ActiveZone] = []
 var camps: Array[CampState] = []
 ## SHOP: cửa hàng của trận (MatchSetup.add_shop), id → món.
 var item_catalog: Dictionary[StringName, ItemDef] = {}
+## SHOP-08: kho mỗi đội (0, 1): id món → [còn bao nhiêu, tick thêm 1 (-1 = đang đầy)].
+var shop_stock: Array[Dictionary] = []
 ## Đạn kỹ năng đang bay (ABL-05), SkillShotSystem cập nhật.
 var skill_shots: Array[SkillShot] = []
 ## Chỉ để VIEW vẽ: vùng vừa nổ gần đây [tâm, bán kính, tick, đội]. Không thuộc trạng thái trận.
@@ -200,7 +202,7 @@ func state_hash() -> PackedByteArray:
 	for e: Entity in entities:
 		ctx.update(PackedInt64Array([e.id, e.team, e.kind, e.order.type, int(e.order.finished), e.order.target_id,
 			int(e.alive), int(e.locked), int(e.returning), int(e.has_origin), e.aggro_target_id, e.aggro_until_tick, e.attack_phase, e.attack_target_id, e.attack_start_tick, e.attack_release_tick, e.next_attack_tick,
-			e.lock_target_id, e.respawn_tick, e.gold, e.last_hits, e.skill_points, e.attribute_bonus_count, e.talent_slot, e.kills, e.deaths, e.assists, e.last_attack_target_id, e.visible_mask, e.bush_id, e.reveal_until_tick, e.camp_index, e.reincarnate_tick]).to_byte_array())
+			e.lock_target_id, e.respawn_tick, e.gold, e.last_hits, e.skill_points, e.attribute_bonus_count, e.talent_slot, e.kills, e.deaths, e.assists, e.last_attack_target_id, e.visible_mask, e.bush_id, e.reveal_until_tick, e.camp_index, e.reincarnate_tick, e.expire_tick]).to_byte_array())
 		ctx.update(PackedFloat64Array([e.position.x, e.position.y, e.radius, e.health, e.mana,
 			e.order.point.x, e.order.point.y, e.order.direction.x, e.order.direction.y,
 			e.chase_origin.x, e.chase_origin.y, e.xp]).to_byte_array())
@@ -220,6 +222,11 @@ func state_hash() -> PackedByteArray:
 		for inst: EffectInstance in e.effects:
 			ctx.update(PackedInt64Array([inst.serial, inst.def.id.hash(), inst.source_id, inst.stacks, inst.end_tick, inst.next_period_tick, inst.active_tick, inst.source_team]).to_byte_array())
 			ctx.update(PackedFloat64Array([inst.absorb_left]).to_byte_array())
+	for t: int in range(shop_stock.size()):
+		var ids: Array = shop_stock[t].keys()
+		ids.sort()
+		for id: StringName in ids:
+			ctx.update(PackedInt64Array([t, id.hash(), shop_stock[t][id][0], shop_stock[t][id][1]]).to_byte_array())
 	var keys: Array = prd_counters.keys()
 	keys.sort()
 	for k: int in keys:

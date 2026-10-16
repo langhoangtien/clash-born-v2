@@ -20,5 +20,11 @@ enum ShopKind { BASE, SECRET }
 @export var shop: ShopKind = ShopKind.BASE
 ## SHOP-03: mở bán từ giây này (0 = ngay từ đầu).
 @export var unlock_time: float
+## WRD-01: mua thêm cộng `charges` vào món cùng loại đang có, tối đa chừng này lần dùng (0 = không gộp).
+@export var max_stack: int
+## SHOP-08: kho mỗi đội — có sẵn, tối đa, cứ bao nhiêu giây thêm 1 (stock_max 0 = không giới hạn).
+@export var stock_initial: int
+@export var stock_max: int
+@export var stock_restock: float
 ## SHOP-04: cả trận chỉ một món.
 @export var unique: bool = false

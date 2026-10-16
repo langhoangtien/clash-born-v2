@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="UnitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/unit_def.gd" id="1_unit"]
+[ext_resource type="Script" path="res://sim/defs/combat_stats_def.gd" id="2_stats"]
+
+[sub_resource type="Resource" id="Resource_stats"]
+script = ExtResource("2_stats")
+base_hp = 6.0
+vision_range = 1400.0
+collision_radius = 16.0
+
+[resource]
+script = ExtResource("1_unit")
+kind = 6
+stats = SubResource("Resource_stats")
+lifetime = 240.0
+true_sight_range = 0.0
+id = &"ward_observer"
+display_name = "Mắt vàng (ward)"
+art_id = &"ward_observer"
+bounty_gold = 150

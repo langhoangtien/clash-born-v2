@@ -5,8 +5,9 @@ extends SimSystem
 ##   1. E bị REVEALED bởi đội T (VIS-08), ở mọi nơi;
 ##   2. E trong true sight fountain của T (VIS-03);
 ##   3. E trong tầm bắn một trụ của T (D-80, D-83: thấy cả tàng hình lẫn trong bụi);
-##   4. E không tàng hình (VIS-02) và: cùng bụi với người của T (VIS-06), hoặc không bị bụi
-##      che (ngoài bụi / đang lộ VIS-07) và trong tầm nhìn một đơn vị của T (VIS-01).
+##   4. E không tàng hình (VIS-02) hoặc trong vùng mắt xanh của T (WRD-03), và: cùng bụi với
+##      người của T (VIS-06), hoặc không bị bụi che (ngoài bụi / đang lộ VIS-07) và trong tầm
+##      nhìn một đơn vị của T (VIS-01). Ward không có tầm nhìn (mắt xanh) không tính là "người".
 ## World không có hệ thống này thì mọi đơn vị thấy hết (mặc định của visible_mask).
 
 ## Hằng số kỹ thuật: số đội có tầm nhìn (0, 1, trung lập 2).
@@ -18,6 +19,8 @@ var _reach: Array[PackedFloat32Array] = []
 var _occupied: Array[Dictionary] = []
 ## D-80: trụ của mỗi đội nhìn thấy tàng hình trong tầm bắn — [vị trí, bán kính thân + tầm bắn].
 var _towers: Array[Array] = []
+## WRD-03: mắt xanh của mỗi đội — [vị trí, bình phương bán kính nhìn tàng hình].
+var _sentries: Array[Array] = []
 
 
 func run(world: World) -> void:
@@ -32,7 +35,7 @@ func run(world: World) -> void:
 			var covered: bool = e.bush_id >= 0 and world.tick > e.reveal_until_tick
 			for t: int in range(TEAMS):
 				if t != e.team and (revealed & (1 << t) != 0 or _true_sight(world, t, e, sight_sq) \
-						or _tower_sight(e, t) or (not invisible and _plain_seen(e, t, covered))):
+						or _tower_sight(e, t) or ((not invisible or _sentry_sight(e, t)) and _plain_seen(e, t, covered))):
 					mask |= 1 << t
 		e.visible_mask = mask
 
@@ -42,8 +45,10 @@ func _collect(world: World) -> void:
 	_reach.clear()
 	_occupied.clear()
 	_towers.clear()
+	_sentries.clear()
 	for t: int in range(TEAMS):
 		_towers.append([])
+		_sentries.append([])
 		_eyes.append(PackedVector2Array())
 		_reach.append(PackedFloat32Array())
 		_occupied.append({})
@@ -51,9 +56,11 @@ func _collect(world: World) -> void:
 		o.bush_id = world.map.bushes.at(o.position) if world.map != null and o.alive else -1
 		if not o.alive or o.team < 0 or o.team >= TEAMS:
 			continue
-		if o.bush_id >= 0:
-			_occupied[o.team][o.bush_id] = true
 		var sight: float = o.stats.get_stat(StatId.Id.VISION_RANGE) if o.stats != null else 0.0
+		if o.bush_id >= 0 and (o.kind != Entity.Kind.WARD or sight > 0.0):
+			_occupied[o.team][o.bush_id] = true
+		if o.true_sight_range > 0.0:
+			_sentries[o.team].append([o.position, o.true_sight_range * o.true_sight_range])
 		if sight > 0.0:
 			_eyes[o.team].append(o.position)
 			_reach[o.team].append(sight * sight)
@@ -65,6 +72,14 @@ func _collect(world: World) -> void:
 func _tower_sight(e: Entity, t: int) -> bool:
 	for tower: Array in _towers[t]:
 		if e.position.distance_to(tower[0]) - e.radius <= tower[1]:
+			return true
+	return false
+
+
+## WRD-03: E trong vùng nhìn tàng hình của một mắt xanh đội `t`.
+func _sentry_sight(e: Entity, t: int) -> bool:
+	for s: Array in _sentries[t]:
+		if e.position.distance_squared_to(s[0]) <= s[1]:
 			return true
 	return false
 

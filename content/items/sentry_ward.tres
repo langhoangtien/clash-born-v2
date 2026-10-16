@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Resource" path="res://content/units/ward_sentry.tres" id="2_unit"]
+[ext_resource type="Script" path="res://sim/actions/place_ward_action.gd" id="3_place"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_abl"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="5_item"]
+
+[sub_resource type="Resource" id="Resource_place"]
+script = ExtResource("3_place")
+ward = ExtResource("2_unit")
+
+[sub_resource type="Resource" id="Resource_abl"]
+script = ExtResource("4_abl")
+slot = 4
+targeting = 3
+target_team = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cast_range": PackedFloat32Array(500)
+})
+on_cast = Array[ExtResource("1_act")]([SubResource("Resource_place")])
+id = &"sentry_ward_active"
+art_id = &"sentry_ward_active"
+
+[resource]
+script = ExtResource("5_item")
+category = 3
+description = "Cắm mắt (tầm 500): mắt xanh tàng hình tồn tại 5 phút, nhìn thấy kẻ tàng hình và ward địch trong 900 (cần có tầm nhìn ở đó, không soi bụi). Gộp tối đa 6 lần cắm trong một ô. Kho mỗi đội: có sẵn 3, cứ 90 s thêm 1, tối đa 6. Hero phá bằng 2 đòn đánh (+25 vàng), lính / trụ 6 đòn."
+cost = 50
+ability = SubResource("Resource_abl")
+charges = 1
+max_stack = 6
+stock_initial = 3
+stock_max = 6
+stock_restock = 90.0
+id = &"sentry_ward"
+display_name = "Mắt Xanh"
+art_id = &"sentry_ward"

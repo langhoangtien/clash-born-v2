@@ -66,3 +66,4 @@ static func add_jungle(world: World, library: ContentLibrary) -> void:
 static func add_shop(world: World, library: ContentLibrary) -> void:
 	for id: StringName in library.items:
 		world.item_catalog[id] = library.items[id]
+	Shop.init_stock(world)

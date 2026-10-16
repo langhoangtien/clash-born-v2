@@ -77,7 +77,7 @@ func _pick(world: World, c: Entity) -> Entity:
 	if current != null and Rules.is_attackable(c, current) and current.kind == Entity.Kind.HERO \
 			and Rules.edge_distance(c, current) <= world.balance.creep_acquire_range:
 		return current  # CRP-04 + CRP-06
-	return nearest[1]
+	return nearest[1] if nearest[1] != null else nearest[2]  # WRD-06: ward sau cùng
 
 
 ## DEF-06, nhớ theo (đội, lane) trong một tick để khỏi duyệt lại danh sách đơn vị.
@@ -91,13 +91,13 @@ func _next_structure(world: World, c: Entity) -> Entity:
 	return _next_cache[key]
 
 
-## Lính địch (hoặc quái rừng, D-76) và hero địch gần nhất trong `creep_acquire_range` (một lần tra lưới cho cả hai).
+## Lính địch (hoặc quái rừng, D-76), hero địch và ward địch đang thấy gần nhất trong `creep_acquire_range` (một lần tra lưới cho cả hai).
 func _nearest_creep_and_hero(world: World, c: Entity) -> Array[Entity]:
-	var best: Array[Entity] = [null, null]
-	var best_d: Array[float] = [INF, INF]
+	var best: Array[Entity] = [null, null, null]
+	var best_d: Array[float] = [INF, INF, INF]
 	var acquire: float = world.balance.creep_acquire_range
 	for e: Entity in world.spatial_near(c.position, acquire + c.radius, World.Phase.CONTROLLER, false):
-		var slot: int = 0 if e.kind == Entity.Kind.LANE_CREEP or e.kind == Entity.Kind.NEUTRAL else (1 if e.kind == Entity.Kind.HERO else -1)
+		var slot: int = 0 if e.kind == Entity.Kind.LANE_CREEP or e.kind == Entity.Kind.NEUTRAL else (1 if e.kind == Entity.Kind.HERO else (2 if e.kind == Entity.Kind.WARD else -1))
 		if slot < 0 or not Rules.is_attackable(c, e):
 			continue
 		var d: float = Rules.edge_distance(c, e)

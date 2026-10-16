@@ -394,6 +394,8 @@ là đề xuất, cân lại khi chơi thử.
 | Lưỡi Hái Biến Hình | `hex_scythe` | 5600 | +35 INT, +10 STR, +10 AGI | **Chủ động** (hồi 22 s, tầm 600): HEXED mục tiêu 3.5 s |
 | Bùa Thanh Tẩy | `cleansing_charm` | 1800 | +6 giáp, +4 hồi máu | **Chủ động** (hồi 18 s): thanh tẩy cơ bản bản thân |
 | Búa Choáng | `stun_hammer` | 2900 | +25 sát thương | **Bị động**: đòn đánh 20% (cận chiến) / 10% (đánh xa) choáng 1.5 s, +100 sát thương vật lý; nhóm `bash`, thời gian chờ chung `bash_cooldown` (CMB-08, D-38) |
+| Mắt Vàng | `observer_ward` | 50 | — | **Chủ động**, tầm 500: cắm mắt vàng (tầm nhìn 1400, 4 phút); gộp 4; kho đội 2 / +1 mỗi 135 s / tối đa 4 (WRD, D-92) |
+| Mắt Xanh | `sentry_ward` | 50 | — | **Chủ động**, tầm 500: cắm mắt xanh (true sight 900, 5 phút); gộp 6; kho đội 3 / +1 mỗi 90 s / tối đa 6 |
 
 Danh mục, shop ẩn, giờ mở và độc nhất của từng món: D-90 (SHOP-07). Luật của trang bị: GAME_RULES mục ITM.
 

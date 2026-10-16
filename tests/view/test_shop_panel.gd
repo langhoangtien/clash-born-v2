@@ -26,12 +26,12 @@ func _ids(items: Array[ItemDef]) -> Array[StringName]:
 
 func test_SHOP_07_tabs_filter_catalog() -> void:
 	var p: ShopPanel = _panel()
-	assert_eq(p.catalog(T.ALL).size(), 9)
-	assert_eq(p.catalog(T.ALL)[0].id, &"reveal_dust", "rẻ nhất trước")
+	assert_eq(p.catalog(T.ALL).size(), 11)
+	assert_eq(p.catalog(T.ALL)[0].id, &"observer_ward", "rẻ nhất trước, cùng giá theo id")
 	assert_eq(_ids(p.catalog(T.ATTACK)), [&"shadow_blade", &"stun_hammer"])
 	assert_eq(_ids(p.catalog(T.MAGIC)), [&"ghost_scepter", &"cyclone_staff", &"hex_scythe"])
 	assert_eq(_ids(p.catalog(T.DEFENSE)), [&"cleansing_charm", &"frost_orb", &"resolute_armor"])
-	assert_eq(_ids(p.catalog(T.UTILITY)), [&"reveal_dust"])
+	assert_eq(_ids(p.catalog(T.UTILITY)), [&"observer_ward", &"sentry_ward", &"reveal_dust"])
 	assert_eq(_ids(p.catalog(T.SECRET)), [&"frost_orb", &"resolute_armor"])
 	p.free()
 

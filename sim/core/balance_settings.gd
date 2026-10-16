@@ -81,6 +81,9 @@ extends Resource
 @export var respawn_per_level: float
 ## DTH-02: thời gian nằm chờ tái sinh (giây).
 @export var reincarnate_delay: float
+## WRD-04: máu ward tính theo đòn: mỗi đòn đánh của hero trừ ward_hero_hit, của lính / trụ / khác trừ ward_other_hit.
+@export var ward_hero_hit: float
+@export var ward_other_hit: float
 
 @export_group("Trạng thái (ST)")
 ## ST-16: tốc chạy cố định khi HEXED.

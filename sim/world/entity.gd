@@ -3,7 +3,7 @@ extends RefCounted
 ## Một đơn vị trên sân (ARCHITECTURE 3.1). Chỉ có các trường mà hệ thống hiện có cần;
 ## thêm trường khi hệ thống dùng nó được làm (không làm trước).
 
-enum Kind { HERO, LANE_CREEP, NEUTRAL, TOWER, CORE }
+enum Kind { HERO, LANE_CREEP, NEUTRAL, TOWER, CORE, WARD }
 enum AttackPhase { NONE, WINDUP, RECOVERY }
 
 ## Do World cấp, tăng dần, không dùng lại; quyết định thứ tự xử lý.
@@ -43,6 +43,10 @@ var lock_target_id: int = -1
 var respawn_tick: int = -1
 ## DTH-02: đang nằm chờ tái sinh tới tick này (-1 = không).
 var reincarnate_tick: int = -1
+## WRD-02: ward biến mất ở tick này (-1 = không phải ward).
+var expire_tick: int = -1
+## WRD-03: bán kính nhìn thấy tàng hình (mắt xanh), 0 = không có.
+var true_sight_range: float = 0.0
 ## Kinh tế (ECO-01/07): vàng thưởng khi bị hạ (từ dữ liệu), vàng và số last hit của hero,
 ## kẻ gây đòn chết (DamageSystem ghi).
 var bounty_gold: int = 0

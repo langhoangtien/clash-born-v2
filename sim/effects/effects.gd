@@ -68,6 +68,8 @@ static func refresh_states(owner: Entity) -> void:
 		bits |= 1 << UnitState.Id.UNTARGETABLE  # ABL-08
 	if owner.knockback != null:
 		bits |= 1 << UnitState.Id.STUNNED  # ABL-10
+	if owner.kind == Entity.Kind.WARD:
+		bits |= 1 << UnitState.Id.INVISIBLE  # WRD-02
 	if owner.reincarnate_tick >= 0:
 		bits |= (1 << UnitState.Id.INVULNERABLE) | (1 << UnitState.Id.UNTARGETABLE) | (1 << UnitState.Id.STUNNED)  # DTH-02
 	var hexed_before: bool = owner.states & (1 << UnitState.Id.HEXED) != 0

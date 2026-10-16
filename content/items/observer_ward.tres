@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Resource" path="res://content/units/ward_observer.tres" id="2_unit"]
+[ext_resource type="Script" path="res://sim/actions/place_ward_action.gd" id="3_place"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_abl"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="5_item"]
+
+[sub_resource type="Resource" id="Resource_place"]
+script = ExtResource("3_place")
+ward = ExtResource("2_unit")
+
+[sub_resource type="Resource" id="Resource_abl"]
+script = ExtResource("4_abl")
+slot = 4
+targeting = 3
+target_team = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cast_range": PackedFloat32Array(500)
+})
+on_cast = Array[ExtResource("1_act")]([SubResource("Resource_place")])
+id = &"observer_ward_active"
+art_id = &"observer_ward_active"
+
+[resource]
+script = ExtResource("5_item")
+category = 3
+description = "Cắm mắt (tầm 500): mắt vàng tàng hình tồn tại 4 phút, cho tầm nhìn 1400 (đứng trong bụi thì soi cả bụi). Gộp tối đa 4 lần cắm trong một ô. Kho mỗi đội: có sẵn 2, cứ 135 s thêm 1, tối đa 4. Hero phá bằng 2 đòn đánh (+150 vàng), lính / trụ 6 đòn."
+cost = 50
+ability = SubResource("Resource_abl")
+charges = 1
+max_stack = 4
+stock_initial = 2
+stock_max = 4
+stock_restock = 135.0
+id = &"observer_ward"
+display_name = "Mắt Vàng"
+art_id = &"observer_ward"

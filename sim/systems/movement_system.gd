@@ -125,13 +125,13 @@ func _path_still_walkable(nav: MapNavigation, e: Entity) -> bool:
 func _separate(world: World) -> void:
 	var max_push: float = world.balance.separation_speed * SimClock.TICK_SECONDS
 	for a: Entity in world.entities:
-		if not a.alive or a.dash != null or a.knockback != null:
-			continue
+		if not a.alive or a.dash != null or a.knockback != null or a.kind == Entity.Kind.WARD:
+			continue  # WRD-02: ward không chắn ai
 		# Lưới dựng một lần ở đầu bước đẩy; vị trí đổi trong lúc đẩy chỉ làm lọc thô kém đi
 		# vài đơn vị, kết quả vẫn xác định vì thứ tự theo id.
 		var later: Array[Entity] = []
 		for b: Entity in world.spatial_near(a.position, a.radius + SEPARATION_SLACK, World.Phase.MOVEMENT, false):
-			if b.id > a.id and b.dash == null and b.knockback == null:
+			if b.id > a.id and b.dash == null and b.knockback == null and b.kind != Entity.Kind.WARD:
 				later.append(b)
 		if later.size() > 1:
 			later.sort_custom(func(x: Entity, y: Entity) -> bool: return x.id < y.id)

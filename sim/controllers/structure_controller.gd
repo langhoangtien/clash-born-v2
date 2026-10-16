@@ -33,6 +33,8 @@ func _choose(world: World, tower: Entity) -> void:
 		pick = _nearest(tower, nearby, Entity.Kind.LANE_CREEP)
 		if pick == null:
 			pick = _nearest(tower, nearby, Entity.Kind.HERO)
+		if pick == null:
+			pick = _nearest(tower, nearby, Entity.Kind.WARD)  # WRD-06
 	var current: int = tower.order.target_id if tower.order.type == Order.Type.ATTACK and not tower.order.finished else -1
 	if pick != null and pick.id != current:
 		world.submit(Command.attack(tower.id, pick.id))

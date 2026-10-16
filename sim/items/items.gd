@@ -14,9 +14,15 @@ static func slots(e: Entity) -> Array[ItemInstance]:
 	return e.items
 
 
-## Cho món vào ô trống đầu tiên; trả về chỉ số ô hoặc -1 nếu đầy.
+## Cho món vào ô trống đầu tiên (món gộp được thì cộng vào món cùng loại, WRD-01); trả về
+## chỉ số ô hoặc -1 nếu đầy.
 static func give(world: World, e: Entity, def: ItemDef) -> int:
 	var list: Array[ItemInstance] = slots(e)
+	var stack: int = stack_slot(e, def)
+	if stack >= 0:
+		list[stack].charges += def.charges
+		list[stack].bought_tick = world.tick
+		return stack
 	var index: int = list.find(null)
 	if index < 0:
 		return -1
@@ -40,6 +46,16 @@ static func give(world: World, e: Entity, def: ItemDef) -> int:
 		e.stats.add_modifier(StatModifier.make(StatId.from_name(m.stat), m.op, ExprEval.evaluate(m.value, ctx), it.serial, m.unique_group, index + 1))
 	refresh_passives(world, e)
 	return index
+
+
+## WRD-01: ô có món cùng loại còn gộp thêm được, -1 nếu không có.
+static func stack_slot(e: Entity, def: ItemDef) -> int:
+	if def.max_stack <= 0:
+		return -1
+	for it: ItemInstance in slots(e):
+		if it != null and it.def == def and it.charges + def.charges <= def.max_stack:
+			return it.index
+	return -1
 
 
 static func remove(world: World, e: Entity, index: int) -> ItemDef:

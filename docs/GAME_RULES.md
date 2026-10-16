@@ -377,10 +377,35 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   chối SOLD_OUT. Bán lại thì món về cửa hàng; chết không rơi đồ.
 - `SHOP-05` Bán: nhận `sell_ratio` × giá (làm tròn xuống); bán trong `sell_full_refund_time`
   giây sau khi mua thì hoàn đủ. Bán được ở mọi nơi, cả khi đang chờ hồi sinh.
-- `SHOP-06` Thứ tự kiểm tra khi mua: món có trong cửa hàng → giờ mở → độc nhất → shop ẩn →
-  vàng → ô trống.
+- `SHOP-06` Thứ tự kiểm tra khi mua: món có trong cửa hàng → giờ mở → độc nhất → kho đội
+  (SHOP-08) → shop ẩn → vàng → ô trống (món gộp được thì còn chỗ gộp cũng được, WRD-01).
 - `SHOP-07` Mỗi món thuộc một danh mục (`category`): Tấn công, Phép, Phòng thủ, Tiện ích. Cửa
   hàng có thêm hai bộ lọc: Tất cả và Shop ẩn. Danh mục chỉ để hiển thị, không đổi luật mua bán.
+- `SHOP-08` Kho mỗi đội (`stock_initial`, `stock_max`, `stock_restock`; stock_max 0 = không giới
+  hạn): mua trừ 1 của kho đội mình, hết thì từ chối OUT_OF_STOCK. Kho chưa đầy thì cứ
+  `stock_restock` giây thêm 1 (đồng hồ chạy từ lúc kho rời mức đầy); bán không trả lại kho.
+
+## WRD — Ward (D-92, M6.8)
+
+- `WRD-01` Mắt vàng (`observer_ward`) / mắt xanh (`sentry_ward`): đồ chủ động nhắm điểm, tầm
+  500 (xa hơn thì cắm ở mép tầm), cắm ward của phe mình ở đất đi được gần điểm nhắm nhất, tốn
+  1 lần dùng; hết lần dùng thì món mất. Mua thêm cộng vào món cùng loại đang có tới
+  `max_stack` (4 / 6) lần cắm, không tốn ô mới.
+- `WRD-02` Ward là đơn vị loại WARD: không di chuyển, không đánh, không chắn ai, luôn
+  INVISIBLE; phe mình luôn thấy. Hết `lifetime` (mắt vàng 4 phút, mắt xanh 5 phút) thì biến
+  mất, không ai được thưởng.
+- `WRD-03` Mắt vàng có tầm nhìn 1400 như một đơn vị (đứng trong bụi thì soi cả bụi đó, VIS-06).
+  Mắt xanh không có tầm nhìn, không soi bụi; trong `true_sight_range` 900 quanh nó, kẻ tàng
+  hình (hero, ward) được xét như không tàng hình — vẫn cần đội có tầm nhìn tới đó theo VIS-01 /
+  VIS-06. Ward địch còn bị thấy nhờ true sight fountain, tầm bắn trụ (D-80) và REVEALED.
+- `WRD-04` Máu ward = 6 đòn: mỗi đòn đánh của hero trừ `ward_hero_hit` (3), của lính / trụ /
+  đơn vị khác trừ `ward_other_hit` (1), bỏ qua sát thương thật. Sát thương không phải đòn
+  đánh (chiêu, vùng, phản đòn…) không tác dụng; chiêu không nhắm và không trúng ward.
+- `WRD-05` Hero phá ward địch nhận `bounty_gold` của ward (mắt vàng 150, mắt xanh 25), không
+  tính last hit, không XP. Lính / trụ phá thì không ai được.
+- `WRD-06` Ưu tiên chọn mục tiêu: nút Lính — ward trước lính; nút Đánh — hero → lính → công
+  trình → ward. Lính đường: sau mọi mục tiêu khác. Trụ: lính → hero → ward. Quái rừng không
+  đánh ward.
 
 ## TAL — Talent
 
@@ -737,6 +762,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | hex_move_speed | 140 | | bush_reveal_time | 1 s |
 | shop_radius | 600 | | sell_ratio / sell_full_refund_time | 0.5 / 10 s |
 | reincarnate_delay | 3 s | | match_target_minutes | 15–20 (D-29) |
+| ward_hero_hit / ward_other_hit | 3 / 1 (máu ward 6) | | | |
 | first_wave_time | 15 s | | creep_front_margin | 200 |
 | fountain_regen | 0.05 / s | | fountain_damage / attack_interval | 300 / 1 s |
 | evasion_cap | 1.0 (không giới hạn) | | tower_body_radius | 52 |

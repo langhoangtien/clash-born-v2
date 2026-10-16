@@ -99,17 +99,17 @@ static func pick_attack_target(world: World, e: Entity, mode: AttackMode) -> int
 	if mode == AttackMode.ALL and e.lock_target_id >= 0 and lock_holds(world, e):
 		return e.lock_target_id
 	var search: float = e.stats.get_stat(StatId.Id.ATTACK_RANGE) + world.balance.attack_search_bonus
-	var best: Array[Entity] = [null, null, null]  # hero, lính/quái, công trình
+	var best: Array[Entity] = [null, null, null, null]  # hero, lính/quái, công trình, ward
 	for t: Entity in world.entities:
 		if not is_attackable(e, t) or edge_distance(e, t) > search:
 			continue
-		var slot: int = 0 if t.kind == Entity.Kind.HERO else (2 if is_structure(t) else 1)
+		var slot: int = 0 if t.kind == Entity.Kind.HERO else (2 if is_structure(t) else (3 if t.kind == Entity.Kind.WARD else 1))
 		var by_hp: bool = slot == 0 or (slot == 1 and mode == AttackMode.CREEP)
 		if best[slot] == null or _better(e, t, best[slot], by_hp):
 			best[slot] = t
-	var order: Array[int] = [0, 1, 2]
+	var order: Array[int] = [0, 1, 2, 3]  # WRD-06: nút Đánh — ward sau cùng
 	if mode == AttackMode.CREEP:
-		order = [1]
+		order = [3, 1]  # WRD-06: nút Lính — ward trước lính
 	elif mode == AttackMode.STRUCTURE:
 		order = [2]
 	for slot: int in order:

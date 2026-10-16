@@ -18,14 +18,14 @@ func test_content_has_no_errors() -> void:
 	assert_true(errs.is_empty(), "\n".join(errs))
 
 
-func test_four_heroes_and_nine_items() -> void:
+func test_four_heroes_and_items() -> void:
 	assert_eq(_lib.heroes.keys().map(func(k: StringName) -> String: return String(k)).size(), 4)
 	for id: StringName in [&"brakk", &"myra", &"noctis", &"vexa"]:
 		assert_true(_lib.heroes.has(id), "có hero " + id)
 	for id: StringName in [&"ghost_scepter", &"resolute_armor", &"frost_orb", &"reveal_dust", &"cyclone_staff",
 			&"shadow_blade", &"hex_scythe", &"cleansing_charm", &"stun_hammer"]:
 		assert_true(_lib.items.has(id), "có đồ " + id)
-	assert_eq(_lib.items.size(), 9)
+	assert_eq(_lib.items.size(), 11, "9 món + 2 ward (M6.8)")
 	var C := ItemDef.Category
 	var table: Dictionary = {  # SHOP-07, D-90: danh mục, shop ẩn, giờ mở (s), độc nhất
 		&"stun_hammer": [C.ATTACK, false, 0, false], &"shadow_blade": [C.ATTACK, false, 0, false],
@@ -33,6 +33,7 @@ func test_four_heroes_and_nine_items() -> void:
 		&"hex_scythe": [C.MAGIC, false, 900, true], &"cleansing_charm": [C.DEFENSE, false, 0, false],
 		&"frost_orb": [C.DEFENSE, true, 0, false], &"resolute_armor": [C.DEFENSE, true, 600, false],
 		&"reveal_dust": [C.UTILITY, false, 0, false],
+		&"observer_ward": [C.UTILITY, false, 0, false], &"sentry_ward": [C.UTILITY, false, 0, false],
 	}
 	for id: StringName in table:
 		var d: ItemDef = _lib.items[id]

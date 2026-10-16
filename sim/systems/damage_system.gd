@@ -17,6 +17,8 @@ static func resolve(world: World) -> void:
 		if target == null or not target.alive or target.locked or target.reincarnate_tick >= 0:
 			continue  # STR-02: công trình khóa không nhận sát thương; DTH-02: đang nằm chờ tái sinh
 		var source: Entity = world.find_entity(r.source_id)
+		if target.kind == Entity.Kind.WARD and not r.is_attack:
+			continue  # WRD-04: chỉ đòn đánh phá được ward
 		if r.is_attack and _misses(world, source, target):
 			world.emit(&"attack_missed", r.source_id, r.target_id)
 			world.note(&"miss", target.position)
@@ -29,6 +31,8 @@ static func resolve(world: World) -> void:
 		if factor <= 0.0:
 			continue
 		amount *= factor
+		if target.kind == Entity.Kind.WARD:  # WRD-04: máu ward tính theo đòn
+			amount = world.balance.ward_hero_hit if source != null and source.kind == Entity.Kind.HERO else world.balance.ward_other_hit
 		if r.is_attack:
 			world.emit(&"attack_landed", r.source_id, r.target_id, amount, &"crit" if r.crit else &"")
 			if source != null and source.kind == Entity.Kind.HERO and target.kind == Entity.Kind.HERO and source.team != target.team:
