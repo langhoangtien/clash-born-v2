@@ -691,7 +691,11 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | BOT-08 | PUSH | Công trình kế tiếp mở, vị trí đánh an toàn | Đánh công trình | Hết điều kiện |
 | BOT-09 | RALLY | Mặc định | Đứng sau frontline `bot_lane_offset`; không có thì ngay ngoài vùng nguy hiểm trụ địch | — |
 
-- `BOT-10` Mọi điểm bot đi tới hoặc đứng đánh đều qua `is_safe_for_hero`, không ngoại lệ.
+- `BOT-10` Mọi điểm bot đi tới hoặc đứng đánh đều qua `is_safe_for_hero`, không ngoại lệ. Đường thẳng
+  tới chỗ đứng đánh cũng phải an toàn; lỡ đứng chỗ không an toàn thì vào ESCAPE_TOWER.
+- `BOT-16` (D-94) JUNGLE: không có việc ở lane (không TRADE / KILL / DEFEND_BASE / FARM / PUSH),
+  máu ≥ 50% → đánh quái trại rừng phe mình gần nhất (trong 2500) còn quái, chỗ đứng an toàn.
+  Không kéo lính.
 - `BOT-11` Không đứng yên ngoài RECOVER và DEAD.
 - `BOT-12` Bot thấy đúng những gì đội nó thấy (VIS). Không "nhìn xuyên" tàng hình.
 - `BOT-13` Bot dùng skill và đồ chủ động theo **loại** khai báo trong dữ liệu (`bot_usage`: DISABLE,

@@ -211,3 +211,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M6.8b | Xong | 2026-10-17 | 506 test + 3 soak xanh (+2); vẽ ward, minimap, nhắm cắm mắt bằng kéo nút, kho trong shop (D-93). Chờ chơi thử cắm / phá ward |
 | M7.1 | Xong | 2026-10-17 | 510 test xanh (+4); Rules.tower_threat_at / in_enemy_fountain / is_safe_for_hero (DEF-09, DEF-10), tham số bot vào BalanceSettings |
 | M7.2 | Xong | 2026-10-17 | 513 test xanh (+3); BotController (pha CONTROLLER), BotState trên Entity.bot (trong hash), MatchSetup.add_bot; BOT-01..03 |
+| M7.3 | Xong | 2026-10-17 | 523 test xanh (+10); BOT-04..09, farm rừng (D-94), BOT-10 cả đường đi tới chỗ đứng, test 3 phút bot đấu bot kiểm INV-06 / BOT-11 |
