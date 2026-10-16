@@ -4,7 +4,8 @@ extends SimSystem
 ## (khác đội) khi một trong các điều sau đúng, theo thứ tự:
 ##   1. E bị REVEALED bởi đội T (VIS-08), ở mọi nơi;
 ##   2. E trong true sight fountain của T (VIS-03);
-##   3. E không tàng hình (VIS-02) — hoặc tàng hình nhưng trong tầm bắn một trụ của T (D-80) — và: cùng bụi với người của T (VIS-06), hoặc không bị bụi
+##   3. E trong tầm bắn một trụ của T (D-80, D-83: thấy cả tàng hình lẫn trong bụi);
+##   4. E không tàng hình (VIS-02) và: cùng bụi với người của T (VIS-06), hoặc không bị bụi
 ##      che (ngoài bụi / đang lộ VIS-07) và trong tầm nhìn một đơn vị của T (VIS-01).
 ## World không có hệ thống này thì mọi đơn vị thấy hết (mặc định của visible_mask).
 
@@ -31,7 +32,7 @@ func run(world: World) -> void:
 			var covered: bool = e.bush_id >= 0 and world.tick > e.reveal_until_tick
 			for t: int in range(TEAMS):
 				if t != e.team and (revealed & (1 << t) != 0 or _true_sight(world, t, e, sight_sq) \
-						or ((not invisible or _tower_sight(e, t)) and _plain_seen(e, t, covered))):
+						or _tower_sight(e, t) or (not invisible and _plain_seen(e, t, covered))):
 					mask |= 1 << t
 		e.visible_mask = mask
 
@@ -60,7 +61,7 @@ func _collect(world: World) -> void:
 			_towers[o.team].append([o.position, o.radius + o.stats.get_stat(StatId.Id.ATTACK_RANGE)])
 
 
-## D-80: E (tàng hình) trong tầm bắn một trụ của đội `t` (tính theo mép thân như CMB).
+## D-80, D-83: E trong tầm bắn một trụ của đội `t` (tính theo mép thân như CMB).
 func _tower_sight(e: Entity, t: int) -> bool:
 	for tower: Array in _towers[t]:
 		if e.position.distance_to(tower[0]) - e.radius <= tower[1]:

@@ -194,7 +194,7 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
     địch trong vùng, kể cả tàng hình, núp bụi, ngoài tầm các đơn vị.
   - Trụ: kẻ địch tàng hình mà mép thân trong **tầm bắn** của trụ thì đội chủ trụ thấy (trụ
     bắn được), ra ngoài thì ẩn lại — như tàng hình thường trong Dota (Riki, Bounty Hunter).
-    Trụ không khử bụi cỏ (VIS-06).
+    Trong tầm bắn, trụ cũng thấy kẻ địch núp bụi (D-83), để map đổi chỗ bụi không phải sửa luật.
   - Loại tàng hình không bị true sight lộ (kiểu Shadow Dance của Slark) chưa có; khi có hero
     dùng thì thêm cờ riêng cho hiệu ứng.
 - `VIS-04` Hiệu ứng tàng hình bị xóa khi chủ nhân bắt đầu đánh hoặc dùng chiêu (khai báo
@@ -205,8 +205,7 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   Không có kẻ áp (vd fountain) thì mọi đội địch của E đều thấy.
 - `VIS-06` Bụi cỏ (D-72, kiểu Liên Quân): đơn vị E có tâm nằm trong bụi B thì đội T khác
   đội E chỉ thấy E khi (a) T có đơn vị sống cũng đứng trong B (thấy cả bụi, không cần
-  tầm), hoặc (b) E đang lộ (VIS-07) và VIS-01 thỏa. Áp cho mọi đội, cả trụ và nhà
-  chính. Bụi không chặn đi lại, đạn hay vùng kỹ năng. Đứng ngoài bụi thì như VIS-01.
+  tầm), hoặc (b) E đang lộ (VIS-07) và VIS-01 thỏa. Áp cho mọi đội; riêng trụ thấy vào bụi trong tầm bắn của nó (VIS-03, D-83). Bụi không chặn đi lại, đạn hay vùng kỹ năng. Đứng ngoài bụi thì như VIS-01.
 - `VIS-07` Ra tay thì lộ: bắt đầu vung đòn đánh (`attack_started`) hoặc tung chiêu
   (`ability_cast`) → lộ `bush_reveal_time` giây, tính từ tick sau sự kiện. Đang lộ thì
   bụi không che (vẫn cần trong tầm nhìn VIS-01).

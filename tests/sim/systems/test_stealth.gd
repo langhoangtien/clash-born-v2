@@ -149,7 +149,7 @@ func test_VIS_03_towers_see_invisible_inside_attack_range_only() -> void:
 	tower.position = bush + Vector2(300, 0)
 	sneak.position = bush
 	w.step()
-	assert_false(Rules.is_visible(0, sneak), "trụ vẫn không nhìn vào bụi (VIS-06)")
+	assert_true(Rules.is_visible(0, sneak), "trong tầm bắn: trụ thấy cả tàng hình trong bụi (D-83)")
 
 
 func test_VIS_02_attack_order_cancelled_but_projectile_and_areas_hit() -> void:

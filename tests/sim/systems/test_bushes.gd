@@ -112,12 +112,18 @@ func test_VIS_07_attacking_from_bush_reveals_for_1s() -> void:
 	assert_false(Rules.is_visible(0, hider), "hết 1 s thì bụi che lại")
 
 
-func test_VIS_06_towers_cannot_see_into_bushes_but_areas_hit() -> void:
+func test_VIS_03_towers_see_into_bushes_only_within_attack_range_and_areas_hit() -> void:
 	var w: World = _world()
 	var hider: Entity = _unit(w, 1, _bush(0))
 	var tower: Entity = _unit(w, 0, _outside(0, 450.0), 1200.0, Entity.Kind.TOWER)
+	tower.stats.set_base(StatId.Id.ATTACK_RANGE, 300)
+	tower.stats.recompute()
 	w.step()
-	assert_false(Rules.is_targetable(tower, hider), "trụ không nhắm được người trong bụi")
+	assert_false(Rules.is_targetable(tower, hider), "ngoài tầm bắn trụ: bụi vẫn che")
+	tower.stats.set_base(StatId.Id.ATTACK_RANGE, 600)
+	tower.stats.recompute()
+	w.step()
+	assert_true(Rules.is_targetable(tower, hider), "trong tầm bắn trụ: trụ thấy cả trong bụi (D-83)")
 	var hit: DamageAction = DamageAction.new()
 	hit.damage_type = DamageFormulas.DamageType.PURE
 	hit.amount = "100"
