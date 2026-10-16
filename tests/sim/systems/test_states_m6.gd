@@ -243,3 +243,22 @@ func test_ST_16_hex_disables_passive_triggers() -> void:
 	_hit(w, foe, me, T.PURE, 100.0)
 	w.step()
 	assert_near(me.health, 850.0, 1.0, "biến hình: bị động tạm tắt")
+
+
+func test_EFF_07_purge_on_magic_immune_needs_pierce() -> void:
+	var w: World = _world()
+	var me: Entity = _unit(w, 0, _center())
+	var foe: Entity = _unit(w, 1, _center() + Vector2(200, 0))
+	var haste: EffectDef = _effect([], &"buff", &"test_haste")
+	Effects.apply(w, foe, haste, foe, {}, "5")
+	Effects.apply(w, foe, _lib.effects[&"magic_immune"], foe, {}, "5")
+	var purge: PurgeAction = PurgeAction.new()
+	purge.target = ActionDef.Target.TARGET
+	var ctx: ExprContext = ExprContext.make(me, foe)
+	ctx.ability = _ability(AbilityDef.Targeting.UNIT, [])
+	ActionRunner.run(w, [purge], ctx, me.id)
+	assert_true(foe.effects.any(func(i: EffectInstance) -> bool: return i.def.id == &"test_haste"), "miễn phép: không tước được")
+	ctx.ability = _ability(AbilityDef.Targeting.UNIT, [], true)
+	ActionRunner.run(w, [purge], ctx, me.id)
+	assert_false(foe.effects.any(func(i: EffectInstance) -> bool: return i.def.id == &"test_haste"), "nguồn xuyên miễn phép tước được")
+	assert_true(Rules.has_state(foe, UnitState.Id.MAGIC_IMMUNE), "miễn phép (dispel NONE/STRONG) không bị tước bởi tước cơ bản")

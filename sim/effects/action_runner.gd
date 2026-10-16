@@ -42,6 +42,8 @@ static func run(world: World, actions: Array[ActionDef], ctx: ExprContext, sourc
 			_strip(world, receiver, &"debuff", (action as DispelAction).level, ctx, [], source_id)
 		elif action is PurgeAction:
 			var p: PurgeAction = action
+			if receiver.team != ctx.owner.team and not _pierces(ctx) and Rules.has_state(receiver, UnitState.Id.MAGIC_IMMUNE):
+				continue  # EFF-07 (D-79): tước buff địch đang miễn phép cần nguồn xuyên miễn phép
 			_strip(world, receiver, &"buff", p.level, ctx, p.on_each, source_id)
 		else:
 			push_error("ActionRunner: %s chưa làm" % action.get_script().get_global_name())

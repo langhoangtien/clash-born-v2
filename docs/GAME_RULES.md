@@ -391,6 +391,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   STRONG; debuff khác (chậm, câm lặng, trói, cấm đánh, lộ diện) là BASIC; buff từ
   skill thường là BASIC; buff từ ultimate là NONE. Thanh tẩy **mình** gỡ debuff;
   **tước** (purge) lên địch gỡ buff.
+  Tước buff (purge) của địch đang MAGIC_IMMUNE không có tác dụng, trừ nguồn xuyên miễn phép
+  (như Dota, D-79). Thanh tẩy debuff trên chính mình / đồng minh không bị chặn.
 - `EFF-08` Trigger khai báo **vai** của chủ hiệu ứng trong sự kiện: `as: SOURCE` (mình
   gây ra, ví dụ mình đánh trúng) hoặc `as: TARGET` (mình bị, ví dụ mình bị đánh trúng).
   Cùng sự kiện `attack_landed` có thể kích hoạt nội tại của kẻ đánh và kẻ bị đánh.
