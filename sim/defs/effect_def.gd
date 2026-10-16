@@ -19,6 +19,9 @@ enum Dispel { BASIC, STRONG, NONE }  # EFF-07
 @export var fade_in: String
 ## Lượng khiên (EFF-06). Rỗng = không phải khiên.
 @export var absorb: String
+## DTH-01: chặn cái chết của chủ hiệu ứng (kiểu Wraith King). Gắn với kỹ năng bị động thì cần
+## kỹ năng đã hồi và đủ mana; không gắn kỹ năng nào thì dùng một lần rồi mất (kiểu Aegis).
+@export var prevent_death: bool = false
 @export var periodic_interval: String
 @export var periodic_actions: Array[ActionDef] = []
 ## Chí mạng của đòn đánh (CMB-07). Rỗng = không chí mạng.

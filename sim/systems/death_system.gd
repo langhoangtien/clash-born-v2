@@ -10,6 +10,8 @@ func run(world: World) -> void:
 	var gone: Array[Entity] = []
 	for e: Entity in world.entities:
 		if e.alive:
+			if e.reincarnate_tick >= 0 and world.tick >= e.reincarnate_tick:
+				Reincarnation.stand_up(world, e)  # DTH-02
 			continue
 		if e.kind == Entity.Kind.HERO:
 			_hero_waits(world, e)
@@ -30,7 +32,7 @@ func run(world: World) -> void:
 func _hero_waits(world: World, e: Entity) -> void:
 	if e.respawn_tick < 0:
 		Effects.remove_on_death(world, e)  # D-56
-		_hero_kill_rewards(world, e)
+		hero_kill_rewards(world, e)
 		var wait: float = world.balance.respawn_base + world.balance.respawn_per_level * e.stats.level()
 		e.respawn_tick = world.tick + SimClock.seconds_to_ticks(wait)
 		e.order = Order.idle()
@@ -79,7 +81,7 @@ func _reward(world: World, e: Entity) -> void:
 
 ## ECO-03: XP chia đều cho hero phe kia còn sống trong `xp_share_range` (kẻ hạ là hero thì
 ## luôn được tính). Trả về danh sách hero được chia, theo id.
-func _share_xp(world: World, dead: Entity, amount: float, killer: Entity) -> Array[Entity]:
+static func _share_xp(world: World, dead: Entity, amount: float, killer: Entity) -> Array[Entity]:
 	var takers: Array[Entity] = []
 	for h: Entity in world.entities:
 		if h.kind != Entity.Kind.HERO or not h.alive or h.team == dead.team:
@@ -93,8 +95,8 @@ func _share_xp(world: World, dead: Entity, amount: float, killer: Entity) -> Arr
 
 
 ## Hạ hero: XP và vàng cho kẻ hạ (hoặc chia cho hero phe kia gần đó nếu trụ/lính hạ);
-## nạn nhân mất vàng (ECO-05).
-func _hero_kill_rewards(world: World, e: Entity) -> void:
+## nạn nhân mất vàng (ECO-05) trừ khi tái sinh tại chỗ (`lose_gold` = false, DTH-03).
+static func hero_kill_rewards(world: World, e: Entity, lose_gold: bool = true) -> void:
 	var b: BalanceSettings = world.balance
 	var level: int = e.stats.level()
 	var killer: Entity = world.find_entity(e.killer_id)
@@ -110,12 +112,13 @@ func _hero_kill_rewards(world: World, e: Entity) -> void:
 	if not paid.is_empty():
 		world.emit(&"kill_credited", paid[0].id, e.id, gold)
 	_count_kda(world, e, killer)
-	e.gold = maxi(0, e.gold - b.death_gold_per_level * level)
+	if lose_gold:
+		e.gold = maxi(0, e.gold - b.death_gold_per_level * level)
 
 
 ## ECO-09: kẻ hạ (hero) +1 hạ; nạn nhân +1 chết; hero địch khác đã gây sát thương trong
 ## `assist_window` giây +1 hỗ trợ.
-func _count_kda(world: World, victim: Entity, killer: Entity) -> void:
+static func _count_kda(world: World, victim: Entity, killer: Entity) -> void:
 	victim.deaths += 1
 	if killer != null:
 		killer.kills += 1

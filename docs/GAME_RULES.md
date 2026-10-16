@@ -543,10 +543,13 @@ Quái rừng thuộc đội trung lập (đội 2), là **kẻ địch của m�
 
 - `DTH-01` Khi máu về 0, trước khi chết thật hệ thống phát sự kiện `lethal_damage`.
   Hiệu ứng có `prevent_death` (ví dụ tái sinh kiểu Wraith King) có thể chặn chết nếu
-  còn đủ điều kiện (hết hồi chiêu, đủ mana nếu có khai báo).
+  còn đủ điều kiện (hết hồi chiêu, đủ mana nếu có khai báo). Hiệu ứng gắn với kỹ năng bị động
+  (on_learn) thì dùng hồi chiêu và mana của kỹ năng đó; không gắn kỹ năng nào thì dùng một lần
+  rồi mất (kiểu Aegis). Chặn được thì không phát `unit_died` (D-91).
 - `DTH-02` Bị chặn chết thì: máu giữ ở 1, đơn vị nằm xuống tại chỗ, INVULNERABLE +
   UNTARGETABLE + không hành động trong `reincarnate_delay`, rồi đứng dậy đầy máu và mana
-  tại chỗ; mọi debuff bị gỡ.
+  tại chỗ; mọi debuff bị gỡ, buff giữ nguyên, phát `reincarnated`. Lệnh và chiêu đang vung bị
+  hủy. Mọi sát thương tới (kể cả đòn khác trong cùng tick) bỏ qua đơn vị đang nằm.
 - `DTH-03` (Clashborn) Tái sinh vẫn tính là một lần bị hạ: kẻ hạ nhận vàng và XP, chuỗi
   thắng/thua tính bình thường; nhưng không có thời gian chờ hồi sinh và không mất vàng.
 

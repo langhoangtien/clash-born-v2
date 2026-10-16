@@ -115,6 +115,9 @@ func _draw_unit(e: Entity, at: Vector2) -> void:
 	if Rules.is_structure(e):
 		_draw_structure(e, at, color)
 		return
+	if e.reincarnate_tick >= 0:  # DTH-02: nằm chờ tái sinh
+		_draw_lying(e, at, color)
+		return
 	if Rules.has_state(e, UnitState.Id.HEXED):  # ST-16: hình con ếch tạm
 		_draw_frog(e, at, color)
 		return
@@ -138,6 +141,19 @@ func _draw_frog(e: Entity, at: Vector2, color: Color) -> void:
 	draw_circle(at - Vector2(-r * 0.45, r * 1.3), r * 0.3, Color.WHITE)
 	draw_arc(at - Vector2(0, r * 0.6), r, 0, TAU, 20, color, 3.0, true)
 	_draw_health(e, at - Vector2(0, r * 2.4 + 14), color)
+
+
+## DTH-02: hero nằm ngang, mờ, vòng đếm ngược thời gian còn lại tới lúc đứng dậy.
+func _draw_lying(e: Entity, at: Vector2, color: Color) -> void:
+	var r: float = e.radius
+	draw_set_transform(at - Vector2(0, r * 0.4), 0.0, Vector2(1.6, 0.6))
+	draw_circle(Vector2.ZERO, r * 0.9, Color(color.darkened(0.3), 0.5))
+	draw_set_transform(Vector2.ZERO)
+	draw_circle(at - Vector2(r * 1.3, r * 0.4), r * 0.5, Color(0.96, 0.84, 0.7, 0.5))
+	var total: float = SimClock.seconds_to_ticks(world.balance.reincarnate_delay)
+	var left: float = clampf((e.reincarnate_tick - world.tick) / maxf(total, 1.0), 0.0, 1.0)
+	draw_arc(at - Vector2(0, r * 0.4), r * 2.0, 0, TAU, 32, Color(1, 1, 1, 0.2), 4.0, true)
+	draw_arc(at - Vector2(0, r * 0.4), r * 2.0, -PI * 0.5, -PI * 0.5 + TAU * left, 32, Color(1, 0.85, 0.35, 0.9), 5.0, true)
 
 
 ## Hình tạm: thân tròn màu đội + đầu, mũi tên hướng nhìn.

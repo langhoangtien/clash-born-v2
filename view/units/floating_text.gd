@@ -17,6 +17,10 @@ static func draw(ci: CanvasItem, world: World) -> void:
 		match n[0]:
 			&"miss":
 				text = "Trượt"
+			&"reincarnate":
+				text = "TÁI SINH"
+				color = Color(1.0, 0.85, 0.35)
+				size = 28
 			&"stun":
 				text = "CHOÁNG"
 				color = Color(1.0, 0.9, 0.3)

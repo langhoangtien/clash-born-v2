@@ -79,6 +79,8 @@ extends Resource
 ## ECO-04: hồi sinh sau respawn_base + respawn_per_level × cấp giây.
 @export var respawn_base: float
 @export var respawn_per_level: float
+## DTH-02: thời gian nằm chờ tái sinh (giây).
+@export var reincarnate_delay: float
 
 @export_group("Trạng thái (ST)")
 ## ST-16: tốc chạy cố định khi HEXED.

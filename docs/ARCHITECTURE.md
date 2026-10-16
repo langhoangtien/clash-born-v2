@@ -216,7 +216,7 @@ Bốn hero và các món đồ đầu tiên cần đúng các action sau (CONTEN
 | `ManaBurn(target, amount)` | Thư viện bị động (Anti-Mage) |
 | `AreaAt` có tham số `falloff` (giảm dần theo khoảng cách) | Thư viện bị động (Spectre) |
 
-Móc chặn chết (`prevent_death`, DTH-01) nằm trong DeathSystem, không phải action.
+Móc chặn chết (`prevent_death`, DTH-01) nằm trong DamageSystem lúc máu về 0 (`Reincarnation`), đứng dậy ở DeathSystem; không phải action.
 
 Kỹ năng **kết hợp** action, không tự viết logic riêng. Action mới = cơ chế mới.
 

@@ -14,8 +14,8 @@ static func resolve(world: World) -> void:
 	world.damage_requests = []
 	for r: DamageRequest in requests:
 		var target: Entity = world.find_entity(r.target_id)
-		if target == null or not target.alive or target.locked:
-			continue  # STR-02: công trình khóa không nhận sát thương
+		if target == null or not target.alive or target.locked or target.reincarnate_tick >= 0:
+			continue  # STR-02: công trình khóa không nhận sát thương; DTH-02: đang nằm chờ tái sinh
 		var source: Entity = world.find_entity(r.source_id)
 		if r.is_attack and _misses(world, source, target):
 			world.emit(&"attack_missed", r.source_id, r.target_id)
@@ -40,6 +40,8 @@ static func resolve(world: World) -> void:
 		if amount > 0.0 and (target.kind == Entity.Kind.HERO or (source != null and source.kind == Entity.Kind.HERO)):
 			world.note(&"crit" if r.crit else &"damage", target.position, amount)
 		world.emit(&"damage_taken", r.source_id, r.target_id, amount, &"reflected" if r.reflected else &"")
+		if target.health <= 0.0 and Reincarnation.try_prevent(world, target, r.source_id):
+			continue  # DTH-01
 		if target.health <= 0.0:
 			target.health = 0.0
 			target.alive = false

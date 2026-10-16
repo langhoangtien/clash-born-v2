@@ -41,6 +41,8 @@ var aggro_until_tick: int = 0
 ## Hero: mục tiêu đang khóa (CTL-04, CommandSystem ghi), tick hồi sinh (ECO-04, DeathSystem ghi; -1 = không chờ).
 var lock_target_id: int = -1
 var respawn_tick: int = -1
+## DTH-02: đang nằm chờ tái sinh tới tick này (-1 = không).
+var reincarnate_tick: int = -1
 ## Kinh tế (ECO-01/07): vàng thưởng khi bị hạ (từ dữ liệu), vàng và số last hit của hero,
 ## kẻ gây đòn chết (DamageSystem ghi).
 var bounty_gold: int = 0
