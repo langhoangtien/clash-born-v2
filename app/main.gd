@@ -28,6 +28,8 @@ func _ready() -> void:
 	button.pressed.connect(func() -> void: get_tree().change_scene_to_file(MAP_VIEWER))
 	box.add_child(button)
 	var library: ContentLibrary = ContentLibrary.load_dir()
+	box.add_child(_option_row("Bot", "BotHero", PLAYABLE.map(func(id: StringName) -> String: return library.heroes[id].display_name), 1))
+	box.add_child(_option_row("Độ khó bot", "BotDifficulty", ["Dễ", "Thường", "Khó"], BotState.Difficulty.NORMAL))
 	for id: StringName in PLAYABLE:
 		var match_button: Button = Button.new()
 		match_button.name = "Match_" + String(id)
@@ -38,6 +40,27 @@ func _ready() -> void:
 	print(VERSION_TEXT + " ready")
 
 
+## Hàng chọn: nhãn + danh sách thả xuống (D-94: chọn hero và độ khó của bot).
+func _option_row(title: String, node_name: String, labels: Array, selected: int) -> HBoxContainer:
+	var row: HBoxContainer = HBoxContainer.new()
+	row.add_theme_constant_override("separation", 24)
+	var label: Label = Label.new()
+	label.text = title
+	label.add_theme_font_size_override("font_size", 32)
+	row.add_child(label)
+	var pick: OptionButton = OptionButton.new()
+	pick.name = node_name
+	pick.add_theme_font_size_override("font_size", 32)
+	for text: String in labels:
+		pick.add_item(text)
+	pick.select(selected)
+	row.add_child(pick)
+	return row
+
+
 func _start(id: StringName) -> void:
-	preload("res://app/match_scene.gd").hero_id = id
+	var scene: GDScript = preload("res://app/match_scene.gd")
+	scene.hero_id = id
+	scene.bot_hero_id = PLAYABLE[(find_child("BotHero", true, false) as OptionButton).selected]
+	scene.bot_difficulty = (find_child("BotDifficulty", true, false) as OptionButton).selected
 	get_tree().change_scene_to_file(MATCH_SCENE)

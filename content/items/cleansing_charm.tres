@@ -19,6 +19,7 @@ values = Dictionary[StringName, PackedFloat32Array]({
 })
 on_cast = Array[ExtResource("1_hsmej")]([SubResource("Resource_cdyvf")])
 bot_usages = Array[int]([5])
+bot_conditions = Array[StringName]([&"has_dispellable_debuff"])
 id = &"cleansing_charm_active"
 art_id = &"cleansing_charm_active"
 

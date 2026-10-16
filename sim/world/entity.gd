@@ -45,6 +45,8 @@ var respawn_tick: int = -1
 var reincarnate_tick: int = -1
 ## BOT: hero do bot điều khiển (null = người chơi / không phải hero).
 var bot: BotState
+## Hero: dữ liệu gốc (BOT-14 thứ tự nâng điểm, lên đồ).
+var hero_def: HeroDef
 ## WRD-02: ward biến mất ở tick này (-1 = không phải ward).
 var expire_tick: int = -1
 ## WRD-03: bán kính nhìn thấy tàng hình (mắt xanh), 0 = không có.

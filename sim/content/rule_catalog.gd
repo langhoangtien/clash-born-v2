@@ -37,6 +37,15 @@ const TRIGGER_CONDITIONS: PackedStringArray = [
 	"", "target_not_structure", "target_is_hero", "this_effect_depleted", "this_effect_ended",
 ]
 
+## BOT-13: điều kiện dữ liệu của chiêu / đồ cho bot (BotSkills.check). Thêm điều kiện = thay đổi luật.
+const BOT_CONDITIONS: PackedStringArray = [
+	"enemy_hero_in_range", "enemy_hero_in_radius", "enemy_hero_too_close", "enemy_hp_below_damage",
+	"two_enemies_in_area", "hits_multiple", "hp_below_70", "hp_below_30", "hp_below_30_or_tower_targeted",
+	"taking_damage", "target_hp_below_50", "destination_safe", "before_engage", "preparing_engage",
+	"enemy_hero_still_or_disabled", "has_dispellable_debuff", "enemy_has_purgeable_buff_or_fleeing",
+	"predict_position", "prefer_engaging_enemy", "prefer_same_target",
+]
+
 ## EFF-02, ST-09, ST-16…: tag hiệu ứng có ý nghĩa trong luật.
 const EFFECT_TAGS: PackedStringArray = ["debuff", "buff", "passive", "dispellable"]
 

@@ -23,11 +23,15 @@ func run(world: World) -> void:
 		think(world, e)
 
 
-## Một lần nghĩ: chọn state rồi làm.
+## Một lần nghĩ: nâng điểm, mua đồ, chọn state, dùng chiêu / đồ, rồi đi / đánh.
 func think(world: World, e: Entity) -> void:
 	var b: BotState = e.bot
 	var target: Entity = null
+	_level_up(world, e)
+	_shop(world, e)
 	b.mode = choose(world, e)
+	if b.mode != Mode.RECOVER and BotSkills.try_cast(world, e, _enemy_hero(world, e)):
+		return  # BOT-13
 	match b.mode:
 		Mode.ESCAPE_TOWER:
 			_go(world, e, escape_point(world, e))
@@ -45,6 +49,10 @@ func think(world: World, e: Entity) -> void:
 			target = jungle_target(world, e)
 		Mode.PUSH:
 			target = Objectives.next_for_lane(world, e.team, b.lane)
+		Mode.SHOP:
+			_go(world, e, _shop_spot(world, e))
+		Mode.WARD:
+			_ward(world, e)
 		_:
 			_go(world, e, rally_point(world, e))
 	if target != null:
@@ -79,6 +87,10 @@ func choose(world: World, e: Entity) -> Mode:
 		return Mode.FARM  # BOT-07
 	if push_ready(world, e):
 		return Mode.PUSH  # BOT-08
+	if _wants_secret_shop(world, e):
+		return Mode.SHOP  # D-94: đủ vàng mua món shop ẩn kế tiếp, shop gần và an toàn
+	if ward_spot(world, e).is_finite():
+		return Mode.WARD  # D-94: cắm mắt vàng ở điểm định sẵn
 	if hp >= 0.5 and jungle_target(world, e) != null:
 		return Mode.JUNGLE  # D-94: lane trống thì farm rừng phe mình
 	return Mode.RALLY  # BOT-09
@@ -89,6 +101,10 @@ func _note_fights(world: World, e: Entity) -> void:
 	for ev: GameEvent in world.previous_hero_fights():
 		if ev.target_id == e.id:
 			e.bot.trade_until_tick = world.tick + SimClock.seconds_to_ticks(world.balance.bot_trade_window)
+	for ev: GameEvent in world.previous_events:
+		if ev.type == &"damage_taken" and ev.target_id == e.id and ev.amount > 0.0:
+			e.bot.last_hurt_tick = world.tick - 1
+			break
 
 
 ## Hero địch gần nhất mà đội bot đang thấy và đánh được (BOT-12), null nếu không có.
@@ -310,3 +326,129 @@ func _threatened_by_targeting(world: World, e: Entity, p: Vector2) -> bool:
 		if t.order.target_id == e.id:
 			return true
 	return false
+
+
+## BOT-14: nâng điểm theo bot_skill_order (bỏ qua bước chưa làm được, thử bước sau), chọn
+## talent theo bot_talent_priority.
+func _level_up(world: World, e: Entity) -> void:
+	var def: HeroDef = e.hero_def
+	if def == null:
+		return
+	if e.skill_points > 0 and not def.bot_skill_order.is_empty():
+		for i: int in range(e.bot.upgrades_done, def.bot_skill_order.size()):
+			var slot: int = _upgrade_slot(def.bot_skill_order[i])
+			if Progression.level_problem(world, e, slot) == Command.Reject.NONE:
+				world.submit(Command.level_up(e.id, slot))
+				e.bot.upgrades_done = i + 1
+				break
+	if e.talent_slot < 0 and e.skill_points == 0 and e.stats.level() >= world.balance.talent_level:
+		for slot: AbilityDef.Slot in def.bot_talent_priority:
+			if Progression.talent_problem(world, e, slot) == Command.Reject.NONE:
+				world.submit(Command.choose_talent(e.id, slot))
+				break
+
+
+static func _upgrade_slot(u: HeroDef.Upgrade) -> int:
+	match u:
+		HeroDef.Upgrade.Q:
+			return AbilityDef.Slot.Q
+		HeroDef.Upgrade.W:
+			return AbilityDef.Slot.W
+		HeroDef.Upgrade.R:
+			return AbilityDef.Slot.R
+	return Command.ATTRIBUTES
+
+
+## D-94: món kế tiếp trong thứ tự lên đồ chưa có, null nếu đã đủ.
+func next_item(world: World, e: Entity) -> ItemDef:
+	if e.hero_def == null:
+		return null
+	for id: StringName in e.hero_def.bot_item_build:
+		var owned: bool = Items.slots(e).any(func(it: ItemInstance) -> bool: return it != null and it.def.id == id)
+		if not owned and world.item_catalog.has(id):
+			return world.item_catalog[id]
+	return null
+
+
+## D-94: mua món kế tiếp (mọi nơi, hoặc khi đang ở shop ẩn), mua mắt vàng khi kho còn.
+func _shop(world: World, e: Entity) -> void:
+	if world.item_catalog.is_empty():
+		return
+	var d: ItemDef = next_item(world, e)
+	if d != null and Shop.buy_problem(world, e, d.id) == Command.Reject.NONE:
+		world.submit(Command.buy(e.id, d.id))
+		return
+	var obs: ItemDef = world.item_catalog.get(&"observer_ward")
+	if obs != null and _charges_of(e, obs) == 0 and Shop.buy_problem(world, e, obs.id) == Command.Reject.NONE:
+		world.submit(Command.buy(e.id, obs.id))
+
+
+func _charges_of(e: Entity, d: ItemDef) -> int:
+	for it: ItemInstance in Items.slots(e):
+		if it != null and it.def == d:
+			return it.charges
+	return 0
+
+
+func _wants_secret_shop(world: World, e: Entity) -> bool:
+	var d: ItemDef = next_item(world, e)
+	if d == null or d.shop != ItemDef.ShopKind.SECRET or e.gold < d.cost or Shop.buy_problem(world, e, d.id) != Command.Reject.NOT_IN_SHOP:
+		return false
+	var spot: Vector2 = _shop_spot(world, e)
+	return e.position.distance_to(spot) <= 5000.0 and _reach_safe(world, e, spot)
+
+
+func _shop_spot(world: World, e: Entity) -> Vector2:
+	var best: Vector2 = Vector2.INF
+	for p: Vector2 in world.map.shop_points:
+		if not best.is_finite() or e.position.distance_to(p) < e.position.distance_to(best):
+			best = p
+	return world.navigation(e.radius).nearest_clear(best)
+
+
+## D-94: điểm cắm mắt vàng định sẵn — 2 bụi gần giữa map nhất trên nửa map phe bot; trả về
+## điểm chưa có mắt phe mình (trong 700), an toàn, trong 3000; INF nếu không cần cắm.
+func ward_spot(world: World, e: Entity) -> Vector2:
+	var obs: ItemDef = world.item_catalog.get(&"observer_ward")
+	if obs == null or _charges_of(e, obs) == 0:
+		return Vector2.INF
+	for p: Vector2 in ward_spots(world, e.team):
+		if e.position.distance_to(p) > 3000.0 or not _reach_safe(world, e, p):
+			continue
+		var covered: bool = false
+		for w: Entity in world.entities:
+			if w.kind == Entity.Kind.WARD and w.alive and w.team == e.team and w.true_sight_range <= 0.0 and w.position.distance_to(p) < 700.0:
+				covered = true
+		if not covered:
+			return p
+	return Vector2.INF
+
+
+static func ward_spots(world: World, team: int) -> Array[Vector2]:
+	var mid: Vector2 = world.map.world_size() * 0.5
+	var home: Vector2 = world.map.fountain_point(team)
+	var away: Vector2 = world.map.fountain_point(1 - team)
+	var spots: Array[Vector2] = []
+	for poly: PackedVector2Array in world.map.bushes.polygons:
+		var c: Vector2 = Vector2.ZERO
+		for p: Vector2 in poly:
+			c += p
+		c /= poly.size()
+		if c.distance_to(home) < c.distance_to(away):
+			spots.append(c)
+	spots.sort_custom(func(a: Vector2, b: Vector2) -> bool: return a.distance_to(mid) < b.distance_to(mid))
+	return spots.slice(0, 2)
+
+
+func _ward(world: World, e: Entity) -> void:
+	var spot: Vector2 = ward_spot(world, e)
+	if not spot.is_finite():
+		return
+	if e.position.distance_to(spot) > 450.0:
+		_go(world, e, world.navigation(e.radius).nearest_clear(spot))
+		return
+	for it: ItemInstance in Items.slots(e):
+		if it != null and it.def.id == &"observer_ward" and it.ability != null \
+				and Abilities.problem(world, e, it.ability) == Abilities.Problem.NONE:
+			world.submit(Command.cast(e.id, Items.SLOT_BASE + it.index, -1, spot))
+			return

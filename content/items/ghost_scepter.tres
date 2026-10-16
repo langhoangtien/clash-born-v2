@@ -23,6 +23,7 @@ values = Dictionary[StringName, PackedFloat32Array]({
 })
 on_cast = Array[ExtResource("1_x8k83")]([SubResource("Resource_imhha")])
 bot_usages = Array[int]([5])
+bot_conditions = Array[StringName]([&"hp_below_70", &"taking_damage"])
 id = &"ghost_scepter_active"
 art_id = &"ghost_scepter_active"
 

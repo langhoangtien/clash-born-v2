@@ -6,6 +6,7 @@ extends RefCounted
 static func hero(world: World, def: HeroDef, team: int, position: Vector2, level: int = 1) -> Entity:
 	var e: Entity = Entity.new()
 	e.kind = Entity.Kind.HERO
+	e.hero_def = def
 	e.team = team
 	e.position = position
 	e.radius = def.stats.collision_radius

@@ -700,7 +700,10 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 - `BOT-12` Bot thấy đúng những gì đội nó thấy (VIS). Không "nhìn xuyên" tàng hình.
 - `BOT-13` Bot dùng skill và đồ chủ động theo **loại** khai báo trong dữ liệu (`bot_usage`: DISABLE,
   POKE, FINISH, ENGAGE, ESCAPE, SELF_DEFENSE, TEAMFIGHT) cộng điều kiện dữ liệu của
-  skill. Logic bot viết cho từng loại, **không viết cho từng skill**.
+  skill. Logic bot viết cho từng loại, **không viết cho từng skill**. Nhiều loại thì điều kiện thứ
+  i đi với loại thứ i; một loại thì mọi điều kiện phải đúng (`predict_position`,
+  `prefer_engaging_enemy`, `prefer_same_target` chỉ là gợi ý). Tên điều kiện: RuleCatalog
+  .BOT_CONDITIONS. SELF_DEFENSE luôn cần vừa bị trúng sát thương trong 2 s; POKE giữ ≥ 40% mana.
 - `BOT-14` Bot nâng skill và chọn talent theo thứ tự khai báo trong dữ liệu hero.
 - `BOT-15` Skill ENGAGE chỉ dùng khi điểm đến an toàn (DEF-10); ESCAPE được dùng bất
   kể an toàn.

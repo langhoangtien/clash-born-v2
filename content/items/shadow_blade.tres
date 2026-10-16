@@ -34,6 +34,7 @@ values = Dictionary[StringName, PackedFloat32Array]({
 })
 on_cast = Array[ExtResource("1_sx3bd")]([SubResource("Resource_03o0t"), SubResource("Resource_xd7g1")])
 bot_usages = Array[int]([3, 4])
+bot_conditions = Array[StringName]([&"preparing_engage", &"hp_below_30"])
 id = &"shadow_blade_active"
 art_id = &"shadow_blade_active"
 

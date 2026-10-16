@@ -53,6 +53,9 @@ func _check_ability(ability: AbilityDef, where: String) -> void:
 			_fail(where, "giá trị '%s' có %d cấp, cần %d" % [key, ability.values[key].size(), ranks])
 	if ability.targeting == AbilityDef.Targeting.PASSIVE and not ability.on_cast.is_empty():
 		_fail(where, "kỹ năng bị động không có on_cast (dùng on_learn)")
+	for c: StringName in ability.bot_conditions:
+		if not RuleCatalog.BOT_CONDITIONS.has(String(c)):
+			_fail(where, "điều kiện bot lạ: " + c)  # BOT-13
 	if ability.talent != null:
 		for change: ValueChangeDef in ability.talent.value_changes:
 			if not ability.values.has(change.value_name):

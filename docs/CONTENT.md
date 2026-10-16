@@ -369,7 +369,10 @@ liệu, bot chỉ có logic cho từng **loại** (GAME_RULES BOT-13):
 | Noctis R | ENGAGE | Trước khi áp sát mục tiêu |
 | Vexa Q | DISABLE | Hero địch trong tầm, ưu tiên khi nó đang áp sát |
 | Vexa W | ESCAPE / POKE | Hero địch quá gần, hoặc trúng được nhiều kẻ địch |
-| Vexa R | DISABLE | Hero địch có ≥ 1 hiệu ứng có lợi gỡ được, hoặc đang bỏ chạy |
+| Vexa R | DISABLE | Hero địch có ≥ 1 hiệu ứng có lợi gỡ được, hoặc đang bỏ chạy (`enemy_has_purgeable_buff_or_fleeing`) |
+| Đồ (D-95) | theo món | Gậy Hồn Ma, Giáp Bất Khuất: máu < 70% và đang nhận sát thương; Bùa Thanh Tẩy: có debuff gỡ được; Gậy Lốc Xoáy: ESCAPE khi máu < 30% / DISABLE khi hero địch trong tầm; Lưỡi Hái: hero địch trong tầm; Lưỡi Ẩn Thân: ENGAGE khi chuẩn bị áp sát / ESCAPE khi máu < 30% |
+
+Thứ tự lên đồ của bot (`bot_item_build`, D-95): Brakk — Búa Choáng, Ngọc Băng Sương, Giáp Bất Khuất, Bùa Thanh Tẩy; Myra — Gậy Hồn Ma, Gậy Lốc Xoáy, Ngọc Băng Sương, Lưỡi Hái; Noctis — Lưỡi Ẩn Thân, Búa Choáng, Giáp Bất Khuất, Ngọc Băng Sương; Vexa — Gậy Lốc Xoáy, Gậy Hồn Ma, Lưỡi Hái, Bùa Thanh Tẩy.
 
 Nội tại không cần `bot_usage` vì tự kích hoạt. Riêng Myra: bot ưu tiên giữ nguyên mục
 tiêu để không mất cộng dồn Nhịp Phép (điều kiện dữ liệu `prefer_same_target`).

@@ -23,6 +23,7 @@ values = Dictionary[StringName, PackedFloat32Array]({
 })
 on_cast = Array[ExtResource("1_uiwt1")]([SubResource("Resource_2xds4")])
 bot_usages = Array[int]([0])
+bot_conditions = Array[StringName]([&"enemy_hero_in_range"])
 id = &"hex_scythe_active"
 art_id = &"hex_scythe_active"
 

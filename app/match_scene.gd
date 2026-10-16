@@ -6,6 +6,9 @@ extends Node2D
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
 ## Tướng của người chơi; màn khởi động đặt trước khi vào trận (tạm, tới khi có màn chọn tướng M8).
 static var hero_id: StringName = &"brakk"
+## D-94: hero và độ khó của bot đối thủ (màn khởi động đặt; "" = không có bot).
+static var bot_hero_id: StringName = &"myra"
+static var bot_difficulty: int = BotState.Difficulty.NORMAL
 const SEED: int = 1
 ## CTL-02: phím PC giả lập nút ĐÁNH / đánh lính / đánh trụ (theo Rules.AttackMode).
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
@@ -51,6 +54,9 @@ func _ready() -> void:
 	for def: GameDef in library.units.values() + library.heroes.values():
 		ArtLibrary.texture(def.art_id)  # nạp sẵn hình lúc vào trận, không để lần xuất hiện đầu bị giật
 	hero = UnitFactory.hero(world, hero_def, 0, world.map.fountain_point(0))
+	if bot_hero_id != &"":
+		var foe: Entity = UnitFactory.hero(world, library.heroes[bot_hero_id], 1, world.map.fountain_point(1))
+		MatchSetup.add_bot(world, foe, bot_difficulty as BotState.Difficulty)
 	units_view.world = world
 	units_view.viewer_team = hero.team
 	fog = FogView.new()

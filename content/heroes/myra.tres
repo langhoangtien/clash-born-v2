@@ -38,6 +38,7 @@ w = ExtResource("6_0wqin")
 r = ExtResource("3_jy6ew")
 bot_skill_order = Array[int]([0, 1, 0, 1, 0, 2, 0, 1, 0, 1, 2, 1, 3, 3, 3, 2, 3, 3, 3, 3])
 bot_talent_priority = Array[int]([3, 2, 1])
+bot_item_build = Array[StringName]([&"ghost_scepter", &"cyclone_staff", &"frost_orb", &"hex_scythe"])
 id = &"myra"
 display_name = "Myra · Pháp sư"
 art_id = &"myra"

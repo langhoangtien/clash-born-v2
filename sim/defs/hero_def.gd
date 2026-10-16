@@ -20,6 +20,8 @@ enum Upgrade { Q, W, R, ATTRIBUTES }
 ## Lựa chọn ở mỗi lần lên cấp; ATTRIBUTES = đổi điểm lấy thuộc tính (ABL-04).
 @export var bot_skill_order: Array[Upgrade] = []
 @export var bot_talent_priority: Array[AbilityDef.Slot] = []
+## D-94: thứ tự lên đồ của bot (id món); mua món đầu tiên chưa có khi đủ vàng.
+@export var bot_item_build: Array[StringName] = []
 
 
 func abilities() -> Array[AbilityDef]:

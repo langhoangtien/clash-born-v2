@@ -2,7 +2,7 @@ class_name BotState
 extends RefCounted
 ## Trạng thái bot của một hero (BOT). Gắn vào Entity.bot; nằm trong state_hash (D-30).
 
-enum Mode { ESCAPE_TOWER, RETREAT, RECOVER, TRADE, KILL, DEFEND_BASE, FARM, JUNGLE, PUSH, RALLY }
+enum Mode { ESCAPE_TOWER, RETREAT, RECOVER, TRADE, KILL, DEFEND_BASE, FARM, JUNGLE, PUSH, RALLY, SHOP, WARD }
 enum Difficulty { EASY, NORMAL, HARD }
 
 var mode: Mode = Mode.RALLY
@@ -17,6 +17,10 @@ var target_id: int = -1
 var chase_origin: Vector2 = Vector2.INF
 ## BOT-04: tới tick này còn đánh trả.
 var trade_until_tick: int = -1
+## Tick gần nhất bị trúng sát thương (điều kiện `taking_damage`).
+var last_hurt_tick: int = -1000
+## BOT-14: số lần nâng điểm đã làm theo bot_skill_order.
+var upgrades_done: int = 0
 
 
 ## Số tick giữa hai lần bot “nghĩ” (độ trễ phản xạ).
