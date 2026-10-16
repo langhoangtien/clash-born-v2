@@ -86,6 +86,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-84 | 2026-10-16 | M6.4: Vexa đủ bộ theo CONTENT, không cần code mới; R tước được buff của mục tiêu đang miễn phép (xuyên), hiệu ứng miễn phép (dispel NONE) không bị tước. Màn khởi động có Vexa | Đã duyệt |
 | D-85 | 2026-10-16 | M6.5a: ô đồ — ItemInstance trong Entity.items (6 ô), lệnh dùng đồ = CAST ô 10 + k, item_slot = k + 1 theo D-55; bị động nhiều món cùng loại chỉ món ô cao nhất áp; hồi chiêu chung theo loại; số lần dùng hết thì mất món; câm lặng không chặn dùng đồ. HUD: hàng 6 ô trên cụm nút chiêu, phím 4–9 | Đã duyệt |
 | D-86 | 2026-10-16 | M6.5b: luật mua bán SHOP-01..06 — lệnh BUY/SELL (được cả khi chờ hồi sinh), cửa hàng của trận = World.item_catalog; ItemDef thêm `shop` (BASE/SECRET), `unlock_time`, `unique`; shop ẩn S1 cạnh R1 (ô C7) và S1' đối xứng trong dữ liệu map (`shops`); độc nhất xét theo việc có ai đang giữ; bán 50% (làm tròn xuống) hoặc hoàn đủ trong 10 s. Bảng shop tạm phím B / nút Shop; vẽ shop ẩn và vòng 600 trên map, minimap, ký hiệu S1/S1' | Đã duyệt |
+| D-87 | 2026-10-16 | Bỏ hàng 6 ô đồ trên HUD. Chỉ món chủ động (kỹ năng không phải PASSIVE) có nút tròn ở chỗ phép bổ trợ của Liên Quân — hàng dưới, bên trái ô Q, tối đa 3 nút theo thứ tự ô; đồ bị động không hiện trên màn hình (xem trong shop). Phím 4/5/6 = nút thứ 1/2/3; hàng buff lùi sang trái cụm nút. Shop kiểu Liên Quân (danh mục, chi tiết khi chạm) để M6.6 | Đã duyệt |
 
 ## Chờ chốt
 

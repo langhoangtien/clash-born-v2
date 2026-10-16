@@ -11,7 +11,7 @@ const SEED: int = 1
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
 const SPEEDS: Array[int] = [1, 2, 4, 8]
 const MENU_SCENE: String = "res://app/main.tscn"
-const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · 4–9 dùng đồ · B shop · F2 ký hiệu map · Esc"
+const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · 4/5/6 dùng đồ · B shop · F2 ký hiệu map · Esc"
 
 @onready var map_view: MapView = $MapView
 @onready var units_view: UnitsView = $UnitsView
@@ -112,7 +112,7 @@ func tick_frame(delta: float) -> void:
 	minimap.camera_rect = Rect2(camera.position - view_size * 0.5, view_size)
 	match_hud.speed = runner.speed
 	skills.refresh()
-	buff_bar.right_limit = skill_buttons.global_position.x + skill_buttons.skill_center(0).x - SkillButtons.SKILL_RADIUS
+	buff_bar.right_limit = minf(skill_buttons.global_position.x + skill_buttons.skill_center(0).x - SkillButtons.SKILL_RADIUS, skills.items.left_edge())
 	if world.winner >= 0 and result == null:
 		_show_result()
 

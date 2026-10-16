@@ -78,26 +78,26 @@ func _on_aim(i: int, aim: Vector2, active: bool) -> void:
 
 
 ## Phím: 1/2/3 tung vào con trỏ; Ctrl + 1..4 nâng điểm. Trả về true nếu đã xử lý.
-## Ô đồ: [tên tắt, giây hồi, số lần dùng, chủ động, dùng được] (ItemButtons).
+## D-87: chỉ món chủ động có nút, theo thứ tự ô: [ô, tên tắt, giây hồi, số lần dùng, dùng được].
 func _refresh_items() -> void:
-	var list: Array[ItemInstance] = Items.slots(hero)
-	for i: int in range(Items.SLOTS):
-		var it: ItemInstance = list[i]
-		if it == null:
-			items.item_view[i] = []
+	var view: Array = []
+	for it: ItemInstance in Items.slots(hero):
+		if it == null or it.ability == null or it.def.ability.targeting == AbilityDef.Targeting.PASSIVE:
 			continue
 		var a: AbilityInstance = it.ability
-		var active: bool = a != null and a.def.targeting != AbilityDef.Targeting.PASSIVE
-		var cd: float = maxf(0.0, (a.ready_tick - world.tick) * SimClock.TICK_SECONDS) if a != null else 0.0
-		var ok: bool = active and Abilities.problem(world, hero, a) == Abilities.Problem.NONE
-		items.item_view[i] = [ItemButtons.short_name(it.def.display_name), cd, it.charges if it.def.charges > 0 else -1, active, ok]
+		var cd: float = maxf(0.0, (a.ready_tick - world.tick) * SimClock.TICK_SECONDS)
+		var ok: bool = Abilities.problem(world, hero, a) == Abilities.Problem.NONE
+		view.append([it.index, ItemButtons.short_name(it.def.display_name), cd, it.charges if it.def.charges > 0 else -1, ok])
+	items.item_view = view
 	items.queue_redraw()
 
 
 func handle_key(key: InputEventKey, cursor: Vector2) -> bool:
-	var item_key: int = [KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9].find(key.keycode)
-	if item_key >= 0 and not key.ctrl_pressed:
-		input.press_skill_at(Items.SLOT_BASE + item_key, cursor)  # ITM-07: phím 4–9
+	var item_key: int = [KEY_4, KEY_5, KEY_6].find(key.keycode)
+	if item_key >= 0 and not key.ctrl_pressed and items != null:
+		var slot: int = items.slot_for_button(item_key)  # D-87: phím 4/5/6 = nút đồ chủ động thứ 1/2/3
+		if slot >= 0:
+			input.press_skill_at(Items.SLOT_BASE + slot, cursor)
 		return true
 	var index: int = [KEY_1, KEY_2, KEY_3, KEY_4].find(key.keycode)
 	if index < 0:

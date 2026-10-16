@@ -95,7 +95,7 @@ Chưa có gameplay; dựng khung để mọi thứ sau đứng vững.
 | M6.3 Action Push — đẩy lùi (ABL-10) | Test ABL-10, không xuyên vật cản |
 | M6.4 **Vexa** đầy đủ: nội tại hút Trí tuệ, Q, W, R + 3 talent | Test; **chơi thử Vexa** |
 | M6.5 Ô đồ, đồ chủ động/bị động (ITM-01..05), nút đồ trên HUD; luật mua bán SIM (D-81): mua mọi nơi, shop ẩn S1/S1', đồ mở theo giờ, đồ độc nhất, bán lại | Test ITM + SHOP |
-| M6.6 9 món đồ trong CONTENT.md | Test mỗi món một kịch bản |
+| M6.6 9 món đồ trong CONTENT.md, danh mục, shop kiểu Liên Quân | Test mỗi món một kịch bản |
 | M6.7 Móc chặn chết, tái sinh tại chỗ (DTH-01..03), hero thử nghiệm Wraith King | Test DTH; thưởng vàng/XP đúng |
 | M6.8 Ward: mắt vàng (tầm nhìn, tàng hình), mắt xanh (nguồn true sight, lộ ward địch), phá ward khi bị lộ (D-77) | Test từng dòng bảng tương tác; **chơi thử cắm/phá ward** |
 
@@ -203,3 +203,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M6.4 | Xong | 2026-10-16 | 468 test xanh (+8); Vexa: hút Trí tuệ, Q ếch, W sóng đẩy lùi, R tước phép xuyên miễn phép, 3 talent (D-84). Chờ chơi thử |
 | M6.5a | Xong | 2026-10-16 | 475 test xanh (+7); 6 ô đồ, chỉ số, bị động một bản, chủ động (câm lặng không chặn), hồi chiêu chung, số lần dùng; hàng ô đồ HUD, phím 4–9 (D-85) |
 | M6.5b | Xong | 2026-10-16 | 481 test xanh (+6); mua bán SHOP-01..06: mua mọi nơi, shop ẩn S1/S1', đồ theo giờ, đồ độc nhất, bán 50% / hoàn đủ 10 s; bảng shop tạm (D-86). Chờ chơi thử |
+| D-87 | Xong | 2026-10-16 | 481 test xanh; nút đồ chủ động tròn bên trái Q (tối đa 3), bỏ hàng 6 ô |
