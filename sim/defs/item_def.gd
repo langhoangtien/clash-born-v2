@@ -9,6 +9,12 @@ extends GameDef
 ## Số lần dùng; 0 = không giới hạn.
 @export var charges: int
 
+enum Category { ATTACK, MAGIC, DEFENSE, UTILITY }
+## SHOP-07: danh mục trong cửa hàng.
+@export var category: Category = Category.UTILITY
+## Mô tả kỹ năng chủ động / bị động hiện ở khung chi tiết của cửa hàng (chỉ số tự sinh từ modifier).
+@export_multiline var description: String
+
 enum ShopKind { BASE, SECRET }
 ## SHOP-02: đồ thường (mua mọi nơi) hay đồ shop ẩn.
 @export var shop: ShopKind = ShopKind.BASE

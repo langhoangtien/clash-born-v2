@@ -395,7 +395,7 @@ là đề xuất, cân lại khi chơi thử.
 | Bùa Thanh Tẩy | `cleansing_charm` | 1800 | +6 giáp, +4 hồi máu | **Chủ động** (hồi 18 s): thanh tẩy cơ bản bản thân |
 | Búa Choáng | `stun_hammer` | 2900 | +25 sát thương | **Bị động**: đòn đánh 20% (cận chiến) / 10% (đánh xa) choáng 1.5 s, +100 sát thương vật lý; nhóm `bash`, thời gian chờ chung `bash_cooldown` (CMB-08, D-38) |
 
-Luật của trang bị: GAME_RULES mục ITM.
+Danh mục, shop ẩn, giờ mở và độc nhất của từng món: D-90 (SHOP-07). Luật của trang bị: GAME_RULES mục ITM.
 
 ## Lính và công trình (D-47, D-48)
 

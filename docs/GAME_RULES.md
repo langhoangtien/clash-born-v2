@@ -153,7 +153,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   - Khi bắt đầu: thanh tẩy cơ bản các debuff trên mình (EFF-07).
   - Chặn mọi hiệu ứng có tag `debuff` mới từ phe địch, kể cả từ đòn đánh (Búa
     Choáng, Ngọc Băng Sương), trừ nguồn có cờ `pierces_magic_immunity`.
-  - Chiêu/đồ nhắm đơn vị của địch không nhắm được nó; chiêu vùng của địch không gây
+  - Chiêu/đồ nhắm đơn vị của địch (kể cả loại nhắm được cả ta lẫn địch như Gậy Lốc Xoáy, D-90)
+    không nhắm được nó; chiêu vùng của địch không gây
     sát thương phép và không áp debuff lên nó. Nguồn xuyên miễn phép thì tác dụng đủ
     (cả sát thương phép).
   - Không chặn: đánh thường, sát thương vật lý và pure, hiệu ứng của đồng minh.
@@ -378,6 +379,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   giây sau khi mua thì hoàn đủ. Bán được ở mọi nơi, cả khi đang chờ hồi sinh.
 - `SHOP-06` Thứ tự kiểm tra khi mua: món có trong cửa hàng → giờ mở → độc nhất → shop ẩn →
   vàng → ô trống.
+- `SHOP-07` Mỗi món thuộc một danh mục (`category`): Tấn công, Phép, Phòng thủ, Tiện ích. Cửa
+  hàng có thêm hai bộ lọc: Tất cả và Shop ẩn. Danh mục chỉ để hiển thị, không đổi luật mua bán.
 
 ## TAL — Talent
 

@@ -26,6 +26,22 @@ func test_four_heroes_and_nine_items() -> void:
 			&"shadow_blade", &"hex_scythe", &"cleansing_charm", &"stun_hammer"]:
 		assert_true(_lib.items.has(id), "có đồ " + id)
 	assert_eq(_lib.items.size(), 9)
+	var C := ItemDef.Category
+	var table: Dictionary = {  # SHOP-07, D-90: danh mục, shop ẩn, giờ mở (s), độc nhất
+		&"stun_hammer": [C.ATTACK, false, 0, false], &"shadow_blade": [C.ATTACK, false, 0, false],
+		&"ghost_scepter": [C.MAGIC, false, 0, false], &"cyclone_staff": [C.MAGIC, false, 0, false],
+		&"hex_scythe": [C.MAGIC, false, 900, true], &"cleansing_charm": [C.DEFENSE, false, 0, false],
+		&"frost_orb": [C.DEFENSE, true, 0, false], &"resolute_armor": [C.DEFENSE, true, 600, false],
+		&"reveal_dust": [C.UTILITY, false, 0, false],
+	}
+	for id: StringName in table:
+		var d: ItemDef = _lib.items[id]
+		var row: Array = table[id]
+		assert_eq(d.category, row[0], "danh mục " + id)
+		assert_eq(d.shop == ItemDef.ShopKind.SECRET, row[1], "shop ẩn " + id)
+		assert_near(d.unlock_time, row[2], 0.01, "giờ mở " + id)
+		assert_eq(d.unique, row[3], "độc nhất " + id)
+		assert_true(d.description.length() > 20, "có mô tả " + id)
 
 
 func test_D_35_heroes_grow_only_attributes() -> void:

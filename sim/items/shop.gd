@@ -40,8 +40,7 @@ static func sell_problem(e: Entity, index: int) -> R:
 ## SHOP-05: 50% giá (làm tròn xuống), hoàn đủ nếu bán trong `sell_full_refund_time` giây.
 static func sell(world: World, e: Entity, index: int) -> void:
 	var it: ItemInstance = Items.slots(e)[index]
-	var full: bool = world.tick - it.bought_tick <= SimClock.seconds_to_ticks(world.balance.sell_full_refund_time)
-	var refund: int = it.def.cost if full else int(floor(it.def.cost * world.balance.sell_ratio))
+	var refund: int = refund_for(world, it)
 	Items.remove(world, e, index)
 	e.gold += refund
 	world.emit(&"item_sold", e.id, -1, refund, it.def.id)
@@ -63,3 +62,9 @@ static func _held(world: World, id: StringName) -> bool:
 			if it != null and it.def.id == id:
 				return true
 	return false
+
+
+## SHOP-05: số vàng nhận lại nếu bán món `it` lúc này.
+static func refund_for(world: World, it: ItemInstance) -> int:
+	var full: bool = world.tick - it.bought_tick <= SimClock.seconds_to_ticks(world.balance.sell_full_refund_time)
+	return it.def.cost if full else int(floor(it.def.cost * world.balance.sell_ratio))

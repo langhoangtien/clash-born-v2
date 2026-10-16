@@ -97,12 +97,13 @@ static func problem(world: World, e: Entity, a: AbilityInstance) -> Problem:
 static func accepts(caster: Entity, def: AbilityDef, t: Entity, need_sight: bool = true) -> bool:
 	if t == null or not t.alive:
 		return false
+	var as_enemy: bool = def.target_team == AbilityDef.Team.ENEMY or (def.target_team == AbilityDef.Team.ANY and t.team != caster.team)
+	if as_enemy:
+		if not (Rules.is_targetable(caster, t) if need_sight else Rules.is_hittable(caster, t)):
+			return false
+		if need_sight and not def.pierces_magic_immunity and Rules.has_state(t, UnitState.Id.MAGIC_IMMUNE):
+			return false  # ST-15: chiêu nhắm đơn vị không chọn được (kể cả chiêu "bất kỳ" khi nhắm địch)
 	match def.target_team:
-		AbilityDef.Team.ENEMY:
-			if not (Rules.is_targetable(caster, t) if need_sight else Rules.is_hittable(caster, t)):
-				return false
-			if need_sight and not def.pierces_magic_immunity and Rules.has_state(t, UnitState.Id.MAGIC_IMMUNE):
-				return false  # ST-15: chiêu nhắm đơn vị không chọn được
 		AbilityDef.Team.ALLY:
 			if t.team != caster.team:
 				return false

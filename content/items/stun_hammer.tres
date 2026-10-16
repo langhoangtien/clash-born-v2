@@ -33,6 +33,8 @@ value = "25"
 
 [resource]
 script = ExtResource("6_j1ani")
+category = 0
+description = "Bị động: đòn đánh có 20% (cận chiến) / 10% (đánh xa) cơ hội choáng 1.5 s và gây thêm 100 sát thương vật lý. Không cộng dồn với hiệu ứng choáng đòn đánh khác."
 cost = 2900
 modifiers = Array[ExtResource("5_o6v2r")]([SubResource("Resource_m3yb7")])
 ability = SubResource("Resource_fqeu2")

@@ -34,6 +34,8 @@ value = "4"
 
 [resource]
 script = ExtResource("5_f7avq")
+category = 2
+description = "Chủ động (hồi 18 s): thanh tẩy cơ bản bản thân — gỡ làm chậm, câm lặng và các hiệu ứng xấu cơ bản khác."
 cost = 1800
 modifiers = Array[ExtResource("4_s10lq")]([SubResource("Resource_8lg7y"), SubResource("Resource_flbis")])
 ability = SubResource("Resource_3lnmt")

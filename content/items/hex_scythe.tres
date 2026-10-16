@@ -43,6 +43,10 @@ value = "10"
 
 [resource]
 script = ExtResource("6_dinse")
+category = 1
+description = "Chủ động (hồi 22 s, tầm 600): biến mục tiêu thành ếch 3.5 s — không đánh, không dùng chiêu, tốc chạy rất thấp, nội tại bị tắt."
+unlock_time = 900.0
+unique = true
 cost = 5600
 modifiers = Array[ExtResource("5_iu6vu")]([SubResource("Resource_va20x"), SubResource("Resource_jnwik"), SubResource("Resource_wsm41")])
 ability = SubResource("Resource_pugi3")

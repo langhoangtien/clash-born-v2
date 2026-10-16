@@ -43,6 +43,10 @@ value = "24"
 
 [resource]
 script = ExtResource("7_fb7oi")
+category = 2
+description = "Chủ động (hồi 70 s): thanh tẩy cơ bản bản thân rồi kháng phép 6 s — không nhận sát thương phép, không bị chiêu nhắm đơn vị và hiệu ứng xấu của địch."
+shop = 1
+unlock_time = 600.0
 cost = 4000
 modifiers = Array[ExtResource("6_aj6eu")]([SubResource("Resource_3f0e4"), SubResource("Resource_8vgbl")])
 ability = SubResource("Resource_si4ov")

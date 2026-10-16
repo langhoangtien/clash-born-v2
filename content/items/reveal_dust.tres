@@ -33,6 +33,8 @@ art_id = &"reveal_dust_active"
 
 [resource]
 script = ExtResource("7_dshly")
+category = 3
+description = "Chủ động, 2 lần dùng (hồi 30 s): làm lộ diện mọi kẻ địch trong 900 quanh mình 8 s, kể cả tàng hình và trong bụi."
 cost = 80
 ability = SubResource("Resource_yr6g3")
 charges = 2
