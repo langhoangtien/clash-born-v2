@@ -19,6 +19,9 @@ var chase_origin: Vector2 = Vector2.INF
 var trade_until_tick: int = -1
 ## Tick gần nhất bị trúng sát thương (điều kiện `taking_damage`).
 var last_hurt_tick: int = -1000
+## D-96: vị trí và tick lần cuối thấy bot nhích đi (phát hiện kẹt).
+var last_pos: Vector2 = Vector2.INF
+var last_pos_tick: int = 0
 ## BOT-14: số lần nâng điểm đã làm theo bot_skill_order.
 var upgrades_done: int = 0
 

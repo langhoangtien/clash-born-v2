@@ -9,8 +9,10 @@ const Mode := BotState.Mode
 const ARRIVE: float = 60.0
 ## BOT-07: tìm lính để farm trong chừng này quanh bot và quanh điểm neo lane.
 const FARM_RANGE: float = 1100.0
+## D-96: bot chủ động cấu khi máu mình hơn địch chừng này (Dễ / Thường / Khó) và địch ở gần.
+const AHEAD: Array[float] = [0.3, 0.15, 0.05]
 ## D-94: chỉ đi farm trại rừng trong chừng này.
-const JUNGLE_RANGE: float = 2500.0
+const JUNGLE_RANGE: float = 1600.0
 
 
 func run(world: World) -> void:
@@ -55,8 +57,11 @@ func think(world: World, e: Entity) -> void:
 			_ward(world, e)
 		_:
 			_go(world, e, rally_point(world, e))
-	if target != null:
+	if target != null and Rules.can_attack(e):
 		_attack(world, e, target)
+	elif target != null:  # bị biến hình / tước vũ khí: lùi ra xa mục tiêu, không đứng yên (BOT-11)
+		var away: Vector2 = (e.position - target.position).normalized() if e.position != target.position else Vector2.RIGHT
+		_go(world, e, _safe_back(world, e, world.navigation(e.radius).nearest_clear(e.position + away * 300.0)))
 	if b.mode != Mode.TRADE and b.mode != Mode.KILL:
 		b.chase_origin = Vector2.INF
 
@@ -79,8 +84,12 @@ func choose(world: World, e: Entity) -> Mode:
 	if foe != null and _may_chase(world, e, foe):
 		if world.tick <= b.trade_until_tick:
 			return Mode.TRADE  # BOT-04
-		if _hp(foe) < world.balance.bot_kill_hp and e.position.distance_to(foe.position) <= world.balance.bot_kill_range:
-			return Mode.KILL  # BOT-05
+		var near: bool = e.position.distance_to(foe.position) <= world.balance.bot_kill_range
+		if near and (_hp(foe) < world.balance.bot_kill_hp or _hp(foe) < hp - AHEAD[b.difficulty] * 2.0):
+			return Mode.KILL  # BOT-05 (D-96: cả khi máu mình hơn hẳn)
+		if _wants_trade(e, foe):
+			b.trade_until_tick = world.tick + SimClock.seconds_to_ticks(world.balance.bot_trade_window)
+			return Mode.TRADE  # D-96: chủ động cấu
 	if _base_invader(world, e) != null:
 		return Mode.DEFEND_BASE  # BOT-06
 	if farm_target(world, e) != null:
@@ -91,8 +100,8 @@ func choose(world: World, e: Entity) -> Mode:
 		return Mode.SHOP  # D-94: đủ vàng mua món shop ẩn kế tiếp, shop gần và an toàn
 	if ward_spot(world, e).is_finite():
 		return Mode.WARD  # D-94: cắm mắt vàng ở điểm định sẵn
-	if hp >= 0.5 and jungle_target(world, e) != null:
-		return Mode.JUNGLE  # D-94: lane trống thì farm rừng phe mình
+	if hp >= 0.5 and not _own_wave(world, e) and jungle_target(world, e) != null:
+		return Mode.JUNGLE  # D-94: lane trống (không lính địch, không đợt lính phe mình để theo) thì farm rừng
 	return Mode.RALLY  # BOT-09
 
 
@@ -105,6 +114,12 @@ func _note_fights(world: World, e: Entity) -> void:
 		if ev.type == &"damage_taken" and ev.target_id == e.id and ev.amount > 0.0:
 			e.bot.last_hurt_tick = world.tick - 1
 			break
+
+
+## D-96: chủ động cấu — địch trong tầm đánh + 250, máu mình ≥ 50% và hơn địch AHEAD.
+func _wants_trade(e: Entity, foe: Entity) -> bool:
+	var reach: float = e.stats.get_stat(StatId.Id.ATTACK_RANGE) + e.radius + foe.radius + 250.0
+	return e.position.distance_to(foe.position) <= reach and _hp(e) >= 0.5 and _hp(e) >= _hp(foe) + AHEAD[e.bot.difficulty]
 
 
 ## Hero địch gần nhất mà đội bot đang thấy và đánh được (BOT-12), null nếu không có.
@@ -190,8 +205,18 @@ func _last_hit_margin(e: Entity) -> float:
 ## BOT-08: công trình kế tiếp của lane mở khóa, đứng đánh được an toàn.
 func push_ready(world: World, e: Entity) -> bool:
 	var t: Entity = Objectives.next_for_lane(world, e.team, e.bot.lane)
-	return t != null and not t.locked and Rules.is_attackable(e, t) and _reach_safe(world, e, _stand_point(e, t)) \
-		and e.position.distance_to(t.position) <= FARM_RANGE * 1.5
+	return t != null and not t.locked and Rules.is_attackable(e, t) and _reach_safe(world, e, _stand_point(e, t))
+
+
+## Đợt lính phe mình đang áp sát công trình kế tiếp của địch (trong 1500) — theo đẩy, không đi rừng.
+func _own_wave(world: World, e: Entity) -> bool:
+	var t: Entity = Objectives.next_for_lane(world, e.team, e.bot.lane)
+	if t == null:
+		return false
+	for c: Entity in world.spatial_near(t.position, 1500.0, World.Phase.CONTROLLER, false):
+		if c.kind == Entity.Kind.LANE_CREEP and c.alive and c.team == e.team:
+			return true
+	return false
 
 
 ## D-94: lane trống → quái ở trại rừng phe mình gần nhất còn quái, chỗ đánh an toàn.
@@ -290,6 +315,11 @@ func _safe_back(world: World, e: Entity, p: Vector2) -> Vector2:
 
 func _go(world: World, e: Entity, point: Vector2) -> void:
 	var b: BotState = e.bot
+	if _stuck(world, e):  # D-96: kẹt giữa đơn vị đi ngược chiều → bước tránh sang ngang
+		var side: Vector2 = (point - e.position).normalized().orthogonal() * (1.0 if (world.tick / 30) % 2 == 0 else -1.0)
+		b.goal = world.navigation(e.radius).nearest_clear(e.position + side * 160.0)
+		world.submit(Command.move_to(e.id, b.goal))
+		return
 	if e.position.distance_to(point) <= ARRIVE * 0.5 and e.order.type != Order.Type.MOVE:
 		b.goal = point
 		return
@@ -299,6 +329,17 @@ func _go(world: World, e: Entity, point: Vector2) -> void:
 	b.goal = point
 	b.target_id = -1
 	world.submit(Command.move_to(e.id, point))
+
+
+## Đang có lệnh đi mà gần như không nhích trong 1 s.
+func _stuck(world: World, e: Entity) -> bool:
+	var b: BotState = e.bot
+	var moving: bool = e.order.type == Order.Type.MOVE and not e.order.finished
+	if not moving or e.position.distance_to(b.last_pos) > 20.0:
+		b.last_pos = e.position
+		b.last_pos_tick = world.tick
+		return false
+	return world.tick - b.last_pos_tick >= 30
 
 
 func _hold(world: World, e: Entity) -> void:

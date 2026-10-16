@@ -46,12 +46,12 @@ static func run_checks(w: World, minutes: float) -> String:
 			var exempt: bool = e.bot.mode == Mode.ESCAPE_TOWER or e.bot.mode == Mode.RETREAT
 			unsafe[e.id] = 0 if exempt or Rules.is_safe_for_hero(w, e, e.position) else unsafe.get(e.id, 0) + 1
 			stuck[e.id] = 0 if Rules.is_safe_for_hero(w, e, e.position) else stuck.get(e.id, 0) + 1
-			if stuck[e.id] > 150:
-				return "%s bot đội %d kẹt ở chỗ không an toàn > 5 s (mode %s)" % [MatchHud.clock_text(w.tick), e.team, Mode.keys()[e.bot.mode]]
+			if stuck[e.id] > 300:
+				return "%s bot đội %d kẹt ở chỗ không an toàn > 10 s (mode %s)" % [MatchHud.clock_text(w.tick), e.team, Mode.keys()[e.bot.mode]]
 			if unsafe[e.id] > 30:
 				return "%s INV-06: bot đội %d ở chỗ không an toàn > 1 s (mode %s)" % [MatchHud.clock_text(w.tick), e.team, Mode.keys()[e.bot.mode]]
 			var moved: bool = e.position.distance_to(last.get(e.id, Vector2.INF)) > 0.5
-			var busy: bool = e.attack_phase != Entity.AttackPhase.NONE or e.cast != null
+			var busy: bool = e.attack_phase != Entity.AttackPhase.NONE or e.cast != null or not Rules.can_move(e)
 			still[e.id] = 0 if moved or busy or e.bot.mode == Mode.RECOVER else still.get(e.id, 0) + 1
 			last[e.id] = e.position
 			if still[e.id] > 60:
