@@ -206,6 +206,9 @@ func state_hash() -> PackedByteArray:
 			ctx.update(e.stats.values().to_byte_array())
 		for a: AbilityInstance in e.abilities:
 			ctx.update(PackedInt64Array([a.slot, a.rank, a.ready_tick]).to_byte_array())
+		for it: ItemInstance in e.items:
+			if it != null:
+				ctx.update(PackedInt64Array([it.index, it.def.id.hash(), it.charges, it.ability.ready_tick if it.ability != null else -1]).to_byte_array())
 		if e.knockback != null:
 			ctx.update(PackedFloat64Array([e.knockback.direction.x, e.knockback.direction.y, e.knockback.per_tick, e.knockback.end_tick]).to_byte_array())
 		if e.dash != null:

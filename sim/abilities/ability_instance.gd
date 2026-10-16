@@ -12,3 +12,5 @@ var learned_effects: Array[EffectInstance] = []
 ## TAL: talent của kỹ năng này đã chọn; bản hiệu ứng đã vá theo talent (TAL-02c), nhớ theo hiệu ứng gốc.
 var talent_active: bool = false
 var patched: Dictionary[EffectDef, EffectDef] = {}
+## ITM-07: chỉ số ô đồ (0..5) nếu là kỹ năng của món đồ, -1 nếu là kỹ năng hero.
+var item_index: int = -1

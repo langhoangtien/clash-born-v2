@@ -89,6 +89,8 @@ var queued_order: Order
 var dash: DashState
 ## ABL-10: đang bị đẩy lùi (KnockbackSystem), null nếu không.
 var knockback: KnockbackState
+## ITM-01: 6 ô đồ (null = trống); Items quản lý.
+var items: Array[ItemInstance] = []
 ## Kỹ năng (ABL) và chiêu đang tung (AbilitySystem ghi).
 var abilities: Array[AbilityInstance] = []
 var cast: CastState

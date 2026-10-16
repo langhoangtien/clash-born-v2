@@ -355,6 +355,13 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   (`chance_melee`, `chance_ranged`), không bằng code. Biểu thức ghi tên gốc (`chance`);
   hệ thống chọn bản `_melee` hay `_ranged` theo kiểu đánh của chủ kỹ năng.
 - `ITM-06` Mua, bán, ghép đồ: ECO-06.
+- `ITM-07` (M6.5, D-85) Ô đồ đánh số 1–6; chỉ số và hiệu ứng của món ở ô k mang `item_slot` = k
+  (D-55: đồ ô sau thắng). Lệnh dùng đồ là CAST với ô kỹ năng `10 + (k − 1)`. Dùng xong: mọi
+  món cùng loại trên người vào hồi chiêu (ITM-04); món có `charges` > 0 mất một lần dùng, hết
+  thì món biến mất khỏi ô. Bị động của nhiều món cùng loại: chỉ món ở ô cao nhất áp hiệu ứng
+  bị động; bỏ món đó thì món cùng loại còn lại nhận.
+- `ITM-08` Dùng đồ được khi còn sống, không lướt, không STUNNED, không HEXED (ITM-03); câm lặng
+  không chặn. Tầm, mana, cách nhắm như chiêu (ABL-02).
 
 ## TAL — Talent
 

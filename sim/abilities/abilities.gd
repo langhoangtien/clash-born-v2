@@ -21,6 +21,8 @@ static func setup_hero(world: World, e: Entity, def: HeroDef) -> void:
 
 
 static func of(e: Entity, slot: int) -> AbilityInstance:
+	if slot >= Items.SLOT_BASE:
+		return Items.ability_at(e, slot)  # ITM-07
 	for a: AbilityInstance in e.abilities:
 		if a.slot == slot:
 			return a
@@ -73,6 +75,7 @@ static func set_rank(world: World, e: Entity, a: AbilityInstance, rank: int) -> 
 static func context(e: Entity, a: AbilityInstance, target: Entity) -> ExprContext:
 	var ctx: ExprContext = ExprContext.make(e, target, values(e, a))
 	ctx.ability = a.def
+	ctx.item_slot = a.item_index + 1
 	return ctx
 
 
@@ -80,7 +83,7 @@ static func context(e: Entity, a: AbilityInstance, target: Entity) -> ExprContex
 static func problem(world: World, e: Entity, a: AbilityInstance) -> Problem:
 	if a == null or a.rank <= 0:
 		return Problem.NOT_LEARNED
-	if a.def.targeting == AbilityDef.Targeting.PASSIVE or not Rules.can_cast(e):
+	if a.def.targeting == AbilityDef.Targeting.PASSIVE or not (Rules.can_use_item(e) if a.item_index >= 0 else Rules.can_cast(e)):
 		return Problem.CANNOT_CAST
 	if world.tick < a.ready_tick:
 		return Problem.ON_COOLDOWN

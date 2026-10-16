@@ -33,6 +33,8 @@ func _try_start(world: World, e: Entity) -> void:
 			return  # MovementSystem đưa tới tầm
 	e.mana -= Abilities.value(e, a, &"mana")
 	a.ready_tick = world.tick + SimClock.seconds_to_ticks(Abilities.value(e, a, &"cooldown"))
+	if a.item_index >= 0:
+		Items.after_use(e, a)  # ITM-04/07
 	var c: CastState = CastState.new()
 	c.ability = a
 	c.target_id = target.id if target != null else -1
@@ -49,7 +51,8 @@ func _try_start(world: World, e: Entity) -> void:
 
 
 func _continue(world: World, e: Entity) -> void:
-	if not Rules.can_cast(e):
+	var allowed: bool = Rules.can_use_item(e) if e.cast.ability.item_index >= 0 else Rules.can_cast(e)  # ITM-08
+	if not allowed:
 		_end(e, true)  # ABL-03: hủy, không hoàn mana
 	elif world.tick >= e.cast.release_tick:
 		_release(world, e)
@@ -66,6 +69,7 @@ func _release(world: World, e: Entity) -> void:
 	ctx.direction = c.direction if c.direction != Vector2.ZERO else e.facing
 	ActionRunner.run(world, Abilities.cast_actions(c.ability), ctx, e.id)
 	world.emit(&"ability_finished", e.id, c.target_id, c.ability.slot)
+	Items.drop_spent(world, e, c.ability)  # ITM-07
 	_end(e, false)
 
 

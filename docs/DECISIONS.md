@@ -84,6 +84,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-82 | 2026-10-16 | M6.3: đẩy lùi như lướt ngược — KnockbackSystem (pha MOVEMENT), xuyên đơn vị, chặn bởi vách/rừng/thân trụ, STUNNED trong lúc dời, hủy lệnh/chiêu/lướt, miễn phép chặn trừ nguồn xuyên; vào state_hash | Đã duyệt |
 | D-83 | 2026-10-16 | Trụ thấy kẻ địch trong tầm bắn kể cả núp bụi (cùng với tàng hình, D-80), để sau này chỉnh vị trí bụi không phải sửa luật | Người chơi đề xuất |
 | D-84 | 2026-10-16 | M6.4: Vexa đủ bộ theo CONTENT, không cần code mới; R tước được buff của mục tiêu đang miễn phép (xuyên), hiệu ứng miễn phép (dispel NONE) không bị tước. Màn khởi động có Vexa | Đã duyệt |
+| D-85 | 2026-10-16 | M6.5a: ô đồ — ItemInstance trong Entity.items (6 ô), lệnh dùng đồ = CAST ô 10 + k, item_slot = k + 1 theo D-55; bị động nhiều món cùng loại chỉ món ô cao nhất áp; hồi chiêu chung theo loại; số lần dùng hết thì mất món; câm lặng không chặn dùng đồ. HUD: hàng 6 ô trên cụm nút chiêu, phím 4–9 | Đã duyệt |
 
 ## Chờ chốt
 

@@ -62,6 +62,11 @@ static func can_cast(e: Entity) -> bool:
 	return e.alive and e.dash == null and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.SILENCED | 1 << UnitState.Id.HEXED) == 0
 
 
+## ITM-03/08: dùng đồ — không bị câm lặng chặn; choáng, biến hình, lướt, chết thì không.
+static func can_use_item(e: Entity) -> bool:
+	return e.alive and e.dash == null and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.HEXED) == 0
+
+
 ## ST-07, 11: hệ số sát thương nhận theo loại (sau giáp, trước khiên).
 ## PRI-05: INVULNERABLE → miễn theo loại (GHOST, MAGIC_IMMUNE; `pierces` bỏ qua đúng bước miễn phép).
 static func damage_factor(world: World, target: Entity, type: DamageFormulas.DamageType, pierces: bool = false) -> float:

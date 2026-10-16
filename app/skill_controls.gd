@@ -14,6 +14,7 @@ var input: MatchInput
 var buttons: SkillButtons
 var indicator: AimIndicator
 var talents: TalentPanel
+var items: ItemButtons
 
 
 func connect_signals() -> void:
@@ -23,6 +24,8 @@ func connect_signals() -> void:
 	buttons.level_pressed.connect(func(i: int) -> void: level_up(LEVEL_SLOTS[i]))
 	talents.chosen.connect(func(slot: int) -> void: world.submit(Command.choose_talent(hero.id, slot)))
 	talents.visible = false
+	if items != null:
+		items.item_tapped.connect(func(i: int) -> void: input.press_skill(Items.SLOT_BASE + i))  # ITM-07
 
 
 func level_up(slot: int) -> void:
@@ -47,6 +50,8 @@ func refresh() -> void:
 		talents.visible = false
 	if indicator.active:
 		indicator.origin = hero.position
+	if items != null:
+		_refresh_items()
 
 
 func talent_options() -> Array:
@@ -73,7 +78,27 @@ func _on_aim(i: int, aim: Vector2, active: bool) -> void:
 
 
 ## Phím: 1/2/3 tung vào con trỏ; Ctrl + 1..4 nâng điểm. Trả về true nếu đã xử lý.
+## Ô đồ: [tên tắt, giây hồi, số lần dùng, chủ động, dùng được] (ItemButtons).
+func _refresh_items() -> void:
+	var list: Array[ItemInstance] = Items.slots(hero)
+	for i: int in range(Items.SLOTS):
+		var it: ItemInstance = list[i]
+		if it == null:
+			items.item_view[i] = []
+			continue
+		var a: AbilityInstance = it.ability
+		var active: bool = a != null and a.def.targeting != AbilityDef.Targeting.PASSIVE
+		var cd: float = maxf(0.0, (a.ready_tick - world.tick) * SimClock.TICK_SECONDS) if a != null else 0.0
+		var ok: bool = active and Abilities.problem(world, hero, a) == Abilities.Problem.NONE
+		items.item_view[i] = [ItemButtons.short_name(it.def.display_name), cd, it.charges if it.def.charges > 0 else -1, active, ok]
+	items.queue_redraw()
+
+
 func handle_key(key: InputEventKey, cursor: Vector2) -> bool:
+	var item_key: int = [KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9].find(key.keycode)
+	if item_key >= 0 and not key.ctrl_pressed:
+		input.press_skill_at(Items.SLOT_BASE + item_key, cursor)  # ITM-07: phím 4–9
+		return true
 	var index: int = [KEY_1, KEY_2, KEY_3, KEY_4].find(key.keycode)
 	if index < 0:
 		return false

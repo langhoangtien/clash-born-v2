@@ -11,7 +11,7 @@ const SEED: int = 1
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
 const SPEEDS: Array[int] = [1, 2, 4, 8]
 const MENU_SCENE: String = "res://app/main.tscn"
-const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · F2 ký hiệu map · Esc"
+const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · 4–9 dùng đồ · F2 ký hiệu map · Esc"
 
 @onready var map_view: MapView = $MapView
 @onready var units_view: UnitsView = $UnitsView
@@ -73,6 +73,11 @@ func _ready() -> void:
 	skills.buttons = skill_buttons
 	skills.indicator = aim_indicator
 	skills.talents = talent_panel
+	var item_buttons: ItemButtons = ItemButtons.new()
+	item_buttons.name = "ItemButtons"
+	$Hud.add_child(item_buttons)
+	item_buttons.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	skills.items = item_buttons
 	skills.connect_signals()
 	match_hud.world = world
 	buff_bar.world = world

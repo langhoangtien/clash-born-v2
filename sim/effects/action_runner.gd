@@ -29,7 +29,7 @@ static func run(world: World, actions: Array[ActionDef], ctx: ExprContext, sourc
 		elif action is ApplyEffectAction:
 			var a: ApplyEffectAction = action
 			var duration: String = "" if a.duration.is_empty() else str(ExprEval.evaluate(a.duration, ctx))
-			Effects.apply(world, receiver, a.effect, ctx.owner, ctx.values, duration, 0, _pierces(ctx))
+			Effects.apply(world, receiver, a.effect, ctx.owner, ctx.values, duration, ctx.item_slot, _pierces(ctx))
 		elif action is RemoveEffectAction:
 			for inst: EffectInstance in receiver.effects.duplicate():
 				if inst.def == (action as RemoveEffectAction).effect:
