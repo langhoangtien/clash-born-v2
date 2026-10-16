@@ -18,6 +18,12 @@ func test_D_87_active_item_buttons_left_of_q() -> void:
 	assert_eq(got, [2], "nút báo chỉ số ô đồ; nút đang hồi không báo")
 	assert_eq(b.slot_for_button(1), 4)
 	assert_eq(b.slot_for_button(2), -1)
+	var zone3: Rect2 = b.zone_rect()
+	b.item_view = [[0, "A", 0.0, -1, true], [1, "B", 0.0, -1, true], [2, "C", 0.0, -1, true], [3, "D", 0.0, -1, true], [4, "E", 0.0, -1, true], [5, "F", 0.0, -1, true]]
+	assert_eq(b.slot_for_button(5), 5, "D-89: tối đa 6 nút")
+	assert_true(b.button_center(5).x - ItemButtons.RADIUS > 0.0)
+	assert_true(b.zone_rect().position.x < zone3.position.x, "nhiều nút thì hàng buff lùi theo")
+	b.item_view = [[2, "GH", 0.0, -1, true], [4, "BL", 5.0, 1, false]]
 	assert_near(b.left_edge(), b.button_center(1).x - ItemButtons.RADIUS, 0.01)
 	var zone: Rect2 = b.zone_rect()
 	assert_true(zone.end.x < q.x - 62.0, "chỗ nút đồ không đè ô Q")

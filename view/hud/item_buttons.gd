@@ -1,10 +1,12 @@
 class_name ItemButtons
 extends Control
-## Nút đồ chủ động (D-87): chỉ món có thể kích hoạt mới có nút, tối đa MAX nút tròn ở hàng dưới
+## Nút đồ chủ động (D-87, D-89): chỉ món có thể kích hoạt mới có nút, tối đa 6 nút tròn ở hàng dưới
 ## bên trái ô Q — chỗ phép bổ trợ (tốc biến, bộc phá) của Liên Quân. Chạm để dùng (tự nhắm như
 ## nút chiêu). Đồ bị động không có nút. Chỉ báo bằng tín hiệu.
 
-const MAX: int = 3
+const MAX: int = 6
+## Chỗ luôn để dành cho nút đồ (hàng buff/debuff nằm trên chỗ này kể cả khi chưa có đồ).
+const RESERVED: int = 3
 ## Nhỏ hơn nút chiêu (SKILL_RADIUS 62) như phép bổ trợ Liên Quân.
 const RADIUS: float = 50.0
 const SPACING: float = 128.0
@@ -19,7 +21,7 @@ const DROP: float = 6.0
 ## Chỉ số ô đồ (0..5) của món ở nút k.
 signal item_tapped(index: int)
 
-## APP đặt mỗi khung, mỗi nút một món chủ động theo thứ tự ô: [chỉ số ô, tên tắt, giây hồi, số lần dùng (-1 = không), dùng được, tên đầy đủ].
+## APP đặt mỗi khung, mỗi nút một món chủ động theo thứ tự ô: [chỉ số ô, tên tắt, giây hồi, số lần dùng (-1 = không), dùng được].
 var item_view: Array = []
 
 
@@ -41,9 +43,10 @@ func left_edge() -> float:
 	return INF if n == 0 else button_center(n - 1).x - RADIUS
 
 
-## Khung chỗ đặt nút đồ (đủ MAX nút, kể cả khi chưa có đồ) — hàng buff/debuff nằm ngay trên.
+## Khung chỗ đặt nút đồ (ít nhất RESERVED nút, kể cả khi chưa có đồ) — hàng buff/debuff nằm ngay trên.
 func zone_rect() -> Rect2:
-	var left: Vector2 = button_center(MAX - 1) - Vector2(RADIUS, RADIUS)
+	var n: int = clampi(item_view.size(), RESERVED, MAX)
+	var left: Vector2 = button_center(n - 1) - Vector2(RADIUS, RADIUS)
 	var right: Vector2 = button_center(0) + Vector2(RADIUS, RADIUS)
 	return Rect2(left, right - left)
 
@@ -52,7 +55,7 @@ func _has_point(point: Vector2) -> bool:
 	return button_at(point) >= 0
 
 
-## PC: phím 4/5/6 = nút thứ k; trả về chỉ số ô đồ hoặc -1.
+## PC: phím 4..9 = nút thứ k; trả về chỉ số ô đồ hoặc -1.
 func slot_for_button(k: int) -> int:
 	return item_view[k][0] if k >= 0 and k < mini(item_view.size(), MAX) else -1
 
@@ -83,8 +86,6 @@ func _draw() -> void:
 			_label(font, c + Vector2(0, 18), "%d" % ceili(view[2]), 18, Color(1, 0.85, 0.3))
 		if view[3] >= 0:
 			_label(font, c + Vector2(RADIUS * 0.7, RADIUS * 0.7), str(view[3]), 16, Color(1, 1, 0.6))
-		if view.size() > 5:
-			_label(font, c + Vector2(0, RADIUS + 14), view[5], 15, Color(1, 1, 1, 0.9))
 		_label(font, c + Vector2(-RADIUS * 0.75, -RADIUS * 0.75), str(k + 4), 13, Color(1, 1, 1, 0.45))
 
 

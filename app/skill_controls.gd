@@ -78,7 +78,7 @@ func _on_aim(i: int, aim: Vector2, active: bool) -> void:
 
 
 ## Phím: 1/2/3 tung vào con trỏ; Ctrl + 1..4 nâng điểm. Trả về true nếu đã xử lý.
-## D-87: chỉ món chủ động có nút, theo thứ tự ô: [ô, tên tắt, giây hồi, số lần dùng, dùng được, tên].
+## D-87: chỉ món chủ động có nút, theo thứ tự ô: [ô, tên tắt, giây hồi, số lần dùng, dùng được].
 func _refresh_items() -> void:
 	var view: Array = []
 	for it: ItemInstance in Items.slots(hero):
@@ -87,15 +87,15 @@ func _refresh_items() -> void:
 		var a: AbilityInstance = it.ability
 		var cd: float = maxf(0.0, (a.ready_tick - world.tick) * SimClock.TICK_SECONDS)
 		var ok: bool = Abilities.problem(world, hero, a) == Abilities.Problem.NONE
-		view.append([it.index, ItemButtons.short_name(it.def.display_name), cd, it.charges if it.def.charges > 0 else -1, ok, it.def.display_name])
+		view.append([it.index, ItemButtons.short_name(it.def.display_name), cd, it.charges if it.def.charges > 0 else -1, ok])
 	items.item_view = view
 	items.queue_redraw()
 
 
 func handle_key(key: InputEventKey, cursor: Vector2) -> bool:
-	var item_key: int = [KEY_4, KEY_5, KEY_6].find(key.keycode)
+	var item_key: int = [KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9].find(key.keycode)
 	if item_key >= 0 and not key.ctrl_pressed and items != null:
-		var slot: int = items.slot_for_button(item_key)  # D-87: phím 4/5/6 = nút đồ chủ động thứ 1/2/3
+		var slot: int = items.slot_for_button(item_key)  # D-89: phím 4..9 = nút đồ chủ động thứ 1..6
 		if slot >= 0:
 			input.press_skill_at(Items.SLOT_BASE + slot, cursor)
 		return true
