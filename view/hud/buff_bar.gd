@@ -1,11 +1,12 @@
 class_name BuffBar
 extends Control
-## Hàng buff/debuff của hero người chơi (M4.0), đáy màn hình, căn giữa, không vượt sang nút Q
-## (`right_limit`). Mỗi ô: viền xanh = buff, đỏ = debuff; phần tối quét theo thời gian đã qua;
+## Hàng buff/debuff của hero người chơi (M4.0). Như Liên Quân (D-88): nằm ngay trên chỗ nút đồ
+## chủ động, bắt đầu từ mép trái chỗ đó (`left_x`, đáy `bottom_y`) và kéo sang phải, không vượt
+## nút Q (`right_limit`); chưa đặt `left_x` thì căn giữa đáy màn hình. Mỗi ô: viền xanh = buff, đỏ = debuff; phần tối quét theo thời gian đã qua;
 ## số tầng góc dưới. Có hình (ArtLibrary theo art_id) thì vẽ hình, chưa có thì chữ viết tắt.
 ## Không hiện hiệu ứng `passive`. Chỉ đọc World.
 
-const ICON: float = 56.0
+const ICON: float = 44.0
 const GAP: float = 6.0
 const BOTTOM_MARGIN: float = 14.0
 
@@ -13,6 +14,9 @@ var world: World
 var hero: Entity
 ## Mép trái của nút Q (px màn hình); hàng icon không vượt qua.
 var right_limit: float = INF
+## Mép trái và đáy của hàng (px trong Control); INF = căn giữa đáy màn hình.
+var left_x: float = INF
+var bottom_y: float = INF
 
 
 ## [hiệu ứng, là debuff, phần thời gian còn lại 0..1 (1 = vĩnh viễn), số tầng]; buff trước.
@@ -33,16 +37,18 @@ static func entries(w: World, e: Entity) -> Array:
 func icon_size(count: int) -> float:
 	if count <= 0:
 		return ICON
-	var room: float = minf(right_limit, size.x) - GAP - maxi(0, count - 1) * GAP
+	var start: float = left_x if is_finite(left_x) else 0.0
+	var room: float = minf(right_limit, size.x) - start - GAP - maxi(0, count - 1) * GAP
 	return clampf(room / count, 16.0, ICON)
 
 
 func row_rect(count: int) -> Rect2:
 	var icon: float = icon_size(count)
 	var width: float = count * icon + maxi(0, count - 1) * GAP
-	var left: float = size.x * 0.5 - width * 0.5
+	var left: float = left_x if is_finite(left_x) else size.x * 0.5 - width * 0.5
 	left = minf(left, right_limit - GAP - width)
-	return Rect2(Vector2(maxf(left, 0.0), size.y - BOTTOM_MARGIN - icon), Vector2(width, icon))
+	var bottom: float = bottom_y if is_finite(bottom_y) else size.y - BOTTOM_MARGIN
+	return Rect2(Vector2(maxf(left, 0.0), bottom - icon), Vector2(width, icon))
 
 
 func _ready() -> void:

@@ -78,7 +78,7 @@ func _on_aim(i: int, aim: Vector2, active: bool) -> void:
 
 
 ## Phím: 1/2/3 tung vào con trỏ; Ctrl + 1..4 nâng điểm. Trả về true nếu đã xử lý.
-## D-87: chỉ món chủ động có nút, theo thứ tự ô: [ô, tên tắt, giây hồi, số lần dùng, dùng được].
+## D-87: chỉ món chủ động có nút, theo thứ tự ô: [ô, tên tắt, giây hồi, số lần dùng, dùng được, tên].
 func _refresh_items() -> void:
 	var view: Array = []
 	for it: ItemInstance in Items.slots(hero):
@@ -87,7 +87,7 @@ func _refresh_items() -> void:
 		var a: AbilityInstance = it.ability
 		var cd: float = maxf(0.0, (a.ready_tick - world.tick) * SimClock.TICK_SECONDS)
 		var ok: bool = Abilities.problem(world, hero, a) == Abilities.Problem.NONE
-		view.append([it.index, ItemButtons.short_name(it.def.display_name), cd, it.charges if it.def.charges > 0 else -1, ok])
+		view.append([it.index, ItemButtons.short_name(it.def.display_name), cd, it.charges if it.def.charges > 0 else -1, ok, it.def.display_name])
 	items.item_view = view
 	items.queue_redraw()
 

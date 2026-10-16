@@ -100,4 +100,11 @@ func test_M40_buff_bar_entries_and_layout() -> void:
 	assert_near(row.get_center().x, 640.0, 1.0, "căn giữa màn hình")
 	bar.right_limit = 680.0
 	assert_true(bar.row_rect(12).end.x <= 680.0, "nhiều icon thì dồn sang trái, không đè nút Q")
+	bar.left_x = 400.0
+	bar.bottom_y = 600.0
+	bar.right_limit = 900.0
+	row = bar.row_rect(2)
+	assert_near(row.position.x, 400.0, 0.01, "D-88: bắt đầu từ mép trái chỗ nút đồ")
+	assert_near(row.end.y, 600.0, 0.01, "nằm ngay trên chỗ nút đồ")
+	assert_true(bar.row_rect(20).end.x <= 900.0, "nhiều icon thì thu nhỏ, không đè nút Q")
 	bar.free()

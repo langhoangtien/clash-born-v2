@@ -5,24 +5,27 @@ extends Control
 ## nút chiêu). Đồ bị động không có nút. Chỉ báo bằng tín hiệu.
 
 const MAX: int = 3
-const RADIUS: float = 46.0
-const SPACING: float = 112.0
+## Nhỏ hơn nút chiêu (SKILL_RADIUS 62) như phép bổ trợ Liên Quân.
+const RADIUS: float = 50.0
+const SPACING: float = 128.0
+## Khoảng từ tâm ô Q tới tâm nút đồ đầu tiên.
+const FIRST_GAP: float = 176.0
 ## Cùng bố cục với SkillButtons: tâm nút ĐÁNH cách góc dưới phải MAIN_OFFSET, ô Q ở góc Q_ANGLE.
 const MAIN_OFFSET: Vector2 = Vector2(180, 180)
 const Q_ANGLE: float = 178.0
 const Q_DISTANCE: float = 350.0
-const DROP: float = 28.0
+const DROP: float = 6.0
 
 ## Chỉ số ô đồ (0..5) của món ở nút k.
 signal item_tapped(index: int)
 
-## APP đặt mỗi khung, mỗi nút một món chủ động theo thứ tự ô: [chỉ số ô, tên tắt, giây hồi, số lần dùng (-1 = không), dùng được].
+## APP đặt mỗi khung, mỗi nút một món chủ động theo thứ tự ô: [chỉ số ô, tên tắt, giây hồi, số lần dùng (-1 = không), dùng được, tên đầy đủ].
 var item_view: Array = []
 
 
 func button_center(k: int) -> Vector2:
 	var q: Vector2 = size - MAIN_OFFSET + Vector2.from_angle(deg_to_rad(Q_ANGLE)) * Q_DISTANCE
-	return q + Vector2(-(k + 1) * SPACING, DROP)
+	return q + Vector2(-FIRST_GAP - k * SPACING, DROP)
 
 
 func button_at(local: Vector2) -> int:
@@ -36,6 +39,13 @@ func button_at(local: Vector2) -> int:
 func left_edge() -> float:
 	var n: int = mini(item_view.size(), MAX)
 	return INF if n == 0 else button_center(n - 1).x - RADIUS
+
+
+## Khung chỗ đặt nút đồ (đủ MAX nút, kể cả khi chưa có đồ) — hàng buff/debuff nằm ngay trên.
+func zone_rect() -> Rect2:
+	var left: Vector2 = button_center(MAX - 1) - Vector2(RADIUS, RADIUS)
+	var right: Vector2 = button_center(0) + Vector2(RADIUS, RADIUS)
+	return Rect2(left, right - left)
 
 
 func _has_point(point: Vector2) -> bool:
@@ -73,7 +83,9 @@ func _draw() -> void:
 			_label(font, c + Vector2(0, 18), "%d" % ceili(view[2]), 18, Color(1, 0.85, 0.3))
 		if view[3] >= 0:
 			_label(font, c + Vector2(RADIUS * 0.7, RADIUS * 0.7), str(view[3]), 16, Color(1, 1, 0.6))
-		_label(font, c + Vector2(0, -RADIUS - 12), str(k + 4), 14, Color(1, 1, 1, 0.5))
+		if view.size() > 5:
+			_label(font, c + Vector2(0, RADIUS + 14), view[5], 15, Color(1, 1, 1, 0.9))
+		_label(font, c + Vector2(-RADIUS * 0.75, -RADIUS * 0.75), str(k + 4), 13, Color(1, 1, 1, 0.45))
 
 
 func _label(font: Font, center: Vector2, text: String, font_size: int, color: Color) -> void:

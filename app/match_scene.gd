@@ -112,7 +112,11 @@ func tick_frame(delta: float) -> void:
 	minimap.camera_rect = Rect2(camera.position - view_size * 0.5, view_size)
 	match_hud.speed = runner.speed
 	skills.refresh()
-	buff_bar.right_limit = minf(skill_buttons.global_position.x + skill_buttons.skill_center(0).x - SkillButtons.SKILL_RADIUS, skills.items.left_edge())
+	var zone: Rect2 = skills.items.zone_rect()  # D-88: buff/debuff ngay trên chỗ nút đồ, như Liên Quân
+	var origin: Vector2 = skills.items.global_position - buff_bar.global_position
+	buff_bar.left_x = origin.x + zone.position.x
+	buff_bar.bottom_y = origin.y + zone.position.y - 10.0
+	buff_bar.right_limit = skill_buttons.global_position.x - buff_bar.global_position.x + skill_buttons.skill_center(0).x - SkillButtons.SKILL_RADIUS
 	if world.winner >= 0 and result == null:
 		_show_result()
 

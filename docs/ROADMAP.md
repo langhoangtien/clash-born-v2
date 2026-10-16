@@ -204,3 +204,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M6.5a | Xong | 2026-10-16 | 475 test xanh (+7); 6 ô đồ, chỉ số, bị động một bản, chủ động (câm lặng không chặn), hồi chiêu chung, số lần dùng; hàng ô đồ HUD, phím 4–9 (D-85) |
 | M6.5b | Xong | 2026-10-16 | 481 test xanh (+6); mua bán SHOP-01..06: mua mọi nơi, shop ẩn S1/S1', đồ theo giờ, đồ độc nhất, bán 50% / hoàn đủ 10 s; bảng shop tạm (D-86). Chờ chơi thử |
 | D-87 | Xong | 2026-10-16 | 481 test xanh; nút đồ chủ động tròn bên trái Q (tối đa 3), bỏ hàng 6 ô |
+| D-88 | Xong | 2026-10-16 | 481 test xanh; buff/debuff nằm trên nút đồ, nút đồ nhỏ hơn nút chiêu, có tên dưới nút |

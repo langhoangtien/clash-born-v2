@@ -19,6 +19,9 @@ func test_D_87_active_item_buttons_left_of_q() -> void:
 	assert_eq(b.slot_for_button(1), 4)
 	assert_eq(b.slot_for_button(2), -1)
 	assert_near(b.left_edge(), b.button_center(1).x - ItemButtons.RADIUS, 0.01)
+	var zone: Rect2 = b.zone_rect()
+	assert_true(zone.end.x < q.x - 62.0, "chỗ nút đồ không đè ô Q")
+	assert_true(ItemButtons.RADIUS < 62.0, "nút đồ nhỏ hơn nút chiêu")
 	b.item_view = []
 	assert_eq(b.left_edge(), INF)
 	assert_eq(ItemButtons.short_name("Gậy Hồn Ma"), "GH")
