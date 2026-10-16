@@ -200,3 +200,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M6.1 | Xong | 2026-10-16 | 453 test xanh (+9); INVULNERABLE, MAGIC_IMMUNE kiểu BKB, HEXED, kết hợp state PRI-05 (D-78) |
 | M6.2 | Xong | 2026-10-16 | 454 test xanh (+1); thanh tẩy mức cơ bản/mạnh (từ M3), tước buff địch miễn phép cần xuyên miễn phép (D-79) |
 | M6.3 | Xong | 2026-10-16 | 460 test xanh (+6); đẩy lùi ABL-10: khoảng cách/thời gian, choáng, hủy chiêu, chặn ở địa hình và thân trụ, miễn phép (D-82) |
+| M6.4 | Xong | 2026-10-16 | 468 test xanh (+8); Vexa: hút Trí tuệ, Q ếch, W sóng đẩy lùi, R tước phép xuyên miễn phép, 3 talent (D-84). Chờ chơi thử |

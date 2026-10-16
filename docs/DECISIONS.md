@@ -83,6 +83,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-81 | 2026-10-16 | Cửa hàng (luật SIM làm cùng M6.5, giao diện M8): đồ thường mua ở mọi nơi (kiểu Liên Quân); 2 shop ẩn đối xứng ở khối rừng R1 (ô C7, cạnh lane top) và R1' (ô N10, cạnh lane bot), ký hiệu S1 / S1', cả hai đội dùng chung, phải đứng gần mới mua đồ của shop ẩn; đồ mở theo giờ (vd phút 20) hiện khóa kèm đếm ngược; đồ độc nhất cả trận (một người mua thì hết, ở shop ẩn), bán lại thì món quay về shop, chết không rơi đồ. Danh sách món theo loại chốt ở M6.6 | Đã duyệt |
 | D-82 | 2026-10-16 | M6.3: đẩy lùi như lướt ngược — KnockbackSystem (pha MOVEMENT), xuyên đơn vị, chặn bởi vách/rừng/thân trụ, STUNNED trong lúc dời, hủy lệnh/chiêu/lướt, miễn phép chặn trừ nguồn xuyên; vào state_hash | Đã duyệt |
 | D-83 | 2026-10-16 | Trụ thấy kẻ địch trong tầm bắn kể cả núp bụi (cùng với tàng hình, D-80), để sau này chỉnh vị trí bụi không phải sửa luật | Người chơi đề xuất |
+| D-84 | 2026-10-16 | M6.4: Vexa đủ bộ theo CONTENT, không cần code mới; R tước được buff của mục tiêu đang miễn phép (xuyên), hiệu ứng miễn phép (dispel NONE) không bị tước. Màn khởi động có Vexa | Đã duyệt |
 
 ## Chờ chốt
 
