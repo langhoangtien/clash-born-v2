@@ -197,3 +197,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M5.5 | Xong | 2026-10-15 | 441 test xanh (+10); 12 trại rừng, JGL-01..07, kéo quái (pull) ở trại 6, soak có quái rừng (D-76). Chờ chơi thử |
 | M5.6 | Xong | 2026-10-16 | 444 test xanh (+3); ký hiệu map dev: lưới A1…P16, tên trụ/trại/bụi/dốc/rừng/khe, phím 6 / F2, docs/map_dev.png (D-77) |
 | **Hết M5** | | | |
+| M6.1 | Xong | 2026-10-16 | 453 test xanh (+9); INVULNERABLE, MAGIC_IMMUNE kiểu BKB, HEXED, kết hợp state PRI-05 (D-78) |

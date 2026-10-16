@@ -61,6 +61,7 @@ death_gold_per_level = 25
 talent_level = 20
 assist_window = 15.0
 bush_reveal_time = 1.0
+hex_move_speed = 140.0
 jungle_first_spawn = 30.0
 jungle_respawn_check = 60.0
 camp_spawn_box = 300.0

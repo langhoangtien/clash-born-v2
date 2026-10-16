@@ -3,16 +3,21 @@ extends RefCounted
 ## Áp / gỡ hiệu ứng (EFF-01, 02, 06, 09). Cách duy nhất để thêm hoặc bỏ hiệu ứng; modifier
 ## của hiệu ứng vào StatBlock với nguồn = số thứ tự của bản hiệu ứng.
 
+## Hằng số kỹ thuật: nguồn modifier tốc chạy cố định của HEXED (ST-16); số âm, không trùng serial.
+const HEX_SOURCE: int = -16
+
 
 ## Áp `def` lên `owner`. `values`: giá trị có tên của kỹ năng (được chép lại). `duration`:
 ## thời lượng do hành động truyền vào khi `def.duration` rỗng. `item_slot`: ô đồ (D-55).
 static func apply(world: World, owner: Entity, def: EffectDef, source: Entity, values: Dictionary = {},
-		duration: String = "", item_slot: int = 0) -> EffectInstance:
+		duration: String = "", item_slot: int = 0, pierces: bool = false) -> EffectInstance:
 	var source_id: int = source.id if source != null else -1
 	def = Abilities.patched(source, def)  # TAL-02c
-	if def.tags.has(&"debuff") and source != null and source.team != owner.team \
-			and Rules.has_state(owner, UnitState.Id.INVULNERABLE):
-		return null  # ST-17: bất tử chặn debuff mới từ phe địch
+	if def.tags.has(&"debuff") and source != null and source.team != owner.team:
+		if Rules.has_state(owner, UnitState.Id.INVULNERABLE):
+			return null  # ST-17: bất tử chặn debuff mới từ phe địch
+		if not pierces and Rules.has_state(owner, UnitState.Id.MAGIC_IMMUNE):
+			return null  # ST-15: miễn phép chặn debuff mới, trừ nguồn xuyên miễn phép
 	var inst: EffectInstance = null
 	if def.stacking != EffectDef.Stacking.INDEPENDENT:
 		inst = _find(owner, def, source_id)  # EFF-02: nguồn khác → bản khác
@@ -30,8 +35,11 @@ static func apply(world: World, owner: Entity, def: EffectDef, source: Entity, v
 		inst.stacks = mini(inst.stacks + 1, maxi(1, def.max_stacks))
 	inst.values = values.duplicate()
 	inst.applied_seq = world.event_seq  # EFF-05: chỉ sự kiện sau mốc này làm mất
+	var was_immune: bool = Rules.has_state(owner, UnitState.Id.MAGIC_IMMUNE)
 	_start(world, owner, inst, duration)
 	refresh_states(owner)
+	if not was_immune and Rules.has_state(owner, UnitState.Id.MAGIC_IMMUNE):
+		_basic_dispel(world, owner)  # ST-15: bật miễn phép thì thanh tẩy cơ bản
 	if def.states.has(UnitState.Id.STUNNED):
 		world.note(&"stun", owner.position)
 	world.emit(&"effect_applied", source_id, owner.id, inst.stacks)
@@ -58,7 +66,21 @@ static func refresh_states(owner: Entity) -> void:
 			bits |= 1 << state
 	if owner.dash != null:
 		bits |= 1 << UnitState.Id.UNTARGETABLE  # ABL-08
+	var hexed_before: bool = owner.states & (1 << UnitState.Id.HEXED) != 0
 	owner.states = bits
+	var hexed: bool = bits & (1 << UnitState.Id.HEXED) != 0
+	if hexed != hexed_before and owner.stats != null:  # ST-16: tốc chạy cố định khi biến hình
+		owner.stats.remove_source(HEX_SOURCE)
+		if hexed:
+			owner.stats.add_modifier(StatModifier.make(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.OVERRIDE,
+				owner.stats.balance.hex_move_speed, HEX_SOURCE))
+
+
+## EFF-07 mức BASIC: gỡ các debuff thanh tẩy cơ bản được.
+static func _basic_dispel(world: World, owner: Entity) -> void:
+	for inst: EffectInstance in owner.effects.duplicate():
+		if inst.def.tags.has(&"debuff") and inst.def.dispel == EffectDef.Dispel.BASIC:
+			remove(world, owner, inst, &"dispelled")
 
 
 ## DTH: chết thì gỡ mọi hiệu ứng trừ tag `passive` (D-56).

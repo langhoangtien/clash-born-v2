@@ -29,7 +29,7 @@ static func run(world: World, actions: Array[ActionDef], ctx: ExprContext, sourc
 		elif action is ApplyEffectAction:
 			var a: ApplyEffectAction = action
 			var duration: String = "" if a.duration.is_empty() else str(ExprEval.evaluate(a.duration, ctx))
-			Effects.apply(world, receiver, a.effect, ctx.owner, ctx.values, duration)
+			Effects.apply(world, receiver, a.effect, ctx.owner, ctx.values, duration, 0, _pierces(ctx))
 		elif action is RemoveEffectAction:
 			for inst: EffectInstance in receiver.effects.duplicate():
 				if inst.def == (action as RemoveEffectAction).effect:
@@ -45,6 +45,11 @@ static func run(world: World, actions: Array[ActionDef], ctx: ExprContext, sourc
 			_strip(world, receiver, &"buff", p.level, ctx, p.on_each, source_id)
 		else:
 			push_error("ActionRunner: %s chưa làm" % action.get_script().get_global_name())
+
+
+## ST-15: hành động của kỹ năng có cờ xuyên miễn phép.
+static func _pierces(ctx: ExprContext) -> bool:
+	return ctx.ability != null and ctx.ability.pierces_magic_immunity
 
 
 static func receiver_of(target: ActionDef.Target, ctx: ExprContext) -> Entity:
@@ -70,6 +75,7 @@ static func _damage(world: World, d: DamageAction, ctx: ExprContext, receiver: E
 	r.raw = ExprEval.evaluate(d.amount, ctx) * ctx.scale
 	r.damage_type = d.damage_type
 	r.reflected = d.reflected
+	r.pierces_magic_immunity = _pierces(ctx)
 	world.damage_requests.append(r)
 
 

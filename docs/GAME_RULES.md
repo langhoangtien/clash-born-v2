@@ -157,11 +157,15 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
     sát thương phép và không áp debuff lên nó. Nguồn xuyên miễn phép thì tác dụng đủ
     (cả sát thương phép).
   - Không chặn: đánh thường, sát thương vật lý và pure, hiệu ứng của đồng minh.
+  - (D-78, giữ đúng BKB) Vùng/đạn kỹ năng vẫn **chạm** đơn vị miễn phép (đẩy, sát thương
+    vật lý/pure của vùng vẫn có), nhưng phần sát thương phép và mọi debuff trong cùng chiêu
+    bị chặn hết; chỉ chiêu/đồ nhắm đơn vị mới không chọn được nó làm mục tiêu.
 
 `ST-16` HEXED (biến hình): đơn vị thành hình dạng con vật, tốc chạy bị **đặt** bằng
   `hex_move_speed` (bỏ qua mọi modifier tốc chạy), không đánh, không dùng chiêu, không
   dùng đồ; mọi hiệu ứng có tag `passive` của nó tạm tắt (trigger không chạy).
-  Đang tung chiêu thì bị hủy.
+  Đang tung chiêu thì bị hủy. Tốc chạy cố định áp như modifier OVERRIDE (nguồn riêng của
+  trạng thái) nên mọi nơi đọc `movement_speed` đều thấy đúng (D-78).
 
 `ST-17` Kết hợp state: mỗi state áp độc lập, không state nào "đè" state khác trừ khi
   ghi rõ. Ví dụ GHOST + MAGIC_IMMUNE → chỉ còn nhận sát thương pure. INVULNERABLE

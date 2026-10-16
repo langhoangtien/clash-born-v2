@@ -84,6 +84,8 @@ func _fire_instance(world: World, ev: GameEvent, owner: Entity, other: Entity, i
 		role: TriggerDef.Role, removed_self: bool) -> void:
 	if removed_self and not owner.alive:
 		return
+	if inst.def.tags.has(&"passive") and Rules.has_state(owner, UnitState.Id.HEXED):
+		return  # ST-16: biến hình thì bị động tạm tắt
 	var triggers: Array[TriggerDef] = inst.def.triggers
 	for index: int in range(triggers.size()):
 		var t: TriggerDef = triggers[index]

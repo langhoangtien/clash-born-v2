@@ -19,7 +19,8 @@ static func is_structure(e: Entity) -> bool:
 
 
 ## DEF-05: còn sống, khác đội, không phải công trình đang khóa (STR-02). Nhắm bằng chiêu.
-## DEF-05: còn sống, khác đội, thấy được (VIS), không UNTARGETABLE (ST-12). MAGIC_IMMUNE thêm ở M6.
+## DEF-05: còn sống, khác đội, thấy được (VIS), không UNTARGETABLE (ST-12). MAGIC_IMMUNE chỉ chặn
+## chiêu nhắm đơn vị (Abilities.accepts, ST-15), không chặn đánh thường.
 static func is_targetable(by: Entity, target: Entity) -> bool:
 	return is_hittable(by, target) and is_visible(by.team, target) and not has_state(target, UnitState.Id.UNTARGETABLE)
 
@@ -51,20 +52,23 @@ static func can_move(e: Entity) -> bool:
 	return e.alive and e.dash == null and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.ROOTED) == 0
 
 
-## ST-01, 04, 08, 11: được đánh thường.
+## ST-01, 04, 08, 11, 16: được đánh thường.
 static func can_attack(e: Entity) -> bool:
-	return e.alive and e.dash == null and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.DISARMED | 1 << UnitState.Id.GHOST) == 0
+	return e.alive and e.dash == null and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.DISARMED | 1 << UnitState.Id.GHOST | 1 << UnitState.Id.HEXED) == 0
 
 
-## ST-01, 03, 08: được dùng chiêu (AbilitySystem dùng từ M3.4).
+## ST-01, 03, 08, 16: được dùng chiêu (cả đồ).
 static func can_cast(e: Entity) -> bool:
-	return e.alive and e.dash == null and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.SILENCED) == 0
+	return e.alive and e.dash == null and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.SILENCED | 1 << UnitState.Id.HEXED) == 0
 
 
 ## ST-07, 11: hệ số sát thương nhận theo loại (sau giáp, trước khiên).
-static func damage_factor(world: World, target: Entity, type: DamageFormulas.DamageType) -> float:
+## PRI-05: INVULNERABLE → miễn theo loại (GHOST, MAGIC_IMMUNE; `pierces` bỏ qua đúng bước miễn phép).
+static func damage_factor(world: World, target: Entity, type: DamageFormulas.DamageType, pierces: bool = false) -> float:
 	if has_state(target, UnitState.Id.INVULNERABLE):
 		return 0.0
+	if type == DamageFormulas.DamageType.MAGIC and not pierces and has_state(target, UnitState.Id.MAGIC_IMMUNE):
+		return 0.0  # ST-15
 	if has_state(target, UnitState.Id.GHOST):
 		match type:
 			DamageFormulas.DamageType.PHYSICAL:

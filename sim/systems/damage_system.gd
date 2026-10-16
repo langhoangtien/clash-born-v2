@@ -25,7 +25,7 @@ static func resolve(world: World) -> void:
 		var amount: float = DamageFormulas.final_damage(r.raw * _structure_factor(world, source, target), r.damage_type,
 			s.get_stat(StatId.Id.PHYSICAL_ARMOR), s.get_stat(StatId.Id.MAGIC_ARMOR),
 			s.get_stat(StatId.Id.DAMAGE_TAKEN_MULTIPLIER), world.balance)
-		var factor: float = Rules.damage_factor(world, target, r.damage_type)  # ST-07, ST-11
+		var factor: float = Rules.damage_factor(world, target, r.damage_type, r.pierces_magic_immunity)  # PRI-05
 		if factor <= 0.0:
 			continue
 		amount *= factor

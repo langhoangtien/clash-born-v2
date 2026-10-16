@@ -74,6 +74,8 @@ extends Resource
 @export var respawn_per_level: float
 
 @export_group("Trạng thái (ST)")
+## ST-16: tốc chạy cố định khi HEXED.
+@export var hex_move_speed: float
 ## ST-11: GHOST nhận sát thương phép × (1 + ghost_magic_amp).
 @export var ghost_magic_amp: float
 

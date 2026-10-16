@@ -11,6 +11,8 @@ var is_attack: bool = false
 var crit: bool = false
 ## CMB-09: sát thương phản hồi.
 var reflected: bool = false
+## ST-15: nguồn xuyên miễn phép (bỏ qua đúng bước MAGIC_IMMUNE, PRI-05).
+var pierces_magic_immunity: bool = false
 
 
 static func attack(source: Entity, target_id: int) -> DamageRequest:

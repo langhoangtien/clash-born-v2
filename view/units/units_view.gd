@@ -115,6 +115,9 @@ func _draw_unit(e: Entity, at: Vector2) -> void:
 	if Rules.is_structure(e):
 		_draw_structure(e, at, color)
 		return
+	if Rules.has_state(e, UnitState.Id.HEXED):  # ST-16: hình con ếch tạm
+		_draw_frog(e, at, color)
+		return
 	var tex: Texture2D = ArtLibrary.texture(e.art_id)
 	var height: float = e.radius * BODY_HEIGHT * (3.0 if tex != null else 1.0)
 	if tex != null:
@@ -126,6 +129,15 @@ func _draw_unit(e: Entity, at: Vector2) -> void:
 		_draw_placeholder(e, at, Color(color, 0.45) if faded(e) else color, height)
 	StateMarks.draw(self, e, at, height, world.tick)
 	_draw_health(e, at - Vector2(0, height + 14), color)
+
+
+func _draw_frog(e: Entity, at: Vector2, color: Color) -> void:
+	var r: float = e.radius * 0.8
+	draw_circle(at - Vector2(0, r * 0.6), r, Color(0.35, 0.75, 0.3))
+	draw_circle(at - Vector2(r * 0.45, r * 1.3), r * 0.3, Color.WHITE)
+	draw_circle(at - Vector2(-r * 0.45, r * 1.3), r * 0.3, Color.WHITE)
+	draw_arc(at - Vector2(0, r * 0.6), r, 0, TAU, 20, color, 3.0, true)
+	_draw_health(e, at - Vector2(0, r * 2.4 + 14), color)
 
 
 ## Hình tạm: thân tròn màu đội + đầu, mũi tên hướng nhìn.
