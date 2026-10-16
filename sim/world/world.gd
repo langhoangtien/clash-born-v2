@@ -96,6 +96,14 @@ func add_system(system: SimSystem, phase: Phase) -> void:
 	_systems.sort_custom(func(a: Array, b: Array) -> bool: return a[0] < b[0] or (a[0] == b[0] and a[1] < b[1]))
 
 
+## Đã có hệ thống thuộc lớp `script` chưa.
+func has_system(script: Script) -> bool:
+	for entry: Array in _systems:
+		if (entry[2] as Object).get_script() == script:
+			return true
+	return false
+
+
 ## Cấp id, tính chỉ số lần đầu, đầy máu/mana.
 func add_entity(e: Entity) -> Entity:
 	e.id = _next_id
@@ -217,6 +225,8 @@ func state_hash() -> PackedByteArray:
 			ctx.update(PackedFloat64Array([e.knockback.direction.x, e.knockback.direction.y, e.knockback.per_tick, e.knockback.end_tick]).to_byte_array())
 		if e.dash != null:
 			ctx.update(PackedFloat64Array([e.dash.target_id, e.dash.speed, e.dash.source_id]).to_byte_array())
+		if e.bot != null:
+			ctx.update(PackedFloat64Array([e.bot.mode, e.bot.target_id, e.bot.goal.x, e.bot.goal.y, e.bot.chase_origin.x, e.bot.chase_origin.y, e.bot.trade_until_tick]).to_byte_array())
 		if e.cast != null:
 			ctx.update(PackedInt64Array([e.cast.ability.slot, e.cast.release_tick, e.cast.target_id]).to_byte_array())
 		for inst: EffectInstance in e.effects:

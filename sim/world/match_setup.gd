@@ -62,6 +62,15 @@ static func add_jungle(world: World, library: ContentLibrary) -> void:
 	world.add_system(JungleSpawner.new(), World.Phase.SPAWN)
 
 
+## BOT: hero `e` do bot điều khiển (thêm BotController một lần cho trận).
+static func add_bot(world: World, e: Entity, difficulty: BotState.Difficulty = BotState.Difficulty.NORMAL) -> BotState:
+	if not world.has_system(BotController):
+		world.add_system(BotController.new(), World.Phase.CONTROLLER)
+	e.bot = BotState.new()
+	e.bot.difficulty = difficulty
+	return e.bot
+
+
 ## SHOP (D-81): cửa hàng của trận là mọi món trong content.
 static func add_shop(world: World, library: ContentLibrary) -> void:
 	for id: StringName in library.items:

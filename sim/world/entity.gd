@@ -43,6 +43,8 @@ var lock_target_id: int = -1
 var respawn_tick: int = -1
 ## DTH-02: đang nằm chờ tái sinh tới tick này (-1 = không).
 var reincarnate_tick: int = -1
+## BOT: hero do bot điều khiển (null = người chơi / không phải hero).
+var bot: BotState
 ## WRD-02: ward biến mất ở tick này (-1 = không phải ward).
 var expire_tick: int = -1
 ## WRD-03: bán kính nhìn thấy tàng hình (mắt xanh), 0 = không có.
