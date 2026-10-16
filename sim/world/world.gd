@@ -76,6 +76,7 @@ func _init(seed_value: int, p_balance: BalanceSettings) -> void:
 	add_system(RegenSystem.new(), Phase.STATE)
 	add_system(StructureController.new(), Phase.CONTROLLER)
 	add_system(DashSystem.new(), Phase.MOVEMENT)  # trước MovementSystem (thêm sau)
+	add_system(KnockbackSystem.new(), Phase.MOVEMENT)
 	add_system(AbilitySystem.new(), Phase.ABILITY)
 	add_system(SkillShotSystem.new(), Phase.ABILITY)
 	add_system(AttackSystem.new(), Phase.ATTACK)
@@ -205,6 +206,8 @@ func state_hash() -> PackedByteArray:
 			ctx.update(e.stats.values().to_byte_array())
 		for a: AbilityInstance in e.abilities:
 			ctx.update(PackedInt64Array([a.slot, a.rank, a.ready_tick]).to_byte_array())
+		if e.knockback != null:
+			ctx.update(PackedFloat64Array([e.knockback.direction.x, e.knockback.direction.y, e.knockback.per_tick, e.knockback.end_tick]).to_byte_array())
 		if e.dash != null:
 			ctx.update(PackedFloat64Array([e.dash.target_id, e.dash.speed, e.dash.source_id]).to_byte_array())
 		if e.cast != null:

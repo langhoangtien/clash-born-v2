@@ -240,7 +240,7 @@ có thể dùng lại làm skill/talent cho hero sau. Ví dụ: Cuồng Tốc = 
  3. StateSystem        tính lại StateSet + StatBlock của đơn vị có thay đổi
  4. VisionSystem       ai thấy ai (bụi cỏ MapBushes; StateSet: INVISIBLE, REVEALED)
  5. ControllerSystem   lính, trụ, quái, bot đọc snapshot → sinh Command cho tick sau
- 6. DashSystem         lướt (ABL-08), rồi MovementSystem: di chuyển theo Order, va chạm, tìm đường
+ 6. DashSystem         lướt (ABL-08), KnockbackSystem đẩy lùi (ABL-10), rồi MovementSystem: di chuyển theo Order, va chạm, tìm đường
  7. AbilitySystem      tiến trình tung chiêu, chạy on_cast; đạn kỹ năng, vùng trễ,
                        vùng cháy, lướt (ABL-05..08)
  8. AttackSystem       đòn đánh thường, đánh gió, đạn bay, tạo DamageRequest
@@ -256,7 +256,7 @@ Thứ tự này là `World.Phase` trong code; hệ thống đăng ký vào một
 
 Quy tắc:
 - **Mỗi hệ thống chỉ ghi phần dữ liệu của mình.** Ví dụ chỉ DamageSystem trừ máu,
-  chỉ MovementSystem (và DashSystem khi lướt) đổi vị trí. Hệ khác muốn thay đổi thì tạo request/sự kiện.
+  chỉ MovementSystem (và DashSystem / KnockbackSystem khi lướt / bị đẩy) đổi vị trí. Hệ khác muốn thay đổi thì tạo request/sự kiện.
 - Duyệt đơn vị theo `id` tăng dần. RNG chỉ lấy từ `World.rng` có seed.
 - Trigger gây ra trigger khác: tối đa 4 tầng, tránh vòng lặp vô hạn.
 

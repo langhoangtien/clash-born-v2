@@ -87,6 +87,8 @@ var order: Order = Order.idle()
 var queued_order: Order
 ## ABL-08: cú lướt đang diễn ra (DashSystem), null nếu không lướt.
 var dash: DashState
+## ABL-10: đang bị đẩy lùi (KnockbackSystem), null nếu không.
+var knockback: KnockbackState
 ## Kỹ năng (ABL) và chiêu đang tung (AbilitySystem ghi).
 var abilities: Array[AbilityInstance] = []
 var cast: CastState

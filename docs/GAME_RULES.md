@@ -309,6 +309,9 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   gian định sẵn; trong lúc bị dời nó STUNNED; dừng sớm khi chạm vách đá, rừng hoặc thân
   trụ; không bao giờ đi xuyên vật cản. Hủy lệnh và chiêu đang tung của nó. Bị chặn
   bởi MAGIC_IMMUNE trừ khi nguồn xuyên miễn phép.
+  (D-82) Hướng: từ chủ kỹ năng ra đơn vị bị đẩy; dời đều `distance / duration` mỗi tick
+  bắt đầu từ tick sau, xuyên qua đơn vị khác; bị đẩy lại thì cú mới thay cú cũ; đang lướt
+  thì hết lướt. Xong phát `knockback_finished`; lệnh cũ không tiếp tục (đứng yên).
 - `ABL-13` Vùng có hai hình (D-37): **tròn** (tâm + `radius`) hoặc **chữ nhật theo
   hướng** — bắt đầu từ chủ kỹ năng, dài `length`, rộng `width`, theo hướng đã chọn
   lúc tung. Luật trúng của ABL-06/07 áp như nhau cho cả hai hình.

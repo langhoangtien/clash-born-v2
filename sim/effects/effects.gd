@@ -66,6 +66,8 @@ static func refresh_states(owner: Entity) -> void:
 			bits |= 1 << state
 	if owner.dash != null:
 		bits |= 1 << UnitState.Id.UNTARGETABLE  # ABL-08
+	if owner.knockback != null:
+		bits |= 1 << UnitState.Id.STUNNED  # ABL-10
 	var hexed_before: bool = owner.states & (1 << UnitState.Id.HEXED) != 0
 	owner.states = bits
 	var hexed: bool = bits & (1 << UnitState.Id.HEXED) != 0

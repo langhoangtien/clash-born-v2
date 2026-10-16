@@ -34,6 +34,8 @@ static func run(world: World, actions: Array[ActionDef], ctx: ExprContext, sourc
 			for inst: EffectInstance in receiver.effects.duplicate():
 				if inst.def == (action as RemoveEffectAction).effect:
 					Effects.remove(world, receiver, inst, &"removed")
+		elif action is PushAction:
+			_push(world, action, ctx, receiver, source_id)
 		elif action is ModifyCooldownAction:
 			_modify_cooldown(world, action, ctx, receiver)
 		elif action is ManaBurnAction:
@@ -238,3 +240,25 @@ static func _modify_cooldown(world: World, a: ModifyCooldownAction, ctx: ExprCon
 		return
 	var delta: int = roundi(ExprEval.evaluate(a.amount, ctx) * SimClock.TICKS_PER_SECOND)
 	ability.ready_tick = maxi(world.tick, maxi(ability.ready_tick, world.tick) + delta)
+
+
+## ABL-10: đẩy `receiver` ra xa chủ kỹ năng; hủy lệnh, lướt, đòn đang vung; miễn phép chặn trừ nguồn xuyên.
+static func _push(world: World, a: PushAction, ctx: ExprContext, receiver: Entity, source_id: int) -> void:
+	var owner: Entity = ctx.owner
+	if receiver.team != owner.team and not _pierces(ctx) and Rules.has_state(receiver, UnitState.Id.MAGIC_IMMUNE):
+		return
+	var dir: Vector2 = receiver.position - owner.position
+	if dir.length() < 0.001:
+		dir = ctx.direction if ctx.direction != Vector2.ZERO else owner.facing
+	var ticks: int = maxi(1, SimClock.seconds_to_ticks(ExprEval.evaluate(a.duration, ctx)))
+	var k: KnockbackState = KnockbackState.new()
+	k.direction = dir.normalized()
+	k.per_tick = ExprEval.evaluate(a.distance, ctx) / ticks
+	k.end_tick = world.tick + ticks
+	k.source_id = source_id
+	receiver.knockback = k
+	receiver.dash = null
+	receiver.order = Order.idle()
+	receiver.queued_order = null
+	receiver.attack_phase = Entity.AttackPhase.NONE
+	Effects.refresh_states(receiver)

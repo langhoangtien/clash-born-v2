@@ -81,6 +81,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-79 | 2026-10-16 | M6.2: thanh tẩy như Dota — tước buff địch đang miễn phép không có tác dụng trừ nguồn xuyên miễn phép; thanh tẩy cơ bản/mạnh và cờ xuyên miễn phép đã có từ M3 / M6.1 | Đã duyệt |
 | D-80 | 2026-10-16 | Sửa D-73 sau chơi thử: tàng hình thường (Riki, Bounty Hunter) bị trụ thấy khi trong tầm bắn của trụ, ra ngoài thì ẩn lại; trụ vẫn không nhìn vào bụi. Kiểu Shadow Dance (không bị true sight lộ, đánh vẫn ẩn) để sau thành cờ riêng | Người chơi: Noctis tàng hình đi vào trụ không bị bắn |
 | D-81 | 2026-10-16 | Cửa hàng (luật SIM làm cùng M6.5, giao diện M8): đồ thường mua ở mọi nơi (kiểu Liên Quân); 2 shop ẩn đối xứng ở khối rừng R1 (ô C7, cạnh lane top) và R1' (ô N10, cạnh lane bot), ký hiệu S1 / S1', cả hai đội dùng chung, phải đứng gần mới mua đồ của shop ẩn; đồ mở theo giờ (vd phút 20) hiện khóa kèm đếm ngược; đồ độc nhất cả trận (một người mua thì hết, ở shop ẩn), bán lại thì món quay về shop, chết không rơi đồ. Danh sách món theo loại chốt ở M6.6 | Đã duyệt |
+| D-82 | 2026-10-16 | M6.3: đẩy lùi như lướt ngược — KnockbackSystem (pha MOVEMENT), xuyên đơn vị, chặn bởi vách/rừng/thân trụ, STUNNED trong lúc dời, hủy lệnh/chiêu/lướt, miễn phép chặn trừ nguồn xuyên; vào state_hash | Đã duyệt |
 
 ## Chờ chốt
 

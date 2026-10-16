@@ -22,7 +22,7 @@ func _advance(world: World, e: Entity) -> void:
 	var gap: float = maxf(0.0, Rules.edge_distance(e, target))
 	var dir: Vector2 = (target.position - e.position).normalized()
 	var move: float = minf(e.dash.speed * SimClock.TICK_SECONDS, gap)
-	var reached: float = _clear_reach(world, e, dir, move)
+	var reached: float = clear_reach(world, e, dir, move)
 	e.position += dir * reached
 	if dir != Vector2.ZERO:
 		e.facing = dir
@@ -43,7 +43,7 @@ static func _valid(e: Entity, target: Entity) -> bool:
 
 
 ## Quãng đi được dọc `dir` (≤ `move`) mà không chạm vật cản.
-static func _clear_reach(world: World, e: Entity, dir: Vector2, move: float) -> float:
+static func clear_reach(world: World, e: Entity, dir: Vector2, move: float) -> float:
 	if world.map == null:
 		return move
 	var nav: MapNavigation = world.navigation(e.radius)
