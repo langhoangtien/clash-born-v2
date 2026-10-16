@@ -93,6 +93,10 @@ func _paint_dots(ci: CanvasItem) -> void:
 			var r: float = (6.0 if e.kind == Entity.Kind.CORE else 4.0) * px
 			ci.draw_rect(Rect2(e.position - Vector2(r, r), Vector2(r, r) * 2.0), color)
 			ci.draw_rect(Rect2(e.position - Vector2(r, r), Vector2(r, r) * 2.0), Color.BLACK, false, px)
+		elif e.kind == Entity.Kind.WARD:  # WRD: chấm vàng / xanh của phe mình, đỏ nếu là ward địch đang thấy
+			if e.team == team or Rules.is_visible(team, e):
+				var wc: Color = RED if e.team != team else (Color(0.35, 0.75, 1.0) if e.true_sight_range > 0.0 else Color(1.0, 0.82, 0.25))
+				ci.draw_rect(Rect2(e.position - Vector2(3, 3) * px, Vector2(6, 6) * px), wc)
 		elif e.team == team or Rules.is_visible(team, e):
 			var hero_dot: bool = e.kind == Entity.Kind.HERO
 			ci.draw_circle(e.position, (5.0 if hero_dot else 2.2) * px, ME if e == hero else color)

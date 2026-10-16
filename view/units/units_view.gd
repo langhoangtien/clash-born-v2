@@ -115,6 +115,9 @@ func _draw_unit(e: Entity, at: Vector2) -> void:
 	if Rules.is_structure(e):
 		_draw_structure(e, at, color)
 		return
+	if e.kind == Entity.Kind.WARD:
+		_draw_ward(e, at)
+		return
 	if e.reincarnate_tick >= 0:  # DTH-02: nằm chờ tái sinh
 		_draw_lying(e, at, color)
 		return
@@ -141,6 +144,32 @@ func _draw_frog(e: Entity, at: Vector2, color: Color) -> void:
 	draw_circle(at - Vector2(-r * 0.45, r * 1.3), r * 0.3, Color.WHITE)
 	draw_arc(at - Vector2(0, r * 0.6), r, 0, TAU, 20, color, 3.0, true)
 	_draw_health(e, at - Vector2(0, r * 2.4 + 14), color)
+
+
+## WRD: con mắt nhỏ (vàng = mắt vàng, xanh = mắt xanh). Phe mình: mờ, vòng tầm nhìn / nhìn tàng
+## hình, cung thời gian còn lại. Ward địch đang bị thấy: viền đỏ, 6 nấc máu (theo đòn).
+func _draw_ward(e: Entity, at: Vector2) -> void:
+	var sentry: bool = e.true_sight_range > 0.0
+	var col: Color = Color(0.35, 0.75, 1.0) if sentry else Color(1.0, 0.82, 0.25)
+	var own: bool = viewer_team < 0 or e.team == viewer_team
+	var c: Vector2 = at - Vector2(0, 26)
+	draw_line(at, c, Color(0.3, 0.25, 0.2, 0.8), 4.0)
+	draw_set_transform(c, 0.0, Vector2(1.0, 0.6))
+	draw_circle(Vector2.ZERO, 16.0, Color(col, 0.55 if own else 0.95))
+	draw_set_transform(Vector2.ZERO)
+	draw_circle(c, 6.0, Color(0.1, 0.1, 0.15, 0.9))
+	if own:
+		var ring: float = e.true_sight_range if sentry else e.stats.get_stat(StatId.Id.VISION_RANGE)
+		draw_arc(e.position, ring, 0, TAU, 96, Color(col, 0.18), 3.0, true)
+		if e.expire_tick >= 0:
+			var left: float = clampf(float(e.expire_tick - world.tick) / SimClock.seconds_to_ticks(240.0 if not sentry else 300.0), 0.0, 1.0)
+			draw_arc(c, 22.0, -PI * 0.5, -PI * 0.5 + TAU * left, 24, Color(col, 0.8), 3.0, true)
+	else:
+		draw_arc(c, 18.0, 0, TAU, 24, Color(1, 0.25, 0.2), 3.0, true)
+		var hp: int = ceili(e.health)
+		for i: int in range(6):
+			var r: Rect2 = Rect2(c + Vector2(-27 + i * 9, -34), Vector2(7, 6))
+			draw_rect(r, Color(1, 0.3, 0.25) if i < hp else Color(0.2, 0.2, 0.2, 0.8))
 
 
 ## DTH-02: hero nằm ngang, mờ, vòng đếm ngược thời gian còn lại tới lúc đứng dậy.

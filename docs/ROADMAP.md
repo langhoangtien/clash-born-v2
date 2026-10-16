@@ -208,3 +208,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M6.6 | Xong | 2026-10-16 | 490 test xanh (+9); danh mục, shop ẩn, giờ mở, độc nhất cho 9 món; kịch bản cho từng món; cửa hàng kiểu Liên Quân (D-90). Chờ chơi thử |
 | M6.7 | Xong | 2026-10-16 | 496 test + 3 soak xanh (+6); chặn chết, tái sinh tại chỗ DTH-01..03, hero thử nghiệm kiểu Wraith King, dùng một lần kiểu Aegis (D-91) |
 | M6.8a | Xong | 2026-10-16 | 504 test + 3 soak xanh (+8); ward SIM WRD-01..06, kho đội SHOP-08 (D-92) |
+| M6.8b | Xong | 2026-10-17 | 506 test + 3 soak xanh (+2); vẽ ward, minimap, nhắm cắm mắt bằng kéo nút, kho trong shop (D-93). Chờ chơi thử cắm / phá ward |

@@ -17,6 +17,8 @@ static func command(world: World, hero: Entity, slot: int) -> Command:
 			var t: Entity = target(world, hero, a, reach)
 			return Command.cast(hero.id, slot, t.id if t != null else -1)
 		AbilityDef.Targeting.POINT:
+			if ward_of(a) != null:
+				return Command.cast(hero.id, slot, -1, hero.position)  # D-92: chạm nút mắt = cắm dưới chân
 			var t: Entity = target(world, hero, a, reach)
 			var at: Vector2 = t.position if t != null else hero.position + hero.facing * maxf(reach, 300.0)
 			return Command.cast(hero.id, slot, -1, at)
@@ -86,3 +88,13 @@ static func reach_of(hero: Entity, a: AbilityInstance) -> float:
 		if v.get(name, 0.0) > 0.0:
 			return v[name]
 	return 600.0
+
+
+## WRD-01: loại ward mà kỹ năng `a` cắm, null nếu không phải đồ cắm mắt.
+static func ward_of(a: AbilityInstance) -> UnitDef:
+	if a == null:
+		return null
+	for action: ActionDef in a.def.on_cast:
+		if action is PlaceWardAction:
+			return (action as PlaceWardAction).ward
+	return null

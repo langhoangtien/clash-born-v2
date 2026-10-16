@@ -26,6 +26,8 @@ func connect_signals() -> void:
 	talents.visible = false
 	if items != null:
 		items.item_tapped.connect(func(i: int) -> void: input.press_skill(Items.SLOT_BASE + i))  # ITM-07
+		items.item_aimed.connect(func(i: int, aim: Vector2) -> void: input.press_skill_aimed(Items.SLOT_BASE + i, aim))
+		items.aim_changed.connect(func(i: int, aim: Vector2, active: bool) -> void: _show_aim(Items.SLOT_BASE + i, aim, active))
 
 
 func level_up(slot: int) -> void:
@@ -64,7 +66,12 @@ func talent_options() -> Array:
 
 
 func _on_aim(i: int, aim: Vector2, active: bool) -> void:
-	var a: AbilityInstance = Abilities.of(hero, SLOTS[i])
+	_show_aim(SLOTS[i], aim, active)
+
+
+## Chỉ báo nhắm cho kỹ năng ở ô `slot` (chiêu hoặc đồ); ward: vòng tầm nhìn / nhìn tàng hình tại chỗ cắm.
+func _show_aim(slot: int, aim: Vector2, active: bool) -> void:
+	var a: AbilityInstance = Abilities.of(hero, slot)
 	indicator.active = active and a != null and a.rank > 0
 	if not indicator.active:
 		return
@@ -73,6 +80,9 @@ func _on_aim(i: int, aim: Vector2, active: bool) -> void:
 	indicator.origin = hero.position
 	indicator.reach = QuickCast.reach_of(hero, a)
 	indicator.area_radius = v.get(&"radius", 0.0)
+	var ward: UnitDef = QuickCast.ward_of(a)
+	if ward != null:
+		indicator.area_radius = maxf(ward.stats.vision_range, ward.true_sight_range)
 	indicator.width = v.get(&"width", 0.0)
 	indicator.target = hero.position + aim.limit_length(1.0) * indicator.reach
 

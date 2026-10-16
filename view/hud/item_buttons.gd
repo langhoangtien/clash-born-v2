@@ -18,11 +18,22 @@ const Q_ANGLE: float = 178.0
 const Q_DISTANCE: float = 350.0
 const DROP: float = 6.0
 
-## Chỉ số ô đồ (0..5) của món ở nút k.
+const AIM_RADIUS: float = 150.0
+const DEAD_ZONE: float = 24.0
+const MOUSE_POINTER: int = -1
+
+## Chỉ số ô đồ (0..5) của món ở nút k: chạm (tự nhắm như nút chiêu).
 signal item_tapped(index: int)
+## M6.8b: kéo nút để nhắm (aim dài 0..1 của tầm), thả ra ngoài nút thì dùng.
+signal item_aimed(index: int, aim: Vector2)
+signal aim_changed(index: int, aim: Vector2, active: bool)
 
 ## APP đặt mỗi khung, mỗi nút một món chủ động theo thứ tự ô: [chỉ số ô, tên tắt, giây hồi, số lần dùng (-1 = không), dùng được].
 var item_view: Array = []
+var _press: int = -1
+var _pointer: int = -100
+var _offset: Vector2 = Vector2.ZERO
+var _aiming: bool = false
 
 
 func button_center(k: int) -> Vector2:
@@ -52,7 +63,7 @@ func zone_rect() -> Rect2:
 
 
 func _has_point(point: Vector2) -> bool:
-	return button_at(point) >= 0
+	return _press >= 0 or button_at(point) >= 0
 
 
 ## PC: phím 4..9 = nút thứ k; trả về chỉ số ô đồ hoặc -1.
@@ -60,16 +71,65 @@ func slot_for_button(k: int) -> int:
 	return item_view[k][0] if k >= 0 and k < mini(item_view.size(), MAX) else -1
 
 
+func is_aiming() -> bool:
+	return _aiming
+
+
+func aim() -> Vector2:
+	return _offset.limit_length(AIM_RADIUS) / AIM_RADIUS
+
+
+func press_at(pointer: int, local: Vector2) -> void:
+	var k: int = button_at(local)
+	if k >= 0 and _press < 0 and item_view[k][4]:
+		_press = k
+		_pointer = pointer
+		_offset = Vector2.ZERO
+		_aiming = false
+
+
+func drag_to(pointer: int, local: Vector2) -> void:
+	if pointer != _pointer or _press < 0:
+		return
+	_offset = local - button_center(_press)
+	if not _aiming and _offset.length() > DEAD_ZONE:
+		_aiming = true
+	if _aiming:
+		aim_changed.emit(item_view[_press][0], aim(), true)
+		queue_redraw()
+
+
+## Thả: chưa kéo → chạm; đã kéo → thả trong nút là hủy, ngoài nút là dùng theo hướng kéo.
+func release_at(pointer: int, local: Vector2) -> void:
+	if pointer != _pointer or _press < 0:
+		return
+	var slot: int = item_view[_press][0] if _press < item_view.size() else -1
+	if _aiming:
+		aim_changed.emit(slot, aim(), false)
+		if slot >= 0 and local.distance_to(button_center(_press)) > RADIUS:
+			item_aimed.emit(slot, aim())
+	elif slot >= 0:
+		item_tapped.emit(slot)
+	_press = -1
+	_pointer = -100
+	_aiming = false
+	queue_redraw()
+
+
 func _gui_input(event: InputEvent) -> void:
-	var at: Vector2 = Vector2.INF
-	if event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed:
-		at = (event as InputEventScreenTouch).position
-	elif event is InputEventMouseButton and (event as InputEventMouseButton).pressed and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
-		at = (event as InputEventMouseButton).position
-	if at.is_finite():
-		var k: int = button_at(at)
-		if k >= 0 and item_view[k][4]:
-			item_tapped.emit(item_view[k][0])
+	if event is InputEventScreenTouch:
+		var t: InputEventScreenTouch = event
+		press_at(t.index, t.position) if t.pressed else release_at(t.index, t.position)
+		accept_event()
+	elif event is InputEventScreenDrag:
+		drag_to((event as InputEventScreenDrag).index, (event as InputEventScreenDrag).position)
+		accept_event()
+	elif event is InputEventMouseButton and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
+		var m: InputEventMouseButton = event
+		press_at(MOUSE_POINTER, m.position) if m.pressed else release_at(MOUSE_POINTER, m.position)
+		accept_event()
+	elif event is InputEventMouseMotion and (event as InputEventMouseMotion).button_mask & MOUSE_BUTTON_MASK_LEFT:
+		drag_to(MOUSE_POINTER, (event as InputEventMouseMotion).position)
 		accept_event()
 
 
@@ -87,6 +147,11 @@ func _draw() -> void:
 		if view[3] >= 0:
 			_label(font, c + Vector2(RADIUS * 0.7, RADIUS * 0.7), str(view[3]), 16, Color(1, 1, 0.6))
 		_label(font, c + Vector2(-RADIUS * 0.75, -RADIUS * 0.75), str(k + 4), 13, Color(1, 1, 1, 0.45))
+	if _aiming and _press >= 0:
+		var c: Vector2 = button_center(_press)
+		draw_circle(c, AIM_RADIUS, Color(1, 1, 1, 0.08))
+		draw_arc(c, AIM_RADIUS, 0, TAU, 48, Color(1, 1, 1, 0.4), 2.0, true)
+		draw_circle(c + _offset.limit_length(AIM_RADIUS), 22.0, Color(1, 1, 1, 0.6))
 
 
 func _label(font: Font, center: Vector2, text: String, font_size: int, color: Color) -> void:

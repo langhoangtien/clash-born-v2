@@ -255,3 +255,15 @@ func test_SHOP_08_team_stock_and_restock() -> void:
 func _passive(w: World, from: int, to: int) -> int:
 	var every: int = SimClock.seconds_to_ticks(w.balance.passive_gold_interval)
 	return (to / every - from / every) * w.balance.passive_gold
+
+
+func test_D_92_tap_ward_button_places_under_feet() -> void:
+	var w: World = _world()
+	var h: Entity = _hero(w, 0, _center())
+	var slot: int = Items.give(w, h, _lib.items[OBS])
+	var c: Command = QuickCast.command(w, h, Items.SLOT_BASE + slot)
+	assert_eq(c.point, h.position, "chạm nút mắt: cắm dưới chân")
+	assert_eq(QuickCast.ward_of(Abilities.of(h, Items.SLOT_BASE + slot)), _lib.units[&"ward_observer"])
+	assert_eq(_buy(w, h, OBS), R.NONE)
+	_buy(w, h, OBS)
+	assert_eq(ShopPanel.status_text(w, _lib.items[OBS], R.OUT_OF_STOCK, 0), "Hết hàng, còn 135 s")

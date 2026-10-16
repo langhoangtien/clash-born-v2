@@ -29,6 +29,7 @@ const REASONS: Dictionary = {
 	Command.Reject.NOT_IN_SHOP: "Tới shop ẩn S1 / S1'",
 	Command.Reject.NOT_YET: "Chưa mở",
 	Command.Reject.SOLD_OUT: "Đã có người mua",
+	Command.Reject.OUT_OF_STOCK: "Hết hàng",
 }
 ## Tên và cách ghi chỉ số (tỉ lệ thì nhân 100 và thêm %).
 const STATS: Dictionary = {
@@ -213,6 +214,9 @@ func _draw_card(font: Font, r: Rect2, d: ItemDef) -> void:
 	_center(font, r.position + Vector2(r.size.x * 0.5, 132), str(d.cost), 18, Color(1, 0.85, 0.3) if ok else Color(1, 0.85, 0.3, 0.45))
 	if d.shop == ItemDef.ShopKind.SECRET:
 		_center(font, r.position + Vector2(22, 18), "ẨN", 13, Color(0.7, 0.85, 1))
+	var left: int = Shop.stock(world, hero.team, d)
+	if left >= 0:  # SHOP-08: còn trong kho đội
+		_center(font, r.position + Vector2(r.size.x - 24, 18), "x%d" % left, 15, Color(1, 1, 1, 0.8) if left > 0 else Color(1, 0.5, 0.4))
 	if selected_slot < 0 and d.id == selected_id:
 		draw_rect(r, Color(1, 0.9, 0.4), false, 3.0)
 
@@ -258,7 +262,7 @@ func _draw_detail(font: Font) -> void:
 	else:
 		var problem: Command.Reject = Shop.buy_problem(world, hero, d.id)
 		ok = problem == Command.Reject.NONE
-		label = "Mua  %d" % d.cost if ok else status_text(world, d, problem)
+		label = "Mua  %d" % d.cost if ok else status_text(world, d, problem, hero.team)
 	draw_rect(b, (Color(0.6, 0.25, 0.2) if selected_slot >= 0 else Color(0.2, 0.5, 0.25)) if ok else Color(0.25, 0.25, 0.28))
 	_center(font, b.get_center(), label, 26, Color.WHITE if ok else Color(1, 0.6, 0.5))
 
@@ -290,7 +294,9 @@ static func tags(d: ItemDef) -> PackedStringArray:
 	return out
 
 
-static func status_text(w: World, d: ItemDef, problem: Command.Reject) -> String:
+static func status_text(w: World, d: ItemDef, problem: Command.Reject, team: int = -1) -> String:
+	if problem == Command.Reject.OUT_OF_STOCK and Shop.restock_seconds(w, team, d) >= 0.0:
+		return "Hết hàng, còn %d s" % ceili(Shop.restock_seconds(w, team, d))  # SHOP-08
 	if problem == Command.Reject.NOT_YET:
 		return "Mở sau %s" % MatchHud.clock_text(SimClock.seconds_to_ticks(d.unlock_time) - w.tick)
 	return REASONS.get(problem, "Không mua được")
