@@ -94,7 +94,7 @@ Chưa có gameplay; dựng khung để mọi thứ sau đứng vững.
 | M6.2 Thanh tẩy / tước (EFF-07), cờ xuyên miễn phép | Test EFF-07 |
 | M6.3 Action Push — đẩy lùi (ABL-10) | Test ABL-10, không xuyên vật cản |
 | M6.4 **Vexa** đầy đủ: nội tại hút Trí tuệ, Q, W, R + 3 talent | Test; **chơi thử Vexa** |
-| M6.5 Ô đồ, đồ chủ động/bị động (ITM-01..05), nút đồ trên HUD; cho đồ bằng lệnh debug | Test ITM |
+| M6.5 Ô đồ, đồ chủ động/bị động (ITM-01..05), nút đồ trên HUD; luật mua bán SIM (D-81): mua mọi nơi, shop ẩn S1/S1', đồ mở theo giờ, đồ độc nhất, bán lại | Test ITM + SHOP |
 | M6.6 9 món đồ trong CONTENT.md | Test mỗi món một kịch bản |
 | M6.7 Móc chặn chết, tái sinh tại chỗ (DTH-01..03), hero thử nghiệm Wraith King | Test DTH; thưởng vàng/XP đúng |
 | M6.8 Ward: mắt vàng (tầm nhìn, tàng hình), mắt xanh (nguồn true sight, lộ ward địch), phá ward khi bị lộ (D-77) | Test từng dòng bảng tương tác; **chơi thử cắm/phá ward** |

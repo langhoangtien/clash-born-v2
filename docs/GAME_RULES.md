@@ -143,7 +143,7 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 | Đi / đánh / chiêu | Được; đánh hoặc chiêu làm mất (VIS-04) | Không ảnh hưởng | Được |
 | Địch nhắm được | Không (trừ khi lộ / true sight) | Có, ở mọi nơi | Không |
 | Lệnh / đạn đang nhắm | Lệnh hủy, đạn đã bay vẫn trúng | — | Lệnh hủy, đạn đã bay vẫn trúng |
-| Trụ, lính, nút đánh | Không thấy → không chọn | Chọn được nếu trong tầm đánh | Không chọn |
+| Trụ, lính, nút đánh | Không thấy → không chọn; trong tầm bắn trụ thì trụ thấy và bắn (VIS-03) | Chọn được nếu trong tầm đánh | Không chọn |
 | Vùng / đạn kỹ năng | Trúng | Trúng | Trúng |
 | Hiển thị | Phe mình mờ 50%; địch và minimap không hiện | Như thường | Như thường |
 | Với state khác | REVEALED, true sight khử; STUNNED không làm lộ; mạnh hơn bụi | Khử INVISIBLE và bụi | — |
@@ -189,9 +189,14 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `VIS-02` E đang INVISIBLE thì đội địch không thấy E, kể cả trong tầm nhìn, cùng bụi
   (tàng hình mạnh hơn bụi). Chỉ thấy khi E bị lộ (VIS-08) hoặc ở trong true sight
   (VIS-03). Bị choáng, bị trúng đòn không làm lộ (D-73).
-- `VIS-03` Fountain có true sight bán kính `fountain_true_sight` quanh tâm fountain: đội
-  chủ fountain luôn thấy mọi kẻ địch trong vùng này, kể cả tàng hình, núp bụi, ngoài tầm
-  các đơn vị. (Trụ không có, giống Dota.)
+- `VIS-03` True sight (D-80):
+  - Fountain: bán kính `fountain_true_sight` quanh tâm fountain — đội chủ luôn thấy mọi kẻ
+    địch trong vùng, kể cả tàng hình, núp bụi, ngoài tầm các đơn vị.
+  - Trụ: kẻ địch tàng hình mà mép thân trong **tầm bắn** của trụ thì đội chủ trụ thấy (trụ
+    bắn được), ra ngoài thì ẩn lại — như tàng hình thường trong Dota (Riki, Bounty Hunter).
+    Trụ không khử bụi cỏ (VIS-06).
+  - Loại tàng hình không bị true sight lộ (kiểu Shadow Dance của Slark) chưa có; khi có hero
+    dùng thì thêm cờ riêng cho hiệu ứng.
 - `VIS-04` Hiệu ứng tàng hình bị xóa khi chủ nhân bắt đầu đánh hoặc dùng chiêu (khai báo
   `removed_by`, EFF-05). `fade_in`: trong thời gian này hiệu ứng đã có (modifier có tác
   dụng) nhưng **state** của nó chưa bật — với tàng hình là vẫn bị thấy.

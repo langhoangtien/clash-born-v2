@@ -131,16 +131,25 @@ func test_VIS_04_attacking_or_casting_breaks_invisibility() -> void:
 	assert_true(Rules.is_visible(0, caster), "dùng chiêu thì mất tàng hình")
 
 
-func test_VIS_02_towers_creeps_and_attack_button_ignore_invisible() -> void:
+func test_VIS_03_towers_see_invisible_inside_attack_range_only() -> void:
 	var w: World = _world()
 	var sneak: Entity = _unit(w, 1, _center())
 	var tower: Entity = _unit(w, 0, _center() + _dir() * 400.0, 1200.0, Entity.Kind.TOWER)
-	var me: Entity = _unit(w, 0, _center() + _dir() * 200.0)
 	_veil(w, sneak)
 	w.step()
-	assert_false(Rules.is_targetable(tower, sneak), "trụ không nhắm được")
+	assert_true(Rules.is_visible(0, sneak), "trong tầm bắn của trụ: tàng hình bị lộ (D-80)")
+	assert_true(Rules.is_targetable(tower, sneak), "trụ bắn được")
+	sneak.position = _center() - _dir() * 500.0
+	var me: Entity = _unit(w, 0, _center() - _dir() * 300.0)
+	w.step()
+	assert_false(Rules.is_visible(0, sneak), "ra ngoài tầm bắn của trụ thì ẩn lại")
 	assert_eq(Rules.pick_attack_target(w, me, Rules.AttackMode.ALL), -1, "nút đánh không chọn")
 	assert_eq(_reject(w, Command.attack(me.id, sneak.id)), Command.Reject.BAD_TARGET)
+	var bush: Vector2 = _map.bushes.polygons[0][0].lerp(_map.bushes.polygons[0][8], 0.5)
+	tower.position = bush + Vector2(300, 0)
+	sneak.position = bush
+	w.step()
+	assert_false(Rules.is_visible(0, sneak), "trụ vẫn không nhìn vào bụi (VIS-06)")
 
 
 func test_VIS_02_attack_order_cancelled_but_projectile_and_areas_hit() -> void:
