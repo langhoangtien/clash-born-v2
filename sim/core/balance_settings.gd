@@ -119,6 +119,25 @@ extends Resource
 ## CTL-04: mục tiêu khóa cách mép xa hơn chừng này thì bỏ khóa.
 @export var lock_break_range: float
 
+@export_group("Bot (BOT, DEF-09/10)")
+## DEF-09: vùng nguy hiểm trụ = tầm bắn + bán kính hero + chừng này.
+@export var tower_danger_margin: float
+## DEF-10: được vào vùng trụ khi trụ đang bắn đơn vị khác, có ≥ tower_tank_creeps lính phe mình trong tầm trụ và máu ≥ dive_min_hp.
+@export var tower_tank_creeps: int
+@export var dive_min_hp: float
+## BOT-02/03: rút khi máu < bot_retreat_hp, đứng hồi tới bot_recover_hp (phần máu tối đa).
+@export var bot_retreat_hp: float
+@export var bot_recover_hp: float
+## BOT-05: săn khi máu người chơi < bot_kill_hp và trong bot_kill_range.
+@export var bot_kill_hp: float
+@export var bot_kill_range: float
+## BOT-04/05: không đuổi xa hơn chừng này tính từ chỗ bắt đầu đuổi (DEF-08).
+@export var bot_chase_leash: float
+## BOT-04: đánh trả trong chừng này giây sau khi bị hero gây giao tranh (DEF-11).
+@export var bot_trade_window: float
+## BOT-09: đứng sau hàng lính phe mình chừng này.
+@export var bot_lane_offset: float
+
 @export_group("Fountain (STR-04)")
 @export var fountain_radius: float
 ## Phần máu/mana tối đa hồi mỗi giây.

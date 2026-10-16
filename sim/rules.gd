@@ -93,6 +93,50 @@ static func lock_holds(world: World, e: Entity) -> bool:
 	return is_attackable(e, target) and edge_distance(e, target) <= world.balance.lock_break_range
 
 
+## DEF-09: các công trình đội khác `team` (trụ, fountain) mà điểm `at` nằm trong vùng nguy hiểm
+## (tầm bắn + `radius` + tower_danger_margin tính từ mép). Fountain trả về null trong mảng.
+static func tower_threat_at(world: World, team: int, at: Vector2, radius: float) -> Array[Entity]:
+	var out: Array[Entity] = []
+	var margin: float = world.balance.tower_danger_margin
+	for t: Entity in world.entities:
+		if t.kind == Entity.Kind.TOWER and t.alive and t.team != team and t.team < 2:
+			if at.distance_to(t.position) - t.radius <= t.stats.get_stat(StatId.Id.ATTACK_RANGE) + radius + margin:
+				out.append(t)
+	return out
+
+
+## DEF-09: điểm `at` trong vùng fountain địch (luôn bắn).
+static func in_enemy_fountain(world: World, team: int, at: Vector2, radius: float) -> bool:
+	if world.map == null or team > 1 or world.map.fountain_points.size() < 2:
+		return false
+	return at.distance_to(world.map.fountain_point(1 - team)) <= world.balance.fountain_radius + radius + world.balance.tower_danger_margin
+
+
+## DEF-10: điểm `at` an toàn cho hero `x`: ngoài vùng nguy hiểm mọi trụ địch và fountain địch,
+## hoặc trụ đó đang bắn đơn vị khác, có ≥ tower_tank_creeps lính phe x trong tầm nó và máu x
+## ≥ dive_min_hp. Trụ đang nhắm x thì không bao giờ an toàn trong vùng của nó.
+static func is_safe_for_hero(world: World, x: Entity, at: Vector2) -> bool:
+	if in_enemy_fountain(world, x.team, at, x.radius):
+		return false
+	var hp: float = x.health / maxf(1.0, x.stats.get_stat(StatId.Id.MAX_HP))
+	for t: Entity in tower_threat_at(world, x.team, at, x.radius):
+		var shooting: int = t.order.target_id if t.order.type == Order.Type.ATTACK and not t.order.finished else -1
+		if shooting < 0 or shooting == x.id or hp < world.balance.dive_min_hp:
+			return false
+		if _tanks_under(world, t, x.team) < world.balance.tower_tank_creeps:
+			return false
+	return true
+
+
+static func _tanks_under(world: World, tower: Entity, team: int) -> int:
+	var n: int = 0
+	var reach: float = tower.stats.get_stat(StatId.Id.ATTACK_RANGE) + tower.radius
+	for c: Entity in world.spatial_near(tower.position, reach + 40.0, World.Phase.CONTROLLER, false):
+		if c.kind == Entity.Kind.LANE_CREEP and c.alive and c.team == team and in_attack_range(tower, c):
+			n += 1
+	return n
+
+
 ## CTL-02/03: mục tiêu cho nút đánh, -1 nếu không có ai (→ đánh gió, D-46). Dùng chung cho
 ## người chơi và bot. Hòa: gần hơn, rồi id nhỏ hơn.
 static func pick_attack_target(world: World, e: Entity, mode: AttackMode) -> int:
