@@ -311,10 +311,10 @@ func escape_point(world: World, e: Entity) -> Vector2:
 ## nhẹ (BOT-11: không đứng yên).
 func rally_point(world: World, e: Entity) -> Vector2:
 	var route: LaneRoute = LaneRoute.of(world, e.bot.lane, e.team)
-	var p: float = _rally_progress(world, e, route)
+	var q: Vector2 = _safe_along(world, e, route, _rally_progress(world, e, route))
 	if (world.tick / SimClock.seconds_to_ticks(2.0)) % 2 == 1:
-		p -= 120.0
-	return _safe_along(world, e, route, p)
+		q = _safe_along(world, e, route, route.progress_of(q) - 150.0)  # lùi 150 từ điểm an toàn (BOT-11)
+	return q
 
 
 ## Điểm neo của lane (chỗ đứng chờ) — dùng để biết lính nào thuộc lane của bot.
