@@ -34,6 +34,11 @@ func set_base(stat: S, value: float) -> void:
 
 
 ## Hero: thuộc tính gốc và tăng mỗi cấp (x = STR, y = AGI, z = INT).
+## Giá trị gốc (trước modifier, thuộc tính) của một chỉ số.
+func base(stat: S) -> float:
+	return _base[stat]
+
+
 func set_attributes(primary: StatFormulas.Attribute, base: Vector3, growth: Vector3) -> void:
 	_primary = primary
 	_attr_base = base

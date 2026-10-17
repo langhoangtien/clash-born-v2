@@ -32,6 +32,8 @@ var visible_mask: int = -1
 var bush_id: int = -1
 var reveal_until_tick: int = -1
 var siege: bool = false
+## CRP-12: 0 thường, 1 lính siêu cấp, 2 siêu lính.
+var creep_tier: int = 0
 var returning: bool = false
 var return_point: Vector2 = Vector2.ZERO
 var has_origin: bool = false

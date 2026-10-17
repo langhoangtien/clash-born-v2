@@ -43,6 +43,16 @@ extends Resource
 @export var wave_melee: int
 @export var wave_ranged: int
 @export var siege_every_waves: int
+## CRP-11: cứ creep_upgrade_interval giây lính thêm creep_upgrade_step máu / sát thương.
+@export var creep_upgrade_interval: float
+@export var creep_upgrade_step: float
+## CRP-12: lính siêu cấp (trụ 3 lane đổ) và siêu lính (cả 3 trụ 3 đổ).
+@export var super_creep_hp: float
+@export var super_creep_damage: float
+@export var mega_creep_hp: float
+@export var mega_creep_damage: float
+@export var mega_extra_melee: int
+@export var mega_creep_bounty: float
 @export var creep_acquire_range: float
 @export var creep_chase_leash: float
 @export var creep_hero_aggro_range: float

@@ -523,6 +523,13 @@ Bảng ưu tiên (dòng trên thắng):
   mục tiêu mới. ADVANCE đi lần lượt qua các điểm của route (không đi tắt qua rừng), dừng ở
   mép trước của lane (DEF-07).
 - `CRP-10` Lính công thành gây `siege_structure_damage` lên công trình (CMB-04).
+- `CRP-11` (D-98) Lính mạnh dần: lính đường sinh ra sau k × `creep_upgrade_interval` giây (tính từ
+  tick 0) có máu tối đa và sát thương × (1 + k × `creep_upgrade_step`). Vàng, XP không đổi.
+- `CRP-12` (D-98) Lính siêu cấp: trụ 3 của địch trên lane L đã đổ → lính của đội phá sinh trên L
+  có thêm máu × `super_creep_hp`, sát thương × `super_creep_damage`. Cả 3 trụ 3 của địch đã đổ →
+  siêu lính ở mọi lane: máu × `mega_creep_hp`, sát thương × `mega_creep_damage` (thay cho hệ số
+  siêu cấp), thêm `mega_extra_melee` lính cận chiến mỗi đợt, vàng × `mega_creep_bounty`.
+  Nhân với hệ số CRP-11.
 
 ## STR — Công trình
 
@@ -776,7 +783,9 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | hex_move_speed | 140 | | bush_reveal_time | 1 s |
 | shop_radius | 600 | | sell_ratio / sell_full_refund_time | 0.5 / 10 s |
 | reincarnate_delay | 3 s | | match_target_minutes | 20–30 (D-97) |
-| ward_hero_hit / ward_other_hit | 3 / 1 (máu ward 6) | | | |
+| ward_hero_hit / ward_other_hit | 3 / 1 (máu ward 6) | | creep_upgrade_interval / step | 300 s / 0.08 |
+| super_creep_hp / damage | 1.5 / 1.5 | | mega_creep_hp / damage | 2.2 / 2.0 |
+| mega_extra_melee / mega_creep_bounty | 1 / 0.5 | | | |
 | first_wave_time | 15 s | | creep_front_margin | 200 |
 | fountain_regen | 0.05 / s | | fountain_damage / attack_interval | 300 / 1 s |
 | evasion_cap | 1.0 (không giới hạn) | | tower_body_radius | 52 |

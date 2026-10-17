@@ -133,6 +133,8 @@ func _draw_unit(e: Entity, at: Vector2) -> void:
 			else draw_texture_rect(tex, Rect2(at + Vector2(size.x * 0.5, -size.y * 0.85), Vector2(-size.x, size.y)), false, tint)
 	else:
 		_draw_placeholder(e, at, Color(color, 0.45) if faded(e) else color, height)
+	if e.creep_tier > 0:  # CRP-12: lính siêu cấp (vòng bạc) / siêu lính (vòng vàng)
+		draw_arc(at - Vector2(0, height * 0.32), e.radius * 1.1, 0, TAU, 24, Color(0.85, 0.85, 0.95) if e.creep_tier == 1 else Color(1, 0.8, 0.2), 3.0, true)
 	StateMarks.draw(self, e, at, height, world.tick)
 	_draw_health(e, at - Vector2(0, height + 14), color)
 
