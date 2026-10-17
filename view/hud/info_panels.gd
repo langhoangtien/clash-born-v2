@@ -58,13 +58,10 @@ func press_at(local: Vector2) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	var at: Vector2 = Vector2.INF
-	if event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed:
-		at = (event as InputEventScreenTouch).position
-	elif event is InputEventMouseButton and (event as InputEventMouseButton).pressed and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
-		at = (event as InputEventMouseButton).position
+	var at: Vector2 = Taps.press_position(event)  # D-102: click PC không bật/tắt hai lần
 	if at.is_finite():
 		press_at(at)
+	if event is InputEventScreenTouch or event is InputEventMouseButton:
 		accept_event()
 
 

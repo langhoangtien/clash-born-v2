@@ -101,6 +101,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-99 | 2026-10-17 | Bot: không ở lì trong rừng — chỉ đi rừng khi lane không còn lính phe mình (BOT-19); đẩy quyết liệt khi đang hơn 2 mạng / 2 cấp hoặc hero địch đang chết (BOT-18: PUSH trước FARM, 1 lính đỡ, máu ≥ 50%, đứng sát lính hơn, bỏ shop / mắt / rừng); tướng đánh xa canh last hit ×1.35 | Đã duyệt |
 | D-100 | 2026-10-17 | Bảng thông tin kiểu Liên Quân (bản khung, đẹp ở M8): chạm ô máu/mana → bảng thông số hero (sát thương, giáp và kháng phép kèm % giảm, tốc đánh đòn/giây, tốc chạy, tầm, máu/mana và hồi, chí mạng, né, hút máu, kháng hiệu ứng, 3 thuộc tính) + mọi kỹ năng với số theo từng cấp, cấp đang có trong [ ]; chạm tỷ số → bảng tỷ số mỗi hero: cấp, K/D/A, LH, giá trị đồ, 6 ô đồ | Đã duyệt |
 | D-101 | 2026-10-17 | Sửa lỗi không kết thúc được trận: nhà chính cách fountain chỉ ~374 nên nằm trọn trong vùng fountain bắn (600, 300 sát thương/giây) — hero gần như không đánh được nhà chính, bot coi là không an toàn. Tách `fountain_attack_radius` = 350 (vùng hồi máu giữ 600): đứng phía trước nhà chính đánh được, đứng sát fountain vẫn bị bắn | Chờ người chơi xác nhận |
+| D-102 | 2026-10-17 | Sửa lỗi click chuột không mở shop / bảng tỷ số: dự án bật emulate_touch_from_mouse nên một click đến hai sự kiện (chuột + chạm giả), nút bật/tắt bị bật rồi tắt ngay. Taps.press_position chỉ nhận một trong hai | Đã duyệt |
 
 ## Chờ chốt
 
