@@ -104,6 +104,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-102 | 2026-10-17 | Sửa lỗi click chuột không mở shop / bảng tỷ số: dự án bật emulate_touch_from_mouse nên một click đến hai sự kiện (chuột + chạm giả), nút bật/tắt bị bật rồi tắt ngay. Taps.press_position chỉ nhận một trong hai | Đã duyệt |
 | D-103 | 2026-10-17 | Đặt lại base giống Dota: fountain vào sâu góc map (guide 52,548 / đối xứng), nhà chính tiến ra theo đường chéo (guide 100,500; cách fountain ~950), 2 trụ nhà (T4) đứng hai bên phía trước nhà chính. Nhà chính ra khỏi tầm fountain nên fountain_attack_radius trở lại 600 (= vùng hồi máu), giữ tham số riêng | Đã duyệt |
 | D-104 | 2026-10-17 | Về thành kiểu Liên Quân (RCL-01..02): lệnh RECALL, kênh 8 s đứng yên rồi về fountain; hủy khi có lệnh mới, trúng sát thương, bị choáng / biến hình, chết; không hồi chiêu. Nút tròn "Về" bên trái cụm nút đồ (có vòng tiến độ), phím H; vòng xanh quanh hero khi kênh. Bot về thành khi rút lui xa nhà mà yên tĩnh (BOT-21). Sửa luôn Command.copy() thiếu item_id (phát lại lệnh mua) | Đã duyệt |
+| D-105 | 2026-10-17 | M7.6 chấp nhận thời lượng hiện tại; chỉnh thời lượng trận về sau bằng đồ tăng sát thương / tốc đánh, vàng và XP từ lính, không làm trụ yếu đi | Đã duyệt |
 
 ## Chờ chốt
 
