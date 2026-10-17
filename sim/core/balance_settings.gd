@@ -155,6 +155,8 @@ extends Resource
 
 @export_group("Fountain (STR-04)")
 @export var fountain_radius: float
+## RCL-01: thời gian kênh về thành (giây).
+@export var recall_time: float
 ## STR-04 (D-101): fountain chỉ bắn hero địch trong bán kính này (nhỏ hơn vùng hồi máu) để đánh được nhà chính.
 @export var fountain_attack_radius: float
 ## Phần máu/mana tối đa hồi mỗi giây.

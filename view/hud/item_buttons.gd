@@ -27,6 +27,12 @@ signal item_tapped(index: int)
 ## M6.8b: kéo nút để nhắm (aim dài 0..1 của tầm), thả ra ngoài nút thì dùng.
 signal item_aimed(index: int, aim: Vector2)
 signal aim_changed(index: int, aim: Vector2, active: bool)
+## D-104: nút Về thành (bên trái cụm nút đồ).
+signal recall_pressed
+
+const RECALL_RADIUS: float = 40.0
+## APP đặt: phần thời gian kênh về thành đã qua 0..1, < 0 = không kênh.
+var recall_progress: float = -1.0
 
 ## APP đặt mỗi khung, mỗi nút một món chủ động theo thứ tự ô: [chỉ số ô, tên tắt, giây hồi, số lần dùng (-1 = không), dùng được].
 var item_view: Array = []
@@ -39,6 +45,10 @@ var _aiming: bool = false
 func button_center(k: int) -> Vector2:
 	var q: Vector2 = size - MAIN_OFFSET + Vector2.from_angle(deg_to_rad(Q_ANGLE)) * Q_DISTANCE
 	return q + Vector2(-FIRST_GAP - k * SPACING, DROP)
+
+
+func recall_center() -> Vector2:
+	return Vector2(zone_rect().position.x - RECALL_RADIUS - 24.0, button_center(0).y)
 
 
 func button_at(local: Vector2) -> int:
@@ -63,7 +73,7 @@ func zone_rect() -> Rect2:
 
 
 func _has_point(point: Vector2) -> bool:
-	return _press >= 0 or button_at(point) >= 0
+	return _press >= 0 or button_at(point) >= 0 or point.distance_to(recall_center()) <= RECALL_RADIUS
 
 
 ## PC: phím 4..9 = nút thứ k; trả về chỉ số ô đồ hoặc -1.
@@ -80,6 +90,11 @@ func aim() -> Vector2:
 
 
 func press_at(pointer: int, local: Vector2) -> void:
+	if local.distance_to(recall_center()) <= RECALL_RADIUS:
+		if pointer == MOUSE_POINTER and Taps._mouse_is_touch():
+			return  # D-102: click PC đã đến dạng chạm giả
+		recall_pressed.emit()
+		return
 	var k: int = button_at(local)
 	if k >= 0 and _press < 0 and item_view[k][4]:
 		_press = k
@@ -134,6 +149,13 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _draw() -> void:
+	var rc: Vector2 = recall_center()
+	draw_circle(rc, RECALL_RADIUS, Color(0.15, 0.3, 0.55, 0.75))
+	draw_arc(rc, RECALL_RADIUS, 0, TAU, 32, Color(0.6, 0.85, 1.0, 0.9), 3.0, true)
+	if recall_progress >= 0.0:
+		draw_arc(rc, RECALL_RADIUS - 6, -PI * 0.5, -PI * 0.5 + TAU * recall_progress, 32, Color(1, 1, 1, 0.95), 6.0, true)
+	_label(ThemeDB.fallback_font, rc, "Về", 20, Color.WHITE)
+	_label(ThemeDB.fallback_font, rc + Vector2(-RECALL_RADIUS * 0.7, -RECALL_RADIUS * 0.7), "H", 13, Color(1, 1, 1, 0.45))
 	var font: Font = ThemeDB.fallback_font
 	for k: int in range(mini(item_view.size(), MAX)):
 		var c: Vector2 = button_center(k)

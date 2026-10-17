@@ -33,13 +33,15 @@ func think(world: World, e: Entity) -> void:
 	_level_up(world, e)
 	_shop(world, e)
 	b.mode = choose(world, e)
+	if e.recall_until_tick >= 0 and (b.mode == Mode.RETREAT or b.mode == Mode.RALLY and _hp(e) < world.balance.bot_recover_hp):
+		return  # RCL: đang về thành, không ra lệnh khác (lệnh mới sẽ hủy)
 	if b.mode != Mode.RECOVER and BotSkills.try_cast(world, e, _enemy_hero(world, e)):
 		return  # BOT-13
 	match b.mode:
 		Mode.ESCAPE_TOWER:
 			_go(world, e, escape_point(world, e))
 		Mode.RETREAT:
-			_go(world, e, world.map.fountain_point(e.team))
+			_retreat(world, e)
 		Mode.RECOVER:
 			_hold(world, e)
 		Mode.TRADE, Mode.KILL:
@@ -277,6 +279,19 @@ func _attack(world: World, e: Entity, t: Entity) -> void:
 	b.target_id = t.id
 	b.goal = Vector2.INF
 	world.submit(Command.attack(e.id, t.id))
+
+
+## BOT-02 + RCL (D-104): xa nhà, không thấy hero địch trong 1500 và 2 s chưa bị đánh → về thành;
+## không thì đi bộ về.
+func _retreat(world: World, e: Entity) -> void:
+	var home: Vector2 = world.map.fountain_point(e.team)
+	var foe: Entity = _enemy_hero(world, e)
+	var quiet: bool = world.tick - e.bot.last_hurt_tick > 60 and (foe == null or foe.position.distance_to(e.position) > 1500.0)
+	if e.position.distance_to(home) > 2500.0 and quiet and Rules.can_use_item(e):
+		if e.recall_until_tick < 0:
+			world.submit(Command.recall(e.id))
+		return
+	_go(world, e, home)
 
 
 ## BOT-01: điểm an toàn gần nhất phía nhà (lùi ra khỏi vùng mọi trụ đang đe dọa, rồi về nhà).

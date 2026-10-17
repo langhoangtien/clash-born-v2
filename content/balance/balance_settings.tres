@@ -50,6 +50,7 @@ respawn_per_level = 2.0
 attack_search_bonus = 100.0
 lock_break_range = 1400.0
 fountain_radius = 600.0
+recall_time = 8.0
 fountain_attack_radius = 600.0
 fountain_regen = 0.05
 fountain_damage = 300.0

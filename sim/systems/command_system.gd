@@ -28,6 +28,11 @@ func run(world: World) -> void:
 				Progression.choose_talent(world, unit, command.slot)
 			world.command_log.append(command)
 			continue
+		unit.recall_until_tick = -1  # RCL-02: lệnh mới hủy về thành
+		if command.type == Command.Type.RECALL:
+			Recall.start(world, unit)
+			world.command_log.append(command)
+			continue
 		var order: Order = _order_for(world, command, unit)
 		if unit.cast != null or unit.dash != null:
 			unit.queued_order = order  # D-59, ABL-08: đang tung chiêu / lướt, lệnh chờ tới khi xong
@@ -88,6 +93,8 @@ func _check(world: World, command: Command, unit: Entity) -> Command.Reject:
 		return Shop.buy_problem(world, unit, command.item_id)
 	if command.type == Command.Type.SELL:
 		return Shop.sell_problem(unit, command.slot)
+	if command.type == Command.Type.RECALL and (unit.kind != Entity.Kind.HERO or not Rules.can_use_item(unit)):
+		return Command.Reject.CANNOT_CAST
 	return Command.Reject.NONE
 
 

@@ -135,6 +135,10 @@ func _draw_unit(e: Entity, at: Vector2) -> void:
 		_draw_placeholder(e, at, Color(color, 0.45) if faded(e) else color, height)
 	if e.creep_tier > 0:  # CRP-12: lính siêu cấp (vòng bạc) / siêu lính (vòng vàng)
 		draw_arc(at - Vector2(0, height * 0.32), e.radius * 1.1, 0, TAU, 24, Color(0.85, 0.85, 0.95) if e.creep_tier == 1 else Color(1, 0.8, 0.2), 3.0, true)
+	if e.recall_until_tick >= 0:  # RCL: vòng kênh về thành
+		var total: float = maxf(1.0, e.recall_until_tick - e.recall_start_tick)
+		var done: float = clampf((world.tick - e.recall_start_tick) / total, 0.0, 1.0)
+		draw_arc(at, e.radius * 1.8, -PI * 0.5, -PI * 0.5 + TAU * done, 32, Color(0.5, 0.8, 1.0, 0.9), 5.0, true)
 	StateMarks.draw(self, e, at, height, world.tick)
 	_draw_health(e, at - Vector2(0, height + 14), color)
 

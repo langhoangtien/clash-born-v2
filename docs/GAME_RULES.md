@@ -407,6 +407,13 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   trình → ward. Lính đường: sau mọi mục tiêu khác. Trụ: lính → hero → ward. Quái rừng không
   đánh ward.
 
+## RCL — Về thành (D-104, kiểu Liên Quân)
+
+- `RCL-01` Lệnh RECALL: hero còn sống, không bị choáng / biến hình (như dùng đồ được) thì đứng
+  lại kênh `recall_time` giây (8 s), xong thì dịch chuyển về fountain đội mình. Không có hồi chiêu.
+- `RCL-02` Bị hủy khi: có lệnh mới bất kỳ (đi, đánh, dùng chiêu…), trúng sát thương (> 0), bị
+  choáng / biến hình, chết. Sự kiện `recall_started`, `recall_cancelled`, `recall_finished`.
+
 ## TAL — Talent
 
 - `TAL-01` Khi hero đạt cấp `talent_level` (20): chọn đúng 1 trong 3 talent, mỗi
@@ -493,7 +500,7 @@ ability_cast, ability_finished, effect_applied, effect_removed, unit_died,
 kill_credited, structure_destroyed, unit_spawned, gold_changed, level_up,
 skill_leveled, talent_chosen, dash_finished, projectile_hit, item_used,
 knockback_finished, dispelled, attack_target_changed, innate_ranked, mana_burned,
-lethal_damage, reincarnated`.
+lethal_damage, reincarnated, recall_started, recall_cancelled, recall_finished`.
 `effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `removed` (hành động RemoveEffect), `dispelled`, `owner_died`.
 Thêm sự kiện = thay đổi luật.
 
@@ -704,13 +711,15 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 - `BOT-16` (D-94) JUNGLE: không có việc ở lane (không TRADE / KILL / DEFEND_BASE / FARM / PUSH),
   máu ≥ 50% → đánh quái trại rừng phe mình gần nhất (trong 2500) còn quái, chỗ đứng an toàn.
   Không kéo lính.
-- `BOT-11` Không đứng yên ngoài RECOVER và DEAD. (D-96) Có lệnh đi mà 1 s không nhích quá 20 →
+- `BOT-11` Không đứng yên ngoài RECOVER, DEAD và lúc kênh về thành. (D-96) Có lệnh đi mà 1 s không nhích quá 20 →
   bước sang ngang 160 rồi đi tiếp; không đánh được (biến hình, tước vũ khí) mà đang có mục tiêu
   → lùi ra xa mục tiêu 300 (điểm an toàn).
 - `BOT-18` (D-99) Đang hơn: hơn hero địch ≥ `bot_ahead_kills` mạng hoặc ≥ `bot_ahead_levels` cấp, hoặc
   mọi hero địch đang chết; và máu ≥ `bot_siege_min_hp`. Khi đó: PUSH xếp trước FARM, DEF-10 nới
   còn `bot_siege_tanks` lính đỡ và máu ≥ `bot_siege_min_hp`, đứng sau lính chỉ nửa
   `bot_lane_offset`, không đi shop ẩn / cắm mắt / rừng. INV-06 dùng ngưỡng nới này cho bot đang hơn.
+- `BOT-21` (D-104) RETREAT: cách fountain > 2500, không thấy hero địch trong 1500 và 2 s chưa bị trúng
+  sát thương → về thành (RCL) thay vì đi bộ; đang kênh thì không ra lệnh khác.
 - `BOT-20` (D-101) PUSH tính cả công trình chưa thấy (công trình đứng yên, biết chỗ): đi tới chỗ đứng
   đánh, thấy rồi mới ra lệnh đánh (INV-07).
 - `BOT-19` (D-99) JUNGLE chỉ khi trên lane của bot không còn lính phe mình. Tướng đánh xa canh last
@@ -791,6 +800,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | hex_move_speed | 140 | | bush_reveal_time | 1 s |
 | shop_radius | 600 | | sell_ratio / sell_full_refund_time | 0.5 / 10 s |
 | reincarnate_delay | 3 s | | match_target_minutes | 20–30 (D-97) |
+| recall_time | 8 s | | | |
 | ward_hero_hit / ward_other_hit | 3 / 1 (máu ward 6) | | creep_upgrade_interval / step | 300 s / 0.08 |
 | super_creep_hp / damage | 1.5 / 1.5 | | mega_creep_hp / damage | 2.2 / 2.0 |
 | mega_extra_melee / mega_creep_bounty | 1 / 0.5 | | | |

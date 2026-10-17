@@ -26,6 +26,7 @@ func connect_signals() -> void:
 	talents.visible = false
 	if items != null:
 		items.item_tapped.connect(func(i: int) -> void: input.press_skill(Items.SLOT_BASE + i))  # ITM-07
+		items.recall_pressed.connect(func() -> void: world.submit(Command.recall(hero.id)))  # RCL-01
 		items.item_aimed.connect(func(i: int, aim: Vector2) -> void: input.press_skill_aimed(Items.SLOT_BASE + i, aim))
 		items.aim_changed.connect(func(i: int, aim: Vector2, active: bool) -> void: _show_aim(Items.SLOT_BASE + i, aim, active))
 
@@ -99,10 +100,15 @@ func _refresh_items() -> void:
 		var ok: bool = Abilities.problem(world, hero, a) == Abilities.Problem.NONE
 		view.append([it.index, ItemButtons.short_name(it.def.display_name), cd, it.charges if it.def.charges > 0 else -1, ok])
 	items.item_view = view
+	var total: int = SimClock.seconds_to_ticks(world.balance.recall_time)
+	items.recall_progress = clampf(float(world.tick - hero.recall_start_tick) / maxf(1.0, total), 0.0, 1.0) if hero.recall_until_tick >= 0 else -1.0
 	items.queue_redraw()
 
 
 func handle_key(key: InputEventKey, cursor: Vector2) -> bool:
+	if key.keycode == KEY_H and not key.ctrl_pressed:
+		world.submit(Command.recall(hero.id))  # RCL-01
+		return true
 	var item_key: int = [KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9].find(key.keycode)
 	if item_key >= 0 and not key.ctrl_pressed and items != null:
 		var slot: int = items.slot_for_button(item_key)  # D-89: phím 4..9 = nút đồ chủ động thứ 1..6

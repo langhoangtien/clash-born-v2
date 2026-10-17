@@ -86,3 +86,15 @@ func test_BOT_02_mid_hp_does_not_retreat_and_hash() -> void:
 	var h: PackedByteArray = w.state_hash()
 	bot.bot.trade_until_tick += 7
 	assert_true(w.state_hash() != h, "D-30: trạng thái bot trong hash")
+
+
+func test_BOT_21_recalls_when_far_and_quiet() -> void:
+	var w: World = _world()
+	var bot: Entity = _bot(w, _map.world_size() * 0.5)
+	bot.health = bot.stats.get_stat(StatId.Id.MAX_HP) * 0.2
+	var started: bool = false
+	for i: int in range(12 * 30):
+		w.step()
+		started = started or bot.recall_until_tick >= 0
+	assert_true(started, "xa nhà, yên tĩnh: về thành")
+	assert_true(bot.position.distance_to(_map.fountain_point(1)) < 700.0, "đã về fountain")

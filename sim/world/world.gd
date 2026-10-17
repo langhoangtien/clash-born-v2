@@ -86,6 +86,7 @@ func _init(seed_value: int, p_balance: BalanceSettings) -> void:
 	add_system(AttackSystem.new(), Phase.ATTACK)
 	add_system(FountainSystem.new(), Phase.ATTACK)
 	add_system(DamageSystem.new(), Phase.DAMAGE)
+	add_system(Recall.new(), Phase.DAMAGE)  # sau DamageSystem: trúng sát thương tick này thì hủy
 	add_system(TriggerSystem.new(), Phase.TRIGGER)
 	add_system(DeathSystem.new(), Phase.DEATH)
 	add_system(EconomySystem.new(), Phase.SPAWN)
@@ -210,7 +211,7 @@ func state_hash() -> PackedByteArray:
 	for e: Entity in entities:
 		ctx.update(PackedInt64Array([e.id, e.team, e.kind, e.order.type, int(e.order.finished), e.order.target_id,
 			int(e.alive), int(e.locked), int(e.returning), int(e.has_origin), e.aggro_target_id, e.aggro_until_tick, e.attack_phase, e.attack_target_id, e.attack_start_tick, e.attack_release_tick, e.next_attack_tick,
-			e.lock_target_id, e.respawn_tick, e.gold, e.last_hits, e.skill_points, e.attribute_bonus_count, e.talent_slot, e.kills, e.deaths, e.assists, e.last_attack_target_id, e.visible_mask, e.bush_id, e.reveal_until_tick, e.camp_index, e.reincarnate_tick, e.expire_tick, e.creep_tier]).to_byte_array())
+			e.lock_target_id, e.respawn_tick, e.gold, e.last_hits, e.skill_points, e.attribute_bonus_count, e.talent_slot, e.kills, e.deaths, e.assists, e.last_attack_target_id, e.visible_mask, e.bush_id, e.reveal_until_tick, e.camp_index, e.reincarnate_tick, e.expire_tick, e.creep_tier, e.recall_until_tick, e.recall_start_tick]).to_byte_array())
 		ctx.update(PackedFloat64Array([e.position.x, e.position.y, e.radius, e.health, e.mana,
 			e.order.point.x, e.order.point.y, e.order.direction.x, e.order.direction.y,
 			e.chase_origin.x, e.chase_origin.y, e.xp]).to_byte_array())

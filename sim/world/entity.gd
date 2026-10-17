@@ -45,6 +45,9 @@ var lock_target_id: int = -1
 var respawn_tick: int = -1
 ## DTH-02: đang nằm chờ tái sinh tới tick này (-1 = không).
 var reincarnate_tick: int = -1
+## RCL: đang kênh về thành tới tick này (-1 = không).
+var recall_until_tick: int = -1
+var recall_start_tick: int = -1
 ## BOT: hero do bot điều khiển (null = người chơi / không phải hero).
 var bot: BotState
 ## Hero: dữ liệu gốc (BOT-14 thứ tự nâng điểm, lên đồ).

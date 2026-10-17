@@ -20,7 +20,7 @@ const EVENTS: PackedStringArray = [
 	"kill_credited", "structure_destroyed", "unit_spawned", "gold_changed", "level_up",
 	"skill_leveled", "talent_chosen", "dash_finished", "projectile_hit", "item_used",
 	"knockback_finished", "dispelled", "attack_target_changed", "innate_ranked", "mana_burned",
-	"lethal_damage", "reincarnated",
+	"lethal_damage", "reincarnated", "recall_started", "recall_cancelled", "recall_finished",
 ]
 
 ## EFF-09: dữ liệu sự kiện dùng được trong biểu thức (`event.damage`…).
