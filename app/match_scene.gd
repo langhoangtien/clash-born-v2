@@ -94,6 +94,12 @@ func _ready() -> void:
 	shop.hero = hero
 	shop.buy_pressed.connect(func(id: StringName) -> void: world.submit(Command.buy(hero.id, id)))  # SHOP-01
 	shop.sell_pressed.connect(func(i: int) -> void: world.submit(Command.sell(hero.id, i)))  # SHOP-05
+	var info: InfoPanels = InfoPanels.new()
+	info.name = "InfoPanels"
+	$Hud.add_child(info)
+	info.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	info.world = world
+	info.hero = hero
 	skills.connect_signals()
 	match_hud.world = world
 	buff_bar.world = world
