@@ -158,7 +158,7 @@ func test_INV_01_thirty_random_walkers_never_enter_obstacles() -> void:
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = 2026
 	var nav: MapNavigation = w.navigation(HERO_R)
-	var center: Vector2 = _map.fountain_point(0) + Vector2(1200, -1200)
+	var center: Vector2 = Vector2(1488, 6832)  # vùng base xanh (cố định, không theo vị trí fountain)
 	for i: int in range(30):
 		_unit(w, nav.nearest_clear(center + Vector2(rng.randf_range(-600, 600), rng.randf_range(-600, 600))), rng.randf_range(250, 350))
 	var worst_overlap: float = 0.0

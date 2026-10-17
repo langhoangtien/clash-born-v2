@@ -545,7 +545,7 @@ Bảng ưu tiên (dòng trên thắng):
   `fountain_regen` × máu/mana tối đa mỗi giây cho đơn vị phe mình (trừ công trình) trong
   `fountain_radius` quanh điểm fountain; cứ `fountain_attack_interval` giây gây
   `fountain_damage` sát thương thuần lên **mỗi** hero địch còn sống trong `fountain_attack_radius`
-  (D-101: 350, nhỏ hơn vùng hồi máu, để hero đứng phía trước nhà chính đánh được nó; sự kiện
+  (D-101, D-103: 600; nhà chính đặt ngoài tầm này nên đánh được từ mọi phía; sự kiện
   `fountain_shot`).
 - `STR-05` Nhà chính bị phá → đội đó thua: trận ghi đội thắng, phát `match_ended`; từ đó
   `World.step()` không chạy nữa (tick đứng yên).

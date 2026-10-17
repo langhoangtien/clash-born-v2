@@ -14,8 +14,8 @@
     {"team": 0, "polygon": [[36,410],[95,410],[150,445],[168,470],[176,500],[176,564],[36,564]]},
     {"team": 1, "polygon": [[407,36],[407,140],[477,210],[564,210],[564,36]]}
   ],
-  "fountains": [[54,538], [546,62]],
-  "cores": [[64.3,517.0], [530.7,87.0]],
+  "fountains": [[52,548], [548,52]],
+  "cores": [[100,500], [500,100]],
   "lane_spawns": {
     "0": {"TOP": [64,454], "MID": [112,468], "BOT": [140,524]},
     "1": {"TOP": [470,84], "MID": [472,140], "BOT": [534,165]}
@@ -35,8 +35,8 @@
     {"id": "blue_bot_t1", "team": 0, "lane": "BOT", "tier": 1, "pos": [495,511]},
     {"id": "blue_bot_t2", "team": 0, "lane": "BOT", "tier": 2, "pos": [286,525]},
     {"id": "blue_bot_t3", "team": 0, "lane": "BOT", "tier": 3, "pos": [161,520]},
-    {"id": "blue_base_guard_left", "team": 0, "lane": "BASE", "tier": 4, "pos": [73,490]},
-    {"id": "blue_base_guard_right", "team": 0, "lane": "BASE", "tier": 4, "pos": [90,505]},
+    {"id": "blue_base_guard_left", "team": 0, "lane": "BASE", "tier": 4, "pos": [102,476]},
+    {"id": "blue_base_guard_right", "team": 0, "lane": "BASE", "tier": 4, "pos": [124,498]},
     {"id": "red_top_t1", "team": 1, "lane": "TOP", "tier": 1, "pos": [115,78]},
     {"id": "red_top_t2", "team": 1, "lane": "TOP", "tier": 2, "pos": [322,88]},
     {"id": "red_top_t3", "team": 1, "lane": "TOP", "tier": 3, "pos": [434,90]},
@@ -80,8 +80,8 @@
     {"pos": [439.0, 489.0], "r": 8, "_note": "D-44: cắt dải rừng dài phía trên lane bot"},
     {"pos": [439.0, 498.5], "r": 8, "_note": "D-44"},
     {"pos": [439.0, 506.5], "r": 8, "_note": "D-44"},
-    {"pos": [54,538], "r": 20}, {"pos": [546,62], "r": 20},
-    {"pos": [64.3,517.0], "r": 12}, {"pos": [530.7,87.0], "r": 12}
+    {"pos": [52,548], "r": 20}, {"pos": [548,52], "r": 20},
+    {"pos": [100,500], "r": 12}, {"pos": [500,100], "r": 12}
   ],
   "_bushes_note": "M5.1b (D-72): bụi cỏ nửa xanh; build_map.py thêm bản xoay 180°. pos = tâm, rx/ry = bán trục, angle = độ.",
   "bushes": [

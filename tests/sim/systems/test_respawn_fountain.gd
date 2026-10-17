@@ -160,4 +160,4 @@ func test_D_101_core_can_be_hit_from_the_front_without_fountain_fire() -> void:
 		w.step()
 	assert_true(e.health >= hp - 1.0, "đứng trước nhà chính (xa fountain hơn 350): không bị fountain bắn")
 	assert_true(front.distance_to(f) > w.balance.fountain_attack_radius)
-	assert_true(front.distance_to(f) < w.balance.fountain_radius, "vẫn trong vùng fountain cũ (600)")
+	assert_true(core.distance_to(f) > w.balance.fountain_attack_radius + 80.0 + 150.0, "D-103: nhà chính đặt xa fountain, đánh được từ mọi phía")

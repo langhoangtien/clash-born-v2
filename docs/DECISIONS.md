@@ -102,6 +102,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-100 | 2026-10-17 | Bảng thông tin kiểu Liên Quân (bản khung, đẹp ở M8): chạm ô máu/mana → bảng thông số hero (sát thương, giáp và kháng phép kèm % giảm, tốc đánh đòn/giây, tốc chạy, tầm, máu/mana và hồi, chí mạng, né, hút máu, kháng hiệu ứng, 3 thuộc tính) + mọi kỹ năng với số theo từng cấp, cấp đang có trong [ ]; chạm tỷ số → bảng tỷ số mỗi hero: cấp, K/D/A, LH, giá trị đồ, 6 ô đồ | Đã duyệt |
 | D-101 | 2026-10-17 | Sửa lỗi không kết thúc được trận: nhà chính cách fountain chỉ ~374 nên nằm trọn trong vùng fountain bắn (600, 300 sát thương/giây) — hero gần như không đánh được nhà chính, bot coi là không an toàn. Tách `fountain_attack_radius` = 350 (vùng hồi máu giữ 600): đứng phía trước nhà chính đánh được, đứng sát fountain vẫn bị bắn | Chờ người chơi xác nhận |
 | D-102 | 2026-10-17 | Sửa lỗi click chuột không mở shop / bảng tỷ số: dự án bật emulate_touch_from_mouse nên một click đến hai sự kiện (chuột + chạm giả), nút bật/tắt bị bật rồi tắt ngay. Taps.press_position chỉ nhận một trong hai | Đã duyệt |
+| D-103 | 2026-10-17 | Đặt lại base giống Dota: fountain vào sâu góc map (guide 52,548 / đối xứng), nhà chính tiến ra theo đường chéo (guide 100,500; cách fountain ~950), 2 trụ nhà (T4) đứng hai bên phía trước nhà chính. Nhà chính ra khỏi tầm fountain nên fountain_attack_radius trở lại 600 (= vùng hồi máu), giữ tham số riêng | Đã duyệt |
 
 ## Chờ chốt
 
