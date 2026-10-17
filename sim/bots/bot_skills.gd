@@ -44,7 +44,7 @@ static func _wants(world: World, e: Entity, a: AbilityInstance, usage: U, foe: E
 			return foe != null and _in_reach(e, a, foe) and mode != Mode.RETREAT \
 				and e.mana >= e.stats.get_stat(StatId.Id.MAX_MANA) * 0.4
 		U.ENGAGE:
-			return foe != null and fighting and Rules.is_safe_for_hero(world, e, foe.position)  # BOT-15
+			return foe != null and fighting and BotController.safe(world, e, foe.position)  # BOT-15
 		U.ESCAPE:
 			return mode == Mode.RETREAT or mode == Mode.ESCAPE_TOWER or _hp(e) < 0.3  # BOT-15: bất kể an toàn
 		U.SELF_DEFENSE:
@@ -91,7 +91,7 @@ static func check(world: World, e: Entity, a: AbilityInstance, name: StringName,
 		&"target_hp_below_50":
 			return foe != null and _hp(foe) < 0.5
 		&"destination_safe":
-			return foe != null and Rules.is_safe_for_hero(world, e, foe.position)
+			return foe != null and BotController.safe(world, e, foe.position)
 		&"before_engage", &"preparing_engage":
 			return foe != null and (e.bot.mode == Mode.KILL or e.bot.mode == Mode.TRADE) \
 				and e.position.distance_to(foe.position) > e.stats.get_stat(StatId.Id.ATTACK_RANGE) + e.radius + foe.radius

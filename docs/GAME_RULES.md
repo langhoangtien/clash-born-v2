@@ -706,11 +706,16 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 - `BOT-11` Không đứng yên ngoài RECOVER và DEAD. (D-96) Có lệnh đi mà 1 s không nhích quá 20 →
   bước sang ngang 160 rồi đi tiếp; không đánh được (biến hình, tước vũ khí) mà đang có mục tiêu
   → lùi ra xa mục tiêu 300 (điểm an toàn).
+- `BOT-18` (D-99) Đang hơn: hơn hero địch ≥ `bot_ahead_kills` mạng hoặc ≥ `bot_ahead_levels` cấp, hoặc
+  mọi hero địch đang chết; và máu ≥ `bot_siege_min_hp`. Khi đó: PUSH xếp trước FARM, DEF-10 nới
+  còn `bot_siege_tanks` lính đỡ và máu ≥ `bot_siege_min_hp`, đứng sau lính chỉ nửa
+  `bot_lane_offset`, không đi shop ẩn / cắm mắt / rừng. INV-06 dùng ngưỡng nới này cho bot đang hơn.
+- `BOT-19` (D-99) JUNGLE chỉ khi trên lane của bot không còn lính phe mình. Tướng đánh xa canh last
+  hit thêm ×1.35 (bù thời gian đạn bay).
 - `BOT-17` (D-96) Chủ động cấu: hero địch trong tầm đánh + 250, máu bot ≥ 50% và hơn máu địch
   (theo phần trăm) `AHEAD` (Dễ 0.30 / Thường 0.15 / Khó 0.05) → mở cửa sổ TRADE như bị đánh.
   KILL thêm điều kiện: máu địch thấp hơn máu bot 2 × AHEAD. Thứ tự: TRADE do bị đánh → KILL →
-  chủ động cấu. JUNGLE không chọn khi đợt lính phe mình đang áp sát công trình kế tiếp của địch
-  (trong 1500) và chỉ đi trại trong 1600; PUSH không giới hạn khoảng cách.
+  chủ động cấu. JUNGLE chỉ đi trại trong 1600 (điều kiện lane: BOT-19); PUSH không giới hạn khoảng cách.
 - `BOT-12` Bot thấy đúng những gì đội nó thấy (VIS). Không "nhìn xuyên" tàng hình.
 - `BOT-13` Bot dùng skill và đồ chủ động theo **loại** khai báo trong dữ liệu (`bot_usage`: DISABLE,
   POKE, FINISH, ENGAGE, ESCAPE, SELF_DEFENSE, TEAMFIGHT) cộng điều kiện dữ liệu của

@@ -174,3 +174,48 @@ func test_BOT_09_rallies_behind_own_creeps() -> void:
 	var route: LaneRoute = LaneRoute.of(w, "MID", 1)
 	var gap: float = route.progress_of(front.position) - route.progress_of(bot.position)
 	assert_true(gap > 150.0 and gap < 600.0, "đứng sau lính phe mình khoảng bot_lane_offset (gap %d)" % gap)
+
+
+func test_D_99_no_jungle_while_own_wave_on_lane() -> void:
+	var w: World = _world(true)
+	_steps(w, SimClock.seconds_to_ticks(w.balance.jungle_first_spawn) + 2)
+	var camp: CampState = null
+	for c: CampState in w.camps:
+		if _map.camp_sides[c.index] == 1 and not c.unit_ids.is_empty():
+			if camp == null or c.center.distance_to(_mid()) < camp.center.distance_to(_mid()):
+				camp = c
+	var own: Entity = _creep(w, 1, _mid() + _toward_red() * 600.0)
+	own.stats.set_base(StatId.Id.MOVEMENT_SPEED, 0.0)
+	own.stats.recompute()
+	var bot: Entity = _bot(w, camp.center + (_mid() - camp.center).normalized() * 500.0)
+	var jungled: bool = false
+	for i: int in range(90):
+		w.step()
+		jungled = jungled or bot.bot.mode == Mode.JUNGLE
+	assert_false(jungled, "còn đợt lính phe mình trên lane thì ra lane, không đi rừng")
+
+
+func test_BOT_18_ahead_pushes_with_one_tank() -> void:
+	var w: World = _world()
+	var tower: Entity = null
+	for e: Entity in w.entities:
+		if e.structure_id == &"blue_mid_t1":
+			tower = e
+	var c: Entity = MatchSetup.spawn_creep(w, _lib, &"creep_melee", 1, "MID", tower.position + _toward_red() * 150.0)
+	c.stats.set_base(StatId.Id.MAX_HP, 100000.0)
+	c.stats.recompute()
+	c.health = 100000.0
+	var bot: Entity = _bot(w, tower.position + _toward_red() * 800.0)
+	var foe: Entity = _hero(w, 0, _map.fountain_point(0), &"brakk")
+	bot.kills = 2
+	var pushed: bool = false
+	for i: int in range(60):
+		w.step()
+		pushed = pushed or bot.bot.mode == Mode.PUSH
+	assert_true(bot.bot.ahead, "hơn 2 mạng")
+	assert_true(pushed, "đang hơn: 1 lính đỡ là đánh trụ")
+	bot.kills = 0
+	foe.alive = false
+	foe.respawn_tick = w.tick + 900
+	w.step()
+	assert_true(BotController.new().is_ahead(w, bot), "hero địch đang chết: cũng là đang hơn")

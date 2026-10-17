@@ -29,6 +29,7 @@ func run(world: World) -> void:
 func think(world: World, e: Entity) -> void:
 	var b: BotState = e.bot
 	var target: Entity = null
+	b.ahead = is_ahead(world, e)
 	_level_up(world, e)
 	_shop(world, e)
 	b.mode = choose(world, e)
@@ -70,7 +71,7 @@ func think(world: World, e: Entity) -> void:
 func choose(world: World, e: Entity) -> Mode:
 	var b: BotState = e.bot
 	var hp: float = _hp(e)
-	if _targeted_by_structure(world, e) or not Rules.is_safe_for_hero(world, e, e.position):
+	if _targeted_by_structure(world, e) or not safe(world, e, e.position):
 		return Mode.ESCAPE_TOWER  # BOT-01, BOT-10: lỡ đứng chỗ không an toàn thì lùi ra
 	var home: Vector2 = world.map.fountain_point(e.team)
 	var at_home: bool = e.position.distance_to(home) <= world.balance.fountain_radius * 0.6
@@ -92,16 +93,20 @@ func choose(world: World, e: Entity) -> Mode:
 			return Mode.TRADE  # D-96: chủ động cấu
 	if _base_invader(world, e) != null:
 		return Mode.DEFEND_BASE  # BOT-06
+	if b.ahead and push_ready(world, e):
+		return Mode.PUSH  # BOT-18: đang hơn thì đẩy trước khi farm
 	if farm_target(world, e) != null:
 		return Mode.FARM  # BOT-07
 	if push_ready(world, e):
 		return Mode.PUSH  # BOT-08
+	if b.ahead:
+		return Mode.RALLY  # BOT-18: đang hơn thì ôm đợt lính, không đi shop / cắm mắt / rừng
 	if _wants_secret_shop(world, e):
 		return Mode.SHOP  # D-94: đủ vàng mua món shop ẩn kế tiếp, shop gần và an toàn
 	if ward_spot(world, e).is_finite():
 		return Mode.WARD  # D-94: cắm mắt vàng ở điểm định sẵn
 	if hp >= 0.5 and not _own_wave(world, e) and jungle_target(world, e) != null:
-		return Mode.JUNGLE  # D-94: lane trống (không lính địch, không đợt lính phe mình để theo) thì farm rừng
+		return Mode.JUNGLE  # D-94 / D-99: lane thật sự trống (không còn lính phe mình trên lane) thì farm rừng
 	return Mode.RALLY  # BOT-09
 
 
@@ -140,14 +145,21 @@ func _may_chase(world: World, e: Entity, foe: Entity) -> bool:
 	return foe.position.distance_to(origin) <= world.balance.bot_chase_leash
 
 
+## BOT-10 / BOT-18: an toàn theo DEF-10; đang hơn (siege) thì nới ngưỡng lao trụ.
+static func safe(world: World, e: Entity, at: Vector2) -> bool:
+	if e.bot != null and e.bot.ahead:
+		return Rules.is_safe_for_hero(world, e, at, world.balance.bot_siege_tanks, world.balance.bot_siege_min_hp)
+	return Rules.is_safe_for_hero(world, e, at)
+
+
 ## BOT-10: chỗ đứng `to` an toàn và đường thẳng tới đó không cắt qua vùng nguy hiểm.
 func _reach_safe(world: World, e: Entity, to: Vector2) -> bool:
-	if not Rules.is_safe_for_hero(world, e, to):
+	if not safe(world, e, to):
 		return false
 	var d: float = e.position.distance_to(to)
 	var steps: int = int(d / 200.0)
 	for i: int in range(1, steps + 1):
-		if not Rules.is_safe_for_hero(world, e, e.position.lerp(to, float(i) / (steps + 1))):
+		if not safe(world, e, e.position.lerp(to, float(i) / (steps + 1))):
 			return false
 	return true
 
@@ -197,9 +209,10 @@ func _hit_damage(world: World, e: Entity) -> float:
 		armor, 0.0, 1.0, world.balance)
 
 
-## D-94: độ chính xác last hit theo độ khó (Khó canh sát nút hơn).
+## D-94: độ chính xác last hit theo độ khó (Khó canh sát nút hơn); tướng đánh xa bù thời gian
+## đạn bay (D-99).
 func _last_hit_margin(e: Entity) -> float:
-	return [0.8, 1.0, 1.15][e.bot.difficulty]
+	return [0.8, 1.0, 1.15][e.bot.difficulty] * (1.35 if e.projectile_speed > 0.0 else 1.0)
 
 
 ## BOT-08: công trình kế tiếp của lane mở khóa, đứng đánh được an toàn.
@@ -208,15 +221,29 @@ func push_ready(world: World, e: Entity) -> bool:
 	return t != null and not t.locked and Rules.is_attackable(e, t) and _reach_safe(world, e, _stand_point(e, t))
 
 
-## Đợt lính phe mình đang áp sát công trình kế tiếp của địch (trong 1500) — theo đẩy, không đi rừng.
+## D-99: còn lính phe mình trên lane của bot (đợt lính để theo) — khi đó không đi rừng.
 func _own_wave(world: World, e: Entity) -> bool:
-	var t: Entity = Objectives.next_for_lane(world, e.team, e.bot.lane)
-	if t == null:
-		return false
-	for c: Entity in world.spatial_near(t.position, 1500.0, World.Phase.CONTROLLER, false):
-		if c.kind == Entity.Kind.LANE_CREEP and c.alive and c.team == e.team:
+	for c: Entity in world.entities:
+		if c.kind == Entity.Kind.LANE_CREEP and c.alive and c.team == e.team and c.lane == e.bot.lane:
 			return true
 	return false
+
+
+## BOT-18: đang hơn — hơn ≥ bot_ahead_kills mạng hoặc ≥ bot_ahead_levels cấp so với hero địch
+## mạnh nhất, hoặc mọi hero địch đang chết chờ hồi sinh.
+func is_ahead(world: World, e: Entity) -> bool:
+	var foes: int = 0
+	var alive: int = 0
+	var lead: bool = false
+	for o: Entity in world.entities:
+		if o.kind != Entity.Kind.HERO or o.team == e.team or o.team > 1:
+			continue
+		foes += 1
+		if o.alive:
+			alive += 1
+		if e.kills - o.kills >= world.balance.bot_ahead_kills or e.stats.level() - o.stats.level() >= world.balance.bot_ahead_levels:
+			lead = true
+	return foes > 0 and (alive == 0 or lead) and _hp(e) >= world.balance.bot_siege_min_hp
 
 
 ## D-94: lane trống → quái ở trại rừng phe mình gần nhất còn quái, chỗ đánh an toàn.
@@ -257,7 +284,7 @@ func escape_point(world: World, e: Entity) -> Vector2:
 	var step: Vector2 = (home - e.position).normalized()
 	for d: float in [300.0, 500.0, 700.0, 900.0, 1200.0, 1600.0]:
 		var p: Vector2 = nav.nearest_clear(e.position + step * d)
-		if Rules.is_safe_for_hero(world, e, p) and not _threatened_by_targeting(world, e, p):
+		if safe(world, e, p) and not _threatened_by_targeting(world, e, p):
 			return p
 	return home
 
@@ -285,7 +312,7 @@ func _rally_progress(world: World, e: Entity, route: LaneRoute) -> float:
 		if c.kind == Entity.Kind.LANE_CREEP and c.alive and c.team == e.team and c.lane == e.bot.lane:
 			front = maxf(front, route.progress_of(c.position))
 	if front >= 0.0:
-		return maxf(0.0, front - world.balance.bot_lane_offset)
+		return maxf(0.0, front - (world.balance.bot_lane_offset * 0.5 if e.bot.ahead else world.balance.bot_lane_offset))
 	var next: Entity = Objectives.next_for_lane(world, e.team, e.bot.lane)
 	return route.progress_of(next.position) if next != null else route.length()
 
@@ -295,7 +322,7 @@ func _safe_along(world: World, e: Entity, route: LaneRoute, p: float) -> Vector2
 	var nav: MapNavigation = world.navigation(e.radius)
 	while p > 0.0:
 		var q: Vector2 = nav.nearest_clear(route.point_at(p))
-		if Rules.is_safe_for_hero(world, e, q):
+		if safe(world, e, q):
 			return q
 		p -= 100.0
 	return nav.nearest_clear(route.point_at(0.0))
@@ -307,7 +334,7 @@ func _safe_back(world: World, e: Entity, p: Vector2) -> Vector2:
 	var nav: MapNavigation = world.navigation(e.radius)
 	var q: Vector2 = p
 	for i: int in range(12):
-		if Rules.is_safe_for_hero(world, e, q):
+		if safe(world, e, q):
 			return q
 		q = nav.nearest_clear(q + (home - q).normalized() * 200.0)
 	return home

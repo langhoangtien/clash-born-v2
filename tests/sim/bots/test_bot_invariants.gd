@@ -44,8 +44,8 @@ static func run_checks(w: World, minutes: float) -> String:
 				stuck.erase(e.id)
 				continue
 			var exempt: bool = e.bot.mode == Mode.ESCAPE_TOWER or e.bot.mode == Mode.RETREAT
-			unsafe[e.id] = 0 if exempt or Rules.is_safe_for_hero(w, e, e.position) else unsafe.get(e.id, 0) + 1
-			stuck[e.id] = 0 if Rules.is_safe_for_hero(w, e, e.position) else stuck.get(e.id, 0) + 1
+			unsafe[e.id] = 0 if exempt or BotController.safe(w, e, e.position) else unsafe.get(e.id, 0) + 1
+			stuck[e.id] = 0 if BotController.safe(w, e, e.position) else stuck.get(e.id, 0) + 1
 			if stuck[e.id] > 300:
 				return "%s bot đội %d kẹt ở chỗ không an toàn > 10 s (mode %s)" % [MatchHud.clock_text(w.tick), e.team, Mode.keys()[e.bot.mode]]
 			if unsafe[e.id] > 30:

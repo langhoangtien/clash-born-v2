@@ -92,3 +92,7 @@ bot_kill_range = 900.0
 bot_chase_leash = 1200.0
 bot_trade_window = 3.0
 bot_lane_offset = 350.0
+bot_ahead_kills = 2
+bot_ahead_levels = 2
+bot_siege_tanks = 1
+bot_siege_min_hp = 0.5

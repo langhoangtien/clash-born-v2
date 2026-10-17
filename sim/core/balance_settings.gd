@@ -147,6 +147,11 @@ extends Resource
 @export var bot_trade_window: float
 ## BOT-09: đứng sau hàng lính phe mình chừng này.
 @export var bot_lane_offset: float
+## BOT-18: đang hơn khi hơn chừng này mạng hoặc cấp; khi đó lao trụ chỉ cần bot_siege_tanks lính đỡ và máu ≥ bot_siege_min_hp.
+@export var bot_ahead_kills: int
+@export var bot_ahead_levels: int
+@export var bot_siege_tanks: int
+@export var bot_siege_min_hp: float
 
 @export_group("Fountain (STR-04)")
 @export var fountain_radius: float

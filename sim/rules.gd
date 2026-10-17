@@ -115,15 +115,17 @@ static func in_enemy_fountain(world: World, team: int, at: Vector2, radius: floa
 ## DEF-10: điểm `at` an toàn cho hero `x`: ngoài vùng nguy hiểm mọi trụ địch và fountain địch,
 ## hoặc trụ đó đang bắn đơn vị khác, có ≥ tower_tank_creeps lính phe x trong tầm nó và máu x
 ## ≥ dive_min_hp. Trụ đang nhắm x thì không bao giờ an toàn trong vùng của nó.
-static func is_safe_for_hero(world: World, x: Entity, at: Vector2) -> bool:
+static func is_safe_for_hero(world: World, x: Entity, at: Vector2, tanks: int = -1, min_hp: float = -1.0) -> bool:
 	if in_enemy_fountain(world, x.team, at, x.radius):
 		return false
+	var need_tanks: int = tanks if tanks >= 0 else world.balance.tower_tank_creeps
+	var need_hp: float = min_hp if min_hp >= 0.0 else world.balance.dive_min_hp
 	var hp: float = x.health / maxf(1.0, x.stats.get_stat(StatId.Id.MAX_HP))
 	for t: Entity in tower_threat_at(world, x.team, at, x.radius):
 		var shooting: int = t.order.target_id if t.order.type == Order.Type.ATTACK and not t.order.finished else -1
-		if shooting < 0 or shooting == x.id or hp < world.balance.dive_min_hp:
+		if shooting < 0 or shooting == x.id or hp < need_hp:
 			return false
-		if _tanks_under(world, t, x.team) < world.balance.tower_tank_creeps:
+		if _tanks_under(world, t, x.team) < need_tanks:
 			return false
 	return true
 
