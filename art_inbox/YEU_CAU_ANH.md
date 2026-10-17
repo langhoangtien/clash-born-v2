@@ -189,6 +189,20 @@ Danh sách đánh dấu:
 
 ## Đợt 4 — Icon
 
+> **Cập nhật 2026-10-17 (người dùng đồng ý):** Đợt 4 được làm **ngay**, không chờ Đợt 3
+> xong (icon không phụ thuộc ảnh thân hero). Thứ tự trong đợt này:
+>
+> 1. **4a — Icon mẫu (neo phong cách icon):** chỉ làm 4 file `skill_brakk_q`, `skill_myra_r`,
+>    `state_stunned`, `item_frost_orb`. Xong thì **DỪNG** chờ duyệt. Sau khi duyệt, mọi icon
+>    còn lại đính kèm thêm 4 icon mẫu này làm tham chiếu để cùng một bộ.
+> 2. **4b — 14 icon skill còn lại**, rồi **4c — icon trạng thái**. Mỗi phần xong thì dừng báo.
+> 3. **Icon trang bị: CHƯA LÀM** (danh sách đồ sẽ đổi khi thêm ghép đồ). Chỉ làm khi bảng
+>    trang bị trong file này được cập nhật lại và ghi "đã chốt".
+>
+> Phân biệt loại bằng **màu viền**: skill thường viền theo màu bảng dưới; **nội tại** viền
+> bạc mảnh hơn; **ultimate (R)** viền đôi vàng kim dày hơn. Mỗi icon chỉ **một** hình chính,
+> to, chiếm ~70% vòng tròn, không chi tiết vụn.
+
 Icon skill và đồ: **256 × 256**, hình tròn, viền phát sáng theo màu ghi chú, nền tối
 bên trong vòng tròn, ngoài vòng tròn trong suốt, nhìn rõ khi thu nhỏ còn 64 px.
 Câu lệnh thêm: `round game skill icon, glowing rim, dark inner background, high
@@ -228,6 +242,8 @@ contrast, readable at small size`.
 | [ ] | `04_icons/item_hex_scythe.png` | Ornate scythe with a frog-shaped gem |
 | [ ] | `04_icons/item_cleansing_charm.png` | Glowing white charm amulet |
 | [ ] | `04_icons/item_stun_hammer.png` | Heavy war hammer with stun stars |
+| [ ] | `04_icons/item_observer_ward.png` | Golden eye on a small wooden stake |
+| [ ] | `04_icons/item_sentry_ward.png` | Blue eye on a small wooden stake with a faint sight ring |
 
 ### Trạng thái (12) — 64 × 64, biểu tượng đơn giản, nét đậm, nền trong suốt
 
@@ -245,6 +261,7 @@ contrast, readable at small size`.
 | [ ] | `04_icons/state_hexed.png` | Green frog head |
 | [ ] | `04_icons/state_shield.png` | White bubble shield |
 | [ ] | `04_icons/state_burning.png` | Small orange flame |
+| [ ] | `04_icons/state_recall.png` | Blue swirl portal with a small house shape (nút Về thành, 256 × 256 như icon skill, viền xanh dương) |
 
 ---
 
