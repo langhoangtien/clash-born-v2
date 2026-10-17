@@ -16,7 +16,7 @@ func run(world: World) -> void:
 				continue
 			if e.team == team:
 				_heal(world, e)
-			elif fires and e.kind == Entity.Kind.HERO and e.team != 2:
+			elif fires and e.kind == Entity.Kind.HERO and e.team != 2 and e.position.distance_to(spot) <= world.balance.fountain_attack_radius:
 				_shoot(world, e)
 
 

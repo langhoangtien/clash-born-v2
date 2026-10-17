@@ -146,3 +146,18 @@ func test_STR_04_fountain_kills_and_hero_respawns_home() -> void:
 		w.step()
 	assert_true(enemy.alive)
 	assert_eq(enemy.position, _map.fountain_point(0))
+
+
+func test_D_101_core_can_be_hit_from_the_front_without_fountain_fire() -> void:
+	var w: World = _world()
+	var core: Vector2 = _map.core_point(1)
+	var f: Vector2 = _map.fountain_point(1)
+	var front: Vector2 = core + (core - f).normalized() * 200.0
+	var e: Entity = _brakk(w, 0, front)
+	e.position = front
+	var hp: float = e.health
+	for t: int in range(40):
+		w.step()
+	assert_true(e.health >= hp - 1.0, "đứng trước nhà chính (xa fountain hơn 350): không bị fountain bắn")
+	assert_true(front.distance_to(f) > w.balance.fountain_attack_radius)
+	assert_true(front.distance_to(f) < w.balance.fountain_radius, "vẫn trong vùng fountain cũ (600)")

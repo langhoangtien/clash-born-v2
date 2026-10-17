@@ -58,7 +58,9 @@ func think(world: World, e: Entity) -> void:
 			_ward(world, e)
 		_:
 			_go(world, e, rally_point(world, e))
-	if target != null and Rules.can_attack(e):
+	if target != null and Rules.is_structure(target) and not Rules.is_attackable(e, target):
+		_go(world, e, _stand_point(e, target))  # BOT-08: chưa thấy công trình thì đi tới chỗ đứng đánh
+	elif target != null and Rules.can_attack(e):
 		_attack(world, e, target)
 	elif target != null:  # bị biến hình / tước vũ khí: lùi ra xa mục tiêu, không đứng yên (BOT-11)
 		var away: Vector2 = (e.position - target.position).normalized() if e.position != target.position else Vector2.RIGHT
@@ -218,7 +220,7 @@ func _last_hit_margin(e: Entity) -> float:
 ## BOT-08: công trình kế tiếp của lane mở khóa, đứng đánh được an toàn.
 func push_ready(world: World, e: Entity) -> bool:
 	var t: Entity = Objectives.next_for_lane(world, e.team, e.bot.lane)
-	return t != null and not t.locked and Rules.is_attackable(e, t) and _reach_safe(world, e, _stand_point(e, t))
+	return t != null and t.alive and not t.locked and _reach_safe(world, e, _stand_point(e, t))  # công trình đứng yên: biết chỗ dù chưa thấy
 
 
 ## D-99: còn lính phe mình trên lane của bot (đợt lính để theo) — khi đó không đi rừng.

@@ -214,4 +214,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M7.3 | Xong | 2026-10-17 | 523 test xanh (+10); BOT-04..09, farm rừng (D-94), BOT-10 cả đường đi tới chỗ đứng, test 3 phút bot đấu bot kiểm INV-06 / BOT-11 |
 | M7.4 | Xong | 2026-10-17 | 533 test xanh (+10); bot dùng chiêu / đồ theo bot_usage, nâng điểm, talent, mua đồ, shop ẩn, cắm mắt vàng, độ khó; menu chọn bot (D-95). **Chơi thử 1v1 với bot** |
 | M7.5 | Xong | 2026-10-17 | 534 test + 3 soak xanh; 48 trận bot đấu bot 10 phút sạch INV-06 / BOT-11 / INV-07 sau khi sửa (D-96); soak mới test_soak_bots |
-| M7.6 | Đo xong, chưa đạt | 2026-10-17 | Bot đấu bot: 30–40 phút vẫn chưa xong trận (4–8 trụ đổ, 0–5 mạng), cấp 20 ở phút 14–24. Chờ người chơi chọn hướng chỉnh (xem tin nhắn) |
+| M7.6 | Đo lại, chưa đạt | 2026-10-17 | Sau D-97..D-101: bot hơn hẳn (6/0) phá tới nhà chính ở phút ~40; bot ngang tài vẫn 40 phút chưa xong. Thời gian chết nhất: đi bộ về fountain hồi máu (RETREAT + RECOVER ~28% thời gian cuối trận). Đề xuất Về thành (recall) chờ người chơi |

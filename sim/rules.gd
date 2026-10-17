@@ -109,7 +109,7 @@ static func tower_threat_at(world: World, team: int, at: Vector2, radius: float)
 static func in_enemy_fountain(world: World, team: int, at: Vector2, radius: float) -> bool:
 	if world.map == null or team > 1 or world.map.fountain_points.size() < 2:
 		return false
-	return at.distance_to(world.map.fountain_point(1 - team)) <= world.balance.fountain_radius + radius + world.balance.tower_danger_margin
+	return at.distance_to(world.map.fountain_point(1 - team)) <= world.balance.fountain_attack_radius + radius + world.balance.tower_danger_margin
 
 
 ## DEF-10: điểm `at` an toàn cho hero `x`: ngoài vùng nguy hiểm mọi trụ địch và fountain địch,

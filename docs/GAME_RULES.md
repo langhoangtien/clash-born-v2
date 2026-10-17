@@ -544,7 +544,8 @@ Bảng ưu tiên (dòng trên thắng):
 - `STR-04` Fountain (không phải đơn vị, không nhắm được): mỗi tick hồi
   `fountain_regen` × máu/mana tối đa mỗi giây cho đơn vị phe mình (trừ công trình) trong
   `fountain_radius` quanh điểm fountain; cứ `fountain_attack_interval` giây gây
-  `fountain_damage` sát thương thuần lên **mỗi** hero địch còn sống trong vùng (sự kiện
+  `fountain_damage` sát thương thuần lên **mỗi** hero địch còn sống trong `fountain_attack_radius`
+  (D-101: 350, nhỏ hơn vùng hồi máu, để hero đứng phía trước nhà chính đánh được nó; sự kiện
   `fountain_shot`).
 - `STR-05` Nhà chính bị phá → đội đó thua: trận ghi đội thắng, phát `match_ended`; từ đó
   `World.step()` không chạy nữa (tick đứng yên).
@@ -710,6 +711,8 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   mọi hero địch đang chết; và máu ≥ `bot_siege_min_hp`. Khi đó: PUSH xếp trước FARM, DEF-10 nới
   còn `bot_siege_tanks` lính đỡ và máu ≥ `bot_siege_min_hp`, đứng sau lính chỉ nửa
   `bot_lane_offset`, không đi shop ẩn / cắm mắt / rừng. INV-06 dùng ngưỡng nới này cho bot đang hơn.
+- `BOT-20` (D-101) PUSH tính cả công trình chưa thấy (công trình đứng yên, biết chỗ): đi tới chỗ đứng
+  đánh, thấy rồi mới ra lệnh đánh (INV-07).
 - `BOT-19` (D-99) JUNGLE chỉ khi trên lane của bot không còn lính phe mình. Tướng đánh xa canh last
   hit thêm ×1.35 (bù thời gian đạn bay).
 - `BOT-17` (D-96) Chủ động cấu: hero địch trong tầm đánh + 250, máu bot ≥ 50% và hơn máu địch

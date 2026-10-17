@@ -100,6 +100,7 @@ Chỉ thêm dòng mới, không sửa dòng cũ. Đổi ý thì thêm quyết đ
 | D-98 | 2026-10-17 | CRP-11 lính mạnh dần +8% máu / sát thương mỗi 5 phút (cộng dồn, vàng / XP giữ nguyên). CRP-12 trụ 3 địch trên lane đổ → lính đội phá trên lane đó ×1.5 máu, ×1.5 sát thương; cả 3 trụ 3 địch đổ → siêu lính mọi lane ×2.2 máu, ×2 sát thương, +1 lính cận chiến mỗi đợt, vàng ×0.5. VIEW: vòng bạc / vàng quanh lính siêu cấp / siêu lính | Đã duyệt |
 | D-99 | 2026-10-17 | Bot: không ở lì trong rừng — chỉ đi rừng khi lane không còn lính phe mình (BOT-19); đẩy quyết liệt khi đang hơn 2 mạng / 2 cấp hoặc hero địch đang chết (BOT-18: PUSH trước FARM, 1 lính đỡ, máu ≥ 50%, đứng sát lính hơn, bỏ shop / mắt / rừng); tướng đánh xa canh last hit ×1.35 | Đã duyệt |
 | D-100 | 2026-10-17 | Bảng thông tin kiểu Liên Quân (bản khung, đẹp ở M8): chạm ô máu/mana → bảng thông số hero (sát thương, giáp và kháng phép kèm % giảm, tốc đánh đòn/giây, tốc chạy, tầm, máu/mana và hồi, chí mạng, né, hút máu, kháng hiệu ứng, 3 thuộc tính) + mọi kỹ năng với số theo từng cấp, cấp đang có trong [ ]; chạm tỷ số → bảng tỷ số mỗi hero: cấp, K/D/A, LH, giá trị đồ, 6 ô đồ | Đã duyệt |
+| D-101 | 2026-10-17 | Sửa lỗi không kết thúc được trận: nhà chính cách fountain chỉ ~374 nên nằm trọn trong vùng fountain bắn (600, 300 sát thương/giây) — hero gần như không đánh được nhà chính, bot coi là không an toàn. Tách `fountain_attack_radius` = 350 (vùng hồi máu giữ 600): đứng phía trước nhà chính đánh được, đứng sát fountain vẫn bị bắn | Chờ người chơi xác nhận |
 
 ## Chờ chốt
 
