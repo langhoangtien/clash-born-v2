@@ -388,15 +388,15 @@ là đề xuất, cân lại khi chơi thử.
 
 | Món | id | Giá | Chỉ số | Chủ động / bị động |
 |---|---|---:|---|---|
-| Gậy Hồn Ma | `ghost_scepter` | 1500 | +7 mọi thuộc tính | **Chủ động** (hồi 22 s): bản thân GHOST 4 s |
-| Giáp Bất Khuất | `resolute_armor` | 4000 | +10 STR, +24 sát thương | **Chủ động** (hồi 70 s): thanh tẩy cơ bản bản thân rồi MAGIC_IMMUNE 6 s |
-| Ngọc Băng Sương | `frost_orb` | 2200 | +250 máu, +10 mọi thuộc tính | **Bị động**: đòn đánh làm chậm 20% tốc chạy và 20% tốc đánh trong 2 s (đánh xa) / 3 s (cận chiến) |
+| Gậy Hồn Ma | `ghost_scepter` | 1400 | +7 mọi thuộc tính | **Chủ động** (hồi 22 s): bản thân GHOST 4 s |
+| Giáp Bất Khuất | `resolute_armor` | 3300 | +10 STR, +24 sát thương | **Chủ động** (hồi 70 s): thanh tẩy cơ bản bản thân rồi MAGIC_IMMUNE 6 s |
+| Ngọc Băng Sương | `frost_orb` | 2000 | +250 máu, +10 mọi thuộc tính | **Bị động**: đòn đánh làm chậm 20% tốc chạy và 20% tốc đánh trong 2 s (đánh xa) / 3 s (cận chiến) |
 | Bột Lộ Diện | `reveal_dust` | 80 | — | **Chủ động**, 2 lần dùng (hồi 30 s): REVEALED mọi kẻ địch trong 900 quanh mình 8 s |
-| Gậy Lốc Xoáy | `cyclone_staff` | 2700 | +10 INT, +2.5 hồi mana | **Chủ động** (hồi 23 s, tầm 575): một đơn vị bị nhấc lên 2.5 s — INVULNERABLE + UNTARGETABLE + STUNNED. Dùng lên bản thân để né; dùng lên địch đang MAGIC_IMMUNE thì không được |
-| Lưỡi Ẩn Thân | `shadow_blade` | 2800 | +25 sát thương, +30% tốc đánh | **Chủ động** (hồi 28 s): dùng lại hiệu ứng `shadow_veil` + `ambush_ready` của Noctis W (cấp 2) với thời gian 12 s |
-| Lưỡi Hái Biến Hình | `hex_scythe` | 5600 | +35 INT, +10 STR, +10 AGI | **Chủ động** (hồi 22 s, tầm 600): HEXED mục tiêu 3.5 s |
-| Bùa Thanh Tẩy | `cleansing_charm` | 1800 | +6 giáp, +4 hồi máu | **Chủ động** (hồi 18 s): thanh tẩy cơ bản bản thân |
-| Búa Choáng | `stun_hammer` | 2900 | +25 sát thương | **Bị động**: đòn đánh 20% (cận chiến) / 10% (đánh xa) choáng 1.5 s, +100 sát thương vật lý; nhóm `bash`, thời gian chờ chung `bash_cooldown` (CMB-08, D-38) |
+| Gậy Lốc Xoáy | `cyclone_staff` | 2400 | +10 INT, +2.5 hồi mana | **Chủ động** (hồi 23 s, tầm 575): một đơn vị bị nhấc lên 2.5 s — INVULNERABLE + UNTARGETABLE + STUNNED. Dùng lên bản thân để né; dùng lên địch đang MAGIC_IMMUNE thì không được |
+| Lưỡi Ẩn Thân | `shadow_blade` | 2500 | +25 sát thương, +30% tốc đánh | **Chủ động** (hồi 28 s): dùng lại hiệu ứng `shadow_veil` + `ambush_ready` của Noctis W (cấp 2) với thời gian 12 s |
+| Lưỡi Hái Biến Hình | `hex_scythe` | 4200 | +35 INT, +10 STR, +10 AGI | **Chủ động** (hồi 22 s, tầm 600): HEXED mục tiêu 3.5 s |
+| Bùa Thanh Tẩy | `cleansing_charm` | 1500 | +6 giáp, +4 hồi máu | **Chủ động** (hồi 18 s): thanh tẩy cơ bản bản thân |
+| Búa Choáng | `stun_hammer` | 2600 | +25 sát thương | **Bị động**: đòn đánh 20% (cận chiến) / 10% (đánh xa) choáng 1.5 s, +100 sát thương vật lý; nhóm `bash`, thời gian chờ chung `bash_cooldown` (CMB-08, D-38) |
 | Mắt Vàng | `observer_ward` | 50 | — | **Chủ động**, tầm 500: cắm mắt vàng (tầm nhìn 1400, 4 phút); gộp 4; kho đội 2 / +1 mỗi 135 s / tối đa 4 (WRD, D-92) |
 | Mắt Xanh | `sentry_ward` | 50 | — | **Chủ động**, tầm 500: cắm mắt xanh (true sight 900, 5 phút); gộp 6; kho đội 3 / +1 mỗi 90 s / tối đa 6 |
 

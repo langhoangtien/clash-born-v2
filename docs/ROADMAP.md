@@ -108,7 +108,7 @@ Chưa có gameplay; dựng khung để mọi thứ sau đứng vững.
 | M7.3 BOT-04..09 | Test từng dòng; INV-06 |
 | M7.4 Bot dùng skill và đồ theo `bot_usage` (BOT-13..15), nâng skill, chọn talent | Test mỗi loại bot_usage với cả 4 hero |
 | M7.5 Soak bot đấu bot 10 phút × 3 seed × mọi cặp hero | Mọi INV xanh; **chơi thử 1v1 với bot** |
-| M7.6 Chạy trọn trận bot đấu bot × 5 seed, đo thời lượng và phút đạt cấp 20 | Trung vị 15–20 phút, cấp 20 ở phút 14–17 (D-29); lệch thì chỉnh NUM |
+| M7.6 Chạy trọn trận bot đấu bot × 5 seed, đo thời lượng và phút đạt cấp 20 | Trung vị 20–30 phút, cấp 20 ở phút 20–25 (D-97); lệch thì chỉnh NUM |
 
 ## M8 — Cửa hàng, giao diện, mobile (L)
 

@@ -775,7 +775,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | attribute_bonus | +2 mọi thuộc tính | | attribute_bonus_max | 7 lần |
 | hex_move_speed | 140 | | bush_reveal_time | 1 s |
 | shop_radius | 600 | | sell_ratio / sell_full_refund_time | 0.5 / 10 s |
-| reincarnate_delay | 3 s | | match_target_minutes | 15–20 (D-29) |
+| reincarnate_delay | 3 s | | match_target_minutes | 20–30 (D-97) |
 | ward_hero_hit / ward_other_hit | 3 / 1 (máu ward 6) | | | |
 | first_wave_time | 15 s | | creep_front_margin | 200 |
 | fountain_regen | 0.05 / s | | fountain_damage / attack_interval | 300 / 1 s |
