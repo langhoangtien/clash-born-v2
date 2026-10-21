@@ -239,16 +239,16 @@ giữa, không chữ. Làm theo lô 10 món, mỗi lô xong thì báo.
 
 | Xong | File | Mô tả |
 |---|---|---|
-| [ ] | `04_icons/item_iron_branch.png` | Small iron-bark tree branch with a few leaves |
-| [ ] | `04_icons/item_circlet.png` | Simple gold circlet headband |
-| [ ] | `04_icons/item_gauntlets.png` | Pair of red leather strength gauntlets |
-| [ ] | `04_icons/item_slippers.png` | Light green elven slippers |
-| [ ] | `04_icons/item_mantle.png` | Blue scholar mantle with a gem clasp |
-| [ ] | `04_icons/item_ring_protection.png` | Silver ring with a small shield emblem |
-| [ ] | `04_icons/item_ring_regen.png` | Green gem ring with a tiny leaf |
-| [ ] | `04_icons/item_sages_mask.png` | Calm golden sage mask |
-| [ ] | `04_icons/item_blades_attack.png` | Pair of short steel blades crossed |
-| [ ] | `04_icons/item_gloves_haste.png` | Red gloves with speed streak marks |
+| [x] | `04_icons/item_iron_branch.png` | Small iron-bark tree branch with a few leaves |
+| [x] | `04_icons/item_circlet.png` | Simple gold circlet headband |
+| [x] | `04_icons/item_gauntlets.png` | Pair of red leather strength gauntlets |
+| [x] | `04_icons/item_slippers.png` | Light green elven slippers |
+| [x] | `04_icons/item_mantle.png` | Blue scholar mantle with a gem clasp |
+| [x] | `04_icons/item_ring_protection.png` | Silver ring with a small shield emblem |
+| [x] | `04_icons/item_ring_regen.png` | Green gem ring with a tiny leaf |
+| [x] | `04_icons/item_sages_mask.png` | Calm golden sage mask |
+| [x] | `04_icons/item_blades_attack.png` | Pair of short steel blades crossed |
+| [x] | `04_icons/item_gloves_haste.png` | Red gloves with speed streak marks |
 | [ ] | `04_icons/item_boots.png` | Plain brown leather boots |
 | [ ] | `04_icons/item_cloak.png` | Purple cloak with a faint anti-magic rune |
 | [ ] | `04_icons/item_chainmail.png` | Steel chainmail shirt |
