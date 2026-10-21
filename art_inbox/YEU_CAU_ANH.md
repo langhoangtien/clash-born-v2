@@ -252,16 +252,16 @@ giữa, không chữ. Làm theo lô 10 món, mỗi lô xong thì báo.
 | [x] | `04_icons/item_sages_mask.png` | Calm golden sage mask |
 | [x] | `04_icons/item_blades_attack.png` | Pair of short steel blades crossed |
 | [x] | `04_icons/item_gloves_haste.png` | Red gloves with speed streak marks |
-| [ ] | `04_icons/item_boots.png` | Plain brown leather boots |
-| [ ] | `04_icons/item_cloak.png` | Purple cloak with a faint anti-magic rune |
-| [ ] | `04_icons/item_chainmail.png` | Steel chainmail shirt |
-| [ ] | `04_icons/item_belt_strength.png` | Wide leather belt with an iron buckle |
-| [ ] | `04_icons/item_band_elvenskin.png` | Green elven arm band with leaf pattern |
-| [ ] | `04_icons/item_robe_magi.png` | Blue wizard robe with stars |
-| [ ] | `04_icons/item_vitality_booster.png` | Glowing red heart-shaped crystal |
-| [ ] | `04_icons/item_energy_booster.png` | Glowing blue mana crystal |
-| [ ] | `04_icons/item_quarterstaff.png` | Wooden fighting staff with metal caps |
-| [ ] | `04_icons/item_broadsword.png` | Broad steel sword |
+| [x] | `04_icons/item_boots.png` | Plain brown leather boots |
+| [x] | `04_icons/item_cloak.png` | Purple cloak with a faint anti-magic rune |
+| [x] | `04_icons/item_chainmail.png` | Steel chainmail shirt |
+| [x] | `04_icons/item_belt_strength.png` | Wide leather belt with an iron buckle |
+| [x] | `04_icons/item_band_elvenskin.png` | Green elven arm band with leaf pattern |
+| [x] | `04_icons/item_robe_magi.png` | Blue wizard robe with stars |
+| [x] | `04_icons/item_vitality_booster.png` | Glowing red heart-shaped crystal |
+| [x] | `04_icons/item_energy_booster.png` | Glowing blue mana crystal |
+| [x] | `04_icons/item_quarterstaff.png` | Wooden fighting staff with metal caps |
+| [x] | `04_icons/item_broadsword.png` | Broad steel sword |
 | [ ] | `04_icons/item_ogre_axe.png` | Huge crude ogre axe |
 | [ ] | `04_icons/item_blade_alacrity.png` | Thin swift blade with green wind wisps |
 | [ ] | `04_icons/item_staff_wizardry.png` | Wizard staff topped with a blue orb |
