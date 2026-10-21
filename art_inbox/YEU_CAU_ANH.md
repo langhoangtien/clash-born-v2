@@ -212,13 +212,13 @@ contrast, readable at small size`.
 | Xong | File | Màu viền | Mô tả |
 |---|---|---|---|
 | [ ] | `04_icons/skill_brakk_innate.png` | cam | Iron fist hitting, stars of a stun burst |
-| [ ] | `04_icons/skill_brakk_q.png` | cam | Fist slamming the ground, shockwave ring |
+| [x] | `04_icons/skill_brakk_q.png` | cam | Fist slamming the ground, shockwave ring |
 | [ ] | `04_icons/skill_brakk_w.png` | cam | Steel shield bubble around armor |
 | [ ] | `04_icons/skill_brakk_r.png` | xanh lục | Translucent green ghostly warrior silhouette |
 | [ ] | `04_icons/skill_myra_innate.png` | xanh băng | Staff with quickening magic pulses |
 | [ ] | `04_icons/skill_myra_q.png` | xanh băng | Ice beam shooting forward |
 | [ ] | `04_icons/skill_myra_w.png` | xanh băng | Magic circle with vines rooting the ground |
-| [ ] | `04_icons/skill_myra_r.png` | cam lửa | Meteors falling from the sky |
+| [x] | `04_icons/skill_myra_r.png` | cam lửa | Meteors falling from the sky |
 | [ ] | `04_icons/skill_noctis_innate.png` | tím | Dagger with a critical strike flash |
 | [ ] | `04_icons/skill_noctis_q.png` | tím | Shadow dash with dagger trail |
 | [ ] | `04_icons/skill_noctis_w.png` | tím | Hooded figure fading into darkness |
@@ -282,7 +282,7 @@ giữa, không chữ. Làm theo lô 10 món, mỗi lô xong thì báo.
 | [ ] | `04_icons/item_grapes.png` | Bunch of three purple grapes |
 | [ ] | `04_icons/item_ghost_scepter.png` | Pale green scepter with a ghostly wisp |
 | [ ] | `04_icons/item_resolute_armor.png` | Black and gold breastplate radiating golden aura |
-| [ ] | `04_icons/item_frost_orb.png` | Icy blue orb with frost crystals |
+| [x] | `04_icons/item_frost_orb.png` | Icy blue orb with frost crystals |
 | [ ] | `04_icons/item_reveal_dust.png` | Small pouch spilling glittering dust |
 | [ ] | `04_icons/item_cyclone_staff.png` | Staff with a small swirling tornado |
 | [ ] | `04_icons/item_shadow_blade.png` | Dark curved blade dissolving into shadow |
@@ -296,7 +296,7 @@ giữa, không chữ. Làm theo lô 10 món, mỗi lô xong thì báo.
 
 | Xong | File | Mô tả |
 |---|---|---|
-| [ ] | `04_icons/state_stunned.png` | Yellow spinning stars |
+| [x] | `04_icons/state_stunned.png` | Yellow spinning stars |
 | [ ] | `04_icons/state_rooted.png` | Green vine chain |
 | [ ] | `04_icons/state_silenced.png` | Purple crossed-out mouth |
 | [ ] | `04_icons/state_disarmed.png` | Red crossed swords with a slash |
