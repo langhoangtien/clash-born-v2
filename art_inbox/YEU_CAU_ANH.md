@@ -214,22 +214,22 @@ contrast, readable at small size`.
 
 | Xong | File | Màu viền | Mô tả |
 |---|---|---|---|
-| [ ] | `04_icons/skill_brakk_innate.png` | cam | Iron fist hitting, stars of a stun burst |
+| [x] | `04_icons/skill_brakk_innate.png` | cam | Iron fist hitting, stars of a stun burst |
 | [x] | `04_icons/skill_brakk_q.png` | cam | Fist slamming the ground, shockwave ring |
-| [ ] | `04_icons/skill_brakk_w.png` | cam | Steel shield bubble around armor |
-| [ ] | `04_icons/skill_brakk_r.png` | xanh lục | Translucent green ghostly warrior silhouette |
-| [ ] | `04_icons/skill_myra_innate.png` | xanh băng | Staff with quickening magic pulses |
-| [ ] | `04_icons/skill_myra_q.png` | xanh băng | Ice beam shooting forward |
-| [ ] | `04_icons/skill_myra_w.png` | xanh băng | Magic circle with vines rooting the ground |
+| [x] | `04_icons/skill_brakk_w.png` | cam | Steel shield bubble around armor |
+| [x] | `04_icons/skill_brakk_r.png` | xanh lục | Translucent green ghostly warrior silhouette |
+| [x] | `04_icons/skill_myra_innate.png` | xanh băng | Staff with quickening magic pulses |
+| [x] | `04_icons/skill_myra_q.png` | xanh băng | Ice beam shooting forward |
+| [x] | `04_icons/skill_myra_w.png` | xanh băng | Magic circle with vines rooting the ground |
 | [x] | `04_icons/skill_myra_r.png` | cam lửa | Meteors falling from the sky |
-| [ ] | `04_icons/skill_noctis_innate.png` | tím | Dagger with a critical strike flash |
-| [ ] | `04_icons/skill_noctis_q.png` | tím | Shadow dash with dagger trail |
-| [ ] | `04_icons/skill_noctis_w.png` | tím | Hooded figure fading into darkness |
-| [ ] | `04_icons/skill_noctis_r.png` | đỏ | Glowing death mark sigil over a target |
-| [ ] | `04_icons/skill_vexa_innate.png` | xanh lục | Glowing brain energy flowing into a hand |
-| [ ] | `04_icons/skill_vexa_q.png` | xanh lục | Person turning into a frog in a puff of magic |
-| [ ] | `04_icons/skill_vexa_w.png` | xanh lục | Swirling gust of wind pushing |
-| [ ] | `04_icons/skill_vexa_r.png` | tím | Magic being ripped away from a figure |
+| [x] | `04_icons/skill_noctis_innate.png` | tím | Dagger with a critical strike flash |
+| [x] | `04_icons/skill_noctis_q.png` | tím | Shadow dash with dagger trail |
+| [x] | `04_icons/skill_noctis_w.png` | tím | Hooded figure fading into darkness |
+| [x] | `04_icons/skill_noctis_r.png` | đỏ | Glowing death mark sigil over a target |
+| [x] | `04_icons/skill_vexa_innate.png` | xanh lục | Glowing brain energy flowing into a hand |
+| [x] | `04_icons/skill_vexa_q.png` | xanh lục | Person turning into a frog in a puff of magic |
+| [x] | `04_icons/skill_vexa_w.png` | xanh lục | Swirling gust of wind pushing |
+| [x] | `04_icons/skill_vexa_r.png` | tím | Magic being ripped away from a figure |
 
 ### Trang bị (55) — **ĐÃ CHỐT 2026-10-21** (danh sách đồ D-106), làm sau 4b
 
@@ -300,18 +300,18 @@ giữa, không chữ. Làm theo lô 10 món, mỗi lô xong thì báo.
 | Xong | File | Mô tả |
 |---|---|---|
 | [x] | `04_icons/state_stunned.png` | Yellow spinning stars |
-| [ ] | `04_icons/state_rooted.png` | Green vine chain |
-| [ ] | `04_icons/state_silenced.png` | Purple crossed-out mouth |
-| [ ] | `04_icons/state_disarmed.png` | Red crossed swords with a slash |
-| [ ] | `04_icons/state_slowed.png` | Light blue snowflake |
-| [ ] | `04_icons/state_revealed.png` | Orange eye |
-| [ ] | `04_icons/state_ghost.png` | Green ghost |
-| [ ] | `04_icons/state_invulnerable.png` | Golden shield |
-| [ ] | `04_icons/state_magic_immune.png` | Golden shield with a magic rune |
-| [ ] | `04_icons/state_hexed.png` | Green frog head |
-| [ ] | `04_icons/state_shield.png` | White bubble shield |
-| [ ] | `04_icons/state_burning.png` | Small orange flame |
-| [ ] | `04_icons/state_recall.png` | Blue swirl portal with a small house shape (nút Về thành, 256 × 256 như icon skill, viền xanh dương) |
+| [x] | `04_icons/state_rooted.png` | Green vine chain |
+| [x] | `04_icons/state_silenced.png` | Purple crossed-out mouth |
+| [x] | `04_icons/state_disarmed.png` | Red crossed swords with a slash |
+| [x] | `04_icons/state_slowed.png` | Light blue snowflake |
+| [x] | `04_icons/state_revealed.png` | Orange eye |
+| [x] | `04_icons/state_ghost.png` | Green ghost |
+| [x] | `04_icons/state_invulnerable.png` | Golden shield |
+| [x] | `04_icons/state_magic_immune.png` | Golden shield with a magic rune |
+| [x] | `04_icons/state_hexed.png` | Green frog head |
+| [x] | `04_icons/state_shield.png` | White bubble shield |
+| [x] | `04_icons/state_burning.png` | Small orange flame |
+| [x] | `04_icons/state_recall.png` | Blue swirl portal with a small house shape (nút Về thành, 256 × 256 như icon skill, viền xanh dương) |
 
 ---
 
