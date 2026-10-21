@@ -152,9 +152,14 @@ func _draw() -> void:
 	var rc: Vector2 = recall_center()
 	draw_circle(rc, RECALL_RADIUS, Color(0.15, 0.3, 0.55, 0.75))
 	draw_arc(rc, RECALL_RADIUS, 0, TAU, 32, Color(0.6, 0.85, 1.0, 0.9), 3.0, true)
+	var recall_tex: Texture2D = ArtLibrary.texture(&"recall")
+	if recall_tex != null:
+		var side: float = RECALL_RADIUS * 2.0 - 6.0
+		draw_texture_rect(recall_tex, Rect2(rc - Vector2(side, side) * 0.5, Vector2(side, side)), false)
+	else:
+		_label(ThemeDB.fallback_font, rc, "Về", 20, Color.WHITE)
 	if recall_progress >= 0.0:
 		draw_arc(rc, RECALL_RADIUS - 6, -PI * 0.5, -PI * 0.5 + TAU * recall_progress, 32, Color(1, 1, 1, 0.95), 6.0, true)
-	_label(ThemeDB.fallback_font, rc, "Về", 20, Color.WHITE)
 	_label(ThemeDB.fallback_font, rc + Vector2(-RECALL_RADIUS * 0.7, -RECALL_RADIUS * 0.7), "H", 13, Color(1, 1, 1, 0.45))
 	var font: Font = ThemeDB.fallback_font
 	for k: int in range(mini(item_view.size(), MAX)):

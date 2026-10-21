@@ -216,3 +216,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M7.5 | Xong | 2026-10-17 | 534 test + 3 soak xanh; 48 trận bot đấu bot 10 phút sạch INV-06 / BOT-11 / INV-07 sau khi sửa (D-96); soak mới test_soak_bots |
 | M7.6 | Xong (chấp nhận) | 2026-10-17 | Sau về thành + base kiểu Dota: bot đấu bot kết thúc 29–39 phút khi một bên hơn, ngang tài thì dài hơn. Người chơi chấp nhận: tốc độ kết thúc sẽ chỉnh sau bằng đồ (sát thương / tốc đánh), vàng và XP từ lính (D-105) |
 | Icon 4a | Xong | 2026-10-21 | 550 test xanh; 4 icon mẫu đã duyệt và nhập vào game (D-109). Tiếp: Codex làm 4b + 4c (icon skill, trạng thái), rồi 4d (55 icon đồ) |
+| Icon 4b+4c | Xong | 2026-10-21 | 550 test xanh; 14 icon skill + 12 icon trạng thái nhập vào game, nút Về dùng icon về thành. Tiếp: 4d (55 icon đồ) |
