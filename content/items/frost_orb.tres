@@ -51,6 +51,7 @@ category = 2
 description = "Bị động: đòn đánh làm chậm mục tiêu 20% tốc chạy và 20% tốc đánh trong 3 s (cận chiến) / 2 s (đánh xa)."
 shop = 1
 cost = 2000
+components = Array[StringName]([&"vitality_booster", &"belt_strength", &"band_elvenskin"])
 modifiers = Array[ExtResource("5_ybash")]([SubResource("Resource_gyj23"), SubResource("Resource_fal02"), SubResource("Resource_0n4uc"), SubResource("Resource_b1dkt")])
 ability = SubResource("Resource_0giwr")
 id = &"frost_orb"

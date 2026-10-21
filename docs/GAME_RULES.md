@@ -381,6 +381,10 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   (SHOP-08) → shop ẩn → vàng → ô trống (món gộp được thì còn chỗ gộp cũng được, WRD-01).
 - `SHOP-07` Mỗi món thuộc một danh mục (`category`): Tấn công, Phép, Phòng thủ, Tiện ích. Cửa
   hàng có thêm hai bộ lọc: Tất cả và Shop ẩn. Danh mục chỉ để hiển thị, không đổi luật mua bán.
+- `SHOP-09` (ECO-06, D-106) Ghép đồ: món có `components` ghép từ các món đó (lặp được). Mua món
+  ghép khi đang có thành phần (một cấp, mỗi ô dùng một lần, theo thứ tự thành phần): trả
+  `cost` − tổng giá thành phần đang có, thành phần biến mất, món mới vào ô trống đầu tiên. Đầy ô
+  nhưng có ít nhất một thành phần thì vẫn mua được. Bán món ghép: theo giá món (SHOP-05).
 - `SHOP-08` Kho mỗi đội (`stock_initial`, `stock_max`, `stock_restock`; stock_max 0 = không giới
   hạn): mua trừ 1 của kho đội mình, hết thì từ chối OUT_OF_STOCK. Kho chưa đầy thì cứ
   `stock_restock` giây thêm 1 (đồng hồ chạy từ lúc kho rời mức đầy); bán không trả lại kho.
@@ -597,6 +601,7 @@ Quái rừng thuộc đội trung lập (đội 2), là **kẻ địch của m�
 
 - `ECO-01` Vàng từ lính/quái chỉ cho đòn kết liễu (last hit): hero gây đòn chết nhận
   `bounty_gold` của đơn vị đó và +1 last hit; lính/trụ/fountain kết liễu thì không ai được.
+  Vàng khởi đầu: mỗi hero có `starting_gold` (400, D-106) lúc vào trận.
   Vàng thụ động: cứ `passive_gold_interval` giây (tính từ tick 0) mỗi hero được
   `passive_gold` vàng, kể cả khi đang chờ hồi sinh.
 - `ECO-07` Trụ đổ (ai phá cũng vậy): mọi hero đội kia nhận `bounty_gold` của trụ.

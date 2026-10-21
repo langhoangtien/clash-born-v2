@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Resource" path="res://content/effects/item_crit_passive.tres" id="2_eff"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_apply"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_abl"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_item"]
+
+[sub_resource type="Resource" id="Apply"]
+script = ExtResource("3_apply")
+effect = ExtResource("2_eff")
+target = 0
+
+[sub_resource type="Resource" id="Abl"]
+script = ExtResource("4_abl")
+slot = 4
+targeting = 0
+values = Dictionary[StringName, PackedFloat32Array]({
+&"crit_chance": PackedFloat32Array(0.3),
+&"crit_multiplier": PackedFloat32Array(2.25)
+})
+on_learn = Array[ExtResource("1_act")]([SubResource("Apply")])
+id = &"divine_blade_passive_ability"
+art_id = &"divine_blade_passive_ability"
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("5_mod")
+stat = &"physical_damage"
+value = "80"
+
+[resource]
+script = ExtResource("6_item")
+category = 0
+description = "Bị động: đòn đánh 30% chí mạng ×2.25."
+cost = 4800
+modifiers = Array[ExtResource("5_mod")]([SubResource("M0")])
+ability = SubResource("Abl")
+components = Array[StringName]([&"crit_blade", &"demon_edge"])
+id = &"divine_blade"
+display_name = "Đại Đao Thần"
+art_id = &"divine_blade"

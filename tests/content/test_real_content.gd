@@ -25,7 +25,16 @@ func test_four_heroes_and_items() -> void:
 	for id: StringName in [&"ghost_scepter", &"resolute_armor", &"frost_orb", &"reveal_dust", &"cyclone_staff",
 			&"shadow_blade", &"hex_scythe", &"cleansing_charm", &"stun_hammer"]:
 		assert_true(_lib.items.has(id), "có đồ " + id)
-	assert_eq(_lib.items.size(), 11, "9 món + 2 ward (M6.8)")
+	assert_true(_lib.items.size() >= 50, "D-106: đồ cơ bản + đồ ghép kiểu Dota")
+	for d: ItemDef in _lib.items.values():  # SHOP-09: thành phần có thật, phí ghép không âm
+		var sum: int = 0
+		for c: StringName in d.components:
+			assert_true(_lib.items.has(c), "%s ghép từ món không có: %s" % [d.id, c])
+			sum += _lib.items[c].cost if _lib.items.has(c) else 0
+		assert_true(d.cost >= sum, "%s: giá ≥ tổng thành phần" % d.id)
+	for h: HeroDef in _lib.heroes.values():
+		for id: StringName in h.bot_item_build:
+			assert_true(_lib.items.has(id), "lên đồ bot %s: %s" % [h.id, id])
 	var C := ItemDef.Category
 	var table: Dictionary = {  # SHOP-07, D-90: danh mục, shop ẩn, giờ mở (s), độc nhất
 		&"stun_hammer": [C.ATTACK, false, 0, false], &"shadow_blade": [C.ATTACK, false, 0, false],

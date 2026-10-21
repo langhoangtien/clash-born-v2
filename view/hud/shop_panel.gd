@@ -8,16 +8,21 @@ extends Control
 const BUTTON: Rect2 = Rect2(292, 160, 120, 44)
 const PANEL_SIZE: Vector2 = Vector2(1640, 900)
 const TAB_SIZE: Vector2 = Vector2(190, 76)
-const CARD_SIZE: Vector2 = Vector2(180, 150)
-const CARD_GAP: float = 18.0
-const COLUMNS: int = 4
+const CARD_SIZE: Vector2 = Vector2(122, 126)
+const CARD_GAP: float = 10.0
+const COLUMNS: int = 6
+## Vùng lưới món (cuộn dọc khi nhiều món): từ y = GRID_TOP tới trên hàng ô đồ.
+const GRID_TOP: float = 80.0
+const GRID_BOTTOM_GAP: float = 150.0
+const SCROLL_STEP: float = 136.0
 const GRID_LEFT: float = 230.0
 const DETAIL_LEFT: float = 1080.0
 const SLOT_SIZE: Vector2 = Vector2(116, 86)
 
-enum Tab { ALL, ATTACK, MAGIC, DEFENSE, UTILITY, SECRET }
-const TAB_NAMES: PackedStringArray = ["Tất cả", "Tấn công", "Phép", "Phòng thủ", "Tiện ích", "Shop ẩn"]
+enum Tab { ALL, BASIC, ATTACK, MAGIC, DEFENSE, UTILITY, SECRET }
+const TAB_NAMES: PackedStringArray = ["Tất cả", "Cơ bản", "Tấn công", "Phép", "Phòng thủ", "Tiện ích", "Shop ẩn"]
 const CATEGORY_TAB: Dictionary = {
+	ItemDef.Category.BASIC: Tab.BASIC,
 	ItemDef.Category.ATTACK: Tab.ATTACK,
 	ItemDef.Category.MAGIC: Tab.MAGIC,
 	ItemDef.Category.DEFENSE: Tab.DEFENSE,
@@ -60,6 +65,9 @@ var tab: Tab = Tab.ALL
 ## Món đang xem: một món trong cửa hàng (`selected_id`) hoặc một ô đồ đang có (`selected_slot` ≥ 0).
 var selected_id: StringName = &""
 var selected_slot: int = -1
+## Độ cuộn của lưới món (px, ≥ 0).
+var scroll: float = 0.0
+var _drag_from: float = INF
 
 
 func panel_rect() -> Rect2:
@@ -81,8 +89,24 @@ func tab_rect(i: int) -> Rect2:
 
 
 func card_rect(i: int) -> Rect2:
-	var at: Vector2 = Vector2(GRID_LEFT + (i % COLUMNS) * (CARD_SIZE.x + CARD_GAP), 80 + (i / COLUMNS) * (CARD_SIZE.y + CARD_GAP))
+	var at: Vector2 = Vector2(GRID_LEFT + (i % COLUMNS) * (CARD_SIZE.x + CARD_GAP), GRID_TOP + (i / COLUMNS) * (CARD_SIZE.y + CARD_GAP) - scroll)
 	return Rect2(panel_rect().position + at, CARD_SIZE)
+
+
+## Khung nhìn của lưới món; thẻ ngoài khung không vẽ, không chạm được.
+func grid_rect() -> Rect2:
+	var p: Rect2 = panel_rect()
+	return Rect2(p.position + Vector2(GRID_LEFT, GRID_TOP), Vector2(COLUMNS * (CARD_SIZE.x + CARD_GAP), p.size.y - GRID_TOP - GRID_BOTTOM_GAP))
+
+
+func max_scroll() -> float:
+	var rows: int = ceili(float(catalog(tab).size()) / COLUMNS)
+	return maxf(0.0, rows * (CARD_SIZE.y + CARD_GAP) - grid_rect().size.y)
+
+
+func scroll_by(amount: float) -> void:
+	scroll = clampf(scroll + amount, 0.0, max_scroll())
+	queue_redraw()
 
 
 func slot_rect(i: int) -> Rect2:
@@ -131,10 +155,11 @@ func press_at(local: Vector2) -> void:
 	for i: int in range(TAB_NAMES.size()):
 		if tab_rect(i).has_point(local):
 			tab = i as Tab
+			scroll = 0.0
 			return
 	var items: Array[ItemDef] = catalog(tab)
 	for i: int in range(items.size()):
-		if card_rect(i).has_point(local):
+		if card_rect(i).has_point(local) and grid_rect().has_point(local):
 			selected_id = items[i].id
 			selected_slot = -1
 			return
@@ -160,7 +185,16 @@ func _gui_input(event: InputEvent) -> void:
 	var at: Vector2 = Taps.press_position(event)  # D-102: click PC không bật/tắt hai lần
 	if at.is_finite():
 		press_at(at)
-	if event is InputEventScreenTouch or event is InputEventMouseButton:
+		_drag_from = at.y if open and grid_rect().has_point(at) else INF
+	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed and open:
+		var b: MouseButton = (event as InputEventMouseButton).button_index
+		if b == MOUSE_BUTTON_WHEEL_DOWN or b == MOUSE_BUTTON_WHEEL_UP:
+			scroll_by(SCROLL_STEP * (1.0 if b == MOUSE_BUTTON_WHEEL_DOWN else -1.0))  # D-106: cuộn lưới món
+	if event is InputEventScreenDrag and open and is_finite(_drag_from):
+		scroll_by(-(event as InputEventScreenDrag).relative.y)
+	if event is InputEventScreenTouch and not (event as InputEventScreenTouch).pressed:
+		_drag_from = INF
+	if event is InputEventScreenTouch or event is InputEventMouseButton or event is InputEventScreenDrag:
 		accept_event()
 
 
@@ -190,8 +224,15 @@ func _draw() -> void:
 		draw_rect(r, Color(0.55, 0.4, 0.12, 0.95) if on else Color(0.14, 0.16, 0.2, 0.9))
 		_center(font, r.get_center(), TAB_NAMES[i], 22, Color.WHITE if on else Color(1, 1, 1, 0.7))
 	var items: Array[ItemDef] = catalog(tab)
+	var view: Rect2 = grid_rect()
 	for i: int in range(items.size()):
-		_draw_card(font, card_rect(i), items[i])
+		var cr: Rect2 = card_rect(i)
+		if view.encloses(cr):
+			_draw_card(font, cr, items[i])
+	if max_scroll() > 0.0:  # thanh cuộn
+		var bar: float = view.size.y * view.size.y / (view.size.y + max_scroll())
+		var top: float = view.position.y + (view.size.y - bar) * scroll / max_scroll()
+		draw_rect(Rect2(Vector2(view.end.x + 2, top), Vector2(6, bar)), Color(1, 1, 1, 0.35))
 	draw_string(font, slot_rect(0).position + Vector2(0, -12), "Đồ của bạn", HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color(1, 1, 1, 0.7))
 	for i: int in range(Items.SLOTS):
 		var r: Rect2 = slot_rect(i)
@@ -208,9 +249,9 @@ func _draw() -> void:
 func _draw_card(font: Font, r: Rect2, d: ItemDef) -> void:
 	var ok: bool = Shop.buy_problem(world, hero, d.id) == Command.Reject.NONE
 	draw_rect(r, Color(0.13, 0.15, 0.2, 0.95))
-	_draw_icon(font, r.position + Vector2(r.size.x * 0.5, 50), 36.0, d, ok)
-	_center(font, r.position + Vector2(r.size.x * 0.5, 104), d.display_name, 16, Color.WHITE if ok else Color(1, 1, 1, 0.45))
-	_center(font, r.position + Vector2(r.size.x * 0.5, 132), str(d.cost), 18, Color(1, 0.85, 0.3) if ok else Color(1, 0.85, 0.3, 0.45))
+	_draw_icon(font, r.position + Vector2(r.size.x * 0.5, 42), 30.0, d, ok)
+	_center(font, r.position + Vector2(r.size.x * 0.5, 88), d.display_name, 13, Color.WHITE if ok else Color(1, 1, 1, 0.45))
+	_center(font, r.position + Vector2(r.size.x * 0.5, 112), str(Shop.price(world, hero, d)), 16, Color(1, 0.85, 0.3) if ok else Color(1, 0.85, 0.3, 0.45))
 	if d.shop == ItemDef.ShopKind.SECRET:
 		_center(font, r.position + Vector2(22, 18), "ẨN", 13, Color(0.7, 0.85, 1))
 	var left: int = Shop.stock(world, hero.team, d)
@@ -222,7 +263,7 @@ func _draw_card(font: Font, r: Rect2, d: ItemDef) -> void:
 
 ## Ô hình tạm: tròn màu theo danh mục, chữ tắt (hình thật ở M8).
 func _draw_icon(font: Font, c: Vector2, radius: float, d: ItemDef, bright: bool) -> void:
-	var col: Color = [Color(0.75, 0.3, 0.25), Color(0.4, 0.35, 0.8), Color(0.3, 0.6, 0.4), Color(0.6, 0.55, 0.3)][d.category]
+	var col: Color = [Color(0.75, 0.3, 0.25), Color(0.4, 0.35, 0.8), Color(0.3, 0.6, 0.4), Color(0.6, 0.55, 0.3), Color(0.45, 0.47, 0.5)][d.category]
 	if not bright:
 		col = col.darkened(0.55)
 	draw_circle(c, radius, col)
@@ -244,6 +285,9 @@ func _draw_detail(font: Font) -> void:
 	draw_string(font, at + Vector2(100, 56), d.display_name, HORIZONTAL_ALIGNMENT_LEFT, w - 100, 28, Color.WHITE)
 	draw_string(font, at + Vector2(100, 92), "Giá %d" % d.cost, HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color(1, 0.85, 0.3))
 	var y: float = 140.0
+	for line: String in recipe_lines(world, d):  # SHOP-09: ghép từ / ghép thành
+		draw_string(font, at + Vector2(0, y), line, HORIZONTAL_ALIGNMENT_LEFT, w, 17, Color(1, 0.85, 0.55))
+		y += 26.0
 	var tag_line: String = " · ".join(tags(d))
 	if not tag_line.is_empty():
 		draw_string(font, at + Vector2(0, y), tag_line, HORIZONTAL_ALIGNMENT_LEFT, w, 18, Color(0.7, 0.85, 1))
@@ -261,7 +305,7 @@ func _draw_detail(font: Font) -> void:
 	else:
 		var problem: Command.Reject = Shop.buy_problem(world, hero, d.id)
 		ok = problem == Command.Reject.NONE
-		label = "Mua  %d" % d.cost if ok else status_text(world, d, problem, hero.team)
+		label = "Mua  %d" % Shop.price(world, hero, d) if ok else status_text(world, d, problem, hero.team)
 	draw_rect(b, (Color(0.6, 0.25, 0.2) if selected_slot >= 0 else Color(0.2, 0.5, 0.25)) if ok else Color(0.25, 0.25, 0.28))
 	_center(font, b.get_center(), label, 26, Color.WHITE if ok else Color(1, 0.6, 0.5))
 
@@ -279,6 +323,28 @@ static func stat_lines(d: ItemDef) -> PackedStringArray:
 		var v: float = float(m.value)
 		var text: String = ("%d%%" % roundi(v * 100.0)) if info[1] else (str(int(v)) if is_equal_approx(v, roundf(v)) else str(v))
 		out.append("+%s %s" % [text, info[0]])
+	return out
+
+
+## SHOP-09: "Ghép từ: A + B + phí N" và "Ghép thành: X, Y".
+static func recipe_lines(w: World, d: ItemDef) -> PackedStringArray:
+	var out: PackedStringArray = PackedStringArray()
+	if not d.components.is_empty():
+		var names: PackedStringArray = PackedStringArray()
+		var sum: int = 0
+		for c: StringName in d.components:
+			var part: ItemDef = w.item_catalog.get(c)
+			if part != null:
+				names.append(part.display_name)
+				sum += part.cost
+		out.append("Ghép từ: %s + phí %d" % [" + ".join(names), d.cost - sum])
+	var into: PackedStringArray = PackedStringArray()
+	for o: ItemDef in w.item_catalog.values():
+		if o.components.has(d.id):
+			into.append(o.display_name)
+	into.sort()
+	if not into.is_empty():
+		out.append("Ghép thành: " + ", ".join(into))
 	return out
 
 

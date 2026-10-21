@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("1_mod")
+stat = &"strength"
+value = "30"
+
+[sub_resource type="Resource" id="M1"]
+script = ExtResource("1_mod")
+stat = &"max_hp"
+value = "600"
+
+[sub_resource type="Resource" id="M2"]
+script = ExtResource("1_mod")
+stat = &"hp_regen"
+value = "10"
+
+[resource]
+script = ExtResource("2_item")
+category = 2
+cost = 4000
+modifiers = Array[ExtResource("1_mod")]([SubResource("M0"), SubResource("M1"), SubResource("M2")])
+components = Array[StringName]([&"vitality_booster", &"vitality_booster", &"ogre_axe", &"belt_strength", &"ring_regen"])
+id = &"giant_heart"
+display_name = "Tim Khổng Lồ"
+art_id = &"giant_heart"

@@ -41,7 +41,9 @@ func _structure(w: World, structure_id: StringName) -> Entity:
 
 
 func _brakk(w: World, team: int, at: Vector2) -> Entity:
-	return UnitFactory.hero(w, _lib.heroes[&"brakk"], team, at)
+	var h: Entity = UnitFactory.hero(w, _lib.heroes[&"brakk"], team, at)
+	h.gold = 0  # đo vàng kiếm được, bỏ vàng khởi đầu (D-106)
+	return h
 
 
 func test_STR_05_core_destroyed_ends_match_and_sim_stops() -> void:

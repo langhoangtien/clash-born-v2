@@ -104,6 +104,8 @@ extends Resource
 @export_group("Kinh tế (ECO)")
 ## ECO-01: cứ passive_gold_interval giây mỗi hero được passive_gold vàng.
 @export var passive_gold: int
+## D-106: vàng mỗi hero có lúc vào trận.
+@export var starting_gold: int
 @export var passive_gold_interval: float
 ## ECO-03: XP chia cho hero phe kia trong tầm này khi đơn vị chết.
 @export var xp_share_range: float

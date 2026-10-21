@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("1_mod")
+stat = &"magic_armor"
+value = "10"
+
+[sub_resource type="Resource" id="M1"]
+script = ExtResource("1_mod")
+stat = &"hp_regen"
+value = "8"
+
+[resource]
+script = ExtResource("2_item")
+category = 2
+cost = 1000
+modifiers = Array[ExtResource("1_mod")]([SubResource("M0"), SubResource("M1")])
+components = Array[StringName]([&"cloak", &"ring_regen"])
+id = &"magic_cloak"
+display_name = "Áo Choàng Phép"
+art_id = &"magic_cloak"

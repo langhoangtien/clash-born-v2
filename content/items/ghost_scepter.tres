@@ -47,6 +47,7 @@ script = ExtResource("6_jmkwk")
 category = 1
 description = "Chủ động (hồi 22 s): hóa hồn ma 4 s — miễn sát thương vật lý nhưng không đánh được và nhận thêm sát thương phép."
 cost = 1400
+components = Array[StringName]([&"belt_strength", &"band_elvenskin", &"robe_magi"])
 modifiers = Array[ExtResource("5_o5si0")]([SubResource("Resource_6nxta"), SubResource("Resource_8nao2"), SubResource("Resource_1vh3u")])
 ability = SubResource("Resource_x2g7q")
 id = &"ghost_scepter"

@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("1_mod")
+stat = &"physical_armor"
+value = "10"
+
+[sub_resource type="Resource" id="M1"]
+script = ExtResource("1_mod")
+stat = &"max_hp"
+value = "250"
+
+[resource]
+script = ExtResource("2_item")
+category = 2
+cost = 1600
+modifiers = Array[ExtResource("1_mod")]([SubResource("M0"), SubResource("M1")])
+components = Array[StringName]([&"chainmail", &"ring_protection", &"vitality_booster"])
+id = &"steel_armor"
+display_name = "Giáp Thép"
+art_id = &"steel_armor"

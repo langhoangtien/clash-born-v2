@@ -449,9 +449,42 @@ func next_item(world: World, e: Entity) -> ItemDef:
 	if e.hero_def == null:
 		return null
 	for id: StringName in e.hero_def.bot_item_build:
-		var owned: bool = Items.slots(e).any(func(it: ItemInstance) -> bool: return it != null and it.def.id == id)
+		var owned: bool = Items.slots(e).any(func(it: ItemInstance) -> bool: return it != null and _contains(world, it.def, id))
 		if not owned and world.item_catalog.has(id):
 			return world.item_catalog[id]
+	return null
+
+
+## Món `d` chính là `id` hoặc đã ghép từ `id` (SHOP-09) — coi như đã có.
+static func _contains(world: World, d: ItemDef, id: StringName) -> bool:
+	if d.id == id:
+		return true
+	for c: StringName in d.components:
+		if world.item_catalog.has(c) and _contains(world, world.item_catalog[c], id):
+			return true
+	return false
+
+
+## D-106: chưa đủ vàng mua món ghép thì mua dần thành phần còn thiếu (theo thứ tự, đi sâu
+## vào thành phần của thành phần).
+func _next_part(world: World, e: Entity, d: ItemDef) -> ItemDef:
+	var owned: Array[int] = Shop.owned_components(world, e, d)
+	var held: Array[StringName] = []
+	for index: int in owned:
+		held.append(Items.slots(e)[index].def.id)
+	for c: StringName in d.components:
+		if held.has(c):
+			held.erase(c)
+			continue
+		var part: ItemDef = world.item_catalog.get(c)
+		if part == null:
+			continue
+		if Shop.buy_problem(world, e, c) == Command.Reject.NONE:
+			return part
+		var deeper: ItemDef = _next_part(world, e, part) if not part.components.is_empty() else null
+		if deeper != null:
+			return deeper
+		return null
 	return null
 
 
@@ -462,6 +495,10 @@ func _shop(world: World, e: Entity) -> void:
 	var d: ItemDef = next_item(world, e)
 	if d != null and Shop.buy_problem(world, e, d.id) == Command.Reject.NONE:
 		world.submit(Command.buy(e.id, d.id))
+		return
+	var part: ItemDef = _next_part(world, e, d) if d != null else null
+	if part != null:
+		world.submit(Command.buy(e.id, part.id))
 		return
 	var obs: ItemDef = world.item_catalog.get(&"observer_ward")
 	if obs != null and _charges_of(e, obs) == 0 and Shop.buy_problem(world, e, obs.id) == Command.Reject.NONE:
@@ -477,7 +514,7 @@ func _charges_of(e: Entity, d: ItemDef) -> int:
 
 func _wants_secret_shop(world: World, e: Entity) -> bool:
 	var d: ItemDef = next_item(world, e)
-	if d == null or d.shop != ItemDef.ShopKind.SECRET or e.gold < d.cost or Shop.buy_problem(world, e, d.id) != Command.Reject.NOT_IN_SHOP:
+	if d == null or d.shop != ItemDef.ShopKind.SECRET or e.gold < Shop.price(world, e, d) or Shop.buy_problem(world, e, d.id) != Command.Reject.NOT_IN_SHOP:
 		return false
 	var spot: Vector2 = _shop_spot(world, e)
 	return e.position.distance_to(spot) <= 5000.0 and _reach_safe(world, e, spot)

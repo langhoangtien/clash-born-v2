@@ -9,7 +9,7 @@ extends GameDef
 ## Số lần dùng; 0 = không giới hạn.
 @export var charges: int
 
-enum Category { ATTACK, MAGIC, DEFENSE, UTILITY }
+enum Category { ATTACK, MAGIC, DEFENSE, UTILITY, BASIC }
 ## SHOP-07: danh mục trong cửa hàng.
 @export var category: Category = Category.UTILITY
 ## Mô tả kỹ năng chủ động / bị động hiện ở khung chi tiết của cửa hàng (chỉ số tự sinh từ modifier).
@@ -26,5 +26,7 @@ enum ShopKind { BASE, SECRET }
 @export var stock_initial: int
 @export var stock_max: int
 @export var stock_restock: float
+## SHOP-09 (ECO-06): ghép từ các món này (id, lặp được). Giá `cost` là tổng; phí ghép = cost − tổng giá thành phần.
+@export var components: Array[StringName] = []
 ## SHOP-04: cả trận chỉ một món.
 @export var unique: bool = false

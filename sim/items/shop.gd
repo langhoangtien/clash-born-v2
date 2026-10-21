@@ -19,19 +19,42 @@ static func buy_problem(world: World, e: Entity, id: StringName) -> R:
 		return R.OUT_OF_STOCK  # SHOP-08
 	if def.shop == ItemDef.ShopKind.SECRET and not near_secret_shop(world, e):
 		return R.NOT_IN_SHOP  # SHOP-02
-	if e.gold < def.cost:
+	var used: Array[int] = owned_components(world, e, def)
+	if e.gold < price(world, e, def):
 		return R.NOT_ENOUGH_GOLD
-	if not Items.slots(e).has(null) and Items.stack_slot(e, def) < 0:
+	if not Items.slots(e).has(null) and Items.stack_slot(e, def) < 0 and used.is_empty():
 		return R.INVENTORY_FULL
 	return R.NONE
 
 
+## SHOP-09: ô đồ của các thành phần đang có sẽ được ghép (mỗi ô dùng một lần, theo thứ tự thành phần).
+static func owned_components(world: World, e: Entity, def: ItemDef) -> Array[int]:
+	var used: Array[int] = []
+	for id: StringName in def.components:
+		for it: ItemInstance in Items.slots(e):
+			if it != null and it.def.id == id and not used.has(it.index):
+				used.append(it.index)
+				break
+	return used
+
+
+## SHOP-09: giá phải trả = giá món − giá các thành phần đang có.
+static func price(world: World, e: Entity, def: ItemDef) -> int:
+	var paid: int = def.cost
+	for index: int in owned_components(world, e, def):
+		paid -= Items.slots(e)[index].def.cost
+	return maxi(0, paid)
+
+
 static func buy(world: World, e: Entity, id: StringName) -> void:
 	var def: ItemDef = world.item_catalog[id]
-	e.gold -= def.cost
+	var paid: int = price(world, e, def)
+	for index: int in owned_components(world, e, def):
+		Items.remove(world, e, index)  # SHOP-09: thành phần ghép vào món mới
+	e.gold -= paid
 	_take_stock(world, e.team, def)
 	Items.give(world, e, def)
-	world.emit(&"item_bought", e.id, -1, def.cost, id)
+	world.emit(&"item_bought", e.id, -1, paid, id)
 
 
 static func sell_problem(e: Entity, index: int) -> R:

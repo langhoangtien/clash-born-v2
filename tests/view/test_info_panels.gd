@@ -52,6 +52,6 @@ func test_D_100_score_rows_items_and_kda() -> void:
 	var rows: Array = InfoPanels.score_rows(p.world)
 	assert_eq(rows.size(), 2)
 	assert_eq(rows[1][3], "2/0/0")
-	assert_eq(rows[1][5], 2600, "giá trị đồ")
+	assert_eq(rows[1][5], 2400, "giá trị đồ")
 	assert_eq(rows[1][6][0], "BC", "ô đồ: tên tắt")
 	p.free()

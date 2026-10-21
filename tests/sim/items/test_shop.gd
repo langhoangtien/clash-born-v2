@@ -135,3 +135,26 @@ func test_SHOP_05_sell_half_or_full_refund_within_10s() -> void:
 	assert_true(h.gold >= before + 500)
 	assert_true(h.items[0] == null)
 	assert_eq(_sell(w, h, 0), R.BAD_ITEM, "ô trống")
+
+
+func test_SHOP_09_recipe_pays_difference_and_consumes_components() -> void:
+	var w: World = _world()
+	var h: Entity = _hero(w)
+	h.gold = 1000
+	assert_eq(_buy(w, h, &"slippers"), R.NONE)
+	assert_eq(Shop.price(w, h, w.item_catalog[&"wraith_band"]), 420 - 140, "đã có Dép: chỉ trả phần thiếu")
+	assert_eq(_buy(w, h, &"wraith_band"), R.NONE)
+	assert_eq(h.gold, 1000 - 420, "tổng vẫn đúng giá món")
+	assert_eq(Items.slots(h).filter(func(it: ItemInstance) -> bool: return it != null).size(), 1, "thành phần đã ghép vào")
+	assert_eq(Items.slots(h)[0].def.id, &"wraith_band")
+	for i: int in range(5):
+		Items.give(w, h, w.item_catalog[&"iron_branch"])
+	h.gold = 1000
+	assert_eq(_buy(w, h, &"gauntlets"), R.INVENTORY_FULL)
+	Items.remove(w, h, 1)
+	assert_eq(_buy(w, h, &"gauntlets"), R.NONE)
+	assert_eq(_buy(w, h, &"circlet"), R.INVENTORY_FULL, "đầy ô")
+	Items.remove(w, h, 2)
+	Items.give(w, h, w.item_catalog[&"circlet"])
+	assert_eq(_buy(w, h, &"bracer"), R.NONE, "đầy ô nhưng ghép từ thành phần đang có thì vẫn mua được")
+	assert_true(Items.slots(h).any(func(it: ItemInstance) -> bool: return it != null and it.def.id == &"bracer"))

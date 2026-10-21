@@ -40,7 +40,7 @@ value = "10"
 [sub_resource type="Resource" id="Resource_8vgbl"]
 script = ExtResource("6_aj6eu")
 stat = &"physical_damage"
-value = "24"
+value = "25"
 
 [resource]
 script = ExtResource("7_fb7oi")
@@ -49,6 +49,7 @@ description = "Chủ động (hồi 70 s): thanh tẩy cơ bản bản thân r�
 shop = 1
 unlock_time = 600.0
 cost = 3300
+components = Array[StringName]([&"ogre_axe", &"claymore"])
 modifiers = Array[ExtResource("6_aj6eu")]([SubResource("Resource_3f0e4"), SubResource("Resource_8vgbl")])
 ability = SubResource("Resource_si4ov")
 id = &"resolute_armor"

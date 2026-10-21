@@ -7,6 +7,7 @@ static func hero(world: World, def: HeroDef, team: int, position: Vector2, level
 	var e: Entity = Entity.new()
 	e.kind = Entity.Kind.HERO
 	e.hero_def = def
+	e.gold = world.balance.starting_gold  # ECO (D-106)
 	e.team = team
 	e.position = position
 	e.radius = def.stats.collision_radius

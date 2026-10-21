@@ -150,17 +150,35 @@ func test_BOT_13_item_cleansing_charm_when_hurt_by_debuff() -> void:
 func test_D_94_buys_build_in_order_and_goes_to_secret_shop() -> void:
 	var w: World = _world()
 	var e: Entity = _bot(w, &"brakk", _map.fountain_point(1) + (_mid() - _map.fountain_point(1)).normalized() * 800.0)
-	e.gold = 3000
+	e.gold = 600
 	for i: int in range(15):
 		w.step()
-	assert_true(Items.slots(e)[0] != null and Items.slots(e)[0].def.id == &"stun_hammer", "món đầu trong thứ tự lên đồ")
-	e.gold = 2300
+	assert_true(Items.slots(e).any(func(it: ItemInstance) -> bool: return it != null and it.def.id == &"bracer"), "món đầu trong thứ tự lên đồ")
+	var g: World = _world()
+	var s: Entity = _bot(g, &"myra", _map.fountain_point(1) + (_mid() - _map.fountain_point(1)).normalized() * 800.0)
+	s.hero_def = s.hero_def.duplicate()
+	s.hero_def.bot_item_build = [&"frost_orb"]
+	s.gold = 2300
 	var shopping: bool = false
 	for i: int in range(20):
-		w.step()
-		shopping = shopping or e.bot.mode == Mode.SHOP
-	assert_true(shopping or Items.slots(e).any(func(it: ItemInstance) -> bool: return it != null and it.def.id == &"frost_orb"),
+		g.step()
+		shopping = shopping or s.bot.mode == Mode.SHOP
+	assert_true(shopping or Items.slots(s).any(func(it: ItemInstance) -> bool: return it != null and it.def.id == &"frost_orb"),
 		"Ngọc Băng Sương ở shop ẩn: đi tới shop (hoặc đã ở gần và mua)")
+
+
+func test_D_106_bot_buys_components_when_short_of_gold() -> void:
+	var w: World = _world()
+	var e: Entity = _bot(w, &"noctis", _map.fountain_point(1) + Vector2(-300, 300))
+	e.gold = 200
+	for i: int in range(15):
+		w.step()
+	assert_true(Items.slots(e).any(func(it: ItemInstance) -> bool: return it != null and it.def.id == &"slippers"), "chưa đủ Vòng Ma: mua Dép Nhanh Nhẹn trước")
+	e.gold = 400
+	for i: int in range(15):
+		w.step()
+	assert_true(Items.slots(e).any(func(it: ItemInstance) -> bool: return it != null and it.def.id == &"wraith_band"), "đủ vàng thì ghép Vòng Ma, chỉ trả phần thiếu")
+	assert_false(Items.slots(e).any(func(it: ItemInstance) -> bool: return it != null and it.def.id == &"slippers"))
 
 
 func test_D_94_places_observer_at_ward_spot() -> void:

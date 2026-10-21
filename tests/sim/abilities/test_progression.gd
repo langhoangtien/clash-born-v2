@@ -26,7 +26,9 @@ func _center() -> Vector2:
 
 
 func _brakk(w: World, team: int, at: Vector2) -> Entity:
-	return UnitFactory.hero(w, _lib.heroes[&"brakk"], team, w.navigation(32.0).nearest_clear(at))
+	var h: Entity = UnitFactory.hero(w, _lib.heroes[&"brakk"], team, w.navigation(32.0).nearest_clear(at))
+	h.gold = 0  # đo vàng kiếm được, bỏ vàng khởi đầu (D-106)
+	return h
 
 
 func _kill(w: World, source_id: int, victim: Entity) -> void:

@@ -11,7 +11,7 @@
 script = ExtResource("5_o1hbh")
 base_hp = 50.0
 base_mana = 200.0
-base_hp_regen = 1.5
+base_hp_regen = 0.5
 base_damage = 74.0
 physical_armor = 1.0
 base_attack_time = 2.0
@@ -36,7 +36,7 @@ w = ExtResource("6_q76x5")
 r = ExtResource("3_mcrmk")
 bot_skill_order = Array[int]([0, 1, 0, 1, 0, 2, 0, 1, 0, 1, 2, 1, 3, 3, 3, 2, 3, 3, 3, 3])
 bot_talent_priority = Array[int]([1, 3, 2])
-bot_item_build = Array[StringName]([&"stun_hammer", &"frost_orb", &"resolute_armor", &"cleansing_charm"])
+bot_item_build = Array[StringName]([&"bracer", &"boots_guard", &"stun_hammer", &"battle_axe", &"resolute_armor", &"giant_heart"])
 id = &"brakk"
 display_name = "Brakk · Thiết Quyền"
 art_id = &"brakk"
