@@ -44,6 +44,7 @@ func refresh() -> void:
 		var ok: bool = a != null and Abilities.problem(world, hero, a) == Abilities.Problem.NONE
 		var can_level: bool = Progression.level_problem(world, hero, SLOTS[i]) == Command.Reject.NONE
 		buttons.skill_view[i] = [a.rank if a != null else 0, cd, ok, can_level]
+		buttons.skill_art[i] = a.def.art_id if a != null else &""
 	buttons.attributes_can_level = Progression.level_problem(world, hero, Command.ATTRIBUTES) == Command.Reject.NONE
 	buttons.queue_redraw()
 	var want_talent: bool = hero.talent_slot < 0 and hero.stats.level() >= world.balance.talent_level
@@ -98,7 +99,7 @@ func _refresh_items() -> void:
 		var a: AbilityInstance = it.ability
 		var cd: float = maxf(0.0, (a.ready_tick - world.tick) * SimClock.TICK_SECONDS)
 		var ok: bool = Abilities.problem(world, hero, a) == Abilities.Problem.NONE
-		view.append([it.index, ItemButtons.short_name(it.def.display_name), cd, it.charges if it.def.charges > 0 else -1, ok])
+		view.append([it.index, ItemButtons.short_name(it.def.display_name), cd, it.charges if it.def.charges > 0 else -1, ok, it.def.art_id])
 	items.item_view = view
 	var total: int = SimClock.seconds_to_ticks(world.balance.recall_time)
 	items.recall_progress = clampf(float(world.tick - hero.recall_start_tick) / maxf(1.0, total), 0.0, 1.0) if hero.recall_until_tick >= 0 else -1.0

@@ -266,6 +266,10 @@ func _draw_icon(font: Font, c: Vector2, radius: float, d: ItemDef, bright: bool)
 	var col: Color = [Color(0.75, 0.3, 0.25), Color(0.4, 0.35, 0.8), Color(0.3, 0.6, 0.4), Color(0.6, 0.55, 0.3), Color(0.45, 0.47, 0.5)][d.category]
 	if not bright:
 		col = col.darkened(0.55)
+	var tex: Texture2D = ArtLibrary.texture(d.art_id)
+	if tex != null:
+		draw_texture_rect(tex, Rect2(c - Vector2(radius, radius), Vector2(radius, radius) * 2.0), false, Color.WHITE if bright else Color(0.4, 0.4, 0.4))
+		return
 	draw_circle(c, radius, col)
 	if d.ability != null and d.ability.targeting != AbilityDef.Targeting.PASSIVE:
 		draw_arc(c, radius, 0, TAU, 32, Color(1, 0.85, 0.4, 0.9 if bright else 0.4), 3.0, true)

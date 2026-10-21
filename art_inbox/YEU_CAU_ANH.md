@@ -196,8 +196,7 @@ Danh sách đánh dấu:
 >    `state_stunned`, `item_frost_orb`. Xong thì **DỪNG** chờ duyệt. Sau khi duyệt, mọi icon
 >    còn lại đính kèm thêm 4 icon mẫu này làm tham chiếu để cùng một bộ.
 > 2. **4b — 14 icon skill còn lại**, rồi **4c — icon trạng thái**. Mỗi phần xong thì dừng báo.
-> 3. **Icon trang bị: CHƯA LÀM** (danh sách đồ sẽ đổi khi thêm ghép đồ). Chỉ làm khi bảng
->    trang bị trong file này được cập nhật lại và ghi "đã chốt".
+> 3. **4d — Icon trang bị: ĐÃ CHỐT danh sách (2026-10-21),** làm sau 4c, theo lô 10 món.
 >
 > Phân biệt loại bằng **màu viền**: skill thường viền theo màu bảng dưới; **nội tại** viền
 > bạc mảnh hơn; **ultimate (R)** viền đôi vàng kim dày hơn. Mỗi icon chỉ **một** hình chính,
@@ -229,10 +228,58 @@ contrast, readable at small size`.
 | [ ] | `04_icons/skill_vexa_w.png` | xanh lục | Swirling gust of wind pushing |
 | [ ] | `04_icons/skill_vexa_r.png` | tím | Magic being ripped away from a figure |
 
-### Trang bị (9)
+### Trang bị (55) — **ĐÃ CHỐT 2026-10-21** (danh sách đồ D-106), làm sau 4b
+
+Icon đồ: **khung tròn viền vàng đồng** (khác viền skill). Món cơ bản (giá ≤ 1800 trong
+`docs/CONTENT.md`) dùng viền đồng mảnh; món ghép dùng viền vàng dày hơn. Một vật thể to ở
+giữa, không chữ. Làm theo lô 10 món, mỗi lô xong thì báo.
 
 | Xong | File | Mô tả |
 |---|---|---|
+| [ ] | `04_icons/item_iron_branch.png` | Small iron-bark tree branch with a few leaves |
+| [ ] | `04_icons/item_circlet.png` | Simple gold circlet headband |
+| [ ] | `04_icons/item_gauntlets.png` | Pair of red leather strength gauntlets |
+| [ ] | `04_icons/item_slippers.png` | Light green elven slippers |
+| [ ] | `04_icons/item_mantle.png` | Blue scholar mantle with a gem clasp |
+| [ ] | `04_icons/item_ring_protection.png` | Silver ring with a small shield emblem |
+| [ ] | `04_icons/item_ring_regen.png` | Green gem ring with a tiny leaf |
+| [ ] | `04_icons/item_sages_mask.png` | Calm golden sage mask |
+| [ ] | `04_icons/item_blades_attack.png` | Pair of short steel blades crossed |
+| [ ] | `04_icons/item_gloves_haste.png` | Red gloves with speed streak marks |
+| [ ] | `04_icons/item_boots.png` | Plain brown leather boots |
+| [ ] | `04_icons/item_cloak.png` | Purple cloak with a faint anti-magic rune |
+| [ ] | `04_icons/item_chainmail.png` | Steel chainmail shirt |
+| [ ] | `04_icons/item_belt_strength.png` | Wide leather belt with an iron buckle |
+| [ ] | `04_icons/item_band_elvenskin.png` | Green elven arm band with leaf pattern |
+| [ ] | `04_icons/item_robe_magi.png` | Blue wizard robe with stars |
+| [ ] | `04_icons/item_vitality_booster.png` | Glowing red heart-shaped crystal |
+| [ ] | `04_icons/item_energy_booster.png` | Glowing blue mana crystal |
+| [ ] | `04_icons/item_quarterstaff.png` | Wooden fighting staff with metal caps |
+| [ ] | `04_icons/item_broadsword.png` | Broad steel sword |
+| [ ] | `04_icons/item_ogre_axe.png` | Huge crude ogre axe |
+| [ ] | `04_icons/item_blade_alacrity.png` | Thin swift blade with green wind wisps |
+| [ ] | `04_icons/item_staff_wizardry.png` | Wizard staff topped with a blue orb |
+| [ ] | `04_icons/item_platemail.png` | Heavy steel plate armor |
+| [ ] | `04_icons/item_claymore.png` | Large two-handed claymore |
+| [ ] | `04_icons/item_hyperstone.png` | Sharp golden-orange speed crystal with motion lines |
+| [ ] | `04_icons/item_demon_edge.png` | Dark demonic sword with red runes |
+| [ ] | `04_icons/item_wraith_band.png` | Green spectral wristband |
+| [ ] | `04_icons/item_bracer.png` | Iron bracer with an orange gem |
+| [ ] | `04_icons/item_null_talisman.png` | Blue talisman amulet with a rune |
+| [ ] | `04_icons/item_boots_haste.png` | Red boots with small wings and speed lines |
+| [ ] | `04_icons/item_boots_arcane.png` | Blue magic boots with glowing runes |
+| [ ] | `04_icons/item_boots_guard.png` | Armored steel boots |
+| [ ] | `04_icons/item_battle_axe.png` | Large double-headed battle axe with red trim |
+| [ ] | `04_icons/item_wind_bow.png` | Elegant longbow wrapped in green wind |
+| [ ] | `04_icons/item_butterfly.png` | Slender sword with a butterfly-wing guard, teal glow |
+| [ ] | `04_icons/item_steel_armor.png` | Polished steel breastplate |
+| [ ] | `04_icons/item_magic_cloak.png` | Long purple cloak shimmering with a protective rune |
+| [ ] | `04_icons/item_assault_plate.png` | Ornate golden plate armor with spikes |
+| [ ] | `04_icons/item_giant_heart.png` | Huge glowing red heart wrapped in iron bands |
+| [ ] | `04_icons/item_storm_staff.png` | Staff crackling with blue lightning |
+| [ ] | `04_icons/item_crit_blade.png` | Curved sword with a red critical spark |
+| [ ] | `04_icons/item_divine_blade.png` | Large holy golden blade with a red jewel |
+| [ ] | `04_icons/item_grapes.png` | Bunch of three purple grapes |
 | [ ] | `04_icons/item_ghost_scepter.png` | Pale green scepter with a ghostly wisp |
 | [ ] | `04_icons/item_resolute_armor.png` | Black and gold breastplate radiating golden aura |
 | [ ] | `04_icons/item_frost_orb.png` | Icy blue orb with frost crystals |

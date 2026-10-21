@@ -8,3 +8,4 @@ export_presets.cfg
 _to_delete/
 .local/
 __pycache__/
+build/

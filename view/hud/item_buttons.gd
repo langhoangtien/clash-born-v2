@@ -163,7 +163,12 @@ func _draw() -> void:
 		var ready: bool = view[4]
 		draw_circle(c, RADIUS, Color(0.55, 0.4, 0.15, 0.75) if ready else Color(0.2, 0.2, 0.24, 0.6))
 		draw_arc(c, RADIUS, 0, TAU, 32, Color(1, 0.85, 0.4, 0.9 if ready else 0.35), 3.0, true)
-		_label(font, c - Vector2(0, 6), view[1], 20, Color.WHITE)
+		var tex: Texture2D = ArtLibrary.texture(view[5]) if view.size() > 5 else null
+		if tex != null:
+			var side: float = RADIUS * 2.0 - 6.0
+			draw_texture_rect(tex, Rect2(c - Vector2(side, side) * 0.5, Vector2(side, side)), false, Color.WHITE if ready else Color(0.45, 0.45, 0.45))
+		else:
+			_label(font, c - Vector2(0, 6), view[1], 20, Color.WHITE)
 		if view[2] > 0.0:
 			_label(font, c + Vector2(0, 18), "%d" % ceili(view[2]), 18, Color(1, 0.85, 0.3))
 		if view[3] >= 0:

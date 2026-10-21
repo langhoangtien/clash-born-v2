@@ -29,6 +29,8 @@ signal level_pressed(index: int)
 
 ## APP đặt mỗi khung: [cấp, giây hồi chiêu, dùng được, nâng được] cho Q/W/R.
 var skill_view: Array = [[0, 0.0, false, false], [0, 0.0, false, false], [0, 0.0, false, false]]
+## art_id của Q/W/R (APP đặt); có hình trong ArtLibrary thì vẽ hình thay chữ.
+var skill_art: Array[StringName] = [&"", &"", &""]
 var attributes_can_level: bool = false
 
 var _aim_pointer: int = -100
@@ -162,11 +164,16 @@ func _draw_skill(font: Font, i: int) -> void:
 	var learned: bool = view[0] > 0
 	var ready: bool = learned and view[2]
 	draw_circle(c, SKILL_RADIUS, Color(0.2, 0.35, 0.6, 0.7) if ready else Color(0.15, 0.15, 0.2, 0.45))
+	var tex: Texture2D = ArtLibrary.texture(skill_art[i])
+	if tex != null:
+		var side: float = SKILL_RADIUS * 2.0 - 8.0
+		draw_texture_rect(tex, Rect2(c - Vector2(side, side) * 0.5, Vector2(side, side)), false, Color.WHITE if ready else Color(0.45, 0.45, 0.45))
 	draw_arc(c, SKILL_RADIUS, 0, TAU, 40, Color(1, 1, 1, 0.7 if ready else 0.2), 3.0, true)
 	if view[1] > 0.0:
 		_label(font, c - Vector2(0, 10), "%d" % ceili(view[1]), 30, Color(1, 0.85, 0.3))
 	else:
-		_label(font, c - Vector2(0, 10), ["Q", "W", "R"][i], 26, Color(1, 1, 1, 0.9 if learned else 0.3))
+		if tex == null:
+			_label(font, c - Vector2(0, 10), ["Q", "W", "R"][i], 26, Color(1, 1, 1, 0.9 if learned else 0.3))
 	_label(font, c + Vector2(0, 22), str(i + 1), 16, Color(1, 1, 1, 0.5))
 	for r: int in range(view[0]):
 		draw_circle(c + Vector2(-16 + r * 8, SKILL_RADIUS - 10), 3.0, Color(1, 0.85, 0.3))
