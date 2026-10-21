@@ -195,7 +195,10 @@ Danh sách đánh dấu:
 > 1. **4a — Icon mẫu (neo phong cách icon):** chỉ làm 4 file `skill_brakk_q`, `skill_myra_r`,
 >    `state_stunned`, `item_frost_orb`. Xong thì **DỪNG** chờ duyệt. Sau khi duyệt, mọi icon
 >    còn lại đính kèm thêm 4 icon mẫu này làm tham chiếu để cùng một bộ.
-> 2. **4b — 14 icon skill còn lại**, rồi **4c — icon trạng thái**. Mỗi phần xong thì dừng báo.
+>    **→ 2026-10-21: 4a ĐÃ DUYỆT** (4 icon đã nhập vào game). Dùng đúng 4 file này làm ảnh
+>    tham chiếu phong cách cho mọi icon sau.
+> 2. **4b — 14 icon skill còn lại** + **4c — icon trạng thái: LÀM LIỀN MỘT LƯỢT**, xong cả
+>    hai mới dừng. Đánh dấu `[x]` vào bảng, rồi **commit + push thư mục `art_inbox/`** lên `main`.
 > 3. **4d — Icon trang bị: ĐÃ CHỐT danh sách (2026-10-21),** làm sau 4c, theo lô 10 món.
 >
 > Phân biệt loại bằng **màu viền**: skill thường viền theo màu bảng dưới; **nội tại** viền

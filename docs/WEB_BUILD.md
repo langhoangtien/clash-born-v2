@@ -6,11 +6,14 @@ không dùng luồng nên chạy được trên Safari iOS, không cần header 
 ## Xuất lại
 
 ```
+godot --headless --path . --import
 godot --headless --path . --export-release "Web" build/web/index.html
 ```
 
 Cần export template web của Godot 4.7.2 (`web_nothreads_release.zip`) trong
 `~/.local/share/godot/export_templates/4.7.2.stable/`. Thư mục `build/` không vào git.
+Luôn chạy `--import` trước khi xuất: ảnh mới thêm vào `assets/art` chưa được nhập sẽ bị bỏ khỏi gói web
+(icon không hiện). Đặt file rỗng `build/.gdignore` để Godot không quét thư mục build.
 
 ## Đưa lên mạng
 
