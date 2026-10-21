@@ -249,9 +249,9 @@ func _draw() -> void:
 func _draw_card(font: Font, r: Rect2, d: ItemDef) -> void:
 	var ok: bool = Shop.buy_problem(world, hero, d.id) == Command.Reject.NONE
 	draw_rect(r, Color(0.13, 0.15, 0.2, 0.95))
-	_draw_icon(font, r.position + Vector2(r.size.x * 0.5, 42), 30.0, d, ok)
-	_center(font, r.position + Vector2(r.size.x * 0.5, 88), d.display_name, 13, Color.WHITE if ok else Color(1, 1, 1, 0.45))
-	_center(font, r.position + Vector2(r.size.x * 0.5, 112), str(Shop.price(world, hero, d)), 16, Color(1, 0.85, 0.3) if ok else Color(1, 0.85, 0.3, 0.45))
+	_draw_icon(font, r.position + Vector2(r.size.x * 0.5, 46), 38.0, d, ok)
+	_center(font, r.position + Vector2(r.size.x * 0.5, 96), d.display_name, 13, Color.WHITE if ok else Color(1, 1, 1, 0.45))
+	_center(font, r.position + Vector2(r.size.x * 0.5, 116), str(Shop.price(world, hero, d)), 16, Color(1, 0.85, 0.3) if ok else Color(1, 0.85, 0.3, 0.45))
 	if d.shop == ItemDef.ShopKind.SECRET:
 		_center(font, r.position + Vector2(22, 18), "ẨN", 13, Color(0.7, 0.85, 1))
 	var left: int = Shop.stock(world, hero.team, d)

@@ -200,6 +200,9 @@ Danh sách đánh dấu:
 > 2. **4b — 14 icon skill còn lại** + **4c — icon trạng thái: LÀM LIỀN MỘT LƯỢT**, xong cả
 >    hai mới dừng. Đánh dấu `[x]` vào bảng, rồi **commit + push thư mục `art_inbox/`** lên `main`.
 > 3. **4d — Icon trang bị: ĐÃ CHỐT danh sách (2026-10-21),** làm sau 4c, theo lô 10 món.
+>    **→ 2026-10-22: lô 1 ĐÃ DUYỆT và nhập vào game.** Làm tiếp **liền các lô còn lại (44 món)**,
+>    mỗi lô xong thì commit + push lên `main` rồi làm lô kế, không cần chờ duyệt. Hai món cùng
+>    loại (vd các loại găng, giày, áo) phải khác nhau rõ về màu / hình dáng.
 >
 > Phân biệt loại bằng **màu viền**: skill thường viền theo màu bảng dưới; **nội tại** viền
 > bạc mảnh hơn; **ultimate (R)** viền đôi vàng kim dày hơn. Mỗi icon chỉ **một** hình chính,
