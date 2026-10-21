@@ -9,6 +9,9 @@ extends SimSystem
 ## Hằng số kỹ thuật: cách điểm đích chừng này coi như đã tới (lính bị đẩy lệch khi tới góc lane).
 const ARRIVE: float = 16.0
 
+## D-108: lính nghĩ lại mỗi chừng này tick (nhẹ CPU điện thoại); vẫn giữ mục tiêu cũ giữa hai lần.
+const THINK_TICKS: int = 2
+
 var _next_tick: int = -1
 var _next_cache: Dictionary[int, Entity] = {}
 
@@ -17,7 +20,8 @@ func run(world: World) -> void:
 	for c: Entity in world.entities:
 		if c.kind == Entity.Kind.LANE_CREEP and c.alive:
 			_remember_aggro(world, c)
-			_think(world, c)
+			if (world.tick + c.id) % THINK_TICKS == 0 or c.order.finished or c.order.type == Order.Type.IDLE:
+				_think(world, c)  # D-108: nghĩ mỗi 2 tick (so le theo id), xong lệnh thì nghĩ ngay
 
 
 func _remember_aggro(world: World, c: Entity) -> void:

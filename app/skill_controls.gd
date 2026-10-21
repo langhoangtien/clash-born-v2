@@ -87,6 +87,12 @@ func _show_aim(slot: int, aim: Vector2, active: bool) -> void:
 		indicator.area_radius = maxf(ward.stats.vision_range, ward.true_sight_range)
 	indicator.width = v.get(&"width", 0.0)
 	indicator.target = hero.position + aim.limit_length(1.0) * indicator.reach
+	indicator.unit_at = Vector2.INF
+	if a.def.targeting == AbilityDef.Targeting.UNIT and a.def.target_team == AbilityDef.Team.ENEMY:
+		var t: Entity = QuickCast.unit_for_aim(world, hero, a, aim)  # D-108: tô đỏ kẻ sẽ bị chọn
+		if t != null:
+			indicator.unit_at = t.position
+			indicator.unit_radius = t.radius
 
 
 ## Phím: 1/2/3 tung vào con trỏ; Ctrl + 1..4 nâng điểm. Trả về true nếu đã xử lý.

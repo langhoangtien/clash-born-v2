@@ -13,6 +13,8 @@ var world: World
 var hero: Entity
 ## Tốc độ chơi thử (SimRunner.speed); >1 thì hiện cạnh đồng hồ.
 var speed: int = 1
+## D-108: ms SIM mỗi tick (APP đặt) — hiện cùng FPS ở góc phải trên để đo trên điện thoại.
+var sim_ms: float = 0.0
 
 
 static func clock_text(tick: int) -> String:
@@ -42,6 +44,7 @@ func _draw() -> void:
 	var top: String = clock_text(world.tick) + ("   ×%d" % speed if speed > 1 else "")
 	_score(font)
 	_text(font, Vector2(size.x * 0.5, 44), top, 34, Color.WHITE, true)
+	_text(font, Vector2(size.x - 210, 108), "FPS %d · SIM %.1f ms" % [Engine.get_frames_per_second(), sim_ms], 18, Color(1, 1, 1, 0.55), false)
 	draw_rect(PANEL, Color(0, 0, 0, 0.45))
 	var x: float = PANEL.position.x + 20
 	var max_hp: float = maxf(1.0, hero.stats.get_stat(StatId.Id.MAX_HP))

@@ -20,6 +20,10 @@ var speed: int = 1
 var _accumulator: float = 0.0
 
 
+## D-108: ms SIM mỗi tick (trung bình trượt).
+var step_ms: float = 0.0
+
+
 func _init(p_world: World) -> void:
 	world = p_world
 
@@ -32,6 +36,7 @@ func advance(delta: float) -> int:
 	var steps: int = 0
 	var cap: int = MAX_STEPS_PER_FRAME * speed
 	var start: int = Time.get_ticks_msec()
+	var t0: int = Time.get_ticks_usec()
 	while _accumulator + 0.000001 >= SimClock.TICK_SECONDS and steps < cap and world.winner < 0:
 		_accumulator -= SimClock.TICK_SECONDS
 		before_step.emit()
@@ -40,6 +45,8 @@ func advance(delta: float) -> int:
 		if speed > 1 and Time.get_ticks_msec() - start > FAST_FRAME_BUDGET_MS:
 			_accumulator = 0.0
 			break
+	if steps > 0:  # D-108: thời gian SIM trung bình mỗi tick (hiện ở HUD để đo trên điện thoại)
+		step_ms = lerpf(step_ms, (Time.get_ticks_usec() - t0) / 1000.0 / steps, 0.1)
 	if steps == cap or world.winner >= 0:
 		_accumulator = minf(_accumulator, SimClock.TICK_SECONDS * 0.999)
 	return steps

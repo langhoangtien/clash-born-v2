@@ -342,3 +342,24 @@ func test_M38_aimed_and_cursor_casts() -> void:
 	a.def.targeting = AbilityDef.Targeting.UNIT
 	assert_eq(QuickCast.at_point(w, me, AbilityDef.Slot.Q, Vector2(500, 760)).target_id, other.id, "đơn vị gần con trỏ nhất")
 	assert_eq(QuickCast.at_point(w, me, AbilityDef.Slot.Q, Vector2(710, 520)).target_id, near.id)
+
+
+func test_D_108_drag_unit_skill_picks_enemy_closest_to_drag_direction() -> void:
+	var w: World = World.new(1, load("res://content/balance/balance_settings.tres") as BalanceSettings)
+	var me: Entity = _unit_at(w, 0, Vector2(500, 500), Entity.Kind.HERO)
+	var up: Entity = _unit_at(w, 1, Vector2(500, 200), Entity.Kind.LANE_CREEP)
+	var right: Entity = _unit_at(w, 1, Vector2(800, 500), Entity.Kind.LANE_CREEP)
+	var hero_up_right: Entity = _unit_at(w, 1, Vector2(700, 300), Entity.Kind.HERO)
+	var d: AbilityDef = AbilityDef.new()
+	d.slot = AbilityDef.Slot.Q
+	d.targeting = AbilityDef.Targeting.UNIT
+	d.values = {&"cast_range": PackedFloat32Array([500, 500, 500, 500, 500])}
+	var a: AbilityInstance = AbilityInstance.new()
+	a.def = d
+	a.slot = AbilityDef.Slot.Q
+	a.rank = 1
+	me.abilities.append(a)
+	assert_eq(QuickCast.unit_for_aim(w, me, a, Vector2(1, 0)), right, "kéo sang phải: lính bên phải")
+	assert_eq(QuickCast.unit_for_aim(w, me, a, Vector2(0, -1)), up, "kéo lên: lính phía trên")
+	assert_eq(QuickCast.unit_for_aim(w, me, a, Vector2(1, -0.6).normalized()), hero_up_right, "gần hướng kéo, hero được ưu tiên")
+	assert_eq(QuickCast.aimed(w, me, AbilityDef.Slot.Q, Vector2(1, 0)).target_id, right.id)

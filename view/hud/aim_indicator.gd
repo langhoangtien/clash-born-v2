@@ -12,6 +12,9 @@ var target: Vector2 = Vector2.ZERO
 var area_radius: float = 0.0
 var width: float = 0.0
 var targeting: AbilityDef.Targeting = AbilityDef.Targeting.NO_TARGET
+## D-108: chiêu chọn đơn vị — vị trí kẻ sẽ bị chọn (INF = chưa có ai), bán kính thân.
+var unit_at: Vector2 = Vector2.INF
+var unit_radius: float = 30.0
 
 
 func _process(_delta: float) -> void:
@@ -34,6 +37,13 @@ func _draw() -> void:
 			var end: Vector2 = origin + dir * reach
 			draw_colored_polygon(PackedVector2Array([origin + side, end + side, end - side, origin - side]), fill)
 			draw_line(origin, end, line, 4.0, true)
+		AbilityDef.Targeting.UNIT:
+			if unit_at.is_finite():
+				draw_line(origin, unit_at, Color(1, 0.4, 0.3, 0.8), 4.0, true)
+				draw_arc(unit_at, unit_radius + 14.0, 0, TAU, 40, Color(1, 0.3, 0.25, 0.95), 5.0, true)
+				draw_circle(unit_at, unit_radius + 14.0, Color(1, 0.3, 0.25, 0.15))
+			else:
+				draw_line(origin, target, Color(1, 1, 1, 0.3), 3.0, true)
 		_:
 			draw_line(origin, target, Color(1, 1, 1, 0.4), 3.0, true)
 			draw_circle(target, maxf(area_radius, 40.0), fill)

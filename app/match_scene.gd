@@ -122,7 +122,9 @@ func tick_frame(delta: float) -> void:
 	camera.position = minimap.peek_point if minimap.peeking else units_view.display_position(hero)
 	var view_size: Vector2 = get_viewport_rect().size / camera.zoom
 	minimap.camera_rect = Rect2(camera.position - view_size * 0.5, view_size)
+	fog.view_rect = minimap.camera_rect  # D-108: chỉ tô sương trong khung camera
 	match_hud.speed = runner.speed
+	match_hud.sim_ms = runner.step_ms
 	skills.refresh()
 	var zone: Rect2 = skills.items.zone_rect()  # D-88: buff/debuff ngay trên chỗ nút đồ, như Liên Quân
 	var origin: Vector2 = skills.items.global_position - buff_bar.global_position

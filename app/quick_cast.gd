@@ -53,10 +53,14 @@ static func target(world: World, hero: Entity, a: AbilityInstance, reach: float)
 
 
 ## Kéo nút để nhắm: `aim` dài 0..1 = tỉ lệ tầm chiêu theo hướng kéo (D-59: không quá tầm).
+## Chiêu chọn đơn vị (D-108, kiểu Liên Quân): chọn kẻ địch lệch ít nhất so với hướng kéo.
 static func aimed(world: World, hero: Entity, slot: int, aim: Vector2) -> Command:
 	var a: AbilityInstance = Abilities.of(hero, slot)
 	if a == null or aim.length() < 0.001:
 		return command(world, hero, slot)
+	if a.def.targeting == AbilityDef.Targeting.UNIT and a.def.target_team == AbilityDef.Team.ENEMY:
+		var t: Entity = unit_for_aim(world, hero, a, aim)
+		return Command.cast(hero.id, slot, t.id) if t != null else command(world, hero, slot)
 	return at_point(world, hero, slot, hero.position + aim.limit_length(1.0) * reach_of(hero, a))
 
 
@@ -98,3 +102,24 @@ static func ward_of(a: AbilityInstance) -> UnitDef:
 		if action is PlaceWardAction:
 			return (action as PlaceWardAction).ward
 	return null
+
+
+## D-108: mục tiêu của chiêu chọn đơn vị khi kéo theo hướng `aim`: trong tầm chiêu + tầm tìm,
+## góc lệch với hướng kéo nhỏ nhất (hero địch được ưu tiên 25°); kéo quá ngắn → tự chọn như chạm.
+static func unit_for_aim(world: World, hero: Entity, a: AbilityInstance, aim: Vector2) -> Entity:
+	var reach: float = Abilities.value(hero, a, &"cast_range")
+	if aim.length() < 0.15:
+		return target(world, hero, a, reach)
+	var search: float = (reach if reach > 0.0 else 600.0) + world.balance.attack_search_bonus
+	var best: Entity = null
+	var best_score: float = INF
+	for e: Entity in world.entities:
+		if e == hero or not Abilities.accepts(hero, a.def, e) or Rules.edge_distance(hero, e) > search:
+			continue
+		var to: Vector2 = e.position - hero.position
+		var angle: float = absf(aim.angle_to(to)) if to.length() > 1.0 else 0.0
+		var score: float = angle - (deg_to_rad(25.0) if e.kind == Entity.Kind.HERO else 0.0)
+		if score < best_score:
+			best = e
+			best_score = score
+	return best

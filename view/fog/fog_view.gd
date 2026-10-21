@@ -13,6 +13,9 @@ var team: int = 0
 ## Vị trí hiển thị của đơn vị (UnitsView.display_position); null thì dùng vị trí SIM.
 var place: Callable
 var fog_alpha: float = 0.6
+## Vùng camera đang nhìn (tọa độ map); chỉ gửi mắt có vòng nhìn chạm vùng này lên shader
+## (D-108: nhẹ GPU điện thoại). Rỗng = gửi hết.
+var view_rect: Rect2 = Rect2()
 
 
 func _ready() -> void:
@@ -48,6 +51,8 @@ func _process(_delta: float) -> void:
 	if world == null:
 		return
 	var list: Array[Vector4] = eyes(world, team, place)
+	if view_rect.has_area():
+		list = list.filter(func(v: Vector4) -> bool: return view_rect.grow(v.z).has_point(Vector2(v.x, v.y)))
 	var count: int = list.size()
 	list.resize(MAX_EYES)
 	(material as ShaderMaterial).set_shader_parameter("eyes", list)
@@ -57,4 +62,5 @@ func _process(_delta: float) -> void:
 
 func _draw() -> void:
 	if world != null and world.map != null:
-		draw_rect(Rect2(Vector2.ZERO, world.map.world_size()), Color.WHITE)
+		var area: Rect2 = Rect2(Vector2.ZERO, world.map.world_size())
+		draw_rect(area.intersection(view_rect.grow(64.0)) if view_rect.has_area() else area, Color.WHITE)
