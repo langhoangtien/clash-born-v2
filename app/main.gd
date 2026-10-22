@@ -37,6 +37,10 @@ func _ready() -> void:
 		match_button.add_theme_font_size_override("font_size", 36)
 		match_button.pressed.connect(_start.bind(id))
 		box.add_child(match_button)
+	var audio: AudioView = AudioView.new()  # D-114: nhạc menu (Safari phát sau lần chạm đầu tiên)
+	audio.name = "Audio"
+	add_child(audio)
+	audio.play_music(&"music_menu")
 	print(VERSION_TEXT + " ready")
 
 

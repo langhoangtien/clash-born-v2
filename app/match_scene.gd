@@ -36,6 +36,7 @@ var result: ResultPanel
 var hero_def: HeroDef
 var skills: SkillControls = SkillControls.new()
 var fog: FogView
+var audio: AudioView
 var minimap: Minimap
 var shop: ShopPanel
 
@@ -74,6 +75,7 @@ func _ready() -> void:
 	input.hero = hero
 	runner = SimRunner.new(world)
 	runner.before_step.connect(_before_step)
+	_setup_audio()
 	camera.position = hero.position
 	skills.world = world
 	skills.hero = hero
@@ -123,6 +125,7 @@ func tick_frame(delta: float) -> void:
 	var view_size: Vector2 = get_viewport_rect().size / camera.zoom
 	minimap.camera_rect = Rect2(camera.position - view_size * 0.5, view_size)
 	fog.view_rect = minimap.camera_rect  # D-108: chỉ tô sương trong khung camera
+	audio.listener = camera.position
 	match_hud.speed = runner.speed
 	match_hud.sim_ms = runner.step_ms
 	skills.refresh()
@@ -185,3 +188,20 @@ func _unhandled_input(event: InputEvent) -> void:
 		input.click_world_point(get_global_mouse_position(), true)
 	elif event is InputEventScreenTouch and event.pressed:
 		input.click_world_point(get_canvas_transform().affine_inverse() * (event as InputEventScreenTouch).position, false)
+
+
+## D-114: âm thanh theo sự kiện trận, nhạc trận + tiếng nền map, nút chế độ tiếng (phím M).
+func _setup_audio() -> void:
+	audio = AudioView.new()
+	audio.name = "Audio"
+	add_child(audio)
+	audio.setup_match(hero.team, hero.id)
+	runner.stepped.connect(func() -> void: audio.on_step(world))
+	audio.play_music(&"music_match", &"amb_map")
+	var toggle: SoundToggle = SoundToggle.new()
+	toggle.name = "SoundToggle"
+	$Hud.add_child(toggle)
+	toggle.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	toggle.pressed.connect(func() -> void:
+		audio.cycle_mode()
+		toggle.queue_redraw())

@@ -220,3 +220,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | Icon 4d lô 1 | Xong | 2026-10-22 | 550 test xanh; 10 icon đồ cơ bản nhập vào game, icon trong thẻ shop to hơn (bán kính 30 → 38). Còn 44 icon đồ |
 | Icon 4d xong | Xong | 2026-10-22 | 550 test xanh; đủ 55 icon đồ trong shop, nút đồ, ô đồ. **Hết Đợt 4 (icon)** |
 | Icon 4e | Xong | 2026-10-22 | 550 test xanh; icon nút Đánh / Lính / Trụ (D-110), import_icons cắt viền trong suốt cho icon nút |
+| Âm thanh A1 | Xong | 2026-10-22 | 557 test xanh (+7); 62 tiếng ElevenLabs (D-111..113), bộ phát theo sự kiện + thông báo + nhạc, nút chế độ tiếng (D-114). **Chơi thử có tiếng** |

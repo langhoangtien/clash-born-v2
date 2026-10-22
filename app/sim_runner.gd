@@ -10,6 +10,8 @@ const MAX_STEPS_PER_FRAME: int = 5
 const FAST_FRAME_BUDGET_MS: int = 25
 
 signal before_step
+## Sau mỗi tick (VIEW đọc world.events của tick đó, vd âm thanh D-114).
+signal stepped
 
 var world: World
 var paused: bool = false
@@ -41,6 +43,7 @@ func advance(delta: float) -> int:
 		_accumulator -= SimClock.TICK_SECONDS
 		before_step.emit()
 		world.step()
+		stepped.emit()
 		steps += 1
 		if speed > 1 and Time.get_ticks_msec() - start > FAST_FRAME_BUDGET_MS:
 			_accumulator = 0.0

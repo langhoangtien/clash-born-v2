@@ -70,6 +70,8 @@ clashborn_v2/
     map/                   MapView, MapPainter (vẽ tạm bằng hình phẳng)
     units/                 UnitsView: vẽ đơn vị, nội suy giữa hai tick, y-sort
     art/                   ArtLibrary: res://assets/art/<art_id>.png, thiếu → hình tạm
+    audio/                 SoundLibrary (res://assets/audio/<id>.ogg, thiếu → im lặng), AudioCues
+                           (sự kiện tick → tiếng, lọc sương mù), AudioView (phát, nhạc) — D-114
     hud/                   TouchJoystick (joystick ảo; tên VirtualJoystick trùng lớp có sẵn của Godot 4.7)
   app/                     scene chính, luồng màn hình, màn xem map, màn trận;
                            SimRunner: chạy World 30 tick/giây theo thời gian thật;
