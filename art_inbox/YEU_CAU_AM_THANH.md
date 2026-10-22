@@ -24,4 +24,4 @@ Claude sẽ tự cân âm lượng, cắt khoảng lặng, chuyển sang .ogg v�
 
 ## Ghi chú của Codex
 
-(trống)
+- 2026-10-22: Đã chạy đợt A1 bằng biến môi trường `ELEVENLABS_API_KEY`. ElevenLabs trả HTTP 401, `missing_permissions`: khóa thiếu quyền `sound_generation`. Chưa tạo được file âm thanh nào (0/47), chưa thể nghe thử. Cần người chơi bật quyền Sound Generation hoặc cấp khóa có quyền đó rồi chạy lại. Không sửa `generate.py` / `sounds.json`; không lưu khóa vào repo.
