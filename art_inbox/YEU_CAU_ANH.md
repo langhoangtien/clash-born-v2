@@ -185,6 +185,9 @@ Danh sách đánh dấu:
 - [ ] myra_sheet  - [ ] myra_body  - [ ] myra_portrait
 - [ ] noctis_sheet  - [ ] noctis_body  - [ ] noctis_portrait
 - [ ] vexa_sheet  - [ ] vexa_body  - [ ] vexa_portrait
+- [x] gorran_sheet  - [ ] gorran_body  - [ ] gorran_portrait
+
+Gorran: đã tạo `03_heroes/gorran_sheet.png` (1536 × 1024, PNG alpha), **chờ người dùng duyệt thiết kế**. Chưa làm ảnh thân / chân dung theo điểm dừng duyệt của Đợt 3. Đã làm lại nền ảnh sheet để bỏ quầng sáng, tách nền trong suốt và căn chân ở khoảng 1/5 dưới khung.
 
 ---
 
@@ -336,14 +339,16 @@ icon tạm chữ cái cho 8 file này. Xong thì commit + push lên `main`.
 
 | Xong | File | Màu viền | Mô tả |
 |---|---|---|---|
-| [ ] | `04_icons/item_desolator.png` | đỏ sẫm | Wicked curved reaper blade dripping dark red corrosion |
-| [ ] | `04_icons/item_corrosion_blade.png` | xanh rêu | Small short blade with green acid corrosion on the edge |
-| [ ] | `04_icons/item_claws_fury.png` | cam | Pair of sharp beast claws with orange speed streaks |
-| [ ] | `04_icons/item_moon_shard.png` | xanh trăng | Glowing pale-blue crystal shard shaped like a crescent moon |
-| [ ] | `04_icons/skill_gorran_innate.png` | bạc (nội tại) | Muscular arm holding a bubbling alchemy flask, golden glow |
-| [ ] | `04_icons/skill_gorran_q.png` | xanh axit | Bubbling green acid pool splashing on the ground |
-| [ ] | `04_icons/skill_gorran_w.png` | cam đỏ | Armored dragon tail whipping with a stun shockwave |
-| [ ] | `04_icons/skill_gorran_r.png` | đỏ (ult, viền đôi vàng) | Raging ogre alchemist roaring, red chemical fumes, glowing eyes |
+| [x] | `04_icons/item_desolator.png` | đỏ sẫm | Wicked curved reaper blade dripping dark red corrosion |
+| [x] | `04_icons/item_corrosion_blade.png` | xanh rêu | Small short blade with green acid corrosion on the edge |
+| [x] | `04_icons/item_claws_fury.png` | cam | Pair of sharp beast claws with orange speed streaks |
+| [x] | `04_icons/item_moon_shard.png` | xanh trăng | Glowing pale-blue crystal shard shaped like a crescent moon |
+| [x] | `04_icons/skill_gorran_innate.png` | bạc (nội tại) | Muscular arm holding a bubbling alchemy flask, golden glow |
+| [x] | `04_icons/skill_gorran_q.png` | xanh axit | Bubbling green acid pool splashing on the ground |
+| [x] | `04_icons/skill_gorran_w.png` | cam đỏ | Armored dragon tail whipping with a stun shockwave |
+| [x] | `04_icons/skill_gorran_r.png` | đỏ (ult, viền đôi vàng) | Raging ogre alchemist roaring, red chemical fumes, glowing eyes |
+
+4f: đã kiểm tra đủ 8 PNG 256 × 256, alpha ngoài vòng tròn, lề ≥ 8%, xem thử ở 64 px. Đã làm lại Desolator / Corrosion Blade để đúng viền đỏ sẫm / xanh rêu, và nội tại Gorran để thấy rõ cánh tay cơ bắp cầm bình thuốc. Icon R dùng thiết kế từ bảng Gorran đang chờ duyệt.
 
 ---
 
