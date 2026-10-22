@@ -185,9 +185,9 @@ Danh sách đánh dấu:
 - [ ] myra_sheet  - [ ] myra_body  - [ ] myra_portrait
 - [ ] noctis_sheet  - [ ] noctis_body  - [ ] noctis_portrait
 - [ ] vexa_sheet  - [ ] vexa_body  - [ ] vexa_portrait
-- [x] gorran_sheet  - [ ] gorran_body  - [ ] gorran_portrait
+- [x] gorran_sheet  - [x] gorran_body  - [x] gorran_portrait
 
-Gorran: đã tạo `03_heroes/gorran_sheet.png` (1536 × 1024, PNG alpha), **chờ người dùng duyệt thiết kế**. Chưa làm ảnh thân / chân dung theo điểm dừng duyệt của Đợt 3. Đã làm lại nền ảnh sheet để bỏ quầng sáng, tách nền trong suốt và căn chân ở khoảng 1/5 dưới khung.
+Gorran: **bảng nhân vật đã được người dùng duyệt 2026-10-22**. Đã tạo `03_heroes/gorran_body.png` và `03_heroes/gorran_portrait.png` (512 × 512, PNG alpha), dùng bảng Gorran đã duyệt cùng hai ảnh phong cách bắt buộc làm tham chiếu. Ảnh thân quay sang phải, tư thế chờ chiến đấu, chân ở khoảng 1/5 dưới khung; chân dung đầu và vai quay hơi phải. Giữ nguyên goblin trợ thủ, khuôn mặt, tóc, tạp dề và bộ bình thuốc của thiết kế đã duyệt. Đã kiểm tra kích thước, nền trong suốt và lề ≥ 8%.
 
 ---
 
@@ -348,7 +348,7 @@ icon tạm chữ cái cho 8 file này. Xong thì commit + push lên `main`.
 | [x] | `04_icons/skill_gorran_w.png` | cam đỏ | Armored dragon tail whipping with a stun shockwave |
 | [x] | `04_icons/skill_gorran_r.png` | đỏ (ult, viền đôi vàng) | Raging ogre alchemist roaring, red chemical fumes, glowing eyes |
 
-4f: đã kiểm tra đủ 8 PNG 256 × 256, alpha ngoài vòng tròn, lề ≥ 8%, xem thử ở 64 px. Đã làm lại Desolator / Corrosion Blade để đúng viền đỏ sẫm / xanh rêu, và nội tại Gorran để thấy rõ cánh tay cơ bắp cầm bình thuốc. Icon R dùng thiết kế từ bảng Gorran đang chờ duyệt.
+4f: đã kiểm tra đủ 8 PNG 256 × 256, alpha ngoài vòng tròn, lề ≥ 8%, xem thử ở 64 px. Đã làm lại Desolator / Corrosion Blade để đúng viền đỏ sẫm / xanh rêu, và nội tại Gorran để thấy rõ cánh tay cơ bắp cầm bình thuốc. Icon R dùng thiết kế từ bảng Gorran đã được người dùng duyệt 2026-10-22.
 
 ---
 
