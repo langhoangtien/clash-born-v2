@@ -4,7 +4,7 @@
 // Incrementing CACHE_VERSION will kick off the install event and force
 // previously cached resources to be updated from the network.
 /** @type {string} */
-const CACHE_VERSION = '1792682160|6291458';
+const CACHE_VERSION = '1792683037|4280557';
 /** @type {string} */
 const CACHE_PREFIX = 'Clashborn v2-sw-cache-';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
