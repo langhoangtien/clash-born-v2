@@ -262,16 +262,16 @@ giữa, không chữ. Làm theo lô 10 món, mỗi lô xong thì báo.
 | [x] | `04_icons/item_energy_booster.png` | Glowing blue mana crystal |
 | [x] | `04_icons/item_quarterstaff.png` | Wooden fighting staff with metal caps |
 | [x] | `04_icons/item_broadsword.png` | Broad steel sword |
-| [ ] | `04_icons/item_ogre_axe.png` | Huge crude ogre axe |
-| [ ] | `04_icons/item_blade_alacrity.png` | Thin swift blade with green wind wisps |
-| [ ] | `04_icons/item_staff_wizardry.png` | Wizard staff topped with a blue orb |
-| [ ] | `04_icons/item_platemail.png` | Heavy steel plate armor |
-| [ ] | `04_icons/item_claymore.png` | Large two-handed claymore |
-| [ ] | `04_icons/item_hyperstone.png` | Sharp golden-orange speed crystal with motion lines |
-| [ ] | `04_icons/item_demon_edge.png` | Dark demonic sword with red runes |
-| [ ] | `04_icons/item_wraith_band.png` | Green spectral wristband |
-| [ ] | `04_icons/item_bracer.png` | Iron bracer with an orange gem |
-| [ ] | `04_icons/item_null_talisman.png` | Blue talisman amulet with a rune |
+| [x] | `04_icons/item_ogre_axe.png` | Huge crude ogre axe |
+| [x] | `04_icons/item_blade_alacrity.png` | Thin swift blade with green wind wisps |
+| [x] | `04_icons/item_staff_wizardry.png` | Wizard staff topped with a blue orb |
+| [x] | `04_icons/item_platemail.png` | Heavy steel plate armor |
+| [x] | `04_icons/item_claymore.png` | Large two-handed claymore |
+| [x] | `04_icons/item_hyperstone.png` | Sharp golden-orange speed crystal with motion lines |
+| [x] | `04_icons/item_demon_edge.png` | Dark demonic sword with red runes |
+| [x] | `04_icons/item_wraith_band.png` | Green spectral wristband |
+| [x] | `04_icons/item_bracer.png` | Iron bracer with an orange gem |
+| [x] | `04_icons/item_null_talisman.png` | Blue talisman amulet with a rune |
 | [ ] | `04_icons/item_boots_haste.png` | Red boots with small wings and speed lines |
 | [ ] | `04_icons/item_boots_arcane.png` | Blue magic boots with glowing runes |
 | [ ] | `04_icons/item_boots_guard.png` | Armored steel boots |
