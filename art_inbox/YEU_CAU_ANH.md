@@ -282,17 +282,17 @@ giữa, không chữ. Làm theo lô 10 món, mỗi lô xong thì báo.
 | [x] | `04_icons/item_magic_cloak.png` | Long purple cloak shimmering with a protective rune |
 | [x] | `04_icons/item_assault_plate.png` | Ornate golden plate armor with spikes |
 | [x] | `04_icons/item_giant_heart.png` | Huge glowing red heart wrapped in iron bands |
-| [ ] | `04_icons/item_storm_staff.png` | Staff crackling with blue lightning |
-| [ ] | `04_icons/item_crit_blade.png` | Curved sword with a red critical spark |
-| [ ] | `04_icons/item_divine_blade.png` | Large holy golden blade with a red jewel |
-| [ ] | `04_icons/item_grapes.png` | Bunch of three purple grapes |
-| [ ] | `04_icons/item_ghost_scepter.png` | Pale green scepter with a ghostly wisp |
-| [ ] | `04_icons/item_resolute_armor.png` | Black and gold breastplate radiating golden aura |
+| [x] | `04_icons/item_storm_staff.png` | Staff crackling with blue lightning |
+| [x] | `04_icons/item_crit_blade.png` | Curved sword with a red critical spark |
+| [x] | `04_icons/item_divine_blade.png` | Large holy golden blade with a red jewel |
+| [x] | `04_icons/item_grapes.png` | Bunch of three purple grapes |
+| [x] | `04_icons/item_ghost_scepter.png` | Pale green scepter with a ghostly wisp |
+| [x] | `04_icons/item_resolute_armor.png` | Black and gold breastplate radiating golden aura |
 | [x] | `04_icons/item_frost_orb.png` | Icy blue orb with frost crystals |
-| [ ] | `04_icons/item_reveal_dust.png` | Small pouch spilling glittering dust |
-| [ ] | `04_icons/item_cyclone_staff.png` | Staff with a small swirling tornado |
-| [ ] | `04_icons/item_shadow_blade.png` | Dark curved blade dissolving into shadow |
-| [ ] | `04_icons/item_hex_scythe.png` | Ornate scythe with a frog-shaped gem |
+| [x] | `04_icons/item_reveal_dust.png` | Small pouch spilling glittering dust |
+| [x] | `04_icons/item_cyclone_staff.png` | Staff with a small swirling tornado |
+| [x] | `04_icons/item_shadow_blade.png` | Dark curved blade dissolving into shadow |
+| [x] | `04_icons/item_hex_scythe.png` | Ornate scythe with a frog-shaped gem |
 | [ ] | `04_icons/item_cleansing_charm.png` | Glowing white charm amulet |
 | [ ] | `04_icons/item_stun_hammer.png` | Heavy war hammer with stun stars |
 | [ ] | `04_icons/item_observer_ward.png` | Golden eye on a small wooden stake |
