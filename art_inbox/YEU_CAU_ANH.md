@@ -293,10 +293,10 @@ giữa, không chữ. Làm theo lô 10 món, mỗi lô xong thì báo.
 | [x] | `04_icons/item_cyclone_staff.png` | Staff with a small swirling tornado |
 | [x] | `04_icons/item_shadow_blade.png` | Dark curved blade dissolving into shadow |
 | [x] | `04_icons/item_hex_scythe.png` | Ornate scythe with a frog-shaped gem |
-| [ ] | `04_icons/item_cleansing_charm.png` | Glowing white charm amulet |
-| [ ] | `04_icons/item_stun_hammer.png` | Heavy war hammer with stun stars |
-| [ ] | `04_icons/item_observer_ward.png` | Golden eye on a small wooden stake |
-| [ ] | `04_icons/item_sentry_ward.png` | Blue eye on a small wooden stake with a faint sight ring |
+| [x] | `04_icons/item_cleansing_charm.png` | Glowing white charm amulet |
+| [x] | `04_icons/item_stun_hammer.png` | Heavy war hammer with stun stars |
+| [x] | `04_icons/item_observer_ward.png` | Golden eye on a small wooden stake |
+| [x] | `04_icons/item_sentry_ward.png` | Blue eye on a small wooden stake with a faint sight ring |
 
 ### Trạng thái (12) — 64 × 64, biểu tượng đơn giản, nét đậm, nền trong suốt
 
