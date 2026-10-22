@@ -1,58 +1,324 @@
 {
-  "_ghi_chu": "Danh sách hiệu ứng âm thanh cho ElevenLabs (D-111). id = tên file trong art_inbox/06_audio/<id>.mp3. duration: giây (0.5–30). influence: 0–1 (cao = bám câu lệnh). loop: tiếng lặp liền mạch.",
-  "style": "stylized fantasy mobile MOBA game sound effect, punchy, clean, no music, no voice",
-  "sounds": [
-    {"id": "ui_click", "duration": 0.5, "text": "soft wooden UI button click"},
-    {"id": "ui_buy", "duration": 0.8, "text": "shop purchase, coins dropping into a leather pouch with a bright chime"},
-    {"id": "ui_sell", "duration": 0.7, "text": "a few coins clinking onto a wooden counter"},
-    {"id": "ui_error", "duration": 0.5, "text": "short low muted error buzz, UI deny"},
-    {"id": "ui_level_up", "duration": 1.5, "text": "hero level up, rising magical shimmer with a triumphant bright sparkle"},
-    {"id": "ui_skill_up", "duration": 0.7, "text": "quick ascending magical ding, skill upgraded"},
-    {"id": "ui_gold", "duration": 0.5, "text": "single crisp gold coin pickup ding"},
-
-    {"id": "hit_melee", "duration": 0.5, "text": "heavy gauntlet punch impact on armor"},
-    {"id": "hit_blade", "duration": 0.5, "text": "fast dagger slash hitting flesh, sharp swish"},
-    {"id": "shot_magic", "duration": 0.5, "text": "small magic bolt launched, airy whoosh"},
-    {"id": "hit_magic", "duration": 0.5, "text": "small magic bolt impact, soft arcane pop"},
-    {"id": "hit_crit", "duration": 0.8, "text": "critical strike, brutal heavy slash with metallic ring"},
-    {"id": "creep_melee_hit", "duration": 0.5, "text": "light short sword clang, small soldier attack"},
-    {"id": "creep_ranged_shot", "duration": 0.5, "text": "small arrow released from a short bow, twang"},
-    {"id": "tower_shot", "duration": 0.8, "text": "stone defense tower fires a glowing crystal energy bolt, deep magical thump"},
-    {"id": "tower_hit", "duration": 0.6, "text": "crystal energy bolt impact, heavy crackle"},
-    {"id": "fountain_shot", "duration": 0.8, "text": "powerful holy energy beam zap"},
-
-    {"id": "cast_brakk_q", "duration": 1.2, "text": "giant fist slams the ground, earthquake shockwave, rocks cracking"},
-    {"id": "cast_brakk_w", "duration": 1.0, "text": "metal shield bubble forms around armor, heavy steel ring and hum"},
-    {"id": "cast_brakk_r", "duration": 1.8, "text": "ghostly spirit warrior rises, eerie wind and ethereal choir swell"},
-    {"id": "proc_brakk_bash", "duration": 0.6, "text": "heavy stunning punch, dull thud with ringing stars"},
-    {"id": "cast_myra_q", "duration": 1.0, "text": "piercing ice beam shoots forward, crystalline whoosh and frost crackle"},
-    {"id": "cast_myra_w", "duration": 1.0, "text": "magic circle appears on the ground, vines erupt and bind, rustling"},
-    {"id": "cast_myra_r", "duration": 2.0, "text": "meteors falling from the sky, fiery roar and explosive impacts"},
-    {"id": "cast_noctis_q", "duration": 0.7, "text": "fast shadow dash, dark whoosh with dagger slice"},
-    {"id": "cast_noctis_w", "duration": 1.0, "text": "assassin fades into darkness, soft dark shimmer and hiss"},
-    {"id": "cast_noctis_r", "duration": 1.2, "text": "ominous death mark sigil applied, deep dark bell toll"},
-    {"id": "cast_vexa_q", "duration": 1.0, "text": "magic puff of smoke transforming someone into a frog, comedic croak"},
-    {"id": "cast_vexa_w", "duration": 1.0, "text": "strong swirling gust of wind blasting forward"},
-    {"id": "cast_vexa_r", "duration": 1.2, "text": "magic energy ripped away from a target, tearing arcane whoosh"},
-    {"id": "item_use", "duration": 0.7, "text": "magic item activated, short bright arcane burst"},
-
-    {"id": "state_stun", "duration": 0.8, "text": "dizzy stun, cartoon birds and ringing stars circling"},
-    {"id": "state_silence", "duration": 0.7, "text": "muffled magic seal, short hush"},
-    {"id": "state_shield_break", "duration": 0.7, "text": "magic shield shatters like glass"},
-    {"id": "state_reincarnate", "duration": 2.0, "text": "hero revived from death, holy rising chime and energy surge"},
-
-    {"id": "ward_place", "duration": 0.6, "text": "small wooden totem planted into soil with a magic eye opening"},
-    {"id": "ward_destroyed", "duration": 0.6, "text": "small wooden totem breaking with a fading magic pop"},
-    {"id": "recall_start", "duration": 8.0, "loop": true, "text": "teleport channel, swirling blue magic portal hum building up"},
-    {"id": "recall_finish", "duration": 1.0, "text": "teleport complete, bright whoosh and magical pop"},
-    {"id": "hero_death", "duration": 1.2, "text": "hero falls in battle, heavy body drop and fading groan, no words"},
-    {"id": "creep_death", "duration": 0.5, "text": "small soldier defeated, short thud"},
-    {"id": "respawn", "duration": 1.0, "text": "hero respawns at base, bright magical rise"},
-    {"id": "tower_destroyed", "duration": 2.5, "text": "large stone tower collapsing, crumbling rocks and crystal shatter"},
-    {"id": "core_destroyed", "duration": 4.0, "text": "massive crystal core explodes, huge magical explosion and rumble"},
-    {"id": "victory", "duration": 3.0, "text": "victory fanfare stinger, short triumphant brass and drums"},
-    {"id": "defeat", "duration": 3.0, "text": "defeat stinger, short somber low brass and fading drum"},
-
-    {"id": "amb_map", "duration": 30.0, "loop": true, "influence": 0.5, "text": "calm fantasy battlefield ambience, gentle wind, distant birds, rustling leaves"}
+ "_ghi_chu": "Danh sách hiệu ứng âm thanh cho ElevenLabs (D-111). id = tên file trong art_inbox/06_audio/<id>.mp3. duration: giây (0.5–30). influence: 0–1 (cao = bám câu lệnh). loop: tiếng lặp liền mạch.",
+ "style": "stylized fantasy mobile MOBA game sound effect, punchy, clean, no music, no voice",
+ "sounds": [
+  {
+   "id": "ui_click",
+   "duration": 0.5,
+   "text": "soft wooden UI button click"
+  },
+  {
+   "id": "ui_buy",
+   "duration": 0.8,
+   "text": "shop purchase, coins dropping into a leather pouch with a bright chime"
+  },
+  {
+   "id": "ui_sell",
+   "duration": 0.7,
+   "text": "a few coins clinking onto a wooden counter"
+  },
+  {
+   "id": "ui_error",
+   "duration": 0.5,
+   "text": "short low muted error buzz, UI deny"
+  },
+  {
+   "id": "ui_level_up",
+   "duration": 1.5,
+   "text": "hero level up, rising magical shimmer with a triumphant bright sparkle"
+  },
+  {
+   "id": "ui_skill_up",
+   "duration": 0.7,
+   "text": "quick ascending magical ding, skill upgraded"
+  },
+  {
+   "id": "ui_gold",
+   "duration": 0.5,
+   "text": "single crisp gold coin pickup ding"
+  },
+  {
+   "id": "hit_melee",
+   "duration": 0.5,
+   "text": "heavy gauntlet punch impact on armor"
+  },
+  {
+   "id": "hit_blade",
+   "duration": 0.5,
+   "text": "fast dagger slash hitting flesh, sharp swish"
+  },
+  {
+   "id": "shot_magic",
+   "duration": 0.5,
+   "text": "small magic bolt launched, airy whoosh"
+  },
+  {
+   "id": "hit_magic",
+   "duration": 0.5,
+   "text": "small magic bolt impact, soft arcane pop"
+  },
+  {
+   "id": "hit_crit",
+   "duration": 0.8,
+   "text": "critical strike, brutal heavy slash with metallic ring"
+  },
+  {
+   "id": "creep_melee_hit",
+   "duration": 0.5,
+   "text": "light short sword clang, small soldier attack"
+  },
+  {
+   "id": "creep_ranged_shot",
+   "duration": 0.5,
+   "text": "small arrow released from a short bow, twang"
+  },
+  {
+   "id": "tower_shot",
+   "duration": 0.8,
+   "text": "stone defense tower fires a glowing crystal energy bolt, deep magical thump"
+  },
+  {
+   "id": "tower_hit",
+   "duration": 0.6,
+   "text": "crystal energy bolt impact, heavy crackle"
+  },
+  {
+   "id": "fountain_shot",
+   "duration": 0.8,
+   "text": "powerful holy energy beam zap"
+  },
+  {
+   "id": "cast_brakk_q",
+   "duration": 1.2,
+   "text": "giant fist slams the ground, earthquake shockwave, rocks cracking"
+  },
+  {
+   "id": "cast_brakk_w",
+   "duration": 1.0,
+   "text": "metal shield bubble forms around armor, heavy steel ring and hum"
+  },
+  {
+   "id": "cast_brakk_r",
+   "duration": 1.8,
+   "text": "ghostly spirit warrior rises, eerie wind and ethereal choir swell"
+  },
+  {
+   "id": "proc_brakk_bash",
+   "duration": 0.6,
+   "text": "heavy stunning punch, dull thud with ringing stars"
+  },
+  {
+   "id": "cast_myra_q",
+   "duration": 1.0,
+   "text": "piercing ice beam shoots forward, crystalline whoosh and frost crackle"
+  },
+  {
+   "id": "cast_myra_w",
+   "duration": 1.0,
+   "text": "magic circle appears on the ground, vines erupt and bind, rustling"
+  },
+  {
+   "id": "cast_myra_r",
+   "duration": 2.0,
+   "text": "meteors falling from the sky, fiery roar and explosive impacts"
+  },
+  {
+   "id": "cast_noctis_q",
+   "duration": 0.7,
+   "text": "fast shadow dash, dark whoosh with dagger slice"
+  },
+  {
+   "id": "cast_noctis_w",
+   "duration": 1.0,
+   "text": "assassin fades into darkness, soft dark shimmer and hiss"
+  },
+  {
+   "id": "cast_noctis_r",
+   "duration": 1.2,
+   "text": "ominous death mark sigil applied, deep dark bell toll"
+  },
+  {
+   "id": "cast_vexa_q",
+   "duration": 1.0,
+   "text": "magic puff of smoke transforming someone into a frog, comedic croak"
+  },
+  {
+   "id": "cast_vexa_w",
+   "duration": 1.0,
+   "text": "strong swirling gust of wind blasting forward"
+  },
+  {
+   "id": "cast_vexa_r",
+   "duration": 1.2,
+   "text": "magic energy ripped away from a target, tearing arcane whoosh"
+  },
+  {
+   "id": "item_use",
+   "duration": 0.7,
+   "text": "magic item activated, short bright arcane burst"
+  },
+  {
+   "id": "state_stun",
+   "duration": 0.8,
+   "text": "dizzy stun, cartoon birds and ringing stars circling"
+  },
+  {
+   "id": "state_silence",
+   "duration": 0.7,
+   "text": "muffled magic seal, short hush"
+  },
+  {
+   "id": "state_shield_break",
+   "duration": 0.7,
+   "text": "magic shield shatters like glass"
+  },
+  {
+   "id": "state_reincarnate",
+   "duration": 2.0,
+   "text": "hero revived from death, holy rising chime and energy surge"
+  },
+  {
+   "id": "ward_place",
+   "duration": 0.6,
+   "text": "small wooden totem planted into soil with a magic eye opening"
+  },
+  {
+   "id": "ward_destroyed",
+   "duration": 0.6,
+   "text": "small wooden totem breaking with a fading magic pop"
+  },
+  {
+   "id": "recall_start",
+   "duration": 8.0,
+   "loop": true,
+   "text": "teleport channel, swirling blue magic portal hum building up"
+  },
+  {
+   "id": "recall_finish",
+   "duration": 1.0,
+   "text": "teleport complete, bright whoosh and magical pop"
+  },
+  {
+   "id": "hero_death",
+   "duration": 1.2,
+   "text": "hero falls in battle, heavy body drop and fading groan, no words"
+  },
+  {
+   "id": "creep_death",
+   "duration": 0.5,
+   "text": "small soldier defeated, short thud"
+  },
+  {
+   "id": "respawn",
+   "duration": 1.0,
+   "text": "hero respawns at base, bright magical rise"
+  },
+  {
+   "id": "tower_destroyed",
+   "duration": 2.5,
+   "text": "large stone tower collapsing, crumbling rocks and crystal shatter"
+  },
+  {
+   "id": "core_destroyed",
+   "duration": 4.0,
+   "text": "massive crystal core explodes, huge magical explosion and rumble"
+  },
+  {
+   "id": "victory",
+   "duration": 3.0,
+   "text": "victory fanfare stinger, short triumphant brass and drums"
+  },
+  {
+   "id": "defeat",
+   "duration": 3.0,
+   "text": "defeat stinger, short somber low brass and fading drum"
+  },
+  {
+   "id": "amb_map",
+   "duration": 30.0,
+   "loop": true,
+   "influence": 0.5,
+   "text": "calm fantasy battlefield ambience, gentle wind, distant birds, rustling leaves"
+  }
+ ],
+ "voice": {
+  "_ghi_chu": "Giọng thông báo tiếng Anh (TTS). voice_id mặc định = Adam (giọng sẵn có của ElevenLabs); đặt ELEVENLABS_VOICE_ID để dùng giọng khác (nên chọn giọng nam trầm, hùng tráng, kiểu người dẫn đấu trường).",
+  "voice_id": "pNInz6obpgDQGcFmaJgB",
+  "model_id": "eleven_multilingual_v2",
+  "settings": {
+   "stability": 0.35,
+   "similarity_boost": 0.8,
+   "style": 0.6
+  },
+  "lines": [
+   {
+    "id": "vo_welcome",
+    "text": "Welcome to Clashborn!"
+   },
+   {
+    "id": "vo_minions",
+    "text": "Minions have spawned."
+   },
+   {
+    "id": "vo_first_blood",
+    "text": "First Blood!"
+   },
+   {
+    "id": "vo_killing_spree",
+    "text": "Killing spree!"
+   },
+   {
+    "id": "vo_dominating",
+    "text": "Dominating!"
+   },
+   {
+    "id": "vo_unstoppable",
+    "text": "Unstoppable!"
+   },
+   {
+    "id": "vo_legendary",
+    "text": "Legendary!"
+   },
+   {
+    "id": "vo_shut_down",
+    "text": "Shut down!"
+   },
+   {
+    "id": "vo_enemy_tower",
+    "text": "Enemy tower destroyed!"
+   },
+   {
+    "id": "vo_ally_tower",
+    "text": "Your tower has been destroyed!"
+   },
+   {
+    "id": "vo_super_creeps",
+    "text": "Your minions grow stronger!"
+   },
+   {
+    "id": "vo_victory",
+    "text": "Victory!"
+   },
+   {
+    "id": "vo_defeat",
+    "text": "Defeat."
+   }
   ]
+ },
+ "music": {
+  "_ghi_chu": "Nhạc nền ElevenLabs Music, không lời. Cần lặp được (đầu và cuối êm).",
+  "model_id": "music_v1",
+  "tracks": [
+   {
+    "id": "music_menu",
+    "length_ms": 90000,
+    "prompt": "Epic orchestral fantasy main menu theme for a mobile MOBA game, heroic brass melody, soaring strings, choir pads, steady war drums, adventurous and inviting, instrumental, ends softly so it can loop"
+   },
+   {
+    "id": "music_match",
+    "length_ms": 150000,
+    "prompt": "Background battle music for a fantasy MOBA match, mid-tempo orchestral with light percussion, tense but not overwhelming, sits under sound effects, no big climaxes, instrumental, seamless loop feel"
+   }
+  ]
+ }
 }
