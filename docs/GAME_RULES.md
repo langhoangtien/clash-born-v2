@@ -55,7 +55,7 @@ physical_damage, magic_damage, pure_damage, physical_armor, magic_armor,
 attack_range, cast_range, base_attack_time, attack_speed, movement_speed,
 vision_range, evasion, accuracy, critical_chance, critical_multiplier,
 status_resistance, armor_reduction, physical_armor_penetration, lifesteal,
-damage_taken_multiplier`.
+damage_taken_multiplier, spell_amplification`.
 
 `damage_taken_multiplier` (mặc định 1.0) nhân vào sát thương cuối cùng mà đơn vị
 nhận, sau giáp (CMB-02).
@@ -77,7 +77,7 @@ nhờ thuộc tính (D-35):
 |---|---|
 | Sức mạnh (STR) | `hp_per_strength` máu, `hp_regen_per_strength` hồi máu |
 | Nhanh nhẹn (AGI) | `armor_per_agility` giáp, `attack_speed_per_agility` tốc đánh |
-| Trí tuệ (INT) | `mana_per_intelligence` mana, `mana_regen_per_intelligence` hồi mana, `magic_armor_per_intelligence` giáp phép (cùng hệ số và cùng công thức giảm sát thương với giáp vật lý) |
+| Trí tuệ (INT) | `mana_per_intelligence` mana, `mana_regen_per_intelligence` hồi mana, `magic_armor_per_intelligence` giáp phép (cùng hệ số và cùng công thức giảm sát thương với giáp vật lý), `spell_amp_per_intelligence` khuếch đại phép (CMB-13) |
 | Thuộc tính chính | `primary_damage_coefficient` sát thương đòn đánh |
 
 Sát thương đòn đánh = sát thương gốc của hero + thuộc tính chính ×
@@ -225,6 +225,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `CMB-03` Ba loại sát thương: PHYSICAL (giáp vật lý), MAGIC (giáp phép), PURE (bỏ qua giáp).
 - `CMB-04` Hero gây `hero_structure_damage` × sát thương lên công trình; lính gây
   `creep_structure_damage` ×; lính công thành `siege_structure_damage` ×.
+- `CMB-04b` (D-125) Trụ gây `tower_creep_damage` × sát thương lên lính đường (0.6); lên hero,
+  quái rừng và ward giữ nguyên.
 - `CMB-05` Hút máu không áp lên công trình.
 - `CMB-06` Nhịp đánh (kiểu Dota): mỗi đòn có **vung tay** (`attack_point`, giây, theo
   hero) và **thu tay**. Sát thương/đạn xuất hiện ở cuối vung tay. Di chuyển hoặc dừng
@@ -246,6 +248,10 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   để ghi công hạ gục.
 - `CMB-10` Đốt mana: trừ mana của mục tiêu tối đa bằng số mana nó đang có; sự kiện
   mang lượng thực tế bị đốt (`event.burned_mana`) để hành động sau dùng.
+- `CMB-13` (D-125) Khuếch đại phép: sát thương do hành động `Damage` của chiêu / đồ / hiệu ứng
+  (không phải đòn đánh thường, không phải sát thương phản hồi) nhân `1 + spell_amplification`
+  của kẻ gây, trước giáp. `spell_amplification` = Trí tuệ × `spell_amp_per_intelligence` (0.003)
+  + modifier (đồ phép).
 - `CMB-12` Đổi mục tiêu đánh (D-69): khi bắt đầu vung đòn vào mục tiêu **khác** mục tiêu
   của đòn vung trước (đánh gió không tính), phát `attack_target_changed` (kẻ gây = người
   đánh, đối tượng = mục tiêu mới). Đòn đầu tiên không phát. Đạn của đòn cũ đang bay vẫn
@@ -656,6 +662,8 @@ chơi và bot (`Rules.pick_attack_target`), nút trên màn hình chỉ gọi h�
 - `CAM-01` (D-118) Hero người chơi chết: camera tự do từ chỗ chết — joystick / WASD đẩy camera,
   kéo một ngón trên map kéo camera, không ra khỏi map; giữ bản đồ nhỏ vẫn xem nhanh như cũ.
   Hồi sinh: camera về theo hero.
+- `CAM-01b` (D-126) Lúc chết, chạm / kéo trên bản đồ nhỏ: camera tự do nhảy tới chỗ đó và ở lại
+  khi thả tay (không bật về chỗ cũ); sau đó vẫn đẩy / kéo tiếp được.
 - `CTL-06` (M3.8, D-65) Ô chiêu Q/W/R: chạm thả tại chỗ = tung nhanh, tự nhắm (mục tiêu đang
   khóa hoặc đang đánh nếu kỹ năng nhận nó và trong tầm + tầm tìm (D-75), rồi hero địch gần
   nhất trong tầm + tầm tìm, rồi đơn vị địch gần nhất, rồi hướng đang nhìn); kéo ra quá vùng
@@ -799,10 +807,11 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | creep_hero_aggro_range | 500 | | fountain_true_sight | 900 |
 | creep_hero_aggro_time | 2.5 s | | jungle_first_spawn | 30 s |
 | hero_structure_damage | 0.5 | | jungle_respawn_check | 60 s |
+| tower_creep_damage (D-125) | 0.6 | | | |
 | creep_structure_damage | 0.65 | | jungle_leash | 600 |
 | siege_structure_damage | 1.25 | | jungle_aggro_time | 5 s |
-| hero_kill_gold base / per_level | 150 / 10 | | hero_max_level | 20 |
-| passive_gold / interval | 1 / 2 s | | camp_spawn_box | 300 |
+| hero_kill_gold base / per_level | 200 / 10 (D-125) | | hero_max_level | 20 |
+| passive_gold / interval | 1 / 0.75 s (D-125) | | camp_spawn_box | 300 |
 | xp_base / xp_per_level | 120 / 30 | | bot_retreat_hp / recover_hp | 0.30 / 0.80 |
 | hero_kill_xp base / per_level | 60 / 30 | | bot_kill_hp / kill_range | 0.35 / 900 |
 | xp_share_range | 1200 | | bot_chase_leash | 1200 |

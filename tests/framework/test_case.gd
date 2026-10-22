@@ -57,3 +57,11 @@ func _show(value: Variant) -> String:
 	if value is String:
 		return "\"%s\"" % value
 	return "%s(%s)" % [type_string(typeof(value)), str(value)]
+
+
+## Balance cho test số kỹ năng theo bảng thiết kế: tắt khuếch đại phép từ Trí tuệ (CMB-13 có
+## test riêng), để sát thương đúng số ghi trong CONTENT.md.
+func balance_without_spell_amp(path: String) -> BalanceSettings:
+	var b: BalanceSettings = (load(path) as BalanceSettings).duplicate()
+	b.spell_amp_per_intelligence = 0.0
+	return b

@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("1_mod")
+stat = &"intelligence"
+value = "30"
+
+[sub_resource type="Resource" id="M1"]
+script = ExtResource("1_mod")
+stat = &"spell_amplification"
+value = "0.3"
+
+[sub_resource type="Resource" id="M2"]
+script = ExtResource("1_mod")
+stat = &"mana_regen"
+value = "5"
+
+[resource]
+script = ExtResource("2_item")
+category = 1
+description = "Sát thương chiêu và đồ +30% (khuếch đại phép)."
+cost = 4000
+modifiers = Array[ExtResource("1_mod")]([SubResource("M0"), SubResource("M1"), SubResource("M2")])
+components = Array[StringName]([&"ancient_tome", &"staff_wizardry", &"sages_mask"])
+id = &"arcane_scepter"
+display_name = "Quyền Trượng Ma Thuật"
+art_id = &"arcane_scepter"

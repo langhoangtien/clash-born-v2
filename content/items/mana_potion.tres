@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Resource" path="res://content/effects/mana_potion_regen.tres" id="2_eff"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_apply"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_abl"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="5_item"]
+
+[sub_resource type="Resource" id="Apply"]
+script = ExtResource("3_apply")
+effect = ExtResource("2_eff")
+duration = "duration"
+target = 0
+
+[sub_resource type="Resource" id="Abl"]
+script = ExtResource("4_abl")
+slot = 4
+target_team = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cooldown": PackedFloat32Array(1),
+&"duration": PackedFloat32Array(20)
+})
+on_cast = Array[ExtResource("1_act")]([SubResource("Apply")])
+id = &"mana_potion_active"
+art_id = &"mana_potion_active"
+
+[resource]
+script = ExtResource("5_item")
+category = 3
+description = "Dùng một lần: hồi 100 mana trong 20 s (+5 mỗi giây). Uống bình mới chỉ làm mới thời gian."
+cost = 50
+ability = SubResource("Abl")
+charges = 1
+max_stack = 4
+id = &"mana_potion"
+display_name = "Bình Mana"
+art_id = &"mana_potion"

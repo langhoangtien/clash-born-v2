@@ -14,7 +14,7 @@ func _world() -> World:
 	if _map == null:
 		_map = load(MAP_PATH) as MapLayout
 		_lib = ContentLibrary.load_dir()
-	var w: World = World.new(9, load(BALANCE_PATH) as BalanceSettings)
+	var w: World = World.new(9, balance_without_spell_amp(BALANCE_PATH))
 	w.map = _map
 	w.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
 	return w

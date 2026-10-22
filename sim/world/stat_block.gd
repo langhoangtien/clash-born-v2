@@ -122,6 +122,7 @@ func _add_attribute_contributions(base: PackedFloat64Array) -> void:
 	base[S.MAX_MANA] += StatFormulas.mana_from_intelligence(intelligence, balance)
 	base[S.MANA_REGEN] += StatFormulas.mana_regen_from_intelligence(intelligence, balance)
 	base[S.MAGIC_ARMOR] += StatFormulas.magic_armor_from_intelligence(intelligence, balance)
+	base[S.SPELL_AMPLIFICATION] += StatFormulas.spell_amp_from_intelligence(intelligence, balance)  # CMB-13
 	base[S.PHYSICAL_DAMAGE] += StatFormulas.attack_damage_from_primary(_primary, strength, agility, intelligence, balance)
 	base[S.ATTACK_SPEED] += StatFormulas.attack_speed_multiplier(agility, 0.0, balance)
 

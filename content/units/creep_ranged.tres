@@ -24,4 +24,4 @@ id = &"creep_ranged"
 display_name = "Lính đánh xa"
 art_id = &"creep_ranged"
 bounty_xp = 69
-bounty_gold = 45
+bounty_gold = 54

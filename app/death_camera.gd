@@ -27,6 +27,12 @@ func drag(world_delta: Vector2, bounds: Rect2) -> void:
 		point = _clamp(point - world_delta, bounds)
 
 
+## CAM-01b (D-126): chạm / kéo bản đồ nhỏ lúc chết → camera tự do nhảy tới đó và ở lại khi thả tay.
+func jump(at: Vector2, bounds: Rect2) -> void:
+	if point.is_finite():
+		point = _clamp(at, bounds)
+
+
 func active() -> bool:
 	return point.is_finite()
 

@@ -92,6 +92,8 @@ static func _damage(world: World, d: DamageAction, ctx: ExprContext, receiver: E
 	r.source_id = source_id
 	r.target_id = receiver.id
 	r.raw = ExprEval.evaluate(d.amount, ctx) * ctx.scale
+	if ctx.owner != null and not d.reflected:  # CMB-13: sát thương chiêu / đồ nhân khuếch đại phép của nguồn
+		r.raw *= 1.0 + maxf(0.0, ctx.owner.stats.get_stat(StatId.Id.SPELL_AMPLIFICATION))
 	r.damage_type = d.damage_type
 	r.reflected = d.reflected
 	r.pierces_magic_immunity = _pierces(ctx)

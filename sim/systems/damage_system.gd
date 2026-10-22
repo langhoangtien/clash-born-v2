@@ -53,8 +53,10 @@ static func resolve(world: World) -> void:
 			world.emit(&"unit_died", r.source_id, r.target_id)
 
 
-## CMB-04: hệ số sát thương lên công trình theo loại kẻ gây.
+## CMB-04: hệ số sát thương lên công trình theo loại kẻ gây; CMB-04b: trụ lên lính đường.
 static func _structure_factor(world: World, source: Entity, target: Entity) -> float:
+	if source != null and source.kind == Entity.Kind.TOWER and target.kind == Entity.Kind.LANE_CREEP:
+		return world.balance.tower_creep_damage  # CMB-04b
 	if not Rules.is_structure(target) or source == null:
 		return 1.0
 	match source.kind:

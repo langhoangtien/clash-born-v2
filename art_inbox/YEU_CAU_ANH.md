@@ -350,6 +350,16 @@ icon tạm chữ cái cho 8 file này. Xong thì commit + push lên `main`.
 
 4f: đã kiểm tra đủ 8 PNG 256 × 256, alpha ngoài vòng tròn, lề ≥ 8%, xem thử ở 64 px. Đã làm lại Desolator / Corrosion Blade để đúng viền đỏ sẫm / xanh rêu, và nội tại Gorran để thấy rõ cánh tay cơ bắp cầm bình thuốc. Icon R dùng thiết kế từ bảng Gorran đã được người dùng duyệt 2026-10-22.
 
+### 4g — Đồ phép + Bình Mana (3 icon) — **LÀM NGAY (2026-10-22)**
+
+Cùng chuẩn icon 4a. Game đang dùng icon tạm chữ cái. Xong thì commit + push lên `main`.
+
+| Xong | File | Màu viền | Mô tả |
+|---|---|---|---|
+| [ ] | `04_icons/item_mana_potion.png` | xanh dương | Small round glass flask of glowing blue mana liquid with a cork |
+| [ ] | `04_icons/item_ancient_tome.png` | tím | Ancient leather spellbook with glowing purple runes on the cover |
+| [ ] | `04_icons/item_arcane_scepter.png` | tím sáng | Ornate golden scepter topped with a floating violet arcane crystal, magic sparks |
+
 ---
 
 ## Đợt 5 — Giao diện (nền trong suốt)

@@ -24,4 +24,4 @@ id = &"creep_siege"
 display_name = "Lính công thành"
 art_id = &"creep_siege"
 bounty_xp = 88
-bounty_gold = 70
+bounty_gold = 84

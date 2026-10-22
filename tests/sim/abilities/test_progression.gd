@@ -147,7 +147,7 @@ func test_ECO_hero_kill_gold_xp_and_death_loss() -> void:
 	for ev: GameEvent in w.events:
 		seen.append(ev.type)
 	assert_true(seen.has(&"kill_credited"))
-	assert_eq(a.gold, 150 + 10 * 3, "vàng hạ hero")
+	assert_eq(a.gold, 200 + 10 * 3, "vàng hạ hero")  # D-125
 	assert_eq(a.stats.level(), 2, "XP hạ hero 60 + 30 × 3 = 150 → lên cấp 2")
 	assert_near(a.xp, 150.0 - 120.0, EPS)
 	assert_eq(b.gold, 500 - 25 * 3, "ECO-05")

@@ -79,7 +79,7 @@ func test_ECO_01_last_hit_gives_bounty_to_killer_only() -> void:
 	assert_eq(ally.gold, 0, "gây sát thương mà không kết liễu thì không có vàng")
 	_hit(w, me.id, creep)
 	w.step()
-	assert_eq(me.gold, 45)
+	assert_eq(me.gold, 54)  # D-125: lính +20%
 	assert_eq(me.last_hits, 1)
 	assert_eq(ally.gold, 0)
 
@@ -99,7 +99,7 @@ func test_ECO_01_passive_gold_every_interval_even_when_dead() -> void:
 	var w: World = _world()
 	var me: Entity = _brakk(w, 0, _center())
 	var every: int = SimClock.seconds_to_ticks(w.balance.passive_gold_interval)
-	assert_eq(every, 60)
+	assert_eq(every, 23)  # D-125: 0.75 s
 	for t: int in range(every - 1):
 		w.step()
 	assert_eq(me.gold, 0)
@@ -126,7 +126,7 @@ func test_ECO_07_tower_gold_to_every_enemy_hero_whoever_kills() -> void:
 func test_D_53_bounties_from_content() -> void:
 	if _lib == null:
 		_world()
-	assert_eq(_lib.units[&"creep_melee"].bounty_gold, 36)
-	assert_eq(_lib.units[&"creep_siege"].bounty_gold, 70)
+	assert_eq(_lib.units[&"creep_melee"].bounty_gold, 43)  # D-125
+	assert_eq(_lib.units[&"creep_siege"].bounty_gold, 84)  # D-125
 	assert_eq(_lib.units[&"tower_t4"].bounty_gold, 250)
 	assert_eq(_lib.units[&"core"].bounty_gold, 0)

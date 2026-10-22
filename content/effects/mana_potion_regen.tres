@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="2_eff"]
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("1_mod")
+stat = &"mana_regen"
+value = "5"
+
+[resource]
+script = ExtResource("2_eff")
+tags = Array[StringName]([&"buff"])
+modifiers = Array[ExtResource("1_mod")]([SubResource("M0")])
+id = &"mana_potion_regen"
+display_name = "Uống bình mana"
+art_id = &"mana_potion"

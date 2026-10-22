@@ -37,6 +37,11 @@ static func magic_armor_from_intelligence(intelligence: float, b: BalanceSetting
 	return intelligence * b.magic_armor_per_intelligence
 
 
+## CMB-13: khuếch đại phép từ Trí tuệ.
+static func spell_amp_from_intelligence(intelligence: float, b: BalanceSettings) -> float:
+	return intelligence * b.spell_amp_per_intelligence
+
+
 static func attack_damage_from_primary(primary: Attribute, strength: float, agility: float,
 		intelligence: float, b: BalanceSettings) -> float:
 	match primary:

@@ -129,6 +129,8 @@ func tick_frame(delta: float) -> void:
 	runner.advance(delta)
 	units_view.alpha = runner.alpha()
 	var follow: Vector2 = death_cam.update(hero.alive, units_view.display_position(hero), _held_direction(), delta, _map_bounds())  # CAM-01
+	if minimap.peeking and death_cam.active():
+		death_cam.jump(minimap.peek_point, _map_bounds())  # CAM-01b
 	camera.position = minimap.peek_point if minimap.peeking else follow
 	if quick_buy != null:  # SHOP-10: món nên mua lúc này
 		var next: ItemDef = BuildPlan.next_buy(world, hero, shop.build if not shop.build.is_empty() else hero_def.bot_item_build)

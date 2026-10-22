@@ -127,10 +127,10 @@ static func stat_rows(e: Entity) -> Array:
 		["Máu / hồi máu", "%d / %.1f mỗi giây" % [roundi(s.get_stat(StatId.Id.MAX_HP)), s.get_stat(StatId.Id.HP_REGEN)], "", C_HP],
 		["Mana / hồi mana", "%d / %.1f mỗi giây" % [roundi(s.get_stat(StatId.Id.MAX_MANA)), s.get_stat(StatId.Id.MANA_REGEN)], "", C_MANA],
 	]
-	for extra: Array in [["Chí mạng", StatId.Id.CRITICAL_CHANCE], ["Né tránh", StatId.Id.EVASION], ["Hút máu", StatId.Id.LIFESTEAL], ["Kháng hiệu ứng", StatId.Id.STATUS_RESISTANCE]]:
+	for extra: Array in [["Khuếch đại phép", StatId.Id.SPELL_AMPLIFICATION], ["Chí mạng", StatId.Id.CRITICAL_CHANCE], ["Né tránh", StatId.Id.EVASION], ["Hút máu", StatId.Id.LIFESTEAL], ["Kháng hiệu ứng", StatId.Id.STATUS_RESISTANCE]]:
 		var v: float = s.get_stat(extra[1])
 		if v > 0.0:
-			rows.append([extra[0], "%d%%" % roundi(v * 100.0), "", C_SPECIAL])
+			rows.append([extra[0], "%d%%" % roundi(v * 100.0), "", C_MAGIC if extra[1] == StatId.Id.SPELL_AMPLIFICATION else C_SPECIAL])
 	var attrs: Array = [["Sức mạnh", StatId.Id.STRENGTH, C_STR], ["Nhanh nhẹn", StatId.Id.AGILITY, C_AGI], ["Trí tuệ", StatId.Id.INTELLIGENCE, C_INT]]
 	for i: int in range(3):
 		rows.append(_split(attrs[i][0] + (" (chính)" if primary == i + 1 else ""), s, attrs[i][1], attrs[i][2]))

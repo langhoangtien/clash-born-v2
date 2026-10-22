@@ -11,6 +11,8 @@ extends Resource
 @export var mana_per_intelligence: float
 @export var mana_regen_per_intelligence: float
 @export var magic_armor_per_intelligence: float
+## CMB-13 (D-125): khuếch đại phép mỗi điểm Trí tuệ (0.003 = +0.3%).
+@export var spell_amp_per_intelligence: float = 0.0
 @export var primary_damage_coefficient: float
 
 @export_group("Sát thương (CMB-03)")
@@ -32,6 +34,8 @@ extends Resource
 
 @export_group("Công trình (CMB-04, STR)")
 @export var hero_structure_damage: float
+## CMB-04b (D-125): trụ gây × sát thương lên lính đường (lính sống lâu hơn dưới trụ, đẩy trụ nhanh hơn).
+@export var tower_creep_damage: float = 1.0
 @export var creep_structure_damage: float
 @export var siege_structure_damage: float
 ## STR-01: trụ nhớ hero gây giao tranh hero trong chừng này giây.

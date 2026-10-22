@@ -51,7 +51,7 @@ func test_CRP_12_super_creeps_on_lane_with_fallen_t3_then_mega() -> void:
 	var mega: Entity = _creep(w, 0, "TOP")
 	assert_eq(mega.creep_tier, 2, "đủ 3 trụ 3: siêu lính mọi lane")
 	assert_near(mega.stats.get_stat(StatId.Id.MAX_HP), 450.0 * 2.2, 0.01)
-	assert_eq(mega.bounty_gold, int(36 * 0.5), "siêu lính: nửa vàng")
+	assert_eq(mega.bounty_gold, int(43 * 0.5), "siêu lính: nửa vàng")  # D-125
 
 
 func test_CRP_12_mega_wave_has_extra_melee() -> void:
