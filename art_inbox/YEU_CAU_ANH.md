@@ -272,16 +272,16 @@ giữa, không chữ. Làm theo lô 10 món, mỗi lô xong thì báo.
 | [x] | `04_icons/item_wraith_band.png` | Green spectral wristband |
 | [x] | `04_icons/item_bracer.png` | Iron bracer with an orange gem |
 | [x] | `04_icons/item_null_talisman.png` | Blue talisman amulet with a rune |
-| [ ] | `04_icons/item_boots_haste.png` | Red boots with small wings and speed lines |
-| [ ] | `04_icons/item_boots_arcane.png` | Blue magic boots with glowing runes |
-| [ ] | `04_icons/item_boots_guard.png` | Armored steel boots |
-| [ ] | `04_icons/item_battle_axe.png` | Large double-headed battle axe with red trim |
-| [ ] | `04_icons/item_wind_bow.png` | Elegant longbow wrapped in green wind |
-| [ ] | `04_icons/item_butterfly.png` | Slender sword with a butterfly-wing guard, teal glow |
-| [ ] | `04_icons/item_steel_armor.png` | Polished steel breastplate |
-| [ ] | `04_icons/item_magic_cloak.png` | Long purple cloak shimmering with a protective rune |
-| [ ] | `04_icons/item_assault_plate.png` | Ornate golden plate armor with spikes |
-| [ ] | `04_icons/item_giant_heart.png` | Huge glowing red heart wrapped in iron bands |
+| [x] | `04_icons/item_boots_haste.png` | Red boots with small wings and speed lines |
+| [x] | `04_icons/item_boots_arcane.png` | Blue magic boots with glowing runes |
+| [x] | `04_icons/item_boots_guard.png` | Armored steel boots |
+| [x] | `04_icons/item_battle_axe.png` | Large double-headed battle axe with red trim |
+| [x] | `04_icons/item_wind_bow.png` | Elegant longbow wrapped in green wind |
+| [x] | `04_icons/item_butterfly.png` | Slender sword with a butterfly-wing guard, teal glow |
+| [x] | `04_icons/item_steel_armor.png` | Polished steel breastplate |
+| [x] | `04_icons/item_magic_cloak.png` | Long purple cloak shimmering with a protective rune |
+| [x] | `04_icons/item_assault_plate.png` | Ornate golden plate armor with spikes |
+| [x] | `04_icons/item_giant_heart.png` | Huge glowing red heart wrapped in iron bands |
 | [ ] | `04_icons/item_storm_staff.png` | Staff crackling with blue lightning |
 | [ ] | `04_icons/item_crit_blade.png` | Curved sword with a red critical spark |
 | [ ] | `04_icons/item_divine_blade.png` | Large holy golden blade with a red jewel |
