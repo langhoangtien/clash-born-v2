@@ -187,7 +187,7 @@ Danh sách đánh dấu:
 
 ---
 
-## Đợt 4 — Icon
+## Đợt 4 — Icon — ✅ ĐÃ DUYỆT 2026-10-22 (đủ 16 skill, 13 trạng thái, 55 đồ, đã nhập vào game)
 
 > **Cập nhật 2026-10-17 (người dùng đồng ý):** Đợt 4 được làm **ngay**, không chờ Đợt 3
 > xong (icon không phụ thuộc ảnh thân hero). Thứ tự trong đợt này:
