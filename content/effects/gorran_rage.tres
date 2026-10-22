@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="2_eff"]
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("1_mod")
+stat = &"base_attack_time"
+value = "-bat_cut"
+
+[sub_resource type="Resource" id="M1"]
+script = ExtResource("1_mod")
+stat = &"hp_regen"
+value = "regen"
+
+[sub_resource type="Resource" id="M2"]
+script = ExtResource("1_mod")
+stat = &"movement_speed"
+value = "move_bonus"
+
+[sub_resource type="Resource" id="M3"]
+script = ExtResource("1_mod")
+stat = &"physical_damage"
+value = "rage_damage"
+
+[resource]
+script = ExtResource("2_eff")
+tags = Array[StringName]([&"buff"])
+modifiers = Array[ExtResource("1_mod")]([SubResource("M0"), SubResource("M1"), SubResource("M2"), SubResource("M3")])
+id = &"gorran_rage"
+display_name = "Cuồng Hóa"
+art_id = &"gorran_r"

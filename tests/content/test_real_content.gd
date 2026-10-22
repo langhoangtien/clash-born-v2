@@ -18,12 +18,12 @@ func test_content_has_no_errors() -> void:
 	assert_true(errs.is_empty(), "\n".join(errs))
 
 
-func test_four_heroes_and_items() -> void:
-	assert_eq(_lib.heroes.keys().map(func(k: StringName) -> String: return String(k)).size(), 4)
-	for id: StringName in [&"brakk", &"myra", &"noctis", &"vexa"]:
+func test_five_heroes_and_items() -> void:
+	assert_eq(_lib.heroes.keys().map(func(k: StringName) -> String: return String(k)).size(), 5)
+	for id: StringName in [&"brakk", &"myra", &"noctis", &"vexa", &"gorran"]:
 		assert_true(_lib.heroes.has(id), "có hero " + id)
 	for id: StringName in [&"ghost_scepter", &"resolute_armor", &"frost_orb", &"reveal_dust", &"cyclone_staff",
-			&"shadow_blade", &"hex_scythe", &"cleansing_charm", &"stun_hammer"]:
+			&"shadow_blade", &"hex_scythe", &"cleansing_charm", &"stun_hammer", &"desolator", &"moon_shard"]:
 		assert_true(_lib.items.has(id), "có đồ " + id)
 	assert_true(_lib.items.size() >= 50, "D-106: đồ cơ bản + đồ ghép kiểu Dota")
 	for d: ItemDef in _lib.items.values():  # SHOP-09: thành phần có thật, phí ghép không âm
@@ -57,7 +57,7 @@ func test_four_heroes_and_items() -> void:
 func test_D_35_heroes_grow_only_attributes() -> void:
 	var brakk: HeroDef = _lib.heroes[&"brakk"]
 	assert_eq(brakk.primary_attribute, StatFormulas.Attribute.STRENGTH)
-	assert_near(brakk.strength_growth, 3.8, 0.0001)
+	assert_near(brakk.strength_growth, 4.94, 0.0001)  # D-121: +30% chỉ số mỗi cấp
 	assert_near(brakk.stats.base_damage, 74.0, 0.0001)
 
 

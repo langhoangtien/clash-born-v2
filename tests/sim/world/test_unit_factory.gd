@@ -33,7 +33,7 @@ func test_brakk_level1_from_content() -> void:
 
 func test_STAT_04_hero_level_from_content() -> void:
 	var e: Entity = _brakk(10)
-	assert_near(e.stats.get_stat(StatId.Id.STRENGTH), 30 + 3.8 * 9, 0.01)
+	assert_near(e.stats.get_stat(StatId.Id.STRENGTH), 30 + 4.94 * 9, 0.01)  # D-121
 
 
 func test_ids_assigned_by_world() -> void:

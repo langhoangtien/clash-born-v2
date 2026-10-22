@@ -120,3 +120,31 @@ func test_D_115_recipe_tree_links_components_and_select_by_tap() -> void:
 	p.press_at((circ[0] as RecipeTree.TreeNode).center)
 	assert_eq(p.selected_id, &"circlet", "chạm ô thành phần: chuyển sang xem món đó")
 	p.free()
+
+
+func test_D_120_compose_button_adds_and_build_slot_removes() -> void:
+	var p: ShopPanel = _panel()
+	var saved: Array = []
+	p.build_changed.connect(func(b: Array[StringName]) -> void: saved.append(b.duplicate()))
+	p.toggle()
+	p.selected_id = &"wraith_band"
+	p.press_at(p.compose_rect().get_center())
+	assert_eq(p.build, [&"wraith_band"] as Array[StringName], "Soạn +: thêm vào bộ soạn sẵn")
+	p.selected_id = &"boots_haste"
+	p.press_at(p.compose_rect().get_center())
+	assert_eq(p.build.size(), 2)
+	p.press_at(p.build_rect(0).get_center())
+	assert_eq(p.build, [&"boots_haste"] as Array[StringName], "chạm ô soạn sẵn: bỏ món")
+	assert_eq(saved.size(), 3, "mỗi lần đổi báo để lưu")
+	for id: StringName in [&"circlet", &"slippers", &"mantle", &"gauntlets", &"iron_branch", &"bracer"]:
+		p.toggle_build(id)
+	assert_eq(p.build.size(), ShopPanel.BUILD_MAX, "tối đa 6 món")
+	p.free()
+
+
+func test_D_120_build_presets_round_trip() -> void:
+	var b: Array[StringName] = [&"wraith_band", &"butterfly"]
+	BuildPresets.save_build(&"test_hero", b)
+	assert_eq(BuildPresets.load_build(&"test_hero"), b)
+	BuildPresets.save_build(&"test_hero", [] as Array[StringName])
+	assert_eq(BuildPresets.load_build(&"test_hero").size(), 0)

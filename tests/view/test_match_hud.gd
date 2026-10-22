@@ -49,6 +49,8 @@ func test_M38_scene_manual_levels_and_talent_panel() -> void:
 	var hero: Entity = scene.hero
 	scene.tick_frame(0.0)
 	assert_true(scene.skill_buttons.skill_view[0][3], "cấp 1 có điểm: hiện + ở Q")
+	assert_eq(scene.skill_buttons.skill_view[0][4], 5, "D-119: viền Q chia 5 đoạn")
+	assert_eq(scene.skill_buttons.skill_view[2][4], 3, "D-119: viền R chia 3 đoạn")
 	scene.skills.level_up(AbilityDef.Slot.Q)
 	w.step()
 	assert_eq(Abilities.of(hero, AbilityDef.Slot.Q).rank, 1, "cộng điểm bằng tay, không còn tự cộng")

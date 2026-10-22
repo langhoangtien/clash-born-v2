@@ -4,7 +4,7 @@ extends SceneTree
 ## --full: chạy tới khi có đội thắng (tối đa 40 phút), in thời lượng và phút đạt cấp 20.
 ## Mỗi trận kiểm INV-06 / BOT-11 (tests/sim/bots/test_bot_invariants.gd) và INV-07.
 
-const HEROES: Array[StringName] = [&"brakk", &"myra", &"noctis", &"vexa"]
+const HEROES: Array[StringName] = [&"brakk", &"myra", &"noctis", &"vexa", &"gorran"]
 const Inv = preload("res://tests/sim/bots/test_bot_invariants.gd")
 
 

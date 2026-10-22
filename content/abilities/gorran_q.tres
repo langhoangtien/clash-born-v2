@@ -1,0 +1,59 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="2_dmg"]
+[ext_resource type="Script" path="res://sim/actions/zone_action.gd" id="3_zone"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_abl"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="5_tal"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="9_val"]
+
+[sub_resource type="Resource" id="D0"]
+script = ExtResource("2_dmg")
+damage_type = 1
+amount = "dps"
+
+[sub_resource type="Resource" id="Z0"]
+script = ExtResource("3_zone")
+delay = "0"
+radius = "radius"
+duration = "zone_duration"
+interval = "1"
+actions = Array[ExtResource("1_act")]([SubResource("D0")])
+
+[sub_resource type="Resource" id="V0"]
+script = ExtResource("9_val")
+value_name = &"radius"
+amount = 100.0
+
+[sub_resource type="Resource" id="V1"]
+script = ExtResource("9_val")
+value_name = &"dps"
+amount = 15.0
+
+[sub_resource type="Resource" id="T0"]
+script = ExtResource("5_tal")
+id = &"gorran_q_ii"
+display_name = "Axit Lan Rộng"
+description = "Vũng Axit: bán kính +100, +15 sát thương mỗi giây"
+value_changes = Array[ExtResource("9_val")]([SubResource("V0"), SubResource("V1")])
+
+[resource]
+script = ExtResource("4_abl")
+slot = 1
+targeting = 3
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cast_range": PackedFloat32Array(900, 900, 900, 900, 900),
+&"cooldown": PackedFloat32Array(20, 20, 20, 20, 20),
+&"dps": PackedFloat32Array(10, 20, 30, 40, 50),
+&"mana": PackedFloat32Array(90, 100, 110, 120, 130),
+&"radius": PackedFloat32Array(400, 400, 400, 400, 400),
+&"zone_duration": PackedFloat32Array(10, 10, 10, 10, 10)
+})
+on_cast = Array[ExtResource("1_act")]([SubResource("Z0")])
+talent = SubResource("T0")
+bot_usages = Array[int]([1, 6])
+bot_conditions = Array[StringName]([&"enemy_hero_in_range", &"predict_position"])
+id = &"gorran_q"
+display_name = "Vũng Axit"
+description = "Đổ vũng axit bán kính 400 trong 10 s: kẻ địch đứng trong vùng nhận 10 / 20 / 30 / 40 / 50 sát thương phép mỗi giây."
+art_id = &"gorran_q"

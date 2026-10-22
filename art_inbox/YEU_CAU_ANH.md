@@ -169,6 +169,7 @@ Làm **từng hero một**: bảng nhân vật → dừng chờ duyệt → ản
 | Myra (`myra`) | Petite mage girl, long flowing robe, staff topped with an ice crystal, white hair, icy blue and white palette, calm expression |
 | Noctis (`noctis`) | Hooded assassin, face mask, twin daggers, tattered cloak, purple-black with teal accents, crouched ready stance |
 | Vexa (`vexa`) | Young witch, tall pointed hat, floating spellbook beside her, small frog on her shoulder, green and purple palette, mischievous smile |
+| Gorran (`gorran`) — **mới 2026-10-22, làm cùng 4f** | Hulking ogre alchemist, leather apron over bare muscular arms, belt of bubbling potion flasks, small goblin helper riding on his back, green and brown palette with orange chemical glow |
 
 Mỗi hero 3 ảnh (thay `<id>` bằng id ở trên):
 
@@ -327,6 +328,22 @@ giữa, không chữ. Làm theo lô 10 món, mỗi lô xong thì báo.
 | [x] | `04_icons/ui_attack.png` | Nút ĐÁNH chính (to nhất): a single heavy sword striking diagonally with a bright slash arc, viền đỏ cam dày hơn hai nút kia |
 | [x] | `04_icons/ui_attack_creep.png` | Nút đánh LÍNH: small helmeted foot-soldier head with a sword crosshair over it |
 | [x] | `04_icons/ui_attack_tower.png` | Nút đánh TRỤ: stone defense tower with a crystal on top, cracked, with a sword crosshair over it |
+
+### 4f — Đồ mới + tướng Gorran (8 icon) — **LÀM NGAY (2026-10-22)**
+
+Cùng chuẩn icon 4a (256 × 256, tròn, viền theo màu, nền tối, không chữ). Game đang dùng
+icon tạm chữ cái cho 8 file này. Xong thì commit + push lên `main`.
+
+| Xong | File | Màu viền | Mô tả |
+|---|---|---|---|
+| [ ] | `04_icons/item_desolator.png` | đỏ sẫm | Wicked curved reaper blade dripping dark red corrosion |
+| [ ] | `04_icons/item_corrosion_blade.png` | xanh rêu | Small short blade with green acid corrosion on the edge |
+| [ ] | `04_icons/item_claws_fury.png` | cam | Pair of sharp beast claws with orange speed streaks |
+| [ ] | `04_icons/item_moon_shard.png` | xanh trăng | Glowing pale-blue crystal shard shaped like a crescent moon |
+| [ ] | `04_icons/skill_gorran_innate.png` | bạc (nội tại) | Muscular arm holding a bubbling alchemy flask, golden glow |
+| [ ] | `04_icons/skill_gorran_q.png` | xanh axit | Bubbling green acid pool splashing on the ground |
+| [ ] | `04_icons/skill_gorran_w.png` | cam đỏ | Armored dragon tail whipping with a stun shockwave |
+| [ ] | `04_icons/skill_gorran_r.png` | đỏ (ult, viền đôi vàng) | Raging ogre alchemist roaring, red chemical fumes, glowing eyes |
 
 ---
 

@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="2_eff"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="3_trg"]
+[ext_resource type="Resource" path="res://content/effects/desolator_corrode.tres" id="4_cor"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="5_app"]
+
+[sub_resource type="Resource" id="A0"]
+script = ExtResource("5_app")
+effect = ExtResource("4_cor")
+duration = "duration"
+target = 3
+
+[sub_resource type="Resource" id="T0"]
+script = ExtResource("3_trg")
+event = &"attack_landed"
+actions = Array[ExtResource("1_act")]([SubResource("A0")])
+
+[resource]
+script = ExtResource("2_eff")
+duration = "0"
+tags = Array[StringName]([&"passive"])
+dispel = 2
+triggers = Array[ExtResource("3_trg")]([SubResource("T0")])
+id = &"desolator_passive"
+art_id = &"desolator"

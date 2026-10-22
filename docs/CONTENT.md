@@ -326,6 +326,30 @@ bị tước gây thêm sát thương phép. Sau đó làm chậm.
 | W II — Bão Táp | Rộng +100, sát thương +100, đẩy lùi +150 |
 | R II — Phong Ấn | Hồi chiêu −20; làm chậm = 0% và thêm ROOTED 2 s (D-38) |
 
+## Gorran · Giả Kim
+
+Đánh gần, Sức mạnh, BAT 1.7, đẩy trụ bằng đòn đánh (kiểu Alchemist). D-122.
+
+### Nội tại — Sức Mạnh Giả Kim
++15 / 20 / 25 / 30 / 35 / 35 sát thương (bậc ở cấp 1, 4, 8, 12, 16, 20).
+
+### Q — Vũng Axit (chọn điểm, tầm 900)
+Vùng bán kính 400 trong 10 s, 10 / 20 / 30 / 40 / 50 sát thương phép mỗi giây, không giảm giáp.
+Hồi chiêu 20 s, mana 90–130.
+
+### W — Đuôi Rồng (chọn đơn vị địch, tầm 700)
+80 / 100 / 120 / 140 / 160 sát thương phép, choáng 1.5 / 1.8 / 2.1 / 2.4 / 2.7 s. Hồi chiêu 12 s, mana 100.
+
+### R — Cuồng Hóa (ultimate, bản thân)
+25 s: BAT 1.7 → 1.2 / 1.1 / 1.0, hồi máu +50 / 75 / 100 mỗi giây, tốc chạy +30 / 40 / 50.
+Hồi chiêu 55 s, mana 50 / 100 / 150.
+
+### Talent cấp 20 (chọn 1)
+- Q: Vũng Axit bán kính +100, +15 sát thương mỗi giây.
+- W: choáng +1 s.
+- R: BAT giảm thêm 0.15 (0.85) và +50 sát thương khi Cuồng Hóa (gộp hai ý của người chơi vì
+  talent chỉ sửa chính chiêu của nó, TAL-02).
+
 ## Thư viện bị động (dành sẵn cho hero sau)
 
 Bị động kiểu Dota không cần làm hết ngay. Cần làm ngay là **các viên gạch** để mọi

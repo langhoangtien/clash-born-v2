@@ -28,7 +28,8 @@ signal aim_changed(index: int, aim: Vector2, active: bool)
 signal level_pressed(index: int)
 
 ## APP đặt mỗi khung: [cấp, giây hồi chiêu, dùng được, nâng được] cho Q/W/R.
-var skill_view: Array = [[0, 0.0, false, false], [0, 0.0, false, false], [0, 0.0, false, false]]
+## Mỗi ô: [cấp, hồi chiêu còn (s), dùng được, nâng được, cấp tối đa].
+var skill_view: Array = [[0, 0.0, false, false, 5], [0, 0.0, false, false, 5], [0, 0.0, false, false, 3]]
 ## art_id của Q/W/R (APP đặt); có hình trong ArtLibrary thì vẽ hình thay chữ.
 var skill_art: Array[StringName] = [&"", &"", &""]
 var attributes_can_level: bool = false
@@ -168,17 +169,26 @@ func _draw_skill(font: Font, i: int) -> void:
 	if tex != null:
 		var side: float = SKILL_RADIUS * 2.0 - 8.0
 		draw_texture_rect(tex, Rect2(c - Vector2(side, side) * 0.5, Vector2(side, side)), false, Color.WHITE if ready else Color(0.45, 0.45, 0.45))
-	draw_arc(c, SKILL_RADIUS, 0, TAU, 40, Color(1, 1, 1, 0.7 if ready else 0.2), 3.0, true)
+	_draw_rank_ring(c, view[0], view[4] if view.size() > 4 else 5, ready)
 	if view[1] > 0.0:
 		_label(font, c - Vector2(0, 10), "%d" % ceili(view[1]), 30, Color(1, 0.85, 0.3))
 	else:
 		if tex == null:
 			_label(font, c - Vector2(0, 10), ["Q", "W", "R"][i], 26, Color(1, 1, 1, 0.9 if learned else 0.3))
 	_label(font, c + Vector2(0, 22), str(i + 1), 16, Color(1, 1, 1, 0.5))
-	for r: int in range(view[0]):
-		draw_circle(c + Vector2(-16 + r * 8, SKILL_RADIUS - 10), 3.0, Color(1, 0.85, 0.3))
 	if view[3]:
 		_draw_plus(font, plus_center(i), "+")
+
+
+## D-119: viền chia đoạn kiểu Liên Quân — mỗi cấp tối đa một đoạn, đã nâng thì sáng vàng.
+func _draw_rank_ring(c: Vector2, rank: int, max_rank: int, ready: bool) -> void:
+	var gap: float = 0.12
+	var seg: float = TAU / maxi(1, max_rank)
+	for k: int in range(max_rank):
+		var from: float = -PI * 0.5 + k * seg + gap * 0.5
+		var lit: bool = k < rank
+		var col: Color = Color(1, 0.82, 0.25, 1.0 if ready else 0.75) if lit else Color(1, 1, 1, 0.22)
+		draw_arc(c, SKILL_RADIUS + 2.0, from, from + seg - gap, 16, col, 5.0 if lit else 3.0, true)
 
 
 func _draw_plus(font: Font, c: Vector2, text: String) -> void:

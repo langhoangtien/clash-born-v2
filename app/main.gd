@@ -6,7 +6,7 @@ const VERSION_TEXT: String = "Clashborn v2 — M0"
 const MAP_VIEWER: String = "res://app/map_viewer.tscn"
 const MATCH_SCENE: String = "res://app/match_scene.tscn"
 ## Tướng chơi thử được (tạm, tới khi có màn chọn tướng M8).
-const PLAYABLE: Array[StringName] = [&"brakk", &"myra", &"noctis", &"vexa"]
+const PLAYABLE: Array[StringName] = [&"brakk", &"myra", &"noctis", &"vexa", &"gorran"]
 
 
 func _ready() -> void:

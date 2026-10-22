@@ -43,7 +43,7 @@ func refresh() -> void:
 		var cd: float = maxf(0.0, (a.ready_tick - world.tick) * SimClock.TICK_SECONDS) if a != null else 0.0
 		var ok: bool = a != null and Abilities.problem(world, hero, a) == Abilities.Problem.NONE
 		var can_level: bool = Progression.level_problem(world, hero, SLOTS[i]) == Command.Reject.NONE
-		buttons.skill_view[i] = [a.rank if a != null else 0, cd, ok, can_level]
+		buttons.skill_view[i] = [a.rank if a != null else 0, cd, ok, can_level, AbilityDef.RANKS[SLOTS[i] as AbilityDef.Slot]]
 		buttons.skill_art[i] = a.def.art_id if a != null else &""
 	buttons.attributes_can_level = Progression.level_problem(world, hero, Command.ATTRIBUTES) == Command.Reject.NONE
 	buttons.queue_redraw()

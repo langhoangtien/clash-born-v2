@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="2_dmg"]
+[ext_resource type="Resource" path="res://content/effects/stun.tres" id="3_stun"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="4_app"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="5_abl"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="6_tal"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="7_val"]
+
+[sub_resource type="Resource" id="D0"]
+script = ExtResource("2_dmg")
+damage_type = 1
+amount = "damage"
+
+[sub_resource type="Resource" id="S0"]
+script = ExtResource("4_app")
+effect = ExtResource("3_stun")
+duration = "stun_duration"
+
+[sub_resource type="Resource" id="V0"]
+script = ExtResource("7_val")
+value_name = &"stun_duration"
+amount = 1.0
+
+[sub_resource type="Resource" id="T0"]
+script = ExtResource("6_tal")
+id = &"gorran_w_ii"
+display_name = "Đuôi Rồng Nặng"
+description = "Choáng +1 s"
+value_changes = Array[ExtResource("7_val")]([SubResource("V0")])
+
+[resource]
+script = ExtResource("5_abl")
+slot = 2
+targeting = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cast_range": PackedFloat32Array(700, 700, 700, 700, 700),
+&"cooldown": PackedFloat32Array(12, 12, 12, 12, 12),
+&"damage": PackedFloat32Array(80, 100, 120, 140, 160),
+&"mana": PackedFloat32Array(100, 100, 100, 100, 100),
+&"stun_duration": PackedFloat32Array(1.5, 1.8, 2.1, 2.4, 2.7)
+})
+on_cast = Array[ExtResource("1_act")]([SubResource("D0"), SubResource("S0")])
+talent = SubResource("T0")
+bot_usages = Array[int]([0])
+bot_conditions = Array[StringName]([&"enemy_hero_in_range", &"prefer_engaging_enemy"])
+id = &"gorran_w"
+display_name = "Đuôi Rồng"
+description = "Quất đuôi rồng từ xa 700: 80 / 100 / 120 / 140 / 160 sát thương phép và choáng 1.5 / 1.8 / 2.1 / 2.4 / 2.7 s."
+art_id = &"gorran_w"

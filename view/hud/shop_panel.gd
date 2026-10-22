@@ -57,6 +57,8 @@ const STATS: Dictionary = {
 
 signal buy_pressed(item_id: StringName)
 signal sell_pressed(index: int)
+## D-120: bộ đồ soạn sẵn đổi (thêm / bỏ món).
+signal build_changed(build: Array[StringName])
 
 var world: World
 var hero: Entity
@@ -70,6 +72,10 @@ var scroll: float = 0.0
 var _drag_from: float = INF
 ## D-115: các nút của cây ghép đồ đang vẽ (để bắt chạm).
 var _tree: Array = []
+## D-120: bộ đồ soạn sẵn (tối đa BUILD_MAX món, theo thứ tự mua).
+var build: Array[StringName] = []
+const BUILD_SLOT: float = 56.0
+const BUILD_MAX: int = 6
 
 
 func panel_rect() -> Rect2:
@@ -123,7 +129,34 @@ func detail_rect() -> Rect2:
 
 func action_rect() -> Rect2:
 	var d: Rect2 = detail_rect()
-	return Rect2(d.position + Vector2(24, d.size.y - 96), Vector2(d.size.x - 48, 76))
+	var full: Rect2 = Rect2(d.position + Vector2(24, d.size.y - 96), Vector2(d.size.x - 48, 76))
+	if selected_slot >= 0:
+		return full
+	return Rect2(full.position, Vector2(full.size.x * 0.6 - 6, full.size.y))
+
+
+## D-120: nút "Soạn" cạnh nút Mua (chỉ khi xem món của cửa hàng).
+func compose_rect() -> Rect2:
+	var a: Rect2 = action_rect()
+	var d: Rect2 = detail_rect()
+	return Rect2(Vector2(a.end.x + 12, a.position.y), Vector2(d.end.x - 24 - a.end.x - 12, a.size.y))
+
+
+## D-120: ô thứ `i` của hàng "Soạn sẵn" (cột trái, dưới các thẻ), 3 cột × 2 hàng.
+func build_rect(i: int) -> Rect2:
+	var top: Vector2 = panel_rect().position + Vector2(20, 80 + TAB_NAMES.size() * (TAB_SIZE.y + 10) + 44)
+	return Rect2(top + Vector2((i % 3) * (BUILD_SLOT + 8), (i / 3) * (BUILD_SLOT + 8)), Vector2(BUILD_SLOT, BUILD_SLOT))
+
+
+## D-120: thêm món vào bộ soạn sẵn, hoặc bỏ nếu đã có. Đầy thì không thêm.
+func toggle_build(id: StringName) -> void:
+	if build.has(id):
+		build.erase(id)
+	elif build.size() < BUILD_MAX:
+		build.append(id)
+	else:
+		return
+	build_changed.emit(build)
 
 
 func close_rect() -> Rect2:
@@ -173,6 +206,13 @@ func press_at(local: Vector2) -> void:
 	if node != null:  # D-115: chạm ô trên cây ghép → xem món đó
 		selected_id = node.def.id
 		selected_slot = -1
+		return
+	for i: int in range(build.size()):
+		if build_rect(i).has_point(local):  # D-120: chạm ô soạn sẵn → bỏ món đó
+			toggle_build(build[i])
+			return
+	if selected_slot < 0 and selected_def() != null and compose_rect().has_point(local):
+		toggle_build(selected_def().id)
 		return
 	if action_rect().has_point(local):
 		_act()
@@ -250,7 +290,22 @@ func _draw() -> void:
 			_center(font, r.get_center() + Vector2(0, 32), it.def.display_name, 13, Color(1, 1, 1, 0.8))
 		if i == selected_slot:
 			draw_rect(r, Color(1, 0.9, 0.4), false, 3.0)
+	_draw_build(font)
 	_draw_detail(font)
+
+
+## D-120: hàng "Soạn sẵn" ở cột trái; món đã có (kể cả đã ghép vào món lớn) viền xanh.
+func _draw_build(font: Font) -> void:
+	draw_string(font, build_rect(0).position + Vector2(0, -12), "Soạn sẵn", HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color(1, 1, 1, 0.7))
+	for i: int in range(BUILD_MAX):
+		var r: Rect2 = build_rect(i)
+		draw_rect(r, Color(0.15, 0.17, 0.22, 0.9))
+		if i < build.size() and world.item_catalog.has(build[i]):
+			_draw_icon(font, r.get_center(), BUILD_SLOT * 0.42, world.item_catalog[build[i]], true)
+			var one: Array[StringName] = [build[i]]
+			var done: bool = BuildPlan.next_target(world, hero, one) == null
+			if done:
+				draw_rect(r, Color(0.4, 1, 0.5), false, 3.0)
 
 
 func _draw_card(font: Font, r: Rect2, d: ItemDef) -> void:
@@ -319,6 +374,11 @@ func _draw_detail(font: Font) -> void:
 		label = "Mua  %d" % Shop.price(world, hero, d) if ok else status_text(world, d, problem, hero.team)
 	draw_rect(b, (Color(0.6, 0.25, 0.2) if selected_slot >= 0 else Color(0.2, 0.5, 0.25)) if ok else Color(0.25, 0.25, 0.28))
 	_center(font, b.get_center(), label, 26, Color.WHITE if ok else Color(1, 0.6, 0.5))
+	if selected_slot < 0:  # D-120
+		var cr: Rect2 = compose_rect()
+		var has: bool = build.has(d.id)
+		draw_rect(cr, Color(0.35, 0.3, 0.12) if has else Color(0.2, 0.3, 0.5))
+		_center(font, cr.get_center(), "Bỏ soạn" if has else ("Soạn +" if build.size() < BUILD_MAX else "Đã đủ 6"), 24, Color.WHITE)
 
 
 func _center(font: Font, c: Vector2, text: String, font_size: int, color: Color) -> void:

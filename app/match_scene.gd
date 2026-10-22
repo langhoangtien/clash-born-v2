@@ -100,6 +100,8 @@ func _ready() -> void:
 	shop.hero = hero
 	shop.buy_pressed.connect(func(id: StringName) -> void: world.submit(Command.buy(hero.id, id)))  # SHOP-01
 	shop.sell_pressed.connect(func(i: int) -> void: world.submit(Command.sell(hero.id, i)))  # SHOP-05
+	shop.build = BuildPresets.load_build(hero_id)  # D-120: bộ đồ soạn sẵn của tướng này
+	shop.build_changed.connect(func(b: Array[StringName]) -> void: BuildPresets.save_build(hero_id, b))
 	var info: InfoPanels = InfoPanels.new()
 	info.name = "InfoPanels"
 	$Hud.add_child(info)
@@ -129,7 +131,7 @@ func tick_frame(delta: float) -> void:
 	var follow: Vector2 = death_cam.update(hero.alive, units_view.display_position(hero), _held_direction(), delta, _map_bounds())  # CAM-01
 	camera.position = minimap.peek_point if minimap.peeking else follow
 	if quick_buy != null:  # SHOP-10: món nên mua lúc này
-		var next: ItemDef = BuildPlan.next_buy(world, hero, hero_def.bot_item_build)
+		var next: ItemDef = BuildPlan.next_buy(world, hero, shop.build if not shop.build.is_empty() else hero_def.bot_item_build)
 		quick_buy.show_item(next, Shop.price(world, hero, next) if next != null else 0)
 	var view_size: Vector2 = get_viewport_rect().size / camera.zoom
 	minimap.camera_rect = Rect2(camera.position - view_size * 0.5, view_size)

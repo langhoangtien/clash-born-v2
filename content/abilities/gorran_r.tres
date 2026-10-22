@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Resource" path="res://content/effects/gorran_rage.tres" id="2_rage"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_app"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_abl"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="5_tal"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="6_val"]
+
+[sub_resource type="Resource" id="A0"]
+script = ExtResource("3_app")
+effect = ExtResource("2_rage")
+duration = "duration"
+target = 0
+
+[sub_resource type="Resource" id="V0"]
+script = ExtResource("6_val")
+value_name = &"bat_cut"
+amount = 0.15
+
+[sub_resource type="Resource" id="V1"]
+script = ExtResource("6_val")
+value_name = &"rage_damage"
+amount = 50.0
+
+[sub_resource type="Resource" id="T0"]
+script = ExtResource("5_tal")
+id = &"gorran_r_ii"
+display_name = "Cuồng Hóa Tột Độ"
+description = "Thời gian đánh gốc giảm thêm 0.15 (cấp 3: 0.85) và +50 sát thương khi Cuồng Hóa"
+value_changes = Array[ExtResource("6_val")]([SubResource("V0"), SubResource("V1")])
+
+[resource]
+script = ExtResource("4_abl")
+slot = 3
+target_team = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"bat_cut": PackedFloat32Array(0.5, 0.6, 0.7),
+&"cooldown": PackedFloat32Array(55, 55, 55),
+&"duration": PackedFloat32Array(25, 25, 25),
+&"mana": PackedFloat32Array(50, 100, 150),
+&"move_bonus": PackedFloat32Array(30, 40, 50),
+&"rage_damage": PackedFloat32Array(0, 0, 0),
+&"regen": PackedFloat32Array(50, 75, 100)
+})
+on_cast = Array[ExtResource("1_act")]([SubResource("A0")])
+talent = SubResource("T0")
+bot_usages = Array[int]([3, 5])
+bot_conditions = Array[StringName]([&"enemy_hero_in_range"])
+id = &"gorran_r"
+display_name = "Cuồng Hóa"
+description = "25 s: thời gian đánh gốc 1.7 → 1.2 / 1.1 / 1.0, hồi máu +50 / 75 / 100 mỗi giây, tốc chạy +30 / 40 / 50."
+art_id = &"gorran_r"
