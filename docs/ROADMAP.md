@@ -222,3 +222,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | Icon 4e | Xong | 2026-10-22 | 550 test xanh; icon nút Đánh / Lính / Trụ (D-110), import_icons cắt viền trong suốt cho icon nút |
 | Âm thanh A1 | Xong | 2026-10-22 | 557 test xanh (+7); 62 tiếng ElevenLabs (D-111..113), bộ phát theo sự kiện + thông báo + nhạc, nút chế độ tiếng (D-114). **Chơi thử có tiếng** |
 | D-115 | Xong | 2026-10-22 | 559 test xanh (+2); icon cho mọi hiệu ứng, icon đồ ở bảng tỷ số, cây ghép đồ trong shop |
+| APK | Xong | 2026-10-22 | Bản APK cho Android / HarmonyOS 2–4 (D-116, docs/ANDROID_BUILD.md). **Chơi thử trên Huawei** |
