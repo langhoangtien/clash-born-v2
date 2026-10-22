@@ -444,48 +444,9 @@ static func _upgrade_slot(u: HeroDef.Upgrade) -> int:
 	return Command.ATTRIBUTES
 
 
-## D-94: món kế tiếp trong thứ tự lên đồ chưa có, null nếu đã đủ.
+## D-94: món kế tiếp trong thứ tự lên đồ của hero chưa có (BuildPlan, SHOP-10).
 func next_item(world: World, e: Entity) -> ItemDef:
-	if e.hero_def == null:
-		return null
-	for id: StringName in e.hero_def.bot_item_build:
-		var owned: bool = Items.slots(e).any(func(it: ItemInstance) -> bool: return it != null and _contains(world, it.def, id))
-		if not owned and world.item_catalog.has(id):
-			return world.item_catalog[id]
-	return null
-
-
-## Món `d` chính là `id` hoặc đã ghép từ `id` (SHOP-09) — coi như đã có.
-static func _contains(world: World, d: ItemDef, id: StringName) -> bool:
-	if d.id == id:
-		return true
-	for c: StringName in d.components:
-		if world.item_catalog.has(c) and _contains(world, world.item_catalog[c], id):
-			return true
-	return false
-
-
-## D-106: chưa đủ vàng mua món ghép thì mua dần thành phần còn thiếu (theo thứ tự, đi sâu
-## vào thành phần của thành phần).
-func _next_part(world: World, e: Entity, d: ItemDef) -> ItemDef:
-	var owned: Array[int] = Shop.owned_components(world, e, d)
-	var held: Array[StringName] = []
-	for index: int in owned:
-		held.append(Items.slots(e)[index].def.id)
-	for c: StringName in d.components:
-		if held.has(c):
-			held.erase(c)
-			continue
-		var part: ItemDef = world.item_catalog.get(c)
-		if part == null:
-			continue
-		if Shop.buy_problem(world, e, c) == Command.Reject.NONE:
-			return part
-		var deeper: ItemDef = _next_part(world, e, part) if not part.components.is_empty() else null
-		if deeper != null:
-			return deeper
-		return null
-	return null
+	return BuildPlan.next_target(world, e, e.hero_def.bot_item_build) if e.hero_def != null else null
 
 
 ## D-94: mua món kế tiếp (mọi nơi, hoặc khi đang ở shop ẩn), mua mắt vàng khi kho còn.
@@ -496,7 +457,7 @@ func _shop(world: World, e: Entity) -> void:
 	if d != null and Shop.buy_problem(world, e, d.id) == Command.Reject.NONE:
 		world.submit(Command.buy(e.id, d.id))
 		return
-	var part: ItemDef = _next_part(world, e, d) if d != null else null
+	var part: ItemDef = BuildPlan.next_part(world, e, d) if d != null else null
 	if part != null:
 		world.submit(Command.buy(e.id, part.id))
 		return

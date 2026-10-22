@@ -223,3 +223,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | Âm thanh A1 | Xong | 2026-10-22 | 557 test xanh (+7); 62 tiếng ElevenLabs (D-111..113), bộ phát theo sự kiện + thông báo + nhạc, nút chế độ tiếng (D-114). **Chơi thử có tiếng** |
 | D-115 | Xong | 2026-10-22 | 559 test xanh (+2); icon cho mọi hiệu ứng, icon đồ ở bảng tỷ số, cây ghép đồ trong shop |
 | APK | Xong | 2026-10-22 | Bản APK cho Android / HarmonyOS 2–4 (D-116, docs/ANDROID_BUILD.md). **Chơi thử trên Huawei** |
+| D-117 / D-118 | Xong | 2026-10-22 | 563 test + 4 soak xanh (+4); lính đánh trụ 4 / nhà chính lệch route (CRP-03b), nút mua nhanh (SHOP-10), camera tự do khi chết (CAM-01) |

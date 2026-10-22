@@ -37,6 +37,8 @@ var hero_def: HeroDef
 var skills: SkillControls = SkillControls.new()
 var fog: FogView
 var audio: AudioView
+var death_cam: DeathCamera = DeathCamera.new()
+var quick_buy: QuickBuy
 var minimap: Minimap
 var shop: ShopPanel
 
@@ -76,6 +78,7 @@ func _ready() -> void:
 	runner = SimRunner.new(world)
 	runner.before_step.connect(_before_step)
 	_setup_audio()
+	_setup_quick_buy()
 	camera.position = hero.position
 	skills.world = world
 	skills.hero = hero
@@ -123,7 +126,11 @@ func _process(delta: float) -> void:
 func tick_frame(delta: float) -> void:
 	runner.advance(delta)
 	units_view.alpha = runner.alpha()
-	camera.position = minimap.peek_point if minimap.peeking else units_view.display_position(hero)
+	var follow: Vector2 = death_cam.update(hero.alive, units_view.display_position(hero), _held_direction(), delta, _map_bounds())  # CAM-01
+	camera.position = minimap.peek_point if minimap.peeking else follow
+	if quick_buy != null:  # SHOP-10: món nên mua lúc này
+		var next: ItemDef = BuildPlan.next_buy(world, hero, hero_def.bot_item_build)
+		quick_buy.show_item(next, Shop.price(world, hero, next) if next != null else 0)
 	var view_size: Vector2 = get_viewport_rect().size / camera.zoom
 	minimap.camera_rect = Rect2(camera.position - view_size * 0.5, view_size)
 	fog.view_rect = minimap.camera_rect  # D-108: chỉ tô sương trong khung camera
@@ -188,6 +195,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_tree().change_scene_to_file(MENU_SCENE)
 	elif event is InputEventMouseButton and event.pressed and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_RIGHT:
 		input.click_world_point(get_global_mouse_position(), true)
+	elif event is InputEventScreenDrag and death_cam.active():
+		death_cam.drag((event as InputEventScreenDrag).relative / camera.zoom, _map_bounds())  # CAM-01
 	elif event is InputEventScreenTouch and event.pressed:
 		input.click_world_point(get_canvas_transform().affine_inverse() * (event as InputEventScreenTouch).position, false)
 
@@ -207,3 +216,16 @@ func _setup_audio() -> void:
 	toggle.pressed.connect(func() -> void:
 		audio.cycle_mode()
 		toggle.queue_redraw())
+
+
+func _map_bounds() -> Rect2:
+	return Rect2(Vector2.ZERO, world.map.world_size())
+
+
+## SHOP-10 (D-117): nút mua nhanh theo thứ tự lên đồ gợi ý của hero.
+func _setup_quick_buy() -> void:
+	quick_buy = QuickBuy.new()
+	quick_buy.name = "QuickBuy"
+	$Hud.add_child(quick_buy)
+	quick_buy.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	quick_buy.pressed.connect(func(id: StringName) -> void: world.submit(Command.buy(hero.id, id)))

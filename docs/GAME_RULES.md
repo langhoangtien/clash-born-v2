@@ -385,6 +385,11 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   ghép khi đang có thành phần (một cấp, mỗi ô dùng một lần, theo thứ tự thành phần): trả
   `cost` − tổng giá thành phần đang có, thành phần biến mất, món mới vào ô trống đầu tiên. Đầy ô
   nhưng có ít nhất một thành phần thì vẫn mua được. Bán món ghép: theo giá món (SHOP-05).
+- `SHOP-10` (D-117) Thứ tự lên đồ (`BuildPlan`): món kế tiếp = món đầu tiên trong danh sách chưa
+  có (đã ghép vào món lớn hơn cũng tính là có). Mua lúc này: món đó nếu mua được, không thì thành
+  phần còn thiếu đầu tiên mua được (đi sâu vào thành phần con). Bot dùng thứ tự `bot_item_build`;
+  người chơi có nút mua nhanh bên trái (trên joystick) hiện món mua được theo cùng thứ tự gợi ý
+  của hero, chạm là mua; không mua được gì thì ẩn.
 - `SHOP-08` Kho mỗi đội (`stock_initial`, `stock_max`, `stock_restock`; stock_max 0 = không giới
   hạn): mua trừ 1 của kho đội mình, hết thì từ chối OUT_OF_STOCK. Kho chưa đầy thì cứ
   `stock_restock` giây thêm 1 (đồng hồ chạy từ lúc kho rời mức đầy); bán không trả lại kho.
@@ -519,6 +524,7 @@ Bảng ưu tiên (dòng trên thắng):
 | CRP-01 | HERO_AGGRO | Có `hero_attacked_hero` mà nạn nhân là hero phe mình và lính trong `creep_hero_aggro_range` của nạn nhân | Đánh hero gây sự | Hết `creep_hero_aggro_time` (gia hạn nếu đánh tiếp), mục tiêu không nhắm được, vượt `creep_chase_leash` từ origin |
 | CRP-02 | LANE_COMBAT | Lính địch hoặc quái rừng nhắm được trong `creep_acquire_range` | Đánh lính địch / quái gần nhất (D-76) | Mục tiêu mất, vượt leash |
 | CRP-03 | SIEGE | Công trình kế tiếp trong `creep_acquire_range` hoặc trong tầm đánh của lính (lính công thành tầm 690 > 500) | Đánh nó | Công trình chết; có lính địch |
+| CRP-03b | SIEGE lệch route (D-118) | Lính đã tới mép trước của lane (DEF-07) mà công trình kế tiếp vẫn ngoài tầm (trụ 4 / nhà chính nằm lệch khỏi route) | Rời route, đi thẳng tới đánh nó; đánh công trình thì không bị leash / mép trước kéo về (CRP-07) | Công trình chết; có lính địch |
 | CRP-04 | HERO_NEARBY | Hero địch nhắm được trong `creep_acquire_range` | Đánh hero đó | Ra khỏi tầm, vượt leash |
 | CRP-05 | ADVANCE | Mặc định | Đi theo route, không vượt mép trước của lane (DEF-07) | — |
 
@@ -647,6 +653,9 @@ chơi và bot (`Rules.pick_attack_target`), nút trên màn hình chỉ gọi h�
 - `CTL-04` Chạm vào đơn vị địch (điện thoại) / chuột phải vào địch (PC): khóa mục tiêu và
   đánh; khóa giữ đến khi nó chết, mất nhắm được, hoặc ra khỏi `lock_break_range`.
 - `CTL-05` Người chơi không bao giờ tự về nhà.
+- `CAM-01` (D-118) Hero người chơi chết: camera tự do từ chỗ chết — joystick / WASD đẩy camera,
+  kéo một ngón trên map kéo camera, không ra khỏi map; giữ bản đồ nhỏ vẫn xem nhanh như cũ.
+  Hồi sinh: camera về theo hero.
 - `CTL-06` (M3.8, D-65) Ô chiêu Q/W/R: chạm thả tại chỗ = tung nhanh, tự nhắm (mục tiêu đang
   khóa hoặc đang đánh nếu kỹ năng nhận nó và trong tầm + tầm tìm (D-75), rồi hero địch gần
   nhất trong tầm + tầm tìm, rồi đơn vị địch gần nhất, rồi hướng đang nhìn); kéo ra quá vùng

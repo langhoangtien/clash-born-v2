@@ -52,8 +52,8 @@ func _think(world: World, c: Entity) -> void:
 		c.has_origin = true
 		c.chase_origin = c.position  # DEF-08
 	var limit: float = LaneRoute.limit(world, c)
-	var too_far: bool = c.position.distance_to(c.chase_origin) > world.balance.creep_chase_leash
-	if too_far or route.progress_of(c.position) > limit + world.balance.creep_front_margin:
+	var too_far: bool = c.position.distance_to(c.chase_origin) > world.balance.creep_chase_leash and not Rules.is_structure(target)  # CRP-03b
+	if too_far or (route.progress_of(c.position) > limit + world.balance.creep_front_margin and not Rules.is_structure(target)):
 		c.returning = true
 		c.aggro_target_id = -1
 		c.return_point = world.navigation(c.radius).nearest_clear(route.point_at(minf(route.progress_of(c.position), limit)))
@@ -76,8 +76,9 @@ func _pick(world: World, c: Entity) -> Entity:
 		return nearest[0]
 	var structure: Entity = _next_structure(world, c)
 	if structure != null and Rules.is_attackable(c, structure) \
-			and (Rules.edge_distance(c, structure) <= world.balance.creep_acquire_range or Rules.in_attack_range(c, structure)):
-		return structure  # CRP-03
+			and (Rules.edge_distance(c, structure) <= world.balance.creep_acquire_range or Rules.in_attack_range(c, structure) \
+			or _at_front(world, c)):
+		return structure  # CRP-03; CRP-03b: đã ở mép trước mà công trình nằm lệch khỏi route → tới đánh
 	if current != null and Rules.is_attackable(c, current) and current.kind == Entity.Kind.HERO \
 			and Rules.edge_distance(c, current) <= world.balance.creep_acquire_range:
 		return current  # CRP-04 + CRP-06
@@ -109,6 +110,12 @@ func _nearest_creep_and_hero(world: World, c: Entity) -> Array[Entity]:
 			best[slot] = e
 			best_d[slot] = d
 	return best
+
+
+## CRP-03b: lính đã tới mép trước của lane (DEF-07).
+func _at_front(world: World, c: Entity) -> bool:
+	var route: LaneRoute = LaneRoute.of(world, c.lane, c.team)
+	return route.progress_of(c.position) >= LaneRoute.limit(world, c) - ARRIVE
 
 
 ## CRP-05: đi tới điểm route kế tiếp, không quá mép trước (DEF-07).

@@ -72,3 +72,37 @@ func test_CRP_12_mega_wave_has_extra_melee() -> void:
 			e.creep_tier = 0
 			break
 	assert_true(w.state_hash() != h, "D-30")
+
+
+## Lỗi chơi thử 2026-10-22: sau D-103 trụ 4 / nhà chính nằm lệch khỏi route (490–1500 đơn vị
+## từ cuối route) nên lính đứng ở cuối lane. CRP-03b: ở mép trước mà công trình kế tiếp ngoài
+## tầm thì rời route đi thẳng tới đánh nó.
+func test_CRP_03b_creeps_leave_lane_end_to_hit_t4_then_core() -> void:
+	var w: World = _world()
+	w.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
+	MatchSetup.add_lane_creeps(w, _lib, false)
+	for e: Entity in w.entities.duplicate():
+		if e.kind == Entity.Kind.TOWER and e.team == 1 and e.tier < 4:
+			w.destroyed_structures[e.structure_id] = true
+			w.remove_entity(e)
+	Objectives.refresh_locks(w)
+	var route: LaneRoute = LaneRoute.of(w, "BOT", 0)
+	var c: Entity = MatchSetup.spawn_creep(w, _lib, &"creep_melee", 0, "BOT", route.point_at(route.length() - 50.0))
+	var t4: Entity = Objectives.next_for_lane(w, 0, "BOT")
+	assert_eq(t4.tier, 4)
+	var hp: float = t4.health
+	for i: int in range(30 * 20):
+		w.step()
+	assert_true(t4.health < hp, "lính tới đánh trụ 4 lệch khỏi route")
+	for e: Entity in w.entities.duplicate():
+		if e.kind == Entity.Kind.TOWER and e.team == 1:
+			w.destroyed_structures[e.structure_id] = true
+			w.remove_entity(e)
+	Objectives.refresh_locks(w)
+	var core: Entity = Objectives.next_for_lane(w, 0, "BOT")
+	assert_eq(core.kind, Entity.Kind.CORE)
+	var core_hp: float = core.health
+	MatchSetup.spawn_creep(w, _lib, &"creep_melee", 0, "BOT", route.point_at(route.length() - 50.0))
+	for i: int in range(30 * 25):
+		w.step()
+	assert_true(core.health < core_hp, "hết trụ 4: lính đi tiếp đánh nhà chính (cách cuối route ~1500)")
