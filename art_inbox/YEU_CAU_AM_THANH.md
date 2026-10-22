@@ -27,3 +27,7 @@ Claude sẽ tự cân âm lượng, cắt khoảng lặng, chuyển sang .ogg v�
 ## Ghi chú của Codex
 
 - 2026-10-22: Đã chạy đợt A1 bằng biến môi trường `ELEVENLABS_API_KEY`. ElevenLabs trả HTTP 401, `missing_permissions`: khóa thiếu quyền `sound_generation`. Chưa tạo được file âm thanh nào (0/47), chưa thể nghe thử. Cần người chơi bật quyền Sound Generation hoặc cấp khóa có quyền đó rồi chạy lại. Không sửa `generate.py` / `sounds.json`; không lưu khóa vào repo.
+
+- 2026-10-22 (chạy lại sau khi cấp quyền): Đã tạo đủ **62/62 MP3**: 47 hiệu ứng, 13 câu thông báo tiếng Anh (giọng Adam mặc định), 2 bản nhạc nền (menu ~90 s, trận đấu ~150 s). Lỗi quyền trước đó đã được giải quyết. Tất cả file qua kiểm tra giải mã đầy đủ bằng FFmpeg, có tín hiệu âm thanh, MP3 44.1 kHz; thời lượng hiệu ứng và nhạc khớp yêu cầu trong sai số đóng gói MP3.
+- **Chưa xác nhận nghe thử:** phiên làm việc này không hỗ trợ đầu vào âm thanh để Codex nghe trực tiếp; kiểm tra kỹ thuật không thay thế duyệt nội dung bằng tai. Cần nghe mẫu hiệu ứng / giọng / nhạc trước khi nhập game, đặc biệt kiểm tra không có giọng hoặc nhạc ngoài ý muốn trong hiệu ứng và độ liền mạch của các vòng lặp. Chưa có file nào được xác định hỏng nội dung để tạo lại.
+- Giữ nguyên `tools/sfx_gen/generate.py` và `sounds.json`; chưa cân âm lượng, cắt khoảng lặng, chuyển OGG hay nhập vào `assets/`. Khóa chỉ được truyền qua biến môi trường, không lưu trong repo.
