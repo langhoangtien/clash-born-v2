@@ -219,3 +219,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | Icon 4b+4c | Xong | 2026-10-21 | 550 test xanh; 14 icon skill + 12 icon trạng thái nhập vào game, nút Về dùng icon về thành. Tiếp: 4d (55 icon đồ) |
 | Icon 4d lô 1 | Xong | 2026-10-22 | 550 test xanh; 10 icon đồ cơ bản nhập vào game, icon trong thẻ shop to hơn (bán kính 30 → 38). Còn 44 icon đồ |
 | Icon 4d xong | Xong | 2026-10-22 | 550 test xanh; đủ 55 icon đồ trong shop, nút đồ, ô đồ. **Hết Đợt 4 (icon)** |
+| Icon 4e | Xong | 2026-10-22 | 550 test xanh; icon nút Đánh / Lính / Trụ (D-110), import_icons cắt viền trong suốt cho icon nút |

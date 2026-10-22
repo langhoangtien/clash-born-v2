@@ -23,8 +23,14 @@ STATE = {
 }
 
 
-def save(src, art_id, size):
-    im = Image.open(src).convert("RGBA").resize((size, size), Image.LANCZOS)
+def save(src, art_id, size, trim=False):
+    im = Image.open(src).convert("RGBA")
+    if trim:  # bỏ phần trong suốt quanh hình để icon lấp đầy nút
+        l, t, r, b = im.getbbox()
+        side = max(r - l, b - t)
+        cx, cy = (l + r) // 2, (t + b) // 2
+        im = im.crop((cx - side // 2, cy - side // 2, cx - side // 2 + side, cy - side // 2 + side))
+    im = im.resize((size, size), Image.LANCZOS)
     im.save(os.path.join(DST, art_id + ".png"))
     print("  ", os.path.basename(src), "->", art_id)
 
@@ -43,7 +49,7 @@ def main():
         elif stem.startswith("skill_"):
             save(path, stem[6:], 256)
         elif stem.startswith("ui_"):
-            save(path, stem, 256)  # nút giao diện: ui_attack… giữ nguyên tên
+            save(path, stem, 256, trim=True)  # nút giao diện: ui_attack… giữ nguyên tên
         elif stem.startswith("state_"):
             for art_id in STATE.get(stem[6:], []):
                 save(path, art_id, 256 if stem == "state_recall" else 64)
