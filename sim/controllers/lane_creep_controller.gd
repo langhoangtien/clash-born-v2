@@ -48,11 +48,11 @@ func _think(world: World, c: Entity) -> void:
 		c.has_origin = false
 		_advance(world, c, route)
 		return
-	if not c.has_origin:
+	if not c.has_origin or Rules.is_structure(target):
 		c.has_origin = true
-		c.chase_origin = c.position  # DEF-08
+		c.chase_origin = c.position  # DEF-08; CRP-03b: đánh công trình thì origin đi theo lính
 	var limit: float = LaneRoute.limit(world, c)
-	var too_far: bool = c.position.distance_to(c.chase_origin) > world.balance.creep_chase_leash and not Rules.is_structure(target)  # CRP-03b
+	var too_far: bool = c.position.distance_to(c.chase_origin) > world.balance.creep_chase_leash
 	if too_far or (route.progress_of(c.position) > limit + world.balance.creep_front_margin and not Rules.is_structure(target)):
 		c.returning = true
 		c.aggro_target_id = -1

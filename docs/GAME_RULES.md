@@ -530,7 +530,7 @@ Bảng ưu tiên (dòng trên thắng):
 | CRP-01 | HERO_AGGRO | Có `hero_attacked_hero` mà nạn nhân là hero phe mình và lính trong `creep_hero_aggro_range` của nạn nhân | Đánh hero gây sự | Hết `creep_hero_aggro_time` (gia hạn nếu đánh tiếp), mục tiêu không nhắm được, vượt `creep_chase_leash` từ origin |
 | CRP-02 | LANE_COMBAT | Lính địch hoặc quái rừng nhắm được trong `creep_acquire_range` | Đánh lính địch / quái gần nhất (D-76) | Mục tiêu mất, vượt leash |
 | CRP-03 | SIEGE | Công trình kế tiếp trong `creep_acquire_range` hoặc trong tầm đánh của lính (lính công thành tầm 690 > 500) | Đánh nó | Công trình chết; có lính địch |
-| CRP-03b | SIEGE lệch route (D-118) | Lính đã tới mép trước của lane (DEF-07) mà công trình kế tiếp vẫn ngoài tầm (trụ 4 / nhà chính nằm lệch khỏi route) | Rời route, đi thẳng tới đánh nó; đánh công trình thì không bị leash / mép trước kéo về (CRP-07) | Công trình chết; có lính địch |
+| CRP-03b | SIEGE lệch route (D-118) | Lính đã tới mép trước của lane (DEF-07) mà công trình kế tiếp vẫn ngoài tầm (trụ 4 / nhà chính nằm lệch khỏi route) | Rời route, đi thẳng tới đánh nó; đánh công trình thì không bị mép trước kéo về và origin leash đi theo lính (DEF-08), nên đổi sang mục tiêu khác thì leash tính từ chỗ đang đứng | Công trình chết; có lính địch |
 | CRP-04 | HERO_NEARBY | Hero địch nhắm được trong `creep_acquire_range` | Đánh hero đó | Ra khỏi tầm, vượt leash |
 | CRP-05 | ADVANCE | Mặc định | Đi theo route, không vượt mép trước của lane (DEF-07) | — |
 
