@@ -316,6 +316,18 @@ giữa, không chữ. Làm theo lô 10 món, mỗi lô xong thì báo.
 | [x] | `04_icons/state_burning.png` | Small orange flame |
 | [x] | `04_icons/state_recall.png` | Blue swirl portal with a small house shape (nút Về thành, 256 × 256 như icon skill, viền xanh dương) |
 
+### 4e — Nút đánh (3) — **LÀM NGAY (2026-10-22)**
+
+256 × 256, hình tròn, cùng phong cách icon skill (dùng 4 icon mẫu 4a làm tham chiếu), viền
+**đỏ cam** phát sáng, nền tối bên trong, ngoài vòng tròn trong suốt. **Không có chữ.** Ba nút
+đứng cạnh nhau ở góc dưới phải nên phải phân biệt ngay bằng hình. Xong thì commit + push lên `main`.
+
+| Xong | File | Mô tả |
+|---|---|---|
+| [ ] | `04_icons/ui_attack.png` | Nút ĐÁNH chính (to nhất): a single heavy sword striking diagonally with a bright slash arc, viền đỏ cam dày hơn hai nút kia |
+| [ ] | `04_icons/ui_attack_creep.png` | Nút đánh LÍNH: small helmeted foot-soldier head with a sword crosshair over it |
+| [ ] | `04_icons/ui_attack_tower.png` | Nút đánh TRỤ: stone defense tower with a crystal on top, cracked, with a sword crosshair over it |
+
 ---
 
 ## Đợt 5 — Giao diện (nền trong suốt)

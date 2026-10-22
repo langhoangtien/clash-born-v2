@@ -13,6 +13,8 @@ const SMALL_DISTANCE: float = 195.0
 const SMALL_ANGLES: Array[float] = [200.0, 250.0]
 const LABELS: Array[String] = ["ĐÁNH", "Lính", "Trụ"]
 const KEYS: Array[String] = ["J", "K", "L"]
+## Icon nút (ArtLibrary); thiếu ảnh thì vẽ chữ LABELS.
+const ART_IDS: Array[StringName] = [&"ui_attack", &"ui_attack_creep", &"ui_attack_tower"]
 ## Con trỏ chuột dùng số này (chạm dùng chỉ số ngón tay ≥ 0).
 const MOUSE_POINTER: int = -1
 
@@ -82,9 +84,17 @@ func _draw() -> void:
 		var c: Vector2 = button_center(mode)
 		var r: float = button_radius(mode)
 		var held: bool = is_held(mode)
+		var big: int = 34 if mode == Rules.AttackMode.ALL else 22
+		var tex: Texture2D = ArtLibrary.texture(ART_IDS[mode])
+		if tex != null:
+			var side: float = r * 2.0
+			draw_texture_rect(tex, Rect2(c - Vector2(side, side) * 0.5, Vector2(side, side)), false, Color.WHITE if held else Color(0.85, 0.85, 0.85, 0.9))
+			if held:
+				draw_arc(c, r, 0, TAU, 48, Color(1, 1, 1, 0.9), 4.0, true)
+			_label(font, c + Vector2(r * 0.7, r * 0.7), KEYS[mode], int(big * 0.55), Color(1, 1, 1, 0.6))
+			continue
 		draw_circle(c, r, Color(0.85, 0.35, 0.25, 0.75 if held else 0.5))
 		draw_arc(c, r, 0, TAU, 48, Color(1, 1, 1, 0.9 if held else 0.55), 4.0, true)
-		var big: int = 34 if mode == Rules.AttackMode.ALL else 22
 		_label(font, c - Vector2(0, big * 0.35), LABELS[mode], big, Color.WHITE)
 		_label(font, c + Vector2(0, big * 0.75), KEYS[mode], int(big * 0.7), Color(1, 1, 1, 0.6))
 

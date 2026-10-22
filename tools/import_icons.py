@@ -5,6 +5,7 @@
 
 - item_<id>.png  -> <id>.png           (art_id của món = id)
 - skill_<id>.png -> <id>.png           (vd skill_brakk_q -> brakk_q)
+- ui_<x>.png     -> ui_<x>.png       (nút Đánh / Lính / Trụ)
 - state_<x>.png  -> art_id của các hiệu ứng tương ứng (bảng STATE dưới)
 Icon kỹ năng / đồ thu về 256 px, icon trạng thái 64 px. Chạy lại an toàn (ghi đè).
 """
@@ -41,6 +42,8 @@ def main():
             save(path, stem[5:], 256)
         elif stem.startswith("skill_"):
             save(path, stem[6:], 256)
+        elif stem.startswith("ui_"):
+            save(path, stem, 256)  # nút giao diện: ui_attack… giữ nguyên tên
         elif stem.startswith("state_"):
             for art_id in STATE.get(stem[6:], []):
                 save(path, art_id, 256 if stem == "state_recall" else 64)
