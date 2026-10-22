@@ -34,7 +34,8 @@ func test_D_100_stat_and_skill_rows() -> void:
 	var p: InfoPanels = _setup()
 	var stats: Array = InfoPanels.stat_rows(p.hero)
 	assert_eq(stats[0][0], "Sát thương")
-	assert_true(String(stats[1][1]).contains("giảm"), "giáp ghi % giảm sát thương")
+	assert_true(String(stats[3][1]).contains("giảm"), "giáp ghi % giảm sát thương")
+	assert_true(String(stats[1][1]).contains("đòn/giây"), "D-124: tốc đánh kèm số đòn mỗi giây")
 	var skills: Array = InfoPanels.ability_rows(p.hero)
 	assert_eq(skills.size(), 4, "nội tại + Q W R")
 	var q: Array = skills[1]
@@ -55,4 +56,20 @@ func test_D_100_score_rows_items_and_kda() -> void:
 	assert_eq(rows[1][5], 2400, "giá trị đồ")
 	assert_eq(rows[1][6][0], "BC", "ô đồ: tên tắt")
 	assert_eq(rows[1][7][0], &"stun_hammer", "D-115: ô đồ có icon")
+	p.free()
+
+
+func test_D_124_damage_and_attributes_split_base_plus_items() -> void:
+	var p: InfoPanels = _setup()
+	var lib: ContentLibrary = ContentLibrary.load_dir()
+	var rows: Array = InfoPanels.stat_rows(p.hero)
+	assert_eq(rows[0][2], "", "chưa có đồ: không có phần cộng thêm")
+	Items.give(p.world, p.hero, lib.items[&"claymore"])
+	Items.give(p.world, p.hero, lib.items[&"ogre_axe"])
+	p.world.step()
+	rows = InfoPanels.stat_rows(p.hero)
+	assert_true(String(rows[0][2]).begins_with("+2"), "sát thương: gốc + phần từ đồ (Đại Kiếm 25 + Rìu Khổng Lồ)")
+	var strength: Array = rows.filter(func(r: Array) -> bool: return String(r[0]).begins_with("Sức mạnh"))[0]
+	assert_eq(strength[2], "+10", "Sức mạnh: gốc + 10 từ Rìu Khổng Lồ")
+	assert_true(rows.any(func(r: Array) -> bool: return String(r[0]).begins_with("BAT")), "có dòng BAT")
 	p.free()

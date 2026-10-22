@@ -88,7 +88,24 @@ func _draw() -> void:
 		_draw_score(font, p)
 
 
-## Dòng chỉ số: [tên, giá trị đã định dạng].
+## Màu theo loại chỉ số (D-124) để lướt nhanh trong trận.
+const C_DAMAGE: Color = Color(1.0, 0.62, 0.3)
+const C_SPEED: Color = Color(1.0, 0.88, 0.35)
+const C_ARMOR: Color = Color(0.62, 0.8, 1.0)
+const C_MAGIC: Color = Color(0.82, 0.62, 1.0)
+const C_MOVE: Color = Color(0.45, 1.0, 0.92)
+const C_RANGE: Color = Color(0.92, 0.92, 0.92)
+const C_HP: Color = Color(0.45, 0.95, 0.45)
+const C_MANA: Color = Color(0.45, 0.65, 1.0)
+const C_SPECIAL: Color = Color(1.0, 0.55, 0.65)
+const C_STR: Color = Color(1.0, 0.45, 0.4)
+const C_AGI: Color = Color(0.5, 1.0, 0.5)
+const C_INT: Color = Color(0.5, 0.75, 1.0)
+const C_BONUS: Color = Color(0.4, 1.0, 0.4)
+
+
+## Dòng chỉ số: [tên, giá trị gốc, phần cộng thêm từ đồ / hiệu ứng ("" nếu không có), màu].
+## Kiểu Dota (D-124): sát thương "120 + 70", thuộc tính "25 + 12".
 static func stat_rows(e: Entity) -> Array:
 	var s: StatBlock = e.stats
 	var armor: float = s.get_stat(StatId.Id.PHYSICAL_ARMOR)
@@ -96,21 +113,34 @@ static func stat_rows(e: Entity) -> Array:
 	var b: BalanceSettings = s.balance
 	var cut: float = 1.0 - DamageFormulas.after_armor(100.0, DamageFormulas.DamageType.PHYSICAL, armor, marmor, b) / 100.0
 	var mcut: float = 1.0 - DamageFormulas.after_armor(100.0, DamageFormulas.DamageType.MAGIC, armor, marmor, b) / 100.0
-	return [
-		["Sát thương", "%d" % roundi(s.get_stat(StatId.Id.PHYSICAL_DAMAGE))],
-		["Giáp", "%.1f  (giảm %d%%)" % [armor, roundi(cut * 100.0)]],
-		["Kháng phép", "%.1f  (giảm %d%%)" % [marmor, roundi(mcut * 100.0)]],
-		["Tốc đánh", "%.2f đòn/giây" % s.attacks_per_second()],
-		["Tốc chạy", "%d" % roundi(s.get_stat(StatId.Id.MOVEMENT_SPEED))],
-		["Tầm đánh", "%d" % roundi(s.get_stat(StatId.Id.ATTACK_RANGE))],
-		["Máu / hồi máu", "%d / %.1f mỗi giây" % [roundi(s.get_stat(StatId.Id.MAX_HP)), s.get_stat(StatId.Id.HP_REGEN)]],
-		["Mana / hồi mana", "%d / %.1f mỗi giây" % [roundi(s.get_stat(StatId.Id.MAX_MANA)), s.get_stat(StatId.Id.MANA_REGEN)]],
-		["Chí mạng", "%d%%" % roundi(s.get_stat(StatId.Id.CRITICAL_CHANCE) * 100.0)],
-		["Né tránh", "%d%%" % roundi(s.get_stat(StatId.Id.EVASION) * 100.0)],
-		["Hút máu", "%d%%" % roundi(s.get_stat(StatId.Id.LIFESTEAL) * 100.0)],
-		["Kháng hiệu ứng", "%d%%" % roundi(s.get_stat(StatId.Id.STATUS_RESISTANCE) * 100.0)],
-		["Sức mạnh / Nhanh / Trí", "%d / %d / %d" % [roundi(s.get_stat(StatId.Id.STRENGTH)), roundi(s.get_stat(StatId.Id.AGILITY)), roundi(s.get_stat(StatId.Id.INTELLIGENCE))]],
+	var bat: float = s.get_stat(StatId.Id.BASE_ATTACK_TIME)
+	var bat_base: float = s.natural(StatId.Id.BASE_ATTACK_TIME)
+	var primary: int = e.hero_def.primary_attribute if e.hero_def != null else 0
+	var rows: Array = [
+		_split("Sát thương", s, StatId.Id.PHYSICAL_DAMAGE, C_DAMAGE),
+		["Tốc đánh", "%d  (%.2f đòn/giây)" % [roundi(s.get_stat(StatId.Id.ATTACK_SPEED) * 100.0), s.attacks_per_second()], "", C_SPEED],
+		["BAT (thời gian đánh gốc)", "%.2f s" % bat, "" if is_equal_approx(bat, bat_base) else "(gốc %.2f)" % bat_base, C_SPEED],
+		["Giáp", "%.1f  (giảm %d%%)" % [armor, roundi(cut * 100.0)], "", C_ARMOR],
+		["Kháng phép", "%.1f  (giảm %d%%)" % [marmor, roundi(mcut * 100.0)], "", C_MAGIC],
+		["Tốc chạy", "%d" % roundi(s.get_stat(StatId.Id.MOVEMENT_SPEED)), "", C_MOVE],
+		["Tầm đánh", "%d" % roundi(s.get_stat(StatId.Id.ATTACK_RANGE)), "", C_RANGE],
+		["Máu / hồi máu", "%d / %.1f mỗi giây" % [roundi(s.get_stat(StatId.Id.MAX_HP)), s.get_stat(StatId.Id.HP_REGEN)], "", C_HP],
+		["Mana / hồi mana", "%d / %.1f mỗi giây" % [roundi(s.get_stat(StatId.Id.MAX_MANA)), s.get_stat(StatId.Id.MANA_REGEN)], "", C_MANA],
 	]
+	for extra: Array in [["Chí mạng", StatId.Id.CRITICAL_CHANCE], ["Né tránh", StatId.Id.EVASION], ["Hút máu", StatId.Id.LIFESTEAL], ["Kháng hiệu ứng", StatId.Id.STATUS_RESISTANCE]]:
+		var v: float = s.get_stat(extra[1])
+		if v > 0.0:
+			rows.append([extra[0], "%d%%" % roundi(v * 100.0), "", C_SPECIAL])
+	var attrs: Array = [["Sức mạnh", StatId.Id.STRENGTH, C_STR], ["Nhanh nhẹn", StatId.Id.AGILITY, C_AGI], ["Trí tuệ", StatId.Id.INTELLIGENCE, C_INT]]
+	for i: int in range(3):
+		rows.append(_split(attrs[i][0] + (" (chính)" if primary == i + 1 else ""), s, attrs[i][1], attrs[i][2]))
+	return rows
+
+
+static func _split(label: String, s: StatBlock, stat: StatId.Id, col: Color) -> Array:
+	var white: float = s.natural(stat)
+	var bonus: float = s.get_stat(stat) - white
+	return [label, "%d" % roundi(white), ("+%d" % roundi(bonus)) if absf(bonus) >= 0.5 else "", col]
 
 
 ## Dòng kỹ năng: [tên + cấp, [dòng giá trị "Tên: 90 / 140 / [190] / 240"]].
@@ -145,10 +175,13 @@ static func _num(v: float) -> String:
 func _draw_stats(font: Font, p: Rect2) -> void:
 	_text(font, p.position + Vector2(28, 52), "%s — cấp %d" % [hero.hero_def.display_name if hero.hero_def != null else "Hero", hero.stats.level()], 30, Color.WHITE)
 	var y: float = 100.0
-	for row: Array in stat_rows(hero):
+	for row: Array in stat_rows(hero):  # D-124: màu theo loại, phần cộng thêm màu xanh
 		_text(font, p.position + Vector2(28, y), row[0], 20, Color(1, 1, 1, 0.65))
-		_text(font, p.position + Vector2(300, y), row[1], 20, Color(0.6, 1, 0.6))
-		y += 34.0
+		_text(font, p.position + Vector2(300, y), row[1], 20, row[3])
+		if row[2] != "":
+			var w: float = font.get_string_size(row[1], HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
+			_text(font, p.position + Vector2(310 + w, y), row[2], 20, C_BONUS)
+		y += 31.0
 	var x: float = 620.0
 	y = 100.0
 	for row: Array in ability_rows(hero):

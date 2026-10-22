@@ -71,6 +71,24 @@ func get_stat(stat: S) -> float:
 	return _final[stat]
 
 
+## Giá trị "trắng" kiểu Dota (D-124): thuộc tính chỉ từ gốc + tăng theo cấp; sát thương đòn
+## đánh = gốc + phần thuộc tính chính "trắng"; BAT gốc. Chỉ đọc, VIEW dùng để tách "120 + 70".
+func natural(stat: S) -> float:
+	var attrs: Vector3 = Vector3.ZERO
+	for i: int in range(3):
+		attrs[i] = _base[ATTRIBUTES[i]] + StatFormulas.attribute_at_level(_attr_base[i], _attr_growth[i], _level, _bonus_count, _bonus_per_count)
+	match stat:
+		S.STRENGTH:
+			return attrs.x
+		S.AGILITY:
+			return attrs.y
+		S.INTELLIGENCE:
+			return attrs.z
+		S.PHYSICAL_DAMAGE:
+			return _base[S.PHYSICAL_DAMAGE] + StatFormulas.attack_damage_from_primary(_primary, attrs.x, attrs.y, attrs.z, balance)
+	return _base[stat]
+
+
 func values() -> PackedFloat64Array:
 	return _final
 

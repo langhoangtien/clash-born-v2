@@ -22,16 +22,13 @@ func primary_name() -> String:
 	return ["—", "Sức mạnh", "Nhanh nhẹn", "Trí tuệ"][def.primary_attribute]
 
 
-## Dòng bảng chỉ số: [tên, cấp 1, cấp 20].
+## Dòng bảng chỉ số: [tên, cấp 1, cấp 20, màu] (chưa có đồ nên không có phần cộng thêm).
 func stat_table() -> Array:
 	var a: Array = InfoPanels.stat_rows(lv1)
 	var b: Array = InfoPanels.stat_rows(lv20)
 	var out: Array = []
-	for i: int in range(a.size()):
-		if a[i][0] in ["Chí mạng", "Né tránh", "Hút máu", "Kháng hiệu ứng"] and a[i][1] == "0%" and b[i][1] == "0%":
-			continue
-		out.append([a[i][0], a[i][1], b[i][1]])
-	out.insert(4, ["BAT (thời gian đánh gốc)", "%.2f s" % def.stats.base_attack_time, "%.2f s" % def.stats.base_attack_time])
+	for i: int in range(mini(a.size(), b.size())):
+		out.append([a[i][0], a[i][1], b[i][1], a[i][3]])
 	return out
 
 

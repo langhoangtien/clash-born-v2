@@ -77,9 +77,9 @@ static func _stats(c: CanvasItem, font: Font, p: HeroPreview, area: Rect2) -> vo
 	for row: Array in p.stat_table():
 		c.draw_rect(Rect2(Vector2(area.position.x - 8, y - 26), Vector2(area.size.x, 36)), Color(1, 1, 1, 0.03))
 		c.draw_string(font, Vector2(x[0], y), row[0], HORIZONTAL_ALIGNMENT_LEFT, 360, 21, DIM)
-		c.draw_string(font, Vector2(x[1], y), row[1], HORIZONTAL_ALIGNMENT_LEFT, 300, 21, TEXT)
-		c.draw_string(font, Vector2(x[2], y), row[2], HORIZONTAL_ALIGNMENT_LEFT, 360, 21, GREEN)
-		y += 38.0
+		c.draw_string(font, Vector2(x[1], y), row[1], HORIZONTAL_ALIGNMENT_LEFT, 300, 21, row[3])
+		c.draw_string(font, Vector2(x[2], y), row[2], HORIZONTAL_ALIGNMENT_LEFT, 360, 21, row[3])
+		y += 34.0
 
 
 static func _talents(c: CanvasItem, font: Font, p: HeroPreview, area: Rect2) -> void:
