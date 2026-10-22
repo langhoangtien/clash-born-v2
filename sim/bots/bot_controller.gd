@@ -309,10 +309,15 @@ func escape_point(world: World, e: Entity) -> Vector2:
 ## BOT-09: sau hàng lính phe mình `bot_lane_offset` (lính xa nhất trên lane); không có lính thì
 ## điểm xa nhất còn an toàn tính từ công trình kế tiếp của địch lùi về. Tới nơi thì đi qua lại
 ## nhẹ (BOT-11: không đứng yên).
+## BOT-11: đứng chờ thì cứ chừng này giây đổi chỗ một lần. Phải nhỏ hơn hẳn ngưỡng 2 s của
+## BOT-11 (trước là đúng 2 s, lệch một tick là vi phạm — lộ ra khi map đổi, D-127).
+const RALLY_STEP_SECONDS: float = 1.5
+
+
 func rally_point(world: World, e: Entity) -> Vector2:
 	var route: LaneRoute = LaneRoute.of(world, e.bot.lane, e.team)
 	var q: Vector2 = _safe_along(world, e, route, _rally_progress(world, e, route))
-	if (world.tick / SimClock.seconds_to_ticks(2.0)) % 2 == 1:
+	if (world.tick / SimClock.seconds_to_ticks(RALLY_STEP_SECONDS)) % 2 == 1:
 		q = _safe_along(world, e, route, route.progress_of(q) - 150.0)  # lùi 150 từ điểm an toàn (BOT-11)
 	return q
 

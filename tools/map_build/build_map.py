@@ -112,6 +112,38 @@ sizes = ndi.sum(black, lab, range(1, n + 1))
 cliffs = np.isin(lab, [i + 1 for i, s in enumerate(sizes) if s >= 6])
 cliffs = ndi.binary_dilation(cliffs, iterations=1) & inside
 
+# ---------------------------------------------------------------- cleanup (D-127)
+# Mép đồ lại từ ảnh tham chiếu có móc câu, nhánh cụt, chấm lẻ làm hero mắc khi đi sát.
+CLEAN = SRC.get("terrain_cleanup", {})
+
+
+def prune_spurs(mask, steps, keep_width):
+    """Cắt nhánh cụt ngắn hơn `steps` px của vách (khung xương), giữ độ dày `keep_width`."""
+    from skimage.morphology import skeletonize
+    sk = skeletonize(mask)
+    k = np.ones((3, 3), int)
+    for _ in range(steps):
+        nb = ndi.convolve(sk.astype(int), k, mode="constant") - sk
+        sk = sk & ~(sk & (nb <= 1))
+    if not sk.any():
+        return mask & False
+    return mask & (ndi.distance_transform_edt(~sk) <= keep_width)
+
+
+if CLEAN:
+    cliffs &= ~ndi.binary_dilation(water, iterations=CLEAN.get("water_margin", 1))  # chấm vách giữa sông
+    cliffs = prune_spurs(cliffs, CLEAN.get("cliff_spur_prune", 0), CLEAN.get("cliff_width", 2.5))
+    lab, n = ndi.label(cliffs, structure=np.ones((3, 3)))
+    sizes = ndi.sum(cliffs, lab, range(1, n + 1))
+    cliffs = np.isin(lab, [i + 1 for i, s in enumerate(sizes) if s >= CLEAN.get("cliff_min_px", 0)])
+    for x0, y0, x1, y1 in CLEAN.get("cliff_erase_rects", []):
+        cliffs &= ~((xx >= x0) & (xx <= x1) & (yy >= y0) & (yy <= y1))
+    _lanes = np.zeros_like(cliffs, dtype=np.uint8)
+    for _pts in SRC["lanes"].values():
+        cv2.polylines(_lanes, [np.round(np.array(_pts)).astype(np.int32)], False, 1, 1)
+    LANE_DIST = ndi.distance_transform_edt(_lanes == 0)
+    cliffs &= LANE_DIST > SRC["lane_half_width"] + CLEAN.get("cliff_lane_margin", 0)  # răng vách sát mép lane
+
 # ---------------------------------------------------------------- towers (D-49)
 if SYM:
     _blocked = (tree | black | ~inside)
@@ -163,6 +195,16 @@ bf = SRC["border_forest"]
 border = inside & ((xx < bf["left"]) | (yy < bf["top"]) | (xx > bf["right"]) | (yy > bf["bottom"]))
 border &= ~bases & ~lane_corridor
 forest = tree | border
+if CLEAN.get("forest_smooth"):  # D-127: bỏ răng cưa mép rừng (mở rồi đóng), cắt lại lane / nhà
+    _r = CLEAN["forest_smooth"]
+    _d = disk(_r, _r, _r)[: 2 * _r + 1, : 2 * _r + 1]
+    forest = ndi.binary_closing(ndi.binary_opening(forest, structure=_d), structure=_d) & inside & ~bases & ~lane_corridor
+    _r = CLEAN.get("forest_lane_smooth", 0)
+    if _r:  # dải sát lane làm mượt mạnh hơn: mép rừng dọc lane thẳng, không răng cưa
+        _d = disk(_r, _r, _r)[: 2 * _r + 1, : 2 * _r + 1]
+        _smooth = ndi.binary_closing(ndi.binary_opening(forest, structure=_d), structure=_d)
+        _band = LANE_DIST <= SRC["lane_half_width"] + CLEAN.get("forest_lane_band", 8)
+        forest = np.where(_band, _smooth, forest) & inside & ~bases & ~lane_corridor
 lab, n = ndi.label(forest)
 sizes = ndi.sum(forest, lab, range(1, n + 1))
 forest = np.isin(lab, [i + 1 for i, s in enumerate(sizes) if s >= 20])

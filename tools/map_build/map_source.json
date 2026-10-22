@@ -73,6 +73,7 @@
     [357,85],[404,85],[357,149],[436,175],[534,214],[534,261],[340,212],[437,250]
   ],
   "ramp_radius": 11,
+  "terrain_cleanup": {"_note": "D-127: dọn mép bị móc câu / răng cưa / chấm lẻ (người chơi báo kẹt)", "water_margin": 1, "cliff_spur_prune": 6, "cliff_width": 2.5, "cliff_min_px": 30, "forest_smooth": 2, "forest_lane_smooth": 4, "forest_lane_band": 8, "cliff_lane_margin": 4, "cliff_erase_rects": [[296, 366, 337, 380]]},
   "erase_rects": [[104,298,138,326]],
   "clear_circles": [
     {"pos": [497.5, 464.0], "r": 8, "_note": "D-44: lối rừng ra lane bot gần blue_bot_t1"},
