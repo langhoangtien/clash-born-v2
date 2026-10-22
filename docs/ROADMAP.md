@@ -225,3 +225,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | APK | Xong | 2026-10-22 | Bản APK cho Android / HarmonyOS 2–4 (D-116, docs/ANDROID_BUILD.md). **Chơi thử trên Huawei** |
 | D-117 / D-118 | Xong | 2026-10-22 | 563 test + 4 soak xanh (+4); lính đánh trụ 4 / nhà chính lệch route (CRP-03b), nút mua nhanh (SHOP-10), camera tự do khi chết (CAM-01) |
 | D-119..D-123 | Xong | 2026-10-22 | 574 test xanh; viền cấp chiêu, soạn đồ, Lưỡi Hái / Mảnh Trăng, +30% chỉ số mỗi cấp, tướng Gorran, màn chọn tướng. Chờ Codex: icon 4f + ảnh Gorran |
+| D-124..D-126 | Xong | 2026-10-22 | 583 test + soak xanh; bảng thông số kiểu Dota, kinh tế mới, trụ 60% lên lính, Bình Mana, khuếch đại phép, camera theo bản đồ nhỏ. Bot đấu bot 8 trận: 6 kết thúc 18–38 phút (trung bình ~27), Brakk–Vexa vẫn quá 40 phút. Theo dõi: một lần BOT-11 (bot đứng yên ở RALLY phút 38) trên code trước bản sửa leash, chạy lại không tái hiện |
