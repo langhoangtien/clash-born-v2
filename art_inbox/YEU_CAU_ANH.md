@@ -324,9 +324,9 @@ giữa, không chữ. Làm theo lô 10 món, mỗi lô xong thì báo.
 
 | Xong | File | Mô tả |
 |---|---|---|
-| [ ] | `04_icons/ui_attack.png` | Nút ĐÁNH chính (to nhất): a single heavy sword striking diagonally with a bright slash arc, viền đỏ cam dày hơn hai nút kia |
-| [ ] | `04_icons/ui_attack_creep.png` | Nút đánh LÍNH: small helmeted foot-soldier head with a sword crosshair over it |
-| [ ] | `04_icons/ui_attack_tower.png` | Nút đánh TRỤ: stone defense tower with a crystal on top, cracked, with a sword crosshair over it |
+| [x] | `04_icons/ui_attack.png` | Nút ĐÁNH chính (to nhất): a single heavy sword striking diagonally with a bright slash arc, viền đỏ cam dày hơn hai nút kia |
+| [x] | `04_icons/ui_attack_creep.png` | Nút đánh LÍNH: small helmeted foot-soldier head with a sword crosshair over it |
+| [x] | `04_icons/ui_attack_tower.png` | Nút đánh TRỤ: stone defense tower with a crystal on top, cracked, with a sword crosshair over it |
 
 ---
 
