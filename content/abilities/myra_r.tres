@@ -49,6 +49,7 @@ extra_actions = Array[ExtResource("1_jarcr")]([SubResource("Resource_ckapc")])
 
 [resource]
 script = ExtResource("6_jvac1")
+description = "Mưa sao băng bán kính 400 sau 1 s: sát thương phép lớn và câm lặng."
 slot = 3
 targeting = 3
 values = Dictionary[StringName, PackedFloat32Array]({

@@ -34,6 +34,7 @@ extra_actions = Array[ExtResource("1_8x5vf")]([SubResource("Resource_gkx1q")])
 
 [resource]
 script = ExtResource("4_4a2rh")
+description = "Đánh dấu kẻ địch 6 s: lộ diện với đội mình và nhận thêm 15–30% sát thương mọi nguồn."
 slot = 3
 targeting = 2
 values = Dictionary[StringName, PackedFloat32Array]({

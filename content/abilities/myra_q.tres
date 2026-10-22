@@ -44,6 +44,7 @@ value_changes = Array[ExtResource("9_ftds8")]([SubResource("Resource_l1mun")])
 
 [resource]
 script = ExtResource("6_lid3w")
+description = "Bắn tia băng thẳng 1000: trúng kẻ địch đầu tiên, gây sát thương phép và làm chậm 30%."
 targeting = 4
 values = Dictionary[StringName, PackedFloat32Array]({
 &"cast_range": PackedFloat32Array(1000, 1000, 1000, 1000, 1000),

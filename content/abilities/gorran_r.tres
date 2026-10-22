@@ -32,6 +32,7 @@ value_changes = Array[ExtResource("6_val")]([SubResource("V0"), SubResource("V1"
 
 [resource]
 script = ExtResource("4_abl")
+description = "25 s: thời gian đánh gốc 1.7 → 1.2 / 1.1 / 1.0, hồi máu +50 / 75 / 100 mỗi giây, tốc chạy +30 / 40 / 50."
 slot = 3
 target_team = 2
 values = Dictionary[StringName, PackedFloat32Array]({
@@ -49,5 +50,4 @@ bot_usages = Array[int]([3, 5])
 bot_conditions = Array[StringName]([&"enemy_hero_in_range"])
 id = &"gorran_r"
 display_name = "Cuồng Hóa"
-description = "25 s: thời gian đánh gốc 1.7 → 1.2 / 1.1 / 1.0, hồi máu +50 / 75 / 100 mỗi giây, tốc chạy +30 / 40 / 50."
 art_id = &"gorran_r"

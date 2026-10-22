@@ -12,6 +12,7 @@ target = 0
 
 [resource]
 script = ExtResource("4_q51xi")
+description = "Mỗi đòn đánh trúng hero địch hút Trí tuệ của nó về mình trong 20–30 s."
 slot = 0
 targeting = 0
 values = Dictionary[StringName, PackedFloat32Array]({

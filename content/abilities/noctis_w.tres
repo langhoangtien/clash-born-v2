@@ -48,6 +48,7 @@ effect_patches = Array[ExtResource("6_l06la")]([SubResource("Resource_yl33r")])
 
 [resource]
 script = ExtResource("5_chh4a")
+description = "Tàng hình sau 0.6 s, chạy nhanh hơn; đòn đánh đầu tiên gây thêm sát thương và tước vũ khí mục tiêu."
 slot = 2
 target_team = 2
 values = Dictionary[StringName, PackedFloat32Array]({

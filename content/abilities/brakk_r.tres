@@ -56,6 +56,7 @@ effect_patches = Array[ExtResource("5_e76kh")]([SubResource("Resource_iauqv")])
 
 [resource]
 script = ExtResource("4_crpup")
+description = "Thành hồn ma: miễn sát thương vật lý, hồi một phần máu tối đa, chạy nhanh hơn; không đánh thường được."
 slot = 3
 target_team = 2
 values = Dictionary[StringName, PackedFloat32Array]({

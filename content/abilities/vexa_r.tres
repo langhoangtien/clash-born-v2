@@ -50,6 +50,7 @@ extra_actions = Array[ExtResource("1_ov6c8")]([SubResource("Resource_goydu")])
 
 [resource]
 script = ExtResource("6_ln5dd")
+description = "Xuyên miễn phép: tước mọi hiệu ứng có lợi của mục tiêu (mỗi hiệu ứng thêm sát thương phép), rồi làm chậm."
 slot = 3
 targeting = 2
 pierces_magic_immunity = true

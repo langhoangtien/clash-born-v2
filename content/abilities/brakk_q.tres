@@ -44,6 +44,7 @@ value_changes = Array[ExtResource("9_2f1xk")]([SubResource("Resource_5h7d8"), Su
 
 [resource]
 script = ExtResource("6_hxh4i")
+description = "Đấm xuống đất: kẻ địch trong bán kính 300 quanh Brakk nhận sát thương vật lý và bị choáng."
 values = Dictionary[StringName, PackedFloat32Array]({
 &"cooldown": PackedFloat32Array(14, 13, 12, 11, 10),
 &"damage": PackedFloat32Array(70, 110, 150, 190, 230),

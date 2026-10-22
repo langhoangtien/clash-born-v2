@@ -224,3 +224,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | D-115 | Xong | 2026-10-22 | 559 test xanh (+2); icon cho mọi hiệu ứng, icon đồ ở bảng tỷ số, cây ghép đồ trong shop |
 | APK | Xong | 2026-10-22 | Bản APK cho Android / HarmonyOS 2–4 (D-116, docs/ANDROID_BUILD.md). **Chơi thử trên Huawei** |
 | D-117 / D-118 | Xong | 2026-10-22 | 563 test + 4 soak xanh (+4); lính đánh trụ 4 / nhà chính lệch route (CRP-03b), nút mua nhanh (SHOP-10), camera tự do khi chết (CAM-01) |
+| D-119..D-123 | Xong | 2026-10-22 | 574 test xanh; viền cấp chiêu, soạn đồ, Lưỡi Hái / Mảnh Trăng, +30% chỉ số mỗi cấp, tướng Gorran, màn chọn tướng. Chờ Codex: icon 4f + ảnh Gorran |

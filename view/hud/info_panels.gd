@@ -19,6 +19,8 @@ const VALUE_NAMES: Dictionary = {
 	&"fade_in": "Hiện dần (s)", &"drain": "Hút", &"disarm_duration": "Tước vũ khí (s)", &"damage_per_buff": "Sát thương / buff",
 	&"crit_multiplier": "Chí mạng ×", &"crit_chance": "Tỉ lệ chí mạng", &"chance": "Tỉ lệ", &"bonus_damage": "Sát thương thêm",
 	&"attack_speed_per_stack": "Tốc đánh / tầng", &"amplify": "Khuếch đại", &"ambush_damage": "Sát thương phục kích", &"pierce": "Xuyên",
+	&"bonus": "Sát thương +", &"dps": "Sát thương / giây", &"zone_duration": "Thời gian vùng (s)", &"bat_cut": "Giảm BAT",
+	&"regen": "Hồi máu / giây", &"rage_damage": "Sát thương khi Cuồng Hóa",
 }
 
 var world: World

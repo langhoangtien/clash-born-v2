@@ -49,6 +49,7 @@ effect_patches = Array[ExtResource("5_xemnf")]([SubResource("Resource_1cwbc")])
 
 [resource]
 script = ExtResource("4_ter0p")
+description = "Khiên hút mọi loại sát thương trong 6 s."
 slot = 2
 target_team = 2
 values = Dictionary[StringName, PackedFloat32Array]({

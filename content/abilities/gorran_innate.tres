@@ -12,6 +12,7 @@ target = 0
 
 [resource]
 script = ExtResource("4_abl")
+description = "Bị động: +15 / 20 / 25 / 30 / 35 sát thương."
 slot = 0
 targeting = 0
 values = Dictionary[StringName, PackedFloat32Array]({
@@ -20,5 +21,4 @@ values = Dictionary[StringName, PackedFloat32Array]({
 on_learn = Array[ExtResource("1_act")]([SubResource("A0")])
 id = &"gorran_innate"
 display_name = "Sức Mạnh Giả Kim"
-description = "Bị động: +15 / 20 / 25 / 30 / 35 sát thương (lên bậc ở cấp 1, 4, 8, 12, 16)."
 art_id = &"gorran_innate"

@@ -51,6 +51,7 @@ value_changes = Array[ExtResource("8_7d2xn")]([SubResource("Resource_kjpmf"), Su
 
 [resource]
 script = ExtResource("5_xhxfl")
+description = "Sóng gió phía trước (dài 700, rộng 250): sát thương phép và đẩy lùi 300."
 slot = 2
 targeting = 4
 values = Dictionary[StringName, PackedFloat32Array]({

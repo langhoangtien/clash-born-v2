@@ -39,6 +39,7 @@ value_changes = Array[ExtResource("9_val")]([SubResource("V0"), SubResource("V1"
 
 [resource]
 script = ExtResource("4_abl")
+description = "Đổ vũng axit bán kính 400 trong 10 s: kẻ địch đứng trong vùng nhận sát thương phép mỗi giây."
 slot = 1
 targeting = 3
 values = Dictionary[StringName, PackedFloat32Array]({
@@ -55,5 +56,4 @@ bot_usages = Array[int]([1, 6])
 bot_conditions = Array[StringName]([&"enemy_hero_in_range", &"predict_position"])
 id = &"gorran_q"
 display_name = "Vũng Axit"
-description = "Đổ vũng axit bán kính 400 trong 10 s: kẻ địch đứng trong vùng nhận 10 / 20 / 30 / 40 / 50 sát thương phép mỗi giây."
 art_id = &"gorran_q"

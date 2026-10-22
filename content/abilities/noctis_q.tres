@@ -39,6 +39,7 @@ extra_actions = Array[ExtResource("1_h8cb7")]([SubResource("Resource_tey01")])
 
 [resource]
 script = ExtResource("4_aelf1")
+description = "Lướt tới kẻ địch (không bị nhắm khi lướt), tới nơi gây sát thương vật lý."
 targeting = 2
 values = Dictionary[StringName, PackedFloat32Array]({
 &"cast_range": PackedFloat32Array(600, 600, 600, 600, 600),

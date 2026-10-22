@@ -12,6 +12,8 @@ const RANKS: Dictionary[Slot, int] = {Slot.INNATE: 6, Slot.Q: 5, Slot.W: 5, Slot
 ## Tên giá trị mà hệ thống kỹ năng đọc trực tiếp (ABL-02).
 const SYSTEM_VALUES: PackedStringArray = ["cooldown", "mana", "cast_range"]
 
+## Mô tả ngắn cho người chơi (màn chọn tướng, D-123). Số theo cấp đọc từ `values`.
+@export_multiline var description: String = ""
 @export var slot: Slot = Slot.Q
 @export var targeting: Targeting = Targeting.NO_TARGET
 @export var target_team: Team = Team.ENEMY

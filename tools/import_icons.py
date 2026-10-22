@@ -39,6 +39,10 @@ def main():
     if not os.path.isdir(SRC):
         sys.exit("chưa có " + SRC)
     os.makedirs(DST, exist_ok=True)
+    heroes = os.path.join(ROOT, "art_inbox", "03_heroes")  # chân dung cho màn chọn tướng (D-123)
+    for name in sorted(os.listdir(heroes)) if os.path.isdir(heroes) else []:
+        if name.endswith("_portrait.png"):
+            save(os.path.join(heroes, name), name[:-4], 256)
     for name in sorted(os.listdir(SRC)):
         if not name.endswith(".png"):
             continue

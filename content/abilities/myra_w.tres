@@ -46,6 +46,7 @@ value_changes = Array[ExtResource("9_q5iyd")]([SubResource("Resource_2po6h"), Su
 
 [resource]
 script = ExtResource("6_q0t3o")
+description = "Vòng phong ấn bán kính 280 tại điểm chọn, sau 0.8 s gây sát thương phép và trói chân (né được)."
 slot = 2
 targeting = 3
 values = Dictionary[StringName, PackedFloat32Array]({

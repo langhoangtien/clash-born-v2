@@ -12,6 +12,7 @@ target = 0
 
 [resource]
 script = ExtResource("4_s6jc3")
+description = "Đòn đánh có xác suất 15–25% choáng 0.5–1 s và gây thêm 30–80 sát thương vật lý (không lên công trình)."
 slot = 0
 targeting = 0
 values = Dictionary[StringName, PackedFloat32Array]({

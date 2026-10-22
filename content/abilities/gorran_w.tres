@@ -32,6 +32,7 @@ value_changes = Array[ExtResource("7_val")]([SubResource("V0")])
 
 [resource]
 script = ExtResource("5_abl")
+description = "Quất đuôi rồng từ xa 700: sát thương phép và choáng."
 slot = 2
 targeting = 2
 values = Dictionary[StringName, PackedFloat32Array]({
@@ -47,5 +48,4 @@ bot_usages = Array[int]([0])
 bot_conditions = Array[StringName]([&"enemy_hero_in_range", &"prefer_engaging_enemy"])
 id = &"gorran_w"
 display_name = "Đuôi Rồng"
-description = "Quất đuôi rồng từ xa 700: 80 / 100 / 120 / 140 / 160 sát thương phép và choáng 1.5 / 1.8 / 2.1 / 2.4 / 2.7 s."
 art_id = &"gorran_w"
