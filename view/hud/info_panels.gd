@@ -158,7 +158,7 @@ func _draw_stats(font: Font, p: Rect2) -> void:
 		y += 12.0
 
 
-## Dòng tỷ số: mỗi hero [đội, tên, cấp, K/D/A, LH, giá trị đồ, tên tắt 6 ô].
+## Dòng tỷ số: mỗi hero [đội, tên, cấp, K/D/A, LH, giá trị đồ, tên tắt 6 ô, art_id 6 ô (D-115)].
 static func score_rows(w: World) -> Array:
 	var out: Array = []
 	for team: int in range(2):
@@ -167,11 +167,13 @@ static func score_rows(w: World) -> Array:
 				continue
 			var worth: int = 0
 			var slots: PackedStringArray = PackedStringArray()
+			var arts: Array[StringName] = []
 			for it: ItemInstance in Items.slots(e):
 				worth += it.def.cost if it != null else 0
 				slots.append(ItemButtons.short_name(it.def.display_name) if it != null else "")
+				arts.append(it.def.art_id if it != null else &"")
 			out.append([team, e.hero_def.display_name if e.hero_def != null else "Hero", e.stats.level(),
-				"%d/%d/%d" % [e.kills, e.deaths, e.assists], e.last_hits, worth, slots])
+				"%d/%d/%d" % [e.kills, e.deaths, e.assists], e.last_hits, worth, slots, arts])
 	return out
 
 
@@ -191,9 +193,12 @@ func _draw_score(font: Font, p: Rect2) -> void:
 		_text(font, p.position + Vector2(cols[3], y), str(row[4]), 24, Color.WHITE)
 		_text(font, p.position + Vector2(cols[4], y), str(row[5]), 24, Color(1, 0.85, 0.3))
 		for k: int in range(row[6].size()):
-			var box: Rect2 = Rect2(p.position + Vector2(cols[5] + k * 96, y - 36), Vector2(84, 56))
+			var box: Rect2 = Rect2(p.position + Vector2(cols[5] + k * 72, y - 36), Vector2(60, 60))
 			draw_rect(box, Color(0.15, 0.17, 0.22, 0.95))
-			if row[6][k] != "":
+			var tex: Texture2D = ArtLibrary.texture(row[7][k])
+			if tex != null:
+				draw_texture_rect(tex, box.grow(-2), false)
+			elif row[6][k] != "":
 				_text(font, box.get_center() + Vector2(-14, 8), row[6][k], 20, Color.WHITE)
 		y += 84.0
 

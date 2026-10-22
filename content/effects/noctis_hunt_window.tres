@@ -25,4 +25,4 @@ triggers = Array[ExtResource("4_8x0oj")]([SubResource("Resource_0o0dh")])
 removed_by = Array[StringName]([&"unit_died"])
 id = &"noctis_hunt_window"
 display_name = "Săn mồi"
-art_id = &"noctis_hunt_window"
+art_id = &"noctis_q"

@@ -20,4 +20,4 @@ removed_by = Array[StringName]([&"attack_started", &"ability_cast"])
 fade_in = "fade_in"
 id = &"shadow_veil"
 display_name = "Màn đêm"
-art_id = &"shadow_veil"
+art_id = &"noctis_w"

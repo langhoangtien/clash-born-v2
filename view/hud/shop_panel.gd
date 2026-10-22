@@ -68,6 +68,8 @@ var selected_slot: int = -1
 ## Độ cuộn của lưới món (px, ≥ 0).
 var scroll: float = 0.0
 var _drag_from: float = INF
+## D-115: các nút của cây ghép đồ đang vẽ (để bắt chạm).
+var _tree: Array = []
 
 
 func panel_rect() -> Rect2:
@@ -167,6 +169,11 @@ func press_at(local: Vector2) -> void:
 		if slot_rect(i).has_point(local) and Items.slots(hero)[i] != null:
 			selected_slot = i
 			return
+	var node: RecipeTree.TreeNode = RecipeTree.node_at(_tree, local) if selected_def() != null else null
+	if node != null:  # D-115: chạm ô trên cây ghép → xem món đó
+		selected_id = node.def.id
+		selected_slot = -1
+		return
 	if action_rect().has_point(local):
 		_act()
 
@@ -285,20 +292,20 @@ func _draw_detail(font: Font) -> void:
 		return
 	var at: Vector2 = r.position + Vector2(24, 0)
 	var w: float = r.size.x - 48
-	_draw_icon(font, at + Vector2(40, 60), 40.0, d, true)
-	draw_string(font, at + Vector2(100, 56), d.display_name, HORIZONTAL_ALIGNMENT_LEFT, w - 100, 28, Color.WHITE)
-	draw_string(font, at + Vector2(100, 92), "Giá %d" % d.cost, HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color(1, 0.85, 0.3))
-	var y: float = 140.0
-	for line: String in recipe_lines(world, d):  # SHOP-09: ghép từ / ghép thành
-		draw_string(font, at + Vector2(0, y), line, HORIZONTAL_ALIGNMENT_LEFT, w, 17, Color(1, 0.85, 0.55))
-		y += 26.0
+	var tree: Array = RecipeTree.layout(world, hero, d, at + Vector2(0, 16), w)  # D-115: cây ghép đồ
+	_tree = tree[0]
+	RecipeTree.draw(self, font, world, _tree, at + Vector2(0, 16))
+	var y: float = 16.0 + tree[1] + 34.0
+	draw_string(font, at + Vector2(0, y), d.display_name, HORIZONTAL_ALIGNMENT_LEFT, w - 140, 26, Color.WHITE)
+	draw_string(font, at + Vector2(w - 130, y), "Giá %d" % d.cost, HORIZONTAL_ALIGNMENT_RIGHT, 130, 22, Color(1, 0.85, 0.3))
+	y += 38.0
 	var tag_line: String = " · ".join(tags(d))
 	if not tag_line.is_empty():
 		draw_string(font, at + Vector2(0, y), tag_line, HORIZONTAL_ALIGNMENT_LEFT, w, 18, Color(0.7, 0.85, 1))
-		y += 34.0
+		y += 30.0
 	for line: String in stat_lines(d):
 		draw_string(font, at + Vector2(0, y), line, HORIZONTAL_ALIGNMENT_LEFT, w, 20, Color(0.6, 1, 0.6))
-		y += 30.0
+		y += 28.0
 	y += 10.0
 	draw_multiline_string(font, at + Vector2(0, y), d.description, HORIZONTAL_ALIGNMENT_LEFT, w, 19, -1, Color(1, 1, 1, 0.85))
 	var b: Rect2 = action_rect()
@@ -327,28 +334,6 @@ static func stat_lines(d: ItemDef) -> PackedStringArray:
 		var v: float = float(m.value)
 		var text: String = ("%d%%" % roundi(v * 100.0)) if info[1] else (str(int(v)) if is_equal_approx(v, roundf(v)) else str(v))
 		out.append("+%s %s" % [text, info[0]])
-	return out
-
-
-## SHOP-09: "Ghép từ: A + B + phí N" và "Ghép thành: X, Y".
-static func recipe_lines(w: World, d: ItemDef) -> PackedStringArray:
-	var out: PackedStringArray = PackedStringArray()
-	if not d.components.is_empty():
-		var names: PackedStringArray = PackedStringArray()
-		var sum: int = 0
-		for c: StringName in d.components:
-			var part: ItemDef = w.item_catalog.get(c)
-			if part != null:
-				names.append(part.display_name)
-				sum += part.cost
-		out.append("Ghép từ: %s + phí %d" % [" + ".join(names), d.cost - sum])
-	var into: PackedStringArray = PackedStringArray()
-	for o: ItemDef in w.item_catalog.values():
-		if o.components.has(d.id):
-			into.append(o.display_name)
-	into.sort()
-	if not into.is_empty():
-		out.append("Ghép thành: " + ", ".join(into))
 	return out
 
 

@@ -17,4 +17,4 @@ states = Array[int]([5])
 modifiers = Array[ExtResource("1_uibdk")]([SubResource("Resource_n8hj2")])
 id = &"noctis_death_mark"
 display_name = "Dấu Tử Thần"
-art_id = &"noctis_death_mark"
+art_id = &"noctis_r"

@@ -20,4 +20,4 @@ modifiers = Array[ExtResource("1_chy7v")]([SubResource("Resource_qltk2")])
 removed_by = Array[StringName]([&"attack_target_changed"])
 id = &"myra_rhythm_stack"
 display_name = "Nhịp Phép"
-art_id = &"myra_rhythm_stack"
+art_id = &"myra_innate"

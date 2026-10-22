@@ -152,3 +152,19 @@ func test_EFF_03_slows_from_different_sources_stack() -> void:
 func test_minimum_movement_speed_is_zero() -> void:
 	var bal: BalanceSettings = load("res://content/balance/balance_settings.tres")
 	assert_eq(bal.minimum_movement_speed, 0.0)
+
+
+func test_D_115_every_shown_effect_item_and_skill_has_an_icon() -> void:
+	var lib: ContentLibrary = ContentLibrary.load_dir()
+	var missing: Array[String] = []
+	for e: EffectDef in lib.effects.values():
+		if not e.tags.has(&"passive") and ArtLibrary.texture(e.art_id) == null:
+			missing.append("hiệu ứng " + String(e.id))
+	for d: ItemDef in lib.items.values():
+		if ArtLibrary.texture(d.art_id) == null:
+			missing.append("đồ " + String(d.id))
+	for h: HeroDef in lib.heroes.values():
+		for a: AbilityDef in [h.innate, h.q, h.w, h.r]:
+			if a != null and ArtLibrary.texture(a.art_id) == null:
+				missing.append("chiêu " + String(a.id))
+	assert_eq(missing, [] as Array[String], "thiếu icon")

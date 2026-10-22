@@ -93,6 +93,7 @@ func _ready() -> void:
 	$Hud.add_child(shop)
 	shop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	shop.world = world
+	shop.z_index = 10  # D-115: bảng shop / tỷ số vẽ trên cụm nút điều khiển
 	shop.hero = hero
 	shop.buy_pressed.connect(func(id: StringName) -> void: world.submit(Command.buy(hero.id, id)))  # SHOP-01
 	shop.sell_pressed.connect(func(i: int) -> void: world.submit(Command.sell(hero.id, i)))  # SHOP-05
@@ -101,6 +102,7 @@ func _ready() -> void:
 	$Hud.add_child(info)
 	info.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	info.world = world
+	info.z_index = 10
 	info.hero = hero
 	skills.connect_signals()
 	match_hud.world = world

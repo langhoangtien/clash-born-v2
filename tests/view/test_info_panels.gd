@@ -54,4 +54,5 @@ func test_D_100_score_rows_items_and_kda() -> void:
 	assert_eq(rows[1][3], "2/0/0")
 	assert_eq(rows[1][5], 2400, "giá trị đồ")
 	assert_eq(rows[1][6][0], "BC", "ô đồ: tên tắt")
+	assert_eq(rows[1][7][0], &"stun_hammer", "D-115: ô đồ có icon")
 	p.free()

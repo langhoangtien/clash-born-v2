@@ -31,4 +31,4 @@ triggers = Array[ExtResource("4_v3y85")]([SubResource("Resource_nbk5f")])
 removed_by = Array[StringName]([&"attack_landed", &"ability_cast"])
 id = &"ambush_ready"
 display_name = "Phục kích"
-art_id = &"ambush_ready"
+art_id = &"noctis_w"

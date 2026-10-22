@@ -14,4 +14,4 @@ tags = Array[StringName]([&"buff"])
 modifiers = Array[ExtResource("1_mod")]([SubResource("M0")])
 id = &"grape_regen"
 display_name = "Ăn nho"
-art_id = &"grape_regen"
+art_id = &"grapes"

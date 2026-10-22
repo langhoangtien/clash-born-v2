@@ -47,10 +47,10 @@ func test_D_106_scroll_and_recipe_lines() -> void:
 	assert_near(p.scroll, p.max_scroll(), 0.01)
 	p.scroll_by(-10000.0)
 	assert_eq(p.scroll, 0.0)
-	var lines: PackedStringArray = ShopPanel.recipe_lines(p.world, p.world.item_catalog[&"wraith_band"])
-	assert_eq(lines[0], "Ghép từ: Dép Nhanh Nhẹn + Vòng Đầu + phí 130")
-	var into: PackedStringArray = ShopPanel.recipe_lines(p.world, p.world.item_catalog[&"circlet"])
-	assert_true(into[0].begins_with("Ghép thành:") and into[0].contains("Vòng Ma"))
+	var wb: ItemDef = p.world.item_catalog[&"wraith_band"]
+	assert_eq(RecipeTree.fee(p.world, wb), 130, "phí ghép")
+	var into: Array[ItemDef] = RecipeTree.builds_into(p.world, p.world.item_catalog[&"circlet"])
+	assert_true(into.has(wb), "Vòng Đầu ghép thành Vòng Ma")
 	p.free()
 
 
@@ -95,4 +95,28 @@ func test_D_90_stat_lines_tags_status() -> void:
 	late.unlock_time = 1200.0
 	assert_eq(ShopPanel.tags(late), PackedStringArray(["[shop ẩn]", "[độc nhất]", "[từ 20:00]"]))
 	assert_eq(ShopPanel.status_text(p.world, late, Command.Reject.NOT_YET), "Mở sau 20:00")
+	p.free()
+
+
+func test_D_115_recipe_tree_links_components_and_select_by_tap() -> void:
+	var p: ShopPanel = _panel()
+	var w: World = p.world
+	var wb: ItemDef = w.item_catalog[&"wraith_band"]
+	Items.give(w, p.hero, w.item_catalog[&"circlet"])
+	var tree: Array = RecipeTree.layout(w, p.hero, wb, Vector2(0, 0), 500.0)
+	var nodes: Array = tree[0]
+	assert_eq((nodes[0] as RecipeTree.TreeNode).def, wb, "gốc = món đang xem")
+	var parts: Array = nodes.filter(func(n: RecipeTree.TreeNode) -> bool: return n.parent == 0)
+	assert_eq(parts.size(), wb.components.size(), "mỗi thành phần một nút nối với gốc")
+	var circ: Array = parts.filter(func(n: RecipeTree.TreeNode) -> bool: return n.def.id == &"circlet")
+	assert_true((circ[0] as RecipeTree.TreeNode).owned, "thành phần đang có trong túi: đánh dấu")
+	for n: RecipeTree.TreeNode in parts:
+		assert_true(n.center.y > (nodes[0] as RecipeTree.TreeNode).center.y, "thành phần nằm dưới món ghép")
+	assert_eq(RecipeTree.node_at(nodes, (circ[0] as RecipeTree.TreeNode).center), circ[0])
+	p.toggle()
+	p.selected_id = &"wraith_band"
+	p.queue_redraw()
+	p._tree = nodes
+	p.press_at((circ[0] as RecipeTree.TreeNode).center)
+	assert_eq(p.selected_id, &"circlet", "chạm ô thành phần: chuyển sang xem món đó")
 	p.free()
