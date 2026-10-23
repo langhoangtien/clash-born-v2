@@ -35,6 +35,8 @@ def main():
         im = Image.open(os.path.join(SRC, n)).convert("RGBA")
         x, y = 10 + (i % COLS) * CELL_W, 10 + (i // COLS) * CELL_H
         for s in SIZES:
+            if n.startswith("item_"):  # D-130: thẻ vuông bo góc như shop trong game
+                d.rounded_rectangle((x - 3, y + 84 - s - 3, x + s + 3, y + 87), radius=6, fill=(22, 29, 45), outline=(82, 102, 140))
             sheet.paste(im.resize((s, s), Image.LANCZOS), (x, y + 84 - s), im.resize((s, s), Image.LANCZOS))
             x += s + 10
         small = dim(im.resize((64, 64), Image.LANCZOS))

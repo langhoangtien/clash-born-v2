@@ -397,6 +397,22 @@ Nút trận kiểu Liên Quân (theo `icon_mau_nut_tran.png`): đĩa xanh than, 
 `ui_attack` = thanh kiếm chéo (nút to nhất), `ui_attack_creep` = mũ lính, `ui_attack_tower` = tháp
 canh, `state_recall` = ngôi nhà nhỏ với mũi tên vòng.
 
+### ĐỔI 2026-10-23: ICON ĐỒ LÀ HÌNH VUÔNG (không đĩa tròn)
+
+Người chơi chọn kiểu **vuông** như `00_style/icon_mau_shop.png` cho **icon đồ** (`item_*`). Thay quy tắc
+3 và 5 ở trên **cho riêng icon đồ**:
+
+- 256 × 256, **nền trong suốt hoàn toàn**: không đĩa, không vòng viền, không khung — thẻ shop trong game
+  tự vẽ khung vuông bo góc nền xanh than.
+- Vật phẩm **to, chiếm 80–85% ô**, đặt chéo nhẹ cho động (như kiếm / rìu trong ảnh mẫu), một bóng đổ mềm
+  phía dưới để tách khỏi nền tối. Vẫn giữ: khối đơn giản, một điểm nhấn, không glow tỏa rộng, màu tách
+  nền xanh than.
+- Icon chiêu (`skill_*`), trạng thái, nút trận **giữ kiểu tròn** như 7a đã duyệt.
+
+**7s — thử kiểu vuông 3 món rồi DỪNG chờ duyệt:** `item_demon_edge` (Kiếm Quỷ),
+`item_frost_orb` (Ngọc Băng Sương), `item_shadow_blade` (Lưỡi Ẩn Thân). Chạy `python tools/icon_preview.py`
+và nộp kèm `_preview.png`. Duyệt xong thì làm **lại cả 4 món đồ của 7a** theo kiểu vuông rồi mới tới 7b.
+
 ### Thứ tự
 
 - **7a — mẫu, rồi DỪNG chờ duyệt:** `item_sages_mask`, `item_ring_regen`, `item_gauntlets`,
