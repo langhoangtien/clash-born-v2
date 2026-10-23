@@ -515,6 +515,7 @@ Theo 7s lần 3 đã duyệt: đồ có khối nổi, chất liệu trau chuốt
 - [x] 7b lô 2 — 16 đồ — 16 icon.
 - [x] 7b lô 3 — 16 đồ — 16 icon.
 - [x] 7b lô 4 — 7 đồ và 9 chiêu — 16 icon.
+- [x] 7b lô 5 — 10 chiêu và 6 trạng thái — 16 icon.
 
 Đã chạy `tools/icon_preview.py` cho mỗi lô, kèm 3 món 7s để đối chiếu; mở kiểm tra các cỡ 48 / 64 / 84 px và bản làm tối. `_preview.png` hiện là lô mới nhất cùng 3 mẫu 7s. Chỉ thay đổi `art_inbox/`; chưa nhập vào `assets/`.
 
@@ -588,6 +589,22 @@ Theo 7s lần 3 đã duyệt: đồ có khối nổi, chất liệu trau chuốt
 | [x] | `04_icons/skill_myra_w.png` |
 | [x] | `04_icons/skill_myra_r.png` |
 | [x] | `04_icons/skill_noctis_innate.png` |
+| [x] | `04_icons/skill_noctis_q.png` |
+| [x] | `04_icons/skill_noctis_w.png` |
+| [x] | `04_icons/skill_noctis_r.png` |
+| [x] | `04_icons/skill_vexa_innate.png` |
+| [x] | `04_icons/skill_vexa_q.png` |
+| [x] | `04_icons/skill_vexa_w.png` |
+| [x] | `04_icons/skill_vexa_r.png` |
+| [x] | `04_icons/skill_gorran_innate.png` |
+| [x] | `04_icons/skill_gorran_q.png` |
+| [x] | `04_icons/skill_gorran_w.png` |
+| [x] | `04_icons/state_burning.png` |
+| [x] | `04_icons/state_disarmed.png` |
+| [x] | `04_icons/state_ghost.png` |
+| [x] | `04_icons/state_hexed.png` |
+| [x] | `04_icons/state_invulnerable.png` |
+| [x] | `04_icons/state_magic_immune.png` |
 
 <!-- END_ICON7B_PROGRESS -->
 
