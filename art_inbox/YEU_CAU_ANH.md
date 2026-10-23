@@ -404,6 +404,28 @@ canh, `state_recall` = ngôi nhà nhỏ với mũi tên vòng.
   `ui_attack_tower`. Nộp kèm `_preview.png`. Ghi đè đúng tên file trong `04_icons/`.
 - **7b — sau khi duyệt:** toàn bộ phần còn lại (danh sách dưới), mỗi lô 15–20 icon thì commit + push.
 
+### Kết quả 7a — 2026-10-23 — CHỜ NGƯỜI DÙNG DUYỆT
+
+Đã làm lại đúng 10 mẫu theo chuẩn Đợt 7, ghi đè file cũ; chưa làm 7b. Nền xanh than phẳng, viền đồng xỉn mảnh (ult vàng mảnh), bỏ glow / tia sáng / vòng trang trí. Nút trận dùng biểu tượng trắng phẳng và viền đôi xanh dương; choáng dùng cụm sao hai màu, không đĩa.
+
+| Xong | File |
+|---|---|
+| [x] | `04_icons/item_sages_mask.png` |
+| [x] | `04_icons/item_ring_regen.png` |
+| [x] | `04_icons/item_gauntlets.png` |
+| [x] | `04_icons/item_butterfly.png` |
+| [x] | `04_icons/skill_brakk_q.png` |
+| [x] | `04_icons/skill_gorran_r.png` |
+| [x] | `04_icons/state_stunned.png` |
+| [x] | `04_icons/ui_attack.png` |
+| [x] | `04_icons/ui_attack_creep.png` |
+| [x] | `04_icons/ui_attack_tower.png` |
+
+- [x] `04_icons/_preview.png` — đã chạy `tools/icon_preview.py`, mở và kiểm tra bản 48 / 64 / 84 px cùng bản làm tối. Ảnh preview chỉ gồm 10 mẫu 7a để duyệt, các icon còn lại giữ nguyên.
+- Đã sửa lại Gorran R để giữ mặt đang gầm và bỏ viền cũ còn sót; đã chuẩn hóa nền / màu viền, làm phẳng sao choáng và ký hiệu nút trận để tránh chi tiết nhòe.
+- Dừng tại đây chờ duyệt 7a; không tự đánh dấu bộ mới đã duyệt.
+
+
 Danh sách đầy đủ (ghi đè file cùng tên trong `04_icons/`; tên món tiếng Việt xem `content/items`):
 
 - Đồ (62): item_ancient_tome, item_arcane_scepter, item_assault_plate, item_band_elvenskin, item_battle_axe, item_belt_strength, item_blade_alacrity, item_blades_attack, item_boots, item_boots_arcane, item_boots_guard, item_boots_haste, item_bracer, item_broadsword, item_butterfly, item_chainmail, item_circlet, item_claws_fury, item_claymore, item_cleansing_charm, item_cloak, item_corrosion_blade, item_crit_blade, item_cyclone_staff, item_demon_edge, item_desolator, item_divine_blade, item_energy_booster, item_frost_orb, item_gauntlets, item_ghost_scepter, item_giant_heart, item_gloves_haste, item_grapes, item_hex_scythe, item_hyperstone, item_iron_branch, item_magic_cloak, item_mana_potion, item_mantle, item_moon_shard, item_null_talisman, item_observer_ward, item_ogre_axe, item_platemail, item_quarterstaff, item_resolute_armor, item_reveal_dust, item_ring_protection, item_ring_regen, item_robe_magi, item_sages_mask, item_sentry_ward, item_shadow_blade, item_slippers, item_staff_wizardry, item_steel_armor, item_storm_staff, item_stun_hammer, item_vitality_booster, item_wind_bow, item_wraith_band
