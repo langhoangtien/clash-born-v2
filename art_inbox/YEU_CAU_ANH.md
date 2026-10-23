@@ -719,16 +719,24 @@ trùng các món đã có. Ghi vào `04_icons/`, chạy `tools/icon_preview.py`,
 
 | Xong | File | Món | Vẽ gì |
 |---|---|---|---|
-| [ ] | `item_evasion_charm.png` | Bùa Né Tránh | Bùa ngọc bích hình giọt nước treo dây, vệt mờ lệch như ảnh ảo — xanh ngọc |
-| [ ] | `item_status_charm.png` | Bùa Kiên Định | Bùa đá tròn khắc hình mỏ neo — xám đá + đồng |
-| [ ] | `item_reaver.png` | Rìu Thần Lực | Rìu hai lưỡi khổng lồ, lưỡi đen sẫm, cán đỏ máu |
-| [ ] | `item_eaglesong.png` | Lông Đại Bàng | Một chiếc lông chim lớn màu vàng nâu, đầu lông xanh lục |
-| [ ] | `item_mystic_staff.png` | Gậy Huyền Bí | Gậy gỗ trắng ngà, đầu là viên đá xanh lam lơ lửng giữa ba nhánh |
-| [ ] | `item_sacred_relic.png` | Thánh Tích | Viên đá thánh hình thoi đỏ cam đặt trong giá đỡ vàng |
-| [ ] | `item_morbid_mask.png` | Mặt Nạ Khát Máu | Mặt nạ xương nửa mặt, răng nanh, vệt đỏ dưới mắt |
-| [ ] | `item_vampire_blade.png` | Lưỡi Hút Hồn | Dao găm cong lưỡi đỏ thẫm, giọt máu ở mũi |
-| [ ] | `item_satanic.png` | Kiếm Huyết Ma | Đại kiếm đen lưỡi răng cưa, đường vân đỏ chạy dọc lưỡi |
-| [ ] | `item_sage_cloak.png` | Áo Choàng Hiền Giả | Áo choàng tím than viền bạc, ký hiệu khiên phép trên ngực |
-| [ ] | `item_mirage_orb.png` | Ngọc Ảo Ảnh | Viên ngọc tím nhạt có hai bóng mờ lệch hai bên |
-| [ ] | `item_frost_orb_ii.png` | Ngọc Băng Sương II | Như Ngọc Băng Sương nhưng to hơn, viền bạc đôi, tinh thể băng tím nhạt |
-| [ ] | `item_steadfast_armor.png` | Giáp Kiên Cường | Giáp ngực thép dày, khắc mỏ neo vàng giữa ngực |
+| [x] | `item_evasion_charm.png` | Bùa Né Tránh | Bùa ngọc bích hình giọt nước treo dây, vệt mờ lệch như ảnh ảo — xanh ngọc |
+| [x] | `item_status_charm.png` | Bùa Kiên Định | Bùa đá tròn khắc hình mỏ neo — xám đá + đồng |
+| [x] | `item_reaver.png` | Rìu Thần Lực | Rìu hai lưỡi khổng lồ, lưỡi đen sẫm, cán đỏ máu |
+| [x] | `item_eaglesong.png` | Lông Đại Bàng | Một chiếc lông chim lớn màu vàng nâu, đầu lông xanh lục |
+| [x] | `item_mystic_staff.png` | Gậy Huyền Bí | Gậy gỗ trắng ngà, đầu là viên đá xanh lam lơ lửng giữa ba nhánh |
+| [x] | `item_sacred_relic.png` | Thánh Tích | Viên đá thánh hình thoi đỏ cam đặt trong giá đỡ vàng |
+| [x] | `item_morbid_mask.png` | Mặt Nạ Khát Máu | Mặt nạ xương nửa mặt, răng nanh, vệt đỏ dưới mắt |
+| [x] | `item_vampire_blade.png` | Lưỡi Hút Hồn | Dao găm cong lưỡi đỏ thẫm, giọt máu ở mũi |
+| [x] | `item_satanic.png` | Kiếm Huyết Ma | Đại kiếm đen lưỡi răng cưa, đường vân đỏ chạy dọc lưỡi |
+| [x] | `item_sage_cloak.png` | Áo Choàng Hiền Giả | Áo choàng tím than viền bạc, ký hiệu khiên phép trên ngực |
+| [x] | `item_mirage_orb.png` | Ngọc Ảo Ảnh | Viên ngọc tím nhạt có hai bóng mờ lệch hai bên |
+| [x] | `item_frost_orb_ii.png` | Ngọc Băng Sương II | Như Ngọc Băng Sương nhưng to hơn, viền bạc đôi, tinh thể băng tím nhạt |
+| [x] | `item_steadfast_armor.png` | Giáp Kiên Cường | Giáp ngực thép dày, khắc mỏ neo vàng giữa ngực |
+
+### Kết quả Đợt 10 — 2026-10-23 — HOÀN TẤT
+
+Đã tạo đủ 13 món theo chuẩn 7s lần 3: vật phẩm có khối nổi và chất liệu rõ, mỗi món có màu / hình dáng riêng, không khung / đĩa / hào quang. Bóng lệch của bùa và ngọc là bản sao vật thể, không phải khói sáng. Ngọc Băng Sương II có hai đai bạc và tinh thể tím nhạt; bùa / giáp có mỏ neo vàng đồng rõ ở giữa.
+
+- [x] Kiểm tra 13 PNG 256 × 256, alpha ngoài vật và lề an toàn.
+- [x] Chạy `tools/icon_preview.py`, mở `04_icons/_preview.png` xem cỡ 48 / 64 / 84 px và bản làm tối, kèm 3 mẫu 7s để so sánh.
+- Đã làm sạch mảnh thừa khi tách ảnh ở áo choàng, kiếm, dao và ngọc; chỉ thay đổi `art_inbox/`, không sửa code / dữ liệu gameplay hay nhập vào `assets/`.
