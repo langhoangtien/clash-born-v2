@@ -407,9 +407,7 @@ Người chơi chọn kiểu **vuông** như `00_style/icon_mau_shop.png` cho **
 - Vật phẩm **to, chiếm 80–85% ô**, đặt chéo nhẹ cho động (như kiếm / rìu trong ảnh mẫu).
 - ~~Phong cách hào quang theo `icon_mau_vuong_7s.png`~~ — **BỎ (2026-10-23, sau khi chơi thử):** icon
   lòe loẹt gây mỏi mắt, các món cùng tông màu khó phân biệt khi nhỏ ở bảng đồ hai đội.
-- **PHONG CÁCH CHỐT: tiết chế như 7a đã duyệt, nhưng ô VUÔNG.** Khối đơn giản, mảng màu phẳng, một điểm
-  nhấn nhỏ, viền tối mảnh quanh vật để tách nền. **KHÔNG hào quang, KHÔNG khói, KHÔNG tia sáng, KHÔNG
-  lửa tỏa** quanh vật. Màu bão hòa vừa phải (không neon).
+- **Cập nhật theo xác nhận trực tiếp của người dùng 2026-10-23:** đúng phong cách đồ vật trong `00_style/icon_mau_shop.png`, **bỏ viền tròn**. Giữ khối nổi, chất liệu kim loại có cạnh sáng, ngọc có chiều sâu, màu tươi và nét vẽ trau chuốt; không giản lược thành hình học phẳng. Hạn chế chi tiết vụn. Không hào quang, khói, tia sáng hay lửa tỏa quanh vật; ánh sáng nằm trên bề mặt vật. Nền ngoài vật alpha 0, không đĩa / khung.
 - **File nộp nền trong suốt (alpha 0)**, không khung, không đĩa — game tự vẽ ô vuông bo góc xanh than.
 - **Mỗi món một màu chủ đạo riêng + hình dáng riêng** để nhận ra ở 40–48 px: các món cùng loại (kiếm,
   găng, giày, áo, gậy, ngọc) không được trùng tông màu. Kiểm tra `_preview.png` bản làm tối và cỡ 48 px.
@@ -446,6 +444,19 @@ và nộp kèm `_preview.png`. Duyệt xong thì làm **lại cả 4 món đồ 
 | [x] | `04_icons/_preview.png` — 3 mẫu lần 2, 48 / 64 / 84 px và bản làm tối |
 
 PNG 256 × 256, alpha ngoài vật, không nền / khung / đĩa; vật chiếm khoảng 80–85% ô. Đã chạy `tools/icon_preview.py`, mở preview kiểm tra và xem thêm ở 40 px. Chỉ thay đổi 3 món 7s cùng preview và phiếu này; chưa đổi 4 món 7a, chưa làm 7b. **Dừng chờ duyệt.**
+
+### Kết quả 7s lần 3 — 2026-10-23 — CHỜ DUYỆT
+
+Người dùng làm rõ: đúng chất liệu và độ nổi của ảnh shop mẫu, chỉ bỏ viền tròn. Đã làm lại 3 món để sửa bản lần 2 quá phẳng: kim loại có mặt vát sáng, ngọc bóng có chiều sâu; không hiệu ứng phát sáng bên ngoài vật.
+
+| Xong | File |
+|---|---|
+| [x] | `04_icons/item_demon_edge.png` |
+| [x] | `04_icons/item_frost_orb.png` |
+| [x] | `04_icons/item_shadow_blade.png` |
+| [x] | `04_icons/_preview.png` — 3 mẫu lần 3 ở 48 / 64 / 84 px và bản làm tối |
+
+Đã kiểm tra PNG 256 × 256, alpha ngoài vật, không khung / đĩa / viền tròn; chạy `tools/icon_preview.py` và mở preview. Chỉ thay đổi 3 món 7s cùng preview và phiếu. Dừng chờ duyệt, chưa làm các món khác.
 
 ### Thứ tự
 
