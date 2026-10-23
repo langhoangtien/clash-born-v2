@@ -404,9 +404,15 @@ Người chơi chọn kiểu **vuông** như `00_style/icon_mau_shop.png` cho **
 
 - 256 × 256, **nền trong suốt hoàn toàn**: không đĩa, không vòng viền, không khung — thẻ shop trong game
   tự vẽ khung vuông bo góc nền xanh than.
-- Vật phẩm **to, chiếm 80–85% ô**, đặt chéo nhẹ cho động (như kiếm / rìu trong ảnh mẫu), một bóng đổ mềm
-  phía dưới để tách khỏi nền tối. Vẫn giữ: khối đơn giản, một điểm nhấn, không glow tỏa rộng, màu tách
-  nền xanh than.
+- Vật phẩm **to, chiếm 80–85% ô**, đặt chéo nhẹ cho động (như kiếm / rìu trong ảnh mẫu).
+- **PHONG CÁCH CHỐT (2026-10-23): theo `00_style/icon_mau_vuong_7s.png`** — đúng 3 món 7s: Kiếm Quỷ đỏ
+  lửa, Ngọc Băng Sương xanh băng, Lưỡi Ẩn Thân tím. Vẽ chi tiết, sắc nét, kim loại có viền sáng; **được
+  phép có hào quang / khói màu ôm sát vật** (đỏ, xanh, tím…) — đây là ngoại lệ cho quy tắc "không glow"
+  ở trên, chỉ áp dụng cho icon đồ. Hào quang phải nằm gọn trong ô, không lan kín cả ô, để vật vẫn là
+  thứ nhìn thấy đầu tiên ở 48 px.
+- Ảnh mẫu có khung vuông nền xanh than chỉ để minh họa: **file nộp KHÔNG có khung/nền**, nền ngoài vật và
+  hào quang phải trong suốt (alpha 0) — game tự vẽ khung.
+- Mỗi món một màu chủ đạo riêng theo công dụng, để các món cùng loại không lẫn nhau.
 - Icon chiêu (`skill_*`), trạng thái, nút trận **giữ kiểu tròn** như 7a đã duyệt.
 
 **7s — thử kiểu vuông 3 món rồi DỪNG chờ duyệt:** `item_demon_edge` (Kiếm Quỷ),
