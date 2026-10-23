@@ -3,7 +3,8 @@ extends RefCounted
 ## Yêu cầu từ người chơi, bot hoặc controller (ARCHITECTURE mục 1). Không đổi trận
 ## trực tiếp; CommandSystem kiểm tra rồi mới thành Order (CMD-01..05).
 
-enum Type { MOVE_TO, MOVE_DIR, STOP, ATTACK, ATTACK_AUTO, CAST, LEVEL_UP, CHOOSE_TALENT, BUY, SELL, RECALL }
+enum Type { MOVE_TO, MOVE_DIR, STOP, ATTACK, ATTACK_AUTO, CAST, LEVEL_UP, CHOOSE_TALENT, BUY, SELL, RECALL,
+	CHEAT_GOLD, CHEAT_LEVEL }
 enum Reject { NONE, UNKNOWN_UNIT, POINT_OUTSIDE_MAP, BAD_DIRECTION, BAD_TARGET, UNIT_DEAD,
 	NOT_LEARNED, ON_COOLDOWN, NO_MANA, CANNOT_CAST, NO_SKILL_POINT, CANNOT_LEVEL,
 	CANNOT_CHOOSE_TALENT, BAD_ITEM, NOT_ENOUGH_GOLD, INVENTORY_FULL, NOT_IN_SHOP, NOT_YET, SOLD_OUT, OUT_OF_STOCK, IN_DUEL }
@@ -96,6 +97,24 @@ static func stop(id: int) -> Command:
 	var c: Command = Command.new()
 	c.type = Type.STOP
 	c.entity_id = id
+	return c
+
+
+## CMD-06 (D-138): thử nghiệm — cộng `amount` vàng (lưu ở `slot`).
+static func cheat_gold(id: int, amount: int) -> Command:
+	var c: Command = Command.new()
+	c.type = Type.CHEAT_GOLD
+	c.entity_id = id
+	c.slot = amount
+	return c
+
+
+## CMD-06 (D-138): thử nghiệm — lên `levels` cấp (lưu ở `slot`), không quá cấp tối đa.
+static func cheat_level(id: int, levels: int) -> Command:
+	var c: Command = Command.new()
+	c.type = Type.CHEAT_LEVEL
+	c.entity_id = id
+	c.slot = levels
 	return c
 
 

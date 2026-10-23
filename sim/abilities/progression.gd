@@ -34,6 +34,26 @@ static func _level_up(world: World, hero: Entity) -> void:
 	world.emit(&"level_up", hero.id, hero.id, hero.stats.level())
 
 
+## CMD-06 (D-138): lệnh thử nghiệm chỉ cho hero; lên cấp khi đã tối đa → CANNOT_LEVEL.
+static func cheat_problem(world: World, hero: Entity, command: Command) -> Command.Reject:
+	if hero.kind != Entity.Kind.HERO or command.slot <= 0:
+		return Command.Reject.BAD_TARGET
+	if command.type == Command.Type.CHEAT_LEVEL and hero.stats.level() >= world.balance.hero_max_level:
+		return Command.Reject.CANNOT_LEVEL
+	return Command.Reject.NONE
+
+
+## CMD-06: cộng vàng, hoặc cộng đúng lượng XP cho từng cấp (kèm điểm kỹ năng, nội tại như lên cấp thường).
+static func cheat(world: World, hero: Entity, command: Command) -> void:
+	if command.type == Command.Type.CHEAT_GOLD:
+		hero.gold += command.slot
+		return
+	for i: int in range(command.slot):
+		if hero.stats.level() >= world.balance.hero_max_level:
+			break
+		add_xp(world, hero, xp_to_next(world, hero.stats.level()) - hero.xp)
+
+
 ## Đổi cấp / số lần cộng thuộc tính; máu, mana hiện tại cộng phần tối đa tăng thêm.
 static func _apply_level(hero: Entity, level: int, bonus_count: int, bonus: float) -> void:
 	var max_hp: float = hero.stats.get_stat(StatId.Id.MAX_HP)

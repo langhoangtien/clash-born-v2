@@ -31,6 +31,8 @@ const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm the
 var world: World
 var runner: SimRunner
 var hero: Entity
+## Hero bot của trận (null nếu không có), cho nút Test (D-138).
+var bot_unit: Entity
 var input: MatchInput = MatchInput.new()
 var result: ResultPanel
 var hero_def: HeroDef
@@ -62,6 +64,7 @@ func _ready() -> void:
 	if bot_hero_id != &"":
 		var foe: Entity = UnitFactory.hero(world, library.heroes[bot_hero_id], 1, world.map.fountain_point(1))
 		MatchSetup.add_bot(world, foe, bot_difficulty as BotState.Difficulty)
+		bot_unit = foe
 	units_view.world = world
 	units_view.viewer_team = hero.team
 	fog = FogView.new()
@@ -81,6 +84,7 @@ func _ready() -> void:
 	runner.before_step.connect(_before_step)
 	_setup_audio()
 	_setup_quick_buy()
+	_setup_test_panel()
 	camera.position = hero.position
 	skills.world = world
 	skills.hero = hero
@@ -227,6 +231,26 @@ func _setup_audio() -> void:
 
 func _map_bounds() -> Rect2:
 	return Rect2(Vector2.ZERO, world.map.world_size())
+
+
+## D-138: nút Test — cộng vàng / lên cấp cho mình hoặc bot qua lệnh CHEAT_* (CMD-06).
+func _setup_test_panel() -> void:
+	var panel: TestPanel = TestPanel.new()
+	panel.name = "TestPanel"
+	panel.has_bot = bot_unit != null
+	$Hud.add_child(panel)
+	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	panel.action.connect(_on_test_action)
+
+
+func _on_test_action(who: int, what: StringName) -> void:
+	var target: Entity = hero if who == 0 else bot_unit
+	if target == null:
+		return
+	if what == &"gold":
+		world.submit(Command.cheat_gold(target.id, 10000))
+	else:
+		world.submit(Command.cheat_level(target.id, 1 if what == &"level" else world.balance.hero_max_level))
 
 
 ## SHOP-10 (D-117): nút mua nhanh theo thứ tự lên đồ gợi ý của hero.

@@ -782,6 +782,12 @@ Người chơi, bot và controller (lính, trụ, quái) đều điều khiển 
   ABL-15). Đánh, dùng chiêu, mua đồ thêm ở
   mốc của chúng.
 
+- `CMD-06` (D-138) Lệnh thử nghiệm (nút **Test** trong trận, kiểu chế độ luyện tập Liên Quân):
+  `CHEAT_GOLD(hero, vàng)` cộng vàng; `CHEAT_LEVEL(hero, số cấp)` cộng đúng lượng XP từng cấp (điểm
+  kỹ năng, nội tại như lên cấp thường), dừng ở cấp tối đa (đã tối đa → `CANNOT_LEVEL`). Chỉ cho hero
+  (không thì `BAD_TARGET`), cả hero bot; được cả khi chờ hồi sinh; không đổi lệnh đang làm; ghi nhật
+  ký như mọi lệnh nên phát lại đúng (D-30).
+
 ## BOT — Bot hero
 
 Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` để đánh giá an toàn.
