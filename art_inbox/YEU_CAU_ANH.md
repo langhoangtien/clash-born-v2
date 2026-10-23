@@ -514,6 +514,7 @@ Theo 7s lần 3 đã duyệt: đồ có khối nổi, chất liệu trau chuốt
 - [x] 7b lô 1 — 16 đồ — 16 icon.
 - [x] 7b lô 2 — 16 đồ — 16 icon.
 - [x] 7b lô 3 — 16 đồ — 16 icon.
+- [x] 7b lô 4 — 7 đồ và 9 chiêu — 16 icon.
 
 Đã chạy `tools/icon_preview.py` cho mỗi lô, kèm 3 món 7s để đối chiếu; mở kiểm tra các cỡ 48 / 64 / 84 px và bản làm tối. `_preview.png` hiện là lô mới nhất cùng 3 mẫu 7s. Chỉ thay đổi `art_inbox/`; chưa nhập vào `assets/`.
 
@@ -571,6 +572,22 @@ Theo 7s lần 3 đã duyệt: đồ có khối nổi, chất liệu trau chuốt
 | [x] | `04_icons/item_robe_magi.png` |
 | [x] | `04_icons/item_sentry_ward.png` |
 | [x] | `04_icons/item_slippers.png` |
+| [x] | `04_icons/item_staff_wizardry.png` |
+| [x] | `04_icons/item_steel_armor.png` |
+| [x] | `04_icons/item_storm_staff.png` |
+| [x] | `04_icons/item_stun_hammer.png` |
+| [x] | `04_icons/item_vitality_booster.png` |
+| [x] | `04_icons/item_wind_bow.png` |
+| [x] | `04_icons/item_wraith_band.png` |
+| [x] | `04_icons/skill_brakk_innate.png` |
+| [x] | `04_icons/skill_brakk_q.png` |
+| [x] | `04_icons/skill_brakk_w.png` |
+| [x] | `04_icons/skill_brakk_r.png` |
+| [x] | `04_icons/skill_myra_innate.png` |
+| [x] | `04_icons/skill_myra_q.png` |
+| [x] | `04_icons/skill_myra_w.png` |
+| [x] | `04_icons/skill_myra_r.png` |
+| [x] | `04_icons/skill_noctis_innate.png` |
 
 <!-- END_ICON7B_PROGRESS -->
 
