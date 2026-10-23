@@ -693,11 +693,21 @@ từ ảnh này (`03_heroes/duy_anh_portrait.png`) — không cần vẽ.
 
 | Xong | File | Chiêu | Vẽ gì |
 |---|---|---|---|
-| [ ] | `skill_duy_anh_innate.png` | Bất Khuất (giáp tăng khi máu thấp) | Khiên xanh sư tử vàng đứng vững, vết nứt đỏ ở mép, ánh vàng phía sau khiên |
-| [ ] | `skill_duy_anh_q.png` | Xung Phong (tăng tốc) | Hiệp sĩ chúi người lao tới, áo choàng xanh bay ngang, vệt gió trắng phía sau |
-| [ ] | `skill_duy_anh_w.png` | Hoành Kiếm (quét quạt phía trước) | Vệt chém hình quạt trắng xanh từ thanh kiếm bạc, góc nhìn từ trên |
-| [ ] | `skill_duy_anh_r.png` | Quyết Đấu (đấu tay đôi) | Hai thanh kiếm bắt chéo trong vòng tròn đỏ thẫm, một kiếm bạc chuôi vàng, một kiếm tối |
-| [ ] | `03_heroes/duy_anh_sheet.png` | 1536 × 1024 | Như các tướng khác: cùng nhân vật trong `duy_anh_full.png`, mặt trước 3/4 và sau lưng 3/4, toàn thân, đứng thẳng, nền trong suốt, đúng style_sheet |
-| [ ] | `03_heroes/duy_anh_body.png` | 512 × 512 | Toàn thân quay phải, thủ thế kiếm khiên, chân ở 1/5 dưới khung, nền trong suốt |
+| [x] | `skill_duy_anh_innate.png` | Bất Khuất (giáp tăng khi máu thấp) | Khiên xanh sư tử vàng đứng vững, vết nứt đỏ ở mép, ánh vàng phía sau khiên |
+| [x] | `skill_duy_anh_q.png` | Xung Phong (tăng tốc) | Hiệp sĩ chúi người lao tới, áo choàng xanh bay ngang, vệt gió trắng phía sau |
+| [x] | `skill_duy_anh_w.png` | Hoành Kiếm (quét quạt phía trước) | Vệt chém hình quạt trắng xanh từ thanh kiếm bạc, góc nhìn từ trên |
+| [x] | `skill_duy_anh_r.png` | Quyết Đấu (đấu tay đôi) | Hai thanh kiếm bắt chéo trong vòng tròn đỏ thẫm, một kiếm bạc chuôi vàng, một kiếm tối |
+| [x] | `03_heroes/duy_anh_sheet.png` | 1536 × 1024 | Như các tướng khác: cùng nhân vật trong `duy_anh_full.png`, mặt trước 3/4 và sau lưng 3/4, toàn thân, đứng thẳng, nền trong suốt, đúng style_sheet |
+| [x] | `03_heroes/duy_anh_body.png` | 512 × 512 | Toàn thân quay phải, thủ thế kiếm khiên, chân ở 1/5 dưới khung, nền trong suốt |
 
 Ghi vào `04_icons/`, chạy `tools/icon_preview.py`, commit + push.
+
+### Kết quả Đợt 9 — 2026-10-23 — HOÀN TẤT
+
+Đã tạo 4 icon chiêu tròn 256 × 256, đĩa xanh than và viền đồng mảnh, R viền vàng như yêu cầu Đợt 9. Các hình thể hiện hành động: khiên trụ vững trước đòn đánh, lao tới, quét kiếm hình quạt và kiếm giao nhau trong vòng quyết đấu đỏ thẫm.
+
+Đã tạo sheet 1536 × 1024 và body 512 × 512, dùng `duy_anh_full.png` cùng hai ảnh phong cách bắt buộc làm tham chiếu; ảnh thân thêm sheet làm tham chiếu. Giữ mặt, tóc đen, giáp bạc viền vàng, áo choàng xanh, khiên sư tử vàng và kiếm bạc chuôi vàng. Đã làm sạch quầng nền của bản sheet đầu tiên; PNG alpha, không bóng nền; ảnh thân quay phải, thủ thế kiếm khiên, chân ở khoảng 1/5 dưới khung.
+
+- [x] Chạy `tools/icon_preview.py`, mở `04_icons/_preview.png` xem 48 / 64 / 84 px và bản làm tối. Preview gồm 4 chiêu Duy Anh cùng Brakk Q / Gorran R để đối chiếu chuẩn 7a.
+- [x] Kiểm tra kích thước, alpha, lề và vị trí bàn chân; giữ nguyên `duy_anh_full.png` / `duy_anh_portrait.png`.
+- Chỉ sửa `art_inbox/`, không nhập vào `assets/`.
