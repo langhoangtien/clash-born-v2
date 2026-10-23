@@ -78,6 +78,7 @@ func _init(seed_value: int, p_balance: BalanceSettings) -> void:
 	add_system(EffectSystem.new(), Phase.EFFECT)
 	add_system(StateSystem.new(), Phase.STATE)
 	add_system(RegenSystem.new(), Phase.STATE)
+	add_system(DuelSystem.new(), Phase.STATE)  # D-135
 	add_system(StructureController.new(), Phase.CONTROLLER)
 	add_system(DashSystem.new(), Phase.MOVEMENT)  # trước MovementSystem (thêm sau)
 	add_system(KnockbackSystem.new(), Phase.MOVEMENT)
@@ -214,7 +215,9 @@ func state_hash() -> PackedByteArray:
 			e.lock_target_id, e.respawn_tick, e.gold, e.last_hits, e.skill_points, e.attribute_bonus_count, e.talent_slot, e.kills, e.deaths, e.assists, e.last_attack_target_id, e.visible_mask, e.bush_id, e.reveal_until_tick, e.camp_index, e.reincarnate_tick, e.expire_tick, e.creep_tier, e.recall_until_tick, e.recall_start_tick]).to_byte_array())
 		ctx.update(PackedFloat64Array([e.position.x, e.position.y, e.radius, e.health, e.mana,
 			e.order.point.x, e.order.point.y, e.order.direction.x, e.order.direction.y,
-			e.chase_origin.x, e.chase_origin.y, e.xp]).to_byte_array())
+			e.chase_origin.x, e.chase_origin.y, e.xp, e.duel_damage]).to_byte_array())
+		if e.duel != null:
+			ctx.update(PackedInt64Array([e.duel.knight_id, e.duel.foe_id, e.duel.end_tick]).to_byte_array())
 		if e.stats != null:
 			ctx.update(e.stats.values().to_byte_array())
 		for a: AbilityInstance in e.abilities:

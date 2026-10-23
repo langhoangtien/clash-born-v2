@@ -18,9 +18,9 @@ func test_content_has_no_errors() -> void:
 	assert_true(errs.is_empty(), "\n".join(errs))
 
 
-func test_five_heroes_and_items() -> void:
-	assert_eq(_lib.heroes.keys().map(func(k: StringName) -> String: return String(k)).size(), 5)
-	for id: StringName in [&"brakk", &"myra", &"noctis", &"vexa", &"gorran"]:
+func test_six_heroes_and_items() -> void:
+	assert_eq(_lib.heroes.keys().map(func(k: StringName) -> String: return String(k)).size(), 6)
+	for id: StringName in [&"brakk", &"myra", &"noctis", &"vexa", &"gorran", &"duy_anh"]:
 		assert_true(_lib.heroes.has(id), "có hero " + id)
 	for id: StringName in [&"ghost_scepter", &"resolute_armor", &"frost_orb", &"reveal_dust", &"cyclone_staff",
 			&"shadow_blade", &"hex_scythe", &"cleansing_charm", &"stun_hammer", &"desolator", &"moon_shard"]:

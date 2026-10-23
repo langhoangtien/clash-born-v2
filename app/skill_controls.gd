@@ -86,6 +86,7 @@ func _show_aim(slot: int, aim: Vector2, active: bool) -> void:
 	if ward != null:
 		indicator.area_radius = maxf(ward.stats.vision_range, ward.true_sight_range)
 	indicator.width = v.get(&"width", 0.0)
+	indicator.cone_angle = v.get(&"angle", 0.0)
 	indicator.target = hero.position + aim.limit_length(1.0) * indicator.reach
 	indicator.unit_at = Vector2.INF
 	if a.def.targeting == AbilityDef.Targeting.UNIT and a.def.target_team == AbilityDef.Team.ENEMY:

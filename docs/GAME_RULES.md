@@ -57,6 +57,8 @@ vision_range, evasion, accuracy, critical_chance, critical_multiplier,
 status_resistance, armor_reduction, physical_armor_penetration, lifesteal,
 damage_taken_multiplier, spell_amplification, magic_armor_reduction, cooldown_reduction`.
 
+`physical_damage` cuối cùng tối thiểu 0 (D-135).
+
 `damage_taken_multiplier` (mặc định 1.0) nhân vào sát thương cuối cùng mà đơn vị
 nhận, sau giáp (CMB-02).
 
@@ -121,6 +123,7 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 | ST-12 | UNTARGETABLE | ✓ | ✓ | ✓ | ✗ (kỹ năng vùng vẫn trúng) | ✓ |
 | ST-15 | MAGIC_IMMUNE | ✓ | ✓ | ✓ | đánh thường ✓; chiêu/đồ địch chỉ khi xuyên miễn phép | phép ✗ (trừ nguồn xuyên miễn phép); vật lý ✓; pure ✓ |
 | ST-16 | HEXED | ✓ (tốc cố định `hex_move_speed`) | ✗ | ✗ (kể cả đồ) | ✓ | ✓ |
+| ST-19 | DUELING | chỉ tự đuổi đối thủ (DUL-03) | chỉ đối thủ | ✗ (kể cả đồ) | ✓ | ✓ |
 
 `ST-09` Kháng hiệu ứng (`status_resistance`) giảm thời lượng các hiệu ứng có tag
 `debuff` (v1 chỉ giảm choáng).
@@ -167,6 +170,20 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   dùng đồ; mọi hiệu ứng có tag `passive` của nó tạm tắt (trigger không chạy).
   Đang tung chiêu thì bị hủy. Tốc chạy cố định áp như modifier OVERRIDE (nguồn riêng của
   trạng thái) nên mọi nơi đọc `movement_speed` đều thấy đúng (D-78).
+
+`ST-19` (D-135) DUELING (Quyết Đấu, DUL): không nhận lệnh đi / đánh / chiêu / đồ / về thành
+  (từ chối `IN_DUEL`); mỗi tick bị đặt lệnh đánh đối thủ (ngoài tầm thì tự đi tới). Đang tung
+  chiêu thì bị hủy (ABL-03), đang về thành thì hủy. Không phải debuff: miễn phép, thanh tẩy
+  không gỡ (dispel NONE); STUNNED / ROOTED / DISARMED… vẫn tác dụng (ST-17). Mất khi Quyết Đấu
+  kết thúc. Bảng tương tác:
+
+| Hỏi | DUELING |
+|---|---|
+| Đi / đánh / chiêu | Chỉ tự đuổi và đánh đối thủ; không chiêu, không đồ |
+| Địch nhắm được | Có (đồng đội, lính, quái, trụ vẫn can thiệp) |
+| Lệnh / đạn đang nhắm | Lệnh cũ bị thay bằng đánh đối thủ; đạn đã bay vẫn trúng |
+| Với state khác | Khống chế vẫn tác dụng; đối thủ không đánh được (tàng hình, GHOST…) thì đứng chờ |
+| Mất khi | Một bên chết, hết giờ |
 
 `ST-17` Kết hợp state: mỗi state áp độc lập, không state nào "đè" state khác trừ khi
   ghi rõ. Ví dụ GHOST + MAGIC_IMMUNE → chỉ còn nhận sát thương pure. INVULNERABLE
@@ -314,6 +331,11 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   nhắm được (tàng hình, UNTARGETABLE…). Chết thì hết lướt.
 - `ABL-18` Chỉnh hồi chiêu (ModifyCooldownAction): cộng `amount` giây vào thời gian hồi
   còn lại của ô `slot` trên đơn vị nhận; âm thì giảm, không xuống dưới 0 (sẵn sàng ngay).
+- `ABL-08b` (D-135) Cú lướt có cờ `untargetable` (mặc định bật). Tắt thì trong lúc lướt vẫn bị
+  nhắm, vẫn nhận sát thương và khống chế như thường (Quyết Đấu).
+- `ABL-20` (D-135) Vùng hình quạt (`CONE`): đỉnh ở chủ kỹ năng, bán kính `radius`, góc mở
+  `angle` (độ), giữa quạt theo hướng chọn lúc tung (không có thì hướng đang nhìn). Trúng đơn vị
+  có mép thân trong bán kính và thân chạm trong góc; mỗi đơn vị một lần mỗi lần tung.
 - `ABL-19` (D-132) Giảm hồi chiêu: khi bắt đầu hồi (ABL-02, cả đồ chủ động ITM-07 và tái sinh
   DTH-01), thời gian hồi = `cooldown` × (1 − `cooldown_reduction`). Nhiều nguồn **nhân dồn** như né
   (CMB-11): hai nguồn 20% → 1 − 0.8 × 0.8 = 36%. Giới hạn 0–100%. Không áp lên hồi trigger của bị
@@ -492,7 +514,7 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `EFF-09` Giá trị trong hành động có thể là **biểu thức** gồm: số, giá trị có tên của
   skill, chỉ số của chủ hiệu ứng / mục tiêu (`self.strength`, `target.max_hp`…), dữ
   liệu của sự kiện (`event.damage`, `event.burned_mana`). Chỉ cộng, trừ, nhân, chia,
-  min, max. Không có điều kiện if trong biểu thức; điều kiện nằm ở `condition` của trigger.
+  min, max, floor (làm tròn xuống, D-135). Không có điều kiện if trong biểu thức; điều kiện nằm ở `condition` của trigger.
   `self.` / `target.` đọc chỉ số STAT-01 và `current_hp`, `current_mana`, `level`;
   `event.` đọc `damage`, `burned_mana`, `heal`. Danh sách nằm trong `RuleCatalog`, test
   nội dung từ chối mọi tên khác. Giá trị có tên được **chụp lúc áp** hiệu ứng: nâng cấp
@@ -514,8 +536,40 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   không thuộc kỹ năng (hiệu ứng, đồ) trúng **phe địch, không phải công trình**, nhắm được (DEF-05), mép thân trong vùng; tâm/hướng chốt lúc tung, có `delay` thì nổ sau đó;
   đơn vị trúng xử lý theo id. `falloff` f: sát thương nhân 1 − f × (khoảng cách tâm–tâm /
   bán kính), tối thiểu ở mép (f = 1 → mép nhận 0).
+- `EFF-16` (D-135) Hiệu ứng `live`: modifier **tính lại mỗi tick** (pha EFFECT) theo trạng thái
+  hiện tại của chủ (vd giáp theo máu đã mất), thay vì chụp lúc áp. Giá trị có tên vẫn chụp lúc
+  áp như EFF-09; chủ chết thì không tính lại.
 - `EFF-13` Chủ hiệu ứng chết → mọi hiệu ứng bị gỡ (lý do `owner_died`), trừ hiệu ứng có tag
   `passive` (D-56).
+
+## DUL — Quyết Đấu (D-135)
+
+- `DUL-01` Hành động `Duel` (chạy khi cú lướt tới nơi): bắt đầu Quyết Đấu giữa chủ kỹ năng (A)
+  và mục tiêu (B) nếu cả hai còn sống và **không ai đang trong Quyết Đấu**; không thì không có
+  gì xảy ra (không thưởng / phạt, mana và hồi chiêu đã tính theo ABL-02). Giá trị (thời gian,
+  phần phản, thưởng, phạt, vàng) **chụp lúc bắt đầu** theo cấp chiêu lúc đó.
+- `DUL-02` Bắt đầu: áp hiệu ứng Quyết Đấu (state DUELING, ST-19) lên cả hai, áp hiệu ứng riêng
+  của A (vd +tốc đánh) cùng thời lượng, phát `duel_started`, rồi chạy `on_start` (vd cú bổ).
+  Hết thời lượng → kết thúc không ai thắng (`timeout`), không thưởng / phạt.
+- `DUL-03` Trong Quyết Đấu mỗi bên bị đặt lệnh đánh bên kia mỗi tick (ngoài tầm thì tự đi tới,
+  không đổi mục tiêu). Đơn vị khác vẫn đánh / dùng chiêu lên hai bên bình thường.
+- `DUL-04` Phản sát thương: đòn **đánh thường** của B trúng A (không né) → sau khi trừ máu A,
+  nếu A còn sống, A gây ngay cho B sát thương vật lý = `reflect` × sát thương vật lý của đòn
+  **trước** giáp / hệ số nhận / khiên của A (đã nhân chí mạng). Đánh dấu `reflected` (CMB-09:
+  không chí mạng, không hút máu, không kích hoạt trigger phản hồi), giáp / khiên của B áp bình
+  thường. Chỉ B → A; đòn của đơn vị khác, sát thương chiêu / phép / pure / hiệu ứng không phản.
+- `DUL-05` Kết thúc ngay khi một bên **chết** (DamageSystem đặt `alive = false`), bất kể ai / nguồn
+  nào gây; bên còn lại thắng. Sự kiện chết đầu tiên quyết định; Quyết Đấu đã kết thúc thì các
+  cái chết sau trong cùng tick không đổi kết quả. Đòn vào A: trừ máu A → A chết thì A thua,
+  không phản; A sống mới phản (DUL-04) → B chết thì A thắng.
+- `DUL-06` Thưởng / phạt (đúng một lần, khi có người thắng): A thắng → A +`win_damage` sát
+  thương vĩnh viễn và +`win_gold` vàng. B thắng → A −`lose_damage`, B +`win_damage` và
+  +`win_gold`. Ngoài vàng / XP hạ gục thường lệ.
+- `DUL-07` Sát thương vĩnh viễn: bộ đếm riêng mỗi hero (`duel_damage`, có thể âm), cộng vào
+  `physical_damage` như modifier nguồn riêng, còn tới hết trận (không mất khi chết). Sát
+  thương đánh thường cuối cùng tối thiểu 0 (STAT).
+- `DUL-08` Kết thúc (thắng hay hết giờ): gỡ ngay hiệu ứng Quyết Đấu của cả hai và hiệu ứng riêng
+  của A, phát `duel_ended`.
 
 ## EVT — Sự kiện
 
@@ -524,7 +578,8 @@ ability_cast, ability_finished, effect_applied, effect_removed, unit_died,
 kill_credited, structure_destroyed, unit_spawned, gold_changed, level_up,
 skill_leveled, talent_chosen, dash_finished, projectile_hit, item_used,
 knockback_finished, dispelled, attack_target_changed, innate_ranked, mana_burned,
-lethal_damage, reincarnated, recall_started, recall_cancelled, recall_finished`.
+lethal_damage, reincarnated, recall_started, recall_cancelled, recall_finished, duel_started,
+duel_ended`. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
 `effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `removed` (hành động RemoveEffect), `dispelled`, `owner_died`.
 Thêm sự kiện = thay đổi luật.
 
@@ -707,7 +762,8 @@ Người chơi, bot và controller (lính, trụ, quái) đều điều khiển 
   tại), `POINT_OUTSIDE_MAP` (điểm ngoài map hoặc không phải số hữu hạn), `BAD_DIRECTION`
   (hướng dài 0 hoặc không hữu hạn), `BAD_TARGET` (mục tiêu không nhắm được: không tồn
   tại, đã chết, cùng đội), `UNIT_DEAD` (đơn vị ra lệnh đang chờ hồi sinh), `NOT_LEARNED`, `ON_COOLDOWN`, `NO_MANA`,
-  `CANNOT_CAST` (bị động, hoặc đang STUNNED/SILENCED). Thêm lý do khi
+  `CANNOT_CAST` (bị động, hoặc đang STUNNED/SILENCED), `IN_DUEL` (đang Quyết Đấu, ST-19 — chỉ
+  mua / bán / nâng điểm / chọn talent được). Thêm lý do khi
   thêm loại lệnh.
 - `CMD-03` Lệnh hợp lệ thay lệnh hiện tại (Order) của đơn vị. `STOP` → đứng yên.
 - `CMD-04` Mọi lệnh đã áp được ghi vào nhật ký kèm tick; phát lại nhật ký trên World cùng

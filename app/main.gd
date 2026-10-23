@@ -7,7 +7,7 @@ const MAP_VIEWER: String = "res://app/map_viewer.tscn"
 const MATCH_SCENE: String = "res://app/match_scene.tscn"
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
 ## Tướng chơi được, theo thứ tự hiện trên màn chọn.
-const PLAYABLE: Array[StringName] = [&"brakk", &"myra", &"noctis", &"vexa", &"gorran"]
+const PLAYABLE: Array[StringName] = [&"brakk", &"myra", &"noctis", &"vexa", &"gorran", &"duy_anh"]
 
 
 func _ready() -> void:

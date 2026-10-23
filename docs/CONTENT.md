@@ -401,6 +401,37 @@ Thứ tự lên đồ của bot (`bot_item_build`, D-95): Brakk — Búa Choáng
 Nội tại không cần `bot_usage` vì tự kích hoạt. Riêng Myra: bot ưu tiên giữ nguyên mục
 tiêu để không mất cộng dồn Nhịp Phép (điều kiện dữ liệu `prefer_same_target`).
 
+## Duy Anh · Hiệp Sĩ (D-135)
+
+Sức mạnh, cận chiến (tầm 150), kiếm và khiên; BAT 1.7, sát thương gốc 58, tốc chạy 270; STR 26 (+3.6),
+AGI 18 (+1.6), INT 15 (+1.5) — số gốc do Claude đặt theo Brakk / Gorran, chờ chơi thử. Đấu sĩ bắt chủ lực,
+ép đấu tay đôi, mạnh dần qua các trận Quyết Đấu thắng.
+
+### Nội tại — Bất Khuất
+Mỗi 10% máu đã mất (tối đa 9 nấc) +0.6 / 0.8 / 1.0 / 1.2 / 1.4 / 1.6 giáp vật lý (bậc theo cấp hero
+1 / 4 / 8 / 12 / 16 / 20, ABL-11). Tính lại mỗi tick (EFF-16): hồi máu thì giảm theo.
+
+### Q — Xung Phong
++30 / 35 / 40 / 45 / 50% tốc chạy 5 s. Hồi 18 / 17 / 16 / 15 / 14 s, 40 mana. Không giải khống chế.
+
+### W — Hoành Kiếm
+Quạt 150°, tầm 350 phía trước (ABL-20): 100 / 150 / 200 / 250 / 300 + 80% sát thương đánh thường, vật lý.
+Hồi 7 s, mana 50 / 55 / 60 / 65 / 70. Không lên công trình, không chí mạng / hút máu / hiệu ứng đòn đánh.
+
+### R — Quyết Đấu
+Tầm 500, chỉ tướng địch. Lao tới (vẫn bị nhắm, ABL-08b), tới nơi bắt đầu Quyết Đấu (DUL) rồi bổ
+150 / 250 / 350 vật lý. 3 / 4 / 5 s: hai bên bị ép đánh nhau; hiệp sĩ +60 / 80 / 100% tốc đánh và phản
+100% sát thương đòn đánh trước giáp của đối thủ. Ai chết trước thua: thắng +10 / 15 / 20 sát thương vĩnh
+viễn và +150 / 225 / 300 vàng (cả khi đối thủ thắng); hiệp sĩ thua −10 / 15 / 20. Hồi 70 / 60 / 50 s, mana
+100 / 125 / 150.
+
+### Talent cấp 20 (chọn 1)
+| Talent | Hiệu ứng |
+|---|---|
+| Q II — Xung Phong Bền Bỉ | +2 s (7 s) |
+| W II — Hoành Kiếm Phá Trận | +100 sát thương cơ bản |
+| R II — Quyết Đấu Bất Bại | Miễn phép (MAGIC_IMMUNE) từ lúc tung tới hết Quyết Đấu |
+
 ## Trang bị có kỹ năng
 
 Kỹ năng chủ động và bị động của đồ dùng **đúng hệ thống của skill hero**

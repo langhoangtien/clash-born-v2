@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="2_dmg"]
+[ext_resource type="Script" path="res://sim/actions/area_action.gd" id="3_area"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_abl"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="5_tal"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="6_val"]
+
+[sub_resource type="Resource" id="D0"]
+script = ExtResource("2_dmg")
+amount = "damage + 0.8 * self.physical_damage"
+
+[sub_resource type="Resource" id="AR"]
+script = ExtResource("3_area")
+target = 0
+shape = 2
+radius = "radius"
+angle = "angle"
+actions = Array[ExtResource("1_act")]([SubResource("D0")])
+
+[sub_resource type="Resource" id="V0"]
+script = ExtResource("6_val")
+value_name = &"damage"
+amount = 100.0
+
+[sub_resource type="Resource" id="T0"]
+script = ExtResource("5_tal")
+id = &"duy_anh_w_ii"
+display_name = "Hoành Kiếm Phá Trận"
+description = "Sát thương cơ bản +100"
+value_changes = Array[ExtResource("6_val")]([SubResource("V0")])
+
+[resource]
+script = ExtResource("4_abl")
+description = "Vung kiếm hình quạt 150° phía trước, tầm 350: sát thương vật lý = cơ bản + 80% sát thương đánh thường. Không lên công trình."
+slot = 2
+targeting = 4
+values = Dictionary[StringName, PackedFloat32Array]({
+&"angle": PackedFloat32Array(150, 150, 150, 150, 150),
+&"cooldown": PackedFloat32Array(7, 7, 7, 7, 7),
+&"damage": PackedFloat32Array(100, 150, 200, 250, 300),
+&"mana": PackedFloat32Array(50, 55, 60, 65, 70),
+&"radius": PackedFloat32Array(350, 350, 350, 350, 350)
+})
+on_cast = Array[ExtResource("1_act")]([SubResource("AR")])
+talent = SubResource("T0")
+bot_usages = Array[int]([1])
+bot_conditions = Array[StringName]([&"enemy_hero_in_radius"])
+id = &"duy_anh_w"
+display_name = "Hoành Kiếm"
+art_id = &"duy_anh_w"

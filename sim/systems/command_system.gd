@@ -73,6 +73,9 @@ func _check(world: World, command: Command, unit: Entity) -> Command.Reject:
 		return Command.Reject.UNKNOWN_UNIT
 	if not unit.alive and not command.type in [Command.Type.LEVEL_UP, Command.Type.CHOOSE_TALENT, Command.Type.BUY, Command.Type.SELL]:
 		return Command.Reject.UNIT_DEAD  # cộng điểm được cả khi đang chờ hồi sinh
+	if unit.duel != null and command.type in [Command.Type.MOVE_TO, Command.Type.MOVE_DIR, Command.Type.STOP,
+			Command.Type.ATTACK, Command.Type.ATTACK_AUTO, Command.Type.CAST, Command.Type.RECALL]:
+		return Command.Reject.IN_DUEL  # ST-19
 	if command.type == Command.Type.MOVE_TO:
 		if not command.point.is_finite():
 			return Command.Reject.POINT_OUTSIDE_MAP

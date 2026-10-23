@@ -102,6 +102,10 @@ var order: Order = Order.idle()
 var queued_order: Order
 ## ABL-08: cú lướt đang diễn ra (DashSystem), null nếu không lướt.
 var dash: DashState
+## DUL (D-135): Quyết Đấu đang tham gia (hai bên dùng chung một DuelState), null nếu không.
+var duel: DuelState
+## DUL-07: sát thương vĩnh viễn từ Quyết Đấu (có thể âm), còn tới hết trận.
+var duel_damage: float = 0.0
 ## ABL-10: đang bị đẩy lùi (KnockbackSystem), null nếu không.
 var knockback: KnockbackState
 ## ITM-01: 6 ô đồ (null = trống); Items quản lý.

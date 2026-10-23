@@ -59,7 +59,10 @@ func talents() -> Array:
 
 
 ## Giá trị là tỉ lệ (ghi %).
-const PERCENT: Array[StringName] = [&"chance", &"crit_chance", &"heal_fraction", &"slow", &"move_bonus", &"amplify"]
+const PERCENT: Array[StringName] = [&"chance", &"crit_chance", &"heal_fraction", &"slow", &"move_bonus", &"amplify",
+	&"speed_bonus", &"attack_speed_bonus", &"reflect"]
+## Giá trị kỹ thuật không hiện cho người chơi.
+const HIDDEN: Array[StringName] = [&"dash_speed"]
 
 
 ## Số chiêu gọn kiểu ảnh mẫu (D-130): "Sát thương: 70 – 230 · Choáng (s): 0.8 – 1.6", hồi chiêu và
@@ -74,7 +77,7 @@ static func compact_lines(d: AbilityDef) -> PackedStringArray:
 	var parts: PackedStringArray = PackedStringArray()
 	for n: StringName in names:
 		var arr: PackedFloat32Array = d.values[n]
-		if arr.is_empty() or (arr[0] == 0.0 and arr[arr.size() - 1] == 0.0):
+		if arr.is_empty() or HIDDEN.has(n) or (arr[0] == 0.0 and arr[arr.size() - 1] == 0.0):
 			continue
 		var pct: bool = PERCENT.has(n)
 		var a: String = InfoPanels._num(arr[0] * (100.0 if pct else 1.0))

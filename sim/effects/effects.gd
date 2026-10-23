@@ -64,8 +64,8 @@ static func refresh_states(owner: Entity) -> void:
 			continue  # VIS-04: đang hiện dần, state chưa bật
 		for state: UnitState.Id in inst.def.states:
 			bits |= 1 << state
-	if owner.dash != null:
-		bits |= 1 << UnitState.Id.UNTARGETABLE  # ABL-08
+	if owner.dash != null and owner.dash.untargetable:
+		bits |= 1 << UnitState.Id.UNTARGETABLE  # ABL-08, ABL-08b
 	if owner.knockback != null:
 		bits |= 1 << UnitState.Id.STUNNED  # ABL-10
 	if owner.kind == Entity.Kind.WARD:
@@ -140,8 +140,14 @@ static func _start(world: World, owner: Entity, inst: EffectInstance, duration: 
 	if not def.periodic_interval.is_empty() and not def.periodic_actions.is_empty():
 		inst.period_ticks = maxi(1, SimClock.seconds_to_ticks(ExprEval.evaluate(def.periodic_interval, ctx)))
 		inst.next_period_tick = world.tick + inst.period_ticks
+	apply_modifiers(owner, inst)
+
+
+## Modifier của bản hiệu ứng (nguồn = serial), theo số tầng (EFF-12); EFF-16 gọi lại mỗi tick.
+static func apply_modifiers(owner: Entity, inst: EffectInstance) -> void:
+	var ctx: ExprContext = ExprContext.make(owner, owner, inst.values)
 	owner.stats.remove_source(inst.serial)
-	for m: ModifierDef in def.modifiers:
+	for m: ModifierDef in inst.def.modifiers:
 		var stat: int = StatId.from_name(m.stat)
 		var value: float = ExprEval.evaluate(m.value, ctx)
 		if m.op == ModifierDef.Op.ADD:

@@ -21,6 +21,7 @@ const EVENTS: PackedStringArray = [
 	"skill_leveled", "talent_chosen", "dash_finished", "projectile_hit", "item_used",
 	"knockback_finished", "dispelled", "attack_target_changed", "innate_ranked", "mana_burned",
 	"lethal_damage", "reincarnated", "recall_started", "recall_cancelled", "recall_finished",
+	"duel_started", "duel_ended",
 ]
 
 ## EFF-09: dữ liệu sự kiện dùng được trong biểu thức (`event.damage`…).
@@ -30,7 +31,7 @@ const EVENT_FIELDS: PackedStringArray = ["damage", "burned_mana", "heal"]
 const UNIT_FIELDS: PackedStringArray = ["current_hp", "current_mana", "level"]
 
 ## EFF-09: hàm cho phép trong biểu thức.
-const FUNCTIONS: PackedStringArray = ["min", "max"]
+const FUNCTIONS: PackedStringArray = ["min", "max", "floor"]
 
 ## Điều kiện của trigger (EFF-08). Thêm điều kiện = thay đổi luật.
 const TRIGGER_CONDITIONS: PackedStringArray = [

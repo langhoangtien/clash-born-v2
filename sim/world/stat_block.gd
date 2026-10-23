@@ -177,5 +177,6 @@ func _apply_limits() -> void:
 	_final[S.CRITICAL_CHANCE] = clampf(_final[S.CRITICAL_CHANCE], 0.0, 1.0)
 	_final[S.PHYSICAL_ARMOR_PENETRATION] = clampf(_final[S.PHYSICAL_ARMOR_PENETRATION], 0.0, 1.0)
 	_final[S.LIFESTEAL] = maxf(0.0, _final[S.LIFESTEAL])
+	_final[S.PHYSICAL_DAMAGE] = maxf(0.0, _final[S.PHYSICAL_DAMAGE])  # DUL-07
 	_final[S.COOLDOWN_REDUCTION] = clampf(_final[S.COOLDOWN_REDUCTION], 0.0, 1.0)  # ABL-19
 	_final[S.DAMAGE_TAKEN_MULTIPLIER] = maxf(0.0, _final[S.DAMAGE_TAKEN_MULTIPLIER])

@@ -683,3 +683,19 @@ Hiện trong game là icon tạm chữ tắt — file của bạn sẽ thay.
 - [x] Kiểm tra 7 PNG 256 × 256, alpha ngoài vật và lề an toàn.
 - [x] Chạy `tools/icon_preview.py`, mở `04_icons/_preview.png` kiểm tra ở 48 / 64 / 84 px và bản làm tối, đối chiếu trực tiếp với 3 mẫu 7s. Preview đợt này gồm 7 món mới + 3 mẫu 7s.
 - Chỉ thay đổi `art_inbox/`; chưa chép vào `assets/`, không sửa code hay dữ liệu gameplay.
+
+## Đợt 9 — hero Duy Anh · Hiệp Sĩ (D-135) — 2026-10-23
+
+Icon chiêu **tròn theo chuẩn 7a** (đĩa xanh than, viền đồng mảnh; R viền vàng). Vẽ HÀNH ĐỘNG / hiệu ứng,
+không vẽ lại đồ vật. Ảnh nhân vật tham khảo: `03_heroes/duy_anh_full.png` (hiệp sĩ nhí tóc đen, giáp
+bạc viền vàng, áo choàng xanh dương, khiên xanh hình sư tử vàng, kiếm bạc chuôi vàng). Chân dung đã cắt
+từ ảnh này (`03_heroes/duy_anh_portrait.png`) — không cần vẽ.
+
+| Xong | File | Chiêu | Vẽ gì |
+|---|---|---|---|
+| [ ] | `skill_duy_anh_innate.png` | Bất Khuất (giáp tăng khi máu thấp) | Khiên xanh sư tử vàng đứng vững, vết nứt đỏ ở mép, ánh vàng phía sau khiên |
+| [ ] | `skill_duy_anh_q.png` | Xung Phong (tăng tốc) | Hiệp sĩ chúi người lao tới, áo choàng xanh bay ngang, vệt gió trắng phía sau |
+| [ ] | `skill_duy_anh_w.png` | Hoành Kiếm (quét quạt phía trước) | Vệt chém hình quạt trắng xanh từ thanh kiếm bạc, góc nhìn từ trên |
+| [ ] | `skill_duy_anh_r.png` | Quyết Đấu (đấu tay đôi) | Hai thanh kiếm bắt chéo trong vòng tròn đỏ thẫm, một kiếm bạc chuôi vàng, một kiếm tối |
+
+Ghi vào `04_icons/`, chạy `tools/icon_preview.py`, commit + push.

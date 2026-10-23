@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Resource" path="res://content/effects/duy_anh_charge.tres" id="2_eff"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_app"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_abl"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="5_tal"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="6_val"]
+
+[sub_resource type="Resource" id="A0"]
+script = ExtResource("3_app")
+effect = ExtResource("2_eff")
+duration = "duration"
+target = 0
+
+[sub_resource type="Resource" id="V0"]
+script = ExtResource("6_val")
+value_name = &"duration"
+amount = 2.0
+
+[sub_resource type="Resource" id="T0"]
+script = ExtResource("5_tal")
+id = &"duy_anh_q_ii"
+display_name = "Xung Phong Bền Bỉ"
+description = "Tăng tốc kéo dài thêm 2 giây (7 giây)"
+value_changes = Array[ExtResource("6_val")]([SubResource("V0")])
+
+[resource]
+script = ExtResource("4_abl")
+description = "Gồng lên, tăng tốc chạy trong 5 giây. Không giải khống chế."
+slot = 1
+targeting = 1
+target_team = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cooldown": PackedFloat32Array(18, 17, 16, 15, 14),
+&"duration": PackedFloat32Array(5, 5, 5, 5, 5),
+&"mana": PackedFloat32Array(40, 40, 40, 40, 40),
+&"speed_bonus": PackedFloat32Array(0.3, 0.35, 0.4, 0.45, 0.5)
+})
+on_cast = Array[ExtResource("1_act")]([SubResource("A0")])
+talent = SubResource("T0")
+bot_usages = Array[int]([3, 4])
+bot_conditions = Array[StringName]([&"preparing_engage"])
+id = &"duy_anh_q"
+display_name = "Xung Phong"
+art_id = &"duy_anh_q"

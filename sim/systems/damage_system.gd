@@ -10,47 +10,68 @@ func run(world: World) -> void:
 
 ## Xử lý mọi yêu cầu đang chờ (TriggerSystem cũng gọi để sát thương của trigger có ngay).
 static func resolve(world: World) -> void:
-	var requests: Array[DamageRequest] = world.damage_requests
+	var queue: Array[DamageRequest] = world.damage_requests
 	world.damage_requests = []
-	for r: DamageRequest in requests:
+	var i: int = 0
+	while i < queue.size():
+		var r: DamageRequest = queue[i]
+		i += 1
 		var target: Entity = world.find_entity(r.target_id)
-		if target == null or not target.alive or target.locked or target.reincarnate_tick >= 0:
-			continue  # STR-02: công trình khóa không nhận sát thương; DTH-02: đang nằm chờ tái sinh
-		var source: Entity = world.find_entity(r.source_id)
-		if target.kind == Entity.Kind.WARD and not r.is_attack:
-			continue  # WRD-04: chỉ đòn đánh phá được ward
-		if r.is_attack and _misses(world, source, target):
-			world.emit(&"attack_missed", r.source_id, r.target_id)
-			world.note(&"miss", target.position)
-			continue
-		var s: StatBlock = target.stats
-		var amount: float = DamageFormulas.final_damage(r.raw * _structure_factor(world, source, target), r.damage_type,
-			s.get_stat(StatId.Id.PHYSICAL_ARMOR), _magic_armor(source, target),
-			s.get_stat(StatId.Id.DAMAGE_TAKEN_MULTIPLIER), world.balance)
-		var factor: float = Rules.damage_factor(world, target, r.damage_type, r.pierces_magic_immunity)  # PRI-05
-		if factor <= 0.0:
-			continue
-		amount *= factor
-		if target.kind == Entity.Kind.WARD:  # WRD-04: máu ward tính theo đòn
-			amount = world.balance.ward_hero_hit if source != null and source.kind == Entity.Kind.HERO else world.balance.ward_other_hit
-		if r.is_attack:
-			world.emit(&"attack_landed", r.source_id, r.target_id, amount, &"crit" if r.crit else &"")
-			if source != null and source.kind == Entity.Kind.HERO and target.kind == Entity.Kind.HERO and source.team != target.team:
-				world.emit(&"hero_attacked_hero", r.source_id, r.target_id)  # DEF-11
-		amount = Effects.absorb(world, target, amount)  # EFF-06
+		if _apply(world, r, target) and target.alive:
+			var back: DamageRequest = Duels.reflect_for(r, target)  # DUL-04/05: còn sống mới phản
+			if back != null:
+				queue.insert(i, back)
+
+
+## Một yêu cầu; true nếu sát thương đã trừ vào máu (kể cả 0).
+static func _apply(world: World, r: DamageRequest, target: Entity) -> bool:
+	if target == null or not target.alive or target.locked or target.reincarnate_tick >= 0:
+		return false  # STR-02: công trình khóa không nhận sát thương; DTH-02: đang nằm chờ tái sinh
+	var source: Entity = world.find_entity(r.source_id)
+	if target.kind == Entity.Kind.WARD and not r.is_attack:
+		return false  # WRD-04: chỉ đòn đánh phá được ward
+	if r.is_attack and _misses(world, source, target):
+		world.emit(&"attack_missed", r.source_id, r.target_id)
+		world.note(&"miss", target.position)
+		return false
+	var amount: float = _amount(world, r, source, target)
+	if amount < 0.0:
+		return false
+	if r.is_attack:
+		world.emit(&"attack_landed", r.source_id, r.target_id, amount, &"crit" if r.crit else &"")
 		if source != null and source.kind == Entity.Kind.HERO and target.kind == Entity.Kind.HERO and source.team != target.team:
-			target.damaged_by[source.id] = world.tick  # ECO-09
-		target.health -= amount
-		if amount > 0.0 and (target.kind == Entity.Kind.HERO or (source != null and source.kind == Entity.Kind.HERO)):
-			world.note(&"crit" if r.crit else &"damage", target.position, amount)
-		world.emit(&"damage_taken", r.source_id, r.target_id, amount, &"reflected" if r.reflected else &"")
-		if target.health <= 0.0 and Reincarnation.try_prevent(world, target, r.source_id):
-			continue  # DTH-01
-		if target.health <= 0.0:
-			target.health = 0.0
-			target.alive = false
-			target.killer_id = r.source_id
-			world.emit(&"unit_died", r.source_id, r.target_id)
+			world.emit(&"hero_attacked_hero", r.source_id, r.target_id)  # DEF-11
+	amount = Effects.absorb(world, target, amount)  # EFF-06
+	if source != null and source.kind == Entity.Kind.HERO and target.kind == Entity.Kind.HERO and source.team != target.team:
+		target.damaged_by[source.id] = world.tick  # ECO-09
+	target.health -= amount
+	if amount > 0.0 and (target.kind == Entity.Kind.HERO or (source != null and source.kind == Entity.Kind.HERO)):
+		world.note(&"crit" if r.crit else &"damage", target.position, amount)
+	world.emit(&"damage_taken", r.source_id, r.target_id, amount, &"reflected" if r.reflected else &"")
+	if target.health <= 0.0 and Reincarnation.try_prevent(world, target, r.source_id):
+		return true  # DTH-01
+	if target.health <= 0.0:
+		target.health = 0.0
+		target.alive = false
+		target.killer_id = r.source_id
+		world.emit(&"unit_died", r.source_id, r.target_id)
+		Duels.on_death(world, target)  # DUL-05
+	return true
+
+
+## Sát thương sau giáp, hệ số nhận, state (PRI-05), ward (WRD-04); −1 = miễn hoàn toàn.
+static func _amount(world: World, r: DamageRequest, source: Entity, target: Entity) -> float:
+	var s: StatBlock = target.stats
+	var amount: float = DamageFormulas.final_damage(r.raw * _structure_factor(world, source, target), r.damage_type,
+		s.get_stat(StatId.Id.PHYSICAL_ARMOR), _magic_armor(source, target),
+		s.get_stat(StatId.Id.DAMAGE_TAKEN_MULTIPLIER), world.balance)
+	var factor: float = Rules.damage_factor(world, target, r.damage_type, r.pierces_magic_immunity)  # PRI-05
+	if factor <= 0.0:
+		return -1.0
+	amount *= factor
+	if target.kind == Entity.Kind.WARD:  # WRD-04: máu ward tính theo đòn
+		amount = world.balance.ward_hero_hit if source != null and source.kind == Entity.Kind.HERO else world.balance.ward_other_hit
+	return amount
 
 
 ## CMB-14 (D-132): giáp phép mục tiêu trừ `magic_armor_reduction` của kẻ gây (chỉ với sát thương của kẻ đó).

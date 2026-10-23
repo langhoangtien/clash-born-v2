@@ -4,3 +4,5 @@ extends ActionDef
 
 @export var speed: String
 @export var on_arrive: Array[ActionDef] = []
+## ABL-08b: false = vẫn bị nhắm khi lướt (Quyết Đấu).
+@export var untargetable: bool = true

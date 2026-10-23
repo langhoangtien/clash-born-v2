@@ -21,6 +21,9 @@ const VALUE_NAMES: Dictionary = {
 	&"attack_speed_per_stack": "Tốc đánh / tầng", &"amplify": "Khuếch đại", &"ambush_damage": "Sát thương phục kích", &"pierce": "Xuyên",
 	&"bonus": "Sát thương +", &"dps": "Sát thương / giây", &"zone_duration": "Thời gian vùng (s)", &"bat_cut": "Giảm BAT",
 	&"regen": "Hồi máu / giây", &"rage_damage": "Sát thương khi Cuồng Hóa",
+	&"armor_step": "Giáp mỗi 10% máu mất", &"angle": "Góc quạt", &"speed_bonus": "Tốc chạy +",
+	&"attack_speed_bonus": "Tốc đánh +", &"reflect": "Phản sát thương", &"strike": "Cú bổ",
+	&"win_damage": "Thắng: sát thương +", &"lose_damage": "Thua: sát thương −", &"win_gold": "Vàng khi thắng",
 }
 
 var world: World

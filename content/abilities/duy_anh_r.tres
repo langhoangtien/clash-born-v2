@@ -1,0 +1,74 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="2_dmg"]
+[ext_resource type="Script" path="res://sim/actions/dash_action.gd" id="3_dash"]
+[ext_resource type="Script" path="res://sim/actions/duel_action.gd" id="4_duel"]
+[ext_resource type="Resource" path="res://content/effects/duel.tres" id="5_duel"]
+[ext_resource type="Resource" path="res://content/effects/duy_anh_duel_haste.tres" id="6_haste"]
+[ext_resource type="Resource" path="res://content/effects/magic_immune.tres" id="7_bkb"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="8_app"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="9_abl"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="10_tal"]
+
+[sub_resource type="Resource" id="D0"]
+script = ExtResource("2_dmg")
+amount = "strike"
+
+[sub_resource type="Resource" id="DU"]
+script = ExtResource("4_duel")
+duration = "duration"
+reflect = "reflect"
+win_damage = "win_damage"
+lose_damage = "lose_damage"
+win_gold = "win_gold"
+duel_effect = ExtResource("5_duel")
+self_effect = ExtResource("6_haste")
+on_start = Array[ExtResource("1_act")]([SubResource("D0")])
+
+[sub_resource type="Resource" id="DA"]
+script = ExtResource("3_dash")
+speed = "dash_speed"
+untargetable = false
+on_arrive = Array[ExtResource("1_act")]([SubResource("DU")])
+
+[sub_resource type="Resource" id="B0"]
+script = ExtResource("8_app")
+effect = ExtResource("7_bkb")
+duration = "duration + 0.5"
+target = 0
+
+[sub_resource type="Resource" id="T0"]
+script = ExtResource("10_tal")
+id = &"duy_anh_r_ii"
+display_name = "Quyết Đấu Bất Bại"
+description = "Miễn phép (kiểu BKB) trong thời gian Quyết Đấu"
+extra_actions = Array[ExtResource("1_act")]([SubResource("B0")])
+
+[resource]
+script = ExtResource("9_abl")
+description = "Lao tới tướng địch, bổ kiếm, ép hai bên đánh nhau; hiệp sĩ phản 100% sát thương đòn đánh. Ai chết trước thua."
+slot = 3
+targeting = 2
+hits_creeps = false
+hits_neutrals = false
+values = Dictionary[StringName, PackedFloat32Array]({
+&"attack_speed_bonus": PackedFloat32Array(0.6, 0.8, 1.0),
+&"cast_range": PackedFloat32Array(500, 500, 500),
+&"cooldown": PackedFloat32Array(70, 60, 50),
+&"dash_speed": PackedFloat32Array(1800, 1800, 1800),
+&"duration": PackedFloat32Array(3, 4, 5),
+&"lose_damage": PackedFloat32Array(10, 15, 20),
+&"mana": PackedFloat32Array(100, 125, 150),
+&"reflect": PackedFloat32Array(1, 1, 1),
+&"strike": PackedFloat32Array(150, 250, 350),
+&"win_damage": PackedFloat32Array(10, 15, 20),
+&"win_gold": PackedFloat32Array(150, 225, 300)
+})
+on_cast = Array[ExtResource("1_act")]([SubResource("DA")])
+talent = SubResource("T0")
+bot_usages = Array[int]([3])
+bot_conditions = Array[StringName]([&"enemy_hero_in_range", &"prefer_engaging_enemy"])
+id = &"duy_anh_r"
+display_name = "Quyết Đấu"
+art_id = &"duy_anh_r"

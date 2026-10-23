@@ -58,7 +58,8 @@ clashborn_v2/
                            UnitState; EffectContainer ở M3
     systems/               mỗi file một hệ thống, chạy theo thứ tự cố định
     abilities/             Abilities (kỹ năng trên đơn vị, giá trị theo cấp), AbilityInstance, CastState
-    effects/               Effects (áp/gỡ), EffectInstance, ExprEval (EFF-09), ActionRunner
+    effects/               Effects (áp/gỡ), EffectInstance, ExprEval (EFF-09), ActionRunner, AreaShapes (tròn / chữ nhật /
+                           quạt), Duels + DuelState (Quyết Đấu, DUL — DuelSystem ở systems/)
     defs/                  khuôn dữ liệu: HeroDef, AbilityDef, EffectDef, TalentDef, ItemDef, UnitDef…
     content/               ContentLibrary (nạp content/), ContentValidator, RuleCatalog, ExprRules
     actions/               hành động dùng chung cho kỹ năng/hiệu ứng (mỗi loại một khuôn)
@@ -212,7 +213,8 @@ Bốn hero và các món đồ đầu tiên cần đúng các action sau (CONTEN
 | `ApplyEffect(target, effect, duration)` / `RemoveEffect` | hầu hết skill |
 | `AreaAt(center, radius, delay, actions)` | Brakk Q, Myra W, Myra R |
 | `SpawnProjectile(direction, range, width, speed, pierce, on_hit)` | Myra Q |
-| `Dash(to_target, speed, on_arrive)` | Noctis Q |
+| `Dash(to_target, speed, on_arrive, untargetable)` | Noctis Q, Duy Anh R (ABL-08b) |
+| `Duel(duration, reflect, win/lose_damage, win_gold, duel_effect, self_effect, on_start)` | Duy Anh R (DUL, D-135) |
 | `ZoneAction(delay, radius, duration, interval, actions)` — world.zones, TriggerSystem cho tác dụng (ABL-17) | Myra R II |
 | `ModifyCooldown(slot, amount)` | Noctis Q II |
 | `Push(target, direction, distance, duration)` | Vexa W |

@@ -13,6 +13,8 @@ enum Dispel { BASIC, STRONG, NONE }  # EFF-07
 @export var dispel: Dispel = Dispel.BASIC
 @export var states: Array[UnitState.Id] = []
 @export var modifiers: Array[ModifierDef] = []
+## EFF-16 (D-135): modifier tính lại mỗi tick theo trạng thái hiện tại của chủ.
+@export var live: bool = false
 @export var triggers: Array[TriggerDef] = []
 @export var removed_by: Array[StringName] = []  # EFF-05
 ## State chỉ có hiệu lực sau khoảng này (tàng hình).

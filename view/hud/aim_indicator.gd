@@ -11,6 +11,8 @@ var reach: float = 0.0
 var target: Vector2 = Vector2.ZERO
 var area_radius: float = 0.0
 var width: float = 0.0
+## ABL-20: chiêu hướng có góc quạt (độ) thì vẽ hình quạt bán kính `reach`.
+var cone_angle: float = 0.0
 var targeting: AbilityDef.Targeting = AbilityDef.Targeting.NO_TARGET
 ## D-108: chiêu chọn đơn vị — vị trí kẻ sẽ bị chọn (INF = chưa có ai), bán kính thân.
 var unit_at: Vector2 = Vector2.INF
@@ -31,6 +33,15 @@ func _draw() -> void:
 		AbilityDef.Targeting.NO_TARGET:
 			draw_circle(origin, area_radius, fill)
 			draw_arc(origin, area_radius, 0, TAU, 64, line, 4.0, true)
+		AbilityDef.Targeting.DIRECTION when cone_angle > 0.0:
+			var mid: float = (target - origin).angle()
+			var half: float = deg_to_rad(cone_angle) * 0.5
+			var pts: PackedVector2Array = PackedVector2Array([origin])
+			for i: int in range(25):
+				pts.append(origin + Vector2.from_angle(mid - half + 2.0 * half * i / 24.0) * reach)
+			draw_colored_polygon(pts, fill)
+			pts.append(origin)
+			draw_polyline(pts, line, 4.0, true)
 		AbilityDef.Targeting.DIRECTION:
 			var dir: Vector2 = (target - origin).normalized()
 			var side: Vector2 = dir.orthogonal() * maxf(width, 40.0) * 0.5

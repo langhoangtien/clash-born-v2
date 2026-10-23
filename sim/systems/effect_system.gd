@@ -20,5 +20,7 @@ func _tick(world: World, e: Entity, inst: EffectInstance) -> void:
 			and (inst.end_tick < 0 or inst.next_period_tick <= inst.end_tick):
 		inst.next_period_tick += inst.period_ticks
 		ActionRunner.run(world, inst.def.periodic_actions, Effects.context(world, e, inst), inst.source_id)
+	if inst.def.live:
+		Effects.apply_modifiers(e, inst)  # EFF-16
 	if inst.end_tick >= 0 and world.tick >= inst.end_tick:
 		Effects.remove(world, e, inst, &"expired")

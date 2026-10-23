@@ -7,3 +7,4 @@ var speed: float
 var actions: Array[ActionDef] = []
 var ctx: ExprContext
 var source_id: int
+var untargetable: bool = true

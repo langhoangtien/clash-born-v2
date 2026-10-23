@@ -19,6 +19,9 @@ static func run(world: World, actions: Array[ActionDef], ctx: ExprContext, sourc
 		if action is DashAction:
 			_dash(world, action, ctx, source_id)
 			continue
+		if action is DuelAction:
+			_duel(world, action, ctx, source_id)
+			continue
 		if action is PlaceWardAction:
 			place_ward(world, (action as PlaceWardAction).ward, ctx.owner, ctx.point)
 			continue
@@ -173,7 +176,7 @@ static func fire_area(world: World, p: PendingArea) -> void:
 	var half_width: float = ExprEval.evaluate(a.width, p.ctx) * 0.5
 	var dir: Vector2 = p.ctx.direction if p.ctx.direction != Vector2.ZERO else owner.facing
 	var start: Vector2 = owner.position
-	var reach: float = radius if a.shape == AreaAction.Shape.CIRCLE else length + half_width
+	var reach: float = radius if a.shape != AreaAction.Shape.RECT else length + half_width
 	if a.shape == AreaAction.Shape.CIRCLE:
 		world.recent_areas = world.recent_areas.filter(func(r: Array) -> bool: return world.tick - r[2] < 30)
 		world.recent_areas.append([p.center, radius, world.tick, owner.team])
@@ -181,14 +184,7 @@ static func fire_area(world: World, p: PendingArea) -> void:
 	for e: Entity in world.spatial_near(around, reach, World.Phase.TRIGGER):
 		if not _area_accepts(p.ctx, owner, e):
 			continue
-		var hit: bool
-		if a.shape == AreaAction.Shape.CIRCLE:
-			hit = e.position.distance_to(p.center) - e.radius <= radius
-		else:
-			var rel: Vector2 = e.position - start
-			var along: float = rel.dot(dir.normalized())
-			hit = along >= -e.radius and along <= length + e.radius and absf(rel.cross(dir.normalized())) <= half_width + e.radius
-		if hit:
+		if AreaShapes.contains(a, p, e, start, dir, radius, length, half_width):
 			var each: ExprContext = p.ctx.with_target(e)
 			if not a.falloff.is_empty() and radius > 0.0:  # giảm dần theo khoảng cách tới tâm
 				each.scale = 1.0 - ExprEval.evaluate(a.falloff, p.ctx) * clampf(e.position.distance_to(p.center) / radius, 0.0, 1.0)
@@ -244,10 +240,21 @@ static func _dash(world: World, a: DashAction, ctx: ExprContext, source_id: int)
 	d.actions = a.on_arrive
 	d.ctx = ctx
 	d.source_id = source_id
+	d.untargetable = a.untargetable  # ABL-08b
 	owner.dash = d
 	owner.attack_phase = Entity.AttackPhase.NONE
 	Effects.refresh_states(owner)
 	world.emit(&"dash_started", owner.id, target.id)
+
+
+## DUL-01: giá trị chụp lúc bắt đầu; bắt đầu được thì chạy on_start với mục tiêu là đối thủ.
+static func _duel(world: World, a: DuelAction, ctx: ExprContext, source_id: int) -> void:
+	var values: Dictionary[StringName, float] = {
+		&"duration": ExprEval.evaluate(a.duration, ctx), &"reflect": ExprEval.evaluate(a.reflect, ctx),
+		&"win_damage": ExprEval.evaluate(a.win_damage, ctx), &"lose_damage": ExprEval.evaluate(a.lose_damage, ctx),
+		&"win_gold": ExprEval.evaluate(a.win_gold, ctx)}
+	if Duels.start(world, ctx.owner, ctx.target, values, a.duel_effect, a.self_effect, ctx.values):
+		run(world, a.on_start, ctx, source_id)
 
 
 ## ABL-18: cộng `amount` giây vào hồi chiêu còn lại của ô `slot`; không xuống dưới 0.

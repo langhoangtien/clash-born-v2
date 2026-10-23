@@ -15,4 +15,5 @@ enum Id {
 	UNTARGETABLE,  # ST-12
 	MAGIC_IMMUNE,  # ST-15
 	HEXED,         # ST-16
+	DUELING,       # ST-19 (D-135)
 }

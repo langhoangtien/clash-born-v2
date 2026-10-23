@@ -16,7 +16,7 @@ const BOT_AT: Vector2 = Vector2(80, 964)
 const BOT_SIZE: float = 84.0
 const DIFF_NAMES: Array[String] = ["Dễ", "Thường", "Khó"]
 const START: Rect2 = Rect2(1480, 934, 380, 112)
-const MAP_BUTTON: Rect2 = Rect2(1220, 954, 220, 72)
+const MAP_BUTTON: Rect2 = Rect2(1196, 954, 260, 72)
 
 var previews: Array[HeroPreview] = []
 var selected: int = 0
@@ -46,7 +46,7 @@ func bot_rect(i: int) -> Rect2:
 
 
 func diff_rect(i: int) -> Rect2:
-	var x0: float = bot_rect(previews.size()).position.x + 150.0
+	var x0: float = bot_rect(previews.size()).position.x + 40.0
 	return Rect2(Vector2(x0 + i * 112, 958), Vector2(104, 64))
 
 
