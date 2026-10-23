@@ -405,21 +405,23 @@ Người chơi chọn kiểu **vuông** như `00_style/icon_mau_shop.png` cho **
 - 256 × 256, **nền trong suốt hoàn toàn**: không đĩa, không vòng viền, không khung — thẻ shop trong game
   tự vẽ khung vuông bo góc nền xanh than.
 - Vật phẩm **to, chiếm 80–85% ô**, đặt chéo nhẹ cho động (như kiếm / rìu trong ảnh mẫu).
-- **PHONG CÁCH CHỐT (2026-10-23): theo `00_style/icon_mau_vuong_7s.png`** — đúng 3 món 7s: Kiếm Quỷ đỏ
-  lửa, Ngọc Băng Sương xanh băng, Lưỡi Ẩn Thân tím. Vẽ chi tiết, sắc nét, kim loại có viền sáng; **được
-  phép có hào quang / khói màu ôm sát vật** (đỏ, xanh, tím…) — đây là ngoại lệ cho quy tắc "không glow"
-  ở trên, chỉ áp dụng cho icon đồ. Hào quang phải nằm gọn trong ô, không lan kín cả ô, để vật vẫn là
-  thứ nhìn thấy đầu tiên ở 48 px.
-- Ảnh mẫu có khung vuông nền xanh than chỉ để minh họa: **file nộp KHÔNG có khung/nền**, nền ngoài vật và
-  hào quang phải trong suốt (alpha 0) — game tự vẽ khung.
-- Mỗi món một màu chủ đạo riêng theo công dụng, để các món cùng loại không lẫn nhau.
+- ~~Phong cách hào quang theo `icon_mau_vuong_7s.png`~~ — **BỎ (2026-10-23, sau khi chơi thử):** icon
+  lòe loẹt gây mỏi mắt, các món cùng tông màu khó phân biệt khi nhỏ ở bảng đồ hai đội.
+- **PHONG CÁCH CHỐT: tiết chế như 7a đã duyệt, nhưng ô VUÔNG.** Khối đơn giản, mảng màu phẳng, một điểm
+  nhấn nhỏ, viền tối mảnh quanh vật để tách nền. **KHÔNG hào quang, KHÔNG khói, KHÔNG tia sáng, KHÔNG
+  lửa tỏa** quanh vật. Màu bão hòa vừa phải (không neon).
+- **File nộp nền trong suốt (alpha 0)**, không khung, không đĩa — game tự vẽ ô vuông bo góc xanh than.
+- **Mỗi món một màu chủ đạo riêng + hình dáng riêng** để nhận ra ở 40–48 px: các món cùng loại (kiếm,
+  găng, giày, áo, gậy, ngọc) không được trùng tông màu. Kiểm tra `_preview.png` bản làm tối và cỡ 48 px.
 - Icon chiêu (`skill_*`), trạng thái, nút trận **giữ kiểu tròn** như 7a đã duyệt.
+- **Nút Đánh / Lính / Trụ: KHÔNG cần vẽ lại.** Game tự vẽ đĩa + viền và chỉ lấy hình trắng ở giữa (tự làm mịn,
+  tự căn giữa). Nếu vẽ lại thì hình trắng phải nét mịn (không răng cưa) và ở đúng tâm.
 
-**7s — thử kiểu vuông 3 món rồi DỪNG chờ duyệt:** `item_demon_edge` (Kiếm Quỷ),
+**7s (LÀM LẠI 2026-10-23 theo phong cách tiết chế ở trên) — 3 món rồi DỪNG chờ duyệt:** `item_demon_edge` (Kiếm Quỷ),
 `item_frost_orb` (Ngọc Băng Sương), `item_shadow_blade` (Lưỡi Ẩn Thân). Chạy `python tools/icon_preview.py`
 và nộp kèm `_preview.png`. Duyệt xong thì làm **lại cả 4 món đồ của 7a** theo kiểu vuông rồi mới tới 7b.
 
-### Kết quả 7s — 2026-10-23 — CHỜ DUYỆT TRONG GAME
+### Kết quả 7s lần 1 — 2026-10-23 — KHÔNG DUYỆT (quá lòe loẹt, làm lại theo phong cách tiết chế)
 
 Đã xuất 3 item theo ảnh chuẩn `00_style/icon_mau_vuong_7s.png`: giữ thiết kế fantasy sắc nét và màu nhấn đỏ / xanh băng / tím; bỏ toàn bộ nền và khung của ảnh minh họa. PNG alpha 256 × 256, vật phẩm và hào quang nằm gọn trong ô, không đĩa tròn.
 

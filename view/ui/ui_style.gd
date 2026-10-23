@@ -73,6 +73,11 @@ static func panel(c: CanvasItem, r: Rect2, radius: int = 14) -> void:
 	c.draw_style_box(box(Color(1, 1, 1, 0.025), Color(0, 0, 0, 0), 0, radius), top)
 
 
+## Ô vuông bo góc cho icon đồ (D-131): nền xanh than, viền màu `border`.
+static func tile(c: CanvasItem, r: Rect2, border: Color, width: int = 2, fill: Color = CARD) -> void:
+	c.draw_style_box(box(fill, border, width, maxi(4, int(r.size.x * 0.14))), r)
+
+
 ## Thẻ (món, tướng, ô): đang chọn thì viền vàng sáng và quầng nhẹ.
 static func card(c: CanvasItem, r: Rect2, selected: bool = false, dim: bool = false) -> void:
 	var fill: Color = CARD_HI if selected else CARD

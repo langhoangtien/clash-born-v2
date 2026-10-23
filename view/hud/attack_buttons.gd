@@ -15,6 +15,8 @@ const LABELS: Array[String] = ["ĐÁNH", "Lính", "Trụ"]
 const KEYS: Array[String] = ["J", "K", "L"]
 ## Icon nút (ArtLibrary); thiếu ảnh thì vẽ chữ LABELS.
 const ART_IDS: Array[StringName] = [&"ui_attack", &"ui_attack_creep", &"ui_attack_tower"]
+## Cạnh ảnh hình trắng = bán kính nút × hệ số (ảnh đã cắt sát hình, D-131).
+const GLYPH_SCALE: float = 1.05
 ## Con trỏ chuột dùng số này (chạm dùng chỉ số ngón tay ≥ 0).
 const MOUSE_POINTER: int = -1
 
@@ -86,11 +88,11 @@ func _draw() -> void:
 		var held: bool = is_held(mode)
 		var big: int = 34 if mode == Rules.AttackMode.ALL else 22
 		var tex: Texture2D = ArtLibrary.texture(ART_IDS[mode])
-		if tex != null:
-			var side: float = r * 2.0
-			draw_texture_rect(tex, Rect2(c - Vector2(side, side) * 0.5, Vector2(side, side)), false, Color.WHITE if held else Color(0.85, 0.85, 0.85, 0.9))
-			if held:
-				draw_arc(c, r, 0, TAU, 48, Color(1, 1, 1, 0.9), 4.0, true)
+		if tex != null:  # D-131: nền + viền vẽ bằng code (mịn, đúng tâm); ảnh chỉ là hình trắng
+			draw_circle(c, r, Color(UiStyle.CARD, 0.88 if held else 0.78), true, -1.0, true)
+			draw_arc(c, r - 2.0, 0, TAU, 96, Color(UiStyle.BLUE_EDGE, 1.0 if held else 0.85), 4.0 if held else 3.0, true)
+			var side: float = r * GLYPH_SCALE
+			draw_texture_rect(tex, Rect2(c - Vector2(side, side) * 0.5, Vector2(side, side)), false, Color.WHITE if held else Color(0.9, 0.9, 0.9, 0.95))
 			_label(font, c + Vector2(r * 0.7, r * 0.7), KEYS[mode], int(big * 0.55), Color(1, 1, 1, 0.6))
 			continue
 		draw_circle(c, r, Color(0.85, 0.35, 0.25, 0.75 if held else 0.5))

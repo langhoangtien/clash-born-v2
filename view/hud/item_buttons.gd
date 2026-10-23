@@ -166,11 +166,11 @@ func _draw() -> void:
 		var c: Vector2 = button_center(k)
 		var view: Array = item_view[k]
 		var ready: bool = view[4]
-		draw_circle(c, RADIUS, Color(0.55, 0.4, 0.15, 0.75) if ready else Color(0.2, 0.2, 0.24, 0.6))
-		draw_arc(c, RADIUS, 0, TAU, 32, Color(1, 0.85, 0.4, 0.9 if ready else 0.35), 3.0, true)
+		var half: float = RADIUS * 0.9  # ô vuông bo góc (D-131)
+		UiStyle.tile(self, Rect2(c - Vector2(half, half), Vector2(half, half) * 2.0), Color(1, 0.85, 0.4, 0.9 if ready else 0.35), 3, Color(UiStyle.CARD, 0.85))
 		var tex: Texture2D = ArtLibrary.texture(view[5]) if view.size() > 5 else null
 		if tex != null:
-			var side: float = RADIUS * 2.0 - 6.0
+			var side: float = half * 2.0 - 8.0
 			draw_texture_rect(tex, Rect2(c - Vector2(side, side) * 0.5, Vector2(side, side)), false, Color.WHITE if ready else Color(0.45, 0.45, 0.45))
 		else:
 			_label(font, c - Vector2(0, 6), view[1], 20, Color.WHITE)

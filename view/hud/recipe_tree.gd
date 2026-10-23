@@ -1,7 +1,7 @@
 class_name RecipeTree
 extends RefCounted
 ## Cây ghép đồ kiểu Liên Quân trong khung chi tiết shop (D-115, SHOP-09):
-## món đang xem ở trên, các thành phần bên dưới nối bằng đường gấp khúc (tối đa 2 tầng),
+## món đang xem ở trên (ô vuông, D-131), các thành phần bên dưới nối bằng đường gấp khúc (tối đa 2 tầng),
 ## thành phần đang có trong túi viền xanh; hàng "Ghép thành" ở dưới cùng. Chạm một ô → xem món đó.
 
 const ROOT_RADIUS: float = 32.0
@@ -110,12 +110,11 @@ static func draw(panel: ShopPanel, font: Font, w: World, nodes: Array, origin: V
 		if f > 0:
 			panel.draw_string(font, root.center + Vector2(ROOT_RADIUS + 14, 6), "+ phí %d" % f, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color(1, 0.85, 0.3))
 	for n: TreeNode in nodes:
-		panel.draw_circle(n.center, n.radius + 3.0, Color(0.05, 0.06, 0.09))
-		ShopPainter.icon(panel, n.center, n.radius, n.def, true)
-		if n.owned:
-			panel.draw_arc(n.center, n.radius + 3.0, 0, TAU, 32, OWNED, 3.0, true)
-		if n.parent < 0 and not n.into:
-			panel.draw_arc(n.center, n.radius + 3.0, 0, TAU, 32, Color(1, 0.9, 0.4), 3.0, true)
+		var half: float = n.radius + 3.0
+		var root_node: bool = n.parent < 0 and not n.into
+		var edge: Color = OWNED if n.owned else (Color(1, 0.9, 0.4) if root_node else UiStyle.LINE)
+		UiStyle.tile(panel, Rect2(n.center - Vector2(half, half), Vector2(half, half) * 2.0), edge, 3 if n.owned or root_node else 1)
+		ShopPainter.icon(panel, n.center, n.radius - 1.0, n.def, true)
 	var first_into: TreeNode = null
 	for n: TreeNode in nodes:
 		if n.into:

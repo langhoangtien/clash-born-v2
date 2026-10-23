@@ -40,13 +40,11 @@ func _draw() -> void:
 	if item == null:
 		return
 	var pulse: float = 0.6 + 0.4 * sin(Time.get_ticks_msec() / 220.0)
-	draw_circle(CENTER, RADIUS + 6.0, Color(0.05, 0.06, 0.09, 0.85))
+	var half: float = RADIUS + 4.0  # ô vuông bo góc (D-131)
+	UiStyle.tile(self, Rect2(CENTER - Vector2(half, half), Vector2(half, half) * 2.0), Color(1, 0.85, 0.3, pulse), 4, Color(UiStyle.CARD, 0.92))
 	var tex: Texture2D = ArtLibrary.texture(item.art_id)
 	if tex != null:
-		draw_texture_rect(tex, Rect2(CENTER - Vector2(RADIUS, RADIUS), Vector2(RADIUS, RADIUS) * 2.0), false)
-	else:
-		draw_circle(CENTER, RADIUS, Color(0.4, 0.35, 0.2))
-	draw_arc(CENTER, RADIUS + 5.0, 0, TAU, 48, Color(1, 0.85, 0.3, pulse), 4.0, true)
+		draw_texture_rect(tex, Rect2(CENTER - Vector2(RADIUS, RADIUS) * 0.9, Vector2(RADIUS, RADIUS) * 1.8), false)
 	var font: Font = ThemeDB.fallback_font
 	var text: String = "Mua %d" % price
 	var w: float = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
