@@ -419,6 +419,12 @@ Người chơi chọn kiểu **vuông** như `00_style/icon_mau_shop.png` cho **
 `item_frost_orb` (Ngọc Băng Sương), `item_shadow_blade` (Lưỡi Ẩn Thân). Chạy `python tools/icon_preview.py`
 và nộp kèm `_preview.png`. Duyệt xong thì làm **lại cả 4 món đồ của 7a** theo kiểu vuông rồi mới tới 7b.
 
+**→ 2026-10-23: 7s ĐÃ DUYỆT (lần 3).** 3 món này là CHUẨN cho mọi icon đồ: cùng độ chi tiết, chất liệu,
+độ bão hòa, cỡ vật trong ô, nền trong suốt. **Việc tiếp theo, không cần dừng chờ duyệt nữa:**
+1. Làm lại 4 món đồ của 7a theo chuẩn 7s: `item_sages_mask`, `item_ring_regen`, `item_gauntlets`, `item_butterfly`.
+2. Rồi 7b: toàn bộ icon còn lại (đồ theo chuẩn 7s vuông; chiêu / trạng thái theo chuẩn 7a tròn, gồm
+   `skill_brakk_q` làm lại). Mỗi lô 15–20 icon: chạy `tools/icon_preview.py`, tự so với 3 món 7s, commit + push.
+
 ### Kết quả 7s lần 1 — 2026-10-23 — KHÔNG DUYỆT (quá lòe loẹt, làm lại theo phong cách tiết chế)
 
 Đã xuất 3 item theo ảnh chuẩn `00_style/icon_mau_vuong_7s.png`: giữ thiết kế fantasy sắc nét và màu nhấn đỏ / xanh băng / tím; bỏ toàn bộ nền và khung của ảnh minh họa. PNG alpha 256 × 256, vật phẩm và hào quang nằm gọn trong ô, không đĩa tròn.
@@ -432,7 +438,7 @@ và nộp kèm `_preview.png`. Duyệt xong thì làm **lại cả 4 món đồ 
 
 Đã chạy `tools/icon_preview.py` và mở ảnh kiểm tra. Chưa đổi 4 món đồ 7a, chưa làm 7b; dừng chờ người dùng kiểm tra lô 7s. Chỉ thay đổi `art_inbox/`, không nhập vào `assets/`.
 
-### Kết quả 7s lần 2 — 2026-10-23 — CHỜ NGƯỜI DÙNG DUYỆT
+### Kết quả 7s lần 2 — 2026-10-23 — thay bằng lần 3
 
 Đã làm lại cả 3 món do bản lần 1 quá lòe loẹt: bỏ hoàn toàn hào quang, khói, tia sáng và lửa; giảm chi tiết nhỏ, dùng mảng màu lớn và viền tối mảnh. Kiếm Quỷ: đỏ trầm, lưỡi rộng ba khấc; Ngọc Băng Sương: xanh băng nhạt, khối cầu với hai chân pha lê ngắn; Lưỡi Ẩn Thân: tím tiết chế, lưỡi cong mảnh. Ba món khác nhau rõ cả màu lẫn hình dáng.
 
@@ -445,7 +451,7 @@ và nộp kèm `_preview.png`. Duyệt xong thì làm **lại cả 4 món đồ 
 
 PNG 256 × 256, alpha ngoài vật, không nền / khung / đĩa; vật chiếm khoảng 80–85% ô. Đã chạy `tools/icon_preview.py`, mở preview kiểm tra và xem thêm ở 40 px. Chỉ thay đổi 3 món 7s cùng preview và phiếu này; chưa đổi 4 món 7a, chưa làm 7b. **Dừng chờ duyệt.**
 
-### Kết quả 7s lần 3 — 2026-10-23 — CHỜ DUYỆT
+### Kết quả 7s lần 3 — 2026-10-23 — ĐÃ DUYỆT (người chơi xem trong game: ổn)
 
 Người dùng làm rõ: đúng chất liệu và độ nổi của ảnh shop mẫu, chỉ bỏ viền tròn. Đã làm lại 3 món để sửa bản lần 2 quá phẳng: kim loại có mặt vát sáng, ngọc bóng có chiều sâu; không hiệu ứng phát sáng bên ngoài vật.
 
