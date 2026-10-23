@@ -506,7 +506,7 @@ Danh sách đầy đủ (ghi đè file cùng tên trong `04_icons/`; tên món t
 
 ---
 
-### Tiến độ làm lại 4 món 7a và Đợt 7b — 2026-10-23
+### Kết quả làm lại 4 món 7a và Đợt 7b — 2026-10-23 — HOÀN TẤT
 
 Theo 7s lần 3 đã duyệt: đồ có khối nổi, chất liệu trau chuốt, PNG alpha không nền / khung / đĩa, không hào quang ngoài vật. Chiêu / trạng thái theo chuẩn 7a; không sửa nút Đánh / Lính / Trụ.
 
@@ -516,8 +516,9 @@ Theo 7s lần 3 đã duyệt: đồ có khối nổi, chất liệu trau chuốt
 - [x] 7b lô 3 — 16 đồ — 16 icon.
 - [x] 7b lô 4 — 7 đồ và 9 chiêu — 16 icon.
 - [x] 7b lô 5 — 10 chiêu và 6 trạng thái — 16 icon.
+- [x] 7b lô 6 — 6 trạng thái cuối — 6 icon.
 
-Đã chạy `tools/icon_preview.py` cho mỗi lô, kèm 3 món 7s để đối chiếu; mở kiểm tra các cỡ 48 / 64 / 84 px và bản làm tối. `_preview.png` hiện là lô mới nhất cùng 3 mẫu 7s. Chỉ thay đổi `art_inbox/`; chưa nhập vào `assets/`.
+Đã chạy `tools/icon_preview.py` cho mỗi lô, kèm 3 món 7s để đối chiếu; mở kiểm tra các cỡ 48 / 64 / 84 px và bản làm tối. `_preview.png` cuối cùng hiển thị toàn bộ 98 icon (62 đồ, 20 chiêu, 13 trạng thái, 3 nút trận). Các preview từng lô đã được mở kiểm tra trước khi commit. Chỉ thay đổi `art_inbox/`; chưa nhập vào `assets/`.
 
 | Xong | File làm lại |
 |---|---|
@@ -605,6 +606,16 @@ Theo 7s lần 3 đã duyệt: đồ có khối nổi, chất liệu trau chuốt
 | [x] | `04_icons/state_hexed.png` |
 | [x] | `04_icons/state_invulnerable.png` |
 | [x] | `04_icons/state_magic_immune.png` |
+| [x] | `04_icons/state_recall.png` |
+| [x] | `04_icons/state_revealed.png` |
+| [x] | `04_icons/state_rooted.png` |
+| [x] | `04_icons/state_shield.png` |
+| [x] | `04_icons/state_silenced.png` |
+| [x] | `04_icons/state_slowed.png` |
+
+Tổng cộng **90 file làm lại**: 4 món đồ 7a + 55 món đồ 7b + 19 chiêu + 12 trạng thái. Giữ nguyên 3 đồ 7s, Gorran R, sao choáng và 3 nút trận đã duyệt. Brakk Q đã đổi thành hành động nện đất kèm sóng chấn động cam.
+
+Đã sửa bản nháp `item_grapes` để đúng ba quả, `item_hex_scythe` để rõ viên ngọc mặt ếch; làm sạch nền và mảnh thừa ở `item_mana_potion` / `item_quarterstaff`; làm lại nhóm trạng thái để loại nhiễu alpha ở khiên trắng / bông tuyết. Đã kiểm tra toàn bộ kích thước, alpha và màu viền chiêu.
 
 <!-- END_ICON7B_PROGRESS -->
 
