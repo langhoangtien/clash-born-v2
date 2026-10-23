@@ -512,6 +512,7 @@ Theo 7s lần 3 đã duyệt: đồ có khối nổi, chất liệu trau chuốt
 
 - [x] 4 món đồ 7a theo chuẩn 7s — 4 icon.
 - [x] 7b lô 1 — 16 đồ — 16 icon.
+- [x] 7b lô 2 — 16 đồ — 16 icon.
 
 Đã chạy `tools/icon_preview.py` cho mỗi lô, kèm 3 món 7s để đối chiếu; mở kiểm tra các cỡ 48 / 64 / 84 px và bản làm tối. `_preview.png` hiện là lô mới nhất cùng 3 mẫu 7s. Chỉ thay đổi `art_inbox/`; chưa nhập vào `assets/`.
 
@@ -537,6 +538,22 @@ Theo 7s lần 3 đã duyệt: đồ có khối nổi, chất liệu trau chuốt
 | [x] | `04_icons/item_broadsword.png` |
 | [x] | `04_icons/item_chainmail.png` |
 | [x] | `04_icons/item_circlet.png` |
+| [x] | `04_icons/item_claws_fury.png` |
+| [x] | `04_icons/item_claymore.png` |
+| [x] | `04_icons/item_cleansing_charm.png` |
+| [x] | `04_icons/item_cloak.png` |
+| [x] | `04_icons/item_corrosion_blade.png` |
+| [x] | `04_icons/item_crit_blade.png` |
+| [x] | `04_icons/item_cyclone_staff.png` |
+| [x] | `04_icons/item_desolator.png` |
+| [x] | `04_icons/item_divine_blade.png` |
+| [x] | `04_icons/item_energy_booster.png` |
+| [x] | `04_icons/item_ghost_scepter.png` |
+| [x] | `04_icons/item_giant_heart.png` |
+| [x] | `04_icons/item_gloves_haste.png` |
+| [x] | `04_icons/item_grapes.png` |
+| [x] | `04_icons/item_hex_scythe.png` |
+| [x] | `04_icons/item_hyperstone.png` |
 
 <!-- END_ICON7B_PROGRESS -->
 
