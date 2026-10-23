@@ -41,6 +41,8 @@ static func _apply(world: World, r: DamageRequest, target: Entity) -> bool:
 		world.emit(&"attack_landed", r.source_id, r.target_id, amount, &"crit" if r.crit else &"")
 		if source != null and source.kind == Entity.Kind.HERO and target.kind == Entity.Kind.HERO and source.team != target.team:
 			world.emit(&"hero_attacked_hero", r.source_id, r.target_id)  # DEF-11
+	if r.heal_source > 0.0 and source != null and source.alive:
+		ActionRunner.heal(world, source, amount * r.heal_source, source.id)  # DUL-04b
 	amount = Effects.absorb(world, target, amount)  # EFF-06
 	if source != null and source.kind == Entity.Kind.HERO and target.kind == Entity.Kind.HERO and source.team != target.team:
 		target.damaged_by[source.id] = world.tick  # ECO-09
@@ -62,7 +64,10 @@ static func _apply(world: World, r: DamageRequest, target: Entity) -> bool:
 ## Sát thương sau giáp, hệ số nhận, state (PRI-05), ward (WRD-04); −1 = miễn hoàn toàn.
 static func _amount(world: World, r: DamageRequest, source: Entity, target: Entity) -> float:
 	var s: StatBlock = target.stats
-	var amount: float = DamageFormulas.final_damage(r.raw * _structure_factor(world, source, target), r.damage_type,
+	var raw: float = r.raw
+	if r.is_attack:
+		raw = maxf(0.0, raw - DamageBlock.amount(world, source, target))  # CMB-15: chặn trước giáp
+	var amount: float = DamageFormulas.final_damage(raw * _structure_factor(world, source, target), r.damage_type,
 		s.get_stat(StatId.Id.PHYSICAL_ARMOR), _magic_armor(source, target),
 		s.get_stat(StatId.Id.DAMAGE_TAKEN_MULTIPLIER), world.balance)
 	var factor: float = Rules.damage_factor(world, target, r.damage_type, r.pierces_magic_immunity)  # PRI-05

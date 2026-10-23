@@ -55,6 +55,7 @@ static func reflect_for(r: DamageRequest, target: Entity) -> DamageRequest:
 	back.target_id = d.foe_id
 	back.raw = r.raw * d.values.get(&"reflect", 0.0)
 	back.reflected = true  # CMB-09
+	back.heal_source = d.values.get(&"reflect_heal", 0.0)  # DUL-04b
 	return back if back.raw > 0.0 else null
 
 

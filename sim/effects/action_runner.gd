@@ -251,6 +251,7 @@ static func _dash(world: World, a: DashAction, ctx: ExprContext, source_id: int)
 static func _duel(world: World, a: DuelAction, ctx: ExprContext, source_id: int) -> void:
 	var values: Dictionary[StringName, float] = {
 		&"duration": ExprEval.evaluate(a.duration, ctx), &"reflect": ExprEval.evaluate(a.reflect, ctx),
+		&"reflect_heal": ExprEval.evaluate(a.reflect_heal, ctx),
 		&"win_damage": ExprEval.evaluate(a.win_damage, ctx), &"lose_damage": ExprEval.evaluate(a.lose_damage, ctx),
 		&"win_gold": ExprEval.evaluate(a.win_gold, ctx)}
 	if Duels.start(world, ctx.owner, ctx.target, values, a.duel_effect, a.self_effect, ctx.values):

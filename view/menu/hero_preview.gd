@@ -60,9 +60,9 @@ func talents() -> Array:
 
 ## Giá trị là tỉ lệ (ghi %).
 const PERCENT: Array[StringName] = [&"chance", &"crit_chance", &"heal_fraction", &"slow", &"move_bonus", &"amplify",
-	&"speed_bonus", &"attack_speed_bonus", &"reflect"]
+	&"speed_bonus", &"attack_speed_bonus", &"reflect", &"block_chance", &"reflect_heal"]
 ## Giá trị kỹ thuật không hiện cho người chơi.
-const HIDDEN: Array[StringName] = [&"dash_speed"]
+const HIDDEN: Array[StringName] = [&"dash_speed", &"block_ranged"]
 
 
 ## Số chiêu gọn kiểu ảnh mẫu (D-130): "Sát thương: 70 – 230 · Choáng (s): 0.8 – 1.6", hồi chiêu và

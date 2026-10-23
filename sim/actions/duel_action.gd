@@ -4,6 +4,8 @@ extends ActionDef
 
 @export var duration: String
 @export var reflect: String
+## DUL-04b: hồi máu bằng phần này của sát thương phản gây ra.
+@export var reflect_heal: String
 @export var win_damage: String
 @export var lose_damage: String
 @export var win_gold: String

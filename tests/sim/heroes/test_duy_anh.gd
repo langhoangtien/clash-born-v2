@@ -67,30 +67,53 @@ func _event(w: World, type: StringName) -> GameEvent:
 	return null
 
 
-func test_EFF_16_innate_armor_follows_missing_hp() -> void:
+func _attack_hit(w: World, from: Entity, k: Entity, raw: float) -> float:
+	var r: DamageRequest = DamageRequest.attack(from, k.id)
+	r.raw = raw
+	w.damage_requests.append(r)
+	var before: float = k.health
+	DamageSystem.resolve(w)
+	return before - k.health
+
+
+func test_CMB_15_shield_blocks_half_the_attacks() -> void:
 	var w: World = _world()
 	var k: Entity = _knight(w)
+	var foe: Entity = _foe(w, k.position + Vector2(150, 0))
+	k.stats.set_base(StatId.Id.MAX_HP, 100000.0)
+	k.stats.recompute()
+	k.health = 100000.0
 	w.step()
-	var armor: float = k.stats.get_stat(StatId.Id.PHYSICAL_ARMOR)
-	k.health = k.stats.get_stat(StatId.Id.MAX_HP) * 0.5
-	w.step()
-	assert_near(k.stats.get_stat(StatId.Id.PHYSICAL_ARMOR) - armor, 5 * 0.6, 0.01, "mất 50%: 5 nấc × 0.6")
-	k.health = k.stats.get_stat(StatId.Id.MAX_HP) * 0.01
-	w.step()
-	assert_near(k.stats.get_stat(StatId.Id.PHYSICAL_ARMOR) - armor, 9 * 0.6, 0.01, "tối đa 9 nấc")
-	k.health = k.stats.get_stat(StatId.Id.MAX_HP)
-	w.step()
-	assert_near(k.stats.get_stat(StatId.Id.PHYSICAL_ARMOR), armor, 0.01, "hồi đầy: hết giáp thêm")
+	var mult: float = DamageFormulas.armor_multiplier(k.stats.get_stat(StatId.Id.PHYSICAL_ARMOR), w.balance.armor_coefficient)
+	var blocked: int = 0
+	for i: int in range(200):
+		var taken: float = _attack_hit(w, foe, k, 100.0)
+		if absf(taken - 80.0 * mult) < 0.01:
+			blocked += 1
+		else:
+			assert_near(taken, 100.0 * mult, 0.01, "không chặn: đủ sát thương")
+	assert_true(blocked > 80 and blocked < 120, "≈50%% bị chặn 20 (được %d/200)" % blocked)
 
 
-func test_EFF_16_innate_ranks_by_hero_level() -> void:
-	var inn: AbilityDef = _lib.heroes[&"duy_anh"].innate if _lib != null else null
-	if inn == null:
-		_world()
-		inn = _lib.heroes[&"duy_anh"].innate
-	var want: Array[float] = [0.6, 0.8, 1.0, 1.2, 1.4, 1.6]
+func test_CMB_15_ranged_attacker_blocked_half() -> void:
+	var w: World = _world()
+	var k: Entity = _knight(w)
+	var myra: Entity = UnitFactory.hero(w, _lib.heroes[&"myra"], 1, w.navigation(32.0).nearest_clear(k.position + Vector2(400, 0)))
+	w.step()
+	var seen: Array[float] = []
+	for i: int in range(40):
+		var v: float = DamageBlock.amount(w, myra, k)
+		if v > 0.0 and not seen.has(v):
+			seen.append(v)
+	assert_eq(seen, [10.0] as Array[float], "đánh xa: chặn một nửa (10)")
+
+
+func test_CMB_15_innate_ranks_by_hero_level() -> void:
+	_world()
+	var inn: AbilityDef = _lib.heroes[&"duy_anh"].innate
+	var want: Array[float] = [20, 30, 40, 50, 60, 70]
 	for i: int in range(6):
-		assert_near(inn.values[&"armor_step"][i], want[i], 0.0001, "bậc %d" % (i + 1))
+		assert_near(inn.values[&"block"][i], want[i], 0.0001, "bậc %d" % (i + 1))
 
 
 func test_D_135_charge_boosts_move_speed_for_5s() -> void:
@@ -201,6 +224,28 @@ func test_DUL_04_reflects_pre_armor_attack_damage() -> void:
 	DamageSystem.resolve(w)
 	var mult: float = DamageFormulas.armor_multiplier(foe.stats.get_stat(StatId.Id.PHYSICAL_ARMOR), w.balance.armor_coefficient)
 	assert_near(4000.0 - foe.health, 20.0 * mult, 0.01, "cấp 1 phản 20% của 100 trước giáp, giáp đối thủ áp")
+
+
+func test_DUL_04b_reflect_heals_knight_by_damage_dealt() -> void:
+	var w: World = _world()
+	var k: Entity = _knight(w, [0, 0, 1])
+	var foe: Entity = _foe(w, k.position + Vector2(400, 0))
+	w.step()
+	_duel(w, k, foe)
+	w.step()
+	foe.health = 4000.0
+	k.health = 300.0
+	var back: DamageRequest = DamageRequest.new()
+	back.source_id = k.id
+	back.target_id = foe.id
+	back.raw = 100.0
+	back.reflected = true
+	back.heal_source = 1.0
+	w.damage_requests = [back]
+	DamageSystem.resolve(w)
+	assert_near(k.health - 300.0, 4000.0 - foe.health, 0.01, "hồi đúng bằng sát thương phản gây ra")
+	var d: DuelState = k.duel
+	assert_near(d.values[&"reflect_heal"], 1.0, 0.0001, "Quyết Đấu: hồi 100% lượng phản")
 
 
 func test_DUL_04_skill_damage_not_reflected() -> void:

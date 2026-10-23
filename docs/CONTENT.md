@@ -407,9 +407,9 @@ Sức mạnh, cận chiến (tầm 150), kiếm và khiên; BAT 1.7, sát thươ
 AGI 18 (+1.9), INT 15 (+2.3) — số gốc do Claude đặt theo Brakk / Gorran, chờ chơi thử. Đấu sĩ bắt chủ lực,
 ép đấu tay đôi, mạnh dần qua các trận Quyết Đấu thắng.
 
-### Nội tại — Bất Khuất
-Mỗi 10% máu đã mất (tối đa 9 nấc) +0.6 / 0.8 / 1.0 / 1.2 / 1.4 / 1.6 giáp vật lý (bậc theo cấp hero
-1 / 4 / 8 / 12 / 16 / 20, ABL-11). Tính lại mỗi tick (EFF-16): hồi máu thì giảm theo.
+### Nội tại — Khiên Chắn (D-137)
+Đòn đánh thường nhắm vào hiệp sĩ: 50% (PRD) bị chặn 20 / 30 / 40 / 50 / 60 / 70 sát thương trước giáp
+(bậc theo cấp hero 1 / 4 / 8 / 12 / 16 / 20, ABL-11); đòn của đơn vị đánh xa chặn một nửa (CMB-15).
 
 ### Q — Xung Phong
 +30 / 35 / 40 / 45 / 50% tốc chạy 5 s. Hồi 18 / 17 / 16 / 15 / 14 s, 40 mana. Không giải khống chế.

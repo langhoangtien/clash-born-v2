@@ -274,6 +274,12 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `CMB-14` (D-132) Xuyên giáp phép: sát thương MAGIC do một đơn vị gây tính giáp phép mục tiêu
   = giáp phép − `magic_armor_reduction` của kẻ gây (chỉ trừ phần dương; có thể xuống âm). Giáp thật
   của mục tiêu không đổi, sát thương của kẻ khác không bị ảnh hưởng. Không tác dụng lên PHYSICAL / PURE.
+- `CMB-15` (D-137) Chặn sát thương (kiểu khiên Vanguard): hiệu ứng khai báo `block_chance`,
+  `block_amount`, `block_ranged`. Đòn **đánh thường** trúng (không né) đơn vị có hiệu ứng: mỗi nguồn
+  tung PRD riêng (RNG-01), nhiều nguồn trúng lấy lượng lớn nhất; kẻ đánh là đơn vị đánh xa thì lượng
+  nhân `block_ranged`. Trừ vào sát thương đòn **trước giáp**, không dưới 0. Chặn cả đòn của lính,
+  quái, trụ. Biến hình (ST-16) thì tắt nếu là bị động. Phản sát thương Quyết Đấu (DUL-04) tính trên
+  sát thương trước khi chặn.
 - `CMB-12` Đổi mục tiêu đánh (D-69): khi bắt đầu vung đòn vào mục tiêu **khác** mục tiêu
   của đòn vung trước (đánh gió không tính), phát `attack_target_changed` (kẻ gây = người
   đánh, đối tượng = mục tiêu mới). Đòn đầu tiên không phát. Đạn của đòn cũ đang bay vẫn
@@ -514,7 +520,7 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `EFF-09` Giá trị trong hành động có thể là **biểu thức** gồm: số, giá trị có tên của
   skill, chỉ số của chủ hiệu ứng / mục tiêu (`self.strength`, `target.max_hp`…), dữ
   liệu của sự kiện (`event.damage`, `event.burned_mana`). Chỉ cộng, trừ, nhân, chia,
-  min, max, floor (làm tròn xuống, D-135). Không có điều kiện if trong biểu thức; điều kiện nằm ở `condition` của trigger.
+  min, max, floor (làm tròn xuống). Không có điều kiện if trong biểu thức; điều kiện nằm ở `condition` của trigger.
   `self.` / `target.` đọc chỉ số STAT-01 và `current_hp`, `current_mana`, `level`;
   `event.` đọc `damage`, `burned_mana`, `heal`. Danh sách nằm trong `RuleCatalog`, test
   nội dung từ chối mọi tên khác. Giá trị có tên được **chụp lúc áp** hiệu ứng: nâng cấp
@@ -536,9 +542,6 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   không thuộc kỹ năng (hiệu ứng, đồ) trúng **phe địch, không phải công trình**, nhắm được (DEF-05), mép thân trong vùng; tâm/hướng chốt lúc tung, có `delay` thì nổ sau đó;
   đơn vị trúng xử lý theo id. `falloff` f: sát thương nhân 1 − f × (khoảng cách tâm–tâm /
   bán kính), tối thiểu ở mép (f = 1 → mép nhận 0).
-- `EFF-16` (D-135) Hiệu ứng `live`: modifier **tính lại mỗi tick** (pha EFFECT) theo trạng thái
-  hiện tại của chủ (vd giáp theo máu đã mất), thay vì chụp lúc áp. Giá trị có tên vẫn chụp lúc
-  áp như EFF-09; chủ chết thì không tính lại.
 - `EFF-13` Chủ hiệu ứng chết → mọi hiệu ứng bị gỡ (lý do `owner_died`), trừ hiệu ứng có tag
   `passive` (D-56).
 
@@ -558,6 +561,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   **trước** giáp / hệ số nhận / khiên của A (đã nhân chí mạng). Đánh dấu `reflected` (CMB-09:
   không chí mạng, không hút máu, không kích hoạt trigger phản hồi), giáp / khiên của B áp bình
   thường. Chỉ B → A; đòn của đơn vị khác, sát thương chiêu / phép / pure / hiệu ứng không phản.
+- `DUL-04b` (D-137) A hồi máu bằng `reflect_heal` × sát thương phản thực gây cho B (sau giáp /
+  hệ số nhận của B, trước khiên của B); A phải còn sống.
 - `DUL-05` Kết thúc ngay khi một bên **chết** (DamageSystem đặt `alive = false`), bất kể ai / nguồn
   nào gây; bên còn lại thắng. Sự kiện chết đầu tiên quyết định; Quyết Đấu đã kết thúc thì các
   cái chết sau trong cùng tick không đổi kết quả. Đòn vào A: trừ máu A → A chết thì A thua,

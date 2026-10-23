@@ -13,6 +13,8 @@ var crit: bool = false
 var reflected: bool = false
 ## ST-15: nguồn xuyên miễn phép (bỏ qua đúng bước MAGIC_IMMUNE, PRI-05).
 var pierces_magic_immunity: bool = false
+## DUL-04b: kẻ gây hồi máu bằng phần này của sát thương gây ra (sau giáp, trước khiên).
+var heal_source: float = 0.0
 
 
 static func attack(source: Entity, target_id: int) -> DamageRequest:

@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="AbilityDef" format=3]
 
 [ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
-[ext_resource type="Resource" path="res://content/effects/duy_anh_resolve.tres" id="2_eff"]
+[ext_resource type="Resource" path="res://content/effects/duy_anh_shield.tres" id="2_eff"]
 [ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_app"]
 [ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_abl"]
 
@@ -12,13 +12,15 @@ target = 0
 
 [resource]
 script = ExtResource("4_abl")
-description = "Bị động: mỗi 10% máu đã mất (tối đa 9 nấc) +0.6 / 0.8 / 1.0 / 1.2 / 1.4 / 1.6 giáp vật lý. Hồi máu thì giáp thêm giảm theo."
+description = "Bị động: đòn đánh thường nhắm vào hiệp sĩ có 50% cơ hội bị khiên chặn 20 / 30 / 40 / 50 / 60 / 70 sát thương (đòn của đơn vị đánh xa: một nửa)."
 slot = 0
 targeting = 0
 values = Dictionary[StringName, PackedFloat32Array]({
-&"armor_step": PackedFloat32Array(0.6, 0.8, 1.0, 1.2, 1.4, 1.6)
+&"block": PackedFloat32Array(20, 30, 40, 50, 60, 70),
+&"block_chance": PackedFloat32Array(0.5, 0.5, 0.5, 0.5, 0.5, 0.5),
+&"block_ranged": PackedFloat32Array(0.5, 0.5, 0.5, 0.5, 0.5, 0.5)
 })
 on_learn = Array[ExtResource("1_act")]([SubResource("A0")])
 id = &"duy_anh_innate"
-display_name = "Bất Khuất"
+display_name = "Khiên Chắn"
 art_id = &"duy_anh_innate"

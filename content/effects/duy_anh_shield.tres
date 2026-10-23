@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="1_eff"]
+
+[resource]
+script = ExtResource("1_eff")
+duration = "0"
+tags = Array[StringName]([&"passive"])
+dispel = 2
+block_chance = "block_chance"
+block_amount = "block"
+block_ranged = "block_ranged"
+id = &"duy_anh_shield"
+art_id = &"duy_anh_innate"
