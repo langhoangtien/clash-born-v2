@@ -402,6 +402,10 @@ canh, `state_recall` = ngôi nhà nhỏ với mũi tên vòng.
 - **7a — mẫu, rồi DỪNG chờ duyệt:** `item_sages_mask`, `item_ring_regen`, `item_gauntlets`,
   `item_butterfly`, `skill_brakk_q`, `skill_gorran_r`, `state_stunned`, `ui_attack`, `ui_attack_creep`,
   `ui_attack_tower`. Nộp kèm `_preview.png`. Ghi đè đúng tên file trong `04_icons/`.
+  **→ 2026-10-23: 7a ĐÃ DUYỆT** (rõ ở 48 px, đúng chuẩn). Một sửa cho 7b: **icon chiêu vẽ HÀNH ĐỘNG / hiệu
+  ứng, icon đồ vẽ ĐỒ VẬT** — không để hai cái trùng hình (hiện `skill_brakk_q` gần giống `item_gauntlets`:
+  làm lại `skill_brakk_q` thành nắm đấm nện xuống mặt đất với vòng sóng chấn động cam, góc nhìn khác).
+  Các món cùng loại (găng, giày, áo, kiếm, gậy) phải khác nhau rõ về màu và hình dáng.
 - **7b — sau khi duyệt:** toàn bộ phần còn lại (danh sách dưới), mỗi lô 15–20 icon thì commit + push.
 
 ### Kết quả 7a — 2026-10-23 — CHỜ NGƯỜI DÙNG DUYỆT
