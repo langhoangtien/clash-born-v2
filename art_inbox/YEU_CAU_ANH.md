@@ -506,6 +506,23 @@ Danh sách đầy đủ (ghi đè file cùng tên trong `04_icons/`; tên món t
 
 ---
 
+### Tiến độ làm lại 4 món 7a và Đợt 7b — 2026-10-23
+
+Theo 7s lần 3 đã duyệt: đồ có khối nổi, chất liệu trau chuốt, PNG alpha không nền / khung / đĩa, không hào quang ngoài vật. Chiêu / trạng thái theo chuẩn 7a; không sửa nút Đánh / Lính / Trụ.
+
+- [x] 4 món đồ 7a theo chuẩn 7s — 4 icon.
+
+Đã chạy `tools/icon_preview.py` cho mỗi lô, kèm 3 món 7s để đối chiếu; mở kiểm tra các cỡ 48 / 64 / 84 px và bản làm tối. `_preview.png` hiện là lô mới nhất cùng 3 mẫu 7s. Chỉ thay đổi `art_inbox/`; chưa nhập vào `assets/`.
+
+| Xong | File làm lại |
+|---|---|
+| [x] | `04_icons/item_sages_mask.png` |
+| [x] | `04_icons/item_ring_regen.png` |
+| [x] | `04_icons/item_gauntlets.png` |
+| [x] | `04_icons/item_butterfly.png` |
+
+<!-- END_ICON7B_PROGRESS -->
+
 ## Đợt 5 — Giao diện (nền trong suốt)
 
 Kiểu: viền đá/kim loại tối, phát sáng xanh như nút skill trong ảnh mẫu.
