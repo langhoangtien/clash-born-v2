@@ -419,6 +419,19 @@ Người chơi chọn kiểu **vuông** như `00_style/icon_mau_shop.png` cho **
 `item_frost_orb` (Ngọc Băng Sương), `item_shadow_blade` (Lưỡi Ẩn Thân). Chạy `python tools/icon_preview.py`
 và nộp kèm `_preview.png`. Duyệt xong thì làm **lại cả 4 món đồ của 7a** theo kiểu vuông rồi mới tới 7b.
 
+### Kết quả 7s — 2026-10-23 — CHỜ DUYỆT TRONG GAME
+
+Đã xuất 3 item theo ảnh chuẩn `00_style/icon_mau_vuong_7s.png`: giữ thiết kế fantasy sắc nét và màu nhấn đỏ / xanh băng / tím; bỏ toàn bộ nền và khung của ảnh minh họa. PNG alpha 256 × 256, vật phẩm và hào quang nằm gọn trong ô, không đĩa tròn.
+
+| Xong | File |
+|---|---|
+| [x] | `04_icons/item_demon_edge.png` |
+| [x] | `04_icons/item_frost_orb.png` |
+| [x] | `04_icons/item_shadow_blade.png` |
+| [x] | `04_icons/_preview.png` — đúng 3 mẫu 7s ở 48 / 64 / 84 px và bản làm tối |
+
+Đã chạy `tools/icon_preview.py` và mở ảnh kiểm tra. Chưa đổi 4 món đồ 7a, chưa làm 7b; dừng chờ người dùng kiểm tra lô 7s. Chỉ thay đổi `art_inbox/`, không nhập vào `assets/`.
+
 ### Thứ tự
 
 - **7a — mẫu, rồi DỪNG chờ duyệt:** `item_sages_mask`, `item_ring_regen`, `item_gauntlets`,
