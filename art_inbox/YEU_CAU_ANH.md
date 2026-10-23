@@ -513,6 +513,7 @@ Theo 7s lần 3 đã duyệt: đồ có khối nổi, chất liệu trau chuốt
 - [x] 4 món đồ 7a theo chuẩn 7s — 4 icon.
 - [x] 7b lô 1 — 16 đồ — 16 icon.
 - [x] 7b lô 2 — 16 đồ — 16 icon.
+- [x] 7b lô 3 — 16 đồ — 16 icon.
 
 Đã chạy `tools/icon_preview.py` cho mỗi lô, kèm 3 món 7s để đối chiếu; mở kiểm tra các cỡ 48 / 64 / 84 px và bản làm tối. `_preview.png` hiện là lô mới nhất cùng 3 mẫu 7s. Chỉ thay đổi `art_inbox/`; chưa nhập vào `assets/`.
 
@@ -554,6 +555,22 @@ Theo 7s lần 3 đã duyệt: đồ có khối nổi, chất liệu trau chuốt
 | [x] | `04_icons/item_grapes.png` |
 | [x] | `04_icons/item_hex_scythe.png` |
 | [x] | `04_icons/item_hyperstone.png` |
+| [x] | `04_icons/item_iron_branch.png` |
+| [x] | `04_icons/item_magic_cloak.png` |
+| [x] | `04_icons/item_mana_potion.png` |
+| [x] | `04_icons/item_mantle.png` |
+| [x] | `04_icons/item_moon_shard.png` |
+| [x] | `04_icons/item_null_talisman.png` |
+| [x] | `04_icons/item_observer_ward.png` |
+| [x] | `04_icons/item_ogre_axe.png` |
+| [x] | `04_icons/item_platemail.png` |
+| [x] | `04_icons/item_quarterstaff.png` |
+| [x] | `04_icons/item_resolute_armor.png` |
+| [x] | `04_icons/item_reveal_dust.png` |
+| [x] | `04_icons/item_ring_protection.png` |
+| [x] | `04_icons/item_robe_magi.png` |
+| [x] | `04_icons/item_sentry_ward.png` |
+| [x] | `04_icons/item_slippers.png` |
 
 <!-- END_ICON7B_PROGRESS -->
 
