@@ -434,6 +434,19 @@ và nộp kèm `_preview.png`. Duyệt xong thì làm **lại cả 4 món đồ 
 
 Đã chạy `tools/icon_preview.py` và mở ảnh kiểm tra. Chưa đổi 4 món đồ 7a, chưa làm 7b; dừng chờ người dùng kiểm tra lô 7s. Chỉ thay đổi `art_inbox/`, không nhập vào `assets/`.
 
+### Kết quả 7s lần 2 — 2026-10-23 — CHỜ NGƯỜI DÙNG DUYỆT
+
+Đã làm lại cả 3 món do bản lần 1 quá lòe loẹt: bỏ hoàn toàn hào quang, khói, tia sáng và lửa; giảm chi tiết nhỏ, dùng mảng màu lớn và viền tối mảnh. Kiếm Quỷ: đỏ trầm, lưỡi rộng ba khấc; Ngọc Băng Sương: xanh băng nhạt, khối cầu với hai chân pha lê ngắn; Lưỡi Ẩn Thân: tím tiết chế, lưỡi cong mảnh. Ba món khác nhau rõ cả màu lẫn hình dáng.
+
+| Xong | File |
+|---|---|
+| [x] | `04_icons/item_demon_edge.png` |
+| [x] | `04_icons/item_frost_orb.png` |
+| [x] | `04_icons/item_shadow_blade.png` |
+| [x] | `04_icons/_preview.png` — 3 mẫu lần 2, 48 / 64 / 84 px và bản làm tối |
+
+PNG 256 × 256, alpha ngoài vật, không nền / khung / đĩa; vật chiếm khoảng 80–85% ô. Đã chạy `tools/icon_preview.py`, mở preview kiểm tra và xem thêm ở 40 px. Chỉ thay đổi 3 món 7s cùng preview và phiếu này; chưa đổi 4 món 7a, chưa làm 7b. **Dừng chờ duyệt.**
+
 ### Thứ tự
 
 - **7a — mẫu, rồi DỪNG chờ duyệt:** `item_sages_mask`, `item_ring_regen`, `item_gauntlets`,
