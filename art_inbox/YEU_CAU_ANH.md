@@ -511,6 +511,7 @@ Danh sách đầy đủ (ghi đè file cùng tên trong `04_icons/`; tên món t
 Theo 7s lần 3 đã duyệt: đồ có khối nổi, chất liệu trau chuốt, PNG alpha không nền / khung / đĩa, không hào quang ngoài vật. Chiêu / trạng thái theo chuẩn 7a; không sửa nút Đánh / Lính / Trụ.
 
 - [x] 4 món đồ 7a theo chuẩn 7s — 4 icon.
+- [x] 7b lô 1 — 16 đồ — 16 icon.
 
 Đã chạy `tools/icon_preview.py` cho mỗi lô, kèm 3 món 7s để đối chiếu; mở kiểm tra các cỡ 48 / 64 / 84 px và bản làm tối. `_preview.png` hiện là lô mới nhất cùng 3 mẫu 7s. Chỉ thay đổi `art_inbox/`; chưa nhập vào `assets/`.
 
@@ -520,6 +521,22 @@ Theo 7s lần 3 đã duyệt: đồ có khối nổi, chất liệu trau chuốt
 | [x] | `04_icons/item_ring_regen.png` |
 | [x] | `04_icons/item_gauntlets.png` |
 | [x] | `04_icons/item_butterfly.png` |
+| [x] | `04_icons/item_ancient_tome.png` |
+| [x] | `04_icons/item_arcane_scepter.png` |
+| [x] | `04_icons/item_assault_plate.png` |
+| [x] | `04_icons/item_band_elvenskin.png` |
+| [x] | `04_icons/item_battle_axe.png` |
+| [x] | `04_icons/item_belt_strength.png` |
+| [x] | `04_icons/item_blade_alacrity.png` |
+| [x] | `04_icons/item_blades_attack.png` |
+| [x] | `04_icons/item_boots.png` |
+| [x] | `04_icons/item_boots_arcane.png` |
+| [x] | `04_icons/item_boots_guard.png` |
+| [x] | `04_icons/item_boots_haste.png` |
+| [x] | `04_icons/item_bracer.png` |
+| [x] | `04_icons/item_broadsword.png` |
+| [x] | `04_icons/item_chainmail.png` |
+| [x] | `04_icons/item_circlet.png` |
 
 <!-- END_ICON7B_PROGRESS -->
 
