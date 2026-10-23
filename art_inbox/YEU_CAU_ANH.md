@@ -668,10 +668,18 @@ Hiện trong game là icon tạm chữ tắt — file của bạn sẽ thay.
 
 | Xong | File | Món | Vẽ gì (màu chủ đạo khác các món đã có) |
 |---|---|---|---|
-| [ ] | `item_piercing_staff.png` | Xuyên Tâm Trượng | Trượng phép thẳng, đầu là mũi nhọn xuyên qua một vòng tròn phép vỡ — tím lam |
-| [ ] | `item_twin_blades.png` | Song Đao | Hai thanh đao cong bắt chéo hình chữ X — thép bạc, chuôi xanh lục |
-| [ ] | `item_focus_staff.png` | Gậy Định Tâm | Gậy chiến dài có con mắt / tâm ngắm ở đầu — vàng đồng |
-| [ ] | `item_thunder_staff.png` | Trượng Lôi Kích | Trượng có tia sét hình chữ Z quấn quanh đầu — vàng chanh + xanh điện (sét là hình, không phải hào quang) |
-| [ ] | `item_time_orb.png` | Ngọc Thời Không | Viên ngọc tròn có mặt đồng hồ / đồng hồ cát bên trong, khung bạc — xanh ngọc lam |
-| [ ] | `item_shadow_dance_blade.png` | Kiếm Ảnh Vũ | Thanh kiếm mảnh với một bản sao mờ lệch bên cạnh (bóng) — xám tro + đỏ thẫm |
-| [ ] | `item_chain_axe.png` | Rìu Xiềng Xích | Rìu một lưỡi có sợi xích quấn cán, đầu xích có còng — sắt xám + nâu gỉ |
+| [x] | `item_piercing_staff.png` | Xuyên Tâm Trượng | Trượng phép thẳng, đầu là mũi nhọn xuyên qua một vòng tròn phép vỡ — tím lam |
+| [x] | `item_twin_blades.png` | Song Đao | Hai thanh đao cong bắt chéo hình chữ X — thép bạc, chuôi xanh lục |
+| [x] | `item_focus_staff.png` | Gậy Định Tâm | Gậy chiến dài có con mắt / tâm ngắm ở đầu — vàng đồng |
+| [x] | `item_thunder_staff.png` | Trượng Lôi Kích | Trượng có tia sét hình chữ Z quấn quanh đầu — vàng chanh + xanh điện (sét là hình, không phải hào quang) |
+| [x] | `item_time_orb.png` | Ngọc Thời Không | Viên ngọc tròn có mặt đồng hồ / đồng hồ cát bên trong, khung bạc — xanh ngọc lam |
+| [x] | `item_shadow_dance_blade.png` | Kiếm Ảnh Vũ | Thanh kiếm mảnh với một bản sao mờ lệch bên cạnh (bóng) — xám tro + đỏ thẫm |
+| [x] | `item_chain_axe.png` | Rìu Xiềng Xích | Rìu một lưỡi có sợi xích quấn cán, đầu xích có còng — sắt xám + nâu gỉ |
+
+### Kết quả Đợt 8 — 2026-10-23 — HOÀN TẤT
+
+Đã tạo đủ 7 icon theo chuẩn 7s lần 3: vật có khối nổi / chất liệu rõ, nền alpha, không khung / đĩa / hào quang. Giữ riêng các dấu hiệu nhận dạng: vòng phép vỡ, đôi đao cong, mắt ngắm vàng đồng, sét chữ Z dạng hình, đồng hồ cát trong ngọc xanh ngọc lam, bóng kiếm lệch, xích có còng ở cuối.
+
+- [x] Kiểm tra 7 PNG 256 × 256, alpha ngoài vật và lề an toàn.
+- [x] Chạy `tools/icon_preview.py`, mở `04_icons/_preview.png` kiểm tra ở 48 / 64 / 84 px và bản làm tối, đối chiếu trực tiếp với 3 mẫu 7s. Preview đợt này gồm 7 món mới + 3 mẫu 7s.
+- Chỉ thay đổi `art_inbox/`; chưa chép vào `assets/`, không sửa code hay dữ liệu gameplay.
