@@ -253,7 +253,7 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   của kẻ gây, trước giáp. `spell_amplification` = Trí tuệ × `spell_amp_per_intelligence` (0.003)
   + modifier (đồ phép).
   Hành động `Damage` khai báo `amplified = false` thì **không** nhân (D-132: sát thương thêm của
-  đòn đánh từ đồ như Trượng Lôi Kích, Rìu Xiềng Xích).
+  đòn đánh từ đồ như Trượng Lôi Kích, Rìu Xiềng Xích, Búa Choáng — D-133).
 - `CMB-14` (D-132) Xuyên giáp phép: sát thương MAGIC do một đơn vị gây tính giáp phép mục tiêu
   = giáp phép − `magic_armor_reduction` của kẻ gây (chỉ trừ phần dương; có thể xuống âm). Giáp thật
   của mục tiêu không đổi, sát thương của kẻ khác không bị ảnh hưởng. Không tác dụng lên PHYSICAL / PURE.

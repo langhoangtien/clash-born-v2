@@ -77,6 +77,7 @@ có sát thương mỗi cấp (STAT-04).
 ## Brakk · Thiết Quyền
 
 Cận chiến (tầm 150), thuộc tính chính Sức mạnh. Máu cao, lao vào khống chế, chịu đòn.
+BAT 1.7, mỗi cấp +1.5 Nhanh nhẹn, +1.5 Trí tuệ (D-133).
 
 ### Nội tại — Đòn Chấn Động (kiểu Faceless Void)
 
@@ -328,7 +329,7 @@ bị tước gây thêm sát thương phép. Sau đó làm chậm.
 
 ## Gorran · Giả Kim
 
-Đánh gần, Sức mạnh, BAT 1.7, đẩy trụ bằng đòn đánh (kiểu Alchemist). D-122.
+Đánh gần, Sức mạnh, BAT 1.7, đẩy trụ bằng đòn đánh (kiểu Alchemist). D-122. Mỗi cấp +1.4 Nhanh nhẹn (D-133).
 
 ### Nội tại — Sức Mạnh Giả Kim
 +15 / 20 / 25 / 30 / 35 / 35 sát thương (bậc ở cấp 1, 4, 8, 12, 16, 20).
@@ -341,14 +342,13 @@ Hồi chiêu 20 s, mana 90–130.
 80 / 100 / 120 / 140 / 160 sát thương phép, choáng 1.5 / 1.8 / 2.1 / 2.4 / 2.7 s. Hồi chiêu 12 s, mana 100.
 
 ### R — Cuồng Hóa (ultimate, bản thân)
-25 s: BAT 1.7 → 1.2 / 1.1 / 1.0, hồi máu +50 / 75 / 100 mỗi giây, tốc chạy +30 / 40 / 50.
+25 s: BAT 1.7 → 1.4 / 1.3 / 1.2, hồi máu +15 / 25 / 35 mỗi giây (D-133), tốc chạy +30 / 40 / 50.
 Hồi chiêu 55 s, mana 50 / 100 / 150.
 
 ### Talent cấp 20 (chọn 1)
 - Q: Vũng Axit bán kính +100, +15 sát thương mỗi giây.
 - W: choáng +1 s.
-- R: BAT giảm thêm 0.15 (0.85) và +50 sát thương khi Cuồng Hóa (gộp hai ý của người chơi vì
-  talent chỉ sửa chính chiêu của nó, TAL-02).
+- R: BAT giảm thêm 0.1 khi Cuồng Hóa (cấp 3: 1.1); bỏ +50 sát thương (D-133).
 
 ## Thư viện bị động (dành sẵn cho hero sau)
 

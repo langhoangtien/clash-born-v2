@@ -196,3 +196,9 @@ func test_D_132_stat_items() -> void:
 	Items.give(w, hero, w.item_catalog[&"shadow_dance_blade"])
 	w.step()
 	assert_near(hero.stats.get_stat(StatId.Id.EVASION), 0.3, 0.0001)
+
+
+func test_CMB_13_stun_hammer_bonus_not_amplified() -> void:
+	var w: World = _world()[0]
+	var eff: EffectDef = ((w.item_catalog[&"stun_hammer"] as ItemDef).ability.on_learn[0] as ApplyEffectAction).effect
+	assert_false((eff.triggers[0].actions[0] as DamageAction).amplified, "D-133: Búa Choáng không nhân khuếch đại phép")

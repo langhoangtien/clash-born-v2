@@ -113,15 +113,15 @@ func test_D_122_rage_cuts_bat_regen_and_speed() -> void:
 	w.submit(Command.cast(g.id, Slot.R))
 	for i: int in range(5):
 		w.step()
-	assert_near(g.stats.get_stat(StatId.Id.BASE_ATTACK_TIME), 1.0, 0.001, "BAT 1.7 → 1.0")
-	assert_near(g.stats.get_stat(StatId.Id.HP_REGEN) - regen, 100.0, 0.01)
+	assert_near(g.stats.get_stat(StatId.Id.BASE_ATTACK_TIME), 1.2, 0.001, "BAT 1.7 → 1.2 (D-133)")
+	assert_near(g.stats.get_stat(StatId.Id.HP_REGEN) - regen, 35.0, 0.01)
 	assert_near(g.stats.get_stat(StatId.Id.MOVEMENT_SPEED) - ms, 50.0, 0.01)
 	for i: int in range(30 * 25):
 		w.step()
 	assert_near(g.stats.get_stat(StatId.Id.BASE_ATTACK_TIME), 1.7, 0.001, "hết 25 s")
 
 
-func test_D_122_talents_wider_acid_long_stun_rage_bat_and_damage() -> void:
+func test_D_122_talents_wider_acid_long_stun_rage_bat() -> void:
 	var w: World = _world()
 	var gq: Entity = _gorran20(w, Slot.Q)
 	assert_near(Abilities.value(gq, Abilities.of(gq, Slot.Q), &"radius"), 500.0, 0.001, "talent Q: bán kính +100")
@@ -132,8 +132,8 @@ func test_D_122_talents_wider_acid_long_stun_rage_bat_and_damage() -> void:
 	w2.submit(Command.cast(gr.id, Slot.R))
 	for i: int in range(5):
 		w2.step()
-	assert_near(gr.stats.get_stat(StatId.Id.BASE_ATTACK_TIME), 0.85, 0.001, "talent R: BAT 0.85")
-	assert_near(gr.stats.get_stat(StatId.Id.PHYSICAL_DAMAGE) - dmg, 50.0, 0.01, "talent R: +50 sát thương khi Cuồng Hóa")
+	assert_near(gr.stats.get_stat(StatId.Id.BASE_ATTACK_TIME), 1.1, 0.001, "talent R: BAT 1.1 (D-133)")
+	assert_near(gr.stats.get_stat(StatId.Id.PHYSICAL_DAMAGE) - dmg, 0.0, 0.01, "talent R: không còn +sát thương")
 	var w3: World = _world()
 	var gw: Entity = _gorran20(w3, Slot.W)
 	assert_near(Abilities.value(gw, Abilities.of(gw, Slot.W), &"stun_duration"), 3.7, 0.001, "talent W: choáng +1 s")
