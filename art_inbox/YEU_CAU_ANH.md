@@ -697,5 +697,7 @@ từ ảnh này (`03_heroes/duy_anh_portrait.png`) — không cần vẽ.
 | [ ] | `skill_duy_anh_q.png` | Xung Phong (tăng tốc) | Hiệp sĩ chúi người lao tới, áo choàng xanh bay ngang, vệt gió trắng phía sau |
 | [ ] | `skill_duy_anh_w.png` | Hoành Kiếm (quét quạt phía trước) | Vệt chém hình quạt trắng xanh từ thanh kiếm bạc, góc nhìn từ trên |
 | [ ] | `skill_duy_anh_r.png` | Quyết Đấu (đấu tay đôi) | Hai thanh kiếm bắt chéo trong vòng tròn đỏ thẫm, một kiếm bạc chuôi vàng, một kiếm tối |
+| [ ] | `03_heroes/duy_anh_sheet.png` | 1536 × 1024 | Như các tướng khác: cùng nhân vật trong `duy_anh_full.png`, mặt trước 3/4 và sau lưng 3/4, toàn thân, đứng thẳng, nền trong suốt, đúng style_sheet |
+| [ ] | `03_heroes/duy_anh_body.png` | 512 × 512 | Toàn thân quay phải, thủ thế kiếm khiên, chân ở 1/5 dưới khung, nền trong suốt |
 
 Ghi vào `04_icons/`, chạy `tools/icon_preview.py`, commit + push.

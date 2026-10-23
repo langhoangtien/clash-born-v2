@@ -403,8 +403,8 @@ tiêu để không mất cộng dồn Nhịp Phép (điều kiện dữ liệu `
 
 ## Duy Anh · Hiệp Sĩ (D-135)
 
-Sức mạnh, cận chiến (tầm 150), kiếm và khiên; BAT 1.7, sát thương gốc 58, tốc chạy 270; STR 26 (+3.6),
-AGI 18 (+1.6), INT 15 (+1.5) — số gốc do Claude đặt theo Brakk / Gorran, chờ chơi thử. Đấu sĩ bắt chủ lực,
+Sức mạnh, cận chiến (tầm 150), kiếm và khiên; BAT 1.7, sát thương gốc 58, tốc chạy 270; STR 26 (+4.5),
+AGI 18 (+1.9), INT 15 (+2.3) — số gốc do Claude đặt theo Brakk / Gorran, chờ chơi thử. Đấu sĩ bắt chủ lực,
 ép đấu tay đôi, mạnh dần qua các trận Quyết Đấu thắng.
 
 ### Nội tại — Bất Khuất
@@ -421,7 +421,7 @@ Hồi 7 s, mana 50 / 55 / 60 / 65 / 70. Không lên công trình, không chí m�
 ### R — Quyết Đấu
 Tầm 500, chỉ tướng địch. Lao tới (vẫn bị nhắm, ABL-08b), tới nơi bắt đầu Quyết Đấu (DUL) rồi bổ
 150 / 250 / 350 vật lý. 3 / 4 / 5 s: hai bên bị ép đánh nhau; hiệp sĩ +60 / 80 / 100% tốc đánh và phản
-100% sát thương đòn đánh trước giáp của đối thủ. Ai chết trước thua: thắng +10 / 15 / 20 sát thương vĩnh
+20 / 25 / 30% sát thương đòn đánh trước giáp của đối thủ. Ai chết trước thua: thắng +10 / 15 / 20 sát thương vĩnh
 viễn và +150 / 225 / 300 vàng (cả khi đối thủ thắng); hiệp sĩ thua −10 / 15 / 20. Hồi 70 / 60 / 50 s, mana
 100 / 125 / 150.
 

@@ -200,7 +200,7 @@ func test_DUL_04_reflects_pre_armor_attack_damage() -> void:
 	w.damage_requests.append(r)
 	DamageSystem.resolve(w)
 	var mult: float = DamageFormulas.armor_multiplier(foe.stats.get_stat(StatId.Id.PHYSICAL_ARMOR), w.balance.armor_coefficient)
-	assert_near(4000.0 - foe.health, 100.0 * mult, 0.01, "phản 100 trước giáp, giáp đối thủ áp")
+	assert_near(4000.0 - foe.health, 20.0 * mult, 0.01, "cấp 1 phản 20% của 100 trước giáp, giáp đối thủ áp")
 
 
 func test_DUL_04_skill_damage_not_reflected() -> void:
@@ -251,7 +251,7 @@ func test_DUL_05_reflect_kill_wins_and_rewards_once() -> void:
 	w.step()
 	var gold: int = k.gold
 	var dmg: float = k.stats.get_stat(StatId.Id.PHYSICAL_DAMAGE)
-	foe.health = 5.0
+	foe.health = 1.0
 	var r: DamageRequest = DamageRequest.attack(foe, k.id)
 	r.raw = 100.0
 	w.damage_requests.append(r)
