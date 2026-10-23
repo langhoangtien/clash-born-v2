@@ -41,6 +41,10 @@ static func _apply(world: World, r: DamageRequest, target: Entity) -> bool:
 		world.emit(&"attack_landed", r.source_id, r.target_id, amount, &"crit" if r.crit else &"")
 		if source != null and source.kind == Entity.Kind.HERO and target.kind == Entity.Kind.HERO and source.team != target.team:
 			world.emit(&"hero_attacked_hero", r.source_id, r.target_id)  # DEF-11
+	if r.is_attack and not r.reflected and source != null and source.alive and not Rules.is_structure(target):
+		var steal: float = source.stats.get_stat(StatId.Id.LIFESTEAL)
+		if steal > 0.0:
+			ActionRunner.heal(world, source, amount * steal, source.id)  # CMB-05b
 	if r.heal_source > 0.0 and source != null and source.alive:
 		ActionRunner.heal(world, source, amount * r.heal_source, source.id)  # DUL-04b
 	amount = Effects.absorb(world, target, amount)  # EFF-06

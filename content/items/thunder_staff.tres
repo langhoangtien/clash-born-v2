@@ -23,18 +23,23 @@ on_learn = Array[ExtResource("1_act")]([SubResource("A0")])
 id = &"thunder_staff_passive_ability"
 art_id = &"thunder_staff"
 
-[sub_resource type="Resource" id="M0"]
+[sub_resource type="Resource" id="MZ0"]
 script = ExtResource("5_mod")
 stat = &"attack_speed"
 value = "0.4"
+
+[sub_resource type="Resource" id="MZ1"]
+script = ExtResource("5_mod")
+stat = &"intelligence"
+value = "10"
 
 [resource]
 script = ExtResource("6_item")
 category = 0
 description = "Bị động – Lôi Kích: mỗi đòn đánh trúng gây thêm 70 sát thương phép (không lên trụ, không nhân khuếch đại phép)."
 cost = 3800
-components = Array[StringName]([&"hyperstone", &"staff_wizardry", &"quarterstaff"])
-modifiers = Array[ExtResource("5_mod")]([SubResource("M0")])
+components = Array[StringName]([&"gloves_haste", &"gloves_haste", &"staff_wizardry"])
+modifiers = Array[ExtResource("5_mod")]([SubResource("MZ0"), SubResource("MZ1")])
 ability = SubResource("AB")
 id = &"thunder_staff"
 display_name = "Trượng Lôi Kích"

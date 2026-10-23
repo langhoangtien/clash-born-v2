@@ -3,22 +3,22 @@
 [ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
 [ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
 
-[sub_resource type="Resource" id="M0"]
+[sub_resource type="Resource" id="MZ0"]
 script = ExtResource("1_mod")
 stat = &"agility"
-value = "30"
+value = "35"
 
-[sub_resource type="Resource" id="M1"]
+[sub_resource type="Resource" id="MZ1"]
 script = ExtResource("1_mod")
 stat = &"physical_damage"
 value = "30"
 
-[sub_resource type="Resource" id="M2"]
+[sub_resource type="Resource" id="MZ2"]
 script = ExtResource("1_mod")
 stat = &"attack_speed"
 value = "0.3"
 
-[sub_resource type="Resource" id="M3"]
+[sub_resource type="Resource" id="MZ3"]
 script = ExtResource("1_mod")
 stat = &"evasion"
 value = "0.3"
@@ -26,9 +26,9 @@ value = "0.3"
 [resource]
 script = ExtResource("2_item")
 category = 0
-cost = 4200
-modifiers = Array[ExtResource("1_mod")]([SubResource("M0"), SubResource("M1"), SubResource("M2"), SubResource("M3")])
-components = Array[StringName]([&"blade_alacrity", &"blade_alacrity", &"quarterstaff", &"band_elvenskin"])
+cost = 4400
+modifiers = Array[ExtResource("1_mod")]([SubResource("MZ0"), SubResource("MZ1"), SubResource("MZ2"), SubResource("MZ3")])
+components = Array[StringName]([&"eaglesong", &"quarterstaff", &"blade_alacrity"])
 id = &"butterfly"
 display_name = "Cánh Bướm"
 art_id = &"butterfly"

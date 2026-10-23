@@ -24,19 +24,19 @@ on_learn = Array[ExtResource("1_act")]([SubResource("Apply")])
 id = &"divine_blade_passive_ability"
 art_id = &"divine_blade_passive_ability"
 
-[sub_resource type="Resource" id="M0"]
+[sub_resource type="Resource" id="MZ0"]
 script = ExtResource("5_mod")
 stat = &"physical_damage"
-value = "80"
+value = "85"
 
 [resource]
 script = ExtResource("6_item")
 category = 0
 description = "Bị động: đòn đánh 30% chí mạng ×2.25."
-cost = 4800
-modifiers = Array[ExtResource("5_mod")]([SubResource("M0")])
+cost = 5100
+modifiers = Array[ExtResource("5_mod")]([SubResource("MZ0")])
 ability = SubResource("Abl")
-components = Array[StringName]([&"crit_blade", &"demon_edge"])
+components = Array[StringName]([&"crit_blade", &"sacred_relic"])
 id = &"divine_blade"
 display_name = "Đại Đao Thần"
 art_id = &"divine_blade"

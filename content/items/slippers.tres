@@ -3,16 +3,16 @@
 [ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
 [ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
 
-[sub_resource type="Resource" id="M0"]
+[sub_resource type="Resource" id="MZ0"]
 script = ExtResource("1_mod")
 stat = &"agility"
-value = "3"
+value = "4"
 
 [resource]
 script = ExtResource("2_item")
 category = 4
 cost = 140
-modifiers = Array[ExtResource("1_mod")]([SubResource("M0")])
+modifiers = Array[ExtResource("1_mod")]([SubResource("MZ0")])
 id = &"slippers"
 display_name = "Dép Nhanh Nhẹn"
 art_id = &"slippers"

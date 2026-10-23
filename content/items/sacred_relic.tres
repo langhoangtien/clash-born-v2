@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
+
+[sub_resource type="Resource" id="MZ0"]
+script = ExtResource("1_mod")
+stat = &"physical_damage"
+value = "50"
+
+[resource]
+script = ExtResource("2_item")
+category = 4
+cost = 2600
+modifiers = Array[ExtResource("1_mod")]([SubResource("MZ0")])
+id = &"sacred_relic"
+display_name = "Thánh Tích"
+art_id = &"sacred_relic"

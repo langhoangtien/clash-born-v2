@@ -3,12 +3,12 @@
 [ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
 [ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
 
-[sub_resource type="Resource" id="M0"]
+[sub_resource type="Resource" id="MZ0"]
 script = ExtResource("1_mod")
 stat = &"intelligence"
-value = "15"
+value = "16"
 
-[sub_resource type="Resource" id="M1"]
+[sub_resource type="Resource" id="MZ1"]
 script = ExtResource("1_mod")
 stat = &"spell_amplification"
 value = "0.15"
@@ -18,7 +18,7 @@ script = ExtResource("2_item")
 category = 1
 description = "Sát thương chiêu và đồ +15% (khuếch đại phép)."
 cost = 2000
-modifiers = Array[ExtResource("1_mod")]([SubResource("M0"), SubResource("M1")])
+modifiers = Array[ExtResource("1_mod")]([SubResource("MZ0"), SubResource("MZ1")])
 components = Array[StringName]([&"staff_wizardry", &"robe_magi"])
 id = &"ancient_tome"
 display_name = "Sách Phép Cổ"

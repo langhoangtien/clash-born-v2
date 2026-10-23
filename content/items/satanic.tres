@@ -1,0 +1,62 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Resource" path="res://content/effects/satanic_unholy.tres" id="2_eff"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_app"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_abl"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_item"]
+
+[sub_resource type="Resource" id="A0"]
+script = ExtResource("3_app")
+effect = ExtResource("2_eff")
+duration = "duration"
+target = 0
+
+[sub_resource type="Resource" id="AB"]
+script = ExtResource("4_abl")
+slot = 4
+targeting = 1
+target_team = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cooldown": PackedFloat32Array(35),
+&"duration": PackedFloat32Array(5),
+&"unholy": PackedFloat32Array(1.5)
+})
+on_cast = Array[ExtResource("1_act")]([SubResource("A0")])
+bot_usages = Array[int]([5])
+bot_conditions = Array[StringName]([&"hp_below_70", &"taking_damage"])
+id = &"satanic_active"
+art_id = &"satanic"
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("5_mod")
+stat = &"strength"
+value = "25"
+
+[sub_resource type="Resource" id="M1"]
+script = ExtResource("5_mod")
+stat = &"physical_damage"
+value = "35"
+
+[sub_resource type="Resource" id="M2"]
+script = ExtResource("5_mod")
+stat = &"lifesteal"
+value = "0.25"
+
+[sub_resource type="Resource" id="M3"]
+script = ExtResource("5_mod")
+stat = &"hp_regen"
+value = "4"
+
+[resource]
+script = ExtResource("6_item")
+category = 0
+description = "Chủ động (hồi 35 s): +150% hút máu trong 5 giây."
+cost = 5200
+components = Array[StringName]([&"reaver", &"vampire_blade"])
+modifiers = Array[ExtResource("5_mod")]([SubResource("M0"), SubResource("M1"), SubResource("M2"), SubResource("M3")])
+ability = SubResource("AB")
+id = &"satanic"
+display_name = "Kiếm Huyết Ma"
+art_id = &"satanic"

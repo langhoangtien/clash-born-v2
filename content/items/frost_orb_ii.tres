@@ -1,0 +1,63 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_ddpqr"]
+[ext_resource type="Resource" path="res://content/effects/frost_orb_passive.tres" id="2_kti66"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_37686"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_1slvr"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_ybash"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_id8wa"]
+
+[sub_resource type="Resource" id="Resource_ij2sm"]
+script = ExtResource("3_37686")
+effect = ExtResource("2_kti66")
+target = 0
+
+[sub_resource type="Resource" id="Resource_0giwr"]
+script = ExtResource("4_1slvr")
+slot = 4
+targeting = 0
+values = Dictionary[StringName, PackedFloat32Array]({
+&"duration_melee": PackedFloat32Array(3),
+&"duration_ranged": PackedFloat32Array(2),
+&"slow": PackedFloat32Array(0.3)
+})
+on_learn = Array[ExtResource("1_ddpqr")]([SubResource("Resource_ij2sm")])
+id = &"frost_orb_ii_passive_ability"
+art_id = &"frost_orb_ii_passive_ability"
+
+[sub_resource type="Resource" id="Resource_gyj23"]
+script = ExtResource("5_ybash")
+stat = &"max_hp"
+value = "300"
+
+[sub_resource type="Resource" id="Resource_fal02"]
+script = ExtResource("5_ybash")
+stat = &"strength"
+value = "20"
+
+[sub_resource type="Resource" id="Resource_0n4uc"]
+script = ExtResource("5_ybash")
+stat = &"agility"
+value = "20"
+
+[sub_resource type="Resource" id="Resource_b1dkt"]
+script = ExtResource("5_ybash")
+stat = &"intelligence"
+value = "20"
+
+[sub_resource type="Resource" id="EV0"]
+script = ExtResource("5_ybash")
+stat = &"evasion"
+value = "0.2"
+
+[resource]
+script = ExtResource("6_id8wa")
+category = 2
+description = "Bị động: đòn đánh làm chậm mục tiêu 30% tốc chạy và 30% tốc đánh trong 3 s (cận chiến) / 2 s (đánh xa)."
+cost = 5200
+components = Array[StringName]([&"frost_orb", &"mirage_orb"])
+modifiers = Array[ExtResource("5_ybash")]([SubResource("Resource_gyj23"), SubResource("Resource_fal02"), SubResource("Resource_0n4uc"), SubResource("Resource_b1dkt"), SubResource("EV0")])
+ability = SubResource("Resource_0giwr")
+id = &"frost_orb_ii"
+display_name = "Ngọc Băng Sương II"
+art_id = &"frost_orb_ii"

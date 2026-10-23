@@ -57,6 +57,8 @@ const STATS: Dictionary = {
 	&"spell_amplification": ["Khuếch đại phép", true],
 	&"cooldown_reduction": ["Giảm hồi chiêu", true],
 	&"magic_armor_reduction": ["Xuyên giáp phép", false],
+	&"status_resistance": ["Kháng hiệu ứng", true],
+	&"cast_range": ["Tầm chiêu", false],
 }
 
 signal buy_pressed(item_id: StringName)

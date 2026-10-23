@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
+
+[sub_resource type="Resource" id="MZ0"]
+script = ExtResource("1_mod")
+stat = &"physical_damage"
+value = "30"
+
+[sub_resource type="Resource" id="MZ1"]
+script = ExtResource("1_mod")
+stat = &"lifesteal"
+value = "0.2"
+
+[sub_resource type="Resource" id="MZ2"]
+script = ExtResource("1_mod")
+stat = &"hp_regen"
+value = "4"
+
+[resource]
+script = ExtResource("2_item")
+category = 0
+cost = 2300
+components = Array[StringName]([&"morbid_mask", &"broadsword", &"ring_regen"])
+modifiers = Array[ExtResource("1_mod")]([SubResource("MZ0"), SubResource("MZ1"), SubResource("MZ2")])
+id = &"vampire_blade"
+display_name = "Lưỡi Hút Hồn"
+art_id = &"vampire_blade"

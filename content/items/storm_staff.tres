@@ -3,26 +3,37 @@
 [ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
 [ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
 
-[sub_resource type="Resource" id="M0"]
+[sub_resource type="Resource" id="MZ0"]
 script = ExtResource("1_mod")
 stat = &"intelligence"
 value = "18"
 
-[sub_resource type="Resource" id="M1"]
+[sub_resource type="Resource" id="MZ1"]
 script = ExtResource("1_mod")
 stat = &"max_mana"
 value = "300"
 
-[sub_resource type="Resource" id="M2"]
+[sub_resource type="Resource" id="MZ2"]
 script = ExtResource("1_mod")
 stat = &"mana_regen"
 value = "2"
 
+[sub_resource type="Resource" id="MZ3"]
+script = ExtResource("1_mod")
+stat = &"cast_range"
+value = "200"
+
+[sub_resource type="Resource" id="MZ4"]
+script = ExtResource("1_mod")
+stat = &"spell_amplification"
+value = "0.1"
+
 [resource]
 script = ExtResource("2_item")
 category = 1
+description = "+200 tầm dùng chiêu (ABL-21) và +10% khuếch đại phép."
 cost = 2400
-modifiers = Array[ExtResource("1_mod")]([SubResource("M0"), SubResource("M1"), SubResource("M2")])
+modifiers = Array[ExtResource("1_mod")]([SubResource("MZ0"), SubResource("MZ1"), SubResource("MZ2"), SubResource("MZ3"), SubResource("MZ4")])
 components = Array[StringName]([&"staff_wizardry", &"energy_booster", &"sages_mask"])
 id = &"storm_staff"
 display_name = "Quyền Trượng Bão"

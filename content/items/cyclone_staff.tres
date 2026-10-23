@@ -28,12 +28,12 @@ bot_conditions = Array[StringName]([&"hp_below_30", &"enemy_hero_in_range"])
 id = &"cyclone_staff_active"
 art_id = &"cyclone_staff_active"
 
-[sub_resource type="Resource" id="Resource_k2dll"]
+[sub_resource type="Resource" id="MZ0"]
 script = ExtResource("5_ofink")
 stat = &"intelligence"
-value = "10"
+value = "16"
 
-[sub_resource type="Resource" id="Resource_upbdw"]
+[sub_resource type="Resource" id="MZ1"]
 script = ExtResource("5_ofink")
 stat = &"mana_regen"
 value = "2.5"
@@ -44,7 +44,7 @@ category = 1
 description = "Chủ động (hồi 23 s, tầm 575): nhấc một đơn vị lên không 2.5 s — bất tử, không bị nhắm và không làm gì được. Dùng lên bản thân để né; không dùng được lên địch đang kháng phép."
 cost = 2400
 components = Array[StringName]([&"staff_wizardry", &"sages_mask", &"robe_magi"])
-modifiers = Array[ExtResource("5_ofink")]([SubResource("Resource_k2dll"), SubResource("Resource_upbdw")])
+modifiers = Array[ExtResource("5_ofink")]([SubResource("MZ0"), SubResource("MZ1")])
 ability = SubResource("Resource_fb7lg")
 id = &"cyclone_staff"
 display_name = "Gậy Lốc Xoáy"

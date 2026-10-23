@@ -245,6 +245,9 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `CMB-04b` (D-125) Trụ gây `tower_creep_damage` × sát thương lên lính đường (0.6); lên hero,
   quái rừng và ward giữ nguyên.
 - `CMB-05` Hút máu không áp lên công trình.
+- `CMB-05b` (D-139) Hút máu: đòn **đánh thường** trúng (không né) hồi cho kẻ đánh `lifesteal` × sát thương
+  sau giáp / hệ số nhận / state (trước khiên của mục tiêu). Không từ công trình, không từ sát thương
+  phản (CMB-09), không từ chiêu / đồ / hiệu ứng. Lính, quái, hero đều hút được.
 - `CMB-06` Nhịp đánh (kiểu Dota): mỗi đòn có **vung tay** (`attack_point`, giây, theo
   hero) và **thu tay**. Sát thương/đạn xuất hiện ở cuối vung tay. Di chuyển hoặc dừng
   trong lúc vung tay hủy đòn, không tính hồi đòn. Thu tay có thể hủy bằng di chuyển.
@@ -342,6 +345,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `ABL-20` (D-135) Vùng hình quạt (`CONE`): đỉnh ở chủ kỹ năng, bán kính `radius`, góc mở
   `angle` (độ), giữa quạt theo hướng chọn lúc tung (không có thì hướng đang nhìn). Trúng đơn vị
   có mép thân trong bán kính và thân chạm trong góc; mỗi đơn vị một lần mỗi lần tung.
+- `ABL-21` (D-139) Tầm dùng chiêu: chiêu / đồ có `cast_range` > 0 cộng thêm chỉ số `cast_range` của chủ
+  (đồ, vd Quyền Trượng Bão +200). Chiêu không có tầm (0 = không giới hạn) giữ nguyên.
 - `ABL-19` (D-132) Giảm hồi chiêu: khi bắt đầu hồi (ABL-02, cả đồ chủ động ITM-07 và tái sinh
   DTH-01), thời gian hồi = `cooldown` × (1 − `cooldown_reduction`). Nhiều nguồn **nhân dồn** như né
   (CMB-11): hai nguồn 20% → 1 − 0.8 × 0.8 = 36%. Giới hạn 0–100%. Không áp lên hồi trigger của bị

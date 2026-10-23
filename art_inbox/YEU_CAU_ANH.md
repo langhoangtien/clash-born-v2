@@ -711,3 +711,24 @@ Ghi vào `04_icons/`, chạy `tools/icon_preview.py`, commit + push.
 - [x] Chạy `tools/icon_preview.py`, mở `04_icons/_preview.png` xem 48 / 64 / 84 px và bản làm tối. Preview gồm 4 chiêu Duy Anh cùng Brakk Q / Gorran R để đối chiếu chuẩn 7a.
 - [x] Kiểm tra kích thước, alpha, lề và vị trí bàn chân; giữ nguyên `duy_anh_full.png` / `duy_anh_portrait.png`.
 - Chỉ sửa `art_inbox/`, không nhập vào `assets/`.
+
+## Đợt 10 — 13 món mới (D-139) — 2026-10-23
+
+Theo **chuẩn 7s** (vuông, nền trong suốt, tiết chế). Mỗi món một màu chủ đạo + hình dáng riêng, không
+trùng các món đã có. Ghi vào `04_icons/`, chạy `tools/icon_preview.py`, commit + push.
+
+| Xong | File | Món | Vẽ gì |
+|---|---|---|---|
+| [ ] | `item_evasion_charm.png` | Bùa Né Tránh | Bùa ngọc bích hình giọt nước treo dây, vệt mờ lệch như ảnh ảo — xanh ngọc |
+| [ ] | `item_status_charm.png` | Bùa Kiên Định | Bùa đá tròn khắc hình mỏ neo — xám đá + đồng |
+| [ ] | `item_reaver.png` | Rìu Thần Lực | Rìu hai lưỡi khổng lồ, lưỡi đen sẫm, cán đỏ máu |
+| [ ] | `item_eaglesong.png` | Lông Đại Bàng | Một chiếc lông chim lớn màu vàng nâu, đầu lông xanh lục |
+| [ ] | `item_mystic_staff.png` | Gậy Huyền Bí | Gậy gỗ trắng ngà, đầu là viên đá xanh lam lơ lửng giữa ba nhánh |
+| [ ] | `item_sacred_relic.png` | Thánh Tích | Viên đá thánh hình thoi đỏ cam đặt trong giá đỡ vàng |
+| [ ] | `item_morbid_mask.png` | Mặt Nạ Khát Máu | Mặt nạ xương nửa mặt, răng nanh, vệt đỏ dưới mắt |
+| [ ] | `item_vampire_blade.png` | Lưỡi Hút Hồn | Dao găm cong lưỡi đỏ thẫm, giọt máu ở mũi |
+| [ ] | `item_satanic.png` | Kiếm Huyết Ma | Đại kiếm đen lưỡi răng cưa, đường vân đỏ chạy dọc lưỡi |
+| [ ] | `item_sage_cloak.png` | Áo Choàng Hiền Giả | Áo choàng tím than viền bạc, ký hiệu khiên phép trên ngực |
+| [ ] | `item_mirage_orb.png` | Ngọc Ảo Ảnh | Viên ngọc tím nhạt có hai bóng mờ lệch hai bên |
+| [ ] | `item_frost_orb_ii.png` | Ngọc Băng Sương II | Như Ngọc Băng Sương nhưng to hơn, viền bạc đôi, tinh thể băng tím nhạt |
+| [ ] | `item_steadfast_armor.png` | Giáp Kiên Cường | Giáp ngực thép dày, khắc mỏ neo vàng giữa ngực |

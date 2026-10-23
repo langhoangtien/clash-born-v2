@@ -56,6 +56,8 @@ static func values(e: Entity, a: AbilityInstance) -> Dictionary:
 	for key: StringName in out.keys():
 		if String(key).ends_with(suffix):
 			out[StringName(String(key).trim_suffix(suffix))] = out[key]
+	if out.get(&"cast_range", 0.0) > 0.0 and e.stats != null:
+		out[&"cast_range"] += e.stats.get_stat(StatId.Id.CAST_RANGE)  # ABL-21 (D-139)
 	return out
 
 

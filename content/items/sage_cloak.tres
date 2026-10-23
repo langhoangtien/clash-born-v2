@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
+
+[sub_resource type="Resource" id="MZ0"]
+script = ExtResource("1_mod")
+stat = &"magic_armor"
+value = "12"
+
+[sub_resource type="Resource" id="MZ1"]
+script = ExtResource("1_mod")
+stat = &"cooldown_reduction"
+value = "0.1"
+
+[sub_resource type="Resource" id="MZ2"]
+script = ExtResource("1_mod")
+stat = &"max_hp"
+value = "250"
+
+[sub_resource type="Resource" id="MZ3"]
+script = ExtResource("1_mod")
+stat = &"max_mana"
+value = "250"
+
+[sub_resource type="Resource" id="MZ4"]
+script = ExtResource("1_mod")
+stat = &"hp_regen"
+value = "8"
+
+[sub_resource type="Resource" id="MZ5"]
+script = ExtResource("1_mod")
+stat = &"mana_regen"
+value = "2"
+
+[resource]
+script = ExtResource("2_item")
+category = 2
+cost = 3200
+components = Array[StringName]([&"magic_cloak", &"vitality_booster", &"energy_booster", &"sages_mask"])
+modifiers = Array[ExtResource("1_mod")]([SubResource("MZ0"), SubResource("MZ1"), SubResource("MZ2"), SubResource("MZ3"), SubResource("MZ4"), SubResource("MZ5")])
+id = &"sage_cloak"
+display_name = "Áo Choàng Hiền Giả"
+art_id = &"sage_cloak"

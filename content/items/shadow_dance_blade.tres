@@ -3,17 +3,27 @@
 [ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_mod"]
 [ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_item"]
 
-[sub_resource type="Resource" id="M0"]
+[sub_resource type="Resource" id="MZ0"]
 script = ExtResource("5_mod")
 stat = &"strength"
 value = "20"
 
-[sub_resource type="Resource" id="M1"]
+[sub_resource type="Resource" id="MZ1"]
+script = ExtResource("5_mod")
+stat = &"agility"
+value = "10"
+
+[sub_resource type="Resource" id="MZ2"]
+script = ExtResource("5_mod")
+stat = &"intelligence"
+value = "10"
+
+[sub_resource type="Resource" id="MZ3"]
 script = ExtResource("5_mod")
 stat = &"physical_damage"
-value = "30"
+value = "35"
 
-[sub_resource type="Resource" id="M2"]
+[sub_resource type="Resource" id="MZ4"]
 script = ExtResource("5_mod")
 stat = &"evasion"
 value = "0.3"
@@ -22,9 +32,9 @@ value = "0.3"
 script = ExtResource("6_item")
 category = 0
 description = ""
-cost = 3800
-components = Array[StringName]([&"ogre_axe", &"ogre_axe", &"claymore"])
-modifiers = Array[ExtResource("5_mod")]([SubResource("M0"), SubResource("M1"), SubResource("M2")])
+cost = 5100
+components = Array[StringName]([&"mirage_orb", &"ogre_axe", &"claymore"])
+modifiers = Array[ExtResource("5_mod")]([SubResource("MZ0"), SubResource("MZ1"), SubResource("MZ2"), SubResource("MZ3"), SubResource("MZ4")])
 id = &"shadow_dance_blade"
 display_name = "Kiếm Ảnh Vũ"
 art_id = &"shadow_dance_blade"

@@ -463,68 +463,88 @@ Ghép đồ SHOP-09: giá = giá món; mua khi đã có thành phần thì chỉ
 
 | Danh mục | Món | id | Giá | Chỉ số | Ghép từ |
 |---|---|---|---:|---|---|
-| Tấn công | Vòng Ma | `wraith_band` | 420 | +6 Nhanh nhẹn, +2 Sức mạnh, +2 Trí tuệ, +1 Giáp | Dép Nhanh Nhẹn + Vòng Đầu |
+| Tấn công | Vòng Ma | `wraith_band` | 420 | +8 Nhanh nhẹn, +3 Sức mạnh, +3 Trí tuệ, +2 Giáp | Dép Nhanh Nhẹn + Vòng Đầu |
 | Tấn công | Kiếm Chí Mạng | `crit_blade` | 2200 | +32 Sát thương | Lưỡi Công + Trường Kiếm |
 | Tấn công | Cung Gió | `wind_bow` | 2300 | +60% Tốc đánh, +16 Nhanh nhẹn, +12 Sát thương | Găng Nhanh + Lưỡi Nhanh |
-| Tấn công | Búa Choáng | `stun_hammer` | 2400 | +25 Sát thương | Trường Kiếm + Đai Sức Mạnh |
-| Tấn công | Rìu Chiến | `battle_axe` | 2500 | +60 Sát thương, +5 Hồi máu | Trường Kiếm + Đại Kiếm |
+| Tấn công | Lưỡi Hút Hồn | `vampire_blade` | 2300 | +30 Sát thương, +20% Hút máu, +4 Hồi máu | Mặt Nạ Khát Máu + Trường Kiếm + Nhẫn Hồi Phục |
+| Tấn công | Búa Choáng | `stun_hammer` | 2400 | +25 Sát thương, +6 Sức mạnh | Trường Kiếm + Đai Sức Mạnh |
+| Tấn công | Rìu Xiềng Xích | `chain_axe` | 2500 | +10 Sức mạnh, +20 Sát thương | Rìu Khổng Lồ + Trường Kiếm |
 | Tấn công | Lưỡi Ẩn Thân | `shadow_blade` | 2500 | +25 Sát thương, +30% Tốc đánh | Đại Kiếm + Găng Nhanh |
-| Tấn công | Cánh Bướm | `butterfly` | 4200 | +30 Nhanh nhẹn, +30 Sát thương, +30% Tốc đánh, +30% Né tránh | Lưỡi Nhanh + Lưỡi Nhanh + Gậy Chiến + Vòng Nhanh Nhẹn |
-| Tấn công | Đại Đao Thần | `divine_blade` | 4800 | +80 Sát thương | Kiếm Chí Mạng + Kiếm Quỷ |
-| Phép | Bùa Trí Tuệ | `null_talisman` | 420 | +6 Trí tuệ, +2 Sức mạnh, +2 Nhanh nhẹn, +0.6 Hồi mana | Áo Choàng Trí Tuệ + Vòng Đầu |
+| Tấn công | Rìu Chiến | `battle_axe` | 2500 | +60 Sát thương, +5 Hồi máu | Trường Kiếm + Đại Kiếm |
+| Tấn công | Song Đao | `twin_blades` | 3400 | +20 Nhanh nhẹn, +20 Sức mạnh, +20% Tốc đánh, +20 Sát thương, +20% Tốc chạy | Rìu Khổng Lồ + Lưỡi Nhanh + Gậy Chiến + Giày |
+| Tấn công | Lưỡi Hái Hủy Diệt | `desolator` | 3500 | +60 Sát thương | Kiếm Quỷ + Lưỡi Mòn |
+| Tấn công | Trượng Lôi Kích | `thunder_staff` | 3800 | +40% Tốc đánh, +10 Trí tuệ | Găng Nhanh ×2 + Gậy Phù Thủy |
+| Tấn công | Mảnh Trăng | `moon_shard` | 4000 | +150% Tốc đánh | Đá Siêu Tốc + Móng Cuồng Nộ |
+| Tấn công | Gậy Định Tâm | `focus_staff` | 4200 | +80 Sát thương, +75% Xuyên né | Kiếm Quỷ + Đại Kiếm + Lưỡi Công |
+| Tấn công | Cánh Bướm | `butterfly` | 4400 | +35 Nhanh nhẹn, +30 Sát thương, +30% Tốc đánh, +30% Né tránh | Lông Đại Bàng + Gậy Chiến + Lưỡi Nhanh |
+| Tấn công | Kiếm Ảnh Vũ | `shadow_dance_blade` | 5100 | +20 Sức mạnh, +10 Nhanh nhẹn, +10 Trí tuệ, +35 Sát thương, +30% Né tránh | Ngọc Ảo Ảnh + Rìu Khổng Lồ + Đại Kiếm |
+| Tấn công | Đại Đao Thần | `divine_blade` | 5100 | +85 Sát thương | Kiếm Chí Mạng + Thánh Tích |
+| Tấn công | Kiếm Huyết Ma | `satanic` | 5200 | +25 Sức mạnh, +35 Sát thương, +25% Hút máu, +4 Hồi máu | Rìu Thần Lực + Lưỡi Hút Hồn |
+| Phép | Bùa Trí Tuệ | `null_talisman` | 420 | +8 Trí tuệ, +3 Nhanh nhẹn, +3 Sức mạnh, +0.8 Hồi mana | Áo Choàng Trí Tuệ + Vòng Đầu |
 | Phép | Gậy Hồn Ma | `ghost_scepter` | 1400 | +7 Sức mạnh, +7 Nhanh nhẹn, +7 Trí tuệ | Đai Sức Mạnh + Vòng Nhanh Nhẹn + Áo Pháp Sư |
-| Phép | Gậy Lốc Xoáy | `cyclone_staff` | 2400 | +10 Trí tuệ, +2.5 Hồi mana | Gậy Phù Thủy + Mặt Nạ Hiền Triết + Áo Pháp Sư |
-| Phép | Quyền Trượng Bão | `storm_staff` | 2400 | +18 Trí tuệ, +300 Mana, +2 Hồi mana | Gậy Phù Thủy + Ngọc Mana + Mặt Nạ Hiền Triết |
-| Phép | Lưỡi Hái Biến Hình | `hex_scythe` | 4200 | +35 Trí tuệ, +10 Sức mạnh, +10 Nhanh nhẹn | Gậy Phù Thủy + Rìu Khổng Lồ + Lưỡi Nhanh |
-| Phòng thủ | Vòng Tay Sắt | `bracer` | 420 | +6 Sức mạnh, +2 Nhanh nhẹn, +2 Trí tuệ, +1.5 Hồi máu | Găng Sức Mạnh + Vòng Đầu |
+| Phép | Sách Phép Cổ | `ancient_tome` | 2000 | +16 Trí tuệ, +15% Khuếch đại phép | Gậy Phù Thủy + Áo Pháp Sư |
+| Phép | Gậy Lốc Xoáy | `cyclone_staff` | 2400 | +16 Trí tuệ, +2.5 Hồi mana | Gậy Phù Thủy + Mặt Nạ Hiền Triết + Áo Pháp Sư |
+| Phép | Quyền Trượng Bão | `storm_staff` | 2400 | +18 Trí tuệ, +300 Mana, +2 Hồi mana, +200 Tầm chiêu, +10% Khuếch đại phép | Gậy Phù Thủy + Ngọc Mana + Mặt Nạ Hiền Triết |
+| Phép | Xuyên Tâm Trượng | `piercing_staff` | 2600 | +25 Trí tuệ, +3 Hồi mana, +10 Xuyên giáp phép | Gậy Phù Thủy + Áo Pháp Sư + Mặt Nạ Hiền Triết + Áo Kháng Phép |
+| Phép | Ngọc Thời Không | `time_orb` | 3500 | +20% Giảm hồi chiêu, +3 Hồi mana, +450 Máu, +250 Mana | Đá Sinh Lực ×2 + Ngọc Mana + Mặt Nạ Hiền Triết ×2 |
+| Phép | Lưỡi Hái Biến Hình | `hex_scythe` | 4700 | +35 Trí tuệ, +10 Sức mạnh, +10 Nhanh nhẹn | Gậy Huyền Bí + Rìu Khổng Lồ + Lưỡi Nhanh |
+| Phép | Quyền Trượng Ma Thuật | `arcane_scepter` | 4800 | +42 Trí tuệ, +30% Khuếch đại phép, +5 Hồi mana | Sách Phép Cổ + Gậy Huyền Bí |
+| Phòng thủ | Vòng Tay Sắt | `bracer` | 420 | +8 Sức mạnh, +3 Trí tuệ, +3 Nhanh nhẹn, +2 Hồi máu | Găng Sức Mạnh + Vòng Đầu |
 | Phòng thủ | Áo Choàng Phép | `magic_cloak` | 1000 | +10 Kháng phép, +8 Hồi máu | Áo Kháng Phép + Nhẫn Hồi Phục |
 | Phòng thủ | Bùa Thanh Tẩy | `cleansing_charm` | 1300 | +6 Giáp, +4 Hồi máu | Giáp Xích + Nhẫn Hồi Phục |
 | Phòng thủ | Giáp Thép | `steel_armor` | 1600 | +10 Giáp, +250 Máu | Giáp Xích + Nhẫn Bảo Hộ + Đá Sinh Lực |
 | Phòng thủ | Ngọc Băng Sương | `frost_orb` | 2000 | +250 Máu, +10 Sức mạnh, +10 Nhanh nhẹn, +10 Trí tuệ | Đá Sinh Lực + Đai Sức Mạnh + Vòng Nhanh Nhẹn |
+| Phòng thủ | Ngọc Ảo Ảnh | `mirage_orb` | 2700 | +10 Sức mạnh, +10 Nhanh nhẹn, +10 Trí tuệ, +20% Né tránh | Bùa Né Tránh + Đai Sức Mạnh + Vòng Nhanh Nhẹn + Áo Pháp Sư |
+| Phòng thủ | Giáp Kiên Cường | `steadfast_armor` | 3100 | +15 Giáp, +20% Kháng hiệu ứng | Giáp Tấm + Bùa Kiên Định + Giáp Xích |
+| Phòng thủ | Áo Choàng Hiền Giả | `sage_cloak` | 3200 | +12 Kháng phép, +10% Giảm hồi chiêu, +250 Máu, +250 Mana, +8 Hồi máu, +2 Hồi mana | Áo Choàng Phép + Đá Sinh Lực + Ngọc Mana + Mặt Nạ Hiền Triết |
 | Phòng thủ | Giáp Bất Khuất | `resolute_armor` | 3300 | +10 Sức mạnh, +25 Sát thương | Rìu Khổng Lồ + Đại Kiếm |
-| Phòng thủ | Giáp Thần Công | `assault_plate` | 4000 | +15 Giáp, +45% Tốc đánh | Giáp Tấm + Đá Siêu Tốc |
-| Phòng thủ | Tim Khổng Lồ | `giant_heart` | 4000 | +30 Sức mạnh, +600 Máu, +10 Hồi máu | Đá Sinh Lực + Đá Sinh Lực + Rìu Khổng Lồ + Đai Sức Mạnh + Nhẫn Hồi Phục |
+| Phòng thủ | Giáp Thần Công | `assault_plate` | 4000 | +15 Giáp, +60% Tốc đánh | Giáp Tấm + Đá Siêu Tốc |
+| Phòng thủ | Tim Khổng Lồ | `giant_heart` | 4000 | +30 Sức mạnh, +600 Máu, +10 Hồi máu | Rìu Thần Lực + Đá Sinh Lực ×2 + Nhẫn Hồi Phục |
+| Phòng thủ | Ngọc Băng Sương II | `frost_orb_ii` | 5200 | +300 Máu, +20 Sức mạnh, +20 Nhanh nhẹn, +20 Trí tuệ, +20% Né tránh | Ngọc Băng Sương + Ngọc Ảo Ảnh |
 | Tiện ích | Mắt Vàng | `observer_ward` | 50 |  |  |
+| Tiện ích | Bình Mana | `mana_potion` | 50 |  |  |
 | Tiện ích | Mắt Xanh | `sentry_ward` | 50 |  |  |
 | Tiện ích | Chùm Nho | `grapes` | 80 |  |  |
 | Tiện ích | Bột Lộ Diện | `reveal_dust` | 80 |  |  |
-| Tiện ích | Giày Pháp Sư | `boots_arcane` | 1150 | +55 Tốc chạy, +250 Mana, +1.5 Hồi mana | Giày + Ngọc Mana |
-| Tiện ích | Giày Hộ Vệ | `boots_guard` | 1150 | +55 Tốc chạy, +6 Giáp | Giày + Giáp Xích |
 | Tiện ích | Giày Tốc Chiến | `boots_haste` | 1150 | +55 Tốc chạy, +25% Tốc đánh | Giày + Găng Nhanh |
-| Cơ bản | Cành Sắt | `iron_branch` | 50 | +1 Sức mạnh, +1 Nhanh nhẹn, +1 Trí tuệ |  |
-| Cơ bản | Găng Sức Mạnh | `gauntlets` | 140 | +3 Sức mạnh |  |
-| Cơ bản | Áo Choàng Trí Tuệ | `mantle` | 140 | +3 Trí tuệ |  |
-| Cơ bản | Dép Nhanh Nhẹn | `slippers` | 140 | +3 Nhanh nhẹn |  |
-| Cơ bản | Vòng Đầu | `circlet` | 150 | +2 Sức mạnh, +2 Nhanh nhẹn, +2 Trí tuệ |  |
-| Cơ bản | Nhẫn Bảo Hộ | `ring_protection` | 175 | +2 Giáp |  |
+| Tiện ích | Giày Hộ Vệ | `boots_guard` | 1150 | +55 Tốc chạy, +6 Giáp | Giày + Giáp Xích |
+| Tiện ích | Giày Pháp Sư | `boots_arcane` | 1150 | +55 Tốc chạy, +250 Mana, +1.5 Hồi mana | Giày + Ngọc Mana |
+| Cơ bản | Cành Sắt | `iron_branch` | 50 | +2 Sức mạnh, +2 Nhanh nhẹn, +2 Trí tuệ |  |
+| Cơ bản | Găng Sức Mạnh | `gauntlets` | 140 | +4 Sức mạnh |  |
+| Cơ bản | Áo Choàng Trí Tuệ | `mantle` | 140 | +4 Trí tuệ |  |
+| Cơ bản | Dép Nhanh Nhẹn | `slippers` | 140 | +4 Nhanh nhẹn |  |
+| Cơ bản | Vòng Đầu | `circlet` | 150 | +3 Sức mạnh, +3 Nhanh nhẹn, +3 Trí tuệ |  |
 | Cơ bản | Nhẫn Hồi Phục | `ring_regen` | 175 | +2 Hồi máu |  |
 | Cơ bản | Mặt Nạ Hiền Triết | `sages_mask` | 175 | +0.8 Hồi mana |  |
+| Cơ bản | Nhẫn Bảo Hộ | `ring_protection` | 175 | +2 Giáp |  |
 | Cơ bản | Lưỡi Công | `blades_attack` | 400 | +10 Sát thương |  |
-| Cơ bản | Vòng Nhanh Nhẹn | `band_elvenskin` | 450 | +6 Nhanh nhẹn |  |
 | Cơ bản | Đai Sức Mạnh | `belt_strength` | 450 | +6 Sức mạnh |  |
-| Cơ bản | Giày | `boots` | 450 | +40 Tốc chạy |  |
-| Cơ bản | Áo Kháng Phép | `cloak` | 450 | +4 Kháng phép |  |
 | Cơ bản | Găng Nhanh | `gloves_haste` | 450 | +18% Tốc đánh |  |
+| Cơ bản | Giày | `boots` | 450 | +40 Tốc chạy |  |
 | Cơ bản | Áo Pháp Sư | `robe_magi` | 450 | +6 Trí tuệ |  |
+| Cơ bản | Vòng Nhanh Nhẹn | `band_elvenskin` | 450 | +6 Nhanh nhẹn |  |
+| Cơ bản | Áo Kháng Phép | `cloak` | 450 | +4 Kháng phép |  |
 | Cơ bản | Giáp Xích | `chainmail` | 500 | +5 Giáp |  |
 | Cơ bản | Ngọc Mana | `energy_booster` | 500 | +220 Mana |  |
 | Cơ bản | Đá Sinh Lực | `vitality_booster` | 500 | +220 Máu |  |
 | Cơ bản | Gậy Chiến | `quarterstaff` | 800 | +10 Sát thương, +10% Tốc đánh |  |
+| Cơ bản | Lưỡi Mòn | `corrosion_blade` | 800 | +20 Sát thương |  |
+| Cơ bản | Rìu Khổng Lồ | `ogre_axe` | 900 | +10 Sức mạnh |  |
 | Cơ bản | Lưỡi Nhanh | `blade_alacrity` | 900 | +10 Nhanh nhẹn |  |
 | Cơ bản | Trường Kiếm | `broadsword` | 900 | +18 Sát thương |  |
-| Cơ bản | Rìu Khổng Lồ | `ogre_axe` | 900 | +10 Sức mạnh |  |
 | Cơ bản | Gậy Phù Thủy | `staff_wizardry` | 900 | +10 Trí tuệ |  |
-| Cơ bản | Đại Kiếm | `claymore` | 1200 | +25 Sát thương |  |
+| Cơ bản | Bùa Né Tránh | `evasion_charm` | 1000 | +15% Né tránh |  |
+| Cơ bản | Mặt Nạ Khát Máu | `morbid_mask` | 1000 | +10 Sát thương, +15% Hút máu |  |
+| Cơ bản | Bùa Kiên Định | `status_charm` | 1000 | +10% Kháng hiệu ứng |  |
 | Cơ bản | Giáp Tấm | `platemail` | 1200 | +10 Giáp |  |
-| Cơ bản | Đá Siêu Tốc | `hyperstone` | 1700 | +45% Tốc đánh |  |
+| Cơ bản | Đại Kiếm | `claymore` | 1200 | +25 Sát thương |  |
+| Cơ bản | Móng Cuồng Nộ | `claws_fury` | 1500 | +50% Tốc đánh |  |
+| Cơ bản | Đá Siêu Tốc | `hyperstone` | 1700 | +60% Tốc đánh |  |
 | Cơ bản | Kiếm Quỷ | `demon_edge` | 1800 | +38 Sát thương |  |
-| Phép | Xuyên Tâm Trượng | `piercing_staff` | 2600 | +25 Trí tuệ, +3 Hồi mana, +10 Xuyên giáp phép (CMB-14) | Gậy Phù Thủy + Áo Pháp Sư + Mặt Nạ Hiền Triết + Áo Kháng Phép |
-| Tấn công | Song Đao | `twin_blades` | 3400 | +20 Nhanh nhẹn, +20 Sức mạnh, +20% Tốc đánh, +20 Sát thương, +20% Tốc chạy | Rìu Khổng Lồ + Lưỡi Nhanh + Gậy Chiến + Giày |
-| Tấn công | Gậy Định Tâm | `focus_staff` | 4200 | +80 Sát thương, 75% Xuyên né | Kiếm Quỷ + Đại Kiếm + Lưỡi Công |
-| Tấn công | Trượng Lôi Kích | `thunder_staff` | 3800 | +40% Tốc đánh; bị động +70 phép mỗi đòn | Đá Siêu Tốc + Gậy Phù Thủy + Gậy Chiến |
-| Phép | Ngọc Thời Không | `time_orb` | 3500 | 20% Giảm hồi chiêu (ABL-19), +3 Hồi mana, +400 Máu | Đá Sinh Lực ×2 + Ngọc Mana + Mặt Nạ Hiền Triết ×2 |
-| Tấn công | Kiếm Ảnh Vũ | `shadow_dance_blade` | 3800 | +20 Sức mạnh, +30 Sát thương, 30% Né tránh | Rìu Khổng Lồ ×2 + Đại Kiếm |
-| Tấn công | Rìu Xiềng Xích | `chain_axe` | 2500 | +10 Sức mạnh, +20 Sát thương; bị động trói | Rìu Khổng Lồ + Trường Kiếm |
+| Cơ bản | Rìu Thần Lực | `reaver` | 2400 | +25 Sức mạnh |  |
+| Cơ bản | Gậy Huyền Bí | `mystic_staff` | 2400 | +25 Trí tuệ |  |
+| Cơ bản | Lông Đại Bàng | `eaglesong` | 2400 | +25 Nhanh nhẹn |  |
+| Cơ bản | Thánh Tích | `sacred_relic` | 2600 | +50 Sát thương |  |
 
 Danh mục, shop ẩn, giờ mở và độc nhất của từng món: D-90 (SHOP-07). Luật của trang bị: GAME_RULES mục ITM.
 

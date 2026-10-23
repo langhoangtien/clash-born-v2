@@ -88,7 +88,7 @@ func test_D_90_select_shows_detail_then_buy_and_sell() -> void:
 func test_D_90_stat_lines_tags_status() -> void:
 	var p: ShopPanel = _panel()
 	assert_eq(ShopPanel.stat_lines(p.world.item_catalog[&"shadow_blade"]), PackedStringArray(["+25 Sát thương", "+30% Tốc đánh"]))
-	assert_eq(ShopPanel.stat_lines(p.world.item_catalog[&"cyclone_staff"]), PackedStringArray(["+10 Trí tuệ", "+2.5 Hồi mana"]))
+	assert_eq(ShopPanel.stat_lines(p.world.item_catalog[&"cyclone_staff"]), PackedStringArray(["+16 Trí tuệ", "+2.5 Hồi mana"]))
 	var late: ItemDef = ItemDef.new()
 	late.shop = ItemDef.ShopKind.SECRET
 	late.unique = true

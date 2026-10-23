@@ -24,10 +24,10 @@ on_learn = Array[ExtResource("1_act")]([SubResource("A0")])
 id = &"desolator_passive_ability"
 art_id = &"desolator"
 
-[sub_resource type="Resource" id="M0"]
+[sub_resource type="Resource" id="MZ0"]
 script = ExtResource("5_mod")
 stat = &"physical_damage"
-value = "50"
+value = "60"
 
 [resource]
 script = ExtResource("6_item")
@@ -35,7 +35,7 @@ category = 0
 description = "Bị động: đòn đánh giảm 6 giáp của mục tiêu trong 7 s, kể cả trụ và nhà chính."
 cost = 3500
 components = Array[StringName]([&"demon_edge", &"corrosion_blade"])
-modifiers = Array[ExtResource("5_mod")]([SubResource("M0")])
+modifiers = Array[ExtResource("5_mod")]([SubResource("MZ0")])
 ability = SubResource("AB")
 id = &"desolator"
 display_name = "Lưỡi Hái Hủy Diệt"

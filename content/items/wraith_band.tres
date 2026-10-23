@@ -3,31 +3,31 @@
 [ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
 [ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
 
-[sub_resource type="Resource" id="M0"]
+[sub_resource type="Resource" id="MZ0"]
 script = ExtResource("1_mod")
 stat = &"agility"
-value = "6"
+value = "8"
 
-[sub_resource type="Resource" id="M1"]
+[sub_resource type="Resource" id="MZ1"]
 script = ExtResource("1_mod")
 stat = &"strength"
-value = "2"
+value = "3"
 
-[sub_resource type="Resource" id="M2"]
+[sub_resource type="Resource" id="MZ2"]
 script = ExtResource("1_mod")
 stat = &"intelligence"
-value = "2"
+value = "3"
 
-[sub_resource type="Resource" id="M3"]
+[sub_resource type="Resource" id="MZ3"]
 script = ExtResource("1_mod")
 stat = &"physical_armor"
-value = "1"
+value = "2"
 
 [resource]
 script = ExtResource("2_item")
 category = 0
 cost = 420
-modifiers = Array[ExtResource("1_mod")]([SubResource("M0"), SubResource("M1"), SubResource("M2"), SubResource("M3")])
+modifiers = Array[ExtResource("1_mod")]([SubResource("MZ0"), SubResource("MZ1"), SubResource("MZ2"), SubResource("MZ3")])
 components = Array[StringName]([&"slippers", &"circlet"])
 id = &"wraith_band"
 display_name = "Vòng Ma"

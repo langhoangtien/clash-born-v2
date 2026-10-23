@@ -79,7 +79,7 @@ func test_CMB_13_intelligence_and_items_amplify_spell_damage_not_attacks() -> vo
 	Items.give(w, hero, w.item_catalog[&"arcane_scepter"])
 	w.step()
 	var amp: float = hero.stats.get_stat(StatId.Id.SPELL_AMPLIFICATION)
-	assert_near(amp, (intel + 30.0) * 0.003 + 0.30, 0.0001, "Quyền Trượng: +30 Trí tuệ, +30%")
+	assert_near(amp, (intel + 42.0) * 0.003 + 0.30, 0.0001, "Quyền Trượng (D-139): +42 Trí tuệ, +30%")
 	var foe: Entity = UnitFactory.hero(w, lib.heroes[&"brakk"], 1, hero.position + Vector2(200, 0))
 	var d: DamageAction = DamageAction.new()
 	d.damage_type = DamageFormulas.DamageType.PURE
@@ -88,4 +88,4 @@ func test_CMB_13_intelligence_and_items_amplify_spell_damage_not_attacks() -> vo
 	ctx.owner = hero
 	ActionRunner._damage(w, d, ctx, foe, hero.id)
 	assert_near((w.damage_requests[-1] as DamageRequest).raw, 100.0 * (1.0 + amp), 0.001, "sát thương chiêu nhân khuếch đại")
-	assert_eq((w.item_catalog[&"arcane_scepter"] as ItemDef).components, [&"ancient_tome", &"staff_wizardry", &"sages_mask"] as Array[StringName])
+	assert_eq((w.item_catalog[&"arcane_scepter"] as ItemDef).components, [&"ancient_tome", &"mystic_staff"] as Array[StringName])
