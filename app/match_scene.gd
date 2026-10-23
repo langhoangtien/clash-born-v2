@@ -39,6 +39,8 @@ var fog: FogView
 var audio: AudioView
 var death_cam: DeathCamera = DeathCamera.new()
 var quick_buy: QuickBuy
+## D-128: món soạn sẵn đã lên xong trong trận này (ẩn khỏi shop, vẫn giữ trong bộ đã lưu).
+var _build_done: Array[StringName] = []
 var minimap: Minimap
 var shop: ShopPanel
 
@@ -101,7 +103,7 @@ func _ready() -> void:
 	shop.buy_pressed.connect(func(id: StringName) -> void: world.submit(Command.buy(hero.id, id)))  # SHOP-01
 	shop.sell_pressed.connect(func(i: int) -> void: world.submit(Command.sell(hero.id, i)))  # SHOP-05
 	shop.build = BuildPresets.load_build(hero_id)  # D-120: bộ đồ soạn sẵn của tướng này
-	shop.build_changed.connect(func(b: Array[StringName]) -> void: BuildPresets.save_build(hero_id, b))
+	shop.build_changed.connect(func(b: Array[StringName]) -> void: BuildPresets.save_build(hero_id, _build_done + b))
 	var info: InfoPanels = InfoPanels.new()
 	info.name = "InfoPanels"
 	$Hud.add_child(info)
@@ -133,6 +135,7 @@ func tick_frame(delta: float) -> void:
 		death_cam.jump(minimap.peek_point, _map_bounds())  # CAM-01b
 	camera.position = minimap.peek_point if minimap.peeking else follow
 	if quick_buy != null:  # SHOP-10: món nên mua lúc này
+		_drop_finished_build()
 		var next: ItemDef = BuildPlan.next_buy(world, hero, shop.build if not shop.build.is_empty() else hero_def.bot_item_build)
 		quick_buy.show_item(next, Shop.price(world, hero, next) if next != null else 0)
 	var view_size: Vector2 = get_viewport_rect().size / camera.zoom
@@ -233,3 +236,17 @@ func _setup_quick_buy() -> void:
 	$Hud.add_child(quick_buy)
 	quick_buy.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	quick_buy.pressed.connect(func(id: StringName) -> void: world.submit(Command.buy(hero.id, id)))
+
+
+
+## D-128: món soạn sẵn đã lên xong thì tự bỏ khỏi danh sách trong trận (bộ đã lưu giữ nguyên cho trận sau).
+func _drop_finished_build() -> void:
+	if shop.build.is_empty():
+		return
+	var left: Array[StringName] = BuildPlan.pending(world, hero, shop.build)
+	if left.size() != shop.build.size():
+		for id: StringName in shop.build:
+			if not left.has(id):
+				_build_done.append(id)
+		shop.build = left
+		shop.queue_redraw()

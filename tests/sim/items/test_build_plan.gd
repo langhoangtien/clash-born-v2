@@ -31,3 +31,13 @@ func test_SHOP_10_owned_or_built_item_is_skipped() -> void:
 	var build: Array[StringName] = [&"circlet", &"wraith_band", &"boots_haste"]
 	Items.give(w, e, w.item_catalog[&"wraith_band"])
 	assert_eq(BuildPlan.next_target(w, e, build).id, &"boots_haste", "Vòng Đầu đã ghép vào Vòng Ma: coi như có")
+
+
+func test_D_128_finished_build_items_drop_out() -> void:
+	var s: Array = _setup()
+	var w: World = s[0]
+	var e: Entity = s[1]
+	var build: Array[StringName] = [&"circlet", &"wraith_band", &"boots_haste"]
+	assert_eq(BuildPlan.pending(w, e, build), build, "chưa có gì: còn đủ")
+	Items.give(w, e, w.item_catalog[&"wraith_band"])
+	assert_eq(BuildPlan.pending(w, e, build), [&"boots_haste"] as Array[StringName], "Vòng Ma xong (kèm Vòng Đầu đã ghép vào): bỏ khỏi danh sách")

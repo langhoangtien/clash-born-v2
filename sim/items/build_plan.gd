@@ -13,6 +13,16 @@ static func next_target(world: World, e: Entity, build: Array[StringName]) -> It
 	return null
 
 
+## D-128: các món trong `build` chưa có (đã có hoặc đã ghép vào món lớn hơn thì bỏ khỏi danh sách).
+static func pending(world: World, e: Entity, build: Array[StringName]) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for id: StringName in build:
+		var owned: bool = Items.slots(e).any(func(it: ItemInstance) -> bool: return it != null and contains(world, it.def, id))
+		if not owned:
+			out.append(id)
+	return out
+
+
 ## Món mua được ngay: món kế tiếp nếu đủ vàng, không thì thành phần còn thiếu đầu tiên mua
 ## được (đi sâu vào thành phần của thành phần, D-106). null = chưa mua được gì.
 static func next_buy(world: World, e: Entity, build: Array[StringName]) -> ItemDef:
