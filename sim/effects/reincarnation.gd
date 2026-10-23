@@ -17,7 +17,7 @@ static func try_prevent(world: World, e: Entity, source_id: int) -> bool:
 			if world.tick < a.ready_tick or e.mana < cost:
 				continue
 			e.mana -= cost
-			a.ready_tick = world.tick + SimClock.seconds_to_ticks(Abilities.value(e, a, &"cooldown"))
+			a.ready_tick = world.tick + Abilities.cooldown_ticks(e, a)  # ABL-19
 		else:
 			Effects.remove(world, e, inst, &"removed")  # dùng một lần (kiểu Aegis)
 		_lie_down(world, e, source_id)

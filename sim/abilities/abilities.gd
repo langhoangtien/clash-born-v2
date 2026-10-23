@@ -29,6 +29,12 @@ static func of(e: Entity, slot: int) -> AbilityInstance:
 	return null
 
 
+## ABL-19 (D-132): hồi chiêu (tick) sau giảm hồi chiêu của chủ — chiêu hero và đồ chủ động.
+static func cooldown_ticks(e: Entity, a: AbilityInstance) -> int:
+	var cdr: float = e.stats.get_stat(StatId.Id.COOLDOWN_REDUCTION)
+	return SimClock.seconds_to_ticks(value(e, a, &"cooldown") * (1.0 - cdr))
+
+
 ## Giá trị có tên ở cấp hiện tại; tên gốc `x` lấy `x_melee` / `x_ranged` theo đơn vị (ITM-05).
 static func values(e: Entity, a: AbilityInstance) -> Dictionary:
 	var out: Dictionary = {}

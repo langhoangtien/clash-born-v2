@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Resource" path="res://content/effects/thunder_staff_passive.tres" id="2_pas"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_app"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_abl"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_item"]
+
+[sub_resource type="Resource" id="A0"]
+script = ExtResource("3_app")
+effect = ExtResource("2_pas")
+target = 0
+
+[sub_resource type="Resource" id="AB"]
+script = ExtResource("4_abl")
+slot = 4
+targeting = 0
+values = Dictionary[StringName, PackedFloat32Array]({
+&"bonus_damage": PackedFloat32Array(70)
+})
+on_learn = Array[ExtResource("1_act")]([SubResource("A0")])
+id = &"thunder_staff_passive_ability"
+art_id = &"thunder_staff"
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("5_mod")
+stat = &"attack_speed"
+value = "0.4"
+
+[resource]
+script = ExtResource("6_item")
+category = 0
+description = "Bị động – Lôi Kích: mỗi đòn đánh trúng gây thêm 70 sát thương phép (không lên trụ, không nhân khuếch đại phép)."
+cost = 3800
+components = Array[StringName]([&"hyperstone", &"staff_wizardry", &"quarterstaff"])
+modifiers = Array[ExtResource("5_mod")]([SubResource("M0")])
+ability = SubResource("AB")
+id = &"thunder_staff"
+display_name = "Trượng Lôi Kích"
+art_id = &"thunder_staff"

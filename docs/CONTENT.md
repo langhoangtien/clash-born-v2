@@ -421,6 +421,8 @@ là đề xuất, cân lại khi chơi thử.
 | Lưỡi Hái Biến Hình | `hex_scythe` | 4200 | +35 INT, +10 STR, +10 AGI | **Chủ động** (hồi 22 s, tầm 600): HEXED mục tiêu 3.5 s |
 | Bùa Thanh Tẩy | `cleansing_charm` | 1500 | +6 giáp, +4 hồi máu | **Chủ động** (hồi 18 s): thanh tẩy cơ bản bản thân |
 | Búa Choáng | `stun_hammer` | 2600 | +25 sát thương | **Bị động**: đòn đánh 20% (cận chiến) / 10% (đánh xa) choáng 1.5 s, +100 sát thương vật lý; nhóm `bash`, thời gian chờ chung `bash_cooldown` (CMB-08, D-38) |
+| Trượng Lôi Kích | `thunder_staff` | 3800 | +40% tốc đánh | **Bị động**: mỗi đòn trúng (không lên công trình) +70 sát thương phép, không khuếch đại phép (D-132) |
+| Rìu Xiềng Xích | `chain_axe` | 2500 | +10 STR, +20 sát thương | **Bị động**: đòn đánh 30% (cận chiến) / 10% (đánh xa) trói 1 s, +80 / +40 sát thương vật lý; PRD, không hồi, không lên công trình, tung riêng với Búa Choáng (D-132) |
 | Mắt Vàng | `observer_ward` | 50 | — | **Chủ động**, tầm 500: cắm mắt vàng (tầm nhìn 1400, 4 phút); gộp 4; kho đội 2 / +1 mỗi 135 s / tối đa 4 (WRD, D-92) |
 | Mắt Xanh | `sentry_ward` | 50 | — | **Chủ động**, tầm 500: cắm mắt xanh (true sight 900, 5 phút); gộp 6; kho đội 3 / +1 mỗi 90 s / tối đa 6 |
 
@@ -485,6 +487,13 @@ Ghép đồ SHOP-09: giá = giá món; mua khi đã có thành phần thì chỉ
 | Cơ bản | Giáp Tấm | `platemail` | 1200 | +10 Giáp |  |
 | Cơ bản | Đá Siêu Tốc | `hyperstone` | 1700 | +45% Tốc đánh |  |
 | Cơ bản | Kiếm Quỷ | `demon_edge` | 1800 | +38 Sát thương |  |
+| Phép | Xuyên Tâm Trượng | `piercing_staff` | 2600 | +25 Trí tuệ, +3 Hồi mana, +10 Xuyên giáp phép (CMB-14) | Gậy Phù Thủy + Áo Pháp Sư + Mặt Nạ Hiền Triết + Áo Kháng Phép |
+| Tấn công | Song Đao | `twin_blades` | 3400 | +20 Nhanh nhẹn, +20 Sức mạnh, +20% Tốc đánh, +20 Sát thương, +20% Tốc chạy | Rìu Khổng Lồ + Lưỡi Nhanh + Gậy Chiến + Giày |
+| Tấn công | Gậy Định Tâm | `focus_staff` | 4200 | +80 Sát thương, 75% Xuyên né | Kiếm Quỷ + Đại Kiếm + Lưỡi Công |
+| Tấn công | Trượng Lôi Kích | `thunder_staff` | 3800 | +40% Tốc đánh; bị động +70 phép mỗi đòn | Đá Siêu Tốc + Gậy Phù Thủy + Gậy Chiến |
+| Phép | Ngọc Thời Không | `time_orb` | 3500 | 20% Giảm hồi chiêu (ABL-19), +3 Hồi mana, +400 Máu | Đá Sinh Lực ×2 + Ngọc Mana + Mặt Nạ Hiền Triết ×2 |
+| Tấn công | Kiếm Ảnh Vũ | `shadow_dance_blade` | 3800 | +20 Sức mạnh, +30 Sát thương, 30% Né tránh | Rìu Khổng Lồ ×2 + Đại Kiếm |
+| Tấn công | Rìu Xiềng Xích | `chain_axe` | 2500 | +10 Sức mạnh, +20 Sát thương; bị động trói | Rìu Khổng Lồ + Trường Kiếm |
 
 Danh mục, shop ẩn, giờ mở và độc nhất của từng món: D-90 (SHOP-07). Luật của trang bị: GAME_RULES mục ITM.
 

@@ -32,7 +32,7 @@ func _try_start(world: World, e: Entity) -> void:
 		if not in_cast_range(e, a, target):
 			return  # MovementSystem đưa tới tầm
 	e.mana -= Abilities.value(e, a, &"mana")
-	a.ready_tick = world.tick + SimClock.seconds_to_ticks(Abilities.value(e, a, &"cooldown"))
+	a.ready_tick = world.tick + Abilities.cooldown_ticks(e, a)  # ABL-19
 	if a.item_index >= 0:
 		Items.after_use(e, a)  # ITM-04/07
 	var c: CastState = CastState.new()

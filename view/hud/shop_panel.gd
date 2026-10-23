@@ -53,6 +53,10 @@ const STATS: Dictionary = {
 	&"lifesteal": ["Hút máu", true],
 	&"evasion": ["Né tránh", true],
 	&"critical_chance": ["Tỉ lệ chí mạng", true],
+	&"accuracy": ["Xuyên né", true],
+	&"spell_amplification": ["Khuếch đại phép", true],
+	&"cooldown_reduction": ["Giảm hồi chiêu", true],
+	&"magic_armor_reduction": ["Xuyên giáp phép", false],
 }
 
 signal buy_pressed(item_id: StringName)
@@ -260,7 +264,10 @@ static func stat_lines(d: ItemDef) -> PackedStringArray:
 	for m: ModifierDef in d.modifiers:
 		var info: Array = STATS.get(m.stat, [String(m.stat), false])
 		var v: float = float(m.value)
-		var text: String = ("%d%%" % roundi(v * 100.0)) if info[1] else (str(int(v)) if is_equal_approx(v, roundf(v)) else str(v))
+		var percent: bool = info[1] or m.op == ModifierDef.Op.MULTIPLY
+		if m.op == ModifierDef.Op.MULTIPLY:
+			v -= 1.0  # vd 1.2 → +20%
+		var text: String = ("%d%%" % roundi(v * 100.0)) if percent else (str(int(v)) if is_equal_approx(v, roundf(v)) else str(v))
 		out.append("+%s %s" % [text, info[0]])
 	return out
 

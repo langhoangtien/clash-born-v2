@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="2_eff"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="3_trg"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="4_dmg"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="5_app"]
+[ext_resource type="Resource" path="res://content/effects/root.tres" id="6_root"]
+
+[sub_resource type="Resource" id="D0"]
+script = ExtResource("4_dmg")
+amount = "bonus_damage"
+amplified = false
+target = 3
+
+[sub_resource type="Resource" id="R0"]
+script = ExtResource("5_app")
+effect = ExtResource("6_root")
+duration = "root_duration"
+target = 3
+
+[sub_resource type="Resource" id="T0"]
+script = ExtResource("3_trg")
+event = &"attack_landed"
+chance = "chance"
+condition = &"target_not_structure"
+actions = Array[ExtResource("1_act")]([SubResource("D0"), SubResource("R0")])
+
+[resource]
+script = ExtResource("2_eff")
+duration = "0"
+tags = Array[StringName]([&"passive"])
+dispel = 2
+triggers = Array[ExtResource("3_trg")]([SubResource("T0")])
+id = &"chain_axe_passive"
+art_id = &"chain_axe"

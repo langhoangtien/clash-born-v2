@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_item"]
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("5_mod")
+stat = &"physical_damage"
+value = "80"
+
+[sub_resource type="Resource" id="M1"]
+script = ExtResource("5_mod")
+stat = &"accuracy"
+value = "0.75"
+
+[resource]
+script = ExtResource("6_item")
+category = 0
+description = "Bị động – Định Tâm: đòn đánh có 75% cơ hội đánh xuyên né tránh."
+cost = 4200
+components = Array[StringName]([&"demon_edge", &"claymore", &"blades_attack"])
+modifiers = Array[ExtResource("5_mod")]([SubResource("M0"), SubResource("M1")])
+id = &"focus_staff"
+display_name = "Gậy Định Tâm"
+art_id = &"focus_staff"

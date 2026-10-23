@@ -1,0 +1,50 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Resource" path="res://content/effects/chain_axe_passive.tres" id="2_pas"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_app"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_abl"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_item"]
+
+[sub_resource type="Resource" id="A0"]
+script = ExtResource("3_app")
+effect = ExtResource("2_pas")
+target = 0
+
+[sub_resource type="Resource" id="AB"]
+script = ExtResource("4_abl")
+slot = 4
+targeting = 0
+values = Dictionary[StringName, PackedFloat32Array]({
+&"chance_melee": PackedFloat32Array(0.3),
+&"chance_ranged": PackedFloat32Array(0.1),
+&"bonus_damage_melee": PackedFloat32Array(80),
+&"bonus_damage_ranged": PackedFloat32Array(40),
+&"root_duration": PackedFloat32Array(1)
+})
+on_learn = Array[ExtResource("1_act")]([SubResource("A0")])
+id = &"chain_axe_passive_ability"
+art_id = &"chain_axe"
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("5_mod")
+stat = &"strength"
+value = "10"
+
+[sub_resource type="Resource" id="M1"]
+script = ExtResource("5_mod")
+stat = &"physical_damage"
+value = "20"
+
+[resource]
+script = ExtResource("6_item")
+category = 0
+description = "Bị động – Xiềng Chân: đòn đánh có 30% (cận chiến) / 10% (đánh xa) cơ hội trói 1 s và gây thêm 80 / 40 sát thương vật lý. Không lên trụ."
+cost = 2500
+components = Array[StringName]([&"ogre_axe", &"broadsword"])
+modifiers = Array[ExtResource("5_mod")]([SubResource("M0"), SubResource("M1")])
+ability = SubResource("AB")
+id = &"chain_axe"
+display_name = "Rìu Xiềng Xích"
+art_id = &"chain_axe"

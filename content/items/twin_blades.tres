@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_item"]
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("5_mod")
+stat = &"agility"
+value = "20"
+
+[sub_resource type="Resource" id="M1"]
+script = ExtResource("5_mod")
+stat = &"strength"
+value = "20"
+
+[sub_resource type="Resource" id="M2"]
+script = ExtResource("5_mod")
+stat = &"attack_speed"
+value = "0.2"
+
+[sub_resource type="Resource" id="M3"]
+script = ExtResource("5_mod")
+stat = &"physical_damage"
+value = "20"
+
+[sub_resource type="Resource" id="M4"]
+script = ExtResource("5_mod")
+stat = &"movement_speed"
+op = 1
+value = "1.2"
+
+[resource]
+script = ExtResource("6_item")
+category = 0
+description = ""
+cost = 3400
+components = Array[StringName]([&"ogre_axe", &"blade_alacrity", &"quarterstaff", &"boots"])
+modifiers = Array[ExtResource("5_mod")]([SubResource("M0"), SubResource("M1"), SubResource("M2"), SubResource("M3"), SubResource("M4")])
+id = &"twin_blades"
+display_name = "Song Đao"
+art_id = &"twin_blades"

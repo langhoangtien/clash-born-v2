@@ -659,3 +659,19 @@ Không màu, chỉ trắng → xám → trong suốt, mép mềm.
 
 Báo người dùng: đợt nào đã xong, file nào phải làm lại và vì sao. Không chép ảnh vào
 `assets/`; việc nhập ảnh vào game do agent lập trình làm theo `docs/ART.md`.
+
+## Đợt 8 — 7 món mới (D-132) — 2026-10-23
+
+Theo **chuẩn 7s đã duyệt** (vuông, nền trong suốt, tiết chế, không hào quang). Ghi vào `04_icons/`,
+chạy `tools/icon_preview.py`, tự so với 3 món 7s rồi commit + push (không cần dừng chờ duyệt).
+Hiện trong game là icon tạm chữ tắt — file của bạn sẽ thay.
+
+| Xong | File | Món | Vẽ gì (màu chủ đạo khác các món đã có) |
+|---|---|---|---|
+| [ ] | `item_piercing_staff.png` | Xuyên Tâm Trượng | Trượng phép thẳng, đầu là mũi nhọn xuyên qua một vòng tròn phép vỡ — tím lam |
+| [ ] | `item_twin_blades.png` | Song Đao | Hai thanh đao cong bắt chéo hình chữ X — thép bạc, chuôi xanh lục |
+| [ ] | `item_focus_staff.png` | Gậy Định Tâm | Gậy chiến dài có con mắt / tâm ngắm ở đầu — vàng đồng |
+| [ ] | `item_thunder_staff.png` | Trượng Lôi Kích | Trượng có tia sét hình chữ Z quấn quanh đầu — vàng chanh + xanh điện (sét là hình, không phải hào quang) |
+| [ ] | `item_time_orb.png` | Ngọc Thời Không | Viên ngọc tròn có mặt đồng hồ / đồng hồ cát bên trong, khung bạc — xanh ngọc lam |
+| [ ] | `item_shadow_dance_blade.png` | Kiếm Ảnh Vũ | Thanh kiếm mảnh với một bản sao mờ lệch bên cạnh (bóng) — xám tro + đỏ thẫm |
+| [ ] | `item_chain_axe.png` | Rìu Xiềng Xích | Rìu một lưỡi có sợi xích quấn cán, đầu xích có còng — sắt xám + nâu gỉ |

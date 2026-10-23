@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_item"]
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("5_mod")
+stat = &"cooldown_reduction"
+value = "0.2"
+
+[sub_resource type="Resource" id="M1"]
+script = ExtResource("5_mod")
+stat = &"mana_regen"
+value = "3"
+
+[sub_resource type="Resource" id="M2"]
+script = ExtResource("5_mod")
+stat = &"max_hp"
+value = "400"
+
+[resource]
+script = ExtResource("6_item")
+category = 1
+description = "Giảm 20% hồi chiêu của chiêu và đồ chủ động. Nhiều nguồn nhân dồn (2 món: 36%)."
+cost = 3500
+components = Array[StringName]([&"vitality_booster", &"vitality_booster", &"energy_booster", &"sages_mask", &"sages_mask"])
+modifiers = Array[ExtResource("5_mod")]([SubResource("M0"), SubResource("M1"), SubResource("M2")])
+id = &"time_orb"
+display_name = "Ngọc Thời Không"
+art_id = &"time_orb"

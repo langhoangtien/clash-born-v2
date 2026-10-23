@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_item"]
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("5_mod")
+stat = &"strength"
+value = "20"
+
+[sub_resource type="Resource" id="M1"]
+script = ExtResource("5_mod")
+stat = &"physical_damage"
+value = "30"
+
+[sub_resource type="Resource" id="M2"]
+script = ExtResource("5_mod")
+stat = &"evasion"
+value = "0.3"
+
+[resource]
+script = ExtResource("6_item")
+category = 0
+description = ""
+cost = 3800
+components = Array[StringName]([&"ogre_axe", &"ogre_axe", &"claymore"])
+modifiers = Array[ExtResource("5_mod")]([SubResource("M0"), SubResource("M1"), SubResource("M2")])
+id = &"shadow_dance_blade"
+display_name = "Kiếm Ảnh Vũ"
+art_id = &"shadow_dance_blade"

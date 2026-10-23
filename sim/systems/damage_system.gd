@@ -25,7 +25,7 @@ static func resolve(world: World) -> void:
 			continue
 		var s: StatBlock = target.stats
 		var amount: float = DamageFormulas.final_damage(r.raw * _structure_factor(world, source, target), r.damage_type,
-			s.get_stat(StatId.Id.PHYSICAL_ARMOR), s.get_stat(StatId.Id.MAGIC_ARMOR),
+			s.get_stat(StatId.Id.PHYSICAL_ARMOR), _magic_armor(source, target),
 			s.get_stat(StatId.Id.DAMAGE_TAKEN_MULTIPLIER), world.balance)
 		var factor: float = Rules.damage_factor(world, target, r.damage_type, r.pierces_magic_immunity)  # PRI-05
 		if factor <= 0.0:
@@ -51,6 +51,14 @@ static func resolve(world: World) -> void:
 			target.alive = false
 			target.killer_id = r.source_id
 			world.emit(&"unit_died", r.source_id, r.target_id)
+
+
+## CMB-14 (D-132): giáp phép mục tiêu trừ `magic_armor_reduction` của kẻ gây (chỉ với sát thương của kẻ đó).
+static func _magic_armor(source: Entity, target: Entity) -> float:
+	var armor: float = target.stats.get_stat(StatId.Id.MAGIC_ARMOR)
+	if source == null:
+		return armor
+	return DamageFormulas.effective_armor(armor, source.stats.get_stat(StatId.Id.MAGIC_ARMOR_REDUCTION), 0.0)
 
 
 ## CMB-04: hệ số sát thương lên công trình theo loại kẻ gây; CMB-04b: trụ lên lính đường.

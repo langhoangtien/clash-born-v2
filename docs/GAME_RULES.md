@@ -55,7 +55,7 @@ physical_damage, magic_damage, pure_damage, physical_armor, magic_armor,
 attack_range, cast_range, base_attack_time, attack_speed, movement_speed,
 vision_range, evasion, accuracy, critical_chance, critical_multiplier,
 status_resistance, armor_reduction, physical_armor_penetration, lifesteal,
-damage_taken_multiplier, spell_amplification`.
+damage_taken_multiplier, spell_amplification, magic_armor_reduction, cooldown_reduction`.
 
 `damage_taken_multiplier` (mặc định 1.0) nhân vào sát thương cuối cùng mà đơn vị
 nhận, sau giáp (CMB-02).
@@ -252,6 +252,11 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   (không phải đòn đánh thường, không phải sát thương phản hồi) nhân `1 + spell_amplification`
   của kẻ gây, trước giáp. `spell_amplification` = Trí tuệ × `spell_amp_per_intelligence` (0.003)
   + modifier (đồ phép).
+  Hành động `Damage` khai báo `amplified = false` thì **không** nhân (D-132: sát thương thêm của
+  đòn đánh từ đồ như Trượng Lôi Kích, Rìu Xiềng Xích).
+- `CMB-14` (D-132) Xuyên giáp phép: sát thương MAGIC do một đơn vị gây tính giáp phép mục tiêu
+  = giáp phép − `magic_armor_reduction` của kẻ gây (chỉ trừ phần dương; có thể xuống âm). Giáp thật
+  của mục tiêu không đổi, sát thương của kẻ khác không bị ảnh hưởng. Không tác dụng lên PHYSICAL / PURE.
 - `CMB-12` Đổi mục tiêu đánh (D-69): khi bắt đầu vung đòn vào mục tiêu **khác** mục tiêu
   của đòn vung trước (đánh gió không tính), phát `attack_target_changed` (kẻ gây = người
   đánh, đối tượng = mục tiêu mới). Đòn đầu tiên không phát. Đạn của đòn cũ đang bay vẫn
@@ -309,6 +314,10 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   nhắm được (tàng hình, UNTARGETABLE…). Chết thì hết lướt.
 - `ABL-18` Chỉnh hồi chiêu (ModifyCooldownAction): cộng `amount` giây vào thời gian hồi
   còn lại của ô `slot` trên đơn vị nhận; âm thì giảm, không xuống dưới 0 (sẵn sàng ngay).
+- `ABL-19` (D-132) Giảm hồi chiêu: khi bắt đầu hồi (ABL-02, cả đồ chủ động ITM-07 và tái sinh
+  DTH-01), thời gian hồi = `cooldown` × (1 − `cooldown_reduction`). Nhiều nguồn **nhân dồn** như né
+  (CMB-11): hai nguồn 20% → 1 − 0.8 × 0.8 = 36%. Giới hạn 0–100%. Không áp lên hồi trigger của bị
+  động (bash…), hồi về thành, ABL-18.
 - `ABL-09` Mọi giá trị theo cấp skill là **giá trị có tên** (`damage`, `duration`…)
   khai báo trong skill; hành động đọc theo tên. Đây là chỗ talent can thiệp (TAL-02).
 - `ABL-10` Đẩy lùi (knockback): đơn vị bị dời theo hướng định sẵn một khoảng trong thời
