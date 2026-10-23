@@ -2,7 +2,8 @@ class_name BuffBar
 extends Control
 ## Hàng buff/debuff của hero người chơi (M4.0). Như Liên Quân (D-88): nằm ngay trên chỗ nút đồ
 ## chủ động, bắt đầu từ mép trái chỗ đó (`left_x`, đáy `bottom_y`) và kéo sang phải, không vượt
-## nút Q (`right_limit`); chưa đặt `left_x` thì căn giữa đáy màn hình. Mỗi ô: viền xanh = buff, đỏ = debuff; phần tối quét theo thời gian đã qua;
+## nút Q (`right_limit`); chưa đặt `left_x` thì căn giữa đáy màn hình. Mỗi ô: viền xanh = buff, đỏ = debuff;
+## viền sáng chạy quanh ô theo thời gian còn lại (D-134: từ giữa cạnh trên, chiều kim đồng hồ, ngắn dần);
 ## số tầng góc dưới. Có hình (ArtLibrary theo art_id) thì vẽ hình, chưa có thì chữ viết tắt.
 ## Không hiện hiệu ứng `passive`. Chỉ đọc World.
 
@@ -80,13 +81,34 @@ func _draw_icon(font: Font, box: Rect2, entry: Array) -> void:
 		draw_texture_rect(tex, box.grow(-3), false)
 	else:
 		_center_text(font, box, _short(def), 14, Color.WHITE)
-	var spent: float = 1.0 - float(entry[2])
-	if spent > 0.0:
-		draw_rect(Rect2(box.position, Vector2(box.size.x, box.size.y * spent)), Color(0, 0, 0, 0.5))
-	draw_rect(box, border, false, 3.0)
+	draw_rect(box, Color(border, 0.25), false, 3.0)  # rãnh mờ = phần thời gian đã qua
+	var trail: PackedVector2Array = border_trail(box, float(entry[2]))  # D-134
+	if trail.size() >= 2:
+		draw_polyline(trail, border, 3.0)
 	if entry[3] > 1:
 		draw_string_outline(font, box.end - Vector2(14, 4), str(entry[3]), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, 4, Color.BLACK)
 		draw_string(font, box.end - Vector2(14, 4), str(entry[3]), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color.WHITE)
+
+
+## D-134: đường viền từ giữa cạnh trên theo chiều kim đồng hồ, dài bằng `left` (0..1) chu vi.
+static func border_trail(box: Rect2, left: float) -> PackedVector2Array:
+	var out: PackedVector2Array = PackedVector2Array()
+	if left <= 0.0:
+		return out
+	var corners: Array[Vector2] = [Vector2(box.end.x, box.position.y), box.end, Vector2(box.position.x, box.end.y),
+		box.position, Vector2(box.get_center().x, box.position.y)]
+	var remain: float = clampf(left, 0.0, 1.0) * 2.0 * (box.size.x + box.size.y)
+	var at: Vector2 = Vector2(box.get_center().x, box.position.y)
+	out.append(at)
+	for c: Vector2 in corners:
+		var d: float = at.distance_to(c)
+		if remain <= d:
+			out.append(at.move_toward(c, remain))
+			return out
+		remain -= d
+		at = c
+		out.append(at)
+	return out
 
 
 ## Chữ viết tắt tạm (tới khi có icon): từ cuối của tên, tối đa 5 ký tự, viết hoa.
