@@ -103,7 +103,7 @@ func test_D_115_recipe_tree_links_components_and_select_by_tap() -> void:
 	var w: World = p.world
 	var wb: ItemDef = w.item_catalog[&"wraith_band"]
 	Items.give(w, p.hero, w.item_catalog[&"circlet"])
-	var tree: Array = RecipeTree.layout(w, p.hero, wb, Vector2(0, 0), 500.0)
+	var tree: Array = RecipeTree.layout(w, p.hero, wb, p.detail_rect().position + Vector2(24, 162), 500.0)  # D-130: đúng chỗ khung chi tiết
 	var nodes: Array = tree[0]
 	assert_eq((nodes[0] as RecipeTree.TreeNode).def, wb, "gốc = món đang xem")
 	var parts: Array = nodes.filter(func(n: RecipeTree.TreeNode) -> bool: return n.parent == 0)

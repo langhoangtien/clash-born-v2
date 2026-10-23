@@ -40,12 +40,12 @@ func _process(_delta: float) -> void:
 func _draw() -> void:
 	if world == null or hero == null:
 		return
-	var font: Font = ThemeDB.fallback_font
+	var font: Font = UiStyle.sans(true)  # D-130
 	var top: String = clock_text(world.tick) + ("   ×%d" % speed if speed > 1 else "")
 	_score(font)
 	_text(font, Vector2(size.x * 0.5, 44), top, 34, Color.WHITE, true)
 	_text(font, Vector2(size.x - 210, 108), "FPS %d · SIM %.1f ms" % [Engine.get_frames_per_second(), sim_ms], 18, Color(1, 1, 1, 0.55), false)
-	draw_rect(PANEL, Color(0, 0, 0, 0.45))
+	draw_style_box(UiStyle.box(Color(0.035, 0.05, 0.085, 0.82), UiStyle.LINE, 1, 12), PANEL)
 	var x: float = PANEL.position.x + 20
 	var max_hp: float = maxf(1.0, hero.stats.get_stat(StatId.Id.MAX_HP))
 	var max_mana: float = maxf(1.0, hero.stats.get_stat(StatId.Id.MAX_MANA))
@@ -65,8 +65,10 @@ func _draw() -> void:
 
 
 func _bar(font: Font, at: Vector2, value: float, maximum: float, color: Color) -> void:
-	draw_rect(Rect2(at, BAR), Color(0, 0, 0, 0.7))
-	draw_rect(Rect2(at, Vector2(BAR.x * clampf(value / maximum, 0, 1), BAR.y)), color)
+	draw_style_box(UiStyle.box(Color(0, 0, 0, 0.7), Color(1, 1, 1, 0.12), 1, 5), Rect2(at, BAR))
+	var fill: float = BAR.x * clampf(value / maximum, 0, 1)
+	if fill >= 2.0:
+		draw_style_box(UiStyle.box(color, Color(0, 0, 0, 0), 0, 5), Rect2(at, Vector2(fill, BAR.y)))
 	_text(font, at + Vector2(BAR.x * 0.5, BAR.y - 4), "%d / %d" % [roundi(value), roundi(maximum)], 18, Color.WHITE, true)
 
 

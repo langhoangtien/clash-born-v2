@@ -75,13 +75,11 @@ func _process(_delta: float) -> void:
 func _draw() -> void:
 	if open == Open.NONE or world == null or hero == null:
 		return
-	var font: Font = ThemeDB.fallback_font
+	var font: Font = UiStyle.sans()  # D-130
 	var p: Rect2 = panel_rect()
-	draw_rect(p, Color(0.05, 0.06, 0.09, 0.95))
-	draw_rect(p, Color(1, 0.85, 0.4, 0.8), false, 3.0)
-	var x: Rect2 = close_rect()
-	draw_rect(x, Color(0.5, 0.15, 0.15, 0.9))
-	_text(font, x.get_center() + Vector2(-9, 10), "✕", 28, Color.WHITE)
+	draw_rect(Rect2(Vector2.ZERO, size), Color(0, 0, 0, 0.5))
+	UiStyle.panel(self, p)
+	UiStyle.glyph(self, &"close", close_rect().get_center(), 16.0, UiStyle.TEXT)
 	if open == Open.STATS:
 		_draw_stats(font, p)
 	else:
@@ -173,10 +171,10 @@ static func _num(v: float) -> String:
 
 
 func _draw_stats(font: Font, p: Rect2) -> void:
-	_text(font, p.position + Vector2(28, 52), "%s — cấp %d" % [hero.hero_def.display_name if hero.hero_def != null else "Hero", hero.stats.level()], 30, Color.WHITE)
+	_text(UiStyle.serif(true), p.position + Vector2(28, 56), "%s — cấp %d" % [hero.hero_def.display_name if hero.hero_def != null else "Hero", hero.stats.level()], 34, UiStyle.TEXT)
 	var y: float = 100.0
 	for row: Array in stat_rows(hero):  # D-124: màu theo loại, phần cộng thêm màu xanh
-		_text(font, p.position + Vector2(28, y), row[0], 20, Color(1, 1, 1, 0.65))
+		_text(UiStyle.serif(), p.position + Vector2(28, y), row[0], 20, UiStyle.DIM)
 		_text(font, p.position + Vector2(300, y), row[1], 20, row[3])
 		if row[2] != "":
 			var w: float = font.get_string_size(row[1], HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
@@ -185,7 +183,7 @@ func _draw_stats(font: Font, p: Rect2) -> void:
 	var x: float = 620.0
 	y = 100.0
 	for row: Array in ability_rows(hero):
-		_text(font, p.position + Vector2(x, y), row[0], 22, Color(1, 0.85, 0.35))
+		_text(UiStyle.serif(true), p.position + Vector2(x, y), row[0], 23, UiStyle.GOLD)
 		y += 30.0
 		for line: String in row[1]:
 			_text(font, p.position + Vector2(x + 20, y), line, 17, Color(1, 1, 1, 0.85))
@@ -213,7 +211,7 @@ static func score_rows(w: World) -> Array:
 
 
 func _draw_score(font: Font, p: Rect2) -> void:
-	_text(font, p.position + Vector2(28, 52), "Tỷ số  %d — %d" % [MatchScore.team_kills(world, 0), MatchScore.team_kills(world, 1)], 30, Color.WHITE)
+	_text(UiStyle.serif(true), p.position + Vector2(28, 56), "Tỷ số  %d — %d" % [MatchScore.team_kills(world, 0), MatchScore.team_kills(world, 1)], 34, UiStyle.TEXT)
 	var heads: Array = ["Hero", "Cấp", "K/D/A", "LH", "Giá trị đồ", "Đồ"]
 	var cols: Array[float] = [28.0, 330.0, 430.0, 590.0, 690.0, 860.0]
 	for i: int in range(heads.size()):
@@ -221,7 +219,7 @@ func _draw_score(font: Font, p: Rect2) -> void:
 	var y: float = 170.0
 	for row: Array in score_rows(world):
 		var col: Color = Color(0.45, 0.7, 1.0) if row[0] == 0 else Color(1.0, 0.45, 0.4)
-		draw_rect(Rect2(p.position + Vector2(16, y - 40), Vector2(p.size.x - 32, 64)), Color(col, 0.12))
+		draw_style_box(UiStyle.box(Color(col, 0.12), Color(col, 0.35), 1, 10), Rect2(p.position + Vector2(16, y - 40), Vector2(p.size.x - 32, 64)))
 		_text(font, p.position + Vector2(cols[0], y), row[1], 24, col)
 		_text(font, p.position + Vector2(cols[1], y), str(row[2]), 24, Color.WHITE)
 		_text(font, p.position + Vector2(cols[2], y), row[3], 24, Color.WHITE)

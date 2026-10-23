@@ -1,23 +1,23 @@
 class_name ShopPanel
 extends Control
-## Cửa hàng kiểu Liên Quân (M6.6, D-90; hình vẽ ở M8). Nút "Shop" dưới ô máu/mana hoặc phím B
+## Cửa hàng kiểu Liên Quân (M6.6, D-90; giao diện D-130 vẽ ở ShopPainter). Nút "Shop" dưới ô máu/mana hoặc phím B
 ## mở/đóng. Trái: thẻ danh mục. Giữa: lưới món (mờ khi chưa mua được). Phải: chi tiết món đang
 ## chọn — giá, nhãn, chỉ số, mô tả, nút Mua (hoặc Bán khi chọn đồ đang có). Dưới: 6 ô đồ của hero.
 ## Chỉ đọc World và báo bằng tín hiệu.
 
 const BUTTON: Rect2 = Rect2(292, 160, 120, 44)
-const PANEL_SIZE: Vector2 = Vector2(1640, 900)
-const TAB_SIZE: Vector2 = Vector2(190, 76)
-const CARD_SIZE: Vector2 = Vector2(122, 126)
-const CARD_GAP: float = 10.0
-const COLUMNS: int = 6
+const PANEL_SIZE: Vector2 = Vector2(1840, 1030)
+const TAB_SIZE: Vector2 = Vector2(214, 60)
+const CARD_SIZE: Vector2 = Vector2(176, 186)
+const CARD_GAP: float = 14.0
+const COLUMNS: int = 5
 ## Vùng lưới món (cuộn dọc khi nhiều món): từ y = GRID_TOP tới trên hàng ô đồ.
-const GRID_TOP: float = 80.0
+const GRID_TOP: float = 104.0
 const GRID_BOTTOM_GAP: float = 150.0
-const SCROLL_STEP: float = 136.0
-const GRID_LEFT: float = 230.0
-const DETAIL_LEFT: float = 1080.0
-const SLOT_SIZE: Vector2 = Vector2(116, 86)
+const SCROLL_STEP: float = 200.0
+const GRID_LEFT: float = 250.0
+const DETAIL_LEFT: float = 1218.0
+const SLOT_SIZE: Vector2 = Vector2(130, 110)
 
 enum Tab { ALL, BASIC, ATTACK, MAGIC, DEFENSE, UTILITY, SECRET }
 const TAB_NAMES: PackedStringArray = ["Tất cả", "Cơ bản", "Tấn công", "Phép", "Phòng thủ", "Tiện ích", "Shop ẩn"]
@@ -74,7 +74,7 @@ var _drag_from: float = INF
 var _tree: Array = []
 ## D-120: bộ đồ soạn sẵn (tối đa BUILD_MAX món, theo thứ tự mua).
 var build: Array[StringName] = []
-const BUILD_SLOT: float = 56.0
+const BUILD_SLOT: float = 64.0
 const BUILD_MAX: int = 6
 
 
@@ -93,7 +93,7 @@ func catalog(which: Tab = Tab.ALL) -> Array[ItemDef]:
 
 
 func tab_rect(i: int) -> Rect2:
-	return Rect2(panel_rect().position + Vector2(20, 80 + i * (TAB_SIZE.y + 10)), TAB_SIZE)
+	return Rect2(panel_rect().position + Vector2(14, 102 + i * (TAB_SIZE.y + 8)), TAB_SIZE)
 
 
 func card_rect(i: int) -> Rect2:
@@ -119,17 +119,17 @@ func scroll_by(amount: float) -> void:
 
 func slot_rect(i: int) -> Rect2:
 	var p: Rect2 = panel_rect()
-	return Rect2(p.position + Vector2(GRID_LEFT + i * (SLOT_SIZE.x + 12), p.size.y - SLOT_SIZE.y - 24), SLOT_SIZE)
+	return Rect2(p.position + Vector2(GRID_LEFT + 20 + i * (SLOT_SIZE.x + 14), p.size.y - SLOT_SIZE.y - 22), SLOT_SIZE)
 
 
 func detail_rect() -> Rect2:
 	var p: Rect2 = panel_rect()
-	return Rect2(p.position + Vector2(DETAIL_LEFT, 80), Vector2(p.size.x - DETAIL_LEFT - 24, p.size.y - 104))
+	return Rect2(p.position + Vector2(DETAIL_LEFT, 104), Vector2(p.size.x - DETAIL_LEFT - 22, p.size.y - 126))
 
 
 func action_rect() -> Rect2:
 	var d: Rect2 = detail_rect()
-	var full: Rect2 = Rect2(d.position + Vector2(24, d.size.y - 96), Vector2(d.size.x - 48, 76))
+	var full: Rect2 = Rect2(d.position + Vector2(20, d.size.y - 104), Vector2(d.size.x - 40, 86))
 	if selected_slot >= 0:
 		return full
 	return Rect2(full.position, Vector2(full.size.x * 0.6 - 6, full.size.y))
@@ -144,7 +144,7 @@ func compose_rect() -> Rect2:
 
 ## D-120: ô thứ `i` của hàng "Soạn sẵn" (cột trái, dưới các thẻ), 3 cột × 2 hàng.
 func build_rect(i: int) -> Rect2:
-	var top: Vector2 = panel_rect().position + Vector2(20, 80 + TAB_NAMES.size() * (TAB_SIZE.y + 10) + 44)
+	var top: Vector2 = panel_rect().position + Vector2(18, 102 + TAB_NAMES.size() * (TAB_SIZE.y + 8) + 52)
 	return Rect2(top + Vector2((i % 3) * (BUILD_SLOT + 8), (i / 3) * (BUILD_SLOT + 8)), Vector2(BUILD_SLOT, BUILD_SLOT))
 
 
@@ -161,7 +161,7 @@ func toggle_build(id: StringName) -> void:
 
 func close_rect() -> Rect2:
 	var p: Rect2 = panel_rect()
-	return Rect2(p.position + Vector2(p.size.x - 70, 14), Vector2(52, 52))
+	return Rect2(p.position + Vector2(p.size.x - 72, 18), Vector2(52, 52))
 
 
 func toggle() -> void:
@@ -178,11 +178,11 @@ func selected_def() -> ItemDef:
 
 
 func _has_point(point: Vector2) -> bool:
-	return BUTTON.has_point(point) or (open and panel_rect().has_point(point))
+	return open or BUTTON.has_point(point)  # D-130: mở thì chặn cả màn (bảng che gần hết màn)
 
 
 func press_at(local: Vector2) -> void:
-	if BUTTON.has_point(local) or (open and close_rect().has_point(local)):
+	if (not open and BUTTON.has_point(local)) or (open and close_rect().has_point(local)):
 		toggle()
 		return
 	if not open:
@@ -251,139 +251,7 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
-	var font: Font = ThemeDB.fallback_font
-	draw_rect(BUTTON, Color(0.55, 0.4, 0.1, 0.85))
-	draw_rect(BUTTON, Color(1, 0.85, 0.4), false, 2.0)
-	draw_string(font, BUTTON.position + Vector2(16, 30), "Shop (B)", HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color.WHITE)
-	if not open or world == null or hero == null:
-		return
-	var p: Rect2 = panel_rect()
-	draw_rect(p, Color(0.05, 0.06, 0.09, 0.95))
-	draw_rect(p, Color(1, 0.85, 0.4, 0.8), false, 3.0)
-	draw_string(font, p.position + Vector2(24, 52), "Cửa hàng", HORIZONTAL_ALIGNMENT_LEFT, -1, 32, Color.WHITE)
-	draw_string(font, p.position + Vector2(GRID_LEFT, 52), "Vàng: %d" % hero.gold, HORIZONTAL_ALIGNMENT_LEFT, -1, 28, Color(1, 0.85, 0.3))
-	var x: Rect2 = close_rect()
-	draw_rect(x, Color(0.5, 0.15, 0.15, 0.9))
-	_center(font, x.get_center(), "✕", 28, Color.WHITE)
-	for i: int in range(TAB_NAMES.size()):
-		var r: Rect2 = tab_rect(i)
-		var on: bool = i == tab
-		draw_rect(r, Color(0.55, 0.4, 0.12, 0.95) if on else Color(0.14, 0.16, 0.2, 0.9))
-		_center(font, r.get_center(), TAB_NAMES[i], 22, Color.WHITE if on else Color(1, 1, 1, 0.7))
-	var items: Array[ItemDef] = catalog(tab)
-	var view: Rect2 = grid_rect()
-	for i: int in range(items.size()):
-		var cr: Rect2 = card_rect(i)
-		if view.encloses(cr):
-			_draw_card(font, cr, items[i])
-	if max_scroll() > 0.0:  # thanh cuộn
-		var bar: float = view.size.y * view.size.y / (view.size.y + max_scroll())
-		var top: float = view.position.y + (view.size.y - bar) * scroll / max_scroll()
-		draw_rect(Rect2(Vector2(view.end.x + 2, top), Vector2(6, bar)), Color(1, 1, 1, 0.35))
-	draw_string(font, slot_rect(0).position + Vector2(0, -12), "Đồ của bạn", HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color(1, 1, 1, 0.7))
-	for i: int in range(Items.SLOTS):
-		var r: Rect2 = slot_rect(i)
-		var it: ItemInstance = Items.slots(hero)[i]
-		draw_rect(r, Color(0.15, 0.17, 0.22, 0.9))
-		if it != null:
-			_draw_icon(font, r.get_center() + Vector2(0, -8), 28.0, it.def, true)
-			_center(font, r.get_center() + Vector2(0, 32), it.def.display_name, 13, Color(1, 1, 1, 0.8))
-		if i == selected_slot:
-			draw_rect(r, Color(1, 0.9, 0.4), false, 3.0)
-	_draw_build(font)
-	_draw_detail(font)
-
-
-## D-120: hàng "Soạn sẵn" ở cột trái; món đã có (kể cả đã ghép vào món lớn) viền xanh.
-func _draw_build(font: Font) -> void:
-	draw_string(font, build_rect(0).position + Vector2(0, -12), "Soạn sẵn", HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color(1, 1, 1, 0.7))
-	for i: int in range(BUILD_MAX):
-		var r: Rect2 = build_rect(i)
-		draw_rect(r, Color(0.15, 0.17, 0.22, 0.9))
-		if i < build.size() and world.item_catalog.has(build[i]):
-			_draw_icon(font, r.get_center(), BUILD_SLOT * 0.42, world.item_catalog[build[i]], true)
-			var one: Array[StringName] = [build[i]]
-			var done: bool = BuildPlan.next_target(world, hero, one) == null
-			if done:
-				draw_rect(r, Color(0.4, 1, 0.5), false, 3.0)
-
-
-func _draw_card(font: Font, r: Rect2, d: ItemDef) -> void:
-	var ok: bool = Shop.buy_problem(world, hero, d.id) == Command.Reject.NONE
-	draw_rect(r, Color(0.13, 0.15, 0.2, 0.95))
-	_draw_icon(font, r.position + Vector2(r.size.x * 0.5, 46), 38.0, d, ok)
-	_center(font, r.position + Vector2(r.size.x * 0.5, 96), d.display_name, 13, Color.WHITE if ok else Color(1, 1, 1, 0.45))
-	_center(font, r.position + Vector2(r.size.x * 0.5, 116), str(Shop.price(world, hero, d)), 16, Color(1, 0.85, 0.3) if ok else Color(1, 0.85, 0.3, 0.45))
-	if d.shop == ItemDef.ShopKind.SECRET:
-		_center(font, r.position + Vector2(22, 18), "ẨN", 13, Color(0.7, 0.85, 1))
-	var left: int = Shop.stock(world, hero.team, d)
-	if left >= 0:  # SHOP-08: còn trong kho đội
-		_center(font, r.position + Vector2(r.size.x - 24, 18), "x%d" % left, 15, Color(1, 1, 1, 0.8) if left > 0 else Color(1, 0.5, 0.4))
-	if selected_slot < 0 and d.id == selected_id:
-		draw_rect(r, Color(1, 0.9, 0.4), false, 3.0)
-
-
-## Ô hình tạm: tròn màu theo danh mục, chữ tắt (hình thật ở M8).
-func _draw_icon(font: Font, c: Vector2, radius: float, d: ItemDef, bright: bool) -> void:
-	var col: Color = [Color(0.75, 0.3, 0.25), Color(0.4, 0.35, 0.8), Color(0.3, 0.6, 0.4), Color(0.6, 0.55, 0.3), Color(0.45, 0.47, 0.5)][d.category]
-	if not bright:
-		col = col.darkened(0.55)
-	var tex: Texture2D = ArtLibrary.texture(d.art_id)
-	if tex != null:
-		draw_texture_rect(tex, Rect2(c - Vector2(radius, radius), Vector2(radius, radius) * 2.0), false, Color.WHITE if bright else Color(0.62, 0.62, 0.66))  # D-129: tối nhẹ hơn
-		return
-	draw_circle(c, radius, col)
-	if d.ability != null and d.ability.targeting != AbilityDef.Targeting.PASSIVE:
-		draw_arc(c, radius, 0, TAU, 32, Color(1, 0.85, 0.4, 0.9 if bright else 0.4), 3.0, true)
-	_center(font, c, ItemButtons.short_name(d.display_name), int(radius * 0.6), Color(1, 1, 1, 1.0 if bright else 0.5))
-
-
-func _draw_detail(font: Font) -> void:
-	var r: Rect2 = detail_rect()
-	draw_rect(r, Color(0.1, 0.12, 0.16, 0.95))
-	var d: ItemDef = selected_def()
-	if d == null:
-		_center(font, r.get_center(), "Chạm một món để xem", 22, Color(1, 1, 1, 0.5))
-		return
-	var at: Vector2 = r.position + Vector2(24, 0)
-	var w: float = r.size.x - 48
-	var tree: Array = RecipeTree.layout(world, hero, d, at + Vector2(0, 16), w)  # D-115: cây ghép đồ
-	_tree = tree[0]
-	RecipeTree.draw(self, font, world, _tree, at + Vector2(0, 16))
-	var y: float = 16.0 + tree[1] + 34.0
-	draw_string(font, at + Vector2(0, y), d.display_name, HORIZONTAL_ALIGNMENT_LEFT, w - 140, 26, Color.WHITE)
-	draw_string(font, at + Vector2(w - 130, y), "Giá %d" % d.cost, HORIZONTAL_ALIGNMENT_RIGHT, 130, 22, Color(1, 0.85, 0.3))
-	y += 38.0
-	var tag_line: String = " · ".join(tags(d))
-	if not tag_line.is_empty():
-		draw_string(font, at + Vector2(0, y), tag_line, HORIZONTAL_ALIGNMENT_LEFT, w, 18, Color(0.7, 0.85, 1))
-		y += 30.0
-	for line: String in stat_lines(d):
-		draw_string(font, at + Vector2(0, y), line, HORIZONTAL_ALIGNMENT_LEFT, w, 20, Color(0.6, 1, 0.6))
-		y += 28.0
-	y += 10.0
-	draw_multiline_string(font, at + Vector2(0, y), d.description, HORIZONTAL_ALIGNMENT_LEFT, w, 19, -1, Color(1, 1, 1, 0.85))
-	var b: Rect2 = action_rect()
-	var label: String
-	var ok: bool = true
-	if selected_slot >= 0:
-		label = "Bán  +%d" % Shop.refund_for(world, Items.slots(hero)[selected_slot])
-	else:
-		var problem: Command.Reject = Shop.buy_problem(world, hero, d.id)
-		ok = problem == Command.Reject.NONE
-		label = "Mua  %d" % Shop.price(world, hero, d) if ok else status_text(world, d, problem, hero.team)
-	draw_rect(b, (Color(0.6, 0.25, 0.2) if selected_slot >= 0 else Color(0.2, 0.5, 0.25)) if ok else Color(0.25, 0.25, 0.28))
-	_center(font, b.get_center(), label, 26, Color.WHITE if ok else Color(1, 0.6, 0.5))
-	if selected_slot < 0:  # D-120
-		var cr: Rect2 = compose_rect()
-		var has: bool = build.has(d.id)
-		draw_rect(cr, Color(0.35, 0.3, 0.12) if has else Color(0.2, 0.3, 0.5))
-		_center(font, cr.get_center(), "Bỏ soạn" if has else ("Soạn +" if build.size() < BUILD_MAX else "Đã đủ 6"), 24, Color.WHITE)
-
-
-func _center(font: Font, c: Vector2, text: String, font_size: int, color: Color) -> void:
-	var w: float = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
-	draw_string(font, c + Vector2(-w * 0.5, font_size * 0.35), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
+	ShopPainter.draw(self)  # D-130
 
 
 ## Dòng chỉ số từ modifier của món, vd "+25 Sát thương", "+30% Tốc đánh".

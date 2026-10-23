@@ -70,6 +70,8 @@ clashborn_v2/
     map/                   MapView, MapPainter (vẽ tạm bằng hình phẳng)
     units/                 UnitsView: vẽ đơn vị, nội suy giữa hai tick, y-sort
     art/                   ArtLibrary: res://assets/art/<art_id>.png, thiếu → hình tạm
+    ui/                    UiStyle (phông, màu, khung, nút, xu), UiGlyphs (icon nét) — D-130
+    menu/                  HeroSelect, HeroDetail, HeroPreview (màn chọn tướng)
     audio/                 SoundLibrary (res://assets/audio/<id>.ogg, thiếu → im lặng), AudioCues
                            (sự kiện tick → tiếng, lọc sương mù), AudioView (phát, nhạc) — D-114
     hud/                   TouchJoystick (joystick ảo; tên VirtualJoystick trùng lớp có sẵn của Godot 4.7)

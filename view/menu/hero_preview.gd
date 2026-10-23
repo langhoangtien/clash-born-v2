@@ -56,3 +56,36 @@ func talents() -> Array:
 		if d != null and d.talent != null:
 			out.append([["Q", "W", "R"][d.slot - 1], d, d.talent])
 	return out
+
+
+## Giá trị là tỉ lệ (ghi %).
+const PERCENT: Array[StringName] = [&"chance", &"crit_chance", &"heal_fraction", &"slow", &"move_bonus", &"amplify"]
+
+
+## Số chiêu gọn kiểu ảnh mẫu (D-130): "Sát thương: 70 – 230 · Choáng (s): 0.8 – 1.6", hồi chiêu và
+## mana cuối cùng; hai giá trị mỗi dòng.
+static func compact_lines(d: AbilityDef) -> PackedStringArray:
+	var names: Array = d.values.keys()
+	var last: Array[StringName] = [&"cast_range", &"cooldown", &"mana"]
+	names.sort_custom(func(a: StringName, b: StringName) -> bool:
+		var ka: int = last.find(a)
+		var kb: int = last.find(b)
+		return String(a) < String(b) if ka == kb else ka < kb)
+	var parts: PackedStringArray = PackedStringArray()
+	for n: StringName in names:
+		var arr: PackedFloat32Array = d.values[n]
+		if arr.is_empty() or (arr[0] == 0.0 and arr[arr.size() - 1] == 0.0):
+			continue
+		var pct: bool = PERCENT.has(n)
+		var a: String = InfoPanels._num(arr[0] * (100.0 if pct else 1.0))
+		var b: String = InfoPanels._num(arr[arr.size() - 1] * (100.0 if pct else 1.0))
+		var label: String = InfoPanels.VALUE_NAMES.get(n, String(n))
+		var unit: String = "%" if pct else ""
+		if label.ends_with(" (s)"):
+			label = label.trim_suffix(" (s)")
+			unit = " giây"
+		parts.append("%s: %s%s" % [label.trim_suffix(" +"), a if a == b else "%s – %s" % [a, b], unit])
+	var out: PackedStringArray = PackedStringArray()
+	for i: int in range(0, parts.size(), 2):
+		out.append(parts[i] if i + 1 >= parts.size() else parts[i] + "  ·  " + parts[i + 1])
+	return out

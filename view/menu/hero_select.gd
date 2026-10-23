@@ -7,16 +7,16 @@ extends Control
 signal start_pressed(hero_id: StringName, bot_id: StringName, difficulty: int)
 signal map_pressed
 
-const CARD: Vector2 = Vector2(200, 250)
-const CARD_GAP: float = 20.0
-const CARDS_AT: Vector2 = Vector2(60, 150)
+const CARD: Vector2 = Vector2(192, 262)
+const CARD_GAP: float = 14.0
+const CARDS_AT: Vector2 = Vector2(64, 140)
 const DETAIL: Rect2 = Rect2(720, 110, 1140, 790)
 const TAB_SIZE: Vector2 = Vector2(200, 56)
-const BOT_AT: Vector2 = Vector2(60, 960)
+const BOT_AT: Vector2 = Vector2(80, 964)
 const BOT_SIZE: float = 84.0
 const DIFF_NAMES: Array[String] = ["Dễ", "Thường", "Khó"]
-const START: Rect2 = Rect2(1500, 930, 360, 120)
-const MAP_BUTTON: Rect2 = Rect2(1240, 960, 200, 70)
+const START: Rect2 = Rect2(1480, 934, 380, 112)
+const MAP_BUTTON: Rect2 = Rect2(1220, 954, 220, 72)
 
 var previews: Array[HeroPreview] = []
 var selected: int = 0
@@ -76,69 +76,56 @@ func _gui_input(event: InputEvent) -> void:
 		accept_event()
 
 
-func _draw() -> void:
-	var font: Font = ThemeDB.fallback_font
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.05, 0.055, 0.075))
-	draw_rect(Rect2(Vector2.ZERO, Vector2(size.x, 96)), Color(0.08, 0.07, 0.06))
-	draw_string(font, Vector2(60, 66), "CLASHBORN", HORIZONTAL_ALIGNMENT_LEFT, -1, 48, HeroDetail.GOLD)
-	draw_string(font, Vector2(400, 64), "Chọn tướng", HORIZONTAL_ALIGNMENT_LEFT, -1, 30, HeroDetail.DIM)
+func _draw() -> void:  # D-130: giao diện theo UiStyle
+	draw_rect(Rect2(Vector2.ZERO, size), UiStyle.BG)
+	draw_string(UiStyle.serif(true), Vector2(60, 70), "CLASHBORN", HORIZONTAL_ALIGNMENT_LEFT, -1, 54, UiStyle.GOLD)
+	UiStyle.divider(self, Vector2(428, 30), Vector2(428, 76))
+	draw_string(UiStyle.serif(), Vector2(456, 66), "Chọn tướng", HORIZONTAL_ALIGNMENT_LEFT, -1, 34, UiStyle.DIM)
+	UiStyle.panel(self, Rect2(Vector2(40, 116), Vector2(DETAIL.position.x - 60, 784)))
 	for i: int in range(previews.size()):
-		_card(font, i)
+		_card(i)
 	if not previews.is_empty():
-		_detail(font)
-	_bottom(font)
+		_detail()
+	_bottom()
 
 
-func _card(font: Font, i: int) -> void:
+func _card(i: int) -> void:
 	var r: Rect2 = card_rect(i)
 	var p: HeroPreview = previews[i]
 	var on: bool = i == selected
-	draw_rect(r, Color(0.14, 0.12, 0.1) if on else Color(0.1, 0.11, 0.14))
-	var tex: Texture2D = ArtLibrary.texture(StringName(String(p.def.id) + "_portrait"))
-	var pic: Rect2 = Rect2(r.position + Vector2(10, 10), Vector2(r.size.x - 20, r.size.x - 20))
-	if tex != null:
-		draw_texture_rect(tex, pic, false, Color.WHITE if on else Color(0.75, 0.75, 0.75))
-	else:
-		draw_rect(pic, Color(0.18, 0.2, 0.16))
-		HeroDetail._center(self, font, pic.get_center(), p.def.display_name.left(1), 90, HeroDetail.GOLD)
-	var name: String = p.def.display_name.get_slice(" · ", 0)
-	HeroDetail._center(self, font, Vector2(r.get_center().x, r.end.y - 34), name, 26, Color.WHITE)
-	HeroDetail._center(self, font, Vector2(r.get_center().x, r.end.y - 10), p.primary_name(), 16, HeroDetail.DIM)
-	draw_rect(r, HeroDetail.GOLD if on else Color(1, 1, 1, 0.15), false, 4.0 if on else 2.0)
+	UiStyle.card(self, r, on)
+	HeroDetail.portrait(self, p, Rect2(r.position + Vector2(10, 10), Vector2(r.size.x - 20, r.size.x - 20)), on)
+	UiStyle.text_center(self, UiStyle.serif(true), Vector2(r.get_center().x, r.end.y - 38), p.def.display_name.get_slice(" · ", 0), 28, UiStyle.TEXT)
+	UiStyle.text_center(self, UiStyle.serif(), Vector2(r.get_center().x, r.end.y - 12), p.primary_name(), 18, UiStyle.DIM)
 
 
-func _detail(font: Font) -> void:
-	draw_rect(DETAIL, Color(0.08, 0.085, 0.11))
-	draw_rect(DETAIL, Color(1, 0.84, 0.4, 0.35), false, 2.0)
+func _detail() -> void:
+	UiStyle.panel(self, DETAIL)
 	var p: HeroPreview = previews[selected]
-	HeroDetail.draw_header(self, font, p, DETAIL.position + Vector2(24, 24))
+	HeroDetail.draw_header(self, p, DETAIL.position + Vector2(24, 24))
 	for i: int in range(HeroDetail.TAB_NAMES.size()):
 		var r: Rect2 = tab_rect(i)
 		var on: bool = i == tab
-		draw_rect(r, Color(0.5, 0.38, 0.12) if on else Color(0.13, 0.14, 0.18))
-		HeroDetail._center(self, font, r.get_center(), HeroDetail.TAB_NAMES[i], 24, Color.WHITE if on else HeroDetail.DIM)
-	var area: Rect2 = Rect2(DETAIL.position + Vector2(24, 270), DETAIL.size - Vector2(48, 290))
-	HeroDetail.draw_tab(self, font, p, tab, area)
+		if on:
+			draw_style_box(UiStyle.box(Color(0.5, 0.37, 0.14, 0.95), UiStyle.GOLD, 2, 8, Color(UiStyle.GOLD, 0.2), 6), r)
+		else:
+			draw_style_box(UiStyle.box(UiStyle.CARD, UiStyle.LINE, 1, 8), r)
+		UiStyle.text_center(self, UiStyle.serif(on), r.get_center(), HeroDetail.TAB_NAMES[i], 26, Color(1, 0.95, 0.85) if on else UiStyle.DIM)
+	UiStyle.divider(self, Vector2(tab_rect(0).position.x, tab_rect(0).end.y + 8), Vector2(DETAIL.end.x - 24, tab_rect(0).end.y + 8))
+	var area: Rect2 = Rect2(DETAIL.position + Vector2(24, 272), DETAIL.size - Vector2(48, 292))
+	HeroDetail.draw_tab(self, p, tab, area)
 
 
-func _bottom(font: Font) -> void:
-	draw_rect(Rect2(Vector2(0, 910), Vector2(size.x, size.y - 910)), Color(0.07, 0.07, 0.09))
-	draw_string(font, BOT_AT + Vector2(0, 18), "Đối thủ (bot)", HORIZONTAL_ALIGNMENT_LEFT, -1, 22, HeroDetail.DIM)
+func _bottom() -> void:
+	UiStyle.panel(self, Rect2(Vector2(40, 918), Vector2(size.x - 80, 144)))
+	draw_string(UiStyle.serif(), BOT_AT + Vector2(0, 18), "Đối thủ (bot)", HORIZONTAL_ALIGNMENT_LEFT, -1, 24, UiStyle.DIM)
 	for i: int in range(previews.size()):
 		var r: Rect2 = bot_rect(i)
-		var tex: Texture2D = ArtLibrary.texture(StringName(String(previews[i].def.id) + "_portrait"))
-		draw_rect(r, Color(0.12, 0.13, 0.17))
-		if tex != null:
-			draw_texture_rect(tex, r, false, Color.WHITE if i == bot else Color(0.55, 0.55, 0.55))
-		else:
-			HeroDetail._center(self, font, r.get_center(), previews[i].def.display_name.left(1), 40, HeroDetail.GOLD)
-		draw_rect(r, Color(1, 0.4, 0.35) if i == bot else Color(1, 1, 1, 0.12), false, 3.0 if i == bot else 1.0)
+		var on: bool = i == bot
+		draw_style_box(UiStyle.box(UiStyle.CARD, UiStyle.GOLD if on else UiStyle.LINE, 3 if on else 1, 8, Color(UiStyle.GOLD, 0.25) if on else Color(0, 0, 0, 0), 6 if on else 0), r)
+		HeroDetail.portrait(self, previews[i], r.grow(-3), on)
 	for i: int in range(DIFF_NAMES.size()):
-		var r: Rect2 = diff_rect(i)
-		draw_rect(r, Color(0.45, 0.2, 0.18) if i == difficulty else Color(0.13, 0.14, 0.18))
-		HeroDetail._center(self, font, r.get_center(), DIFF_NAMES[i], 22, Color.WHITE if i == difficulty else HeroDetail.DIM)
-	draw_rect(MAP_BUTTON, Color(0.13, 0.14, 0.18))
-	HeroDetail._center(self, font, MAP_BUTTON.get_center(), "Xem map", 22, HeroDetail.DIM)
-	draw_rect(START, Color(0.62, 0.42, 0.1))
-	draw_rect(START, HeroDetail.GOLD, false, 3.0)
-	HeroDetail._center(self, font, START.get_center(), "BẮT ĐẦU", 44, Color.WHITE)
+		var on: bool = i == difficulty
+		UiStyle.button(self, diff_rect(i), &"gold" if on else &"ghost", DIFF_NAMES[i], "", 24)
+	UiStyle.button(self, MAP_BUTTON, &"blue", "Xem map", "", 24)
+	UiStyle.button(self, START, &"gold", "BẮT ĐẦU", "", 46)

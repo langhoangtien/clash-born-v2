@@ -24,7 +24,4 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 
 func _draw() -> void:
-	draw_rect(BUTTON, Color(0.12, 0.2, 0.32, 0.85))
-	draw_rect(BUTTON, Color(0.6, 0.8, 1.0, 0.8), false, 2.0)
-	var text: String = AudioView.MODE_NAMES[maxi(AudioView.mode, 0)] + " (M)"
-	draw_string(ThemeDB.fallback_font, BUTTON.position + Vector2(12, 30), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color.WHITE)
+	UiStyle.button(self, BUTTON, &"blue", AudioView.MODE_NAMES[maxi(AudioView.mode, 0)] + " (M)", "", 18)  # D-130

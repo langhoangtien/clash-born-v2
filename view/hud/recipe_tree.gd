@@ -111,7 +111,7 @@ static func draw(panel: ShopPanel, font: Font, w: World, nodes: Array, origin: V
 			panel.draw_string(font, root.center + Vector2(ROOT_RADIUS + 14, 6), "+ phí %d" % f, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color(1, 0.85, 0.3))
 	for n: TreeNode in nodes:
 		panel.draw_circle(n.center, n.radius + 3.0, Color(0.05, 0.06, 0.09))
-		panel._draw_icon(font, n.center, n.radius, n.def, true)
+		ShopPainter.icon(panel, n.center, n.radius, n.def, true)
 		if n.owned:
 			panel.draw_arc(n.center, n.radius + 3.0, 0, TAU, 32, OWNED, 3.0, true)
 		if n.parent < 0 and not n.into:
