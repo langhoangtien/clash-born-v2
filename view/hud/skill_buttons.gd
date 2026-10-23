@@ -13,8 +13,9 @@ const SKILL_ANGLES: Array[float] = [178.0, 213.0, 248.0]
 ## Kéo bao xa (px) thì nhắm hết tầm; dưới vùng chết coi như chạm.
 const AIM_RADIUS: float = 160.0
 const DEAD_ZONE: float = 20.0
-const PLUS_OFFSET: Vector2 = Vector2(-44, -50)
-const PLUS_RADIUS: float = 22.0
+## D-129: nút "+" to, nằm ngay ngoài ô chiêu theo hướng ra xa nút ĐÁNH (khó bấm trượt).
+const PLUS_RADIUS: float = 34.0
+const PLUS_TOUCH_SLACK: float = 12.0
 const ATTR_OFFSET: Vector2 = Vector2(-50, -150)
 const CANCEL_RADIUS: float = 52.0
 ## Mã ô "+" thuộc tính trong level_pressed.
@@ -45,7 +46,9 @@ func skill_center(index: int) -> Vector2:
 
 
 func plus_center(index: int) -> Vector2:
-	return skill_center(0) + ATTR_OFFSET if index == ATTRIBUTES else skill_center(index) + PLUS_OFFSET
+	if index == ATTRIBUTES:
+		return skill_center(0) + ATTR_OFFSET
+	return skill_center(index) + Vector2.from_angle(deg_to_rad(SKILL_ANGLES[index])) * (SKILL_RADIUS + PLUS_RADIUS - 2.0)
 
 
 func cancel_center() -> Vector2:
@@ -62,7 +65,7 @@ func skill_at(local: Vector2) -> int:
 func plus_at(local: Vector2) -> int:
 	for i: int in range(4):
 		var shown: bool = attributes_can_level if i == ATTRIBUTES else skill_view[i][3]
-		if shown and local.distance_to(plus_center(i)) <= PLUS_RADIUS:
+		if shown and local.distance_to(plus_center(i)) <= PLUS_RADIUS + PLUS_TOUCH_SLACK:
 			return i
 	return -1
 
@@ -191,10 +194,19 @@ func _draw_rank_ring(c: Vector2, rank: int, max_rank: int, ready: bool) -> void:
 		draw_arc(c, SKILL_RADIUS + 2.0, from, from + seg - gap, 16, col, 5.0 if lit else 3.0, true)
 
 
+## D-129: "+" hình thoi bo kiểu Liên Quân: nền tối, viền vàng, dấu cộng vàng đậm.
 func _draw_plus(font: Font, c: Vector2, text: String) -> void:
-	draw_circle(c, PLUS_RADIUS, Color(0.95, 0.75, 0.2, 0.9))
-	draw_arc(c, PLUS_RADIUS, 0, TAU, 24, Color(1, 1, 1, 0.9), 2.0, true)
-	_label(font, c, text, 18 if text.length() > 1 else 26, Color(0.15, 0.1, 0.0))
+	var r: float = PLUS_RADIUS
+	var pts: PackedVector2Array = PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0), c + Vector2(0, r), c + Vector2(-r, 0)])
+	draw_colored_polygon(pts, Color(0.12, 0.09, 0.05, 0.95))
+	pts.append(pts[0])
+	draw_polyline(pts, Color(1.0, 0.8, 0.3), 4.0, true)
+	if text == "+":
+		var a: float = r * 0.45
+		draw_line(c - Vector2(a, 0), c + Vector2(a, 0), Color(1.0, 0.84, 0.35), 7.0, true)
+		draw_line(c - Vector2(0, a), c + Vector2(0, a), Color(1.0, 0.84, 0.35), 7.0, true)
+	else:
+		_label(font, c, text, 20, Color(1.0, 0.84, 0.35))
 
 
 func _label(font: Font, center: Vector2, text: String, font_size: int, color: Color) -> void:

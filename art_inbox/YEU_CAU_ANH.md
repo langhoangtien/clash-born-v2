@@ -360,6 +360,57 @@ Cùng chuẩn icon 4a. Game đang dùng icon tạm chữ cái. Xong thì commit 
 | [ ] | `04_icons/item_ancient_tome.png` | tím | Ancient leather spellbook with glowing purple runes on the cover |
 | [ ] | `04_icons/item_arcane_scepter.png` | tím sáng | Ornate golden scepter topped with a floating violet arcane crystal, magic sparks |
 
+
+---
+
+## Đợt 7 — LÀM LẠI TOÀN BỘ ICON CHO DỄ NHÌN — **LÀM NGAY (2026-10-23)**
+
+Người chơi chơi lâu thấy icon cũ **bết, nhòe, đau mắt**: quá nhiều chi tiết, nhiều lớp viền vàng + glow
+lẫn vào nhau, màu vật phẩm gần màu nền. Ảnh mẫu đã duyệt (xem kỹ trước khi vẽ):
+
+- `00_style/icon_mau_shop.png` — **chuẩn mới cho icon đồ** (làm theo đúng kiểu này).
+- `00_style/icon_mau_vat_pham.png` — một vật phẩm vẽ theo cách mới (khối to, ít chi tiết).
+- `00_style/icon_mau_nut_tran.png` — **chuẩn mới cho nút chiêu, nút "+", nút Đánh / Lính / Trụ**.
+- `00_style/icon_cu_khong_dat.png` — icon cũ trong game, **KHÔNG làm như thế này**.
+- Hướng tốt có sẵn: Cành Sắt, Chùm Nho, Áo Choàng Trí Tuệ — hình chính rõ, màu tách nền.
+
+### Quy tắc bắt buộc (mọi icon)
+
+1. **Một vật / một hình chính, to, chiếm ~75% đường kính**, khối đơn giản, viền ngoài (silhouette) rõ.
+   Bỏ hoa văn nhỏ, bỏ cạnh vụn, bỏ vùng sáng tối lấm tấm.
+2. **Một điểm nhấn chính** (một viên ngọc, một vệt sáng…). **Không glow, không tia sáng, không lấp lánh,
+   không vòng vàng bên trong.**
+3. **Nền đĩa xanh than phẳng `#1B2233`**, **một vòng viền mảnh màu đồng xỉn `#8A6A3A`** (~4% đường kính),
+   không viền đôi. Nút chiêu ult: vòng viền vàng `#C9A04A`, cùng độ mảnh. Nội tại: vòng bạc `#9AA3AD`.
+4. **Màu vật phẩm phải tách khỏi nền xanh than**: tránh vật xanh đậm / đen / nâu tối; vật tối thì thêm
+   viền sáng (rim light) quanh khối. 2–3 màu chính, ánh sáng mềm từ trên-trái.
+5. 256 × 256, PNG nền trong suốt ngoài đĩa tròn, không chữ.
+6. **Tự kiểm tra ở cỡ thật trước khi nộp**: chạy `python tools/icon_preview.py` rồi **mở
+   `04_icons/_preview.png`** (icon ở 48 / 64 / 84 px và bản làm tối). Ở 48 px vẫn phải nhận ra món
+   gì ngay; nhòe thì **sửa thiết kế** (bớt chi tiết, to hình), không tăng độ phân giải.
+
+Icon trạng thái (`state_*`, 64 × 64): không đĩa, không viền; một biểu tượng phẳng nét đậm 1–2 màu,
+nền trong suốt. `state_recall` (nút Về) theo kiểu nút trận bên dưới.
+
+Nút trận kiểu Liên Quân (theo `icon_mau_nut_tran.png`): đĩa xanh than, **viền đôi xanh dương sáng
+`#6FB6FF`**, **biểu tượng phẳng trắng, nét đơn giản** ở giữa:
+`ui_attack` = thanh kiếm chéo (nút to nhất), `ui_attack_creep` = mũ lính, `ui_attack_tower` = tháp
+canh, `state_recall` = ngôi nhà nhỏ với mũi tên vòng.
+
+### Thứ tự
+
+- **7a — mẫu, rồi DỪNG chờ duyệt:** `item_sages_mask`, `item_ring_regen`, `item_gauntlets`,
+  `item_butterfly`, `skill_brakk_q`, `skill_gorran_r`, `state_stunned`, `ui_attack`, `ui_attack_creep`,
+  `ui_attack_tower`. Nộp kèm `_preview.png`. Ghi đè đúng tên file trong `04_icons/`.
+- **7b — sau khi duyệt:** toàn bộ phần còn lại (danh sách dưới), mỗi lô 15–20 icon thì commit + push.
+
+Danh sách đầy đủ (ghi đè file cùng tên trong `04_icons/`; tên món tiếng Việt xem `content/items`):
+
+- Đồ (62): item_ancient_tome, item_arcane_scepter, item_assault_plate, item_band_elvenskin, item_battle_axe, item_belt_strength, item_blade_alacrity, item_blades_attack, item_boots, item_boots_arcane, item_boots_guard, item_boots_haste, item_bracer, item_broadsword, item_butterfly, item_chainmail, item_circlet, item_claws_fury, item_claymore, item_cleansing_charm, item_cloak, item_corrosion_blade, item_crit_blade, item_cyclone_staff, item_demon_edge, item_desolator, item_divine_blade, item_energy_booster, item_frost_orb, item_gauntlets, item_ghost_scepter, item_giant_heart, item_gloves_haste, item_grapes, item_hex_scythe, item_hyperstone, item_iron_branch, item_magic_cloak, item_mana_potion, item_mantle, item_moon_shard, item_null_talisman, item_observer_ward, item_ogre_axe, item_platemail, item_quarterstaff, item_resolute_armor, item_reveal_dust, item_ring_protection, item_ring_regen, item_robe_magi, item_sages_mask, item_sentry_ward, item_shadow_blade, item_slippers, item_staff_wizardry, item_steel_armor, item_storm_staff, item_stun_hammer, item_vitality_booster, item_wind_bow, item_wraith_band
+- Chiêu (20): skill_brakk_innate, skill_brakk_q, skill_brakk_w, skill_brakk_r, skill_myra_innate, skill_myra_q, skill_myra_w, skill_myra_r, skill_noctis_innate, skill_noctis_q, skill_noctis_w, skill_noctis_r, skill_vexa_innate, skill_vexa_q, skill_vexa_w, skill_vexa_r, skill_gorran_innate, skill_gorran_q, skill_gorran_w, skill_gorran_r
+- Trạng thái (13): state_burning, state_disarmed, state_ghost, state_hexed, state_invulnerable, state_magic_immune, state_recall, state_revealed, state_rooted, state_shield, state_silenced, state_slowed, state_stunned
+- Nút trận (3): ui_attack, ui_attack_creep, ui_attack_tower
+
 ---
 
 ## Đợt 5 — Giao diện (nền trong suốt)

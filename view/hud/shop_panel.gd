@@ -330,7 +330,7 @@ func _draw_icon(font: Font, c: Vector2, radius: float, d: ItemDef, bright: bool)
 		col = col.darkened(0.55)
 	var tex: Texture2D = ArtLibrary.texture(d.art_id)
 	if tex != null:
-		draw_texture_rect(tex, Rect2(c - Vector2(radius, radius), Vector2(radius, radius) * 2.0), false, Color.WHITE if bright else Color(0.4, 0.4, 0.4))
+		draw_texture_rect(tex, Rect2(c - Vector2(radius, radius), Vector2(radius, radius) * 2.0), false, Color.WHITE if bright else Color(0.62, 0.62, 0.66))  # D-129: tối nhẹ hơn
 		return
 	draw_circle(c, radius, col)
 	if d.ability != null and d.ability.targeting != AbilityDef.Targeting.PASSIVE:
