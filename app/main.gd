@@ -26,6 +26,10 @@ func _ready() -> void:
 	audio.name = "Audio"
 	add_child(audio)
 	audio.play_music(&"music_menu")
+	var updater: Updater = Updater.new()  # D-148: tự kiểm tra bản mới (Android)
+	updater.name = "Updater"
+	add_child(updater)
+	updater.attach(select)
 	print(VERSION_TEXT + " ready")
 
 

@@ -236,3 +236,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | D-143 | Xong | 2026-10-24 | 633 test + soak xanh; Khiên Chắn của Duy Anh thành hất đòn (8→18%, trả 50→100%) |
 | D-144 | Xong | 2026-10-24 | Hình tướng / lính / quái / công trình thật trong trận + hoạt ảnh biến đổi, hiệu ứng chiêu trên bản đồ, giao diện thử 4:3 / 16:10 / 20:9. M8.3 / M8.4: chờ người chơi đo FPS trên máy tính bảng |
 | D-147 | Xong | 2026-10-24 | Hiệu năng: nướng bản đồ thành ô ảnh, minimap vẽ một lần (1.731 → 468 lần gọi vẽ mỗi khung) |
+| D-148 | Xong | 2026-10-24 | Tự cập nhật bản thử Android: nút "Cập nhật" ở màn chọn tướng tải và mở màn cài APK mới |

@@ -8,3 +8,4 @@ _to_delete/
 .local/
 __pycache__/
 build/
+app/build.json
