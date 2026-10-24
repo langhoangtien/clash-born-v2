@@ -16,6 +16,26 @@ const HIT_TICKS: int = 5
 
 ## Ảnh của đơn vị: `<art_id>_blue|_red` → `<art_id>`; trụ bậc 4 (lính gác nhà) dùng `tower_guard_*`.
 static func texture_of(e: Entity) -> Texture2D:
+	var key: int = e.id
+	if _cache.has(key) and _cache_art[key] == e.art_id:
+		return _cache[key]
+	var tex: Texture2D = _find(e)
+	_cache[key] = tex
+	_cache_art[key] = e.art_id
+	return tex
+
+
+## D-149: ảnh theo id đơn vị (phe, art_id, bậc trụ không đổi trong đời đơn vị) — tránh ghép chuỗi mỗi khung.
+static var _cache: Dictionary[int, Texture2D] = {}
+static var _cache_art: Dictionary[int, StringName] = {}
+
+
+static func clear_cache() -> void:
+	_cache.clear()
+	_cache_art.clear()
+
+
+static func _find(e: Entity) -> Texture2D:
 	var base: String = String(e.art_id)
 	if e.kind == Entity.Kind.TOWER and e.tier == 4:
 		base = "tower_guard"

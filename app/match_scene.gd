@@ -51,6 +51,7 @@ var view_3d: MatchView3D
 
 
 func _ready() -> void:
+	UnitSprite.clear_cache()  # D-149: id đơn vị dùng lại giữa các trận
 	world = World.new(SEED, load(BALANCE_PATH) as BalanceSettings)
 	world.map = map_view.layout
 	world.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
@@ -155,6 +156,7 @@ func tick_frame(delta: float) -> void:
 	if view_3d != null:
 		view_3d.update(camera.position)
 		fog.view_rect = Rect2(camera.position - Vector2.ONE * MatchView3D.GROUND_PX * 0.5, Vector2.ONE * MatchView3D.GROUND_PX)
+	units_view.view_rect = fog.view_rect  # D-149: không vẽ đơn vị ngoài khung nhìn
 	match_hud.speed = runner.speed
 	match_hud.sim_ms = runner.step_ms
 	skills.refresh()

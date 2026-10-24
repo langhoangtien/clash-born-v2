@@ -70,7 +70,7 @@ clashborn_v2/
                            ArtLibrary: tra hình theo id, thiếu thì hình tạm (ART.md)
     map/                   MapView, MapPainter (vẽ tạm bằng hình phẳng), MapBaker (nướng lớp tĩnh thành ô ảnh, D-147)
     units/                 UnitsView: vẽ đơn vị, nội suy giữa hai tick, y-sort; UnitSprite (ảnh + hoạt ảnh
-                           biến đổi, D-144), Vfx (hiệu ứng chiêu / đòn trên bản đồ)
+                           biến đổi, D-144), Vfx (hiệu ứng chiêu / đòn trên bản đồ), ZonePainter (vùng kỹ năng)
     three/                 (nhánh thu-3d) MatchView3D (mặt đất 2D trong SubViewport dán lên mặt phẳng, camera),
                            Actor3D (một đơn vị: nhân vật KayKit hoặc ảnh billboard), ModelLibrary (tra
                            assets/models/units_3d.json), Bars3D (thanh máu) — D-145, D-146

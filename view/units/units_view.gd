@@ -27,6 +27,9 @@ var _vfx: Vfx = Vfx.new()
 ## Bản 3D thử (D-145): chỉ vẽ phần nằm trên mặt đất (bóng, vòng đội, vùng, hiệu ứng); hình đơn vị do View3D vẽ.
 var ground_only: bool = false
 var _vfx_tick: int = -1
+## D-149: vùng đang nhìn (tọa độ map); đơn vị ngoài vùng không vẽ. Rỗng = vẽ hết.
+var view_rect: Rect2 = Rect2()
+const CULL_MARGIN: float = 400.0
 
 
 ## Gọi ngay trước mỗi world.step() để nhớ vị trí cũ.
@@ -68,20 +71,18 @@ func _moving(e: Entity) -> bool:
 func _draw() -> void:
 	if world == null:
 		return
-	_draw_zones()
-	var order: Array[Entity] = world.entities.duplicate()
-	order.sort_custom(func(a: Entity, b: Entity) -> bool: return display_position(a).y < display_position(b).y)
-	for e: Entity in order:
-		if e.alive and seen(e):  # hero chờ hồi sinh không vẽ (ECO-04)
-			if e.dash != null:  # ABL-08: vệt lướt
-				var at: Vector2 = display_position(e)
-				var col: Color = _team_color(e.team).lightened(0.4)
-				draw_line(at - e.facing * 110.0, at, Color(col, 0.4), e.radius * 1.6, true)
-				draw_line(at - e.facing * 70.0, at, Color(col, 0.8), e.radius * 0.8, true)
-			if ground_only:
-				_draw_ground_mark(e, display_position(e))
-			else:
-				_draw_unit(e, display_position(e))
+	ZonePainter.draw(self, world)
+	for item: Array in visible_units():
+		var e: Entity = item[1]
+		var at: Vector2 = item[0]
+		if e.dash != null:  # ABL-08: vệt lướt
+			var col: Color = _team_color(e.team).lightened(0.4)
+			draw_line(at - e.facing * 110.0, at, Color(col, 0.4), e.radius * 1.6, true)
+			draw_line(at - e.facing * 70.0, at, Color(col, 0.8), e.radius * 0.8, true)
+		if ground_only:
+			_draw_ground_mark(e, at)
+		else:
+			_draw_unit(e, at)
 	_vfx.draw(self, world)
 	for s: SkillShot in world.skill_shots:  # đạn kỹ năng (ABL-05); của địch chỉ hiện trong tầm nhìn
 		if viewer_team >= 0 and s.team != viewer_team and not FogView.lit(world, viewer_team, s.position):
@@ -96,28 +97,6 @@ func _draw() -> void:
 		draw_circle(p.position, 7.0, Color(1, 0.95, 0.6))
 
 
-## ABL-06/16: vòng báo trước của vùng có độ trễ (lõi lớn dần tới lúc nổ) và vùng tồn tại
-## (nhấp nháy), vẽ dưới đơn vị; cả hai đội đều thấy.
-func _draw_zones() -> void:
-	for p: PendingArea in world.pending_areas:
-		if p.radius <= 0.0:
-			continue
-		var col: Color = (BLUE if p.team == 0 else RED).lightened(0.35)
-		var t: float = clampf(float(world.tick - p.start_tick) / maxf(1.0, p.due_tick - p.start_tick), 0.0, 1.0)
-		draw_circle(p.center, p.radius, Color(col, 0.12))
-		draw_circle(p.center, p.radius * t, Color(col, 0.28))
-		draw_arc(p.center, p.radius, 0, TAU, 64, Color(col, 0.9), 4.0, true)
-	for z: ActiveZone in world.zones:
-		var col: Color = Color(1.0, 0.45, 0.1).lerp(BLUE if z.team == 0 else RED, 0.2)
-		if world.tick < z.start_tick:
-			draw_arc(z.center, z.radius, 0, TAU, 64, Color(col, 0.5), 2.0, true)
-			continue
-		var phase: float = float(world.tick - z.start_tick) / z.interval_ticks
-		var pulse: float = 1.0 - (phase - floorf(phase))
-		draw_circle(z.center, z.radius, Color(col, 0.22 + 0.2 * pulse))
-		draw_arc(z.center, z.radius, 0, TAU, 64, Color(col, 0.85), 3.0, true)
-
-
 ## D-145: bóng + vòng màu đội dưới chân (bản 3D).
 func _draw_ground_mark(e: Entity, at: Vector2) -> void:
 	draw_set_transform(at, 0.0, Vector2(1.0, 1.0))
@@ -125,6 +104,22 @@ func _draw_ground_mark(e: Entity, at: Vector2) -> void:
 	draw_set_transform(Vector2.ZERO)
 	if e.kind == Entity.Kind.HERO or e.kind == Entity.Kind.LANE_CREEP:
 		draw_arc(at, e.radius * 1.05, 0, TAU, 32, Color(_team_color(e.team), 0.85), 4.0 if e.kind == Entity.Kind.HERO else 2.5, true)
+
+
+## D-149: các đơn vị cần vẽ khung này, [vị trí hiển thị, Entity], xếp theo y. Bỏ đơn vị chết /
+## không thấy (ECO-04, sương mù) và đơn vị ngoài `view_rect` (nới CULL_MARGIN cho hình cao, thanh máu).
+func visible_units() -> Array[Array]:
+	var area: Rect2 = view_rect.grow(CULL_MARGIN)
+	var list: Array[Array] = []
+	for e: Entity in world.entities:
+		if not e.alive or not seen(e):
+			continue
+		var at: Vector2 = display_position(e)
+		if view_rect.has_area() and not area.has_point(at):
+			continue
+		list.append([at, e])
+	list.sort_custom(func(a: Array, b: Array) -> bool: return a[0].y < b[0].y)
+	return list
 
 
 ## Vẽ đơn vị này không: phe mình, công trình (vị trí cố định, như Dota) hoặc đang thấy.
