@@ -70,7 +70,7 @@ clashborn_v2/
                            ArtLibrary: tra hình theo id, thiếu thì hình tạm (ART.md)
     map/                   MapView, MapPainter (vẽ tạm bằng hình phẳng), MapBaker (nướng lớp tĩnh thành ô ảnh, D-147)
     units/                 UnitsView: vẽ đơn vị, nội suy giữa hai tick, y-sort; UnitSprite (ảnh + hoạt ảnh
-                           biến đổi, D-144), Vfx (hiệu ứng chiêu / đòn trên bản đồ)
+                           biến đổi, D-144), Vfx (hiệu ứng chiêu / đòn trên bản đồ), ZonePainter (vùng kỹ năng)
     art/                   ArtLibrary: res://assets/art/<art_id>.png, thiếu → hình tạm
     ui/                    UiStyle (phông, màu, khung, nút, xu), UiGlyphs (icon nét) — D-130
     menu/                  HeroSelect, HeroDetail, HeroPreview (màn chọn tướng)
