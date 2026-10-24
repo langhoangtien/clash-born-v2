@@ -8,22 +8,22 @@
   },
   "units": {
     "duy_anh": {"model": "Knight", "rig": "Rig_Medium", "tex": "knight", "right": "sword_1handed", "left": "shield_badge_color",
-                "attack": "Melee_1H_Attack_Chop", "cast": "Melee_1H_Attack_Slice_Horizontal", "height": 2.4},
+                "attack": "Melee_1H_Attack_Chop", "cast": "Melee_1H_Attack_Slice_Horizontal", "height": 1.6},
     "brakk": {"model": "Barbarian", "rig": "Rig_Medium", "tex": "barbarian",
-              "attack": "Melee_Unarmed_Attack_Punch_A", "cast": "Melee_Unarmed_Attack_Kick", "height": 2.5},
+              "attack": "Melee_Unarmed_Attack_Punch_A", "cast": "Melee_Unarmed_Attack_Kick", "height": 1.65},
     "gorran": {"model": "Barbarian_Large", "rig": "Rig_Large", "tex": "barbarian", "right": "axe_2handed_Large",
-               "attack": "Melee_2H_Attack", "cast": "Melee_2H_Slam", "height": 3.0},
+               "attack": "Melee_2H_Attack", "cast": "Melee_2H_Slam", "height": 2.0},
     "myra": {"model": "Mage", "rig": "Rig_Medium", "tex": "mage", "right": "staff",
-             "attack": "Ranged_Magic_Shoot", "cast": "Ranged_Magic_Spellcasting", "height": 2.4},
+             "attack": "Ranged_Magic_Shoot", "cast": "Ranged_Magic_Spellcasting", "height": 1.6},
     "vexa": {"model": "Druid", "rig": "Rig_Medium", "tex": "druid", "right": "druid_staff", "left": "spellbook_open",
-             "attack": "Ranged_Magic_Shoot", "cast": "Ranged_Magic_Summon", "height": 2.4},
+             "attack": "Ranged_Magic_Shoot", "cast": "Ranged_Magic_Summon", "height": 1.6},
     "noctis": {"model": "Rogue_Hooded", "rig": "Rig_Medium", "tex": "rogue", "right": "dagger", "left": "dagger",
-               "attack": "Melee_Dualwield_Attack_Stab", "cast": "Melee_Dualwield_Attack_Slice", "height": 2.4},
+               "attack": "Melee_Dualwield_Attack_Stab", "cast": "Melee_Dualwield_Attack_Slice", "height": 1.6},
     "creep_melee": {"model": "Knight", "rig": "Rig_Medium", "tex": "knight", "right": "sword_1handed", "left": "shield_badge_color",
-                    "attack": "Melee_1H_Attack_Slice_Diagonal", "height": 1.55},
+                    "attack": "Melee_1H_Attack_Slice_Diagonal", "height": 1.1},
     "creep_ranged": {"model": "Ranger", "rig": "Rig_Medium", "tex": "ranger", "right": "crossbow_1handed",
-                     "attack": "Ranged_1H_Shoot", "height": 1.55},
+                     "attack": "Ranged_1H_Shoot", "height": 1.1},
     "creep_siege": {"model": "Engineer", "rig": "Rig_Medium", "tex": "engineer", "right": "crossbow_1handed",
-                    "attack": "Ranged_1H_Shoot", "height": 1.8}
+                    "attack": "Ranged_1H_Shoot", "height": 1.3}
   }
 }
