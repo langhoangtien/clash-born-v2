@@ -55,25 +55,13 @@ func setup(w: World, units_view: UnitsView, ground_nodes: Array[Node]) -> void:
 	var plane: PlaneMesh = PlaneMesh.new()
 	plane.size = Vector2.ONE * GROUND_PX * S
 	_ground.mesh = plane
-	var mat: StandardMaterial3D = StandardMaterial3D.new()
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.albedo_texture = layer.get_texture()
-	_ground.material_override = mat
+	_ground.material_override = Look3D.ground_material(layer.get_texture())  # D-150
 	add_child(_ground)
 	camera = Camera3D.new()
 	camera.fov = CAM_FOV
 	camera.current = true
 	add_child(camera)
-	var sun: DirectionalLight3D = DirectionalLight3D.new()
-	sun.rotation_degrees = Vector3(-55, -30, 0)
-	sun.light_energy = 1.1
-	add_child(sun)
-	var env: WorldEnvironment = WorldEnvironment.new()
-	env.environment = Environment.new()
-	env.environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.environment.ambient_light_color = Color(0.75, 0.78, 0.85)
-	env.environment.ambient_light_energy = 0.8
-	add_child(env)
+	Look3D.add_lights(self)  # D-150
 
 
 func to_3d(p: Vector2) -> Vector3:

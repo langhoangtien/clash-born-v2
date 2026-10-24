@@ -239,3 +239,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | D-147 | Xong | 2026-10-24 | Hiệu năng: nướng bản đồ thành ô ảnh, minimap vẽ một lần (1.731 → 468 lần gọi vẽ mỗi khung) |
 | D-148 | Xong | 2026-10-24 | Tự cập nhật bản thử Android: nút "Cập nhật" ở màn chọn tướng tải và mở màn cài APK mới |
 | D-149 | Xong | 2026-10-24 | Hiệu năng lúc giao tranh: chỉ vẽ đơn vị trong khung nhìn, nhớ ảnh đơn vị (2,6 → 1,0 ms mỗi khung trên máy thử) |
+| D-150 | Đang thử (nhánh `thu-3d`) | 2026-10-25 | Nâng hình bản 3D: MSAA 4×, bóng mờ dưới chân, ánh sáng / màu, sương xa, vân mặt đất. Chờ người chơi đo FPS 3D lúc giao tranh (mục tiêu ≥ 50) |

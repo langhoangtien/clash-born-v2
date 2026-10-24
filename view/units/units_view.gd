@@ -99,9 +99,8 @@ func _draw() -> void:
 
 ## D-145: bóng + vòng màu đội dưới chân (bản 3D).
 func _draw_ground_mark(e: Entity, at: Vector2) -> void:
-	draw_set_transform(at, 0.0, Vector2(1.0, 1.0))
-	draw_circle(Vector2.ZERO, e.radius * 1.1, Color(0, 0, 0, 0.35))
-	draw_set_transform(Vector2.ZERO)
+	if ModelLibrary.unit(e.art_id).is_empty():  # D-150: đơn vị có mô hình 3D tự có bóng mờ
+		draw_circle(at, e.radius * 1.1, Color(0, 0, 0, 0.35))
 	if e.kind == Entity.Kind.HERO or e.kind == Entity.Kind.LANE_CREEP:
 		draw_arc(at, e.radius * 1.05, 0, TAU, 32, Color(_team_color(e.team), 0.85), 4.0 if e.kind == Entity.Kind.HERO else 2.5, true)
 

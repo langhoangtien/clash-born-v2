@@ -59,5 +59,9 @@ static func team_material(base: Material, tex: String, team: int) -> Material:
 		return base
 	var suffix: String = "_blue" if team == 0 else ("_red" if team == 1 else "")
 	m.albedo_texture = load(ROOT + tex + "_texture" + suffix + ".png") as Texture2D
+	m.rim_enabled = true  # D-150: viền sáng nhẹ cho nhân vật nổi khỏi nền
+	m.rim = 0.25
+	m.rim_tint = 0.4
+	m.roughness = 0.8
 	_materials[key] = m
 	return m

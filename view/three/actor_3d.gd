@@ -31,6 +31,7 @@ func _make_model(e: Entity, cfg: Dictionary) -> void:
 	height = cfg["height"]
 	var model: Node3D = ModelLibrary.scene(cfg["model"] + ".glb").instantiate() as Node3D
 	add_child(model)
+	add_child(Look3D.blob(height))  # D-150: bóng mờ dưới chân
 	model.scale = Vector3.ONE * (height / float(_rig["native"]))
 	var skel: Skeleton3D = model.find_children("*", "Skeleton3D", true, false)[0]
 	_attach(skel, cfg.get("right", ""), "handslot.r")
