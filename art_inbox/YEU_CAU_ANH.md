@@ -786,3 +786,9 @@ Chuẩn 7s. Ghi vào `04_icons/`, chạy `tools/icon_preview.py`, commit + push.
 
 Chuẩn 7s. `item_orchid.png` — **Hoa Câm Lặng**: bông hoa lan tím đậm nở trên cán trượng mảnh màu bạc,
 một nhụy trắng hình dấu gạch chéo (ý "câm"). Tím khác hẳn Lưỡi Ẩn Thân / Ngọc Ảo Ảnh (đậm, ít hồng).
+
+### Kết quả Đợt 13 — 2026-10-24 — HOÀN TẤT
+
+- [x] `04_icons/item_orchid.png` — hoa lan tím chàm đậm trên cán trượng bạc, nhụy trắng hình gạch chéo; theo chuẩn 7s, không khung / đĩa / hào quang, nền alpha.
+- [x] PNG 256 × 256, lề an toàn; đã chạy `tools/icon_preview.py` và mở `04_icons/_preview.png` xem 48 / 64 / 84 px và bản làm tối. Preview kèm 3 mẫu 7s và Ngọc Ảo Ảnh để đối chiếu màu tím.
+- Chỉ thay đổi `art_inbox/`, chưa nhập vào `assets/`.
