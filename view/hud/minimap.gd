@@ -24,6 +24,7 @@ var peeking: bool = false
 var peek_point: Vector2 = Vector2.ZERO
 
 var _content: Node2D
+var _terrain: Texture2D
 var _fog: FogView
 var _dots: _Layer
 var _pointer: int = -100
@@ -74,13 +75,7 @@ func _add_terrain() -> void:
 		MapPainter.paint_bushes(ci, world.map, false)
 		MapPainter.paint_shops(ci, world.map, world.balance.shop_radius, false)
 	vp.add_child(terrain)
-	var pic: TextureRect = TextureRect.new()
-	pic.texture = vp.get_texture()
-	pic.size = Vector2(SIDE, SIDE)
-	pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	pic.stretch_mode = TextureRect.STRETCH_SCALE
-	pic.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(pic)
+	_terrain = vp.get_texture()
 
 
 func map_scale() -> float:
@@ -99,6 +94,8 @@ func _process(_delta: float) -> void:
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color(0, 0, 0, 0.35))
+	if _terrain != null:
+		draw_texture_rect(_terrain, Rect2(Vector2.ZERO, Vector2(SIDE, SIDE)), false)
 
 
 ## Vẽ ở tọa độ map (layer đã thu nhỏ): bán kính chấm tính theo px minimap.
