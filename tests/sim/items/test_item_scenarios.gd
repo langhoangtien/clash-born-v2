@@ -96,8 +96,8 @@ func test_ITEM_hex_scythe_hexes_for_3_5s() -> void:
 	assert_false(Rules.has_state(p[2], UnitState.Id.HEXED), "hết 3.5 s")
 
 
-func test_ITEM_resolute_armor_dispels_then_magic_immune() -> void:
-	var p: Array = _pair(&"resolute_armor")
+func test_ITEM_black_king_bar_dispels_then_magic_immune() -> void:
+	var p: Array = _pair(&"black_king_bar")  # D-140: chủ động cũ của Giáp Bất Khuất
 	var w: World = p[0]
 	Effects.apply(w, p[1], _lib.effects[&"silence"], p[2], {}, "5")
 	assert_eq(_use(w, p[1]), R.NONE)

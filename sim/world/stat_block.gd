@@ -142,7 +142,7 @@ func _combine(stat: int, base: float, active: Array[StatModifier]) -> float:
 			ModifierDef.Op.OVERRIDE:
 				override_value = m.value
 	var value: float = base
-	if stat == S.EVASION or stat == S.ACCURACY or stat == S.COOLDOWN_REDUCTION:
+	if stat == S.EVASION or stat == S.ACCURACY or stat == S.COOLDOWN_REDUCTION or stat == S.PHYSICAL_DAMAGE_REDUCTION:
 		adds.append(base)
 		value = HitFormulas.combine_independent(adds)  # CMB-11, ABL-19
 	else:
@@ -179,4 +179,5 @@ func _apply_limits() -> void:
 	_final[S.LIFESTEAL] = maxf(0.0, _final[S.LIFESTEAL])
 	_final[S.PHYSICAL_DAMAGE] = maxf(0.0, _final[S.PHYSICAL_DAMAGE])  # DUL-07
 	_final[S.COOLDOWN_REDUCTION] = clampf(_final[S.COOLDOWN_REDUCTION], 0.0, 1.0)  # ABL-19
+	_final[S.PHYSICAL_DAMAGE_REDUCTION] = clampf(_final[S.PHYSICAL_DAMAGE_REDUCTION], 0.0, 1.0)  # CMB-16
 	_final[S.DAMAGE_TAKEN_MULTIPLIER] = maxf(0.0, _final[S.DAMAGE_TAKEN_MULTIPLIER])

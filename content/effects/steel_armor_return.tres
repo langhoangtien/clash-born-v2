@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="2_eff"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="3_trg"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="4_dmg"]
+
+[sub_resource type="Resource" id="D0"]
+script = ExtResource("4_dmg")
+amount = "flat + fraction * event.damage"
+reflected = true
+amplified = false
+target = 2
+
+[sub_resource type="Resource" id="T0"]
+script = ExtResource("3_trg")
+event = &"attack_landed"
+role = 1
+condition = &"target_is_hero"
+actions = Array[ExtResource("1_act")]([SubResource("D0")])
+
+[resource]
+script = ExtResource("2_eff")
+duration = "0"
+tags = Array[StringName]([&"passive"])
+dispel = 2
+triggers = Array[ExtResource("3_trg")]([SubResource("T0")])
+id = &"steel_armor_return"
+art_id = &"steel_armor"

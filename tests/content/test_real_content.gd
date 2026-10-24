@@ -40,7 +40,8 @@ func test_six_heroes_and_items() -> void:
 		&"stun_hammer": [C.ATTACK, false, 0, false], &"shadow_blade": [C.ATTACK, false, 0, false],
 		&"ghost_scepter": [C.MAGIC, false, 0, false], &"cyclone_staff": [C.MAGIC, false, 0, false],
 		&"hex_scythe": [C.MAGIC, false, 900, true], &"cleansing_charm": [C.DEFENSE, false, 0, false],
-		&"frost_orb": [C.DEFENSE, true, 0, false], &"resolute_armor": [C.DEFENSE, true, 600, false],
+		&"frost_orb": [C.DEFENSE, true, 0, false], &"resolute_armor": [C.DEFENSE, false, 0, false],
+		&"black_king_bar": [C.ATTACK, true, 600, false],
 		&"reveal_dust": [C.UTILITY, false, 0, false],
 		&"observer_ward": [C.UTILITY, false, 0, false], &"sentry_ward": [C.UTILITY, false, 0, false],
 	}

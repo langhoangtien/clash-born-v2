@@ -1,24 +1,47 @@
 [gd_resource type="Resource" script_class="ItemDef" format=3]
 
-[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
-[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Resource" path="res://content/effects/steel_armor_return.tres" id="2_pas"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_app"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_abl"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_item"]
+
+[sub_resource type="Resource" id="A0"]
+script = ExtResource("3_app")
+effect = ExtResource("2_pas")
+target = 0
+
+[sub_resource type="Resource" id="AB"]
+script = ExtResource("4_abl")
+slot = 4
+targeting = 0
+values = Dictionary[StringName, PackedFloat32Array]({
+&"flat": PackedFloat32Array(20),
+&"fraction": PackedFloat32Array(0.2)
+})
+on_learn = Array[ExtResource("1_act")]([SubResource("A0")])
+id = &"steel_armor_passive_ability"
+art_id = &"steel_armor"
 
 [sub_resource type="Resource" id="M0"]
-script = ExtResource("1_mod")
+script = ExtResource("5_mod")
 stat = &"physical_armor"
 value = "10"
 
 [sub_resource type="Resource" id="M1"]
-script = ExtResource("1_mod")
-stat = &"max_hp"
-value = "250"
+script = ExtResource("5_mod")
+stat = &"physical_damage"
+value = "20"
 
 [resource]
-script = ExtResource("2_item")
+script = ExtResource("6_item")
 category = 2
-cost = 1600
-modifiers = Array[ExtResource("1_mod")]([SubResource("M0"), SubResource("M1")])
-components = Array[StringName]([&"chainmail", &"ring_protection", &"vitality_booster"])
+description = "Bị động: tướng địch đánh thường trúng bạn nhận lại 20 + 20% sát thương đòn đó (vật lý, phản hồi)."
+cost = 2100
+components = Array[StringName]([&"chainmail", &"ring_protection", &"broadsword"])
+modifiers = Array[ExtResource("5_mod")]([SubResource("M0"), SubResource("M1")])
+ability = SubResource("AB")
 id = &"steel_armor"
 display_name = "Giáp Thép"
 art_id = &"steel_armor"

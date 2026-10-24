@@ -11,6 +11,7 @@ const STATS: PackedStringArray = [
 	"vision_range", "evasion", "accuracy", "critical_chance", "critical_multiplier",
 	"status_resistance", "armor_reduction", "physical_armor_penetration", "lifesteal",
 	"damage_taken_multiplier", "spell_amplification", "magic_armor_reduction", "cooldown_reduction",
+	"physical_damage_reduction",
 ]
 
 ## EVT

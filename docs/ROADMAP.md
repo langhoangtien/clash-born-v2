@@ -230,3 +230,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | D-134..D-137 | Xong | 2026-10-23 | 616 test + soak xanh; viền chạy quanh ô buff, hero Duy Anh · Hiệp Sĩ (Quyết Đấu có phản + hồi máu, quạt, Khiên Chắn chặn sát thương). Icon Codex đã nhập, chờ chơi thử |
 | D-138 | Xong | 2026-10-23 | 615 test xanh; nút Test trong trận: +10k vàng / +1 cấp / cấp 20 cho mình và bot (CMD-06) |
 | D-139 | Xong | 2026-10-23 | 621 test xanh; cân bằng đồ, hút máu, tầm chiêu, đồ tầm trung, dòng hút máu / né / kháng hiệu ứng / chống phép (13 món mới, tổng 82 món). Chờ Codex Đợt 10, chờ chơi thử |
+| D-140 | Xong | 2026-10-24 | 625 test xanh; Giáp Thép phản đòn, Giáp Bất Khuất giảm sát thương vật lý, Trượng Hắc Vương (kiểu BKB). Chờ Codex Đợt 11 |

@@ -444,7 +444,8 @@ là đề xuất, cân lại khi chơi thử.
 | Món | id | Giá | Chỉ số | Chủ động / bị động |
 |---|---|---:|---|---|
 | Gậy Hồn Ma | `ghost_scepter` | 1400 | +7 mọi thuộc tính | **Chủ động** (hồi 22 s): bản thân GHOST 4 s |
-| Giáp Bất Khuất | `resolute_armor` | 3300 | +10 STR, +24 sát thương | **Chủ động** (hồi 70 s): thanh tẩy cơ bản bản thân rồi MAGIC_IMMUNE 6 s |
+| Trượng Hắc Vương | `black_king_bar` | 3300 | +10 STR, +25 sát thương | **Chủ động** (hồi 70 s): thanh tẩy cơ bản bản thân rồi MAGIC_IMMUNE 6 s (D-140, trước là Giáp Bất Khuất) |
+| Giáp Thép | `steel_armor` | 2100 | +10 giáp, +20 sát thương | **Bị động**: tướng địch đánh thường trúng nhận lại 20 + 20% sát thương đòn (D-140) |
 | Ngọc Băng Sương | `frost_orb` | 2000 | +250 máu, +10 mọi thuộc tính | **Bị động**: đòn đánh làm chậm 20% tốc chạy và 20% tốc đánh trong 2 s (đánh xa) / 3 s (cận chiến) |
 | Bột Lộ Diện | `reveal_dust` | 80 | — | **Chủ động**, 2 lần dùng (hồi 30 s): REVEALED mọi kẻ địch trong 900 quanh mình 8 s |
 | Gậy Lốc Xoáy | `cyclone_staff` | 2400 | +10 INT, +2.5 hồi mana | **Chủ động** (hồi 23 s, tầm 575): một đơn vị bị nhấc lên 2.5 s — INVULNERABLE + UNTARGETABLE + STUNNED. Dùng lên bản thân để né; dùng lên địch đang MAGIC_IMMUNE thì không được |
@@ -471,6 +472,7 @@ Ghép đồ SHOP-09: giá = giá món; mua khi đã có thành phần thì chỉ
 | Tấn công | Rìu Xiềng Xích | `chain_axe` | 2500 | +10 Sức mạnh, +20 Sát thương | Rìu Khổng Lồ + Trường Kiếm |
 | Tấn công | Lưỡi Ẩn Thân | `shadow_blade` | 2500 | +25 Sát thương, +30% Tốc đánh | Đại Kiếm + Găng Nhanh |
 | Tấn công | Rìu Chiến | `battle_axe` | 2500 | +60 Sát thương, +5 Hồi máu | Trường Kiếm + Đại Kiếm |
+| Tấn công | Trượng Hắc Vương | `black_king_bar` | 3300 | +10 Sức mạnh, +25 Sát thương | Rìu Khổng Lồ + Đại Kiếm |
 | Tấn công | Song Đao | `twin_blades` | 3400 | +20 Nhanh nhẹn, +20 Sức mạnh, +20% Tốc đánh, +20 Sát thương, +20% Tốc chạy | Rìu Khổng Lồ + Lưỡi Nhanh + Gậy Chiến + Giày |
 | Tấn công | Lưỡi Hái Hủy Diệt | `desolator` | 3500 | +60 Sát thương | Kiếm Quỷ + Lưỡi Mòn |
 | Tấn công | Trượng Lôi Kích | `thunder_staff` | 3800 | +40% Tốc đánh, +10 Trí tuệ | Găng Nhanh ×2 + Gậy Phù Thủy |
@@ -492,12 +494,12 @@ Ghép đồ SHOP-09: giá = giá món; mua khi đã có thành phần thì chỉ
 | Phòng thủ | Vòng Tay Sắt | `bracer` | 420 | +8 Sức mạnh, +3 Trí tuệ, +3 Nhanh nhẹn, +2 Hồi máu | Găng Sức Mạnh + Vòng Đầu |
 | Phòng thủ | Áo Choàng Phép | `magic_cloak` | 1000 | +10 Kháng phép, +8 Hồi máu | Áo Kháng Phép + Nhẫn Hồi Phục |
 | Phòng thủ | Bùa Thanh Tẩy | `cleansing_charm` | 1300 | +6 Giáp, +4 Hồi máu | Giáp Xích + Nhẫn Hồi Phục |
-| Phòng thủ | Giáp Thép | `steel_armor` | 1600 | +10 Giáp, +250 Máu | Giáp Xích + Nhẫn Bảo Hộ + Đá Sinh Lực |
 | Phòng thủ | Ngọc Băng Sương | `frost_orb` | 2000 | +250 Máu, +10 Sức mạnh, +10 Nhanh nhẹn, +10 Trí tuệ | Đá Sinh Lực + Đai Sức Mạnh + Vòng Nhanh Nhẹn |
+| Phòng thủ | Giáp Thép | `steel_armor` | 2100 | +10 Giáp, +20 Sát thương | Giáp Xích + Nhẫn Bảo Hộ + Trường Kiếm |
 | Phòng thủ | Ngọc Ảo Ảnh | `mirage_orb` | 2700 | +10 Sức mạnh, +10 Nhanh nhẹn, +10 Trí tuệ, +20% Né tránh | Bùa Né Tránh + Đai Sức Mạnh + Vòng Nhanh Nhẹn + Áo Pháp Sư |
+| Phòng thủ | Giáp Bất Khuất | `resolute_armor` | 2900 | +15 Giáp, +10% Giảm sát thương vật lý | Giáp Tấm + Giáp Xích |
 | Phòng thủ | Giáp Kiên Cường | `steadfast_armor` | 3100 | +15 Giáp, +20% Kháng hiệu ứng | Giáp Tấm + Bùa Kiên Định + Giáp Xích |
 | Phòng thủ | Áo Choàng Hiền Giả | `sage_cloak` | 3200 | +12 Kháng phép, +10% Giảm hồi chiêu, +250 Máu, +250 Mana, +8 Hồi máu, +2 Hồi mana | Áo Choàng Phép + Đá Sinh Lực + Ngọc Mana + Mặt Nạ Hiền Triết |
-| Phòng thủ | Giáp Bất Khuất | `resolute_armor` | 3300 | +10 Sức mạnh, +25 Sát thương | Rìu Khổng Lồ + Đại Kiếm |
 | Phòng thủ | Giáp Thần Công | `assault_plate` | 4000 | +15 Giáp, +60% Tốc đánh | Giáp Tấm + Đá Siêu Tốc |
 | Phòng thủ | Tim Khổng Lồ | `giant_heart` | 4000 | +30 Sức mạnh, +600 Máu, +10 Hồi máu | Rìu Thần Lực + Đá Sinh Lực ×2 + Nhẫn Hồi Phục |
 | Phòng thủ | Ngọc Băng Sương II | `frost_orb_ii` | 5200 | +300 Máu, +20 Sức mạnh, +20 Nhanh nhẹn, +20 Trí tuệ, +20% Né tránh | Ngọc Băng Sương + Ngọc Ảo Ảnh |

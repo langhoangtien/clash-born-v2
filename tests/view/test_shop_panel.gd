@@ -35,7 +35,7 @@ func test_SHOP_07_tabs_filter_catalog() -> void:
 	assert_true(_ids(p.catalog(T.MAGIC)).has(&"hex_scythe"))
 	assert_true(_ids(p.catalog(T.DEFENSE)).has(&"magic_cloak"))
 	assert_true(_ids(p.catalog(T.UTILITY)).has(&"grapes"))
-	assert_eq(_ids(p.catalog(T.SECRET)), [&"frost_orb", &"resolute_armor"])
+	assert_eq(_ids(p.catalog(T.SECRET)), [&"frost_orb", &"black_king_bar"])
 	p.free()
 
 

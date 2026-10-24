@@ -55,7 +55,7 @@ physical_damage, magic_damage, pure_damage, physical_armor, magic_armor,
 attack_range, cast_range, base_attack_time, attack_speed, movement_speed,
 vision_range, evasion, accuracy, critical_chance, critical_multiplier,
 status_resistance, armor_reduction, physical_armor_penetration, lifesteal,
-damage_taken_multiplier, spell_amplification, magic_armor_reduction, cooldown_reduction`.
+damage_taken_multiplier, spell_amplification, magic_armor_reduction, cooldown_reduction, physical_damage_reduction`.
 
 `physical_damage` cuối cùng tối thiểu 0 (D-135).
 
@@ -283,6 +283,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   nhân `block_ranged`. Trừ vào sát thương đòn **trước giáp**, không dưới 0. Chặn cả đòn của lính,
   quái, trụ. Biến hình (ST-16) thì tắt nếu là bị động. Phản sát thương Quyết Đấu (DUL-04) tính trên
   sát thương trước khi chặn.
+- `CMB-16` (D-140) Giảm sát thương vật lý (`physical_damage_reduction`): sát thương PHYSICAL nhận vào nhân
+  `1 − giảm` sau giáp, trước hệ số state / khiên. Nhiều nguồn **nhân dồn** như né (hai nguồn 10% → 19%).
 - `CMB-12` Đổi mục tiêu đánh (D-69): khi bắt đầu vung đòn vào mục tiêu **khác** mục tiêu
   của đòn vung trước (đánh gió không tính), phát `attack_target_changed` (kẻ gây = người
   đánh, đối tượng = mục tiêu mới). Đòn đầu tiên không phát. Đạn của đòn cũ đang bay vẫn

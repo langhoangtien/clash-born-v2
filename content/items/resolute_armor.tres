@@ -1,57 +1,25 @@
 [gd_resource type="Resource" script_class="ItemDef" format=3]
 
-[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_ypo7f"]
-[ext_resource type="Script" path="res://sim/actions/dispel_action.gd" id="2_u77j8"]
-[ext_resource type="Resource" path="res://content/effects/magic_immune.tres" id="3_ea5iw"]
-[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="4_tej5e"]
-[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="5_mc4gq"]
-[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="6_aj6eu"]
-[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="7_fb7oi"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
 
-[sub_resource type="Resource" id="Resource_s10p2"]
-script = ExtResource("2_u77j8")
-target = 0
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("1_mod")
+stat = &"physical_armor"
+value = "15"
 
-[sub_resource type="Resource" id="Resource_q1t56"]
-script = ExtResource("4_tej5e")
-effect = ExtResource("3_ea5iw")
-duration = "duration"
-target = 0
-
-[sub_resource type="Resource" id="Resource_si4ov"]
-script = ExtResource("5_mc4gq")
-slot = 4
-target_team = 2
-values = Dictionary[StringName, PackedFloat32Array]({
-&"cooldown": PackedFloat32Array(70),
-&"duration": PackedFloat32Array(6)
-})
-on_cast = Array[ExtResource("1_ypo7f")]([SubResource("Resource_s10p2"), SubResource("Resource_q1t56")])
-bot_usages = Array[int]([5])
-bot_conditions = Array[StringName]([&"hp_below_70", &"taking_damage"])
-id = &"resolute_armor_active"
-art_id = &"resolute_armor_active"
-
-[sub_resource type="Resource" id="Resource_3f0e4"]
-script = ExtResource("6_aj6eu")
-stat = &"strength"
-value = "10"
-
-[sub_resource type="Resource" id="Resource_8vgbl"]
-script = ExtResource("6_aj6eu")
-stat = &"physical_damage"
-value = "25"
+[sub_resource type="Resource" id="M1"]
+script = ExtResource("1_mod")
+stat = &"physical_damage_reduction"
+value = "0.1"
 
 [resource]
-script = ExtResource("7_fb7oi")
+script = ExtResource("2_item")
 category = 2
-description = "Chủ động (hồi 70 s): thanh tẩy cơ bản bản thân rồi kháng phép 6 s — không nhận sát thương phép, không bị chiêu nhắm đơn vị và hiệu ứng xấu của địch."
-shop = 1
-unlock_time = 600.0
-cost = 3300
-components = Array[StringName]([&"ogre_axe", &"claymore"])
-modifiers = Array[ExtResource("6_aj6eu")]([SubResource("Resource_3f0e4"), SubResource("Resource_8vgbl")])
-ability = SubResource("Resource_si4ov")
+description = "Giảm 10% sát thương vật lý nhận vào (CMB-16)."
+cost = 2900
+components = Array[StringName]([&"platemail", &"chainmail"])
+modifiers = Array[ExtResource("1_mod")]([SubResource("M0"), SubResource("M1")])
 id = &"resolute_armor"
 display_name = "Giáp Bất Khuất"
 art_id = &"resolute_armor"

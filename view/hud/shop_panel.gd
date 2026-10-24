@@ -59,6 +59,7 @@ const STATS: Dictionary = {
 	&"magic_armor_reduction": ["Xuyên giáp phép", false],
 	&"status_resistance": ["Kháng hiệu ứng", true],
 	&"cast_range": ["Tầm chiêu", false],
+	&"physical_damage_reduction": ["Giảm sát thương vật lý", true],
 }
 
 signal buy_pressed(item_id: StringName)

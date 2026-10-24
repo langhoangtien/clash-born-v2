@@ -740,3 +740,10 @@ trùng các món đã có. Ghi vào `04_icons/`, chạy `tools/icon_preview.py`,
 - [x] Kiểm tra 13 PNG 256 × 256, alpha ngoài vật và lề an toàn.
 - [x] Chạy `tools/icon_preview.py`, mở `04_icons/_preview.png` xem cỡ 48 / 64 / 84 px và bản làm tối, kèm 3 mẫu 7s để so sánh.
 - Đã làm sạch mảnh thừa khi tách ảnh ở áo choàng, kiếm, dao và ngọc; chỉ thay đổi `art_inbox/`, không sửa code / dữ liệu gameplay hay nhập vào `assets/`.
+
+## Đợt 11 — 1 món (D-140) — 2026-10-24
+
+Chuẩn 7s. `item_black_king_bar.png` — **Trượng Hắc Vương**: cây gậy vua đen bóng, hai đầu bịt vàng,
+khảm một viên đá vàng giữa thân (kiểu gậy quyền uy). Không trùng màu / hình các món đã có.
+Nên vẽ lại luôn `item_resolute_armor.png` (Giáp Bất Khuất giờ là giáp nặng giảm sát thương vật lý) và
+`item_steel_armor.png` (Giáp Thép giờ có gai phản đòn trên vai và ngực) cho đúng công dụng mới.

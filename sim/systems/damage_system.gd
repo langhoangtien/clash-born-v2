@@ -74,6 +74,8 @@ static func _amount(world: World, r: DamageRequest, source: Entity, target: Enti
 	var amount: float = DamageFormulas.final_damage(raw * _structure_factor(world, source, target), r.damage_type,
 		s.get_stat(StatId.Id.PHYSICAL_ARMOR), _magic_armor(source, target),
 		s.get_stat(StatId.Id.DAMAGE_TAKEN_MULTIPLIER), world.balance)
+	if r.damage_type == DamageFormulas.DamageType.PHYSICAL:
+		amount *= 1.0 - s.get_stat(StatId.Id.PHYSICAL_DAMAGE_REDUCTION)  # CMB-16
 	var factor: float = Rules.damage_factor(world, target, r.damage_type, r.pierces_magic_immunity)  # PRI-05
 	if factor <= 0.0:
 		return -1.0
