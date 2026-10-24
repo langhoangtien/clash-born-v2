@@ -768,8 +768,16 @@ Chuẩn 7s. Ghi vào `04_icons/`, chạy `tools/icon_preview.py`, commit + push.
 
 | Xong | File | Món | Vẽ gì |
 |---|---|---|---|
-| [ ] | `item_ring_health.png` | Nhẫn Sinh Lực | Nhẫn vàng có viên đá đỏ hồng hình trái tim nhỏ |
-| [ ] | `item_void_stone.png` | Đá Hư Không | Viên đá tròn xanh đen, xoáy tím bên trong |
-| [ ] | `item_perseverance.png` | Ngọc Kiên Trì | Viên ngọc hai nửa đỏ và xanh lam ghép trong vòng bạc |
-| [ ] | `item_fate_staff.png` | Trượng Định Mệnh | Trượng mảnh, đầu là đồng hồ cát tím quấn xích bạc |
-| [ ] | `item_warding_cloak.png` | Áo Choàng Kiên Định | Áo choàng xanh rêu viền đồng, khắc mỏ neo nhỏ trên cổ áo |
+| [x] | `item_ring_health.png` | Nhẫn Sinh Lực | Nhẫn vàng có viên đá đỏ hồng hình trái tim nhỏ |
+| [x] | `item_void_stone.png` | Đá Hư Không | Viên đá tròn xanh đen, xoáy tím bên trong |
+| [x] | `item_perseverance.png` | Ngọc Kiên Trì | Viên ngọc hai nửa đỏ và xanh lam ghép trong vòng bạc |
+| [x] | `item_fate_staff.png` | Trượng Định Mệnh | Trượng mảnh, đầu là đồng hồ cát tím quấn xích bạc |
+| [x] | `item_warding_cloak.png` | Áo Choàng Kiên Định | Áo choàng xanh rêu viền đồng, khắc mỏ neo nhỏ trên cổ áo |
+
+### Kết quả Đợt 12 — 2026-10-24 — HOÀN TẤT
+
+Đã tạo đủ 5 món theo chuẩn 7s: nhẫn vàng đá tim đỏ hồng, đá xanh đen có xoáy tím bên trong, ngọc hai nửa đỏ–xanh trong giá bạc, trượng đồng hồ cát tím quấn xích bạc, áo choàng xanh rêu viền đồng có mỏ neo ở cổ áo. Giữ khối nổi / chất liệu, không khung / đĩa / hào quang ngoài vật.
+
+- [x] Kiểm tra 5 PNG 256 × 256, alpha ngoài vật và lề an toàn; lỗ nhẫn cũng trong suốt. Đã loại quầng nền của bản nháp đầu.
+- [x] Chạy `tools/icon_preview.py`, mở `04_icons/_preview.png` kiểm tra 48 / 64 / 84 px và bản làm tối. Preview gồm 5 món mới cùng 3 mẫu 7s để đối chiếu.
+- Chỉ thay đổi `art_inbox/`; chưa nhập vào `assets/`, không sửa code hoặc dữ liệu gameplay.
