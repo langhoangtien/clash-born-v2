@@ -747,3 +747,17 @@ Chuẩn 7s. `item_black_king_bar.png` — **Trượng Hắc Vương**: cây gậ
 khảm một viên đá vàng giữa thân (kiểu gậy quyền uy). Không trùng màu / hình các món đã có.
 Nên vẽ lại luôn `item_resolute_armor.png` (Giáp Bất Khuất giờ là giáp nặng giảm sát thương vật lý) và
 `item_steel_armor.png` (Giáp Thép giờ có gai phản đòn trên vai và ngực) cho đúng công dụng mới.
+
+### Kết quả Đợt 11 — 2026-10-24 — HOÀN TẤT
+
+Đã tạo Trượng Hắc Vương và làm lại cả hai giáp được đề nghị trong Đợt 11 cho đúng công dụng mới:
+
+| Xong | File | Nội dung |
+|---|---|---|
+| [x] | `04_icons/item_black_king_bar.png` | Gậy quyền uy đen bóng, hai đầu vàng, một viên đá vàng giữa thân |
+| [x] | `04_icons/item_resolute_armor.png` | Giáp đen–vàng nặng, vai dày và các lớp thép kín, không gai |
+| [x] | `04_icons/item_steel_armor.png` | Giáp bạc–xanh có gai rõ trên vai và ngực, thể hiện phản đòn |
+
+- [x] Kiểm tra PNG 256 × 256, alpha ngoài vật, không khung / đĩa / hào quang; lề an toàn.
+- [x] Chạy `tools/icon_preview.py`, mở `04_icons/_preview.png` xem cỡ 48 / 64 / 84 px và bản làm tối; preview gồm 3 món Đợt 11 cùng 3 mẫu 7s để đối chiếu.
+- Chỉ thay đổi `art_inbox/`; chưa chép vào `assets/`, không sửa code hoặc dữ liệu gameplay.
