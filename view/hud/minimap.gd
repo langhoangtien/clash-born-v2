@@ -12,6 +12,8 @@ const BLUE: Color = Color(0.35, 0.65, 1.0)
 const RED: Color = Color(1.0, 0.35, 0.3)
 const ME: Color = Color(1.0, 0.9, 0.3)
 const NEUTRAL: Color = Color(0.95, 0.75, 0.35)
+## Độ nét ảnh địa hình so với cỡ minimap (2 = gấp đôi, cho màn hình mật độ cao).
+const TERRAIN_DENSITY: float = 2.0
 
 var world: World
 var hero: Entity
@@ -42,16 +44,10 @@ func setup(w: World, h: Entity) -> void:
 	size = Vector2(SIDE, SIDE)
 	clip_contents = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	_add_terrain()
 	_content = Node2D.new()
 	_content.scale = Vector2.ONE * map_scale()
 	add_child(_content)
-	var terrain: _Layer = _Layer.new()
-	terrain.painter = func(ci: CanvasItem) -> void:
-		MapPainter.paint_ground(ci, world.map, false)
-		MapPainter.paint_obstacles(ci, world.map, false)
-		MapPainter.paint_bushes(ci, world.map, false)
-		MapPainter.paint_shops(ci, world.map, world.balance.shop_radius, false)
-	_content.add_child(terrain)
 	_fog = FogView.new()
 	_fog.world = world
 	_fog.team = team
@@ -60,6 +56,31 @@ func setup(w: World, h: Entity) -> void:
 	_dots = _Layer.new()
 	_dots.painter = _paint_dots
 	_content.add_child(_dots)
+
+
+## D-147: địa hình vẽ một lần vào SubViewport (UPDATE_ONCE) rồi hiện như một ảnh, thay vì vẽ lại
+## hàng trăm đa giác mỗi khung.
+func _add_terrain() -> void:
+	var px: int = int(SIDE * TERRAIN_DENSITY)
+	var vp: SubViewport = SubViewport.new()
+	vp.size = Vector2i(px, px)
+	vp.render_target_update_mode = SubViewport.UPDATE_ONCE
+	add_child(vp)
+	var terrain: _Layer = _Layer.new()
+	terrain.scale = Vector2.ONE * (px / world.map.world_size().x)
+	terrain.painter = func(ci: CanvasItem) -> void:
+		MapPainter.paint_ground(ci, world.map, false)
+		MapPainter.paint_obstacles(ci, world.map, false)
+		MapPainter.paint_bushes(ci, world.map, false)
+		MapPainter.paint_shops(ci, world.map, world.balance.shop_radius, false)
+	vp.add_child(terrain)
+	var pic: TextureRect = TextureRect.new()
+	pic.texture = vp.get_texture()
+	pic.size = Vector2(SIDE, SIDE)
+	pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	pic.stretch_mode = TextureRect.STRETCH_SCALE
+	pic.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(pic)
 
 
 func map_scale() -> float:

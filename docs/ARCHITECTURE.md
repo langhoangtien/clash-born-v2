@@ -68,7 +68,7 @@ clashborn_v2/
     map/                   MapLayout, MapNavigation, MapValidator, MapShape (mang từ v1), LaneRoute (tiến độ lane)
   view/                    vẽ đơn vị, map, hiệu ứng, HUD, điều khiển cảm ứng;
                            ArtLibrary: tra hình theo id, thiếu thì hình tạm (ART.md)
-    map/                   MapView, MapPainter (vẽ tạm bằng hình phẳng)
+    map/                   MapView, MapPainter (vẽ tạm bằng hình phẳng), MapBaker (nướng lớp tĩnh thành ô ảnh, D-147)
     units/                 UnitsView: vẽ đơn vị, nội suy giữa hai tick, y-sort; UnitSprite (ảnh + hoạt ảnh
                            biến đổi, D-144), Vfx (hiệu ứng chiêu / đòn trên bản đồ)
     three/                 (nhánh thu-3d) MatchView3D (mặt đất 2D trong SubViewport dán lên mặt phẳng, camera),
