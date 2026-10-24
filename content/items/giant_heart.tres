@@ -17,8 +17,9 @@ script = ExtResource("4_abl")
 slot = 4
 targeting = 0
 values = Dictionary[StringName, PackedFloat32Array]({
-&"pause": PackedFloat32Array(5),
-&"regen_fraction": PackedFloat32Array(0.015)
+&"interval": PackedFloat32Array(0.2),
+&"max_regen": PackedFloat32Array(0.01),
+&"missing_regen": PackedFloat32Array(0.015)
 })
 on_learn = Array[ExtResource("1_act")]([SubResource("A0")])
 id = &"giant_heart_passive_ability"
@@ -42,7 +43,7 @@ value = "10"
 [resource]
 script = ExtResource("6_item")
 category = 2
-description = "Bị động: mỗi giây hồi 1.5% máu tối đa; tạm dừng 5 giây sau khi bị tướng địch gây sát thương."
+description = "Bị động (Máu Cự Thú, như Dota bản mới): mỗi giây hồi 1% máu tối đa + 1.5% lượng máu đã mất. Có nhiều Tim chỉ tính một."
 cost = 4000
 components = Array[StringName]([&"reaver", &"vitality_booster", &"ring_health"])
 modifiers = Array[ExtResource("5_mod")]([SubResource("M0"), SubResource("M1"), SubResource("M2")])

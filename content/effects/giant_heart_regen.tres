@@ -6,7 +6,7 @@
 
 [sub_resource type="Resource" id="H0"]
 script = ExtResource("3_heal")
-amount = "regen_fraction * self.max_hp"
+amount = "interval * (max_regen * self.max_hp + missing_regen * (self.max_hp - self.current_hp))"
 target = 0
 
 [resource]
@@ -14,8 +14,7 @@ script = ExtResource("2_eff")
 duration = "0"
 tags = Array[StringName]([&"passive"])
 dispel = 2
-periodic_interval = "1"
+periodic_interval = "interval"
 periodic_actions = Array[ExtResource("1_act")]([SubResource("H0")])
-pause_on_hero_damage = "pause"
 id = &"giant_heart_regen"
 art_id = &"giant_heart"

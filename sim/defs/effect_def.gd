@@ -29,8 +29,6 @@ enum Dispel { BASIC, STRONG, NONE }  # EFF-07
 @export var prevent_death: bool = false
 @export var periodic_interval: String
 @export var periodic_actions: Array[ActionDef] = []
-## EFF-17 (D-141): hành động chu kỳ tạm dừng trong ngần này giây sau khi chủ nhận sát thương từ tướng địch.
-@export var pause_on_hero_damage: String
 ## Chí mạng của đòn đánh (CMB-07). Rỗng = không chí mạng.
 @export var crit_chance: String
 @export var crit_multiplier: String

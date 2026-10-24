@@ -553,8 +553,6 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   không thuộc kỹ năng (hiệu ứng, đồ) trúng **phe địch, không phải công trình**, nhắm được (DEF-05), mép thân trong vùng; tâm/hướng chốt lúc tung, có `delay` thì nổ sau đó;
   đơn vị trúng xử lý theo id. `falloff` f: sát thương nhân 1 − f × (khoảng cách tâm–tâm /
   bán kính), tối thiểu ở mép (f = 1 → mép nhận 0).
-- `EFF-17` (D-141) Hiệu ứng khai báo `pause_on_hero_damage` (giây): hành động chu kỳ **bỏ lượt** khi chủ
-  vừa nhận sát thương từ tướng địch trong khoảng đó (theo ECO-09 `damaged_by`); nhịp chu kỳ vẫn chạy.
 - `EFF-13` Chủ hiệu ứng chết → mọi hiệu ứng bị gỡ (lý do `owner_died`), trừ hiệu ứng có tag
   `passive` (D-56).
 

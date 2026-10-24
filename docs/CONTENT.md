@@ -489,6 +489,7 @@ Ghép đồ SHOP-09: giá = giá món; mua khi đã có thành phần thì chỉ
 | Phép | Quyền Trượng Bão | `storm_staff` | 2400 | +18 Trí tuệ, +300 Mana, +2 Hồi mana, +200 Tầm chiêu, +10% Khuếch đại phép | Gậy Phù Thủy + Ngọc Mana + Đá Hư Không |
 | Phép | Xuyên Tâm Trượng | `piercing_staff` | 2600 | +25 Trí tuệ, +3 Hồi mana, +10 Xuyên giáp phép | Gậy Phù Thủy + Áo Pháp Sư + Đá Hư Không + Áo Kháng Phép |
 | Phép | Trượng Định Mệnh | `fate_staff` | 2800 | +20 Trí tuệ, +2 Hồi mana, +0.25 debuff_amplification | Gậy Phù Thủy + Áo Pháp Sư + Đá Hư Không |
+| Phép | Hoa Câm Lặng | `orchid` | 3000 | +18 Trí tuệ, +25% Tốc đánh, +2.5 Hồi mana | Gậy Phù Thủy + Găng Nhanh + Đá Hư Không |
 | Phép | Ngọc Thời Không | `time_orb` | 3500 | +20% Giảm hồi chiêu, +3 Hồi mana, +450 Máu, +250 Mana | Đá Sinh Lực ×2 + Ngọc Mana + Đá Hư Không |
 | Phép | Lưỡi Hái Biến Hình | `hex_scythe` | 4700 | +35 Trí tuệ, +10 Sức mạnh, +10 Nhanh nhẹn | Gậy Huyền Bí + Rìu Khổng Lồ + Lưỡi Nhanh |
 | Phép | Quyền Trượng Ma Thuật | `arcane_scepter` | 4800 | +42 Trí tuệ, +30% Khuếch đại phép, +5 Hồi mana | Sách Phép Cổ + Gậy Huyền Bí |

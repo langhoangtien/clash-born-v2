@@ -781,3 +781,8 @@ Chuẩn 7s. Ghi vào `04_icons/`, chạy `tools/icon_preview.py`, commit + push.
 - [x] Kiểm tra 5 PNG 256 × 256, alpha ngoài vật và lề an toàn; lỗ nhẫn cũng trong suốt. Đã loại quầng nền của bản nháp đầu.
 - [x] Chạy `tools/icon_preview.py`, mở `04_icons/_preview.png` kiểm tra 48 / 64 / 84 px và bản làm tối. Preview gồm 5 món mới cùng 3 mẫu 7s để đối chiếu.
 - Chỉ thay đổi `art_inbox/`; chưa nhập vào `assets/`, không sửa code hoặc dữ liệu gameplay.
+
+## Đợt 13 — 1 món (D-142) — 2026-10-24
+
+Chuẩn 7s. `item_orchid.png` — **Hoa Câm Lặng**: bông hoa lan tím đậm nở trên cán trượng mảnh màu bạc,
+một nhụy trắng hình dấu gạch chéo (ý "câm"). Tím khác hẳn Lưỡi Ẩn Thân / Ngọc Ảo Ảnh (đậm, ít hồng).
