@@ -12,8 +12,6 @@ const LAYER_SIZE: int = 2048
 ## Camera: lệch khỏi điểm nhìn (đơn vị 3D), góc nhìn.
 const CAM_OFFSET: Vector3 = Vector3(0, 11.5, 11.0)
 const CAM_FOV: float = 40.0
-const HERO_MODEL: String = "res://assets/models/robot.glb"
-const HERO_HEIGHT: float = 2.4
 
 var world: World
 var units: UnitsView
@@ -22,7 +20,6 @@ var camera: Camera3D
 var _layer_cam: Camera2D
 var _ground: MeshInstance3D
 var _actors: Dictionary[int, Actor3D] = {}
-var _hero_scene: PackedScene
 
 
 ## Dựng bản 3D dưới `parent`, thanh máu vào lớp HUD `hud` (dưới mọi nút).
@@ -77,7 +74,6 @@ func setup(w: World, units_view: UnitsView, ground_nodes: Array[Node]) -> void:
 	env.environment.ambient_light_color = Color(0.75, 0.78, 0.85)
 	env.environment.ambient_light_energy = 0.8
 	add_child(env)
-	_hero_scene = load(HERO_MODEL) as PackedScene
 
 
 func to_3d(p: Vector2) -> Vector3:
@@ -108,7 +104,7 @@ func update(focus: Vector2) -> void:
 		keep[e.id] = true
 		var a: Actor3D = _actors.get(e.id)
 		if a == null:
-			a = Actor3D.make(e, _hero_scene, HERO_HEIGHT)
+			a = Actor3D.make(e)
 			add_child(a)
 			_actors[e.id] = a
 		a.sync(world, e, to_3d(units.display_position(e)), units.is_moving(e), world.tick - units.hit_tick(e))

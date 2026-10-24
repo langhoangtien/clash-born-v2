@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://b5k47gbg68jk2"
-path="res://.godot/imported/robot.glb-41029d68d03e6f14588a3112dbc2111d.scn"
+uid="uid://dujvaqetwxmhs"
+path="res://.godot/imported/Barbarian_Large.glb-e761004a19719303124be423fd18c2dc.scn"
 
 [deps]
 
-source_file="res://assets/models/robot.glb"
-dest_files=["res://.godot/imported/robot.glb-41029d68d03e6f14588a3112dbc2111d.scn"]
+source_file="res://assets/models/kaykit/Barbarian_Large.glb"
+dest_files=["res://.godot/imported/Barbarian_Large.glb-e761004a19719303124be423fd18c2dc.scn"]
 
 [params]
 

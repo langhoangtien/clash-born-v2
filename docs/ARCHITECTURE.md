@@ -71,6 +71,9 @@ clashborn_v2/
     map/                   MapView, MapPainter (vẽ tạm bằng hình phẳng)
     units/                 UnitsView: vẽ đơn vị, nội suy giữa hai tick, y-sort; UnitSprite (ảnh + hoạt ảnh
                            biến đổi, D-144), Vfx (hiệu ứng chiêu / đòn trên bản đồ)
+    three/                 (nhánh thu-3d) MatchView3D (mặt đất 2D trong SubViewport dán lên mặt phẳng, camera),
+                           Actor3D (một đơn vị: nhân vật KayKit hoặc ảnh billboard), ModelLibrary (tra
+                           assets/models/units_3d.json), Bars3D (thanh máu) — D-145, D-146
     art/                   ArtLibrary: res://assets/art/<art_id>.png, thiếu → hình tạm
     ui/                    UiStyle (phông, màu, khung, nút, xu), UiGlyphs (icon nét) — D-130
     menu/                  HeroSelect, HeroDetail, HeroPreview (màn chọn tướng)

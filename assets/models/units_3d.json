@@ -1,0 +1,29 @@
+{
+  "_ghi_chu": "D-146: hình 3D theo art_id (bản thử 3D). Mô hình KayKit (CC0) trong assets/models/kaykit/. rig: bộ xương + hoạt ảnh dùng chung; tex: tên bảng màu (có bản _blue / _red theo đội); right / left: vũ khí gắn tay; attack / cast: hoạt ảnh đánh / tung chiêu; height: chiều cao trên sân (đơn vị 3D).",
+  "rigs": {
+    "Rig_Medium": {"native": 2.45, "idle": "Idle_A", "run": "Running_A", "dash": "Jump_Full_Short", "hit": "Hit_A", "death": "Death_A",
+                   "sets": ["General", "MovementBasic", "CombatMelee", "CombatRanged"]},
+    "Rig_Large": {"native": 4.1, "idle": "Idle_A", "run": "Running_A", "dash": "Running_A", "hit": "Hit_A", "death": "Death_A",
+                  "sets": ["General", "MovementBasic", "CombatMelee"]}
+  },
+  "units": {
+    "duy_anh": {"model": "Knight", "rig": "Rig_Medium", "tex": "knight", "right": "sword_1handed", "left": "shield_badge_color",
+                "attack": "Melee_1H_Attack_Chop", "cast": "Melee_1H_Attack_Slice_Horizontal", "height": 2.4},
+    "brakk": {"model": "Barbarian", "rig": "Rig_Medium", "tex": "barbarian",
+              "attack": "Melee_Unarmed_Attack_Punch_A", "cast": "Melee_Unarmed_Attack_Kick", "height": 2.5},
+    "gorran": {"model": "Barbarian_Large", "rig": "Rig_Large", "tex": "barbarian", "right": "axe_2handed_Large",
+               "attack": "Melee_2H_Attack", "cast": "Melee_2H_Slam", "height": 3.0},
+    "myra": {"model": "Mage", "rig": "Rig_Medium", "tex": "mage", "right": "staff",
+             "attack": "Ranged_Magic_Shoot", "cast": "Ranged_Magic_Spellcasting", "height": 2.4},
+    "vexa": {"model": "Druid", "rig": "Rig_Medium", "tex": "druid", "right": "druid_staff", "left": "spellbook_open",
+             "attack": "Ranged_Magic_Shoot", "cast": "Ranged_Magic_Summon", "height": 2.4},
+    "noctis": {"model": "Rogue_Hooded", "rig": "Rig_Medium", "tex": "rogue", "right": "dagger", "left": "dagger",
+               "attack": "Melee_Dualwield_Attack_Stab", "cast": "Melee_Dualwield_Attack_Slice", "height": 2.4},
+    "creep_melee": {"model": "Knight", "rig": "Rig_Medium", "tex": "knight", "right": "sword_1handed", "left": "shield_badge_color",
+                    "attack": "Melee_1H_Attack_Slice_Diagonal", "height": 1.55},
+    "creep_ranged": {"model": "Ranger", "rig": "Rig_Medium", "tex": "ranger", "right": "crossbow_1handed",
+                     "attack": "Ranged_1H_Shoot", "height": 1.55},
+    "creep_siege": {"model": "Engineer", "rig": "Rig_Medium", "tex": "engineer", "right": "crossbow_1handed",
+                    "attack": "Ranged_1H_Shoot", "height": 1.8}
+  }
+}
