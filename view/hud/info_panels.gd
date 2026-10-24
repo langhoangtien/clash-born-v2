@@ -128,7 +128,7 @@ static func stat_rows(e: Entity) -> Array:
 		["Máu / hồi máu", "%d / %.1f mỗi giây" % [roundi(s.get_stat(StatId.Id.MAX_HP)), s.get_stat(StatId.Id.HP_REGEN)], "", C_HP],
 		["Mana / hồi mana", "%d / %.1f mỗi giây" % [roundi(s.get_stat(StatId.Id.MAX_MANA)), s.get_stat(StatId.Id.MANA_REGEN)], "", C_MANA],
 	]
-	for extra: Array in [["Khuếch đại phép", StatId.Id.SPELL_AMPLIFICATION], ["Chí mạng", StatId.Id.CRITICAL_CHANCE], ["Né tránh", StatId.Id.EVASION], ["Xuyên né", StatId.Id.ACCURACY], ["Giảm hồi chiêu", StatId.Id.COOLDOWN_REDUCTION], ["Giảm sát thương vật lý", StatId.Id.PHYSICAL_DAMAGE_REDUCTION], ["Hút máu", StatId.Id.LIFESTEAL], ["Kháng hiệu ứng", StatId.Id.STATUS_RESISTANCE]]:
+	for extra: Array in [["Khuếch đại phép", StatId.Id.SPELL_AMPLIFICATION], ["Chí mạng", StatId.Id.CRITICAL_CHANCE], ["Né tránh", StatId.Id.EVASION], ["Xuyên né", StatId.Id.ACCURACY], ["Giảm hồi chiêu", StatId.Id.COOLDOWN_REDUCTION], ["Giảm sát thương vật lý", StatId.Id.PHYSICAL_DAMAGE_REDUCTION], ["Kéo dài hiệu ứng gây ra", StatId.Id.DEBUFF_AMPLIFICATION], ["Hút máu", StatId.Id.LIFESTEAL], ["Kháng hiệu ứng", StatId.Id.STATUS_RESISTANCE]]:
 		var v: float = s.get_stat(extra[1])
 		if v > 0.0:
 			rows.append([extra[0], "%d%%" % roundi(v * 100.0), "", C_MAGIC if extra[1] == StatId.Id.SPELL_AMPLIFICATION else C_SPECIAL])

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="2_eff"]
+[ext_resource type="Script" path="res://sim/actions/heal_action.gd" id="3_heal"]
+
+[sub_resource type="Resource" id="H0"]
+script = ExtResource("3_heal")
+amount = "regen_fraction * self.max_hp"
+target = 0
+
+[resource]
+script = ExtResource("2_eff")
+duration = "0"
+tags = Array[StringName]([&"passive"])
+dispel = 2
+periodic_interval = "1"
+periodic_actions = Array[ExtResource("1_act")]([SubResource("H0")])
+pause_on_hero_damage = "pause"
+id = &"giant_heart_regen"
+art_id = &"giant_heart"

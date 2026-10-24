@@ -9,6 +9,7 @@ var values: Dictionary = {}
 var event_damage: float = 0.0
 var event_burned_mana: float = 0.0
 var event_heal: float = 0.0
+var event_raw_damage: float = 0.0
 ## Hai bên của sự kiện (trigger): ActionDef.Target.EVENT_SOURCE / EVENT_TARGET.
 var event_source: Entity
 var event_target: Entity
@@ -40,6 +41,7 @@ func with_target(t: Entity) -> ExprContext:
 	c.event_damage = event_damage
 	c.event_burned_mana = event_burned_mana
 	c.event_heal = event_heal
+	c.event_raw_damage = event_raw_damage
 	c.event_source = event_source
 	c.event_target = event_target
 	c.point = point

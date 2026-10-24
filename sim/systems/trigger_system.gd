@@ -142,6 +142,7 @@ func _context(world: World, ev: GameEvent, owner: Entity, other: Entity, inst: E
 	ctx.event_target = world.find_entity(ev.target_id)
 	if ev.type == &"damage_taken" or ev.type == &"attack_landed":
 		ctx.event_damage = ev.amount
+		ctx.event_raw_damage = ev.raw
 	elif ev.type == &"mana_burned":
 		ctx.event_burned_mana = ev.amount
 	return ctx

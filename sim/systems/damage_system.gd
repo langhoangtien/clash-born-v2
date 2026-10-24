@@ -38,7 +38,7 @@ static func _apply(world: World, r: DamageRequest, target: Entity) -> bool:
 	if amount < 0.0:
 		return false
 	if r.is_attack:
-		world.emit(&"attack_landed", r.source_id, r.target_id, amount, &"crit" if r.crit else &"")
+		world.emit(&"attack_landed", r.source_id, r.target_id, amount, &"crit" if r.crit else &"").raw = r.raw
 		if source != null and source.kind == Entity.Kind.HERO and target.kind == Entity.Kind.HERO and source.team != target.team:
 			world.emit(&"hero_attacked_hero", r.source_id, r.target_id)  # DEF-11
 	if r.is_attack and not r.reflected and source != null and source.alive and not Rules.is_structure(target):

@@ -52,4 +52,5 @@ static func _event(ctx: ExprContext) -> ExprEvent:
 	ev.damage = ctx.event_damage
 	ev.burned_mana = ctx.event_burned_mana
 	ev.heal = ctx.event_heal
+	ev.raw_damage = ctx.event_raw_damage
 	return ev

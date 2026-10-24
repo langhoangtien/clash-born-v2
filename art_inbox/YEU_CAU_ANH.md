@@ -761,3 +761,15 @@ Nên vẽ lại luôn `item_resolute_armor.png` (Giáp Bất Khuất giờ là g
 - [x] Kiểm tra PNG 256 × 256, alpha ngoài vật, không khung / đĩa / hào quang; lề an toàn.
 - [x] Chạy `tools/icon_preview.py`, mở `04_icons/_preview.png` xem cỡ 48 / 64 / 84 px và bản làm tối; preview gồm 3 món Đợt 11 cùng 3 mẫu 7s để đối chiếu.
 - Chỉ thay đổi `art_inbox/`; chưa chép vào `assets/`, không sửa code hoặc dữ liệu gameplay.
+
+## Đợt 12 — 5 món (D-141) — 2026-10-24
+
+Chuẩn 7s. Ghi vào `04_icons/`, chạy `tools/icon_preview.py`, commit + push.
+
+| Xong | File | Món | Vẽ gì |
+|---|---|---|---|
+| [ ] | `item_ring_health.png` | Nhẫn Sinh Lực | Nhẫn vàng có viên đá đỏ hồng hình trái tim nhỏ |
+| [ ] | `item_void_stone.png` | Đá Hư Không | Viên đá tròn xanh đen, xoáy tím bên trong |
+| [ ] | `item_perseverance.png` | Ngọc Kiên Trì | Viên ngọc hai nửa đỏ và xanh lam ghép trong vòng bạc |
+| [ ] | `item_fate_staff.png` | Trượng Định Mệnh | Trượng mảnh, đầu là đồng hồ cát tím quấn xích bạc |
+| [ ] | `item_warding_cloak.png` | Áo Choàng Kiên Định | Áo choàng xanh rêu viền đồng, khắc mỏ neo nhỏ trên cổ áo |

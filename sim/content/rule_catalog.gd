@@ -11,7 +11,7 @@ const STATS: PackedStringArray = [
 	"vision_range", "evasion", "accuracy", "critical_chance", "critical_multiplier",
 	"status_resistance", "armor_reduction", "physical_armor_penetration", "lifesteal",
 	"damage_taken_multiplier", "spell_amplification", "magic_armor_reduction", "cooldown_reduction",
-	"physical_damage_reduction",
+	"physical_damage_reduction", "debuff_amplification",
 ]
 
 ## EVT
@@ -26,7 +26,7 @@ const EVENTS: PackedStringArray = [
 ]
 
 ## EFF-09: dữ liệu sự kiện dùng được trong biểu thức (`event.damage`…).
-const EVENT_FIELDS: PackedStringArray = ["damage", "burned_mana", "heal"]
+const EVENT_FIELDS: PackedStringArray = ["damage", "burned_mana", "heal", "raw_damage"]
 
 ## EFF-09: ngoài STATS, biểu thức đọc được các trường này của `self.` / `target.`.
 const UNIT_FIELDS: PackedStringArray = ["current_hp", "current_mana", "level"]

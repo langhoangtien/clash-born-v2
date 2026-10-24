@@ -57,7 +57,7 @@ func test_CMB_16_two_sources_multiply() -> void:
 	assert_near(me.stats.get_stat(StatId.Id.PHYSICAL_DAMAGE_REDUCTION), 0.19, 0.0001, "1 − 0.9 × 0.9")
 
 
-func test_D_140_steel_armor_returns_20_plus_20_percent_to_heroes() -> void:
+func test_D_141_steel_armor_returns_20_percent_pre_armor_to_heroes() -> void:
 	var s: Array = _world()
 	var w: World = s[0]
 	var me: Entity = s[1]
@@ -70,7 +70,8 @@ func test_D_140_steel_armor_returns_20_plus_20_percent_to_heroes() -> void:
 	TriggerSystem.new().run(w)  # pha TRIGGER của tick này
 	var back: float = 5000.0 - foe.health
 	var fmult: float = DamageFormulas.armor_multiplier(foe.stats.get_stat(StatId.Id.PHYSICAL_ARMOR), w.balance.armor_coefficient)
-	assert_near(back, (20.0 + 0.2 * taken) * fmult, 0.5, "20 + 20% đòn nhận, giáp kẻ đánh áp")
+	assert_true(taken < 100.0, "giáp của mình giảm đòn")
+	assert_near(back, 0.2 * 100.0 * fmult, 0.01, "20% đòn trước giáp của mình, giáp kẻ đánh áp")
 	assert_eq((w.item_catalog[&"steel_armor"] as ItemDef).components, [&"chainmail", &"ring_protection", &"broadsword"] as Array[StringName])
 
 

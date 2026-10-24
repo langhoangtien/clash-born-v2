@@ -1,29 +1,52 @@
 [gd_resource type="Resource" script_class="ItemDef" format=3]
 
-[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
-[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Resource" path="res://content/effects/giant_heart_regen.tres" id="2_pas"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_app"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_abl"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_item"]
 
-[sub_resource type="Resource" id="MZ0"]
-script = ExtResource("1_mod")
+[sub_resource type="Resource" id="A0"]
+script = ExtResource("3_app")
+effect = ExtResource("2_pas")
+target = 0
+
+[sub_resource type="Resource" id="AB"]
+script = ExtResource("4_abl")
+slot = 4
+targeting = 0
+values = Dictionary[StringName, PackedFloat32Array]({
+&"pause": PackedFloat32Array(5),
+&"regen_fraction": PackedFloat32Array(0.015)
+})
+on_learn = Array[ExtResource("1_act")]([SubResource("A0")])
+id = &"giant_heart_passive_ability"
+art_id = &"giant_heart"
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("5_mod")
 stat = &"strength"
 value = "30"
 
-[sub_resource type="Resource" id="MZ1"]
-script = ExtResource("1_mod")
+[sub_resource type="Resource" id="M1"]
+script = ExtResource("5_mod")
 stat = &"max_hp"
 value = "600"
 
-[sub_resource type="Resource" id="MZ2"]
-script = ExtResource("1_mod")
+[sub_resource type="Resource" id="M2"]
+script = ExtResource("5_mod")
 stat = &"hp_regen"
 value = "10"
 
 [resource]
-script = ExtResource("2_item")
+script = ExtResource("6_item")
 category = 2
+description = "Bị động: mỗi giây hồi 1.5% máu tối đa; tạm dừng 5 giây sau khi bị tướng địch gây sát thương."
 cost = 4000
-modifiers = Array[ExtResource("1_mod")]([SubResource("MZ0"), SubResource("MZ1"), SubResource("MZ2")])
-components = Array[StringName]([&"reaver", &"vitality_booster", &"vitality_booster", &"ring_regen"])
+components = Array[StringName]([&"reaver", &"vitality_booster", &"ring_health"])
+modifiers = Array[ExtResource("5_mod")]([SubResource("M0"), SubResource("M1"), SubResource("M2")])
+ability = SubResource("AB")
 id = &"giant_heart"
 display_name = "Tim Khổng Lồ"
 art_id = &"giant_heart"

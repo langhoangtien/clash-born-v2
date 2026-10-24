@@ -3,21 +3,21 @@
 [ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
 [ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
 
-[sub_resource type="Resource" id="M0"]
+[sub_resource type="Resource" id="MZ0"]
 script = ExtResource("1_mod")
 stat = &"movement_speed"
 value = "55"
 
-[sub_resource type="Resource" id="M1"]
+[sub_resource type="Resource" id="MZ1"]
 script = ExtResource("1_mod")
 stat = &"attack_speed"
-value = "0.25"
+value = "0.35"
 
 [resource]
 script = ExtResource("2_item")
 category = 3
 cost = 1150
-modifiers = Array[ExtResource("1_mod")]([SubResource("M0"), SubResource("M1")])
+modifiers = Array[ExtResource("1_mod")]([SubResource("MZ0"), SubResource("MZ1")])
 components = Array[StringName]([&"boots", &"gloves_haste"])
 id = &"boots_haste"
 display_name = "Giày Tốc Chiến"

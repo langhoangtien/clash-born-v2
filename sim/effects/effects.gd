@@ -130,6 +130,9 @@ static func _start(world: World, owner: Entity, inst: EffectInstance, duration: 
 	var length: String = def.duration if not def.duration.is_empty() else duration
 	var seconds: float = ExprEval.evaluate(length, ctx)
 	if def.tags.has(&"debuff") and seconds > 0.0:  # ST-09
+		var source: Entity = world.find_entity(inst.source_id)
+		if source != null and source.team != owner.team and source.stats != null:
+			seconds *= 1.0 + maxf(0.0, source.stats.get_stat(StatId.Id.DEBUFF_AMPLIFICATION))  # ST-09b
 		seconds *= 1.0 - owner.stats.get_stat(StatId.Id.STATUS_RESISTANCE)
 	inst.start_tick = world.tick
 	var fade: float = ExprEval.evaluate(def.fade_in, ctx) if not def.fade_in.is_empty() else 0.0

@@ -445,7 +445,7 @@ là đề xuất, cân lại khi chơi thử.
 |---|---|---:|---|---|
 | Gậy Hồn Ma | `ghost_scepter` | 1400 | +7 mọi thuộc tính | **Chủ động** (hồi 22 s): bản thân GHOST 4 s |
 | Trượng Hắc Vương | `black_king_bar` | 3300 | +10 STR, +25 sát thương | **Chủ động** (hồi 70 s): thanh tẩy cơ bản bản thân rồi MAGIC_IMMUNE 6 s (D-140, trước là Giáp Bất Khuất) |
-| Giáp Thép | `steel_armor` | 2100 | +10 giáp, +20 sát thương | **Bị động**: tướng địch đánh thường trúng nhận lại 20 + 20% sát thương đòn (D-140) |
+| Giáp Thép | `steel_armor` | 2100 | +10 giáp, +20 sát thương | **Bị động**: tướng địch đánh thường trúng nhận lại 20% sát thương đòn trước giáp (D-141) |
 | Ngọc Băng Sương | `frost_orb` | 2000 | +250 máu, +10 mọi thuộc tính | **Bị động**: đòn đánh làm chậm 20% tốc chạy và 20% tốc đánh trong 2 s (đánh xa) / 3 s (cận chiến) |
 | Bột Lộ Diện | `reveal_dust` | 80 | — | **Chủ động**, 2 lần dùng (hồi 30 s): REVEALED mọi kẻ địch trong 900 quanh mình 8 s |
 | Gậy Lốc Xoáy | `cyclone_staff` | 2400 | +10 INT, +2.5 hồi mana | **Chủ động** (hồi 23 s, tầm 575): một đơn vị bị nhấc lên 2.5 s — INVULNERABLE + UNTARGETABLE + STUNNED. Dùng lên bản thân để né; dùng lên địch đang MAGIC_IMMUNE thì không được |
@@ -478,17 +478,18 @@ Ghép đồ SHOP-09: giá = giá món; mua khi đã có thành phần thì chỉ
 | Tấn công | Trượng Lôi Kích | `thunder_staff` | 3800 | +40% Tốc đánh, +10 Trí tuệ | Găng Nhanh ×2 + Gậy Phù Thủy |
 | Tấn công | Mảnh Trăng | `moon_shard` | 4000 | +150% Tốc đánh | Đá Siêu Tốc + Móng Cuồng Nộ |
 | Tấn công | Gậy Định Tâm | `focus_staff` | 4200 | +80 Sát thương, +75% Xuyên né | Kiếm Quỷ + Đại Kiếm + Lưỡi Công |
-| Tấn công | Cánh Bướm | `butterfly` | 4400 | +35 Nhanh nhẹn, +30 Sát thương, +30% Tốc đánh, +30% Né tránh | Lông Đại Bàng + Gậy Chiến + Lưỡi Nhanh |
+| Tấn công | Cánh Bướm | `butterfly` | 4400 | +30 Nhanh nhẹn, +30 Sát thương, +30% Tốc đánh, +30% Né tránh | Lông Đại Bàng + Gậy Chiến + Bùa Né Tránh |
 | Tấn công | Kiếm Ảnh Vũ | `shadow_dance_blade` | 5100 | +20 Sức mạnh, +10 Nhanh nhẹn, +10 Trí tuệ, +35 Sát thương, +30% Né tránh | Ngọc Ảo Ảnh + Rìu Khổng Lồ + Đại Kiếm |
 | Tấn công | Đại Đao Thần | `divine_blade` | 5100 | +85 Sát thương | Kiếm Chí Mạng + Thánh Tích |
 | Tấn công | Kiếm Huyết Ma | `satanic` | 5200 | +25 Sức mạnh, +35 Sát thương, +25% Hút máu, +4 Hồi máu | Rìu Thần Lực + Lưỡi Hút Hồn |
 | Phép | Bùa Trí Tuệ | `null_talisman` | 420 | +8 Trí tuệ, +3 Nhanh nhẹn, +3 Sức mạnh, +0.8 Hồi mana | Áo Choàng Trí Tuệ + Vòng Đầu |
 | Phép | Gậy Hồn Ma | `ghost_scepter` | 1400 | +7 Sức mạnh, +7 Nhanh nhẹn, +7 Trí tuệ | Đai Sức Mạnh + Vòng Nhanh Nhẹn + Áo Pháp Sư |
 | Phép | Sách Phép Cổ | `ancient_tome` | 2000 | +16 Trí tuệ, +15% Khuếch đại phép | Gậy Phù Thủy + Áo Pháp Sư |
-| Phép | Gậy Lốc Xoáy | `cyclone_staff` | 2400 | +16 Trí tuệ, +2.5 Hồi mana | Gậy Phù Thủy + Mặt Nạ Hiền Triết + Áo Pháp Sư |
-| Phép | Quyền Trượng Bão | `storm_staff` | 2400 | +18 Trí tuệ, +300 Mana, +2 Hồi mana, +200 Tầm chiêu, +10% Khuếch đại phép | Gậy Phù Thủy + Ngọc Mana + Mặt Nạ Hiền Triết |
-| Phép | Xuyên Tâm Trượng | `piercing_staff` | 2600 | +25 Trí tuệ, +3 Hồi mana, +10 Xuyên giáp phép | Gậy Phù Thủy + Áo Pháp Sư + Mặt Nạ Hiền Triết + Áo Kháng Phép |
-| Phép | Ngọc Thời Không | `time_orb` | 3500 | +20% Giảm hồi chiêu, +3 Hồi mana, +450 Máu, +250 Mana | Đá Sinh Lực ×2 + Ngọc Mana + Mặt Nạ Hiền Triết ×2 |
+| Phép | Gậy Lốc Xoáy | `cyclone_staff` | 2400 | +16 Trí tuệ, +2.5 Hồi mana | Gậy Phù Thủy + Đá Hư Không + Áo Pháp Sư |
+| Phép | Quyền Trượng Bão | `storm_staff` | 2400 | +18 Trí tuệ, +300 Mana, +2 Hồi mana, +200 Tầm chiêu, +10% Khuếch đại phép | Gậy Phù Thủy + Ngọc Mana + Đá Hư Không |
+| Phép | Xuyên Tâm Trượng | `piercing_staff` | 2600 | +25 Trí tuệ, +3 Hồi mana, +10 Xuyên giáp phép | Gậy Phù Thủy + Áo Pháp Sư + Đá Hư Không + Áo Kháng Phép |
+| Phép | Trượng Định Mệnh | `fate_staff` | 2800 | +20 Trí tuệ, +2 Hồi mana, +0.25 debuff_amplification | Gậy Phù Thủy + Áo Pháp Sư + Đá Hư Không |
+| Phép | Ngọc Thời Không | `time_orb` | 3500 | +20% Giảm hồi chiêu, +3 Hồi mana, +450 Máu, +250 Mana | Đá Sinh Lực ×2 + Ngọc Mana + Đá Hư Không |
 | Phép | Lưỡi Hái Biến Hình | `hex_scythe` | 4700 | +35 Trí tuệ, +10 Sức mạnh, +10 Nhanh nhẹn | Gậy Huyền Bí + Rìu Khổng Lồ + Lưỡi Nhanh |
 | Phép | Quyền Trượng Ma Thuật | `arcane_scepter` | 4800 | +42 Trí tuệ, +30% Khuếch đại phép, +5 Hồi mana | Sách Phép Cổ + Gậy Huyền Bí |
 | Phòng thủ | Vòng Tay Sắt | `bracer` | 420 | +8 Sức mạnh, +3 Trí tuệ, +3 Nhanh nhẹn, +2 Hồi máu | Găng Sức Mạnh + Vòng Đầu |
@@ -496,19 +497,20 @@ Ghép đồ SHOP-09: giá = giá món; mua khi đã có thành phần thì chỉ
 | Phòng thủ | Bùa Thanh Tẩy | `cleansing_charm` | 1300 | +6 Giáp, +4 Hồi máu | Giáp Xích + Nhẫn Hồi Phục |
 | Phòng thủ | Ngọc Băng Sương | `frost_orb` | 2000 | +250 Máu, +10 Sức mạnh, +10 Nhanh nhẹn, +10 Trí tuệ | Đá Sinh Lực + Đai Sức Mạnh + Vòng Nhanh Nhẹn |
 | Phòng thủ | Giáp Thép | `steel_armor` | 2100 | +10 Giáp, +20 Sát thương | Giáp Xích + Nhẫn Bảo Hộ + Trường Kiếm |
+| Phòng thủ | Áo Choàng Kiên Định | `warding_cloak` | 2600 | +14 Kháng phép, +8 Hồi máu, +20% Kháng hiệu ứng | Áo Choàng Phép + Bùa Kiên Định |
 | Phòng thủ | Ngọc Ảo Ảnh | `mirage_orb` | 2700 | +10 Sức mạnh, +10 Nhanh nhẹn, +10 Trí tuệ, +20% Né tránh | Bùa Né Tránh + Đai Sức Mạnh + Vòng Nhanh Nhẹn + Áo Pháp Sư |
 | Phòng thủ | Giáp Bất Khuất | `resolute_armor` | 2900 | +15 Giáp, +10% Giảm sát thương vật lý | Giáp Tấm + Giáp Xích |
 | Phòng thủ | Giáp Kiên Cường | `steadfast_armor` | 3100 | +15 Giáp, +20% Kháng hiệu ứng | Giáp Tấm + Bùa Kiên Định + Giáp Xích |
-| Phòng thủ | Áo Choàng Hiền Giả | `sage_cloak` | 3200 | +12 Kháng phép, +10% Giảm hồi chiêu, +250 Máu, +250 Mana, +8 Hồi máu, +2 Hồi mana | Áo Choàng Phép + Đá Sinh Lực + Ngọc Mana + Mặt Nạ Hiền Triết |
+| Phòng thủ | Áo Choàng Hiền Giả | `sage_cloak` | 3200 | +12 Kháng phép, +10% Giảm hồi chiêu, +250 Máu, +250 Mana, +8 Hồi máu, +2 Hồi mana | Áo Choàng Phép + Đá Sinh Lực + Ngọc Mana + Đá Hư Không |
+| Phòng thủ | Ngọc Băng Sương II | `frost_orb_ii` | 3400 | +470 Máu, +13 Sức mạnh, +13 Nhanh nhẹn, +13 Trí tuệ | Ngọc Băng Sương + Đá Sinh Lực + Vòng Đầu |
 | Phòng thủ | Giáp Thần Công | `assault_plate` | 4000 | +15 Giáp, +60% Tốc đánh | Giáp Tấm + Đá Siêu Tốc |
-| Phòng thủ | Tim Khổng Lồ | `giant_heart` | 4000 | +30 Sức mạnh, +600 Máu, +10 Hồi máu | Rìu Thần Lực + Đá Sinh Lực ×2 + Nhẫn Hồi Phục |
-| Phòng thủ | Ngọc Băng Sương II | `frost_orb_ii` | 5200 | +300 Máu, +20 Sức mạnh, +20 Nhanh nhẹn, +20 Trí tuệ, +20% Né tránh | Ngọc Băng Sương + Ngọc Ảo Ảnh |
+| Phòng thủ | Tim Khổng Lồ | `giant_heart` | 4000 | +30 Sức mạnh, +600 Máu, +10 Hồi máu | Rìu Thần Lực + Đá Sinh Lực + Nhẫn Sinh Lực |
 | Tiện ích | Mắt Vàng | `observer_ward` | 50 |  |  |
 | Tiện ích | Bình Mana | `mana_potion` | 50 |  |  |
 | Tiện ích | Mắt Xanh | `sentry_ward` | 50 |  |  |
 | Tiện ích | Chùm Nho | `grapes` | 80 |  |  |
 | Tiện ích | Bột Lộ Diện | `reveal_dust` | 80 |  |  |
-| Tiện ích | Giày Tốc Chiến | `boots_haste` | 1150 | +55 Tốc chạy, +25% Tốc đánh | Giày + Găng Nhanh |
+| Tiện ích | Giày Tốc Chiến | `boots_haste` | 1150 | +55 Tốc chạy, +35% Tốc đánh | Giày + Găng Nhanh |
 | Tiện ích | Giày Hộ Vệ | `boots_guard` | 1150 | +55 Tốc chạy, +6 Giáp | Giày + Giáp Xích |
 | Tiện ích | Giày Pháp Sư | `boots_arcane` | 1150 | +55 Tốc chạy, +250 Mana, +1.5 Hồi mana | Giày + Ngọc Mana |
 | Cơ bản | Cành Sắt | `iron_branch` | 50 | +2 Sức mạnh, +2 Nhanh nhẹn, +2 Trí tuệ |  |
@@ -529,6 +531,8 @@ Ghép đồ SHOP-09: giá = giá món; mua khi đã có thành phần thì chỉ
 | Cơ bản | Giáp Xích | `chainmail` | 500 | +5 Giáp |  |
 | Cơ bản | Ngọc Mana | `energy_booster` | 500 | +220 Mana |  |
 | Cơ bản | Đá Sinh Lực | `vitality_booster` | 500 | +220 Máu |  |
+| Cơ bản | Nhẫn Sinh Lực | `ring_health` | 700 | +5 Hồi máu |  |
+| Cơ bản | Đá Hư Không | `void_stone` | 700 | +1.5 Hồi mana |  |
 | Cơ bản | Gậy Chiến | `quarterstaff` | 800 | +10 Sát thương, +10% Tốc đánh |  |
 | Cơ bản | Lưỡi Mòn | `corrosion_blade` | 800 | +20 Sát thương |  |
 | Cơ bản | Rìu Khổng Lồ | `ogre_axe` | 900 | +10 Sức mạnh |  |
@@ -541,6 +545,7 @@ Ghép đồ SHOP-09: giá = giá món; mua khi đã có thành phần thì chỉ
 | Cơ bản | Giáp Tấm | `platemail` | 1200 | +10 Giáp |  |
 | Cơ bản | Đại Kiếm | `claymore` | 1200 | +25 Sát thương |  |
 | Cơ bản | Móng Cuồng Nộ | `claws_fury` | 1500 | +50% Tốc đánh |  |
+| Cơ bản | Ngọc Kiên Trì | `perseverance` | 1600 | +6 Hồi máu, +2 Hồi mana | Nhẫn Sinh Lực + Đá Hư Không |
 | Cơ bản | Đá Siêu Tốc | `hyperstone` | 1700 | +60% Tốc đánh |  |
 | Cơ bản | Kiếm Quỷ | `demon_edge` | 1800 | +38 Sát thương |  |
 | Cơ bản | Rìu Thần Lực | `reaver` | 2400 | +25 Sức mạnh |  |

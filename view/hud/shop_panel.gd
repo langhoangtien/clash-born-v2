@@ -60,6 +60,7 @@ const STATS: Dictionary = {
 	&"status_resistance": ["Kháng hiệu ứng", true],
 	&"cast_range": ["Tầm chiêu", false],
 	&"physical_damage_reduction": ["Giảm sát thương vật lý", true],
+	&"debuff_amplification": ["Thời gian hiệu ứng gây ra", true],
 }
 
 signal buy_pressed(item_id: StringName)

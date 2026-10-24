@@ -28,35 +28,30 @@ art_id = &"frost_orb_ii_passive_ability"
 [sub_resource type="Resource" id="Resource_gyj23"]
 script = ExtResource("5_ybash")
 stat = &"max_hp"
-value = "300"
+value = "470"
 
 [sub_resource type="Resource" id="Resource_fal02"]
 script = ExtResource("5_ybash")
 stat = &"strength"
-value = "20"
+value = "13"
 
 [sub_resource type="Resource" id="Resource_0n4uc"]
 script = ExtResource("5_ybash")
 stat = &"agility"
-value = "20"
+value = "13"
 
 [sub_resource type="Resource" id="Resource_b1dkt"]
 script = ExtResource("5_ybash")
 stat = &"intelligence"
-value = "20"
-
-[sub_resource type="Resource" id="EV0"]
-script = ExtResource("5_ybash")
-stat = &"evasion"
-value = "0.2"
+value = "13"
 
 [resource]
 script = ExtResource("6_id8wa")
 category = 2
 description = "Bị động: đòn đánh làm chậm mục tiêu 30% tốc chạy và 30% tốc đánh trong 3 s (cận chiến) / 2 s (đánh xa)."
-cost = 5200
-components = Array[StringName]([&"frost_orb", &"mirage_orb"])
-modifiers = Array[ExtResource("5_ybash")]([SubResource("Resource_gyj23"), SubResource("Resource_fal02"), SubResource("Resource_0n4uc"), SubResource("Resource_b1dkt"), SubResource("EV0")])
+cost = 3400
+components = Array[StringName]([&"frost_orb", &"vitality_booster", &"circlet"])
+modifiers = Array[ExtResource("5_ybash")]([SubResource("Resource_gyj23"), SubResource("Resource_fal02"), SubResource("Resource_0n4uc"), SubResource("Resource_b1dkt")])
 ability = SubResource("Resource_0giwr")
 id = &"frost_orb_ii"
 display_name = "Ngọc Băng Sương II"

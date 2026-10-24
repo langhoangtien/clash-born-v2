@@ -106,7 +106,6 @@ func test_D_139_new_items_stats() -> void:
 	assert_eq(_sum(w.item_catalog[&"mirage_orb"])[&"evasion"], 0.2)
 	assert_eq(_sum(w.item_catalog[&"steadfast_armor"])[&"status_resistance"], 0.2)
 	assert_eq(_sum(w.item_catalog[&"steadfast_armor"])[&"physical_armor"], 15.0)
-	assert_eq(w.item_catalog[&"frost_orb_ii"].components, [&"frost_orb", &"mirage_orb"] as Array[StringName])
 	assert_true(w.item_catalog[&"shadow_dance_blade"].components.has(&"mirage_orb"), "kiếm né ghép từ món né")
 	for id: StringName in [&"reaver", &"eaglesong", &"mystic_staff", &"sacred_relic"]:
 		var used: bool = false

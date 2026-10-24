@@ -55,7 +55,7 @@ physical_damage, magic_damage, pure_damage, physical_armor, magic_armor,
 attack_range, cast_range, base_attack_time, attack_speed, movement_speed,
 vision_range, evasion, accuracy, critical_chance, critical_multiplier,
 status_resistance, armor_reduction, physical_armor_penetration, lifesteal,
-damage_taken_multiplier, spell_amplification, magic_armor_reduction, cooldown_reduction, physical_damage_reduction`.
+damage_taken_multiplier, spell_amplification, magic_armor_reduction, cooldown_reduction, physical_damage_reduction, debuff_amplification`.
 
 `physical_damage` cuối cùng tối thiểu 0 (D-135).
 
@@ -127,6 +127,9 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 
 `ST-09` Kháng hiệu ứng (`status_resistance`) giảm thời lượng các hiệu ứng có tag
 `debuff` (v1 chỉ giảm choáng).
+
+`ST-09b` (D-141) Kéo dài hiệu ứng gây ra (`debuff_amplification` của kẻ áp): hiệu ứng `debuff` áp lên
+đơn vị phe khác kéo dài × (1 + giá trị), tính trước kháng hiệu ứng của mục tiêu (ST-09).
 
 `ST-10` State mới chỉ được thêm khi trả lời đủ **bảng tương tác bắt buộc**
 (ARCHITECTURE mục 7) và có test cho từng dòng.
@@ -529,7 +532,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   liệu của sự kiện (`event.damage`, `event.burned_mana`). Chỉ cộng, trừ, nhân, chia,
   min, max, floor (làm tròn xuống). Không có điều kiện if trong biểu thức; điều kiện nằm ở `condition` của trigger.
   `self.` / `target.` đọc chỉ số STAT-01 và `current_hp`, `current_mana`, `level`;
-  `event.` đọc `damage`, `burned_mana`, `heal`. Danh sách nằm trong `RuleCatalog`, test
+  `event.` đọc `damage`, `burned_mana`, `heal`, `raw_damage` (đòn đánh: sát thương trước giáp / chặn,
+  đã nhân chí mạng — D-141). Danh sách nằm trong `RuleCatalog`, test
   nội dung từ chối mọi tên khác. Giá trị có tên được **chụp lúc áp** hiệu ứng: nâng cấp
   skill sau đó không đổi bản đang chạy.
 - `EFF-10` Thời hạn (D-56): `duration` d giây → hiệu ứng có tác dụng đúng d giây (gỡ ở pha
@@ -549,6 +553,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   không thuộc kỹ năng (hiệu ứng, đồ) trúng **phe địch, không phải công trình**, nhắm được (DEF-05), mép thân trong vùng; tâm/hướng chốt lúc tung, có `delay` thì nổ sau đó;
   đơn vị trúng xử lý theo id. `falloff` f: sát thương nhân 1 − f × (khoảng cách tâm–tâm /
   bán kính), tối thiểu ở mép (f = 1 → mép nhận 0).
+- `EFF-17` (D-141) Hiệu ứng khai báo `pause_on_hero_damage` (giây): hành động chu kỳ **bỏ lượt** khi chủ
+  vừa nhận sát thương từ tướng địch trong khoảng đó (theo ECO-09 `damaged_by`); nhịp chu kỳ vẫn chạy.
 - `EFF-13` Chủ hiệu ứng chết → mọi hiệu ứng bị gỡ (lý do `owner_died`), trừ hiệu ứng có tag
   `passive` (D-56).
 

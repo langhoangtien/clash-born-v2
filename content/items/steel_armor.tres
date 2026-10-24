@@ -17,7 +17,6 @@ script = ExtResource("4_abl")
 slot = 4
 targeting = 0
 values = Dictionary[StringName, PackedFloat32Array]({
-&"flat": PackedFloat32Array(20),
 &"fraction": PackedFloat32Array(0.2)
 })
 on_learn = Array[ExtResource("1_act")]([SubResource("A0")])
@@ -37,7 +36,7 @@ value = "20"
 [resource]
 script = ExtResource("6_item")
 category = 2
-description = "Bị động: tướng địch đánh thường trúng bạn nhận lại 20 + 20% sát thương đòn đó (vật lý, phản hồi)."
+description = "Bị động: tướng địch đánh thường trúng bạn nhận lại 20% sát thương đòn đó tính trước giáp của bạn (vật lý, phản hồi)."
 cost = 2100
 components = Array[StringName]([&"chainmail", &"ring_protection", &"broadsword"])
 modifiers = Array[ExtResource("5_mod")]([SubResource("M0"), SubResource("M1")])

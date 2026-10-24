@@ -7,7 +7,7 @@
 
 [sub_resource type="Resource" id="D0"]
 script = ExtResource("4_dmg")
-amount = "flat + fraction * event.damage"
+amount = "fraction * event.raw_damage"
 reflected = true
 amplified = false
 target = 2

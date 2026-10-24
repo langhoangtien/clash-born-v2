@@ -5,3 +5,4 @@ extends RefCounted
 var damage: float = 0.0
 var burned_mana: float = 0.0
 var heal: float = 0.0
+var raw_damage: float = 0.0

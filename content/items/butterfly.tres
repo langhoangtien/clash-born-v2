@@ -6,7 +6,7 @@
 [sub_resource type="Resource" id="MZ0"]
 script = ExtResource("1_mod")
 stat = &"agility"
-value = "35"
+value = "30"
 
 [sub_resource type="Resource" id="MZ1"]
 script = ExtResource("1_mod")
@@ -28,7 +28,7 @@ script = ExtResource("2_item")
 category = 0
 cost = 4400
 modifiers = Array[ExtResource("1_mod")]([SubResource("MZ0"), SubResource("MZ1"), SubResource("MZ2"), SubResource("MZ3")])
-components = Array[StringName]([&"eaglesong", &"quarterstaff", &"blade_alacrity"])
+components = Array[StringName]([&"eaglesong", &"quarterstaff", &"evasion_charm"])
 id = &"butterfly"
 display_name = "Cánh Bướm"
 art_id = &"butterfly"
