@@ -37,7 +37,7 @@ static func _apply(world: World, r: DamageRequest, target: Entity, queue: Array[
 	var deflected: DamageRequest = AttackDeflect.check(world, r, source, target)  # CMB-15
 	if deflected != null:
 		world.emit(&"attack_deflected", r.source_id, r.target_id)
-		world.note(&"miss", target.position)
+		world.note(&"deflect", target.position)
 		queue.insert(at, deflected)
 		return false
 	var amount: float = _amount(world, r, source, target)

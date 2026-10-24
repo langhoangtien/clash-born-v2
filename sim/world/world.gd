@@ -60,7 +60,8 @@ var item_catalog: Dictionary[StringName, ItemDef] = {}
 var shop_stock: Array[Dictionary] = []
 ## Đạn kỹ năng đang bay (ABL-05), SkillShotSystem cập nhật.
 var skill_shots: Array[SkillShot] = []
-## Chỉ để VIEW vẽ: vùng vừa nổ gần đây [tâm, bán kính, tick, đội]. Không thuộc trạng thái trận.
+## Chỉ để VIEW vẽ: vùng vừa nổ gần đây [tâm / đỉnh, bán kính, tick, đội, hình, hướng, góc, dài, nửa rộng].
+## Không thuộc trạng thái trận.
 var recent_areas: Array = []
 ## Chỉ để VIEW: chữ nổi gần đây [loại, vị trí, giá trị, tick] (miss, damage, crit, stun).
 ## Không thuộc trạng thái trận.

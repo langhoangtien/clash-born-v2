@@ -234,3 +234,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | D-141 | Xong | 2026-10-24 | 632 test + soak xanh; Tim Khổng Lồ hồi %, đồ hồi phục tầm trung, Trượng Định Mệnh, Áo Choàng Kiên Định, sửa Giáp Thép / Ngọc Băng Sương II / Cánh Bướm. Chờ Codex Đợt 12 |
 | D-142 | Xong | 2026-10-24 | 629 test xanh; Tim Khổng Lồ cơ chế Dota mới, Hoa Câm Lặng (khóa chiêu). Icon Đợt 12 đã nhập, chờ Codex Đợt 13 |
 | D-143 | Xong | 2026-10-24 | 633 test + soak xanh; Khiên Chắn của Duy Anh thành hất đòn (8→18%, trả 50→100%) |
+| D-144 | Xong | 2026-10-24 | Hình tướng / lính / quái / công trình thật trong trận + hoạt ảnh biến đổi, hiệu ứng chiêu trên bản đồ, giao diện thử 4:3 / 16:10 / 20:9. M8.3 / M8.4: chờ người chơi đo FPS trên máy tính bảng |

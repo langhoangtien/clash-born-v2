@@ -21,6 +21,10 @@ var viewer_team: int = -1
 var alpha: float = 1.0
 
 var _previous: Dictionary[int, Vector2] = {}
+## D-144: tick đơn vị trúng sát thương gần nhất (lóe đỏ).
+var _hit_tick: Dictionary[int, int] = {}
+var _vfx: Vfx = Vfx.new()
+var _vfx_tick: int = -1
 
 
 ## Gọi ngay trước mỗi world.step() để nhớ vị trí cũ.
@@ -37,7 +41,17 @@ func display_position(e: Entity) -> Vector2:
 
 
 func _process(_delta: float) -> void:
+	if world != null and world.tick != _vfx_tick:
+		_vfx_tick = world.tick
+		_vfx.collect(world)
+		for ev: GameEvent in world.events:
+			if ev.type == &"damage_taken" and ev.amount > 0.0:
+				_hit_tick[ev.target_id] = ev.tick
 	queue_redraw()
+
+
+func _moving(e: Entity) -> bool:
+	return _previous.has(e.id) and _previous[e.id].distance_squared_to(e.position) > 1.0
 
 
 func _draw() -> void:
@@ -54,12 +68,7 @@ func _draw() -> void:
 				draw_line(at - e.facing * 110.0, at, Color(col, 0.4), e.radius * 1.6, true)
 				draw_line(at - e.facing * 70.0, at, Color(col, 0.8), e.radius * 0.8, true)
 			_draw_unit(e, display_position(e))
-	for r: Array in world.recent_areas:
-		var age: float = (world.tick - r[2]) / 15.0
-		if age < 1.0:
-			var col: Color = (BLUE if r[3] == 0 else RED).lightened(0.4)
-			draw_circle(r[0], r[1], Color(col, 0.35 * (1.0 - age)))
-			draw_arc(r[0], r[1], 0, TAU, 48, Color(col, 0.9 * (1.0 - age)), 4.0, true)
+	_vfx.draw(self, world)
 	for s: SkillShot in world.skill_shots:  # đạn kỹ năng (ABL-05); của địch chỉ hiện trong tầm nhìn
 		if viewer_team >= 0 and s.team != viewer_team and not FogView.lit(world, viewer_team, s.position):
 			continue
@@ -113,7 +122,15 @@ func _draw_unit(e: Entity, at: Vector2) -> void:
 	draw_circle(Vector2.ZERO, e.radius * 1.05, Color(0, 0, 0, 0.3))
 	draw_set_transform(Vector2.ZERO)
 	if Rules.is_structure(e):
-		_draw_structure(e, at, color)
+		var stex: Texture2D = UnitSprite.texture_of(e)
+		if stex == null:
+			_draw_structure(e, at, color)
+			return
+		var sh: float = UnitSprite.height_of(e)
+		UnitSprite.draw(self, world, e, stex, at + Vector2(0, e.radius * 0.35), sh, false, world.tick - _hit_tick.get(e.id, -100), Color.WHITE)
+		if e.locked:
+			_draw_lock(at - Vector2(0, sh * 0.45))
+		_draw_health(e, at - Vector2(0, sh * 0.95), color)
 		return
 	if e.kind == Entity.Kind.WARD:
 		_draw_ward(e, at)
@@ -121,16 +138,17 @@ func _draw_unit(e: Entity, at: Vector2) -> void:
 	if e.reincarnate_tick >= 0:  # DTH-02: nằm chờ tái sinh
 		_draw_lying(e, at, color)
 		return
-	if Rules.has_state(e, UnitState.Id.HEXED):  # ST-16: hình con ếch tạm
+	var hexed: bool = Rules.has_state(e, UnitState.Id.HEXED)
+	var tex: Texture2D = ArtLibrary.texture(&"hex_frog") if hexed else UnitSprite.texture_of(e)
+	if hexed and tex == null:  # ST-16: hình con ếch tạm
 		_draw_frog(e, at, color)
 		return
-	var tex: Texture2D = ArtLibrary.texture(e.art_id)
-	var height: float = e.radius * BODY_HEIGHT * (3.0 if tex != null else 1.0)
+	var height: float = (e.radius * 3.0 if hexed else UnitSprite.height_of(e)) if tex != null else e.radius * BODY_HEIGHT
 	if tex != null:
-		var size: Vector2 = Vector2(height, height)
 		var tint: Color = Color(1, 1, 1, 0.45) if faded(e) else Color.WHITE
-		draw_texture_rect(tex, Rect2(at - Vector2(size.x * 0.5, size.y * 0.85), size), false, tint) if e.facing.x >= 0.0 \
-			else draw_texture_rect(tex, Rect2(at + Vector2(size.x * 0.5, -size.y * 0.85), Vector2(-size.x, size.y)), false, tint)
+		UnitSprite.draw(self, world, e, tex, at, height, _moving(e), world.tick - _hit_tick.get(e.id, -100), tint)
+		if e.kind == Entity.Kind.HERO:
+			draw_arc(at, e.radius * 0.9, 0, TAU, 32, Color(color, 0.7), 3.0, true)  # vòng chân màu đội
 	else:
 		_draw_placeholder(e, at, Color(color, 0.45) if faded(e) else color, height)
 	if e.creep_tier > 0:  # CRP-12: lính siêu cấp (vòng bạc) / siêu lính (vòng vàng)
@@ -216,19 +234,27 @@ func _draw_structure(e: Entity, at: Vector2, color: Color) -> void:
 	draw_circle(at - Vector2(0, r * 2.6), r * 0.45, color.lightened(0.4))
 	if e.locked:
 		draw_rect(body, Color(0.5, 0.5, 0.5, 0.45))
-		draw_rect(Rect2(at - Vector2(10, r * 1.4), Vector2(20, 16)), Color(0.9, 0.9, 0.9))
-		draw_arc(at - Vector2(0, r * 1.4), 8, PI, TAU, 8, Color(0.9, 0.9, 0.9), 3.0)
+		_draw_lock(at - Vector2(0, r * 1.4))
 	_draw_health(e, at - Vector2(0, r * 3.4), color)
+
+
+## STR-02: ổ khóa trên công trình đang khóa.
+func _draw_lock(c: Vector2) -> void:
+	draw_rect(Rect2(c - Vector2(14, 0), Vector2(28, 22)), Color(0.15, 0.15, 0.18, 0.85))
+	draw_rect(Rect2(c - Vector2(10, -3), Vector2(20, 16)), Color(0.9, 0.9, 0.9))
+	draw_arc(c, 9, PI, TAU, 8, Color(0.9, 0.9, 0.9), 3.0)
 
 
 func _draw_health(e: Entity, center: Vector2, color: Color) -> void:
 	if e.stats == null:
 		return
 	var max_hp: float = maxf(1.0, e.stats.get_stat(StatId.Id.MAX_HP))
-	var width: float = e.radius * BAR_WIDTH
-	var rect: Rect2 = Rect2(center - Vector2(width * 0.5, BAR_HEIGHT * 0.5), Vector2(width, BAR_HEIGHT))
+	var hero: bool = e.kind == Entity.Kind.HERO
+	var width: float = 120.0 if hero else e.radius * BAR_WIDTH  # D-144: thanh máu tướng to, dễ đọc
+	var bar_h: float = 14.0 if hero else BAR_HEIGHT
+	var rect: Rect2 = Rect2(center - Vector2(width * 0.5, bar_h * 0.5), Vector2(width, bar_h))
 	draw_rect(rect.grow(2), Color(0, 0, 0, 0.7))
-	draw_rect(Rect2(rect.position, Vector2(width * clampf(e.health / max_hp, 0, 1), BAR_HEIGHT)), color)
+	draw_rect(Rect2(rect.position, Vector2(width * clampf(e.health / max_hp, 0, 1), bar_h)), color)
 
 
 func _team_color(team: int) -> Color:

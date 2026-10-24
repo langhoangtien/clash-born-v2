@@ -121,6 +121,7 @@ func _ready() -> void:
 	buff_bar.hero = hero
 	match_hud.hero = hero
 	hud.text = HELP
+	hud.visible = not OS.has_feature("mobile")  # D-144: phím tắt chỉ có ích trên máy tính
 
 
 func _process(delta: float) -> void:

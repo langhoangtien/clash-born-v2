@@ -177,9 +177,10 @@ static func fire_area(world: World, p: PendingArea) -> void:
 	var dir: Vector2 = p.ctx.direction if p.ctx.direction != Vector2.ZERO else owner.facing
 	var start: Vector2 = owner.position
 	var reach: float = radius if a.shape != AreaAction.Shape.RECT else length + half_width
-	if a.shape == AreaAction.Shape.CIRCLE:
-		world.recent_areas = world.recent_areas.filter(func(r: Array) -> bool: return world.tick - r[2] < 30)
-		world.recent_areas.append([p.center, radius, world.tick, owner.team])
+	world.recent_areas = world.recent_areas.filter(func(r: Array) -> bool: return world.tick - r[2] < 30)
+	var angle: float = ExprEval.evaluate(a.angle, p.ctx) if a.shape == AreaAction.Shape.CONE else 0.0
+	world.recent_areas.append([p.center if a.shape == AreaAction.Shape.CIRCLE else start, radius, world.tick, owner.team,
+		a.shape, dir.normalized(), angle, length, half_width])  # chỉ cho VIEW (D-144)
 	var around: Vector2 = p.center if a.shape == AreaAction.Shape.CIRCLE else start
 	for e: Entity in world.spatial_near(around, reach, World.Phase.TRIGGER):
 		if not _area_accepts(p.ctx, owner, e):
