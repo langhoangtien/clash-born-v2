@@ -28,3 +28,20 @@ func test_overlay_toggles() -> void:
 	view.toggle_overlay(&"walkability")
 	assert_false(view.show_walkability)
 	view.free()
+
+
+func test_D_147_baking_skipped_headless_keeps_live_layers() -> void:
+	assert_false(MapBaker.can_bake(), "test chạy headless: không nướng")
+	var view: MapView = MapView.new()
+	view.layout = load("res://data/maps/clashborn.tres") as MapLayout
+	view.bake_static = true
+	(Engine.get_main_loop() as SceneTree).root.add_child(view)
+	assert_true(view.baker == null)
+	assert_true((view.get_node("Ground") as CanvasItem).visible, "lớp gốc vẫn vẽ")
+	view.free()
+
+
+func test_D_147_tile_grid_covers_map() -> void:
+	var size: Vector2 = (load("res://data/maps/clashborn.tres") as MapLayout).world_size()
+	assert_true(ceili(size.x / MapBaker.TILE) * MapBaker.TILE >= size.x)
+	assert_true(MapBaker.TILE * MapBaker.SCALE <= 2048.0, "ô vừa giới hạn kết cấu của máy yếu")

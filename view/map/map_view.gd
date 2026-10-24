@@ -24,6 +24,9 @@ var show_labels: bool = false
 ## SHOP-02: bán kính vẽ quanh shop ẩn (hiển thị; khớp shop_radius trong BalanceSettings).
 var shop_radius: float = 600.0
 
+## D-147: nướng lớp tĩnh thành ô ảnh (màn trận bật; màn xem map giữ vẽ trực tiếp để phóng to nét).
+@export var bake_static: bool = false
+var baker: MapBaker
 var _overlay: _Layer
 var _walkability_texture: ImageTexture
 
@@ -42,10 +45,19 @@ func _ready() -> void:
 	if not errors.is_empty():
 		push_error("Dữ liệu map lỗi: " + "; ".join(errors))
 		return
-	_add_layer("Ground", func(ci: CanvasItem) -> void: MapPainter.paint_ground(ci, layout, true))
-	_add_layer("Obstacles", func(ci: CanvasItem) -> void: MapPainter.paint_obstacles(ci, layout, true))
-	_add_layer("Bushes", func(ci: CanvasItem) -> void: MapPainter.paint_bushes(ci, layout, true))
-	_add_layer("Shops", func(ci: CanvasItem) -> void: MapPainter.paint_shops(ci, layout, shop_radius, true))
+	var painters: Array[Callable] = [
+		func(ci: CanvasItem) -> void: MapPainter.paint_ground(ci, layout, true),
+		func(ci: CanvasItem) -> void: MapPainter.paint_obstacles(ci, layout, true),
+		func(ci: CanvasItem) -> void: MapPainter.paint_bushes(ci, layout, true),
+		func(ci: CanvasItem) -> void: MapPainter.paint_shops(ci, layout, shop_radius, true)]
+	var layers: Array[CanvasItem] = []
+	for i: int in painters.size():
+		layers.append(_add_layer(["Ground", "Obstacles", "Bushes", "Shops"][i], painters[i]))
+	if bake_static and MapBaker.can_bake():
+		baker = MapBaker.new()
+		baker.name = "Baked"
+		add_child(baker)
+		baker.bake.call_deferred(layers, painters, layout.world_size())
 	_overlay = _add_layer("Overlay", _paint_overlay)
 
 
