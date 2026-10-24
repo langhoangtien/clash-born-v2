@@ -13,11 +13,9 @@ enum Dispel { BASIC, STRONG, NONE }  # EFF-07
 @export var dispel: Dispel = Dispel.BASIC
 @export var states: Array[UnitState.Id] = []
 @export var modifiers: Array[ModifierDef] = []
-## CMB-15 (D-137): chặn sát thương đòn đánh nhắm vào chủ — xác suất (PRD), lượng chặn, hệ số khi
-## kẻ đánh là đơn vị đánh xa.
-@export var block_chance: String
-@export var block_amount: String
-@export var block_ranged: String
+## CMB-15 (D-143): khiên hất đòn — xác suất (PRD) và phần sát thương đòn trước giáp trả về kẻ đánh.
+@export var deflect_chance: String
+@export var deflect_fraction: String
 @export var triggers: Array[TriggerDef] = []
 @export var removed_by: Array[StringName] = []  # EFF-05
 ## State chỉ có hiệu lực sau khoảng này (tàng hình).

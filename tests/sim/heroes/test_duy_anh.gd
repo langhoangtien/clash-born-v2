@@ -76,44 +76,59 @@ func _attack_hit(w: World, from: Entity, k: Entity, raw: float) -> float:
 	return before - k.health
 
 
-func test_CMB_15_shield_blocks_half_the_attacks() -> void:
+func test_CMB_15_shield_deflects_8_percent_back_half() -> void:
 	var w: World = _world()
 	var k: Entity = _knight(w)
-	var foe: Entity = _foe(w, k.position + Vector2(150, 0))
-	k.stats.set_base(StatId.Id.MAX_HP, 100000.0)
+	var foe: Entity = _foe(w, k.position + Vector2(150, 0), 1000000.0)
+	k.stats.set_base(StatId.Id.MAX_HP, 1000000.0)
 	k.stats.recompute()
-	k.health = 100000.0
+	k.health = 1000000.0
 	w.step()
-	var mult: float = DamageFormulas.armor_multiplier(k.stats.get_stat(StatId.Id.PHYSICAL_ARMOR), w.balance.armor_coefficient)
-	var blocked: int = 0
-	for i: int in range(200):
+	var kmult: float = DamageFormulas.armor_multiplier(k.stats.get_stat(StatId.Id.PHYSICAL_ARMOR), w.balance.armor_coefficient)
+	var fmult: float = DamageFormulas.armor_multiplier(foe.stats.get_stat(StatId.Id.PHYSICAL_ARMOR), w.balance.armor_coefficient)
+	var deflected: int = 0
+	for i: int in range(500):
+		var foe_hp: float = foe.health
 		var taken: float = _attack_hit(w, foe, k, 100.0)
-		if absf(taken - 80.0 * mult) < 0.01:
-			blocked += 1
+		if taken == 0.0:
+			deflected += 1
+			assert_near(foe_hp - foe.health, 50.0 * fmult, 0.01, "cấp 1: kẻ đánh lãnh 50% đòn trước giáp")
 		else:
-			assert_near(taken, 100.0 * mult, 0.01, "không chặn: đủ sát thương")
-	assert_true(blocked > 80 and blocked < 120, "≈50%% bị chặn 20 (được %d/200)" % blocked)
+			assert_near(taken, 100.0 * kmult, 0.01, "không hất: nhận đủ")
+			assert_near(foe.health, foe_hp, 0.001)
+	assert_true(deflected > 25 and deflected < 60, "≈8%% bị hất (được %d/500)" % deflected)
 
 
-func test_CMB_15_ranged_attacker_blocked_half() -> void:
+func test_CMB_15_deflected_attack_has_no_on_hit() -> void:
 	var w: World = _world()
 	var k: Entity = _knight(w)
-	var myra: Entity = UnitFactory.hero(w, _lib.heroes[&"myra"], 1, w.navigation(32.0).nearest_clear(k.position + Vector2(400, 0)))
+	var foe: Entity = _foe(w, k.position + Vector2(150, 0), 1000000.0)
+	k.stats.set_base(StatId.Id.MAX_HP, 1000000.0)
+	k.stats.recompute()
+	k.health = 1000000.0
 	w.step()
-	var seen: Array[float] = []
-	for i: int in range(40):
-		var v: float = DamageBlock.amount(w, myra, k)
-		if v > 0.0 and not seen.has(v):
-			seen.append(v)
-	assert_eq(seen, [10.0] as Array[float], "đánh xa: chặn một nửa (10)")
+	var landed: int = 0
+	var deflected: int = 0
+	for i: int in range(300):
+		w.events.clear()
+		_attack_hit(w, foe, k, 100.0)
+		for ev: GameEvent in w.events:
+			if ev.type == &"attack_landed":
+				landed += 1
+			elif ev.type == &"attack_deflected":
+				deflected += 1
+	assert_eq(landed + deflected, 300, "mỗi đòn: trúng hoặc bị hất, không cả hai")
+	assert_true(deflected > 0)
 
 
 func test_CMB_15_innate_ranks_by_hero_level() -> void:
 	_world()
 	var inn: AbilityDef = _lib.heroes[&"duy_anh"].innate
-	var want: Array[float] = [20, 30, 40, 50, 60, 70]
+	var chance: Array[float] = [0.08, 0.1, 0.12, 0.14, 0.16, 0.18]
+	var back: Array[float] = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 	for i: int in range(6):
-		assert_near(inn.values[&"block"][i], want[i], 0.0001, "bậc %d" % (i + 1))
+		assert_near(inn.values[&"deflect_chance"][i], chance[i], 0.0001, "tỉ lệ bậc %d" % (i + 1))
+		assert_near(inn.values[&"deflect"][i], back[i], 0.0001, "hất bậc %d" % (i + 1))
 
 
 func test_D_135_charge_boosts_move_speed_for_5s() -> void:

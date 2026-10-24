@@ -17,14 +17,14 @@ static func resolve(world: World) -> void:
 		var r: DamageRequest = queue[i]
 		i += 1
 		var target: Entity = world.find_entity(r.target_id)
-		if _apply(world, r, target) and target.alive:
+		if _apply(world, r, target, queue, i) and target.alive:
 			var back: DamageRequest = Duels.reflect_for(r, target)  # DUL-04/05: còn sống mới phản
 			if back != null:
 				queue.insert(i, back)
 
 
 ## Một yêu cầu; true nếu sát thương đã trừ vào máu (kể cả 0).
-static func _apply(world: World, r: DamageRequest, target: Entity) -> bool:
+static func _apply(world: World, r: DamageRequest, target: Entity, queue: Array[DamageRequest], at: int) -> bool:
 	if target == null or not target.alive or target.locked or target.reincarnate_tick >= 0:
 		return false  # STR-02: công trình khóa không nhận sát thương; DTH-02: đang nằm chờ tái sinh
 	var source: Entity = world.find_entity(r.source_id)
@@ -33,6 +33,12 @@ static func _apply(world: World, r: DamageRequest, target: Entity) -> bool:
 	if r.is_attack and _misses(world, source, target):
 		world.emit(&"attack_missed", r.source_id, r.target_id)
 		world.note(&"miss", target.position)
+		return false
+	var deflected: DamageRequest = AttackDeflect.check(world, r, source, target)  # CMB-15
+	if deflected != null:
+		world.emit(&"attack_deflected", r.source_id, r.target_id)
+		world.note(&"miss", target.position)
+		queue.insert(at, deflected)
 		return false
 	var amount: float = _amount(world, r, source, target)
 	if amount < 0.0:
@@ -69,8 +75,6 @@ static func _apply(world: World, r: DamageRequest, target: Entity) -> bool:
 static func _amount(world: World, r: DamageRequest, source: Entity, target: Entity) -> float:
 	var s: StatBlock = target.stats
 	var raw: float = r.raw
-	if r.is_attack:
-		raw = maxf(0.0, raw - DamageBlock.amount(world, source, target))  # CMB-15: chặn trước giáp
 	var amount: float = DamageFormulas.final_damage(raw * _structure_factor(world, source, target), r.damage_type,
 		s.get_stat(StatId.Id.PHYSICAL_ARMOR), _magic_armor(source, target),
 		s.get_stat(StatId.Id.DAMAGE_TAKEN_MULTIPLIER), world.balance)

@@ -12,13 +12,12 @@ target = 0
 
 [resource]
 script = ExtResource("4_abl")
-description = "Bị động: đòn đánh thường nhắm vào hiệp sĩ có 50% cơ hội bị khiên chặn 20 / 30 / 40 / 50 / 60 / 70 sát thương (đòn của đơn vị đánh xa: một nửa)."
+description = "Bị động: đòn đánh thường nhắm vào hiệp sĩ có 8 / 10 / 12 / 14 / 16 / 18% cơ hội bị khiên hất ngược — hiệp sĩ không nhận gì, kẻ đánh lãnh 50 / 60 / 70 / 80 / 90 / 100% đòn đó."
 slot = 0
 targeting = 0
 values = Dictionary[StringName, PackedFloat32Array]({
-&"block": PackedFloat32Array(20, 30, 40, 50, 60, 70),
-&"block_chance": PackedFloat32Array(0.5, 0.5, 0.5, 0.5, 0.5, 0.5),
-&"block_ranged": PackedFloat32Array(0.5, 0.5, 0.5, 0.5, 0.5, 0.5)
+&"deflect": PackedFloat32Array(0.5, 0.6, 0.7, 0.8, 0.9, 1),
+&"deflect_chance": PackedFloat32Array(0.08, 0.1, 0.12, 0.14, 0.16, 0.18)
 })
 on_learn = Array[ExtResource("1_act")]([SubResource("A0")])
 id = &"duy_anh_innate"

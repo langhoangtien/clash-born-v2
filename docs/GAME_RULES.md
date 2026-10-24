@@ -280,12 +280,12 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `CMB-14` (D-132) Xuyên giáp phép: sát thương MAGIC do một đơn vị gây tính giáp phép mục tiêu
   = giáp phép − `magic_armor_reduction` của kẻ gây (chỉ trừ phần dương; có thể xuống âm). Giáp thật
   của mục tiêu không đổi, sát thương của kẻ khác không bị ảnh hưởng. Không tác dụng lên PHYSICAL / PURE.
-- `CMB-15` (D-137) Chặn sát thương (kiểu khiên Vanguard): hiệu ứng khai báo `block_chance`,
-  `block_amount`, `block_ranged`. Đòn **đánh thường** trúng (không né) đơn vị có hiệu ứng: mỗi nguồn
-  tung PRD riêng (RNG-01), nhiều nguồn trúng lấy lượng lớn nhất; kẻ đánh là đơn vị đánh xa thì lượng
-  nhân `block_ranged`. Trừ vào sát thương đòn **trước giáp**, không dưới 0. Chặn cả đòn của lính,
-  quái, trụ. Biến hình (ST-16) thì tắt nếu là bị động. Phản sát thương Quyết Đấu (DUL-04) tính trên
-  sát thương trước khi chặn.
+- `CMB-15` (D-143) Khiên hất đòn: hiệu ứng khai báo `deflect_chance`, `deflect_fraction`. Đòn **đánh
+  thường** trúng (sau khi tung né, không trượt) đơn vị có hiệu ứng: tung PRD (RNG-01); trúng thì đòn coi
+  như **trượt** với mục tiêu (không mất máu, không `attack_landed`, không hiệu ứng đòn đánh), phát
+  `attack_deflected`, và kẻ đánh nhận ngay sát thương vật lý = `deflect_fraction` × sát thương đòn trước
+  giáp (đã nhân chí mạng), đánh dấu phản hồi (CMB-09: không hút máu, không phản lại). Hất cả đòn của lính,
+  quái, trụ. Biến hình (ST-16) thì tắt nếu là bị động. Đòn bị hất không tính phản Quyết Đấu (DUL-04).
 - `CMB-16` (D-140) Giảm sát thương vật lý (`physical_damage_reduction`): sát thương PHYSICAL nhận vào nhân
   `1 − giảm` sau giáp, trước hệ số state / khiên. Nhiều nguồn **nhân dồn** như né (hai nguồn 10% → 19%).
 - `CMB-12` Đổi mục tiêu đánh (D-69): khi bắt đầu vung đòn vào mục tiêu **khác** mục tiêu
@@ -595,7 +595,7 @@ kill_credited, structure_destroyed, unit_spawned, gold_changed, level_up,
 skill_leveled, talent_chosen, dash_finished, projectile_hit, item_used,
 knockback_finished, dispelled, attack_target_changed, innate_ranked, mana_burned,
 lethal_damage, reincarnated, recall_started, recall_cancelled, recall_finished, duel_started,
-duel_ended`. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
+duel_ended, attack_deflected`. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
 `effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `removed` (hành động RemoveEffect), `dispelled`, `owner_died`.
 Thêm sự kiện = thay đổi luật.
 

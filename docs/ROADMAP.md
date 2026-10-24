@@ -233,3 +233,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | D-140 | Xong | 2026-10-24 | 625 test xanh; Giáp Thép phản đòn, Giáp Bất Khuất giảm sát thương vật lý, Trượng Hắc Vương (kiểu BKB). Chờ Codex Đợt 11 |
 | D-141 | Xong | 2026-10-24 | 632 test + soak xanh; Tim Khổng Lồ hồi %, đồ hồi phục tầm trung, Trượng Định Mệnh, Áo Choàng Kiên Định, sửa Giáp Thép / Ngọc Băng Sương II / Cánh Bướm. Chờ Codex Đợt 12 |
 | D-142 | Xong | 2026-10-24 | 629 test xanh; Tim Khổng Lồ cơ chế Dota mới, Hoa Câm Lặng (khóa chiêu). Icon Đợt 12 đã nhập, chờ Codex Đợt 13 |
+| D-143 | Xong | 2026-10-24 | 633 test + soak xanh; Khiên Chắn của Duy Anh thành hất đòn (8→18%, trả 50→100%) |
