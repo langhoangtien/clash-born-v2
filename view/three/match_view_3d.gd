@@ -101,6 +101,8 @@ func update(focus: Vector2) -> void:
 	for e: Entity in world.entities:
 		if not e.alive or not units.seen(e) or e.kind == Entity.Kind.WARD:
 			continue
+		if units.view_rect.has_area() and not units.view_rect.grow(UnitsView.CULL_MARGIN).has_point(e.position):
+			continue  # D-149: ngoài vùng mặt đất đang vẽ — gỡ hình, khỏi chạy hoạt ảnh
 		keep[e.id] = true
 		var a: Actor3D = _actors.get(e.id)
 		if a == null:
