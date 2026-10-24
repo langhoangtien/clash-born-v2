@@ -82,7 +82,8 @@ clashborn_v2/
     hud/                   TouchJoystick (joystick ảo; tên VirtualJoystick trùng lớp có sẵn của Godot 4.7)
   app/                     scene chính, luồng màn hình, màn xem map, màn trận;
                            SimRunner: chạy World 30 tick/giây theo thời gian thật;
-                           MatchInput: joystick/WASD/chạm → Command (CTL-01)
+                           MatchInput: joystick/WASD/chạm → Command (CTL-01);
+                           Updater: tự kiểm tra / tải / cài bản Android mới (D-148)
   tests/                   test (framework nhỏ tự viết, xem mục 9)
   tools/                   script ngoài Godot (build map...)
 ```
