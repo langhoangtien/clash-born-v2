@@ -9,6 +9,8 @@ static var hero_id: StringName = &"brakk"
 ## D-94: hero và độ khó của bot đối thủ (màn khởi động đặt; "" = không có bot).
 static var bot_hero_id: StringName = &"myra"
 static var bot_difficulty: int = BotState.Difficulty.NORMAL
+## D-145: bản thử 3D (chọn ở màn chọn tướng).
+static var render_3d: bool = false
 const SEED: int = 1
 ## CTL-02: phím PC giả lập nút ĐÁNH / đánh lính / đánh trụ (theo Rules.AttackMode).
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
@@ -45,6 +47,7 @@ var quick_buy: QuickBuy
 var _build_done: Array[StringName] = []
 var minimap: Minimap
 var shop: ShopPanel
+var view_3d: MatchView3D
 
 
 func _ready() -> void:
@@ -86,6 +89,8 @@ func _ready() -> void:
 	_setup_quick_buy()
 	_setup_test_panel()
 	camera.position = hero.position
+	if render_3d:
+		_setup_3d()
 	skills.world = world
 	skills.hero = hero
 	skills.input = input
@@ -147,6 +152,9 @@ func tick_frame(delta: float) -> void:
 	minimap.camera_rect = Rect2(camera.position - view_size * 0.5, view_size)
 	fog.view_rect = minimap.camera_rect  # D-108: chỉ tô sương trong khung camera
 	audio.listener = camera.position
+	if view_3d != null:
+		view_3d.update(camera.position)
+		fog.view_rect = Rect2(camera.position - Vector2.ONE * MatchView3D.GROUND_PX * 0.5, Vector2.ONE * MatchView3D.GROUND_PX)
 	match_hud.speed = runner.speed
 	match_hud.sim_ms = runner.step_ms
 	skills.refresh()
@@ -201,16 +209,16 @@ func _unhandled_input(event: InputEvent) -> void:
 		shop.toggle()  # D-81: bảng shop tạm
 	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_F2:
 		map_view.toggle_overlay(&"labels")  # D-77: ký hiệu map dev
-	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and skills.handle_key(event, get_global_mouse_position()):
+	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and skills.handle_key(event, _world_point(get_viewport().get_mouse_position())):
 		pass
 	elif event is InputEventKey and event.pressed and (event as InputEventKey).keycode == KEY_ESCAPE:
 		get_tree().change_scene_to_file(MENU_SCENE)
 	elif event is InputEventMouseButton and event.pressed and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_RIGHT:
-		input.click_world_point(get_global_mouse_position(), true)
+		input.click_world_point(_world_point(get_viewport().get_mouse_position()), true)
 	elif event is InputEventScreenDrag and death_cam.active():
 		death_cam.drag((event as InputEventScreenDrag).relative / camera.zoom, _map_bounds())  # CAM-01
 	elif event is InputEventScreenTouch and event.pressed:
-		input.click_world_point(get_canvas_transform().affine_inverse() * (event as InputEventScreenTouch).position, false)
+		input.click_world_point(_world_point((event as InputEventScreenTouch).position), false)
 
 
 ## D-114: âm thanh theo sự kiện trận, nhạc trận + tiếng nền map, nút chế độ tiếng (phím M).
@@ -232,6 +240,18 @@ func _setup_audio() -> void:
 
 func _map_bounds() -> Rect2:
 	return Rect2(Vector2.ZERO, world.map.world_size())
+
+
+## D-145: bản thử 3D — các lớp 2D trên mặt đất vào SubViewport, đơn vị thành mô hình / ảnh đứng.
+func _setup_3d() -> void:
+	view_3d = MatchView3D.create(self, $Hud, world, units_view, [map_view, fog, units_view, aim_indicator])
+
+
+## Điểm thế giới dưới điểm màn hình (2D: theo camera 2D; 3D: chiếu tia xuống đất).
+func _world_point(screen: Vector2) -> Vector2:
+	if view_3d != null:
+		return view_3d.screen_to_world(screen)
+	return get_canvas_transform().affine_inverse() * screen
 
 
 ## D-138: nút Test — cộng vàng / lên cấp cho mình hoặc bot qua lệnh CHEAT_* (CMD-06).

@@ -24,6 +24,8 @@ var _previous: Dictionary[int, Vector2] = {}
 ## D-144: tick đơn vị trúng sát thương gần nhất (lóe đỏ).
 var _hit_tick: Dictionary[int, int] = {}
 var _vfx: Vfx = Vfx.new()
+## Bản 3D thử (D-145): chỉ vẽ phần nằm trên mặt đất (bóng, vòng đội, vùng, hiệu ứng); hình đơn vị do View3D vẽ.
+var ground_only: bool = false
 var _vfx_tick: int = -1
 
 
@@ -50,6 +52,15 @@ func _process(_delta: float) -> void:
 	queue_redraw()
 
 
+## D-145: cho bản 3D đọc.
+func is_moving(e: Entity) -> bool:
+	return _moving(e)
+
+
+func hit_tick(e: Entity) -> int:
+	return _hit_tick.get(e.id, -100)
+
+
 func _moving(e: Entity) -> bool:
 	return _previous.has(e.id) and _previous[e.id].distance_squared_to(e.position) > 1.0
 
@@ -67,7 +78,10 @@ func _draw() -> void:
 				var col: Color = _team_color(e.team).lightened(0.4)
 				draw_line(at - e.facing * 110.0, at, Color(col, 0.4), e.radius * 1.6, true)
 				draw_line(at - e.facing * 70.0, at, Color(col, 0.8), e.radius * 0.8, true)
-			_draw_unit(e, display_position(e))
+			if ground_only:
+				_draw_ground_mark(e, display_position(e))
+			else:
+				_draw_unit(e, display_position(e))
 	_vfx.draw(self, world)
 	for s: SkillShot in world.skill_shots:  # đạn kỹ năng (ABL-05); của địch chỉ hiện trong tầm nhìn
 		if viewer_team >= 0 and s.team != viewer_team and not FogView.lit(world, viewer_team, s.position):
@@ -102,6 +116,15 @@ func _draw_zones() -> void:
 		var pulse: float = 1.0 - (phase - floorf(phase))
 		draw_circle(z.center, z.radius, Color(col, 0.22 + 0.2 * pulse))
 		draw_arc(z.center, z.radius, 0, TAU, 64, Color(col, 0.85), 3.0, true)
+
+
+## D-145: bóng + vòng màu đội dưới chân (bản 3D).
+func _draw_ground_mark(e: Entity, at: Vector2) -> void:
+	draw_set_transform(at, 0.0, Vector2(1.0, 1.0))
+	draw_circle(Vector2.ZERO, e.radius * 1.1, Color(0, 0, 0, 0.35))
+	draw_set_transform(Vector2.ZERO)
+	if e.kind == Entity.Kind.HERO or e.kind == Entity.Kind.LANE_CREEP:
+		draw_arc(at, e.radius * 1.05, 0, TAU, 32, Color(_team_color(e.team), 0.85), 4.0 if e.kind == Entity.Kind.HERO else 2.5, true)
 
 
 ## Vẽ đơn vị này không: phe mình, công trình (vị trí cố định, như Dota) hoặc đang thấy.

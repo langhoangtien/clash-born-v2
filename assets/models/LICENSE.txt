@@ -1,0 +1,3 @@
+robot.glb — "RobotExpressive" by Tomás Laulhé (https://www.patreon.com/quaternius đồng tác giả bản gốc),
+phát hành CC0 1.0 (public domain); lấy từ kho ví dụ three.js (examples/models/gltf/RobotExpressive).
+Chỉ dùng cho bản thử 3D (D-145).

@@ -16,12 +16,15 @@ const BOT_AT: Vector2 = Vector2(80, 964)
 const BOT_SIZE: float = 84.0
 const DIFF_NAMES: Array[String] = ["Dễ", "Thường", "Khó"]
 const START: Rect2 = Rect2(1480, 934, 380, 112)
-const MAP_BUTTON: Rect2 = Rect2(1196, 954, 260, 72)
+const MAP_BUTTON: Rect2 = Rect2(1196, 954, 130, 72)
+## D-145: chọn hình 2D / 3D thử.
+const VIEW_BUTTON: Rect2 = Rect2(1336, 954, 130, 72)
 
 var previews: Array[HeroPreview] = []
 var selected: int = 0
 var bot: int = 1
 var difficulty: int = 1
+var use_3d: bool = false
 var tab: HeroDetail.Tab = HeroDetail.Tab.SKILLS
 
 
@@ -66,6 +69,8 @@ func press_at(at: Vector2) -> void:
 		start_pressed.emit(previews[selected].def.id, previews[bot].def.id, difficulty)
 	if MAP_BUTTON.has_point(at):
 		map_pressed.emit()
+	if VIEW_BUTTON.has_point(at):
+		use_3d = not use_3d
 	queue_redraw()
 
 
@@ -127,5 +132,6 @@ func _bottom() -> void:
 	for i: int in range(DIFF_NAMES.size()):
 		var on: bool = i == difficulty
 		UiStyle.button(self, diff_rect(i), &"gold" if on else &"ghost", DIFF_NAMES[i], "", 24)
-	UiStyle.button(self, MAP_BUTTON, &"blue", "Xem map", "", 24)
+	UiStyle.button(self, MAP_BUTTON, &"blue", "Map", "", 24)
+	UiStyle.button(self, VIEW_BUTTON, &"gold" if use_3d else &"ghost", "3D thử" if use_3d else "2D", "", 24)
 	UiStyle.button(self, START, &"gold", "BẮT ĐẦU", "", 46)

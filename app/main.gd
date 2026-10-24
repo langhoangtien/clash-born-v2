@@ -34,4 +34,5 @@ func _start(id: StringName, bot_id: StringName, difficulty: int) -> void:
 	scene.hero_id = id
 	scene.bot_hero_id = bot_id
 	scene.bot_difficulty = difficulty
+	scene.render_3d = (get_node("HeroSelect") as HeroSelect).use_3d  # D-145
 	get_tree().change_scene_to_file(MATCH_SCENE)
