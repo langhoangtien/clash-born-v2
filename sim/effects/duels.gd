@@ -65,7 +65,7 @@ static func on_death(world: World, dead: Entity) -> void:
 		finish(world, dead.duel, world.find_entity(dead.duel.other(dead.id)))
 
 
-## DUL-06/08: kết thúc; `winner` null = hết giờ.
+## DUL-06/08: kết thúc; `winner` null = hết giờ. Bên thua (A hoặc B) −lose_damage (D-166).
 static func finish(world: World, d: DuelState, winner: Entity) -> void:
 	var a: Entity = world.find_entity(d.knight_id)
 	var b: Entity = world.find_entity(d.foe_id)
@@ -80,8 +80,7 @@ static func finish(world: World, d: DuelState, winner: Entity) -> void:
 		var win: float = d.values.get(&"win_damage", 0.0)
 		add_permanent(winner, win)
 		winner.gold += int(d.values.get(&"win_gold", 0.0))
-		if winner == b and a != null:
-			add_permanent(a, -d.values.get(&"lose_damage", 0.0))
+		add_permanent(a if winner == b else b, -d.values.get(&"lose_damage", 0.0))  # D-166: ai thua cũng bị trừ
 	world.emit(&"duel_ended", winner.id if winner != null else -1, d.foe_id if winner == a else d.knight_id,
 		0.0, &"won" if winner != null else &"timeout")
 

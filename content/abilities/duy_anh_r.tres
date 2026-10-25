@@ -48,7 +48,7 @@ extra_actions = Array[ExtResource("1_act")]([SubResource("B0")])
 
 [resource]
 script = ExtResource("9_abl")
-description = "Lao tới tướng địch, bổ kiếm, ép hai bên đánh nhau; hiệp sĩ phản 20 / 25 / 30% sát thương đòn đánh và hồi máu bằng lượng phản. Ai chết trước thua."
+description = "Lao tới tướng địch, bổ kiếm, ép hai bên đánh nhau; hiệp sĩ phản 20 / 25 / 30% sát thương đòn đánh và hồi máu bằng lượng phản. Ai chết trước thua: thắng + sát thương vĩnh viễn, thua − sát thương vĩnh viễn."
 slot = 3
 targeting = 2
 hits_creeps = false

@@ -425,7 +425,7 @@ Hồi 7 s, mana 50 / 55 / 60 / 65 / 70. Không lên công trình, không chí m�
 Tầm 500, chỉ tướng địch. Lao tới (vẫn bị nhắm, ABL-08b), tới nơi bắt đầu Quyết Đấu (DUL) rồi bổ
 150 / 250 / 350 vật lý. 3 / 4 / 5 s: hai bên bị ép đánh nhau; hiệp sĩ +60 / 80 / 100% tốc đánh và phản
 20 / 25 / 30% sát thương đòn đánh trước giáp của đối thủ. Ai chết trước thua: thắng +10 / 15 / 20 sát thương vĩnh
-viễn và +150 / 225 / 300 vàng (cả khi đối thủ thắng); hiệp sĩ thua −10 / 15 / 20. Hồi 70 / 60 / 50 s, mana
+viễn và +150 / 225 / 300 vàng (cả khi đối thủ thắng); bên thua (hiệp sĩ hay đối thủ, D-166) −10 / 15 / 20. Hồi 70 / 60 / 50 s, mana
 100 / 125 / 150.
 
 ### Talent cấp 20 (chọn 1)

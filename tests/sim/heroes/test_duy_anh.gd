@@ -318,6 +318,7 @@ func test_DUL_05_reflect_kill_wins_and_rewards_once() -> void:
 	DamageSystem.resolve(w)
 	assert_false(foe.alive, "chết vì phản")
 	assert_near(k.duel_damage, 10.0, 0.001)
+	assert_near(foe.duel_damage, -10.0, 0.001, "D-166: đối thủ thua cũng −lose_damage")
 	assert_true(k.gold - gold >= 150, "+150 vàng (ngoài vàng hạ gục)")
 	w.step()
 	assert_near(k.stats.get_stat(StatId.Id.PHYSICAL_DAMAGE) - dmg, 10.0, 0.01, "+10 sát thương vĩnh viễn")

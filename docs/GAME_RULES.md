@@ -578,9 +578,9 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   nào gây; bên còn lại thắng. Sự kiện chết đầu tiên quyết định; Quyết Đấu đã kết thúc thì các
   cái chết sau trong cùng tick không đổi kết quả. Đòn vào A: trừ máu A → A chết thì A thua,
   không phản; A sống mới phản (DUL-04) → B chết thì A thắng.
-- `DUL-06` Thưởng / phạt (đúng một lần, khi có người thắng): A thắng → A +`win_damage` sát
-  thương vĩnh viễn và +`win_gold` vàng. B thắng → A −`lose_damage`, B +`win_damage` và
-  +`win_gold`. Ngoài vàng / XP hạ gục thường lệ.
+- `DUL-06` Thưởng / phạt (đúng một lần, khi có người thắng): bên thắng +`win_damage` sát
+  thương vĩnh viễn và +`win_gold` vàng; bên thua −`lose_damage` (D-166: cả A lẫn B). Ngoài vàng /
+  XP hạ gục thường lệ.
 - `DUL-07` Sát thương vĩnh viễn: bộ đếm riêng mỗi hero (`duel_damage`, có thể âm), cộng vào
   `physical_damage` như modifier nguồn riêng, còn tới hết trận (không mất khi chết). Sát
   thương đánh thường cuối cùng tối thiểu 0 (STAT).
