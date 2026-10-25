@@ -60,3 +60,13 @@ func _draw() -> void:
 		draw_string(UiStyle.serif(true), Vector2(PANEL.position.x + 18, y + 9), ROWS[who], HORIZONTAL_ALIGNMENT_LEFT, -1, 24, UiStyle.TEXT)
 		for i: int in range(ACTIONS.size()):
 			UiStyle.button(self, cell_rect(who, i), &"gold" if i == 0 else &"blue", LABELS[i], "", 18)
+
+
+## D-138: lệnh CHEAT_* cho `target` (CMD-06): cộng vàng, lên một cấp hoặc lên cấp tối đa.
+static func apply(world: World, target: Entity, what: StringName) -> void:
+	if target == null:
+		return
+	if what == &"gold":
+		world.submit(Command.cheat_gold(target.id, 10000))
+	else:
+		world.submit(Command.cheat_level(target.id, 1 if what == &"level" else world.balance.hero_max_level))

@@ -241,3 +241,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | D-149 | Xong | 2026-10-24 | Hiệu năng lúc giao tranh: chỉ vẽ đơn vị trong khung nhìn, nhớ ảnh đơn vị (2,6 → 1,0 ms mỗi khung trên máy thử) |
 | D-150 | Đang thử (nhánh `thu-3d`) | 2026-10-25 | Nâng hình bản 3D: MSAA, bóng mờ dưới chân, ánh sáng / màu, sương xa, vân mặt đất. Chờ người chơi đo FPS 3D lúc giao tranh (mục tiêu ≥ 50) |
 | D-151 | Đang thử (nhánh `thu-3d`) | 2026-10-25 | Hiệu năng 3D: lớp mặt đất chỉ phủ vùng camera thấy (4,2 → 1,5 triệu điểm ảnh), MSAA 2×, nút tắt khử răng cưa để so. Chờ người chơi đo 3D lúc giao tranh, có / không khử răng cưa (mục tiêu ≥ 50) |
+| D-152 | Chờ đo trên máy | 2026-10-25 | SIM chạy trên luồng phụ trong lúc vẽ; công cụ đo SIM 5v5 (`tools/sim_profile.gd`). Việc sau nếu cần: tối ưu tìm đường (tick vọt) và tầm nhìn |

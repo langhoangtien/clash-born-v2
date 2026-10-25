@@ -87,12 +87,13 @@ func _ready() -> void:
 	input.hero = hero
 	runner = SimRunner.new(world)
 	runner.before_step.connect(_before_step)
+	if MapBaker.can_bake():
+		runner.attach_to_render()  # D-152: SIM chạy trên luồng phụ trong lúc máy vẽ khung
 	_setup_audio()
 	_setup_quick_buy()
 	_setup_test_panel()
 	camera.position = hero.position
-	if render_3d:
-		_setup_3d()
+	if render_3d: _setup_3d()
 	skills.world = world
 	skills.hero = hero
 	skills.input = input
@@ -141,6 +142,7 @@ func _process(delta: float) -> void:
 ## Một khung hình: chạy SIM theo thời gian thật, cập nhật nội suy và camera.
 func tick_frame(delta: float) -> void:
 	runner.advance(delta)
+	audio.flush()  # D-152: tiếng của các tick vừa chạy
 	units_view.alpha = runner.alpha()
 	var follow: Vector2 = death_cam.update(hero.alive, units_view.display_position(hero), _held_direction(), delta, _map_bounds())  # CAM-01
 	if minimap.peeking and death_cam.active():
@@ -168,6 +170,10 @@ func tick_frame(delta: float) -> void:
 	buff_bar.right_limit = skill_buttons.global_position.x - buff_bar.global_position.x + skill_buttons.skill_center(0).x - SkillButtons.SKILL_RADIUS
 	if world.winner >= 0 and result == null:
 		_show_result()
+
+
+func _exit_tree() -> void:
+	runner.detach()  # D-152
 
 
 func _show_result() -> void:
@@ -269,13 +275,7 @@ func _setup_test_panel() -> void:
 
 
 func _on_test_action(who: int, what: StringName) -> void:
-	var target: Entity = hero if who == 0 else bot_unit
-	if target == null:
-		return
-	if what == &"gold":
-		world.submit(Command.cheat_gold(target.id, 10000))
-	else:
-		world.submit(Command.cheat_level(target.id, 1 if what == &"level" else world.balance.hero_max_level))
+	TestPanel.apply(world, hero if who == 0 else bot_unit, what)
 
 
 ## SHOP-10 (D-117): nút mua nhanh theo thứ tự lên đồ gợi ý của hero.
