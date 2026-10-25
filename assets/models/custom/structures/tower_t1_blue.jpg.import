@@ -2,19 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cc1rb64q0ld1v"
-path="res://.godot/imported/tower_t1_tower_t1.png-c00783556d726021e2ce08b154be1c17.ctex"
+uid="uid://ba2cco7ekxd1s"
+path="res://.godot/imported/tower_t1_blue.jpg-587c45250a09af506c32413c06519a13.ctex"
 metadata={
 "vram_texture": false
-}
-generator_parameters={
-"md5": "7c453d63d4b8c986341d16282caaae50"
 }
 
 [deps]
 
-source_file="res://assets/models/custom/structures/tower_t1_tower_t1.png"
-dest_files=["res://.godot/imported/tower_t1_tower_t1.png-c00783556d726021e2ce08b154be1c17.ctex"]
+source_file="res://assets/models/custom/structures/tower_t1_blue.jpg"
+dest_files=["res://.godot/imported/tower_t1_blue.jpg-587c45250a09af506c32413c06519a13.ctex"]
 
 [params]
 

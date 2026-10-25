@@ -129,11 +129,13 @@ static func faded_material(base: Material) -> Material:
 	return _faded[key]
 
 
-## D-167: mô hình tự làm có ảnh màu theo đội cạnh file (`path`_blue.png / _red.png) → đổi ảnh của mọi bề mặt.
+## D-167: mô hình tự làm có ảnh màu theo đội cạnh file (`path`_blue / _red, .jpg hoặc .png) → đổi ảnh của mọi bề mặt.
 static func apply_team_texture(root: Node, path: String, team: int) -> void:
 	if team < 0 or team > 1:
 		return
-	var tex_path: String = MODELS + path + ("_blue" if team == 0 else "_red") + ".png"
+	var tex_path: String = MODELS + path + ("_blue" if team == 0 else "_red") + ".jpg"
+	if not ResourceLoader.exists(tex_path):
+		tex_path = tex_path.trim_suffix(".jpg") + ".png"
 	if not ResourceLoader.exists(tex_path):
 		return
 	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
@@ -145,3 +147,20 @@ static func apply_team_texture(root: Node, path: String, team: int) -> void:
 				m.albedo_texture = load(tex_path) as Texture2D
 				_materials[key] = m
 			mi.set_surface_override_material(i, _materials[key])
+
+
+## D-167: lưới có màu theo đỉnh (COLOR_0) mà vật liệu không có ảnh màu → dùng màu đỉnh làm màu
+## (trình nhập glTF của Godot không tự bật). Sửa thẳng vật liệu của lưới, một lần.
+static func use_vertex_colors(mesh: Mesh) -> void:
+	for i: int in mesh.get_surface_count():
+		var m: BaseMaterial3D = mesh.surface_get_material(i) as BaseMaterial3D
+		if m == null or m.albedo_texture != null or m.vertex_color_use_as_albedo:
+			continue
+		if mesh is ArrayMesh and (mesh as ArrayMesh).surface_get_format(i) & Mesh.ARRAY_FORMAT_COLOR:
+			m.vertex_color_use_as_albedo = true
+			m.vertex_color_is_srgb = true
+
+
+static func use_vertex_colors_in(root: Node) -> void:
+	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
+		use_vertex_colors((n as MeshInstance3D).mesh)

@@ -113,6 +113,7 @@ func _place(models: Array, items: Array[Array]) -> void:
 func _multimesh(model: String, items: Array) -> void:
 	var src: Node3D = ModelLibrary.static_scene(model).instantiate() as Node3D
 	var mi: MeshInstance3D = src.find_children("*", "MeshInstance3D", true, false)[0]
+	ModelLibrary.use_vertex_colors(mi.mesh)  # D-167
 	var base: Transform3D = ModelLibrary._relative(src, mi)
 	var box: AABB = base * mi.mesh.get_aabb()  # D-167: đặt gốc ở giữa đáy (mô hình tự làm có gốc lệch)
 	base = Transform3D(Basis(), -Vector3(box.get_center().x, box.position.y, box.get_center().z)) * base
@@ -134,6 +135,7 @@ func _multimesh(model: String, items: Array) -> void:
 
 func _add_static(cfg: Dictionary, at: Vector2, angle: float) -> void:
 	var n: Node3D = ModelLibrary.static_scene(cfg["model"]).instantiate() as Node3D
+	ModelLibrary.use_vertex_colors_in(n)
 	add_child(n)
 	var box: AABB = ModelLibrary.bounds(n)
 	var k: float = cfg["height"] / maxf(0.01, box.size.y)

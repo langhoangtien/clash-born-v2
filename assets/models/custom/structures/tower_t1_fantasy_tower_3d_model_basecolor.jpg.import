@@ -2,16 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://j0eu2q2045ye"
-path="res://.godot/imported/tower_t1_red.png-44d1308bb451afd2ece90c88fbe8e185.ctex"
+uid="uid://bqw05t26dsuv3"
+path="res://.godot/imported/tower_t1_fantasy_tower_3d_model_basecolor.jpg-9206c510a0ed4435486bd36faa1435b5.ctex"
 metadata={
 "vram_texture": false
+}
+generator_parameters={
+"md5": "f1e7db43728c7e8fa5e963f488f4a402"
 }
 
 [deps]
 
-source_file="res://assets/models/custom/structures/tower_t1_red.png"
-dest_files=["res://.godot/imported/tower_t1_red.png-44d1308bb451afd2ece90c88fbe8e185.ctex"]
+source_file="res://assets/models/custom/structures/tower_t1_fantasy_tower_3d_model_basecolor.jpg"
+dest_files=["res://.godot/imported/tower_t1_fantasy_tower_3d_model_basecolor.jpg-9206c510a0ed4435486bd36faa1435b5.ctex"]
 
 [params]
 

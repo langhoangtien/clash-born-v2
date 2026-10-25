@@ -108,6 +108,7 @@ func _paint(root: Node, tex: String, team: int) -> void:
 func _make_structure(e: Entity, cfg: Dictionary) -> void:
 	_model = ModelLibrary.static_scene(cfg["model"], e.team).instantiate() as Node3D
 	ModelLibrary.apply_team_texture(_model, cfg["model"], e.team)  # D-167
+	ModelLibrary.use_vertex_colors_in(_model)
 	add_child(_model)
 	height = cfg["height"]
 	var box: AABB = ModelLibrary.bounds(_model)
