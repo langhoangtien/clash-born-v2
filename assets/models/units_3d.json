@@ -1,5 +1,5 @@
 {
- "_ghi_chu": "D-146: hình 3D theo art_id (bản thử 3D). Mô hình KayKit (CC0) trong assets/models/kaykit/. rig: bộ xương + hoạt ảnh dùng chung; tex: tên bảng màu (có bản _blue / _red theo đội); right / left: vũ khí gắn tay; attack / cast: hoạt ảnh đánh / tung chiêu; height: chiều cao trên sân (đơn vị 3D).",
+ "_ghi_chu": "D-146: hình 3D theo art_id (bản thử 3D). Mô hình KayKit (CC0) trong assets/models/kaykit/. rig: bộ xương + hoạt ảnh dùng chung; tex: tên bảng màu (có bản _blue / _red theo đội); right / left: vũ khí gắn tay; attack / cast: hoạt ảnh đánh / tung chiêu; height: chiều cao trên sân (đơn vị 3D). D-159: skills: hoạt ảnh theo ô chiêu (1 Q, 2 W, 3 R), phát trọn khi tung; impact: điểm chém trong hoạt ảnh đánh (phần độ dài, mặc định 0,42).",
  "rigs": {
   "Rig_Medium": {
    "native": 2.45,
@@ -38,7 +38,12 @@
    "left": "shield_badge_color",
    "attack": "Melee_1H_Attack_Chop",
    "cast": "Melee_1H_Attack_Slice_Horizontal",
-   "height": 1.6
+   "height": 1.6,
+   "skills": {
+    "1": "Melee_Block_Attack",
+    "2": "Melee_1H_Attack_Slice_Horizontal",
+    "3": "Melee_1H_Attack_Jump_Chop"
+   }
   },
   "brakk": {
    "model": "Barbarian",
@@ -46,7 +51,12 @@
    "tex": "barbarian",
    "attack": "Melee_Unarmed_Attack_Punch_A",
    "cast": "Melee_Unarmed_Attack_Kick",
-   "height": 1.65
+   "height": 1.65,
+   "skills": {
+    "1": "Melee_2H_Attack_Chop",
+    "2": "Melee_Block",
+    "3": "Spawn_Ground"
+   }
   },
   "gorran": {
    "model": "Barbarian_Large",
@@ -55,7 +65,12 @@
    "right": "axe_2handed_Large",
    "attack": "Melee_2H_Attack",
    "cast": "Melee_2H_Slam",
-   "height": 2.0
+   "height": 2.0,
+   "skills": {
+    "1": "Melee_Unarmed_Smash",
+    "2": "Melee_Dualwield_SlashCombo",
+    "3": "Melee_2H_Slam"
+   }
   },
   "myra": {
    "model": "Mage",
@@ -64,7 +79,12 @@
    "right": "staff",
    "attack": "Ranged_Magic_Shoot",
    "cast": "Ranged_Magic_Spellcasting",
-   "height": 1.6
+   "height": 1.6,
+   "skills": {
+    "1": "Ranged_Magic_Shoot",
+    "2": "Ranged_Magic_Spellcasting",
+    "3": "Ranged_Magic_Raise"
+   }
   },
   "vexa": {
    "model": "Druid",
@@ -74,7 +94,12 @@
    "left": "spellbook_open",
    "attack": "Ranged_Magic_Shoot",
    "cast": "Ranged_Magic_Summon",
-   "height": 1.6
+   "height": 1.6,
+   "skills": {
+    "1": "Ranged_Magic_Shoot",
+    "2": "Ranged_Magic_Spellcasting",
+    "3": "Ranged_Magic_Raise"
+   }
   },
   "noctis": {
    "model": "Rogue_Hooded",
@@ -84,7 +109,12 @@
    "left": "dagger",
    "attack": "Melee_Dualwield_Attack_Stab",
    "cast": "Melee_Dualwield_Attack_Slice",
-   "height": 1.6
+   "height": 1.6,
+   "skills": {
+    "1": "Melee_Dualwield_Attack_Chop",
+    "2": "Melee_Dualwield_Attack_Slice",
+    "3": "Melee_Dualwield_Attack_Stab"
+   }
   },
   "creep_melee": {
    "model": "Knight",

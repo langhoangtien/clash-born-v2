@@ -14,12 +14,23 @@ const GROUND_MARGIN: float = 96.0
 ## Camera: lệch khỏi điểm nhìn (đơn vị 3D), góc nhìn.
 const CAM_OFFSET: Vector3 = Vector3(0, 11.5, 11.0)
 const CAM_FOV: float = 40.0
+## D-159: rung camera (đơn vị 3D) khi tướng mình đánh trúng / chí mạng / mất hơn SHAKE_HURT_FRACTION máu
+## một lần; giảm SHAKE_DECAY mỗi giây.
+const SHAKE_HIT: float = 0.03
+const SHAKE_CRIT: float = 0.07
+const SHAKE_HURT: float = 0.09
+const SHAKE_HURT_FRACTION: float = 0.08
+const SHAKE_DECAY: float = 0.6
 
 var world: World
 var units: UnitsView
 var layer: SubViewport
 var camera: Camera3D
 var scenery: Scenery3D
+## D-159: tướng của người chơi (rung camera khi đánh trúng / bị đánh mạnh).
+var hero_id: int = -1
+var _event_tick: int = -1
+var _shake: float = 0.0
 var _layer_cam: Camera2D
 var _ground: MeshInstance3D
 ## Vùng lớp đất so với điểm nhìn (px thế giới).
@@ -90,6 +101,8 @@ func update(focus: Vector2) -> void:
 	var target: Vector3 = to_3d(focus)
 	camera.position = target + CAM_OFFSET
 	camera.look_at(target, Vector3.UP)
+	_shake = move_toward(_shake, 0.0, get_process_delta_time() * SHAKE_DECAY)
+	camera.position += Vector3(randf_range(-1, 1), randf_range(-1, 1), 0) * _shake
 	scenery.update(world)
 	_layer_cam.position = focus + _ground_rect.get_center()
 	_ground.position = to_3d(focus + _ground_rect.get_center())
@@ -106,6 +119,7 @@ func update(focus: Vector2) -> void:
 			add_child(a)
 			_actors[e.id] = a
 		a.sync(world, e, to_3d(units.display_position(e)), units.is_moving(e), world.tick - units.hit_tick(e), units.faded(e))
+	_dispatch_events()
 	for id: int in _actors.keys():
 		if not keep.has(id):
 			_actors[id].queue_free()
@@ -131,6 +145,35 @@ func _fit_ground() -> void:
 	_ground_rect = box.grow(GROUND_MARGIN)
 	layer.size = Vector2i(ceili(_ground_rect.size.x * LAYER_SCALE), ceili(_ground_rect.size.y * LAYER_SCALE))
 	(_ground.mesh as PlaneMesh).size = _ground_rect.size * S
+
+
+## D-159: sự kiện của tick mới → hoạt ảnh chiêu, khựng khung / lóe khi trúng, rung camera.
+func _dispatch_events() -> void:
+	if world.tick == _event_tick:
+		return
+	_event_tick = world.tick
+	for ev: GameEvent in world.events:
+		var src: Actor3D = _actors.get(ev.source_id)
+		var dst: Actor3D = _actors.get(ev.target_id)
+		match ev.type:
+			&"ability_cast":
+				if src != null:
+					src.on_cast(int(ev.amount))
+			&"attack_landed":
+				var e: Entity = world.find_entity(ev.source_id)
+				var melee: bool = e != null and e.projectile_speed <= 0.0
+				if src != null and melee:
+					src.on_hit_given()
+				if dst != null:
+					dst.on_hit_taken(melee)
+				if ev.source_id == hero_id:
+					_shake = maxf(_shake, SHAKE_CRIT if ev.reason == &"crit" else SHAKE_HIT)
+			&"damage_taken":
+				if dst != null and ev.amount > 0.0:
+					dst.on_hit_taken(false)
+				var me: Entity = world.find_entity(hero_id) if ev.target_id == hero_id else null
+				if me != null and ev.amount > me.stats.get_stat(StatId.Id.MAX_HP) * SHAKE_HURT_FRACTION:
+					_shake = maxf(_shake, SHAKE_HURT)
 
 
 ## Vị trí màn hình của chân đơn vị (cho dấu trạng thái); null nếu chưa có hình hoặc sau camera.

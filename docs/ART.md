@@ -69,6 +69,7 @@ duyệt) nằm ở **`art_inbox/YEU_CAU_ANH.md`** — đó là phiếu việc ch
 
 **Hoạt ảnh (D-157, trận 3D):** tướng và lính là nhân vật 3D có xương (KayKit, `assets/models/units_3d.json`):
 hoạt ảnh đứng / chạy / đánh / tung chiêu / lướt / trúng đòn / ngã lấy từ bộ hoạt ảnh dùng chung của rig.
+Mỗi chiêu một hoạt ảnh (`skills`), đòn đánh khựng / lóe / giật lùi khi trúng (D-159).
 Ảnh 2D của tướng / lính vẫn dùng cho chân dung, nút, minimap; đơn vị chưa có mô hình (quái rừng, công trình)
 hiện bằng ảnh đứng quay về camera. Công trình, cây, đá: KayKit Medieval Hexagon (D-158), cùng phong cách.
 

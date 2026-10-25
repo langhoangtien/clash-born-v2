@@ -244,6 +244,7 @@ func _map_bounds() -> Rect2:
 ## D-145: bản thử 3D — các lớp 2D trên mặt đất vào SubViewport, đơn vị thành mô hình / ảnh đứng.
 func _setup_3d() -> void:
 	view_3d = MatchView3D.create(self, $Hud, world, units_view, [map_view, fog, units_view, aim_indicator])
+	view_3d.hero_id = hero.id  # D-159
 	GraphicsSetting.apply(get_viewport(), GraphicsSetting.load_level())  # D-157
 
 
