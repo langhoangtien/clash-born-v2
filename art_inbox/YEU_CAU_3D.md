@@ -113,18 +113,33 @@ Thư mục `art_inbox/3d/nature/`. Tên và dáng theo ảnh neo.
 
 ## Đợt 2 — Quái rừng
 
-Thư mục `art_inbox/3d/jungle/`. Có thể **thiết kế lại hình dạng** theo ý người dùng, nhưng giữ đúng vai
-trò và cỡ (mã `id` là chỗ game nối dữ liệu, giữ nguyên tên file). Khuyên làm dạng **đứng hai chân** để
-dùng Mixamo.
+Thư mục `art_inbox/3d/jungle/`. **Ảnh neo: `art_inbox/00_style/style_3d_units.png`** (đính kèm cùng
+`style_3d_sheet.png`). Tên file khớp nhãn trong ảnh. Không phe (một ảnh màu).
 
-| File | Vai trò (dữ liệu hiện tại) | Gợi ý thiết kế | Tam giác | Ảnh màu |
-|---|---|---|---|---|
-| [ ] `neutral_wolf` | Sói con — quái nhỏ, đánh gần, nhanh, đi theo cặp | thú nhỏ nhanh nhẹn (goblin, người sói con…) | **2.000–4.000** | 512–1024 |
-| [ ] `neutral_bear` | Gấu đá — quái vừa, đánh gần, trâu | khối to, đá / rêu (người đá, gấu đứng) | **3.000–6.000** | 1024 |
-| [ ] `neutral_shaman` | Pháp sư rừng — quái vừa, **đánh xa** 450 | pháp sư nhỏ cầm gậy / bùa | **2.000–4.000** | 512–1024 |
-| [ ] `neutral_buffalo` | Trâu rừng — quái lớn, đầu trại | to nhất trong rừng, có sừng / giáp | **4.000–8.000** | 1024 |
+**Thú bốn chân** (sói, heo, gấu, bọ, rồng con) **không dùng được Mixamo** → gắn xương bằng Blender
+(Rigify / tự đặt xương) hoặc công cụ AI có tự gắn xương cho thú. Quái đứng hai chân (golem, troll,
+shaman, boss) dùng Mixamo được.
 
-Mỗi quái: bộ hoạt ảnh "Lính, quái rừng" ở trên.
+Cần trước (đang có trong game — cột "thay cho" là mã dữ liệu hiện tại):
+
+| File | Thay cho | Vai trò | Dáng | Tam giác | Ảnh màu |
+|---|---|---|---|---|---|
+| [ ] `jungle_wolf` | `neutral_wolf` (Sói con) | quái nhỏ, đánh gần, đi cặp | bốn chân | **2.000–4.000** | 512–1024 |
+| [ ] `jungle_bear` | `neutral_bear` (Gấu đá) | quái vừa, đánh gần, trâu | bốn chân | **3.000–6.000** | 1024 |
+| [ ] `jungle_shaman` | `neutral_shaman` (Pháp sư rừng) | quái vừa, **đánh xa** 450 | hai chân | **2.000–4.000** | 512–1024 |
+| [ ] `jungle_boar` | `neutral_buffalo` (Trâu rừng) | đầu trại lớn, to nhất rừng hiện nay | bốn chân | **4.000–8.000** | 1024 |
+
+Làm sau (chưa có trong game — cần thiết kế trại / chỉ số trước khi dùng):
+
+| File | Gợi ý vai trò | Dáng | Tam giác |
+|---|---|---|---|
+| [ ] `jungle_golem` | quái vừa trâu, chậm | hai chân | **3.000–6.000** |
+| [ ] `jungle_troll` | quái vừa / lớn, đánh mạnh | hai chân | **3.000–6.000** |
+| [ ] `jungle_beetle` | quái nhỏ giáp cứng | sáu chân | **2.000–4.000** |
+| [ ] `jungle_drake` | quái lớn | bốn chân + đuôi | **4.000–8.000** |
+| [ ] `jungle_boss` | boss giữa bản đồ (boss pit) | hai chân | **6.000–12.000**, ảnh 1024–2048 |
+
+Mỗi quái: bộ hoạt ảnh "Lính, quái rừng". Phần sáng màu (mắt, pha lê) vẽ sáng hẳn trong ảnh màu.
 
 ## Đợt 3 — Công trình (không xương, không hoạt ảnh)
 
@@ -145,16 +160,20 @@ Thư mục `art_inbox/3d/structures/`. Đồ có phe: một GLB + hai ảnh `_bl
 
 ## Đợt 4 — Lính đường
 
-Thư mục `art_inbox/3d/creeps/`. Có phe (hai ảnh màu). Lính đông nhất trên màn hình (20–30 con lúc giao
-tranh) nên **giữ nhẹ**.
+Thư mục `art_inbox/3d/creeps/`. **Ảnh neo: `art_inbox/00_style/style_3d_units.png`.** Có phe (hai ảnh
+màu: áo, chùm lông mũ, khiên, áo choàng, pha lê gậy, sơn xe). Lính đông nhất trên màn hình (20–30 con
+lúc giao tranh) nên **giữ nhẹ**.
 
-| File | Mô tả | Tam giác | Ảnh màu |
+| File | Mô tả (theo ảnh neo) | Tam giác | Ảnh màu |
 |---|---|---|---|
-| [ ] `creep_melee` | Lính cận chiến (kiếm + khiên) | **2.000–4.000** | 512 |
-| [ ] `creep_ranged` | Lính đánh xa (nỏ / cung / phép) | **2.000–4.000** | 512 |
-| [ ] `creep_siege` | Xe công thành / lính phá trụ | **3.000–6.000** | 512–1024 |
+| [ ] `creep_melee` | Lính kiếm + khiên, mũ có chùm lông | **2.000–4.000** | 512 |
+| [ ] `creep_ranged` | Pháp sư trùm mũ, gậy pha lê (đánh xa) | **2.000–4.000** | 512 |
+| [ ] `siege_cart` | Xe pháo gỗ bốn bánh (thay `creep_siege`) | **3.000–6.000** | 512–1024 |
 
-Mỗi lính: bộ hoạt ảnh "Lính, quái rừng". Xe công thành nếu là xe thì `run` = bánh lăn, `attack` = bắn.
+- Lính kiếm, lính phép: bộ hoạt ảnh "Lính, quái rừng" (Mixamo được).
+- **Xe pháo không cần xương:** tách lưới riêng và đặt tên `wheel_fl`, `wheel_fr`, `wheel_bl`, `wheel_br`
+  (gốc mỗi bánh ở trục bánh) và `barrel` (gốc ở chỗ nối nòng). Game tự quay bánh khi chạy và giật nòng
+  khi bắn.
 
 ## Đợt 5 — Tướng
 
@@ -188,9 +207,10 @@ Mỗi tướng: bộ hoạt ảnh "Tướng" ở trên.
 | Suối hồi máu, cửa hàng | 1.500–5.000 | 512–1024 | không |
 | Đổ nát | 500–1.500 | 512 | không |
 | Mắt (ward) | ≤ 300 | 256 | không |
-| Lính đường | 2.000–4.000 (xe 3.000–6.000) | 512, `_blue` / `_red` | No Fingers, 5 hoạt ảnh |
-| Quái rừng nhỏ / vừa | 2.000–6.000 | 512–1024 | No Fingers, 5 hoạt ảnh |
-| Quái rừng lớn | 4.000–8.000 | 1024 | No Fingers, 5 hoạt ảnh |
+| Lính đường | 2.000–4.000 (xe 3.000–6.000) | 512, `_blue` / `_red` | No Fingers, 5 hoạt ảnh (xe: không xương, tách bánh / nòng) |
+| Quái rừng nhỏ / vừa | 2.000–6.000 | 512–1024 | 5 hoạt ảnh (thú: xương Blender; hai chân: Mixamo No Fingers) |
+| Quái rừng lớn | 4.000–8.000 | 1024 | như trên |
+| Boss rừng | 6.000–12.000 | 1024–2048 | Mixamo, 5 hoạt ảnh (+ đòn diện rộng nếu thiết kế) |
 | Tướng | 8.000–15.000 (tối đa 20.000) | 1024 (tối đa 2048), `_blue` / `_red` | No Fingers / Three Chains, ~11 hoạt ảnh |
 
 Vượt mức trên một chút không sao (người ghép có thể giảm lưới), nhưng **gấp đôi trở lên** thì làm lại.
