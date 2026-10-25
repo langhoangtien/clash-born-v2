@@ -17,14 +17,38 @@ static func buy_problem(world: World, e: Entity, id: StringName) -> R:
 		return R.SOLD_OUT  # SHOP-04
 	if stock(world, e.team, def) == 0:
 		return R.OUT_OF_STOCK  # SHOP-08
-	if def.shop == ItemDef.ShopKind.SECRET and not near_secret_shop(world, e):
-		return R.NOT_IN_SHOP  # SHOP-02
+	if needs_secret_shop(world, e, def) and not near_secret_shop(world, e):
+		return R.NOT_IN_SHOP  # SHOP-02, SHOP-11
 	var used: Array[int] = owned_components(world, e, def)
 	if e.gold < price(world, e, def):
 		return R.NOT_ENOUGH_GOLD
 	if not Items.slots(e).has(null) and Items.stack_slot(e, def) < 0 and used.is_empty():
 		return R.INVENTORY_FULL
 	return R.NONE
+
+
+## SHOP-02 / SHOP-11 (D-167): món shop ẩn, hoặc món ghép mà phần còn thiếu (đi sâu) có đồ shop ẩn.
+static func needs_secret_shop(world: World, e: Entity, def: ItemDef) -> bool:
+	if def.shop == ItemDef.ShopKind.SECRET:
+		return true
+	var held: Array[StringName] = []
+	for index: int in owned_components(world, e, def):
+		held.append(Items.slots(e)[index].def.id)
+	for id: StringName in def.components:
+		if held.has(id):
+			held.erase(id)
+		elif world.item_catalog.has(id) and _has_secret(world, world.item_catalog[id]):
+			return true
+	return false
+
+
+static func _has_secret(world: World, def: ItemDef) -> bool:
+	if def.shop == ItemDef.ShopKind.SECRET:
+		return true
+	for id: StringName in def.components:
+		if world.item_catalog.has(id) and _has_secret(world, world.item_catalog[id]):
+			return true
+	return false
 
 
 ## SHOP-09: ô đồ của các thành phần đang có sẽ được ghép (mỗi ô dùng một lần, theo thứ tự thành phần).

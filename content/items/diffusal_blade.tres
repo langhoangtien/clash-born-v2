@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="3_act"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="4_apply"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="5_abl"]
+[ext_resource type="Resource" path="res://content/effects/diffusal_burn.tres" id="6_eff"]
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("1_mod")
+stat = &"agility"
+value = "24"
+
+[sub_resource type="Resource" id="M1"]
+script = ExtResource("1_mod")
+stat = &"intelligence"
+value = "8"
+
+[sub_resource type="Resource" id="Learn"]
+script = ExtResource("4_apply")
+effect = ExtResource("6_eff")
+target = 0
+
+[sub_resource type="Resource" id="Abl"]
+script = ExtResource("5_abl")
+slot = 4
+targeting = 0
+values = Dictionary[StringName, PackedFloat32Array]({
+&"burn_melee": PackedFloat32Array(40),
+&"burn_ranged": PackedFloat32Array(20)
+})
+on_learn = Array[ExtResource("3_act")]([SubResource("Learn")])
+id = &"diffusal_blade_passive_ability"
+art_id = &"diffusal_blade_passive_ability"
+
+[resource]
+script = ExtResource("2_item")
+category = 0
+description = "Bị động: đòn đánh đốt 40 mana (cận chiến) / 20 mana (đánh xa) của mục tiêu và gây thêm sát thương vật lý bằng lượng mana đã đốt. Không tác dụng lên công trình."
+cost = 2700
+modifiers = Array[ExtResource("1_mod")]([SubResource("M0"), SubResource("M1")])
+ability = SubResource("Abl")
+components = Array[StringName]([&"blade_alacrity", &"blade_alacrity", &"robe_magi"])
+id = &"diffusal_blade"
+display_name = "Đao Tán Ma"
+art_id = &"diffusal_blade"

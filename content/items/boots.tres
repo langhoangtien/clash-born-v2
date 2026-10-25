@@ -7,6 +7,7 @@
 script = ExtResource("1_mod")
 stat = &"movement_speed"
 value = "40"
+unique_group = &"move_speed_boots"
 
 [resource]
 script = ExtResource("2_item")

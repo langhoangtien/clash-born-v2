@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="2_eff"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="3_trg"]
+[ext_resource type="Script" path="res://sim/actions/mana_burn_action.gd" id="4_burn"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="5_dmg"]
+
+[sub_resource type="Resource" id="Burn"]
+script = ExtResource("4_burn")
+amount = "burn"
+target = 1
+
+[sub_resource type="Resource" id="OnHit"]
+script = ExtResource("3_trg")
+event = &"attack_landed"
+condition = &"target_not_structure"
+actions = Array[ExtResource("1_act")]([SubResource("Burn")])
+
+[sub_resource type="Resource" id="Dmg"]
+script = ExtResource("5_dmg")
+amount = "event.burned_mana"
+amplified = false
+target = 1
+
+[sub_resource type="Resource" id="OnBurn"]
+script = ExtResource("3_trg")
+event = &"mana_burned"
+actions = Array[ExtResource("1_act")]([SubResource("Dmg")])
+
+[resource]
+script = ExtResource("2_eff")
+duration = "0"
+tags = Array[StringName]([&"passive"])
+dispel = 2
+triggers = Array[ExtResource("3_trg")]([SubResource("OnHit"), SubResource("OnBurn")])
+id = &"diffusal_burn"
+art_id = &"diffusal_burn"
