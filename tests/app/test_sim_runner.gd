@@ -57,3 +57,40 @@ func test_STR_05_runner_stops_when_match_ended() -> void:
 	var r: SimRunner = _runner()
 	r.world.winner = 1
 	assert_eq(r.advance(1.0), 0)
+
+
+## D-152: chạy trên luồng phụ — cùng số tick theo thời gian thật, tick chạy giữa start() và finish().
+func test_D_152_threaded_runner_keeps_thirty_ticks_per_second() -> void:
+	var r: SimRunner = _runner()
+	r.threaded = true
+	for i: int in range(60):
+		assert_eq(r.advance(1.0 / 60.0), 0, "chế độ luồng phụ chỉ hẹn tick")
+		r.start()
+		r.finish()
+	assert_eq(r.world.tick, 30)
+	assert_true(r.alpha() >= 0.0 and r.alpha() < 1.0)
+
+
+func test_D_152_threaded_runner_matches_direct_run() -> void:
+	var a: SimRunner = _runner()
+	var b: SimRunner = _runner()
+	b.threaded = true
+	for d: float in [0.016, 0.034, 0.016, 0.1, 0.0, 0.016, 0.05]:
+		a.advance(d)
+		b.advance(d)
+		b.start()
+	b.finish()
+	b.advance(0.0)
+	b.start()
+	b.finish()
+	assert_true(absi(a.world.tick - b.world.tick) <= 2, "lệch tối đa phần đoán trước một khung")
+	assert_true(b.world.tick > 0)
+
+
+func test_D_152_advance_waits_for_running_ticks() -> void:
+	var r: SimRunner = _runner()
+	r.threaded = true
+	r.advance(0.1)
+	r.start()
+	r.advance(0.0)  # không gọi finish(): advance tự chờ trước khi hẹn tiếp
+	assert_true(r.world.tick >= 3)
