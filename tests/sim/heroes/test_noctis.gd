@@ -153,6 +153,21 @@ func test_noctis_q_dashes_and_hits_physical() -> void:
 	assert_near(foe.health, 100000.0 - 160.0 * Rules.damage_factor(w, foe, PHYS), 0.05, "cấp 3: 160 vật lý")
 
 
+## D-162: Lưỡi Bóng trúng thì làm chậm mục tiêu 50% trong 2 s.
+func test_D_162_noctis_q_arrival_slows_50_percent_for_2s() -> void:
+	var w: World = _world()
+	var n: Entity = _noctis(w, [1, 0, 0])
+	var foe: Entity = _dummy(w, n.position + _dir() * 500.0)
+	w.step()
+	var base: float = foe.stats.get_stat(StatId.Id.MOVEMENT_SPEED)
+	w.submit(Command.cast(n.id, Slot.Q, foe.id))
+	_steps(w, 14)
+	assert_true(n.dash == null, "đã tới nơi")
+	assert_near(foe.stats.get_stat(StatId.Id.MOVEMENT_SPEED), base * 0.5, 0.5, "chậm 50%")
+	_steps(w, SimClock.seconds_to_ticks(2.0) + 1)
+	assert_near(foe.stats.get_stat(StatId.Id.MOVEMENT_SPEED), base, 0.5, "hết chậm sau 2 s")
+
+
 func test_noctis_w_invisible_after_fade_then_ambush_once() -> void:
 	var w: World = _world()
 	var n: Entity = _noctis(w, [0, 2, 0])

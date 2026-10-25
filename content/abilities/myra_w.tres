@@ -52,7 +52,7 @@ targeting = 3
 values = Dictionary[StringName, PackedFloat32Array]({
 &"cast_range": PackedFloat32Array(800, 800, 800, 800, 800),
 &"cooldown": PackedFloat32Array(16, 15, 14, 13, 12),
-&"damage": PackedFloat32Array(60, 100, 140, 180, 220),
+&"damage": PackedFloat32Array(40, 80, 120, 160, 200),
 &"delay": PackedFloat32Array(0.8, 0.8, 0.8, 0.8, 0.8),
 &"mana": PackedFloat32Array(100, 110, 120, 130, 140),
 &"radius": PackedFloat32Array(280, 280, 280, 280, 280),

@@ -12,7 +12,7 @@ target = 0
 
 [resource]
 script = ExtResource("4_dhenk")
-description = "Mỗi đòn đánh trúng cùng một mục tiêu cộng dồn tốc đánh (tối đa 8 lần, giữ 4 s); đổi mục tiêu thì mất."
+description = "Mỗi đòn đánh trúng cùng một mục tiêu cộng dồn tốc đánh (tối đa 15 lần, giữ 4 s); đổi mục tiêu thì mất."
 slot = 0
 targeting = 0
 values = Dictionary[StringName, PackedFloat32Array]({

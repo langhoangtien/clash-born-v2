@@ -140,14 +140,14 @@ sát thương phép (ST-11). Hồi máu chia đều mỗi 0.5 s.
 
 ## Myra · Pháp sư
 
-Đánh xa (tầm 550), thuộc tính chính Trí tuệ. Gây sát thương phép từ xa và khống chế.
+Đánh xa (tầm 550), thuộc tính chính Trí tuệ, BAT 1.7 (D-162). Gây sát thương phép từ xa và khống chế.
 
 ### Nội tại — Nhịp Phép (kiểu Troll Warlord)
 
 | Bậc (hero cấp) | 1 (1) | 2 (4) | 3 (8) | 4 (12) | 5 (16) | 6 (20) |
 |---|---:|---:|---:|---:|---:|---:|
 | Tốc đánh mỗi lần cộng dồn | +5% | +6% | +7% | +8% | +9% | +10% |
-| Tối đa cộng dồn | 8 | 8 | 8 | 8 | 8 | 8 |
+| Tối đa cộng dồn (D-162) | 15 | 15 | 15 | 15 | 15 | 15 |
 
 Mỗi đòn đánh trúng **cùng một mục tiêu** thêm 1 lần cộng dồn (giữ 4 s). Đổi mục
 tiêu thì mất hết (`removed_by attack_target_changed`), tính lúc bắt đầu vung vào mục tiêu khác (CMB-12). Đánh trụ cũng cộng.
@@ -169,7 +169,7 @@ công trình) thì dừng.
 
 | Cấp | 1 | 2 | 3 | 4 | 5 |
 |---|---:|---:|---:|---:|---:|
-| Sát thương phép | 60 | 100 | 140 | 180 | 220 |
+| Sát thương phép (D-162) | 40 | 80 | 120 | 160 | 200 |
 | Trói chân (giây) | 1.0 | 1.25 | 1.5 | 1.75 | 2.0 |
 | Hồi chiêu | 16 | 15 | 14 | 13 | 12 |
 | Mana | 100 | 110 | 120 | 130 | 140 |
@@ -219,9 +219,11 @@ phục kích của W. Không chí mạng lên công trình.
 | Sát thương vật lý | 80 | 120 | 160 | 200 | 240 |
 | Hồi chiêu | 12 | 11 | 10 | 9 | 8 |
 | Mana | 70 | 75 | 80 | 85 | 90 |
+| Làm chậm (D-162) | 50% | 50% | 50% | 50% | 50% |
+| Thời gian chậm (giây) | 2 | 2 | 2 | 2 | 2 |
 
 Tầm dùng 600. Lướt tới mục tiêu với tốc 2000; trong lúc lướt Noctis là
-UNTARGETABLE. Tới nơi gây sát thương.
+UNTARGETABLE. Tới nơi gây sát thương và làm chậm (hiệu ứng `noctis_blade_slow`).
 
 ### W — Màn Đêm (không chọn mục tiêu, bản thân)
 

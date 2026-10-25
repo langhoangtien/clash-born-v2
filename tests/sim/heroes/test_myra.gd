@@ -111,7 +111,7 @@ func test_myra_data_matches_design_tables() -> void:
 	_check_values(q[&"cooldown"], [8.0, 7.5, 7.0, 6.5, 6.0])
 	_check_values(q[&"mana"], [80.0, 90.0, 100.0, 110.0, 120.0])
 	var wv: Dictionary = _values(Slot.W)
-	_check_values(wv[&"damage"], [60.0, 100.0, 140.0, 180.0, 220.0])
+	_check_values(wv[&"damage"], [40.0, 80.0, 120.0, 160.0, 200.0])  # D-162
 	_check_values(wv[&"root_duration"], [1.0, 1.25, 1.5, 1.75, 2.0])
 	_check_values(wv[&"cooldown"], [16.0, 15.0, 14.0, 13.0, 12.0])
 	_check_values(wv[&"mana"], [100.0, 110.0, 120.0, 130.0, 140.0])
@@ -129,7 +129,8 @@ func test_myra_data_matches_design_tables() -> void:
 	assert_near(_lib.heroes[&"myra"].stats.attack_range, 550.0, EPS)
 
 
-func test_myra_innate_stacks_on_same_target_up_to_8() -> void:
+## D-162: tối đa 15 tầng (trước 8).
+func test_myra_innate_stacks_on_same_target_up_to_15() -> void:
 	var w: World = _world()
 	var m: Entity = _myra(w)
 	var foe: Entity = _dummy(w, m.position + _lane_dir() * 400.0)
@@ -142,11 +143,11 @@ func test_myra_innate_stacks_on_same_target_up_to_8() -> void:
 		for ev: GameEvent in w.events:
 			if ev.type == &"attack_landed" and ev.source_id == m.id:
 				hits += 1
-				assert_eq(_stacks(m), mini(hits, 8), "mỗi đòn trúng thêm 1 tầng")
+				assert_eq(_stacks(m), mini(hits, 15), "mỗi đòn trúng thêm 1 tầng")
 		most = maxi(most, _stacks(m))
-	assert_true(hits > 9)
-	assert_eq(most, 8, "tối đa 8 tầng")
-	assert_near(m.stats.get_stat(StatId.Id.ATTACK_SPEED), speed + 8 * 0.05, EPS, "bậc 1: +5% mỗi tầng")
+	assert_true(hits > 16)
+	assert_eq(most, 15, "tối đa 15 tầng")
+	assert_near(m.stats.get_stat(StatId.Id.ATTACK_SPEED), speed + 15 * 0.05, EPS, "bậc 1: +5% mỗi tầng")
 
 
 func test_myra_innate_changing_target_clears_stacks() -> void:
@@ -209,7 +210,7 @@ func test_myra_w_roots_after_delay() -> void:
 	_steps(w, 24)
 	assert_near(inside.health, 100000.0, EPS, "chưa tới 0.8 s")
 	w.step()
-	assert_near(inside.health, 100000.0 - _lost(w, inside, 100.0), EPS, "cấp 2: 100 phép")
+	assert_near(inside.health, 100000.0 - _lost(w, inside, 80.0), EPS, "cấp 2: 80 phép (D-162)")
 	assert_true(Rules.has_state(inside, UnitState.Id.ROOTED))
 	assert_eq(_effect_ticks(inside, UnitState.Id.ROOTED), roundi(1.25 * 30))
 	assert_near(outside.health, 100000.0, EPS)
