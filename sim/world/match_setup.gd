@@ -76,3 +76,5 @@ static func add_shop(world: World, library: ContentLibrary) -> void:
 	for id: StringName in library.items:
 		world.item_catalog[id] = library.items[id]
 	Shop.init_stock(world)
+	for def: UnitDef in library.units.values() if world.map != null else []:
+		world.navigation(def.stats.collision_radius)  # D-156: dựng sẵn cho mắt / đơn vị triệu hồi, không giật lần đầu
