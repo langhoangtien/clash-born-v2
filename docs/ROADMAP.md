@@ -245,3 +245,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | D-154 | Xong | 2026-10-25 | Mức đồ họa 3D (đủ / tắt khử răng cưa / 75% độ phân giải) để đo FPS 3D trên máy rồi chọn mặc định |
 | D-156 | Xong | 2026-10-25 | Hết giật giây 22 (lần cắm mắt đầu dựng lưới tìm đường ~190 ms): dựng sẵn lúc vào trận |
 | D-157 | Xong | 2026-10-25 | Chốt 3D: gộp vào main, bỏ vẽ đơn vị 2D, nút "Đồ họa" Thấp / Vừa / Cao (mặc định Thấp) |
+| D-158 | Xong | 2026-10-25 | Trụ, nhà chính 3D (Medieval Hexagon); cây, đá, chợ, đổ nát tự dựng từ dữ liệu map |

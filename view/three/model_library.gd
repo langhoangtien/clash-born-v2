@@ -5,6 +5,8 @@ extends RefCounted
 
 const ROOT: String = "res://assets/models/kaykit/"
 const CONFIG: String = "res://assets/models/units_3d.json"
+## D-158: công trình, cảnh vật (KayKit Medieval Hexagon).
+const MEDIEVAL: String = "res://assets/models/medieval/"
 
 static var _config: Dictionary = {}
 static var _scenes: Dictionary[String, PackedScene] = {}
@@ -65,3 +67,42 @@ static func team_material(base: Material, tex: String, team: int) -> Material:
 	m.roughness = 0.8
 	_materials[key] = m
 	return m
+
+
+## D-158: cấu hình mô hình công trình của `e` (trụ theo bậc), rỗng nếu vẽ bằng ảnh đứng.
+static func structure(e: Entity) -> Dictionary:
+	var key: String = String(e.art_id) + ("_t%d" % e.tier if e.kind == Entity.Kind.TOWER else "")
+	return config().get("structures", {}).get(key, {})
+
+
+static func scenery() -> Dictionary:
+	return config().get("scenery", {})
+
+
+## Cảnh mô hình tĩnh `path` (không đuôi) trong thư mục Medieval; `team` 0/1 thêm _blue/_red, khác: giữ nguyên.
+static func medieval(path: String, team: int = -1) -> PackedScene:
+	var file: String = path + ("_blue" if team == 0 else ("_red" if team == 1 else "")) + ".gltf"
+	if not _scenes.has(MEDIEVAL + file):
+		_scenes[MEDIEVAL + file] = load(MEDIEVAL + file) as PackedScene
+	return _scenes[MEDIEVAL + file]
+
+
+## Khối bao các lưới trong `root` (tọa độ của root).
+static func bounds(root: Node3D) -> AABB:
+	var box: AABB = AABB()
+	var first: bool = true
+	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = n as MeshInstance3D
+		var b: AABB = _relative(root, mi) * mi.mesh.get_aabb()
+		box = b if first else box.merge(b)
+		first = false
+	return box
+
+
+static func _relative(root: Node3D, n: Node3D) -> Transform3D:
+	var t: Transform3D = n.transform
+	var p: Node = n.get_parent()
+	while p != null and p != root:
+		t = (p as Node3D).transform * t
+		p = p.get_parent()
+	return t

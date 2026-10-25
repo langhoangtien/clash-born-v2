@@ -23,7 +23,10 @@ var _attack_tick: int = -1
 static func make(e: Entity) -> Actor3D:
 	var a: Actor3D = Actor3D.new()
 	var cfg: Dictionary = ModelLibrary.unit(e.art_id)
-	if cfg.is_empty():
+	var building: Dictionary = ModelLibrary.structure(e) if cfg.is_empty() else {}
+	if not building.is_empty():
+		a._make_structure(e, building)
+	elif cfg.is_empty():
 		a._make_sprite(e)
 	else:
 		a._make_model(e, cfg)
@@ -71,6 +74,16 @@ func _paint(root: Node, tex: String, team: int) -> void:
 			mi.set_surface_override_material(i, ModelLibrary.team_material(mi.mesh.surface_get_material(i), tex, team))
 
 
+## D-158: công trình là mô hình tĩnh theo đội, cỡ theo chiều cao trong cấu hình.
+func _make_structure(e: Entity, cfg: Dictionary) -> void:
+	_model = ModelLibrary.medieval(cfg["model"], e.team).instantiate() as Node3D
+	add_child(_model)
+	height = cfg["height"]
+	var box: AABB = ModelLibrary.bounds(_model)
+	_model.scale = Vector3.ONE * (height / maxf(0.01, box.size.y))
+	_model.position = -Vector3(box.get_center().x, box.position.y, box.get_center().z) * _model.scale.x
+
+
 func _make_sprite(e: Entity) -> void:
 	var tex: Texture2D = UnitSprite.texture_of(e)
 	height = UnitSprite.height_of(e) * MatchView3D.S
@@ -89,6 +102,8 @@ func _make_sprite(e: Entity) -> void:
 ## `faded`: GHOST / phe mình núp bụi / tàng hình (UnitsView.faded) — vẽ mờ.
 func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int, faded: bool) -> void:
 	position = at
+	if _anim == null and _sprite == null:
+		return  # D-158: công trình — đứng yên
 	if _sprite != null:
 		_sprite.flip_h = e.facing.x < 0.0
 		_sprite.modulate = Color(1, 0.55, 0.5) if hit_age >= 0 and hit_age < UnitSprite.HIT_TICKS else Color.WHITE

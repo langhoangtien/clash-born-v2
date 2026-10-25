@@ -1,29 +1,170 @@
 {
-  "_ghi_chu": "D-146: hình 3D theo art_id (bản thử 3D). Mô hình KayKit (CC0) trong assets/models/kaykit/. rig: bộ xương + hoạt ảnh dùng chung; tex: tên bảng màu (có bản _blue / _red theo đội); right / left: vũ khí gắn tay; attack / cast: hoạt ảnh đánh / tung chiêu; height: chiều cao trên sân (đơn vị 3D).",
-  "rigs": {
-    "Rig_Medium": {"native": 2.45, "idle": "Idle_A", "run": "Running_A", "dash": "Jump_Full_Short", "hit": "Hit_A", "death": "Death_A",
-                   "sets": ["General", "MovementBasic", "CombatMelee", "CombatRanged"]},
-    "Rig_Large": {"native": 4.1, "idle": "Idle_A", "run": "Running_A", "dash": "Running_A", "hit": "Hit_A", "death": "Death_A",
-                  "sets": ["General", "MovementBasic", "CombatMelee"]}
+ "_ghi_chu": "D-146: hình 3D theo art_id (bản thử 3D). Mô hình KayKit (CC0) trong assets/models/kaykit/. rig: bộ xương + hoạt ảnh dùng chung; tex: tên bảng màu (có bản _blue / _red theo đội); right / left: vũ khí gắn tay; attack / cast: hoạt ảnh đánh / tung chiêu; height: chiều cao trên sân (đơn vị 3D).",
+ "rigs": {
+  "Rig_Medium": {
+   "native": 2.45,
+   "idle": "Idle_A",
+   "run": "Running_A",
+   "dash": "Jump_Full_Short",
+   "hit": "Hit_A",
+   "death": "Death_A",
+   "sets": [
+    "General",
+    "MovementBasic",
+    "CombatMelee",
+    "CombatRanged"
+   ]
   },
-  "units": {
-    "duy_anh": {"model": "Knight", "rig": "Rig_Medium", "tex": "knight", "right": "sword_1handed", "left": "shield_badge_color",
-                "attack": "Melee_1H_Attack_Chop", "cast": "Melee_1H_Attack_Slice_Horizontal", "height": 1.6},
-    "brakk": {"model": "Barbarian", "rig": "Rig_Medium", "tex": "barbarian",
-              "attack": "Melee_Unarmed_Attack_Punch_A", "cast": "Melee_Unarmed_Attack_Kick", "height": 1.65},
-    "gorran": {"model": "Barbarian_Large", "rig": "Rig_Large", "tex": "barbarian", "right": "axe_2handed_Large",
-               "attack": "Melee_2H_Attack", "cast": "Melee_2H_Slam", "height": 2.0},
-    "myra": {"model": "Mage", "rig": "Rig_Medium", "tex": "mage", "right": "staff",
-             "attack": "Ranged_Magic_Shoot", "cast": "Ranged_Magic_Spellcasting", "height": 1.6},
-    "vexa": {"model": "Druid", "rig": "Rig_Medium", "tex": "druid", "right": "druid_staff", "left": "spellbook_open",
-             "attack": "Ranged_Magic_Shoot", "cast": "Ranged_Magic_Summon", "height": 1.6},
-    "noctis": {"model": "Rogue_Hooded", "rig": "Rig_Medium", "tex": "rogue", "right": "dagger", "left": "dagger",
-               "attack": "Melee_Dualwield_Attack_Stab", "cast": "Melee_Dualwield_Attack_Slice", "height": 1.6},
-    "creep_melee": {"model": "Knight", "rig": "Rig_Medium", "tex": "knight", "right": "sword_1handed", "left": "shield_badge_color",
-                    "attack": "Melee_1H_Attack_Slice_Diagonal", "height": 1.1},
-    "creep_ranged": {"model": "Ranger", "rig": "Rig_Medium", "tex": "ranger", "right": "crossbow_1handed",
-                     "attack": "Ranged_1H_Shoot", "height": 1.1},
-    "creep_siege": {"model": "Engineer", "rig": "Rig_Medium", "tex": "engineer", "right": "crossbow_1handed",
-                    "attack": "Ranged_1H_Shoot", "height": 1.3}
+  "Rig_Large": {
+   "native": 4.1,
+   "idle": "Idle_A",
+   "run": "Running_A",
+   "dash": "Running_A",
+   "hit": "Hit_A",
+   "death": "Death_A",
+   "sets": [
+    "General",
+    "MovementBasic",
+    "CombatMelee"
+   ]
   }
+ },
+ "units": {
+  "duy_anh": {
+   "model": "Knight",
+   "rig": "Rig_Medium",
+   "tex": "knight",
+   "right": "sword_1handed",
+   "left": "shield_badge_color",
+   "attack": "Melee_1H_Attack_Chop",
+   "cast": "Melee_1H_Attack_Slice_Horizontal",
+   "height": 1.6
+  },
+  "brakk": {
+   "model": "Barbarian",
+   "rig": "Rig_Medium",
+   "tex": "barbarian",
+   "attack": "Melee_Unarmed_Attack_Punch_A",
+   "cast": "Melee_Unarmed_Attack_Kick",
+   "height": 1.65
+  },
+  "gorran": {
+   "model": "Barbarian_Large",
+   "rig": "Rig_Large",
+   "tex": "barbarian",
+   "right": "axe_2handed_Large",
+   "attack": "Melee_2H_Attack",
+   "cast": "Melee_2H_Slam",
+   "height": 2.0
+  },
+  "myra": {
+   "model": "Mage",
+   "rig": "Rig_Medium",
+   "tex": "mage",
+   "right": "staff",
+   "attack": "Ranged_Magic_Shoot",
+   "cast": "Ranged_Magic_Spellcasting",
+   "height": 1.6
+  },
+  "vexa": {
+   "model": "Druid",
+   "rig": "Rig_Medium",
+   "tex": "druid",
+   "right": "druid_staff",
+   "left": "spellbook_open",
+   "attack": "Ranged_Magic_Shoot",
+   "cast": "Ranged_Magic_Summon",
+   "height": 1.6
+  },
+  "noctis": {
+   "model": "Rogue_Hooded",
+   "rig": "Rig_Medium",
+   "tex": "rogue",
+   "right": "dagger",
+   "left": "dagger",
+   "attack": "Melee_Dualwield_Attack_Stab",
+   "cast": "Melee_Dualwield_Attack_Slice",
+   "height": 1.6
+  },
+  "creep_melee": {
+   "model": "Knight",
+   "rig": "Rig_Medium",
+   "tex": "knight",
+   "right": "sword_1handed",
+   "left": "shield_badge_color",
+   "attack": "Melee_1H_Attack_Slice_Diagonal",
+   "height": 1.1
+  },
+  "creep_ranged": {
+   "model": "Ranger",
+   "rig": "Rig_Medium",
+   "tex": "ranger",
+   "right": "crossbow_1handed",
+   "attack": "Ranged_1H_Shoot",
+   "height": 1.1
+  },
+  "creep_siege": {
+   "model": "Engineer",
+   "rig": "Rig_Medium",
+   "tex": "engineer",
+   "right": "crossbow_1handed",
+   "attack": "Ranged_1H_Shoot",
+   "height": 1.3
+  }
+ },
+ "_ghi_chu_cong_trinh": "D-158: công trình và cảnh vật 3D từ KayKit Medieval Hexagon (CC0) trong assets/models/medieval/. structures: theo art_id (trụ thêm _t<bậc>), model là tên file không có _blue/_red (thêm theo đội), height: chiều cao trên sân (đơn vị 3D). scenery: cây rải trong forest_shapes, đá dọc cliff_shapes, cửa hàng, đống đổ nát chỗ trụ đã đổ; spacing là khoảng cách lưới (px thế giới), scale là [nhỏ nhất, lớn nhất] so với cỡ gốc.",
+ "structures": {
+  "tower_t1": {
+   "model": "buildings/building_tower_A",
+   "height": 3.1
+  },
+  "tower_t2": {
+   "model": "buildings/building_tower_B",
+   "height": 3.4
+  },
+  "tower_t3": {
+   "model": "buildings/building_tower_catapult",
+   "height": 3.0
+  },
+  "tower_t4": {
+   "model": "buildings/building_tower_base",
+   "height": 2.6
+  },
+  "core": {
+   "model": "buildings/building_castle",
+   "height": 4.6
+  }
+ },
+ "scenery": {
+  "trees": [
+   "nature/tree_single_A",
+   "nature/tree_single_B"
+  ],
+  "tree_spacing": 95.0,
+  "tree_scale": [
+   1.3,
+   1.85
+  ],
+  "tree_inset": 24.0,
+  "rocks": [
+   "nature/rock_single_A",
+   "nature/rock_single_B",
+   "nature/rock_single_C",
+   "nature/rock_single_D",
+   "nature/rock_single_E"
+  ],
+  "rock_spacing": 85.0,
+  "rock_scale": [
+   1.3,
+   2.3
+  ],
+  "shop": {
+   "model": "buildings/building_market_blue",
+   "height": 1.4
+  },
+  "rubble": {
+   "model": "buildings/building_destroyed",
+   "height": 1.1
+  }
+ }
 }

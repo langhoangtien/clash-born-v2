@@ -19,6 +19,7 @@ var world: World
 var units: UnitsView
 var layer: SubViewport
 var camera: Camera3D
+var scenery: Scenery3D
 var _layer_cam: Camera2D
 var _ground: MeshInstance3D
 ## Vùng lớp đất so với điểm nhìn (px thế giới).
@@ -64,6 +65,10 @@ func setup(w: World, units_view: UnitsView, ground_nodes: Array[Node]) -> void:
 	_fit_ground()
 	get_viewport().size_changed.connect(_fit_ground)
 	Look3D.add_lights(self)  # D-150
+	scenery = Scenery3D.new()  # D-158: cây, đá, cửa hàng, đổ nát dựng từ dữ liệu map
+	add_child(scenery)
+	if world.map != null:
+		scenery.build(world.map)
 
 
 func to_3d(p: Vector2) -> Vector3:
@@ -85,6 +90,7 @@ func update(focus: Vector2) -> void:
 	var target: Vector3 = to_3d(focus)
 	camera.position = target + CAM_OFFSET
 	camera.look_at(target, Vector3.UP)
+	scenery.update(world)
 	_layer_cam.position = focus + _ground_rect.get_center()
 	_ground.position = to_3d(focus + _ground_rect.get_center())
 	var keep: Dictionary[int, bool] = {}
