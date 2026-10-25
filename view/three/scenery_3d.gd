@@ -114,6 +114,8 @@ func _multimesh(model: String, items: Array) -> void:
 	var src: Node3D = ModelLibrary.static_scene(model).instantiate() as Node3D
 	var mi: MeshInstance3D = src.find_children("*", "MeshInstance3D", true, false)[0]
 	var base: Transform3D = ModelLibrary._relative(src, mi)
+	var box: AABB = base * mi.mesh.get_aabb()  # D-167: đặt gốc ở giữa đáy (mô hình tự làm có gốc lệch)
+	base = Transform3D(Basis(), -Vector3(box.get_center().x, box.position.y, box.get_center().z)) * base
 	var mm: MultiMesh = MultiMesh.new()
 	mm.transform_format = MultiMesh.TRANSFORM_3D
 	mm.mesh = mi.mesh
