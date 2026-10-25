@@ -102,14 +102,16 @@ Mô hình đầu tiên (làm rồi DỪNG chờ duyệt, để kiểm tra cách 
 
 Thư mục `art_inbox/3d/nature/`. Tên và dáng theo ảnh neo.
 
-- [ ] `tree_a.glb` — cây tán tròn bồng nhiều cụm, thân xoắn ngắn. **800–1.500 tam giác.**
+- [x] `tree_a.glb` — cây tán tròn bồng nhiều cụm, thân xoắn ngắn. **996 tam giác.**
 - [ ] `tree_b.glb` — cây thông nhiều tầng lá nhọn. **800–1.500 tam giác.**
 - [ ] `tree_c.glb` — cây tán tròn lệch hai tầng, thân cong. **800–1.500 tam giác.**
 - [ ] `tree_a_lite.glb`, `tree_b_lite.glb`, `tree_c_lite.glb` — bản nhẹ cùng dáng cùng UV để rải sâu
   trong rừng. **200–400 tam giác.** (Không bắt buộc, nhưng cho phép cây chính đẹp hơn mà không tụt FPS.)
-- [ ] `grass_a.glb`, `grass_b.glb`, `grass_c.glb` — **bụi cỏ** (vùng núp, VIS-06): cụm lá to nhọn,
+- [x] `grass_a.glb` — **bụi cỏ** (vùng núp, VIS-06): cụm lá to nhọn, xòe vừa. **576 tam giác.**
+- [ ] `grass_b.glb`, `grass_c.glb` — bụi cỏ (vùng núp, VIS-06): cụm lá to nhọn,
   a = xòe vừa, b = thấp rộng, c = cao thẳng. Cao ~0,5–0,7 m. **300–700 tam giác.**
-- [ ] `rock_a.glb` (khối tròn to), `rock_b.glb` (khối cao nhọn), `rock_c.glb` (khối dẹt dài) — đá vách.
+- [x] `rock_a.glb` — khối tròn to, **320 tam giác.**
+- [ ] `rock_b.glb` (khối cao nhọn), `rock_c.glb` (khối dẹt dài) — đá vách.
   **200–400 tam giác.**
 - [ ] `ground_detail.glb` — cụm cỏ nhỏ + hoa vàng rải lác đác trên nền. **≤ 100 tam giác.**
 
@@ -149,7 +151,7 @@ Thư mục `art_inbox/3d/structures/`. Đồ có phe: một GLB + hai ảnh `_bl
 
 | File | Mô tả | Tam giác | Ảnh màu |
 |---|---|---|---|
-| [ ] `tower_t1` | Tháp mái nhọn, ống ngắm bên hông, băng vải phe | **2.000–5.000** | 1024 |
+| [x] `tower_t1` | Tháp mái nhọn, ống ngắm bên hông, băng vải phe — **3.372 tam giác** | **2.000–5.000** | 1024 |
 | [ ] `tower_t2` | Như t1 nhưng to hơn, thêm cờ bay | **2.000–5.000** | 1024 |
 | [ ] `tower_t3` | Tháp có càng vàng ôm pha lê lớn trên đỉnh | **3.000–6.000** | 1024 |
 | [ ] `tower_t4` | Pháo đài thấp chắc, pha lê giữa, gác nhà chính | **2.000–5.000** | 1024 |
