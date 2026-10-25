@@ -111,7 +111,7 @@ func _place(models: Array, items: Array[Array]) -> void:
 
 
 func _multimesh(model: String, items: Array) -> void:
-	var src: Node3D = ModelLibrary.medieval(model).instantiate() as Node3D
+	var src: Node3D = ModelLibrary.static_scene(model).instantiate() as Node3D
 	var mi: MeshInstance3D = src.find_children("*", "MeshInstance3D", true, false)[0]
 	var base: Transform3D = ModelLibrary._relative(src, mi)
 	var mm: MultiMesh = MultiMesh.new()
@@ -131,7 +131,7 @@ func _multimesh(model: String, items: Array) -> void:
 
 
 func _add_static(cfg: Dictionary, at: Vector2, angle: float) -> void:
-	var n: Node3D = ModelLibrary.medieval(cfg["model"]).instantiate() as Node3D
+	var n: Node3D = ModelLibrary.static_scene(cfg["model"]).instantiate() as Node3D
 	add_child(n)
 	var box: AABB = ModelLibrary.bounds(n)
 	var k: float = cfg["height"] / maxf(0.01, box.size.y)

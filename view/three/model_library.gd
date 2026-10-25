@@ -5,8 +5,8 @@ extends RefCounted
 
 const ROOT: String = "res://assets/models/kaykit/"
 const CONFIG: String = "res://assets/models/units_3d.json"
-## D-158: công trình, cảnh vật (KayKit Medieval Hexagon).
-const MEDIEVAL: String = "res://assets/models/medieval/"
+## D-158, D-165: mô hình tĩnh (công trình, cảnh vật) — đường dẫn trong cấu hình tính từ đây.
+const MODELS: String = "res://assets/models/"
 ## D-161: độ đục khi vẽ mờ (VIS-02, VIS-06, ST-11).
 const FADED_ALPHA: float = 0.45
 
@@ -83,12 +83,12 @@ static func scenery() -> Dictionary:
 	return config().get("scenery", {})
 
 
-## Cảnh mô hình tĩnh `path` (không đuôi) trong thư mục Medieval; `team` 0/1 thêm _blue/_red, khác: giữ nguyên.
-static func medieval(path: String, team: int = -1) -> PackedScene:
+## Cảnh mô hình tĩnh `path` (không đuôi, tính từ assets/models/); `team` 0/1 thêm _blue/_red, khác: giữ nguyên.
+static func static_scene(path: String, team: int = -1) -> PackedScene:
 	var file: String = path + ("_blue" if team == 0 else ("_red" if team == 1 else "")) + ".gltf"
-	if not _scenes.has(MEDIEVAL + file):
-		_scenes[MEDIEVAL + file] = load(MEDIEVAL + file) as PackedScene
-	return _scenes[MEDIEVAL + file]
+	if not _scenes.has(MODELS + file):
+		_scenes[MODELS + file] = load(MODELS + file) as PackedScene
+	return _scenes[MODELS + file]
 
 
 ## Khối bao các lưới trong `root` (tọa độ của root).

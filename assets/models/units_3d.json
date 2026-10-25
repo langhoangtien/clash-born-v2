@@ -150,33 +150,33 @@
    "height": 1.15
   }
  },
- "_ghi_chu_cong_trinh": "D-158: công trình và cảnh vật 3D từ KayKit Medieval Hexagon (CC0) trong assets/models/medieval/. structures: theo art_id (trụ thêm _t<bậc>), model là tên file không có _blue/_red (thêm theo đội), height: chiều cao trên sân (đơn vị 3D). scenery: cây rải trong forest_shapes, đá dọc cliff_shapes, cửa hàng, đống đổ nát chỗ trụ đã đổ; spacing là khoảng cách lưới (px thế giới), scale là [nhỏ nhất, lớn nhất] so với cỡ gốc.",
+ "_ghi_chu_cong_trinh": "D-158: công trình và cảnh vật 3D từ KayKit Medieval Hexagon (CC0) trong assets/models/medieval/; bụi từ KayKit Forest Nature (CC0) trong assets/models/forest/ (D-165). Đường dẫn model tính từ assets/models/. structures: theo art_id (trụ thêm _t<bậc>), model là tên file không có _blue/_red (thêm theo đội), height: chiều cao trên sân (đơn vị 3D). scenery: cây rải trong forest_shapes, đá dọc cliff_shapes, cửa hàng, đống đổ nát chỗ trụ đã đổ; spacing là khoảng cách lưới (px thế giới), scale là [nhỏ nhất, lớn nhất] so với cỡ gốc.",
  "structures": {
   "tower_t1": {
-   "model": "buildings/building_tower_A",
+   "model": "medieval/buildings/building_tower_A",
    "height": 3.8
   },
   "tower_t2": {
-   "model": "buildings/building_tower_B",
+   "model": "medieval/buildings/building_tower_B",
    "height": 4.2
   },
   "tower_t3": {
-   "model": "buildings/building_tower_catapult",
+   "model": "medieval/buildings/building_tower_catapult",
    "height": 3.7
   },
   "tower_t4": {
-   "model": "buildings/building_tower_base",
+   "model": "medieval/buildings/building_tower_base",
    "height": 3.2
   },
   "core": {
-   "model": "buildings/building_castle",
+   "model": "medieval/buildings/building_castle",
    "height": 5.8
   }
  },
  "scenery": {
   "trees": [
-   "nature/tree_single_A",
-   "nature/tree_single_B"
+   "medieval/nature/tree_single_A",
+   "medieval/nature/tree_single_B"
   ],
   "tree_spacing": 105.0,
   "tree_scale": [
@@ -185,11 +185,11 @@
   ],
   "tree_inset": 30.0,
   "rocks": [
-   "nature/rock_single_A",
-   "nature/rock_single_B",
-   "nature/rock_single_C",
-   "nature/rock_single_D",
-   "nature/rock_single_E"
+   "medieval/nature/rock_single_A",
+   "medieval/nature/rock_single_B",
+   "medieval/nature/rock_single_C",
+   "medieval/nature/rock_single_D",
+   "medieval/nature/rock_single_E"
   ],
   "rock_spacing": 85.0,
   "rock_scale": [
@@ -197,22 +197,26 @@
    2.3
   ],
   "shop": {
-   "model": "buildings/building_market_blue",
+   "model": "medieval/buildings/building_market_blue",
    "height": 1.8
   },
   "rubble": {
-   "model": "buildings/building_destroyed",
+   "model": "medieval/buildings/building_destroyed",
    "height": 1.4
   },
   "bushes": [
-   "nature/trees_B_small"
+   "forest/Bush_1_C_Color1",
+   "forest/Bush_1_D_Color1",
+   "forest/Bush_1_E_Color1",
+   "forest/Bush_3_B_Color1",
+   "forest/Bush_2_D_Color1"
   ],
-  "bush_spacing": 75.0,
+  "bush_spacing": 62.0,
   "bush_scale": [
-   0.75,
-   1.0
+   0.45,
+   0.62
   ],
-  "bush_squash": 0.55
+  "bush_squash": 1.0
  },
  "sprite_scale": 0.75
 }
