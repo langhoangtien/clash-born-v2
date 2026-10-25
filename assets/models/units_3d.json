@@ -177,10 +177,10 @@
   "trees": [
    "custom/nature/tree_a"
   ],
-  "tree_spacing": 105.0,
+  "tree_spacing": 125.0,
   "tree_scale": [
-   0.9,
-   1.2
+   0.78,
+   1.0
   ],
   "tree_inset": 30.0,
   "rocks": [
@@ -202,10 +202,10 @@
   "bushes": [
    "custom/nature/grass_a"
   ],
-  "bush_spacing": 60.0,
+  "bush_spacing": 55.0,
   "bush_scale": [
-   0.6,
-   0.8
+   0.7,
+   0.9
   ],
   "bush_squash": 1.0
  },
