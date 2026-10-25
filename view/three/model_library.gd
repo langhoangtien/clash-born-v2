@@ -84,8 +84,11 @@ static func scenery() -> Dictionary:
 
 
 ## Cảnh mô hình tĩnh `path` (không đuôi, tính từ assets/models/); `team` 0/1 thêm _blue/_red, khác: giữ nguyên.
+## Mô hình tự làm (D-167): `path`.glb, một file cho cả hai đội (ảnh màu theo đội: team_texture).
 static func static_scene(path: String, team: int = -1) -> PackedScene:
-	var file: String = path + ("_blue" if team == 0 else ("_red" if team == 1 else "")) + ".gltf"
+	var file: String = path + ".glb"
+	if not ResourceLoader.exists(MODELS + file):
+		file = path + ("_blue" if team == 0 else ("_red" if team == 1 else "")) + ".gltf"
 	if not _scenes.has(MODELS + file):
 		_scenes[MODELS + file] = load(MODELS + file) as PackedScene
 	return _scenes[MODELS + file]
@@ -124,3 +127,21 @@ static func faded_material(base: Material) -> Material:
 		m.albedo_color.a = FADED_ALPHA
 		_faded[key] = m
 	return _faded[key]
+
+
+## D-167: mô hình tự làm có ảnh màu theo đội cạnh file (`path`_blue.png / _red.png) → đổi ảnh của mọi bề mặt.
+static func apply_team_texture(root: Node, path: String, team: int) -> void:
+	if team < 0 or team > 1:
+		return
+	var tex_path: String = MODELS + path + ("_blue" if team == 0 else "_red") + ".png"
+	if not ResourceLoader.exists(tex_path):
+		return
+	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = n as MeshInstance3D
+		for i: int in mi.mesh.get_surface_count():
+			var key: String = tex_path + str(mi.mesh.surface_get_material(i).get_instance_id())
+			if not _materials.has(key):
+				var m: StandardMaterial3D = mi.mesh.surface_get_material(i).duplicate() as StandardMaterial3D
+				m.albedo_texture = load(tex_path) as Texture2D
+				_materials[key] = m
+			mi.set_surface_override_material(i, _materials[key])
