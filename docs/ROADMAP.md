@@ -238,4 +238,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | D-147 | Xong | 2026-10-24 | Hiệu năng: nướng bản đồ thành ô ảnh, minimap vẽ một lần (1.731 → 468 lần gọi vẽ mỗi khung) |
 | D-148 | Xong | 2026-10-24 | Tự cập nhật bản thử Android: nút "Cập nhật" ở màn chọn tướng tải và mở màn cài APK mới |
 | D-149 | Xong | 2026-10-24 | Hiệu năng lúc giao tranh: chỉ vẽ đơn vị trong khung nhìn, nhớ ảnh đơn vị (2,6 → 1,0 ms mỗi khung trên máy thử) |
-| D-152 | Chờ đo trên máy | 2026-10-25 | SIM chạy trên luồng phụ trong lúc vẽ; công cụ đo SIM 5v5 (`tools/sim_profile.gd`). Việc sau nếu cần: tối ưu tìm đường (tick vọt) và tầm nhìn |
+| D-152, D-153 | Xong | 2026-10-25 | Công cụ đo SIM 5v5 (`tools/sim_profile.gd`): 5v5 tb 6,5 / p95 11 ms. Thử SIM luồng phụ: không tăng FPS, SIM chậm hơn trên máy → bỏ. Việc sau nếu cần: tối ưu tìm đường (tick vọt) và tầm nhìn |

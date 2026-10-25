@@ -33,9 +33,6 @@ var _loops: Dictionary[int, AudioStreamPlayer] = {}
 var _last_ms: Dictionary[StringName, int] = {}
 var _music: AudioStreamPlayer
 var _amb: AudioStreamPlayer
-## D-152: tiếng đã chọn sau mỗi tick, chờ flush() phát (tick có thể chạy trên luồng phụ).
-var _pending: Array[AudioCues.Cue] = []
-var _ended: bool = false
 
 
 func _ready() -> void:
@@ -56,23 +53,16 @@ func setup_match(team: int, hero_id: int) -> void:
 	cues.hero_id = hero_id
 
 
-## Gọi sau mỗi tick SIM (được gọi trên luồng phụ, D-152): chỉ chọn tiếng, không đụng node.
+## Gọi sau mỗi tick SIM.
 func on_step(world: World) -> void:
 	if cues == null:
 		return
-	_pending.append_array(cues.collect(world))  # luôn đọc để giữ trạng thái (chuỗi hạ gục…)
-	_ended = _ended or world.winner >= 0
-
-
-## Phát các tiếng đã chọn (luồng chính, mỗi khung).
-func flush() -> void:
-	for c: AudioCues.Cue in _pending:
+	for c: AudioCues.Cue in cues.collect(world):  # luôn đọc để giữ trạng thái (chuỗi hạ gục…)
 		if c.stop:
 			_stop_loop(c.key)
 		elif mode != Mode.MUTE:
 			_play(c)
-	_pending.clear()
-	if _ended:
+	if world.winner >= 0:
 		_amb.stop()
 		_music.stop()
 
