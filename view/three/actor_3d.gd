@@ -29,6 +29,8 @@ var _model: Node3D
 ## ST-16: hình ếch khi bị hóa ếch (tạo khi cần).
 var _frog: Sprite3D
 var _meshes: Array[GeometryInstance3D] = []
+## D-161: vật liệu đặc của từng bề mặt (theo _meshes), để trả lại sau khi hết mờ.
+var _solid: Array[Array] = []
 var _faded: bool = false
 var _playing: String = ""
 var _attack_tick: int = -1
@@ -71,6 +73,11 @@ func _make_model(e: Entity, cfg: Dictionary) -> void:
 	_paint(model, cfg["tex"], e.team)
 	for n: Node in model.find_children("*", "GeometryInstance3D", true, false):
 		_meshes.append(n as GeometryInstance3D)
+		var mats: Array = []
+		if n is MeshInstance3D:
+			for k: int in (n as MeshInstance3D).mesh.get_surface_count():
+				mats.append((n as MeshInstance3D).get_active_material(k))
+		_solid.append(mats)
 	_anim = AnimationPlayer.new()
 	model.add_child(_anim)
 	_anim.add_animation_library(&"", ModelLibrary.animations(cfg["rig"]))
@@ -218,8 +225,13 @@ func _set_faded(faded: bool) -> void:
 	if faded == _faded:
 		return
 	_faded = faded
-	for m: GeometryInstance3D in _meshes:
-		m.transparency = 0.55 if faded else 0.0
+	for i: int in _meshes.size():  # D-161: đổi vật liệu (Compatibility bỏ qua transparency)
+		var mi: MeshInstance3D = _meshes[i] as MeshInstance3D
+		if mi == null:
+			continue
+		for k: int in mi.mesh.get_surface_count():
+			var solid: Material = _solid[i][k]
+			mi.set_surface_override_material(k, ModelLibrary.faded_material(solid) if faded else solid)
 
 
 ## ST-16: hóa ếch — giấu nhân vật, hiện ảnh ếch đứng (thiếu ảnh thì UnitsView vẽ ếch tạm dưới đất).

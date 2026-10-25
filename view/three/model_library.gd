@@ -7,11 +7,15 @@ const ROOT: String = "res://assets/models/kaykit/"
 const CONFIG: String = "res://assets/models/units_3d.json"
 ## D-158: công trình, cảnh vật (KayKit Medieval Hexagon).
 const MEDIEVAL: String = "res://assets/models/medieval/"
+## D-161: độ đục khi vẽ mờ (VIS-02, VIS-06, ST-11).
+const FADED_ALPHA: float = 0.45
 
 static var _config: Dictionary = {}
 static var _scenes: Dictionary[String, PackedScene] = {}
 static var _libs: Dictionary[String, AnimationLibrary] = {}
 static var _materials: Dictionary[String, Material] = {}
+## D-161: bản trong suốt của từng vật liệu (theo id vật liệu gốc).
+static var _faded: Dictionary[int, Material] = {}
 
 
 static func config() -> Dictionary:
@@ -106,3 +110,17 @@ static func _relative(root: Node3D, n: Node3D) -> Transform3D:
 		t = (p as Node3D).transform * t
 		p = p.get_parent()
 	return t
+
+
+## D-161: bản mờ của `base` (ALPHA, độ đục FADED_ALPHA; vẽ độ sâu trước để thân không tự xuyên thấu).
+## Trình vẽ Compatibility không dùng GeometryInstance3D.transparency nên phải đổi vật liệu.
+static func faded_material(base: Material) -> Material:
+	var key: int = base.get_instance_id()
+	if not _faded.has(key):
+		var m: BaseMaterial3D = base.duplicate() as BaseMaterial3D
+		if m == null:
+			return base
+		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_DEPTH_PRE_PASS
+		m.albedo_color.a = FADED_ALPHA
+		_faded[key] = m
+	return _faded[key]
