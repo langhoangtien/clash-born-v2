@@ -12,8 +12,10 @@ thấp (không bóng đổ thật, không normal map). Mô hình hiện ra trên
 
 1. Làm **theo từng đợt**, đúng thứ tự. Mỗi đợt xong thì **DỪNG**, báo người dùng để duyệt. Chỉ làm
    đợt sau khi người dùng đồng ý.
-2. **Đợt 0 là mẫu neo phong cách** (1 cây, 1 bụi, 1 đá). Sau khi được duyệt, mọi mô hình sau phải
-   cùng phong cách, cùng bảng màu với mẫu neo.
+2. **Ảnh neo phong cách đã có** (đợt 0 xong): `art_inbox/00_style/style_3d_sheet.png` (công trình,
+   cây, cỏ, đá) và `art_inbox/00_style/style_3d_units.png` (lính, quái rừng). Mọi mô hình phải cùng
+   phong cách, cùng bảng màu với hai ảnh này. **Nếu không thấy hai file đó hoặc nội dung phiếu khác
+   với mô tả ở đây, chạy `git pull` trước** — đừng dùng ảnh khác thay thế.
 3. Lưu đúng **thư mục và tên file** trong bảng (chữ thường, gạch dưới). Không thêm hậu tố như
    `_final`, `_v2`. Mỗi mô hình kèm 1 ảnh xem trước `<tên>_preview.png` (chụp góc nghiêng từ trên
    xuống như trong game).
