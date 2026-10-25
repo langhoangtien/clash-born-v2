@@ -24,6 +24,20 @@ thấp (không bóng đổ thật, không normal map). Mô hình hiện ra trên
 5. Không sửa bất kỳ file nào ngoài thư mục `art_inbox/`. Việc đưa vào game (đặt gốc, chỉnh cỡ, khai báo
    `assets/models/units_3d.json`) do người ghép làm.
 
+## Cách làm khuyến nghị: tạo 3D từ ảnh (image-to-3D)
+
+Chất "vẽ tay" của ảnh neo nằm ở **ảnh màu**, không ở số tam giác. Dựng lưới bằng code / khối cơ bản rồi
+tô ô màu phẳng sẽ không ra được phong cách này. Cách hợp nhất:
+
+1. Lấy ảnh tách sẵn của từng mô hình trong **`art_inbox/00_style/crops/<tên>.png`** (cắt từ hai ảnh neo).
+2. Đưa ảnh đó vào công cụ **image-to-3D** (Tripo, Meshy, Hunyuan3D, Rodin…) — công cụ dựng lưới và **nướng
+   ảnh màu giống ảnh gốc**.
+3. Chọn chế độ **low poly / giới hạn số mặt (face limit / target polycount)** theo bảng tóm tắt cuối file;
+   công cụ không có thì xuất bản thường, ghi rõ số tam giác — người ghép sẽ giảm lưới giữ nguyên ảnh màu.
+4. Xuất GLB có ảnh màu (1024). Đồ có phe: làm bản xanh, rồi tạo ảnh `_red.png` cùng UV (đổi phần xanh
+   phe → đỏ trong ảnh màu).
+5. Nhân vật / quái: sau đó mới gắn xương (Mixamo cho hình người, Blender cho thú — xem mục Hoạt ảnh).
+
 ## Quy tắc chung cho mọi mô hình
 
 **Định dạng**
