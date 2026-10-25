@@ -235,12 +235,13 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | D-142 | Xong | 2026-10-24 | 629 test xanh; Tim Khổng Lồ cơ chế Dota mới, Hoa Câm Lặng (khóa chiêu). Icon Đợt 12 đã nhập, chờ Codex Đợt 13 |
 | D-143 | Xong | 2026-10-24 | 633 test + soak xanh; Khiên Chắn của Duy Anh thành hất đòn (8→18%, trả 50→100%) |
 | D-144 | Xong | 2026-10-24 | Hình tướng / lính / quái / công trình thật trong trận + hoạt ảnh biến đổi, hiệu ứng chiêu trên bản đồ, giao diện thử 4:3 / 16:10 / 20:9. M8.3 / M8.4: chờ người chơi đo FPS trên máy tính bảng |
-| D-145, D-146 | Đang thử (nhánh `thu-3d`) | 2026-10-24 | Bản thử 3D: mặt đất 2D dán lên mặt phẳng, tướng và lính là nhân vật KayKit có vũ khí, màu đội và hoạt ảnh. Chờ người chơi đo FPS 2D / 3D trên máy tính bảng rồi chốt |
+| D-145, D-146 | Xong (D-157) | 2026-10-24 | Bản thử 3D: mặt đất 2D dán lên mặt phẳng, tướng và lính là nhân vật KayKit có vũ khí, màu đội và hoạt ảnh. Chờ người chơi đo FPS 2D / 3D trên máy tính bảng rồi chốt |
 | D-147 | Xong | 2026-10-24 | Hiệu năng: nướng bản đồ thành ô ảnh, minimap vẽ một lần (1.731 → 468 lần gọi vẽ mỗi khung) |
 | D-148 | Xong | 2026-10-24 | Tự cập nhật bản thử Android: nút "Cập nhật" ở màn chọn tướng tải và mở màn cài APK mới |
 | D-149 | Xong | 2026-10-24 | Hiệu năng lúc giao tranh: chỉ vẽ đơn vị trong khung nhìn, nhớ ảnh đơn vị (2,6 → 1,0 ms mỗi khung trên máy thử) |
-| D-150 | Đang thử (nhánh `thu-3d`) | 2026-10-25 | Nâng hình bản 3D: MSAA, bóng mờ dưới chân, ánh sáng / màu, sương xa, vân mặt đất. Chờ người chơi đo FPS 3D lúc giao tranh (mục tiêu ≥ 50) |
-| D-151 | Đang thử (nhánh `thu-3d`) | 2026-10-25 | Hiệu năng 3D: lớp mặt đất chỉ phủ vùng camera thấy (4,2 → 1,5 triệu điểm ảnh), MSAA 2×, nút tắt khử răng cưa để so. Chờ người chơi đo 3D lúc giao tranh, có / không khử răng cưa (mục tiêu ≥ 50) |
+| D-150 | Xong | 2026-10-25 | Nâng hình bản 3D: MSAA, bóng mờ dưới chân, ánh sáng / màu, sương xa, vân mặt đất. Chờ người chơi đo FPS 3D lúc giao tranh (mục tiêu ≥ 50) |
+| D-151 | Xong | 2026-10-25 | Hiệu năng 3D: lớp mặt đất chỉ phủ vùng camera thấy (4,2 → 1,5 triệu điểm ảnh), MSAA 2×, nút tắt khử răng cưa để so. Chờ người chơi đo 3D lúc giao tranh, có / không khử răng cưa (mục tiêu ≥ 50) |
 | D-152, D-153 | Xong | 2026-10-25 | Công cụ đo SIM 5v5 (`tools/sim_profile.gd`): 5v5 tb 6,5 / p95 11 ms. Thử SIM luồng phụ: không tăng FPS, SIM chậm hơn trên máy → bỏ. Việc sau nếu cần: tối ưu tìm đường (tick vọt) và tầm nhìn |
-| D-154 | Đang thử (nhánh `thu-3d`) | 2026-10-25 | Mức đồ họa 3D (đủ / tắt khử răng cưa / 75% độ phân giải) để đo FPS 3D trên máy rồi chọn mặc định |
+| D-154 | Xong | 2026-10-25 | Mức đồ họa 3D (đủ / tắt khử răng cưa / 75% độ phân giải) để đo FPS 3D trên máy rồi chọn mặc định |
 | D-156 | Xong | 2026-10-25 | Hết giật giây 22 (lần cắm mắt đầu dựng lưới tìm đường ~190 ms): dựng sẵn lúc vào trận |
+| D-157 | Xong | 2026-10-25 | Chốt 3D: gộp vào main, bỏ vẽ đơn vị 2D, nút "Đồ họa" Thấp / Vừa / Cao (mặc định Thấp) |

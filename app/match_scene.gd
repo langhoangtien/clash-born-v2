@@ -9,11 +9,6 @@ static var hero_id: StringName = &"brakk"
 ## D-94: hero và độ khó của bot đối thủ (màn khởi động đặt; "" = không có bot).
 static var bot_hero_id: StringName = &"myra"
 static var bot_difficulty: int = BotState.Difficulty.NORMAL
-## D-145: bản thử 3D (chọn ở màn chọn tướng).
-static var render_3d: bool = false
-## D-151, D-154: mức đồ họa bản 3D — đủ (MSAA 2×), tắt khử răng cưa, 75% độ phân giải (không khử răng cưa).
-enum Quality3D { FULL, NO_AA, LOW_RES }
-static var quality_3d: int = Quality3D.FULL
 const SEED: int = 1
 ## CTL-02: phím PC giả lập nút ĐÁNH / đánh lính / đánh trụ (theo Rules.AttackMode).
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
@@ -93,7 +88,7 @@ func _ready() -> void:
 	_setup_quick_buy()
 	_setup_test_panel()
 	camera.position = hero.position
-	if render_3d: _setup_3d()
+	_setup_3d()
 	skills.world = world
 	skills.hero = hero
 	skills.input = input
@@ -249,8 +244,7 @@ func _map_bounds() -> Rect2:
 ## D-145: bản thử 3D — các lớp 2D trên mặt đất vào SubViewport, đơn vị thành mô hình / ảnh đứng.
 func _setup_3d() -> void:
 	view_3d = MatchView3D.create(self, $Hud, world, units_view, [map_view, fog, units_view, aim_indicator])
-	get_viewport().msaa_3d = Viewport.MSAA_2X if quality_3d == Quality3D.FULL else Viewport.MSAA_DISABLED
-	get_viewport().scaling_3d_scale = 0.75 if quality_3d == Quality3D.LOW_RES else 1.0
+	GraphicsSetting.apply(get_viewport(), GraphicsSetting.load_level())  # D-157
 
 
 ## Điểm thế giới dưới điểm màn hình (2D: theo camera 2D; 3D: chiếu tia xuống đất).

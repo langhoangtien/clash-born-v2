@@ -69,15 +69,16 @@ clashborn_v2/
   view/                    vẽ đơn vị, map, hiệu ứng, HUD, điều khiển cảm ứng;
                            ArtLibrary: tra hình theo id, thiếu thì hình tạm (ART.md)
     map/                   MapView, MapPainter (vẽ tạm bằng hình phẳng), MapBaker (nướng lớp tĩnh thành ô ảnh, D-147)
-    units/                 UnitsView: vẽ đơn vị, nội suy giữa hai tick, y-sort; UnitSprite (ảnh + hoạt ảnh
-                           biến đổi, D-144), Vfx (hiệu ứng chiêu / đòn trên bản đồ), ZonePainter (vùng kỹ năng)
-    three/                 (nhánh thu-3d) MatchView3D (mặt đất 2D trong SubViewport dán lên mặt phẳng, camera),
-                           Actor3D (một đơn vị: nhân vật KayKit hoặc ảnh billboard), ModelLibrary (tra
-                           assets/models/units_3d.json), Bars3D (thanh máu), Look3D + ground.gdshader (ánh
-                           sáng, môi trường, bóng chân, vân mặt đất) — D-145, D-146, D-150
+    units/                 UnitsView: phần dưới đất của đơn vị (bóng, vòng đội / siêu cấp / về thành / tái
+                           sinh, mắt), nội suy giữa hai tick; UnitSprite (ảnh đứng, D-144), Vfx (hiệu ứng chiêu /
+                           đòn), ZonePainter (vùng kỹ năng), StateMarks (dấu trạng thái)
+    three/                 Trận vẽ 3D (D-145, D-157): MatchView3D (mặt đất 2D trong SubViewport dán lên mặt
+                           phẳng, camera), Actor3D (một đơn vị: nhân vật KayKit hoặc ảnh billboard), ModelLibrary
+                           (tra assets/models/units_3d.json), Bars3D (thanh máu, dấu trạng thái, ổ khóa),
+                           Look3D + ground.gdshader (ánh sáng, môi trường, bóng chân, vân mặt đất) — D-146, D-150
     art/                   ArtLibrary: res://assets/art/<art_id>.png, thiếu → hình tạm
     ui/                    UiStyle (phông, màu, khung, nút, xu), UiGlyphs (icon nét) — D-130
-    menu/                  HeroSelect, HeroDetail, HeroPreview (màn chọn tướng)
+    menu/                  HeroSelect, HeroDetail, HeroPreview (màn chọn tướng), GraphicsSetting (mức đồ họa, D-157)
     audio/                 SoundLibrary (res://assets/audio/<id>.ogg, thiếu → im lặng), AudioCues
                            (sự kiện tick → tiếng, lọc sương mù), AudioView (phát, nhạc) — D-114
     hud/                   TouchJoystick (joystick ảo; tên VirtualJoystick trùng lớp có sẵn của Godot 4.7)

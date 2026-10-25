@@ -67,10 +67,10 @@ Danh sách ảnh cụ thể (tên file, kích thước, câu mô tả, thứ t�
 duyệt) nằm ở **`art_inbox/YEU_CAU_ANH.md`** — đó là phiếu việc cho công cụ tạo ảnh
 (Codex…), không phải tài liệu luật. Mục dưới đây là quy cách gốc để soạn phiếu đó.
 
-**Hoạt ảnh hero bản đầu:** mỗi hero một ảnh thân đứng (quay phải, game tự lật) +
-hoạt ảnh do code tạo: nhún khi đứng, nghiêng và nảy khi chạy, co–giãn khi vung tay
-(khớp `attack_point`), vệt chém/hiệu ứng skill chồng lên. Cách này làm được với ảnh
-AI đơn lẻ. Khi có họa sĩ thì nâng lên cắt ghép nhiều mảnh hoặc khung hình (A3b).
+**Hoạt ảnh (D-157, trận 3D):** tướng và lính là nhân vật 3D có xương (KayKit, `assets/models/units_3d.json`):
+hoạt ảnh đứng / chạy / đánh / tung chiêu / lướt / trúng đòn / ngã lấy từ bộ hoạt ảnh dùng chung của rig.
+Ảnh 2D của tướng / lính vẫn dùng cho chân dung, nút, minimap; đơn vị chưa có mô hình (quái rừng, công trình)
+hiện bằng ảnh đứng quay về camera.
 
 ## Quy cách asset cần lấy (gửi cho công cụ AI, họa sĩ, hoặc dùng khi chọn bộ asset)
 

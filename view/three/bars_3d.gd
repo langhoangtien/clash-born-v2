@@ -1,6 +1,7 @@
 class_name Bars3D
 extends Control
-## Thanh máu trên đầu đơn vị cho bản 3D thử (D-145): chiếu đỉnh đầu ra màn hình rồi vẽ.
+## Thanh máu, dấu trạng thái (StateMarks) và ổ khóa công trình (STR-02) trên đầu đơn vị (D-145, D-157):
+## chiếu đỉnh đầu / chân ra màn hình rồi vẽ.
 
 var view: MatchView3D
 
@@ -31,3 +32,15 @@ func _draw() -> void:
 		draw_rect(r.grow(2), Color(0, 0, 0, 0.7))
 		var frac: float = clampf(e.health / maxf(1.0, e.stats.get_stat(StatId.Id.MAX_HP)), 0.0, 1.0)
 		draw_rect(Rect2(r.position, Vector2(w * frac, h)), col)
+		var foot: Variant = view.foot_screen(e)
+		if foot != null:
+			StateMarks.draw(self, e, foot, (foot as Vector2).y - (at as Vector2).y, view.world.tick)
+		if e.locked:
+			_draw_lock((at as Vector2) + Vector2(0, 30))
+
+
+## STR-02: ổ khóa trên công trình đang khóa.
+func _draw_lock(c: Vector2) -> void:
+	draw_rect(Rect2(c - Vector2(14, 0), Vector2(28, 22)), Color(0.15, 0.15, 0.18, 0.85))
+	draw_rect(Rect2(c - Vector2(10, -3), Vector2(20, 16)), Color(0.9, 0.9, 0.9))
+	draw_arc(c, 9, PI, TAU, 8, Color(0.9, 0.9, 0.9), 3.0)

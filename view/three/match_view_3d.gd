@@ -45,7 +45,6 @@ static func create(parent: Node, hud: CanvasLayer, w: World, units_view: UnitsVi
 func setup(w: World, units_view: UnitsView, ground_nodes: Array[Node]) -> void:
 	world = w
 	units = units_view
-	units.ground_only = true
 	layer = SubViewport.new()
 	layer.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	add_child(layer)
@@ -100,7 +99,7 @@ func update(focus: Vector2) -> void:
 			a = Actor3D.make(e)
 			add_child(a)
 			_actors[e.id] = a
-		a.sync(world, e, to_3d(units.display_position(e)), units.is_moving(e), world.tick - units.hit_tick(e))
+		a.sync(world, e, to_3d(units.display_position(e)), units.is_moving(e), world.tick - units.hit_tick(e), units.faded(e))
 	for id: int in _actors.keys():
 		if not keep.has(id):
 			_actors[id].queue_free()
@@ -126,6 +125,14 @@ func _fit_ground() -> void:
 	_ground_rect = box.grow(GROUND_MARGIN)
 	layer.size = Vector2i(ceili(_ground_rect.size.x * LAYER_SCALE), ceili(_ground_rect.size.y * LAYER_SCALE))
 	(_ground.mesh as PlaneMesh).size = _ground_rect.size * S
+
+
+## Vị trí màn hình của chân đơn vị (cho dấu trạng thái); null nếu chưa có hình hoặc sau camera.
+func foot_screen(e: Entity) -> Variant:
+	var a: Actor3D = _actors.get(e.id)
+	if a == null or camera.is_position_behind(a.position):
+		return null
+	return camera.unproject_position(a.position)
 
 
 ## Vị trí màn hình của đỉnh đầu đơn vị (cho thanh máu); null nếu sau camera.

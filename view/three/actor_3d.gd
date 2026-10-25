@@ -11,6 +11,11 @@ var _cfg: Dictionary = {}
 var _rig: Dictionary = {}
 var _anim: AnimationPlayer
 var _sprite: Sprite3D
+var _model: Node3D
+## ST-16: hình ếch khi bị hóa ếch (tạo khi cần).
+var _frog: Sprite3D
+var _meshes: Array[GeometryInstance3D] = []
+var _faded: bool = false
 var _playing: String = ""
 var _attack_tick: int = -1
 
@@ -31,12 +36,15 @@ func _make_model(e: Entity, cfg: Dictionary) -> void:
 	height = cfg["height"]
 	var model: Node3D = ModelLibrary.scene(cfg["model"] + ".glb").instantiate() as Node3D
 	add_child(model)
+	_model = model
 	add_child(Look3D.blob(height))  # D-150: bóng mờ dưới chân
 	model.scale = Vector3.ONE * (height / float(_rig["native"]))
 	var skel: Skeleton3D = model.find_children("*", "Skeleton3D", true, false)[0]
 	_attach(skel, cfg.get("right", ""), "handslot.r")
 	_attach(skel, cfg.get("left", ""), "handslot.l")
 	_paint(model, cfg["tex"], e.team)
+	for n: Node in model.find_children("*", "GeometryInstance3D", true, false):
+		_meshes.append(n as GeometryInstance3D)
 	_anim = AnimationPlayer.new()
 	model.add_child(_anim)
 	_anim.add_animation_library(&"", ModelLibrary.animations(cfg["rig"]))
@@ -78,15 +86,23 @@ func _make_sprite(e: Entity) -> void:
 	add_child(_sprite)
 
 
-func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int) -> void:
+## `faded`: GHOST / phe mình núp bụi / tàng hình (UnitsView.faded) — vẽ mờ.
+func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int, faded: bool) -> void:
 	position = at
 	if _sprite != null:
 		_sprite.flip_h = e.facing.x < 0.0
 		_sprite.modulate = Color(1, 0.55, 0.5) if hit_age >= 0 and hit_age < UnitSprite.HIT_TICKS else Color.WHITE
+		_sprite.modulate.a = 0.45 if faded else 1.0
+		return
+	_set_faded(faded)
+	if _show_frog(Rules.has_state(e, UnitState.Id.HEXED)):
 		return
 	if e.facing != Vector2.ZERO:
 		rotation.y = atan2(e.facing.x, e.facing.y)
-	if e.dash != null:
+	if e.reincarnate_tick >= 0:  # DTH-02: nằm chờ tái sinh — ngã rồi nằm yên ở khung cuối
+		if _playing != _rig["death"]:
+			_play(_rig["death"], 1.0)
+	elif e.dash != null:
 		_play(_rig["dash"], 1.4)
 	elif e.cast != null:
 		_play(_cfg.get("cast", _cfg["attack"]), 1.5)
@@ -98,6 +114,31 @@ func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int) -> void:
 		pass
 	else:
 		_play(_rig["run"] if moving else _rig["idle"], 1.0)
+
+
+func _set_faded(faded: bool) -> void:
+	if faded == _faded:
+		return
+	_faded = faded
+	for m: GeometryInstance3D in _meshes:
+		m.transparency = 0.55 if faded else 0.0
+
+
+## ST-16: hóa ếch — giấu nhân vật, hiện ảnh ếch đứng (thiếu ảnh thì UnitsView vẽ ếch tạm dưới đất).
+func _show_frog(hexed: bool) -> bool:
+	if hexed and _frog == null and ArtLibrary.texture(&"hex_frog") != null:
+		_frog = Sprite3D.new()
+		_frog.texture = ArtLibrary.texture(&"hex_frog")
+		_frog.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		_frog.shaded = false
+		_frog.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+		_frog.pixel_size = height * 0.6 / _frog.texture.get_height()
+		_frog.offset = Vector2(0, _frog.texture.get_height() * 0.5)
+		add_child(_frog)
+	_model.visible = not hexed
+	if _frog != null:
+		_frog.visible = hexed
+	return hexed
 
 
 ## Mỗi đòn đánh mới phát lại từ đầu, kéo dài đúng một chu kỳ đánh.
