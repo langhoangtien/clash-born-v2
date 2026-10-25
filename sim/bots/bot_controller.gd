@@ -451,7 +451,7 @@ static func _upgrade_slot(u: HeroDef.Upgrade) -> int:
 
 ## D-94: món kế tiếp trong thứ tự lên đồ của hero chưa có (BuildPlan, SHOP-10).
 func next_item(world: World, e: Entity) -> ItemDef:
-	return BuildPlan.next_target(world, e, e.hero_def.bot_item_build) if e.hero_def != null else null
+	return BuildPlan.next_target(world, e, BotShopping.build(e)) if e.hero_def != null else null  # BOT-22
 
 
 ## D-94: mua món kế tiếp (mọi nơi, hoặc khi đang ở shop ẩn), mua mắt vàng khi kho còn.
@@ -461,6 +461,8 @@ func _shop(world: World, e: Entity) -> void:
 	var d: ItemDef = next_item(world, e)
 	if d != null and Shop.buy_problem(world, e, d.id) == Command.Reject.NONE:
 		world.submit(Command.buy(e.id, d.id))
+		return
+	if BotShopping.sell_for(world, e, d):  # BOT-22
 		return
 	var part: ItemDef = BuildPlan.next_part(world, e, d) if d != null else null
 	if part != null:

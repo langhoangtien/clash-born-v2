@@ -844,6 +844,13 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   i đi với loại thứ i; một loại thì mọi điều kiện phải đúng (`predict_position`,
   `prefer_engaging_enemy`, `prefer_same_target` chỉ là gợi ý). Tên điều kiện: RuleCatalog
   .BOT_CONDITIONS. SELF_DEFENSE luôn cần vừa bị trúng sát thương trong 2 s; POKE giữ ≥ 40% mana.
+- `BOT-22` (D-164) Bán đồ đầu trận khi đầy ô: cả 6 ô có đồ và món kế tiếp theo `bot_item_build`
+  (SHOP-10) chưa có, mua nó bị từ chối chỉ vì hết ô (INVENTORY_FULL) hoặc thiếu vàng (NOT_ENOUGH_GOLD).
+  Món được bán: giá (`cost`) < `bot_sell_max_cost`, không phải thành phần (kể cả sâu) của món kế
+  tiếp, không phải món gộp có số lần dùng (`max_stack` > 0, vd mắt). Chọn món rẻ nhất (hòa → ô nhỏ
+  hơn). Chỉ bán khi vàng + tiền bán (SHOP-05) ≥ giá món kế tiếp; bán xong lượt mua sau mua như
+  SHOP-10. Mỗi lần bot nghĩ tối đa một lệnh bán. Món đã bán theo luật này coi như xong trong thứ
+  tự lên đồ (không mua lại). Danh sách `bot_item_build` được dài hơn 6 món.
 - `BOT-14` Bot nâng skill và chọn talent theo thứ tự khai báo trong dữ liệu hero.
 - `BOT-15` Skill ENGAGE chỉ dùng khi điểm đến an toàn (DEF-10); ESCAPE được dùng bất
   kể an toàn.

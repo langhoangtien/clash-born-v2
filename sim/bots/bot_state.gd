@@ -31,3 +31,5 @@ var upgrades_done: int = 0
 ## Số tick giữa hai lần bot “nghĩ” (độ trễ phản xạ).
 func think_ticks() -> int:
 	return [9, 6, 3][difficulty]
+## BOT-22: món đã bán để lấy chỗ — coi như xong trong thứ tự lên đồ, không mua lại.
+var sold: Array[StringName] = []

@@ -213,3 +213,50 @@ func test_D_94_difficulty_reaction_and_aim() -> void:
 	assert_eq(BotSkills.aim_point(w, e, foe), foe.position, "Khó, mục tiêu đứng yên: nhắm trúng tâm")
 	e.bot.difficulty = BotState.Difficulty.EASY
 	assert_true(BotSkills.aim_point(w, e, foe) != foe.position, "Dễ: lệch")
+
+
+func _give(w: World, e: Entity, ids: Array[StringName]) -> void:
+	for id: StringName in ids:
+		Items.give(w, e, w.item_catalog[id])
+
+
+func _has_item(e: Entity, id: StringName) -> bool:
+	return Items.slots(e).any(func(it: ItemInstance) -> bool: return it != null and it.def.id == id)
+
+
+## BOT-22: đầy ô, giàu, món kế tiếp chưa có → bán món đầu trận rẻ nhất rồi mua món kế tiếp.
+func test_BOT_22_full_inventory_sells_cheap_early_item_for_next_build() -> void:
+	var w: World = _world()
+	var e: Entity = _bot(w, &"brakk", _map.fountain_point(1) + Vector2(-300, 300))
+	e.hero_def = e.hero_def.duplicate()
+	e.hero_def.bot_item_build = [&"bracer", &"boots_guard", &"stun_hammer", &"desolator", &"battle_axe", &"giant_heart", &"assault_plate"]
+	_give(w, e, [&"bracer", &"boots_guard", &"stun_hammer", &"desolator", &"battle_axe", &"giant_heart"])
+	e.gold = 5000
+	for i: int in range(30):
+		w.step()
+	assert_false(_has_item(e, &"bracer"), "bán Vòng Tay Sắt (rẻ nhất, < bot_sell_max_cost)")
+	assert_true(_has_item(e, &"assault_plate"), "mua món kế tiếp")
+	assert_true(_has_item(e, &"boots_guard"), "giày đắt hơn ngưỡng: giữ")
+
+
+## BOT-22: không đủ vàng kể cả khi bán → giữ nguyên; không có món dưới ngưỡng → không bán.
+func test_BOT_22_keeps_items_when_poor_or_nothing_cheap() -> void:
+	var w: World = _world()
+	var e: Entity = _bot(w, &"brakk", _map.fountain_point(1) + Vector2(-300, 300))
+	e.hero_def = e.hero_def.duplicate()
+	e.hero_def.bot_item_build = [&"bracer", &"boots_guard", &"stun_hammer", &"desolator", &"battle_axe", &"giant_heart", &"assault_plate"]
+	_give(w, e, [&"bracer", &"boots_guard", &"stun_hammer", &"desolator", &"battle_axe", &"giant_heart"])
+	e.gold = 100
+	for i: int in range(30):
+		w.step()
+	assert_true(_has_item(e, &"bracer"), "thiếu vàng: không bán")
+	var g: World = _world()
+	var b: Entity = _bot(g, &"brakk", _map.fountain_point(1) + Vector2(-300, 300))
+	b.hero_def = b.hero_def.duplicate()
+	b.hero_def.bot_item_build = [&"boots_guard", &"stun_hammer", &"desolator", &"battle_axe", &"giant_heart", &"moon_shard", &"assault_plate"]
+	_give(g, b, [&"boots_guard", &"stun_hammer", &"desolator", &"battle_axe", &"giant_heart", &"moon_shard"])
+	b.gold = 20000
+	for i: int in range(30):
+		g.step()
+	assert_true(_has_item(b, &"boots_guard"), "không có món dưới ngưỡng: không bán")
+	assert_false(_has_item(b, &"assault_plate"))

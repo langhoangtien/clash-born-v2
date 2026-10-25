@@ -90,6 +90,7 @@ fountain_true_sight = 900.0
 tower_danger_margin = 100.0
 tower_tank_creeps = 2
 dive_min_hp = 0.6
+bot_sell_max_cost = 1000
 bot_retreat_hp = 0.3
 bot_recover_hp = 0.8
 bot_kill_hp = 0.35

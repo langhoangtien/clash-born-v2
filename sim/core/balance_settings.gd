@@ -141,6 +141,8 @@ extends Resource
 ## DEF-10: được vào vùng trụ khi trụ đang bắn đơn vị khác, có ≥ tower_tank_creeps lính phe mình trong tầm trụ và máu ≥ dive_min_hp.
 @export var tower_tank_creeps: int
 @export var dive_min_hp: float
+## BOT-22: bot chỉ bán món có giá dưới mức này (đồ đầu trận) khi đầy ô.
+@export var bot_sell_max_cost: int
 ## BOT-02/03: rút khi máu < bot_retreat_hp, đứng hồi tới bot_recover_hp (phần máu tối đa).
 @export var bot_retreat_hp: float
 @export var bot_recover_hp: float
