@@ -110,3 +110,45 @@ func test_M40_buff_bar_entries_and_layout() -> void:
 	assert_near(row.end.y, 600.0, 0.01, "nằm ngay trên chỗ nút đồ")
 	assert_true(bar.row_rect(20).end.x <= 900.0, "nhiều icon thì thu nhỏ, không đè nút Q")
 	bar.free()
+
+
+## D-163: nhiều lần cùng một hiệu ứng (vd hút Trí tuệ của Vexa, mỗi lần một hiệu ứng riêng) gộp một ô:
+## số = tổng số lần, thời gian = lần còn lâu nhất.
+func test_D_163_same_effect_instances_grouped_into_one_icon() -> void:
+	var w: World = World.new(1, BalanceSettings.new())
+	var e: Entity = Entity.new()
+	e.stats = StatBlock.new(w.balance)
+	w.add_entity(e)
+	var drain: EffectDef = EffectDef.new()
+	drain.id = &"drain"
+	drain.duration = "10"
+	drain.stacking = EffectDef.Stacking.INDEPENDENT
+	drain.tags = [&"buff"]
+	for i: int in 3:
+		var inst: EffectInstance = Effects.apply(w, e, drain, e)
+		inst.end_tick = w.tick + 100 + i * 50
+		inst.start_tick = w.tick
+	var entries: Array = BuffBar.entries(w, e)
+	assert_eq(entries.size(), 1, "gộp một ô")
+	assert_eq(entries[0][3], 3, "số lần đang có")
+	assert_near(entries[0][2], 1.0, 0.01, "theo lần còn lâu nhất")
+
+
+## D-163 (DUL-07): sát thương vĩnh viễn từ Quyết Đấu hiện một ô riêng có số (+ xanh / − đỏ).
+func test_D_163_duel_damage_shown_with_value() -> void:
+	var w: World = World.new(1, BalanceSettings.new())
+	var e: Entity = Entity.new()
+	e.stats = StatBlock.new(w.balance)
+	w.add_entity(e)
+	var duel: EffectDef = EffectDef.new()
+	duel.id = &"duel"
+	assert_eq(BuffBar.entries(w, e, duel).size(), 0, "chưa có thì không hiện")
+	e.duel_damage = 40.0
+	var entries: Array = BuffBar.entries(w, e, duel)
+	assert_eq(entries.size(), 1)
+	assert_eq(entries[0][4], "+40")
+	assert_false(entries[0][1], "dương = buff")
+	e.duel_damage = -20.0
+	entries = BuffBar.entries(w, e, duel)
+	assert_eq(entries[0][4], "-20")
+	assert_true(entries[0][1], "âm = debuff")
