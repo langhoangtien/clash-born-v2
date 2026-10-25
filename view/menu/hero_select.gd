@@ -25,8 +25,10 @@ var selected: int = 0
 var bot: int = 1
 var difficulty: int = 1
 var use_3d: bool = false
-## D-151: khử răng cưa cho bản 3D (nút xoay vòng 2D → 3D → 3D tắt khử răng cưa), để đo FPS trên máy.
-var aa_3d: bool = true
+## D-151, D-154: mức đồ họa bản 3D (MatchScene.Quality3D), nút xoay vòng 2D → 3D → 3D tắt khử răng cưa
+## → 3D 75% độ phân giải → 2D, để đo FPS trên máy.
+var quality_3d: int = 0
+const QUALITY_NAMES: Array[String] = ["3D", "3D·AA tắt", "3D·75%"]
 var tab: HeroDetail.Tab = HeroDetail.Tab.SKILLS
 
 
@@ -135,16 +137,16 @@ func _bottom() -> void:
 		var on: bool = i == difficulty
 		UiStyle.button(self, diff_rect(i), &"gold" if on else &"ghost", DIFF_NAMES[i], "", 24)
 	UiStyle.button(self, MAP_BUTTON, &"blue", "Map", "", 24)
-	UiStyle.button(self, VIEW_BUTTON, &"gold" if use_3d else &"ghost", ("3D" if aa_3d else "3D·AA tắt") if use_3d else "2D", "", 22)
+	UiStyle.button(self, VIEW_BUTTON, &"gold" if use_3d else &"ghost", QUALITY_NAMES[quality_3d] if use_3d else "2D", "", 22)
 	UiStyle.button(self, START, &"gold", "BẮT ĐẦU", "", 46)
 
 
-## 2D → 3D (khử răng cưa 2×) → 3D tắt khử răng cưa → 2D.
+## 2D → các mức đồ họa 3D (QUALITY_NAMES) → 2D.
 func _cycle_view() -> void:
 	if not use_3d:
 		use_3d = true
-		aa_3d = true
-	elif aa_3d:
-		aa_3d = false
+		quality_3d = 0
+	elif quality_3d + 1 < QUALITY_NAMES.size():
+		quality_3d += 1
 	else:
 		use_3d = false

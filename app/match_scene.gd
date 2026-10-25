@@ -11,7 +11,9 @@ static var bot_hero_id: StringName = &"myra"
 static var bot_difficulty: int = BotState.Difficulty.NORMAL
 ## D-145: bản thử 3D (chọn ở màn chọn tướng).
 static var render_3d: bool = false
-static var antialias_3d: bool = true  # D-151: MSAA 2× cho bản 3D (tắt được ở màn chọn tướng)
+## D-151, D-154: mức đồ họa bản 3D — đủ (MSAA 2×), tắt khử răng cưa, 75% độ phân giải (không khử răng cưa).
+enum Quality3D { FULL, NO_AA, LOW_RES }
+static var quality_3d: int = Quality3D.FULL
 const SEED: int = 1
 ## CTL-02: phím PC giả lập nút ĐÁNH / đánh lính / đánh trụ (theo Rules.AttackMode).
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
@@ -87,8 +89,6 @@ func _ready() -> void:
 	input.hero = hero
 	runner = SimRunner.new(world)
 	runner.before_step.connect(_before_step)
-	if MapBaker.can_bake():
-		runner.attach_to_render()  # D-152: SIM chạy trên luồng phụ trong lúc máy vẽ khung
 	_setup_audio()
 	_setup_quick_buy()
 	_setup_test_panel()
@@ -142,7 +142,6 @@ func _process(delta: float) -> void:
 ## Một khung hình: chạy SIM theo thời gian thật, cập nhật nội suy và camera.
 func tick_frame(delta: float) -> void:
 	runner.advance(delta)
-	audio.flush()  # D-152: tiếng của các tick vừa chạy
 	units_view.alpha = runner.alpha()
 	var follow: Vector2 = death_cam.update(hero.alive, units_view.display_position(hero), _held_direction(), delta, _map_bounds())  # CAM-01
 	if minimap.peeking and death_cam.active():
@@ -170,10 +169,6 @@ func tick_frame(delta: float) -> void:
 	buff_bar.right_limit = skill_buttons.global_position.x - buff_bar.global_position.x + skill_buttons.skill_center(0).x - SkillButtons.SKILL_RADIUS
 	if world.winner >= 0 and result == null:
 		_show_result()
-
-
-func _exit_tree() -> void:
-	runner.detach()  # D-152
 
 
 func _show_result() -> void:
@@ -254,7 +249,8 @@ func _map_bounds() -> Rect2:
 ## D-145: bản thử 3D — các lớp 2D trên mặt đất vào SubViewport, đơn vị thành mô hình / ảnh đứng.
 func _setup_3d() -> void:
 	view_3d = MatchView3D.create(self, $Hud, world, units_view, [map_view, fog, units_view, aim_indicator])
-	get_viewport().msaa_3d = Viewport.MSAA_2X if antialias_3d else Viewport.MSAA_DISABLED
+	get_viewport().msaa_3d = Viewport.MSAA_2X if quality_3d == Quality3D.FULL else Viewport.MSAA_DISABLED
+	get_viewport().scaling_3d_scale = 0.75 if quality_3d == Quality3D.LOW_RES else 1.0
 
 
 ## Điểm thế giới dưới điểm màn hình (2D: theo camera 2D; 3D: chiếu tia xuống đất).
