@@ -32,19 +32,24 @@ thấp (không bóng đổ thật, không normal map). Mô hình hiện ra trên
 - Chỉ cần ảnh màu (albedo / base color). **Không** normal map, roughness, metallic, emission, AO.
 - Không có đèn, camera, mặt đất, bệ đỡ trong file.
 
-**Phong cách**
-- Low poly cách điệu, khối to tròn dễ đọc, tỉ lệ hơi chibi (đầu to cỡ 1/3–1/4 người), màu tươi
-  bão hòa, tô phẳng hoặc vẽ tay đơn giản. Tham khảo phong cách bộ KayKit đang có trong game
-  (`assets/models/kaykit/`, `assets/models/medieval/`).
-- **Chi tiết vẽ lên ảnh màu** (nếp áo, vân gỗ, bóng tối dưới tán lá) thay vì thêm lưới.
-- Dồn tam giác vào phần camera nhìn thấy: **đầu, vai, vũ khí, tán cây, mái trụ**. Đáy, lưng, mặt dưới
-  làm đơn giản.
+**Phong cách — ảnh neo: `art_inbox/00_style/style_3d_sheet.png`** (đính kèm ảnh này mỗi lần tạo)
+- Kiểu **vẽ tay cách điệu (stylized hand-painted)** như trong ảnh neo: khối to, cạnh vát tròn, tỉ lệ
+  hơi chibi, màu tươi; đá xám ấm, gỗ nâu, **viền / chóp vàng kim**, **pha lê xanh phát sáng** làm điểm
+  nhấn công trình; lá cây tròn bồng (cây tán tròn) hoặc tầng nhọn (cây thông); cỏ lá to nhọn.
+- **Bản GLB là bản tối giản của ảnh neo:** giữ đúng **dáng tổng thể, tỉ lệ, bảng màu**; bỏ chi tiết
+  nhỏ khỏi lưới (gạch, vân đá, nếp lá, đinh tán) và **vẽ chúng lên ảnh màu** (sáng ở mặt trên, tối dần
+  xuống dưới, viền sáng ở cạnh — kiểu tô gradient vẽ tay). Đừng cố làm lưới giống hệt ảnh 2D.
+- Ánh sáng **vẽ sẵn trong ảnh màu** (game chỉ có một đèn yếu): mặt trên sáng, mặt dưới / khe tối.
+- Dồn tam giác vào phần camera nhìn thấy: **đầu, vai, vũ khí, tán cây, mái / chóp / pha lê trụ**.
+  Đáy, lưng, mặt dưới làm đơn giản.
+- Lá cỏ, lá cây có thể làm bằng **mặt phẳng + ảnh có nền trong suốt** (alpha cắt cứng, không mờ dần),
+  hoặc lưới đặc — miễn trong giới hạn tam giác.
 - Không lỗ hở, không mặt thừa bên trong, không mặt hai lớp chồng nhau.
 
 **Màu phe** (Blue `#3D8BFF`, Red `#FF4D4D`)
 - Đồ có phe (trụ, nhà chính, lính, tướng): làm **một mô hình**, xuất **hai ảnh màu cùng UV**:
   `<tên>_blue.png` và `<tên>_red.png` (đặt cạnh file GLB; file GLB dùng bản xanh). Chỉ đổi phần
-  màu phe (áo, cờ, mái, pha lê), giữ nguyên da, gỗ, đá, kim loại.
+  màu phe (áo, cờ, mái, băng vải, **pha lê**: xanh → đỏ), giữ nguyên đá, gỗ, viền vàng, da.
 - Đồ không có phe (cây, đá, bụi, quái rừng): một ảnh màu.
 
 **Cỡ trong game** (để tạo đúng tỉ lệ; người ghép vẫn chỉnh lại được)
@@ -83,26 +88,28 @@ Dùng **Mixamo** (nhân vật hình người hai chân) hoặc tự gắn xươn
 
 ---
 
-## Đợt 0 — Mẫu neo phong cách (DỪNG chờ duyệt)
+## Đợt 0 — Ảnh neo phong cách — XONG
 
-Thư mục `art_inbox/3d/nature/`
+- [x] `art_inbox/00_style/style_3d_sheet.png` — bảng phong cách đã duyệt (trụ 1–4, nhà chính, suối,
+  cửa hàng, đổ nát, mắt, cỏ, cây, đá). Tên file mô hình dưới đây khớp nhãn trong ảnh.
 
-- [ ] `tree_a.glb` — cây rừng tán to tròn, thân ngắn chắc. **800–1.500 tam giác.**
-- [ ] `bush_a.glb` — bụi cỏ tròn rậm, rộng hơn cao. **300–700 tam giác.**
-- [ ] `rock_a.glb` — khối đá vách góc cạnh, xám ấm. **200–400 tam giác.**
+Mô hình đầu tiên (làm rồi DỪNG chờ duyệt, để kiểm tra cách tối giản): `tree_a`, `grass_a`, `rock_a`
+(đợt 1) và `tower_t1` (đợt 3).
 
-## Đợt 1 — Cây cối, bụi, đá
+## Đợt 1 — Cây cối, bụi cỏ, đá
 
-Thư mục `art_inbox/3d/nature/`
+Thư mục `art_inbox/3d/nature/`. Tên và dáng theo ảnh neo.
 
-- [ ] `tree_b.glb` — cây tán nhọn (kiểu thông). **800–1.500 tam giác.**
-- [ ] `tree_c.glb` — cây tán lệch / hai tầng, cho rừng đỡ lặp. **800–1.500 tam giác.**
+- [ ] `tree_a.glb` — cây tán tròn bồng nhiều cụm, thân xoắn ngắn. **800–1.500 tam giác.**
+- [ ] `tree_b.glb` — cây thông nhiều tầng lá nhọn. **800–1.500 tam giác.**
+- [ ] `tree_c.glb` — cây tán tròn lệch hai tầng, thân cong. **800–1.500 tam giác.**
 - [ ] `tree_a_lite.glb`, `tree_b_lite.glb`, `tree_c_lite.glb` — bản nhẹ cùng dáng cùng UV để rải sâu
   trong rừng. **200–400 tam giác.** (Không bắt buộc, nhưng cho phép cây chính đẹp hơn mà không tụt FPS.)
-- [ ] `bush_b.glb`, `bush_c.glb` — hai kiểu bụi khác dáng. **300–700 tam giác.**
-- [ ] `rock_b.glb`, `rock_c.glb` — đá vách khác dáng (một khối dẹt, một khối cao). **200–400 tam giác.**
-- [ ] `pebble_a.glb` — cụm sỏi nhỏ trang trí. **≤ 100 tam giác.**
-- [ ] `grass_tuft_a.glb`, `flower_a.glb` — cụm cỏ / hoa lẻ rải trên nền (không bắt buộc). **≤ 100 tam giác.**
+- [ ] `grass_a.glb`, `grass_b.glb`, `grass_c.glb` — **bụi cỏ** (vùng núp, VIS-06): cụm lá to nhọn,
+  a = xòe vừa, b = thấp rộng, c = cao thẳng. Cao ~0,5–0,7 m. **300–700 tam giác.**
+- [ ] `rock_a.glb` (khối tròn to), `rock_b.glb` (khối cao nhọn), `rock_c.glb` (khối dẹt dài) — đá vách.
+  **200–400 tam giác.**
+- [ ] `ground_detail.glb` — cụm cỏ nhỏ + hoa vàng rải lác đác trên nền. **≤ 100 tam giác.**
 
 ## Đợt 2 — Quái rừng
 
@@ -125,16 +132,16 @@ Thư mục `art_inbox/3d/structures/`. Đồ có phe: một GLB + hai ảnh `_bl
 
 | File | Mô tả | Tam giác | Ảnh màu |
 |---|---|---|---|
-| [ ] `tower_t1` | Trụ ngoài cùng, gọn, mái nhọn | **2.000–5.000** | 1024 |
-| [ ] `tower_t2` | Trụ thứ hai, to hơn, thêm giáp / cờ | **2.000–5.000** | 1024 |
-| [ ] `tower_t3` | Trụ chặn nhà lính, có máy bắn / pha lê | **3.000–6.000** | 1024 |
-| [ ] `tower_t4` | Trụ gác nhà chính, thấp chắc | **2.000–5.000** | 1024 |
-| [ ] `core` | Nhà chính (lâu đài / tinh thể lớn) | **5.000–10.000** | 1024–2048 |
-| [ ] `fountain` | Suối hồi máu ở base | **2.000–5.000** | 1024 |
-| [ ] `shop` | Cửa hàng ẩn trong rừng (lều / quầy) | **1.500–3.000** | 512–1024 |
-| [ ] `rubble` | Đống đổ nát chỗ trụ đã đổ (không phe) | **500–1.500** | 512 |
-| [ ] `ward_observer` | Mắt vàng (cắm xuống đất) | **≤ 300** | 256 |
-| [ ] `ward_sentry` | Mắt xanh (nhìn tàng hình) | **≤ 300** | 256 |
+| [ ] `tower_t1` | Tháp mái nhọn, ống ngắm bên hông, băng vải phe | **2.000–5.000** | 1024 |
+| [ ] `tower_t2` | Như t1 nhưng to hơn, thêm cờ bay | **2.000–5.000** | 1024 |
+| [ ] `tower_t3` | Tháp có càng vàng ôm pha lê lớn trên đỉnh | **3.000–6.000** | 1024 |
+| [ ] `tower_t4` | Pháo đài thấp chắc, pha lê giữa, gác nhà chính | **2.000–5.000** | 1024 |
+| [ ] `core` | Thành nhiều chóp nhọn, pha lê lớn ở giữa | **5.000–10.000** | 1024–2048 |
+| [ ] `fountain` | Bể đá tròn, nước xanh, pha lê giữa (không cần nước động trong lưới) | **2.000–5.000** | 1024 |
+| [ ] `shop` | Quầy gỗ mái vải xanh, đèn treo, bình / sách / cuộn giấy | **1.500–3.000** | 512–1024 |
+| [ ] `rubble` | Đống đá vỡ khối vuông (không phe) | **500–1.500** | 512 |
+| [ ] `ward_observer` | Cọc gỗ, mắt vàng, băng vải phe | **≤ 300** | 256 |
+| [ ] `ward_sentry` | Cọc gỗ, mắt xanh, băng vải phe | **≤ 300** | 256 |
 
 ## Đợt 4 — Lính đường
 
@@ -173,9 +180,9 @@ Mỗi tướng: bộ hoạt ảnh "Tướng" ở trên.
 | Loại | Tam giác | Ảnh màu | Xương / hoạt ảnh |
 |---|---|---|---|
 | Cây rừng | 800–1.500 (bản nhẹ 200–400) | 512–1024, dùng chung | không |
-| Bụi cỏ | 300–700 | dùng chung | không |
+| Bụi cỏ (`grass_*`) | 300–700 | dùng chung | không |
 | Đá vách | 200–400 | dùng chung | không |
-| Sỏi, cỏ, hoa trang trí | ≤ 100 | dùng chung | không |
+| Cỏ, hoa trang trí (`ground_detail`) | ≤ 100 | dùng chung | không |
 | Trụ (4 bậc) | 2.000–5.000 (bậc 3 tới 6.000) | 1024, `_blue` / `_red` | không |
 | Nhà chính | 5.000–10.000 | 1024–2048, `_blue` / `_red` | không |
 | Suối hồi máu, cửa hàng | 1.500–5.000 | 512–1024 | không |
