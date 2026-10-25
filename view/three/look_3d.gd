@@ -13,7 +13,6 @@ const BLOB_RADIUS: float = 0.48
 
 static var _blob_material: StandardMaterial3D
 static var _blob_mesh: QuadMesh
-const GROUND_SHADER: Shader = preload("res://view/three/ground.gdshader")
 
 
 ## Mặt trời chếch sau lưng camera một chút để mặt nhân vật sáng, cộng môi trường.
@@ -86,17 +85,8 @@ static func _make_blob_material() -> StandardMaterial3D:
 	return mat
 
 
-## Vật liệu mặt đất: ảnh lớp `layer` + vân chi tiết (nhiễu liền mép, có mipmap) cho đỡ phẳng.
-static func ground_material(layer: Texture2D) -> ShaderMaterial:
-	var mat: ShaderMaterial = ShaderMaterial.new()
-	mat.shader = GROUND_SHADER
-	mat.set_shader_parameter("layer", layer)
-	mat.set_shader_parameter("detail", _detail_texture())
-	return mat
-
-
 ## Hai kênh nhiễu liền mép 256 px: R vân mịn, G vân lớn.
-static func _detail_texture() -> Texture2D:
+static func detail_texture() -> Texture2D:
 	var fine: FastNoiseLite = FastNoiseLite.new()
 	fine.frequency = 0.045
 	fine.fractal_octaves = 3

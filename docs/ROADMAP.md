@@ -243,3 +243,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | D-151 | Đang thử (nhánh `thu-3d`) | 2026-10-25 | Hiệu năng 3D: lớp mặt đất chỉ phủ vùng camera thấy (4,2 → 1,5 triệu điểm ảnh), MSAA 2×, nút tắt khử răng cưa để so. Chờ người chơi đo 3D lúc giao tranh, có / không khử răng cưa (mục tiêu ≥ 50) |
 | D-152, D-153 | Xong | 2026-10-25 | Công cụ đo SIM 5v5 (`tools/sim_profile.gd`): 5v5 tb 6,5 / p95 11 ms. Thử SIM luồng phụ: không tăng FPS, SIM chậm hơn trên máy → bỏ. Việc sau nếu cần: tối ưu tìm đường (tick vọt) và tầm nhìn |
 | D-154 | Đang thử (nhánh `thu-3d`) | 2026-10-25 | Mức đồ họa 3D (đủ / tắt khử răng cưa / 75% độ phân giải) để đo FPS 3D trên máy rồi chọn mặc định |
+| D-155 | Đang thử (nhánh `thu-3d`) | 2026-10-25 | Mặt đất 3D: bản đồ nướng sẵn không vẽ lại, sương ở độ phân giải thấp; nạp sẵn nhân vật 3D (bỏ giật giây 22). Chờ đo |

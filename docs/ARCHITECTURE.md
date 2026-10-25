@@ -73,7 +73,8 @@ clashborn_v2/
                            biến đổi, D-144), Vfx (hiệu ứng chiêu / đòn trên bản đồ), ZonePainter (vùng kỹ năng)
     three/                 (nhánh thu-3d) MatchView3D (mặt đất 2D trong SubViewport dán lên mặt phẳng, camera),
                            Actor3D (một đơn vị: nhân vật KayKit hoặc ảnh billboard), ModelLibrary (tra
-                           assets/models/units_3d.json), Bars3D (thanh máu), Look3D + ground.gdshader (ánh
+                           assets/models/units_3d.json), Bars3D (thanh máu), Ground3D + ground.gdshader (mặt đất: bản đồ nướng
+                           + sương + lớp động, D-155), Look3D (ánh
                            sáng, môi trường, bóng chân, vân mặt đất) — D-145, D-146, D-150
     art/                   ArtLibrary: res://assets/art/<art_id>.png, thiếu → hình tạm
     ui/                    UiStyle (phông, màu, khung, nút, xu), UiGlyphs (icon nét) — D-130

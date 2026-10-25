@@ -21,11 +21,18 @@ static func make(e: Entity) -> Actor3D:
 	if cfg.is_empty():
 		a._make_sprite(e)
 	else:
-		a._make_model(e, cfg)
+		a._make_model(e.team, cfg)
 	return a
 
 
-func _make_model(e: Entity, cfg: Dictionary) -> void:
+## D-155: nhân vật của `art_id` cho đội `team` (dùng để nạp sẵn lúc vào trận).
+static func make_model(art_id: String, team: int) -> Actor3D:
+	var a: Actor3D = Actor3D.new()
+	a._make_model(team, ModelLibrary.unit(StringName(art_id)))
+	return a
+
+
+func _make_model(team: int, cfg: Dictionary) -> void:
 	_cfg = cfg
 	_rig = ModelLibrary.rig(cfg["rig"])
 	height = cfg["height"]
@@ -36,7 +43,7 @@ func _make_model(e: Entity, cfg: Dictionary) -> void:
 	var skel: Skeleton3D = model.find_children("*", "Skeleton3D", true, false)[0]
 	_attach(skel, cfg.get("right", ""), "handslot.r")
 	_attach(skel, cfg.get("left", ""), "handslot.l")
-	_paint(model, cfg["tex"], e.team)
+	_paint(model, cfg["tex"], team)
 	_anim = AnimationPlayer.new()
 	model.add_child(_anim)
 	_anim.add_animation_library(&"", ModelLibrary.animations(cfg["rig"]))
@@ -117,3 +124,11 @@ func _play(name: String, speed: float, restart: bool = false) -> void:
 	if restart:
 		_anim.seek(0.0, true)
 	_playing = name
+
+
+## D-155: chạy thử các hoạt ảnh sẽ dùng (nạp sẵn lúc vào trận).
+func warm_up() -> void:
+	for key: String in ["idle", "run", "hit", "dash"]:
+		_anim.play(_rig[key])
+	_anim.play(_cfg["attack"])
+	_anim.play(_cfg.get("cast", _cfg["attack"]))
