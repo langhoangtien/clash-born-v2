@@ -80,6 +80,11 @@ func setup(w: World, units_view: UnitsView, ground_nodes: Array[Node]) -> void:
 	add_child(scenery)
 	if world.map != null:
 		scenery.build(world.map)
+		var mat: ShaderMaterial = _ground.material_override as ShaderMaterial
+		mat.set_shader_parameter("map_size", world.map.world_size() * S)
+		WaterMask.bake(self, world.map).done.connect(func(t: Texture2D) -> void:  # D-160: sông gợn sóng
+			mat.set_shader_parameter("water_mask", t)
+			mat.set_shader_parameter("has_water", true))
 
 
 func to_3d(p: Vector2) -> Vector3:
@@ -170,7 +175,7 @@ func _dispatch_events() -> void:
 					_shake = maxf(_shake, SHAKE_CRIT if ev.reason == &"crit" else SHAKE_HIT)
 			&"damage_taken":
 				if dst != null and ev.amount > 0.0:
-					dst.on_hit_taken(false)
+					dst.on_hit_taken(false)  # D-160: lóe dịu, giãn cách — chiêu / đòn xa cũng có phản hồi
 				var me: Entity = world.find_entity(hero_id) if ev.target_id == hero_id else null
 				if me != null and ev.amount > me.stats.get_stat(StatId.Id.MAX_HP) * SHAKE_HURT_FRACTION:
 					_shake = maxf(_shake, SHAKE_HURT)

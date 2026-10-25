@@ -1,7 +1,7 @@
 class_name Scenery3D
 extends Node3D
 ## Cảnh vật 3D tự dựng từ dữ liệu bản đồ (D-158) — sửa map thì cảnh tự đổi theo, không đặt tay:
-## cây rải trong vùng rừng (forest_shapes), đá dọc mép vách (cliff_shapes), cửa hàng ở shop_points,
+## cây rải trong vùng rừng (forest_shapes), đá dọc mép vách (cliff_shapes), bụi cỏ (D-160), cửa hàng ở shop_points,
 ## đống đổ nát chỗ trụ đã đổ. Cây / đá vẽ bằng MultiMesh chia theo ô CHUNK px để ô ngoài khung
 ## nhìn tự bị bỏ. Chỉ hình ảnh: không chặn đường, không che tầm nhìn (luật vẫn theo MapLayout).
 ## Vị trí ngẫu nhiên lấy từ RNG riêng với hạt cố định (VIEW, không phải SIM).
@@ -31,6 +31,14 @@ func build(layout: MapLayout) -> void:
 		for p: Vector2 in _along(shape.outer, cfg["rock_spacing"], rng):
 			rocks.append([p, rng.randi() % cfg["rocks"].size(), rng.randf_range(cfg["rock_scale"][0], cfg["rock_scale"][1]), rng.randf() * TAU])
 	_place(cfg["rocks"], rocks)
+	if cfg.has("bushes"):  # D-160: bụi cỏ (VIS-06) — tạm dùng cụm cây tròn ép thấp
+		var bushes: Array[Array] = []
+		for poly: PackedVector2Array in layout.bushes.polygons:
+			var shape: MapShape = MapShape.new()
+			shape.outer = poly
+			for p: Vector2 in _fill(shape, cfg["bush_spacing"], 10.0, rng):
+				bushes.append([p, rng.randi() % cfg["bushes"].size(), rng.randf_range(cfg["bush_scale"][0], cfg["bush_scale"][1]), rng.randf() * TAU, cfg["bush_squash"]])
+		_place(cfg["bushes"], bushes)
 	for i: int in layout.shop_points.size():
 		_add_static(cfg["shop"], layout.shop_points[i], 0.0)
 
@@ -112,7 +120,8 @@ func _multimesh(model: String, items: Array) -> void:
 	mm.instance_count = items.size()
 	for i: int in items.size():
 		var it: Array = items[i]
-		var t: Transform3D = Transform3D(Basis(Vector3.UP, it[3]).scaled(Vector3.ONE * it[2]), Vector3(it[0].x, 0, it[0].y) * MatchView3D.S)
+		var squash: float = it[4] if it.size() > 4 else 1.0
+		var t: Transform3D = Transform3D(Basis(Vector3.UP, it[3]).scaled(Vector3(it[2], it[2] * squash, it[2])), Vector3(it[0].x, 0, it[0].y) * MatchView3D.S)
 		mm.set_instance_transform(i, t * base)
 	src.free()
 	var node: MultiMeshInstance3D = MultiMeshInstance3D.new()

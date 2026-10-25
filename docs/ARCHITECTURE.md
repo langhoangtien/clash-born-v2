@@ -76,7 +76,8 @@ clashborn_v2/
                            phẳng, camera), Actor3D (một đơn vị: nhân vật KayKit hoặc ảnh billboard), ModelLibrary
                            (tra assets/models/units_3d.json), Bars3D (thanh máu, dấu trạng thái, ổ khóa),
                            Look3D + ground.gdshader (ánh sáng, môi trường, bóng chân, vân mặt đất) — D-146, D-150;
-                           Scenery3D (cây, đá, chợ, đổ nát dựng từ dữ liệu map, D-158)
+                           Scenery3D (cây, đá, bụi, chợ, đổ nát dựng từ dữ liệu map, D-158), WaterMask (mặt nạ sông
+                           cho sóng nước, D-160)
     art/                   ArtLibrary: res://assets/art/<art_id>.png, thiếu → hình tạm
     ui/                    UiStyle (phông, màu, khung, nút, xu), UiGlyphs (icon nét) — D-130
     menu/                  HeroSelect, HeroDetail, HeroPreview (màn chọn tướng), GraphicsSetting (mức đồ họa, D-157)

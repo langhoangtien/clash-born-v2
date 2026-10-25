@@ -247,3 +247,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | D-157 | Xong | 2026-10-25 | Chốt 3D: gộp vào main, bỏ vẽ đơn vị 2D, nút "Đồ họa" Thấp / Vừa / Cao (mặc định Thấp) |
 | D-158 | Xong | 2026-10-25 | Trụ, nhà chính 3D (Medieval Hexagon); cây, đá, chợ, đổ nát tự dựng từ dữ liệu map |
 | D-159 | Chơi thử | 2026-10-25 | Cảm giác đòn: điểm chém khớp tick ra đòn, khựng khung, lóe trắng, giật lùi, rung camera, hoạt ảnh riêng từng chiêu. Chờ người chơi đánh giá |
+| D-160 | Chơi thử | 2026-10-25 | Cỡ tướng / lính / cây / trụ, lóe dịu, sông gợn sóng, bụi cỏ tạm, pháp sư rừng 3D. Chờ asset thú rừng (gấu, trâu, sói) và bụi cỏ |

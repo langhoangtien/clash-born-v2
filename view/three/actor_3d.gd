@@ -10,7 +10,11 @@ const BLEND: float = 0.12
 ## Hằng số hiển thị (giây / tỉ lệ).
 const IMPACT: float = 0.42  ## điểm chém mặc định trong hoạt ảnh đánh (phần độ dài), ghi đè bằng `impact`
 const HIT_STOP: float = 0.07
-const FLASH: float = 0.12
+const FLASH: float = 0.1
+## D-160: lóe dịu (đỏ cam nhạt, tối đa FLASH_ALPHA) và cách nhau ít nhất FLASH_GAP giây — nhiều đòn liên tiếp không nhấp nháy.
+const FLASH_ALPHA: float = 0.28
+const FLASH_GAP: float = 0.35
+const FLASH_COLOR: Color = Color(1.0, 0.55, 0.4)
 const LEAN: float = 0.12  ## đơn vị 3D, lùi lại khi bị đánh
 const SKILL_SPEED: float = 1.3
 const SKILL_LOCK_MAX: float = 0.9
@@ -105,7 +109,7 @@ func _make_structure(e: Entity, cfg: Dictionary) -> void:
 
 func _make_sprite(e: Entity) -> void:
 	var tex: Texture2D = UnitSprite.texture_of(e)
-	height = UnitSprite.height_of(e) * MatchView3D.S
+	height = UnitSprite.height_of(e) * MatchView3D.S * float(ModelLibrary.config().get("sprite_scale", 1.0))  # D-160
 	_sprite = Sprite3D.new()
 	_sprite.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_sprite.shaded = false
@@ -169,9 +173,10 @@ func on_hit_given() -> void:
 	_freeze_until = _now() + HIT_STOP
 
 
-## D-159: bị trúng đòn / sát thương — lóe trắng; đòn đánh gần thì khựng và giật lùi.
+## D-159, D-160: bị trúng đòn / sát thương — lóe dịu; đòn đánh gần thì khựng và giật lùi.
 func on_hit_taken(melee: bool) -> void:
-	_flash_until = _now() + FLASH
+	if _now() > _flash_until + FLASH_GAP:
+		_flash_until = _now() + FLASH
 	if melee:
 		_freeze_until = _now() + HIT_STOP
 		_lean = LEAN
@@ -202,7 +207,7 @@ func _feel() -> void:
 			_overlay.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			for m: GeometryInstance3D in _meshes:
 				m.material_overlay = _overlay
-		_overlay.albedo_color = Color(1, 1, 1, flash * 0.8)
+		_overlay.albedo_color = Color(FLASH_COLOR, flash * FLASH_ALPHA)
 
 
 static func _now() -> float:
