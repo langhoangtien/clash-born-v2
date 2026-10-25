@@ -1,24 +1,28 @@
 class_name MatchView3D
 extends Node3D
-## Bản thử 3D (D-145): mặt đất là Ground3D (bản đồ nướng sẵn + sương + lớp 2D động, D-155); tướng là mô hình 3D có hoạt ảnh, đơn vị khác là ảnh đứng (billboard).
+## Bản thử 3D (D-145): mặt đất là lớp 2D (map, sương, vùng, mũi nhắm…) vẽ vào SubViewport quanh
+## camera rồi dán lên mặt phẳng; tướng là mô hình 3D có hoạt ảnh, đơn vị khác là ảnh đứng (billboard).
 ## Camera nghiêng kiểu Liên Quân. Chỉ đọc World (qua UnitsView để lấy vị trí nội suy, ai thấy được).
 
 ## 1 px thế giới = 0,01 đơn vị 3D.
 const S: float = 0.01
-## D-151: mặt đất chỉ phủ vùng camera thấy (tính từ khung nhìn). Xa quá FAR_PX phía trước bị sương
-## che, không vẽ; nới GROUND_MARGIN mỗi phía.
+## D-151: lớp mặt đất chỉ phủ vùng camera thấy (tính từ khung nhìn), ảnh LAYER_SCALE điểm ảnh mỗi px
+## thế giới (khớp MapBaker). Xa quá FAR_PX phía trước bị sương che, không vẽ; nới GROUND_MARGIN mỗi phía.
+const LAYER_SCALE: float = 0.5
 const FAR_PX: float = 1500.0
 const GROUND_MARGIN: float = 96.0
 ## Camera: lệch khỏi điểm nhìn (đơn vị 3D), góc nhìn.
 const CAM_OFFSET: Vector3 = Vector3(0, 11.5, 11.0)
 const CAM_FOV: float = 40.0
-## D-155: số khung giữ nhân vật nạp sẵn dưới đất.
-const WARM_FRAMES: int = 3
 
 var world: World
 var units: UnitsView
-var ground: Ground3D
+var layer: SubViewport
 var camera: Camera3D
+var _layer_cam: Camera2D
+var _ground: MeshInstance3D
+## Vùng lớp đất so với điểm nhìn (px thế giới).
+var _ground_rect: Rect2 = Rect2()
 var _actors: Dictionary[int, Actor3D] = {}
 
 
@@ -42,11 +46,18 @@ func setup(w: World, units_view: UnitsView, ground_nodes: Array[Node]) -> void:
 	world = w
 	units = units_view
 	units.ground_only = true
-	ground = Ground3D.new()
-	add_child(ground)
-	var others: Array[Node] = ground_nodes.filter(func(n: Node) -> bool: return not n is FogView)
-	var fog: FogView = ground_nodes.filter(func(n: Node) -> bool: return n is FogView)[0]
-	ground.setup(ground_nodes.filter(func(n: Node) -> bool: return n is MapView)[0], fog, others)  # D-155
+	layer = SubViewport.new()
+	layer.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	add_child(layer)
+	for n: Node in ground_nodes:
+		n.reparent(layer, false)
+	_layer_cam = Camera2D.new()
+	_layer_cam.zoom = Vector2.ONE * LAYER_SCALE
+	layer.add_child(_layer_cam)
+	_ground = MeshInstance3D.new()
+	_ground.mesh = PlaneMesh.new()
+	_ground.material_override = Look3D.ground_material(layer.get_texture())  # D-150
+	add_child(_ground)
 	camera = Camera3D.new()
 	camera.fov = CAM_FOV
 	camera.current = true
@@ -54,7 +65,6 @@ func setup(w: World, units_view: UnitsView, ground_nodes: Array[Node]) -> void:
 	_fit_ground()
 	get_viewport().size_changed.connect(_fit_ground)
 	Look3D.add_lights(self)  # D-150
-	_warm_up()
 
 
 func to_3d(p: Vector2) -> Vector3:
@@ -76,7 +86,8 @@ func update(focus: Vector2) -> void:
 	var target: Vector3 = to_3d(focus)
 	camera.position = target + CAM_OFFSET
 	camera.look_at(target, Vector3.UP)
-	ground.follow(focus)
+	_layer_cam.position = focus + _ground_rect.get_center()
+	_ground.position = to_3d(focus + _ground_rect.get_center())
 	var keep: Dictionary[int, bool] = {}
 	for e: Entity in world.entities:
 		if not e.alive or not units.seen(e) or e.kind == Entity.Kind.WARD:
@@ -98,7 +109,7 @@ func update(focus: Vector2) -> void:
 
 ## Vùng mặt đất đang vẽ (px thế giới) khi nhìn vào `focus` — cho sương và lọc đơn vị.
 func ground_world_rect(focus: Vector2) -> Rect2:
-	return Rect2(focus + ground.rect.position, ground.rect.size)
+	return Rect2(focus + _ground_rect.position, _ground_rect.size)
 
 
 ## D-151: đo vùng đất camera thấy (chiếu 4 góc màn hình xuống đất, phía xa cắt ở FAR_PX), cỡ lớp đất theo đó.
@@ -112,23 +123,9 @@ func _fit_ground() -> void:
 		var hit: Vector2 = screen_to_world(corner) if camera.project_ray_normal(corner).y < -0.05 else Vector2(0, -FAR_PX)
 		hit.y = maxf(hit.y, -FAR_PX)
 		box = Rect2(hit, Vector2.ZERO) if i == 0 else box.expand(hit)
-	ground.fit(box.grow(GROUND_MARGIN))
-
-
-## D-155: nạp và vẽ thử mọi nhân vật 3D (cả hai đội, có hoạt ảnh) dưới mặt đất trong vài khung đầu,
-## để lần đầu lính / tướng xuất hiện không bị giật vì nạp mô hình, ảnh, dịch shader.
-func _warm_up() -> void:
-	var holder: Node3D = Node3D.new()
-	add_child(holder)
-	for art_id: String in ModelLibrary.config()["units"]:
-		for team: int in 2:
-			var a: Actor3D = Actor3D.make_model(art_id, team)
-			holder.add_child(a)
-			a.warm_up()
-	for i: int in WARM_FRAMES:
-		holder.position = camera.position - CAM_OFFSET + Vector3(0, -3.0, 0)  # dưới mặt đất, giữa khung nhìn
-		await get_tree().process_frame
-	holder.queue_free()
+	_ground_rect = box.grow(GROUND_MARGIN)
+	layer.size = Vector2i(ceili(_ground_rect.size.x * LAYER_SCALE), ceili(_ground_rect.size.y * LAYER_SCALE))
+	(_ground.mesh as PlaneMesh).size = _ground_rect.size * S
 
 
 ## Vị trí màn hình của đỉnh đầu đơn vị (cho thanh máu); null nếu sau camera.
