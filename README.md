@@ -1,8 +1,15 @@
 # Clashborn v2
 
-MOBA 2D 1v1 với bot cho mobile, kiểu Dota 2 đơn giản hóa. Godot 4.7.2, góc nhìn 3/4 kiểu chibi (xem `docs/ART.md`).
+MOBA 1v1 với bot cho mobile, kiểu Dota 2 đơn giản hóa. Godot 4.7.2, trận vẽ 3D góc nghiêng kiểu Liên Quân
+(D-157, xem `docs/ART.md`).
 
-**Trạng thái:** thiết kế đã chốt (D-31). Đang làm mốc M0 — xem `docs/ROADMAP.md`.
+## Chơi thử
+
+- **Bản web** (máy tính, iPhone Safari): https://langhoangtien.github.io/clash-born-v2/
+- **Bản Android** (APK, HarmonyOS 2–4): https://langhoangtien.github.io/clash-born-v2/clashborn.apk —
+  bản đã cài tự báo khi có bản mới (D-148).
+
+**Trạng thái:** xem `docs/ROADMAP.md` (việc gần nhất ở cuối bảng).
 
 ## Chạy game và test (Windows)
 

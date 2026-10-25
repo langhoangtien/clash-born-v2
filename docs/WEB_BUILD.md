@@ -17,7 +17,8 @@ Luôn chạy `--import` trước khi xuất: ảnh mới thêm vào `assets/art`
 
 ## Đưa lên mạng
 
-Nhánh `gh-pages` của repo chứa nội dung `build/web/` (kèm `.nojekyll`). Bật một lần trên
+Nhánh `gh-pages` của repo chứa nội dung `build/web/` (kèm `.nojekyll`), cạnh `clashborn.apk` và
+`version.json` của bản Android (D-148) — chép đè các file web, đừng xóa hai file đó. Bật một lần trên
 GitHub: **Settings → Pages → Build and deployment → Source: Deploy from a branch →
 `gh-pages` / `(root)`**. Địa chỉ: https://langhoangtien.github.io/clash-born-v2/
 
