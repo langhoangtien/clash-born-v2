@@ -65,7 +65,8 @@ polygon, hiệu ứng hạt và shader, giao diện, nhập và cắt asset.
 
 Danh sách ảnh cụ thể (tên file, kích thước, câu mô tả, thứ tự đợt, điểm dừng chờ
 duyệt) nằm ở **`art_inbox/YEU_CAU_ANH.md`** — đó là phiếu việc cho công cụ tạo ảnh
-(Codex…), không phải tài liệu luật. Mục dưới đây là quy cách gốc để soạn phiếu đó.
+(Codex…), không phải tài liệu luật. Mô hình 3D (cây, đá, công trình, lính, quái rừng, tướng — số
+tam giác, quy cách GLB, Mixamo): **`art_inbox/YEU_CAU_3D.md`**. Mục dưới đây là quy cách gốc để soạn phiếu đó.
 
 **Hoạt ảnh (D-157, trận 3D):** tướng và lính là nhân vật 3D có xương (KayKit, `assets/models/units_3d.json`):
 hoạt ảnh đứng / chạy / đánh / tung chiêu / lướt / trúng đòn / ngã lấy từ bộ hoạt ảnh dùng chung của rig.
