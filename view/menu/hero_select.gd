@@ -25,6 +25,8 @@ var selected: int = 0
 var bot: int = 1
 var difficulty: int = 1
 var use_3d: bool = false
+## D-151: khử răng cưa cho bản 3D (nút xoay vòng 2D → 3D → 3D tắt khử răng cưa), để đo FPS trên máy.
+var aa_3d: bool = true
 var tab: HeroDetail.Tab = HeroDetail.Tab.SKILLS
 
 
@@ -70,7 +72,7 @@ func press_at(at: Vector2) -> void:
 	if MAP_BUTTON.has_point(at):
 		map_pressed.emit()
 	if VIEW_BUTTON.has_point(at):
-		use_3d = not use_3d
+		_cycle_view()
 	queue_redraw()
 
 
@@ -133,5 +135,16 @@ func _bottom() -> void:
 		var on: bool = i == difficulty
 		UiStyle.button(self, diff_rect(i), &"gold" if on else &"ghost", DIFF_NAMES[i], "", 24)
 	UiStyle.button(self, MAP_BUTTON, &"blue", "Map", "", 24)
-	UiStyle.button(self, VIEW_BUTTON, &"gold" if use_3d else &"ghost", "3D thử" if use_3d else "2D", "", 24)
+	UiStyle.button(self, VIEW_BUTTON, &"gold" if use_3d else &"ghost", ("3D" if aa_3d else "3D·AA tắt") if use_3d else "2D", "", 22)
 	UiStyle.button(self, START, &"gold", "BẮT ĐẦU", "", 46)
+
+
+## 2D → 3D (khử răng cưa 2×) → 3D tắt khử răng cưa → 2D.
+func _cycle_view() -> void:
+	if not use_3d:
+		use_3d = true
+		aa_3d = true
+	elif aa_3d:
+		aa_3d = false
+	else:
+		use_3d = false

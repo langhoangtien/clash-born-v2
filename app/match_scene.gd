@@ -11,6 +11,7 @@ static var bot_hero_id: StringName = &"myra"
 static var bot_difficulty: int = BotState.Difficulty.NORMAL
 ## D-145: bản thử 3D (chọn ở màn chọn tướng).
 static var render_3d: bool = false
+static var antialias_3d: bool = true  # D-151: MSAA 2× cho bản 3D (tắt được ở màn chọn tướng)
 const SEED: int = 1
 ## CTL-02: phím PC giả lập nút ĐÁNH / đánh lính / đánh trụ (theo Rules.AttackMode).
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
@@ -155,7 +156,7 @@ func tick_frame(delta: float) -> void:
 	audio.listener = camera.position
 	if view_3d != null:
 		view_3d.update(camera.position)
-		fog.view_rect = Rect2(camera.position - Vector2.ONE * MatchView3D.GROUND_PX * 0.5, Vector2.ONE * MatchView3D.GROUND_PX)
+		fog.view_rect = view_3d.ground_world_rect(camera.position)  # D-151
 	units_view.view_rect = fog.view_rect  # D-149: không vẽ đơn vị ngoài khung nhìn
 	match_hud.speed = runner.speed
 	match_hud.sim_ms = runner.step_ms
@@ -247,6 +248,7 @@ func _map_bounds() -> Rect2:
 ## D-145: bản thử 3D — các lớp 2D trên mặt đất vào SubViewport, đơn vị thành mô hình / ảnh đứng.
 func _setup_3d() -> void:
 	view_3d = MatchView3D.create(self, $Hud, world, units_view, [map_view, fog, units_view, aim_indicator])
+	get_viewport().msaa_3d = Viewport.MSAA_2X if antialias_3d else Viewport.MSAA_DISABLED
 
 
 ## Điểm thế giới dưới điểm màn hình (2D: theo camera 2D; 3D: chiếu tia xuống đất).
@@ -283,7 +285,6 @@ func _setup_quick_buy() -> void:
 	$Hud.add_child(quick_buy)
 	quick_buy.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	quick_buy.pressed.connect(func(id: StringName) -> void: world.submit(Command.buy(hero.id, id)))
-
 
 
 ## D-128: món soạn sẵn đã lên xong thì tự bỏ khỏi danh sách trong trận (bộ đã lưu giữ nguyên cho trận sau).

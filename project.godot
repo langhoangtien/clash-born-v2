@@ -26,7 +26,6 @@ pointing/emulate_touch_from_mouse=true
 textures/canvas_textures/default_texture_filter=3
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-anti_aliasing/quality/msaa_3d=2
 textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0.055, 0.07, 0.085, 1)
 
