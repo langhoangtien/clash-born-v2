@@ -58,11 +58,11 @@ cross-section, constant thickness and height along the whole length, evenly dist
 
 ## Đợt K0 — Thử phong cách (3 ảnh) — làm rồi DỪNG
 
-- [ ] `vach_48.png` — vách đá dài 4,8 m, dày 1,2 m, cao 1,2 m (**4 : 1 : 1**). Tảng đá xám xanh xếp
+- [x] `vach_48.png` — vách đá dài 4,8 m, dày 1,2 m, cao 1,2 m (**4 : 1 : 1**). Tảng đá xám xanh xếp
   liền thành bức tường thấp, mặt trên có rêu.
-- [ ] `rung_tron_m.png` — mảng rừng tròn Ø 7,2 m, cao 2,6–3 m. Khoảng 6–8 cây tán tròn bồng **dính liền
+- [x] `rung_tron_m.png` — mảng rừng tròn Ø 7,2 m, cao 2,6–3 m. Khoảng 6–8 cây tán tròn bồng **dính liền
   thành một khối tán**, tán phủ ra sát mép chân khối, thân chỉ lộ chút ở rìa.
-- [ ] `bui_a.png` — cụm cỏ 1,2 × 1,2 m, cao 0,6 m. Lá to nhọn, **khối đặc** (không lá mỏng tách rời).
+- [x] `bui_a.png` — cụm cỏ 1,2 × 1,2 m, cao 0,6 m. Lá to nhọn, **khối đặc** (không lá mỏng tách rời).
 
 ## Đợt K1 — Dãy đá (game uốn cong theo đường)
 
