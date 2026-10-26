@@ -52,9 +52,28 @@ static func tree_items(layout: MapLayout) -> Array[Array]:
 	rng.seed = SEED
 	var trees: Array[Array] = []
 	for shape: MapShape in layout.forest_shapes:
-		for p: Vector2 in _fill(shape, cfg["tree_spacing"], cfg["tree_inset"], rng):
+		var points: PackedVector2Array = _fill(shape, cfg["tree_spacing"], cfg["tree_inset"], rng)
+		points.append_array(_rim(shape, cfg.get("tree_edge_inset", 0.0), cfg.get("tree_edge_spacing", 0.0), rng))
+		for p: Vector2 in points:
 			trees.append([p, rng.randi() % cfg["trees"].size(), rng.randf_range(cfg["tree_scale"][0], cfg["tree_scale"][1]), rng.randf() * TAU])
 	return trees
+
+
+## Hàng cây sát mép rừng (cách mép `inset`): tán phủ kín chỗ chặn đường, không để mép trống
+## trông như đi được. Khối rừng hẹp hơn 2 × inset thì đặt một cây ở giữa.
+static func _rim(shape: MapShape, inset: float, spacing: float, rng: RandomNumberGenerator) -> PackedVector2Array:
+	var out: PackedVector2Array = PackedVector2Array()
+	if spacing <= 0.0:
+		return out
+	var rings: Array[PackedVector2Array] = Geometry2D.offset_polygon(shape.outer, -inset)
+	for hole: PackedVector2Array in shape.holes:
+		rings.append_array(Geometry2D.offset_polygon(hole, inset))
+	for ring: PackedVector2Array in rings:
+		out.append_array(_along(ring, spacing, rng))
+	if rings.is_empty():
+		var box: Rect2 = _rect(shape.outer)
+		out.append(box.get_center())
+	return out
 
 
 ## Mỗi khung: thêm đống đổ nát chỗ trụ vừa đổ (DEF-06).
