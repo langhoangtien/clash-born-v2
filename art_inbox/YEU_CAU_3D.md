@@ -38,6 +38,15 @@ tô ô màu phẳng sẽ không ra được phong cách này. Cách hợp nhất
    phe → đỏ trong ảnh màu).
 5. Nhân vật / quái: sau đó mới gắn xương (Mixamo cho hình người, Blender cho thú — xem mục Hoạt ảnh).
 
+### Nộp file Tripo (đã chốt 2026-10-25)
+
+- Xuất **GLB nguyên bản** từ Tripo (để nguyên ảnh 2048 / 4096, normal map… cũng được) và đặt đúng tên:
+  `art_inbox/3d/<nhóm>/<tên>.glb` — nhóm `structures`, `nature`, `creeps`, `jungle`, `heroes/<id>`; tên
+  theo nhãn trong ảnh neo (`tower_t1`, `tree_a`, `jungle_wolf`…).
+- **Không cần** tự làm bản `_red`: người ghép chạy `tools/models/glb_slim.py` để bỏ ảnh thừa, thu ảnh màu
+  về 1024 và tách ảnh xanh / đỏ (đổi màu phe trong ảnh).
+- Giới hạn số mặt khi xuất: theo bảng tóm tắt cuối file. Vượt một chút không sao.
+
 ## Quy tắc chung cho mọi mô hình
 
 **Định dạng**

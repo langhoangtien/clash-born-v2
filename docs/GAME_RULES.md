@@ -96,7 +96,7 @@ thường (D-34).
 | Nhóm | Thành viên bản đầu | Ví dụ |
 |---|---|---|
 | `bash` | Brakk nội tại, bị động Búa Choáng | Brakk mua Búa Choáng: chỉ bash của Búa Choáng được tung; 2 Búa Choáng không tăng tỉ lệ (CMB-08) |
-| `move_speed_boots` | tốc chạy của mọi món giày (chưa có ở bản đầu) | 2 đôi giày chỉ tính đôi ở ô sau |
+| `move_speed_boots` | tốc chạy của mọi món giày (D-167: Giày, Giày Hộ Vệ, Giày Tốc Hành, Giày Pháp Sư) | 2 đôi giày chỉ tính đôi ở ô sau |
 | `item:<id>` (tự động) | bị động của chính một món đồ | 2 món giống nhau: bị động chỉ tính một lần (ITM-04) |
 
 Kỹ năng và trang bị **khác nhóm** vẫn kết hợp bình thường (vd Ngọc Băng Sương làm chậm
@@ -126,7 +126,8 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 | ST-19 | DUELING | chỉ tự đuổi đối thủ (DUL-03) | chỉ đối thủ | ✗ (kể cả đồ) | ✓ | ✓ |
 
 `ST-09` Kháng hiệu ứng (`status_resistance`) giảm thời lượng các hiệu ứng có tag
-`debuff` (v1 chỉ giảm choáng).
+`debuff` (v1 chỉ giảm choáng). Nhiều nguồn **nhân dồn** như Dota (D-167): 1 − Π(1 − vᵢ), vd 10% và
+20% → 28%; rồi mới giới hạn `status_resistance_cap`.
 
 `ST-09b` (D-141) Kéo dài hiệu ứng gây ra (`debuff_amplification` của kẻ áp): hiệu ứng `debuff` áp lên
 đơn vị phe khác kéo dài × (1 + giá trị), tính trước kháng hiệu ứng của mục tiêu (ST-09).
@@ -350,6 +351,9 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `ABL-20` (D-135) Vùng hình quạt (`CONE`): đỉnh ở chủ kỹ năng, bán kính `radius`, góc mở
   `angle` (độ), giữa quạt theo hướng chọn lúc tung (không có thì hướng đang nhìn). Trúng đơn vị
   có mép thân trong bán kính và thân chạm trong góc; mỗi đơn vị một lần mỗi lần tung.
+- `ABL-22` (D-167) Vùng bỏ mục tiêu chính (`exclude_target`): không chạy lên mục tiêu của ngữ cảnh (đối
+  tượng của sự kiện khi là trigger); quạt không có hướng chọn thì hướng từ chủ tới mục tiêu đó. Dùng cho
+  đánh lan (Rìu Chiến): vùng của trigger không có kỹ năng nên chỉ trúng địch không phải công trình (EFF-15).
 - `ABL-21` (D-139) Tầm dùng chiêu: chiêu / đồ có `cast_range` > 0 cộng thêm chỉ số `cast_range` của chủ
   (đồ, vd Quyền Trượng Bão +200). Chiêu không có tầm (0 = không giới hạn) giữ nguyên.
 - `ABL-19` (D-132) Giảm hồi chiêu: khi bắt đầu hồi (ABL-02, cả đồ chủ động ITM-07 và tái sinh
@@ -431,7 +435,7 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `SHOP-05` Bán: nhận `sell_ratio` × giá (làm tròn xuống); bán trong `sell_full_refund_time`
   giây sau khi mua thì hoàn đủ. Bán được ở mọi nơi, cả khi đang chờ hồi sinh.
 - `SHOP-06` Thứ tự kiểm tra khi mua: món có trong cửa hàng → giờ mở → độc nhất → kho đội
-  (SHOP-08) → shop ẩn → vàng → ô trống (món gộp được thì còn chỗ gộp cũng được, WRD-01).
+  (SHOP-08) → shop ẩn (SHOP-02, SHOP-11) → vàng → ô trống (món gộp được thì còn chỗ gộp cũng được, WRD-01).
 - `SHOP-07` Mỗi món thuộc một danh mục (`category`): Tấn công, Phép, Phòng thủ, Tiện ích. Cửa
   hàng có thêm hai bộ lọc: Tất cả và Shop ẩn. Danh mục chỉ để hiển thị, không đổi luật mua bán.
 - `SHOP-09` (ECO-06, D-106) Ghép đồ: món có `components` ghép từ các món đó (lặp được). Mua món
@@ -443,6 +447,9 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   phần còn thiếu đầu tiên mua được (đi sâu vào thành phần con). Bot dùng thứ tự `bot_item_build`;
   người chơi có nút mua nhanh bên trái (trên joystick) hiện món mua được theo cùng thứ tự gợi ý
   của hero, chạm là mua; không mua được gì thì ẩn.
+- `SHOP-11` (D-167) Món ghép mà phần **còn thiếu** có đồ shop ẩn (đi sâu vào thành phần con) cũng chỉ mua
+  được ở shop ẩn như SHOP-02, vì mua lúc đó là mua luôn món shop ẩn. Đã có sẵn thành phần shop ẩn trong
+  túi thì mua ở đâu cũng được. Ví dụ Ngọc Băng Sương II khi chưa có Ngọc Băng Sương.
 - `SHOP-08` Kho mỗi đội (`stock_initial`, `stock_max`, `stock_restock`; stock_max 0 = không giới
   hạn): mua trừ 1 của kho đội mình, hết thì từ chối OUT_OF_STOCK. Kho chưa đầy thì cứ
   `stock_restock` giây thêm 1 (đồng hồ chạy từ lúc kho rời mức đầy); bán không trả lại kho.
@@ -523,7 +530,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `EFF-08` Trigger khai báo **vai** của chủ hiệu ứng trong sự kiện: `as: SOURCE` (mình
   gây ra, ví dụ mình đánh trúng) hoặc `as: TARGET` (mình bị, ví dụ mình bị đánh trúng).
   Cùng sự kiện `attack_landed` có thể kích hoạt nội tại của kẻ đánh và kẻ bị đánh.
-  Điều kiện (`condition`) cho phép: `target_not_structure`, `target_is_hero`,
+  Điều kiện (`condition`) cho phép: `target_not_structure`, `target_is_hero`, `self_is_melee`
+  (chủ hiệu ứng đánh cận chiến, cùng cách phân như ITM-05; D-167),
   `this_effect_depleted` (sự kiện `effect_removed` của chính hiệu ứng này, lý do
   `depleted`), `this_effect_ended` (`effect_removed` của chính hiệu ứng này, lý do bất kỳ
   trừ `owner_died`); thêm điều kiện = thay đổi luật.

@@ -36,7 +36,7 @@ const FUNCTIONS: PackedStringArray = ["min", "max", "floor"]
 
 ## Điều kiện của trigger (EFF-08). Thêm điều kiện = thay đổi luật.
 const TRIGGER_CONDITIONS: PackedStringArray = [
-	"", "target_not_structure", "target_is_hero", "this_effect_depleted", "this_effect_ended",
+	"", "target_not_structure", "target_is_hero", "self_is_melee", "this_effect_depleted", "this_effect_ended",
 ]
 
 ## BOT-13: điều kiện dữ liệu của chiêu / đồ cho bot (BotSkills.check). Thêm điều kiện = thay đổi luật.

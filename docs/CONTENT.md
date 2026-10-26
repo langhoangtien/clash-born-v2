@@ -458,6 +458,8 @@ là đề xuất, cân lại khi chơi thử.
 | Búa Choáng | `stun_hammer` | 2600 | +25 sát thương | **Bị động**: đòn đánh 20% (cận chiến) / 10% (đánh xa) choáng 1.5 s, +100 sát thương vật lý; nhóm `bash`, thời gian chờ chung `bash_cooldown` (CMB-08, D-38) |
 | Trượng Lôi Kích | `thunder_staff` | 3800 | +40% tốc đánh | **Bị động**: mỗi đòn trúng (không lên công trình) +70 sát thương phép, không khuếch đại phép (D-132) |
 | Rìu Xiềng Xích | `chain_axe` | 2500 | +10 STR, +20 sát thương | **Bị động**: đòn đánh 30% (cận chiến) / 10% (đánh xa) trói 1 s, +80 / +40 sát thương vật lý; PRD, không hồi, không lên công trình, tung riêng với Búa Choáng (D-132) |
+| Rìu Chiến | `battle_axe` | 3300 | +65 sát thương, +6 hồi máu | **Bị động** (chỉ cận chiến): đòn đánh lan 50% sát thương đòn (trước giáp) lên kẻ địch khác trong quạt 80° bán kính 420 phía trước; không lan lên công trình; vật lý, không khuếch đại phép (ABL-22, D-167) |
+| Đao Tán Ma | `diffusal_blade` | 2700 | +24 AGI, +8 INT | **Bị động**: đòn đánh đốt 40 (cận chiến) / 20 (đánh xa) mana của mục tiêu, gây thêm sát thương vật lý bằng mana đã đốt; không lên công trình (CMB-10, D-167) |
 | Mắt Vàng | `observer_ward` | 50 | — | **Chủ động**, tầm 500: cắm mắt vàng (tầm nhìn 1400, 4 phút); gộp 4; kho đội 2 / +1 mỗi 135 s / tối đa 4 (WRD, D-92) |
 | Mắt Xanh | `sentry_ward` | 50 | — | **Chủ động**, tầm 500: cắm mắt xanh (true sight 900, 5 phút); gộp 6; kho đội 3 / +1 mỗi 90 s / tối đa 6 |
 
@@ -474,8 +476,9 @@ Ghép đồ SHOP-09: giá = giá món; mua khi đã có thành phần thì chỉ
 | Tấn công | Búa Choáng | `stun_hammer` | 2400 | +25 Sát thương, +6 Sức mạnh | Trường Kiếm + Đai Sức Mạnh |
 | Tấn công | Rìu Xiềng Xích | `chain_axe` | 2500 | +10 Sức mạnh, +20 Sát thương | Rìu Khổng Lồ + Trường Kiếm |
 | Tấn công | Lưỡi Ẩn Thân | `shadow_blade` | 2500 | +25 Sát thương, +30% Tốc đánh | Đại Kiếm + Găng Nhanh |
-| Tấn công | Rìu Chiến | `battle_axe` | 2500 | +60 Sát thương, +5 Hồi máu | Trường Kiếm + Đại Kiếm |
+| Tấn công | Đao Tán Ma | `diffusal_blade` | 2700 | +24 Nhanh nhẹn, +8 Trí tuệ | Lưỡi Nhanh + Lưỡi Nhanh + Áo Pháp Sư |
 | Tấn công | Trượng Hắc Vương | `black_king_bar` | 3300 | +10 Sức mạnh, +25 Sát thương | Rìu Khổng Lồ + Đại Kiếm |
+| Tấn công | Rìu Chiến | `battle_axe` | 3300 | +65 Sát thương, +6 Hồi máu | Trường Kiếm + Đại Kiếm |
 | Tấn công | Song Đao | `twin_blades` | 3400 | +20 Nhanh nhẹn, +20 Sức mạnh, +20% Tốc đánh, +20 Sát thương, +20% Tốc chạy | Rìu Khổng Lồ + Lưỡi Nhanh + Gậy Chiến + Giày |
 | Tấn công | Lưỡi Hái Hủy Diệt | `desolator` | 3500 | +60 Sát thương | Kiếm Quỷ + Lưỡi Mòn |
 | Tấn công | Trượng Lôi Kích | `thunder_staff` | 3800 | +40% Tốc đánh, +10 Trí tuệ | Găng Nhanh ×2 + Gậy Phù Thủy |

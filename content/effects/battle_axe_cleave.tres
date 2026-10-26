@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="2_eff"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="3_trg"]
+[ext_resource type="Script" path="res://sim/actions/area_action.gd" id="4_area"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="5_dmg"]
+
+[sub_resource type="Resource" id="Dmg"]
+script = ExtResource("5_dmg")
+amount = "event.raw_damage * cleave"
+amplified = false
+target = 1
+
+[sub_resource type="Resource" id="Area"]
+script = ExtResource("4_area")
+shape = 2
+radius = "cleave_radius"
+angle = "cleave_angle"
+exclude_target = true
+actions = Array[ExtResource("1_act")]([SubResource("Dmg")])
+target = 0
+
+[sub_resource type="Resource" id="Trg"]
+script = ExtResource("3_trg")
+event = &"attack_landed"
+condition = &"self_is_melee"
+actions = Array[ExtResource("1_act")]([SubResource("Area")])
+
+[resource]
+script = ExtResource("2_eff")
+duration = "0"
+tags = Array[StringName]([&"passive"])
+dispel = 2
+triggers = Array[ExtResource("3_trg")]([SubResource("Trg")])
+id = &"battle_axe_cleave"
+art_id = &"battle_axe_cleave"

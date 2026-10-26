@@ -88,6 +88,19 @@ func test_SHOP_02_secret_items_only_near_either_secret_shop_and_alive() -> void:
 	assert_eq(_buy(w, far, &"test_secret"), R.NOT_IN_SHOP, "chờ hồi sinh thì không mua đồ shop ẩn")
 
 
+func test_SHOP_11_composite_missing_secret_part_needs_secret_shop() -> void:
+	var w: World = _world()
+	_item(w, &"test_secret", 500, ItemDef.ShopKind.SECRET)
+	var mid: ItemDef = _item(w, &"test_mid", 800)
+	mid.components = [&"test_secret"]
+	var big: ItemDef = _item(w, &"test_big", 1500)
+	big.components = [&"test_mid", &"reveal_dust"]
+	var h: Entity = _hero(w)
+	assert_eq(_buy(w, h, &"test_big"), R.NOT_IN_SHOP, "thiếu thành phần chứa đồ shop ẩn (đi sâu)")
+	Items.give(w, h, mid)
+	assert_eq(_buy(w, h, &"test_big"), R.NONE, "đã có phần shop ẩn thì mua ở đâu cũng được")
+
+
 func test_SHOP_03_unlock_time() -> void:
 	var w: World = _world()
 	_item(w, &"test_late", 500, ItemDef.ShopKind.BASE, 2.0)

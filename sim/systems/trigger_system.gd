@@ -91,7 +91,7 @@ func _fire_instance(world: World, ev: GameEvent, owner: Entity, other: Entity, i
 		var t: TriggerDef = triggers[index]
 		if t.event != ev.type or t.role != role:
 			continue
-		if not _condition_ok(t.condition, ev, inst, other, removed_self):
+		if not _condition_ok(t.condition, ev, inst, owner, other, removed_self):
 			continue
 		if ev.reason == &"reflected" and _reflects(t):
 			continue  # CMB-09: phản hồi không kích hoạt phản hồi khác
@@ -106,7 +106,7 @@ func _fire_instance(world: World, ev: GameEvent, owner: Entity, other: Entity, i
 
 
 ## EFF-08: điều kiện có tên. this_effect_* chỉ đúng với chính bản vừa bị gỡ.
-func _condition_ok(condition: StringName, ev: GameEvent, inst: EffectInstance, other: Entity, removed_self: bool) -> bool:
+func _condition_ok(condition: StringName, ev: GameEvent, inst: EffectInstance, owner: Entity, other: Entity, removed_self: bool) -> bool:
 	match condition:
 		&"":
 			return not removed_self
@@ -114,6 +114,8 @@ func _condition_ok(condition: StringName, ev: GameEvent, inst: EffectInstance, o
 			return not removed_self and other != null and not Rules.is_structure(other)
 		&"target_is_hero":
 			return not removed_self and other != null and other.kind == Entity.Kind.HERO
+		&"self_is_melee":  # D-167: chủ hiệu ứng đánh cận chiến (như ITM-05)
+			return not removed_self and owner.projectile_speed <= 0.0
 		&"this_effect_depleted":
 			return removed_self and ev.effect == inst and ev.reason == &"depleted"
 		&"this_effect_ended":

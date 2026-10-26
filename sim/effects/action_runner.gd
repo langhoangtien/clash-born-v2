@@ -174,7 +174,7 @@ static func fire_area(world: World, p: PendingArea) -> void:
 	var radius: float = ExprEval.evaluate(a.radius, p.ctx)
 	var length: float = ExprEval.evaluate(a.length, p.ctx)
 	var half_width: float = ExprEval.evaluate(a.width, p.ctx) * 0.5
-	var dir: Vector2 = p.ctx.direction if p.ctx.direction != Vector2.ZERO else owner.facing
+	var dir: Vector2 = _area_direction(a, p.ctx, owner)
 	var start: Vector2 = owner.position
 	var reach: float = radius if a.shape != AreaAction.Shape.RECT else length + half_width
 	world.recent_areas = world.recent_areas.filter(func(r: Array) -> bool: return world.tick - r[2] < 30)
@@ -183,13 +183,22 @@ static func fire_area(world: World, p: PendingArea) -> void:
 		a.shape, dir.normalized(), angle, length, half_width])  # chỉ cho VIEW (D-144)
 	var around: Vector2 = p.center if a.shape == AreaAction.Shape.CIRCLE else start
 	for e: Entity in world.spatial_near(around, reach, World.Phase.TRIGGER):
-		if not _area_accepts(p.ctx, owner, e):
-			continue
+		if not _area_accepts(p.ctx, owner, e) or (a.exclude_target and e == p.ctx.target):
+			continue  # ABL-22: đánh lan không trúng lại mục tiêu chính
 		if AreaShapes.contains(a, p, e, start, dir, radius, length, half_width):
 			var each: ExprContext = p.ctx.with_target(e)
 			if not a.falloff.is_empty() and radius > 0.0:  # giảm dần theo khoảng cách tới tâm
 				each.scale = 1.0 - ExprEval.evaluate(a.falloff, p.ctx) * clampf(e.position.distance_to(p.center) / radius, 0.0, 1.0)
 			run(world, a.actions, each, p.source_id)
+
+
+## ABL-20 / ABL-22: hướng chọn lúc tung; vùng bỏ mục tiêu chính thì hướng về mục tiêu đó; không thì hướng nhìn.
+static func _area_direction(a: AreaAction, ctx: ExprContext, owner: Entity) -> Vector2:
+	if ctx.direction != Vector2.ZERO:
+		return ctx.direction
+	if a.exclude_target and ctx.target != null and ctx.target.position != owner.position:
+		return ctx.target.position - owner.position
+	return owner.facing
 
 
 ## ABL-07: vùng của kỹ năng lọc theo target_filter; không có kỹ năng → địch không phải công trình (EFF-15).

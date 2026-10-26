@@ -2,22 +2,46 @@
 
 [ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
 [ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_item"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="3_act"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="4_apply"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="5_abl"]
+[ext_resource type="Resource" path="res://content/effects/battle_axe_cleave.tres" id="6_eff"]
 
 [sub_resource type="Resource" id="M0"]
 script = ExtResource("1_mod")
 stat = &"physical_damage"
-value = "60"
+value = "65"
 
 [sub_resource type="Resource" id="M1"]
 script = ExtResource("1_mod")
 stat = &"hp_regen"
-value = "5"
+value = "6"
+
+[sub_resource type="Resource" id="Learn"]
+script = ExtResource("4_apply")
+effect = ExtResource("6_eff")
+target = 0
+
+[sub_resource type="Resource" id="Abl"]
+script = ExtResource("5_abl")
+slot = 4
+targeting = 0
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cleave": PackedFloat32Array(0.5),
+&"cleave_angle": PackedFloat32Array(80),
+&"cleave_radius": PackedFloat32Array(420)
+})
+on_learn = Array[ExtResource("3_act")]([SubResource("Learn")])
+id = &"battle_axe_passive_ability"
+art_id = &"battle_axe_passive_ability"
 
 [resource]
 script = ExtResource("2_item")
 category = 0
-cost = 2500
+description = "Bị động (chỉ cận chiến): đòn đánh lan 50% sát thương đòn (trước giáp) lên kẻ địch khác trong hình quạt 80° bán kính 420 phía trước. Không lan lên công trình."
+cost = 3300
 modifiers = Array[ExtResource("1_mod")]([SubResource("M0"), SubResource("M1")])
+ability = SubResource("Abl")
 components = Array[StringName]([&"broadsword", &"claymore"])
 id = &"battle_axe"
 display_name = "Rìu Chiến"
