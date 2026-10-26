@@ -29,9 +29,12 @@ def smooth(vals, it=2):
         vals = acc / np.maximum(cnt, 1)
     return vals
 light = 0.12 * np.clip(up, 0, 1)  # mặt hướng lên sáng hơn chút
+face = np.clip(up * 0.5 + 0.5, 0, 1)  # 0 = mặt dưới, 1 = mặt trên
 if kind.startswith('tree'):
-    leaf = lerp([0.24, 0.50, 0.18], [0.58, 0.80, 0.30], np.clip(y * 1.1 + light, 0, 1))
-    bark = lerp([0.42, 0.27, 0.16], [0.55, 0.37, 0.22], y)
+    t = np.clip(0.30 * y + 0.70 * face, 0, 1) ** 1.3  # dưới tán tối, ngọn và mặt trên sáng
+    leaf = np.where(t[:, None] < 0.5, lerp([0.18, 0.29, 0.09], [0.40, 0.55, 0.17], t * 2),
+                    lerp([0.40, 0.55, 0.17], [0.66, 0.78, 0.30], t * 2 - 1))
+    bark = lerp([0.27, 0.19, 0.13], [0.45, 0.32, 0.21], y)
     if kind == 'tree_pine':
         r = np.hypot(p[:, 0], p[:, 2])
         w = ((y < 0.10) & (r < 0.06)).astype(float)
@@ -39,10 +42,14 @@ if kind.startswith('tree'):
         th = thickness(); w = smooth((th < float(sys.argv[4]) if len(sys.argv) > 4 else th < 0.14).astype(float))
         w = ((w > 0.5) | (y < 0.16)).astype(float)
     col = leaf * (1 - w[:, None]) + bark * w[:, None]
+    col *= (0.75 + 0.25 * np.clip(y * 4, 0, 1))[:, None]  # gốc sẫm lại
 elif kind == 'rock':
-    col = lerp([0.42, 0.44, 0.48], [0.70, 0.71, 0.70], np.clip(y * 0.6 + 0.5 * np.clip(up, 0, 1), 0, 1))
+    col = lerp([0.46, 0.47, 0.46], [0.80, 0.80, 0.77], np.clip(0.35 * y + 0.65 * face, 0, 1))
+    moss = np.clip((up - 0.75) * 3, 0, 1) * 0.3
+    col = col * (1 - moss[:, None]) + np.array([0.47, 0.55, 0.24])[None] * moss[:, None]
+    col *= (0.7 + 0.3 * np.clip(y * 5, 0, 1))[:, None]
 elif kind in ('grass', 'ground'):
-    col = lerp([0.17, 0.38, 0.12], [0.56, 0.80, 0.28], y ** 0.8)
+    col = lerp([0.22, 0.33, 0.10], [0.66, 0.76, 0.32], y ** 0.8)
     if kind == 'ground':
         c = glbio.components(len(p), idx)
         for r in np.unique(c):

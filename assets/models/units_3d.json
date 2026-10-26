@@ -214,7 +214,17 @@
    0.7,
    0.9
   ],
-  "bush_squash": 1.0
+  "bush_squash": 1.0,
+  "edge_grass": [
+   "custom/nature/grass_b",
+   "custom/nature/grass_d",
+   "custom/nature/grass_c"
+  ],
+  "edge_spacing": 240.0,
+  "edge_scale": [
+   0.35,
+   0.6
+  ]
  },
  "sprite_scale": 0.75
 }

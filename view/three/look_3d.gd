@@ -4,8 +4,10 @@ extends RefCounted
 ## một đèn mặt trời, ánh sáng nền, tông màu tuyến tính (giữ màu map như bản 2D), sương xa; bóng là đĩa mờ dưới chân thay cho bóng thật.
 
 ## Màu nắng / ánh sáng nền / sương xa (hằng số hiển thị).
-const SUN_COLOR: Color = Color(1.0, 0.93, 0.82)
-const AMBIENT_COLOR: Color = Color(0.62, 0.70, 0.86)
+const SUN_COLOR: Color = Color(1.0, 0.90, 0.74)
+## Góc mặt trời (độ): chếch sau lưng camera một chút.
+const SUN_DEGREES: Vector3 = Vector3(-52, -38, 0)
+const AMBIENT_COLOR: Color = Color(0.60, 0.68, 0.80)
 const HAZE_COLOR: Color = Color(0.55, 0.66, 0.78)
 ## Độ đậm tâm bóng chân và bán kính so với chiều cao nhân vật.
 const BLOB_ALPHA: float = 0.62
@@ -19,13 +21,19 @@ const GROUND_SHADER: Shader = preload("res://view/three/ground.gdshader")
 ## Mặt trời chếch sau lưng camera một chút để mặt nhân vật sáng, cộng môi trường.
 static func add_lights(parent: Node3D) -> void:
 	var sun: DirectionalLight3D = DirectionalLight3D.new()
-	sun.rotation_degrees = Vector3(-52, -38, 0)
+	sun.rotation_degrees = SUN_DEGREES
 	sun.light_color = SUN_COLOR
-	sun.light_energy = 1.0
+	sun.light_energy = 1.1
 	parent.add_child(sun)
 	var env: WorldEnvironment = WorldEnvironment.new()
 	env.environment = environment()
 	parent.add_child(env)
+
+
+## Hướng bóng đổ trên mặt đất (toạ độ map, đã chuẩn hoá): hướng ánh nắng chiếu tới, bỏ trục đứng.
+static func sun_ground_direction() -> Vector2:
+	var d: Vector3 = Basis.from_euler(SUN_DEGREES * PI / 180.0) * Vector3.FORWARD
+	return Vector2(d.x, d.z).normalized()
 
 
 static func environment() -> Environment:
