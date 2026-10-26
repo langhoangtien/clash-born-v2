@@ -774,6 +774,8 @@ chơi và bot (`Rules.pick_attack_target`), nút trên màn hình chỉ gọi h�
   tới điểm kế tiếp được thì tìm đường lại.
 - `MOV-05` Không bao giờ đi hoặc bị đẩy vào vật cản (INV-01).
 - `MOV-06` Đi theo hướng (lệnh `MOVE_DIR`, D-42): đi thẳng theo hướng, không tìm đường.
+- `MOV-07` (D-168) Điểm rẽ giữa đường cách tâm đơn vị không quá bán kính thân, mà đi thẳng tới
+  điểm sau được, thì coi như đã tới và đi tiếp — hai đơn vị ở hai phía một góc không đẩy nhau kẹt mãi.
   Bước thẳng bị chặn thì **trượt dọc mép**: thử lệch ±15°, ±30°, ±45°, ±60°, ±75° (góc
   nhỏ trước, cùng góc thì + trước −), đi quãng = bước × cos(góc). Không góc nào đi được
   thì đứng yên tick đó. Lệnh không tự xong; dừng khi có lệnh khác (`STOP`).
@@ -870,12 +872,21 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   dùng vật lý Godot. Thân trụ chặn đứng/đi với bán kính `tower_body_radius`. Ô lưới tìm
   đường chỉ đi được khi mọi pixel khoảng trống trong ô đủ rộng; kiểm tra đường thẳng duyệt
   từng pixel mà đoạn đi qua (không lấy mẫu), nên đường đi không bao giờ cắt góc vật cản.
-- `MAP-03` Map phải đọc được (D-43): chỗ trống hẹp hơn `gap_min_world` (112) giữa rừng/vách
+  Nguồn map (D-168) là vector: khối rừng, khối đá, vách đá (đoạn thẳng cùng độ dày `rock_width`),
+  hốc đá quanh trại, vách hai bờ sông và viền map; build dựng polygon từ đó (không dò từ ảnh).
+- `MAP-03` Map phải đọc được (D-43): chỗ trống hẹp hơn `gap_min_world` (112) giữa rừng/đá/vách
   bị lấp thành rừng khi build; vùng trống kín không vào được cũng lấp. Kiểm tra: mọi điểm
   trống rộng ≥ 12 phải cách chỗ hero đứng được không quá 48 — tức không có khe nào
   trông như lối đi mà hero không lọt.
 - `MAP-02` Map 8448 × 8448; Blue dưới–trái, Red trên–phải; 3 lane; sông; vách đá chỉ
-  qua ở dốc; 11 trụ mỗi đội; 6 trại mỗi phe + 1 boss pit trên trục sông.
+  qua ở lối (bậc thang); 11 trụ mỗi đội; 6 trại mỗi phe + 1 boss pit trên trục sông.
+- `MAP-06` (D-168) Trụ lane đứng sát mép lane, cùng một bên cho cả lane (TOP, BOT: phía trong
+  map; MID: bên phải theo chiều Blue → Red), tâm cách tim lane `tower_offset` (12 ô guide = 192).
+  T1 đặt theo MAP-04; T2/T3 giữ khoảng cách dọc lane.
+- `MAP-07` (D-168) Bờ sông có vách kín hai bên; chỉ xuống sông ở các lối (bậc thang, `ramps`) và ở
+  khu mid cắt sông (MAP-05). Sông vẫn đi được.
+- `MAP-08` (D-168) Mỗi trại rừng của hai phe nằm trong hốc đá: cung vách bán kính `alcove.r`
+  quanh tâm trại, mở một khoảng `alcove.gap` độ về phía hướng ra vào.
 - `MAP-04` Cân bằng (D-49): map **đối xứng xoay 180°** quanh tâm (công cụ build giữ nửa
   Blue, sinh nửa Red). Lane an toàn của Blue là BOT, của Red là TOP: ở lane an toàn đợt
   lính đầu gặp nhau ngay ngoài tầm trụ 1 của phe mình (`tower_layout` BOT 760), lane khó

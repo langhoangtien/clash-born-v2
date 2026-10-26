@@ -141,6 +141,8 @@ static func paint_obstacles(ci: CanvasItem, layout: MapLayout, detail: bool = tr
 	for shape: MapShape in layout.cliff_shapes:
 		ci.draw_colored_polygon(shape.outer, CLIFF)
 		if detail: _outline(ci, shape.outer, CLIFF_TOP, 8)
+	for shape: MapShape in layout.rock_shapes:  # D-168: nền dưới cụm đá
+		ci.draw_colored_polygon(shape.outer, CLIFF)
 	for shape: MapShape in layout.forest_shapes:
 		ci.draw_colored_polygon(shape.outer, FOREST_BODY)
 		if detail:

@@ -4,7 +4,7 @@ emissive, thu ảnh màu về --size (mặc định 1024, JPEG chất lượng 9
 <tên>_blue.jpg / <tên>_red.jpg — điểm ảnh có sắc độ trong --hue (độ, vd 150-210 = xanh ngọc) và đủ
 đậm được đổi sang xanh phe / đỏ phe; GLB nhúng bản xanh.
 
-  python3 tools/models/glb_slim.py vào.glb ra.glb [--size 1024] [--team --hue 150-210]
+  python3 tools/models/glb_slim.py vào.glb ra.glb [--size 1024] [--team --hue 150-210] [--saturation 0.5]
 In số tam giác, cỡ (m), dung lượng trước / sau.
 """
 import argparse, colorsys, io, json, struct, sys
@@ -66,6 +66,7 @@ def main():
     ap.add_argument('--size', type=int, default=1024)
     ap.add_argument('--team', action='store_true')
     ap.add_argument('--hue', default='150-210')
+    ap.add_argument('--saturation', type=float, default=1.0, help='nhân độ đậm màu ảnh (D-168: đá viền 0.5)')
     a = ap.parse_args()
     g, binc, before = read_glb(a.src)
     keep_images = set()
@@ -88,6 +89,9 @@ def main():
         im = src.convert('RGBA' if alpha else 'RGB')
         if max(im.size) > a.size:
             im = im.resize((a.size, a.size), Image.LANCZOS)
+        if a.saturation != 1.0:
+            from PIL import ImageEnhance
+            im = ImageEnhance.Color(im).enhance(a.saturation)
         base_img = im
         if a.team:
             lo, hi = (float(x) for x in a.hue.split('-'))

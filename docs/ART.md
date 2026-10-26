@@ -32,6 +32,7 @@
   cộng thanh máu xanh / đỏ trên đầu.
 - **Trụ**: tháp đá có pha lê trên đỉnh và cờ phe (pha lê xanh dương / đỏ).
 - **Map giữ nguyên bố cục hiện tại** (`tools/map_build`), chỉ đổi cách vẽ:
+  (D-168: map v3 vẽ lại gọn từ nguồn vector — vách đá là đoạn thẳng độ dày 96 để đặt mảnh vách Tripo `custom/border/rock_wall_*` nối tiếp, bậc thang + cột ở lối xuống sông, cụm đá ở khối đá; ảnh đá giảm độ đậm 50%.)
   - vùng rừng → rải cây lá kim và cây tròn nhiều cỡ, mọc kín vùng chặn, có thứ tự
     theo Y để nhân vật đi sau cây bị che một phần;
   - vách đá → khối đá xám xếp thành tường;

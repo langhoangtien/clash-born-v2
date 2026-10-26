@@ -186,14 +186,15 @@
   ],
   "tree_inset": 30.0,
   "rocks": [
-   "custom/nature/rock_a",
-   "custom/nature/rock_b",
-   "custom/nature/rock_c"
+   "custom/border/rock_a",
+   "custom/border/rock_b",
+   "custom/border/rock_c",
+   "custom/border/rock_pile"
   ],
-  "rock_spacing": 85.0,
+  "rock_spacing": 70.0,
   "rock_scale": [
-   0.4,
-   0.7
+   0.9,
+   1.4
   ],
   "shop": {
    "model": "medieval/buildings/building_market_blue",
@@ -226,7 +227,20 @@
    0.6
   ],
   "tree_edge_inset": 70.0,
-  "tree_edge_spacing": 85.0
+  "tree_edge_spacing": 85.0,
+  "walls": [
+   "custom/border/rock_wall_a",
+   "custom/border/rock_wall_c",
+   "custom/border/rock_wall_d"
+  ],
+  "wall_overhang": 1.35,
+  "wall_step": 0.6,
+  "stairs": "custom/border/stone_stairs",
+  "stairs_width": 250.0,
+  "stairs_squash": 0.5,
+  "pillar": "custom/border/stone_pillar",
+  "pillar_height": 150.0,
+  "rock_inset": 20.0
  },
  "sprite_scale": 0.75
 }

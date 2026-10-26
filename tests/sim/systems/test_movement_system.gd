@@ -61,6 +61,20 @@ func test_MOV_01_moves_speed_per_second_on_open_ground() -> void:
 	assert_near(h.position.distance_to(start), 300.0, 1.0, "30 tick = 1 giây = 300")
 
 
+func test_MOV_07_corner_within_body_radius_counts_as_reached() -> void:
+	var w: World = _world()
+	var start: Vector2 = _map.fountain_point(0)
+	var h: Entity = _unit(w, start, 300.0)
+	w.submit(Command.move_to(h.id, start + Vector2(0, -300)))
+	w.step()
+	h.path = PackedVector2Array([h.position, h.position + Vector2(15, 0), h.position + Vector2(0, -300)])
+	h.path_index = 1
+	var x0: float = h.position.x
+	w.step()
+	assert_eq(h.path_index, 2, "điểm rẽ cách tâm < bán kính thân: coi như đã tới")
+	assert_near(h.position.x, x0, 0.5, "đi thẳng tới điểm sau, không vòng qua điểm rẽ")
+
+
 func test_MOV_01_crosses_map_without_clipping_and_arrives() -> void:
 	var w: World = _world()
 	var h: Entity = _unit(w, _map.fountain_point(0))

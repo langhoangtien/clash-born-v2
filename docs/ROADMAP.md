@@ -249,3 +249,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | D-159 | Chơi thử | 2026-10-25 | Cảm giác đòn: điểm chém khớp tick ra đòn, khựng khung, lóe trắng, giật lùi, rung camera, hoạt ảnh riêng từng chiêu. Chờ người chơi đánh giá |
 | D-160 | Chơi thử | 2026-10-25 | Cỡ tướng / lính / cây / trụ, lóe dịu, sông gợn sóng, bụi cỏ tạm, pháp sư rừng 3D. Chờ asset thú rừng (gấu, trâu, sói) và bụi cỏ |
 | D-167 | Chơi thử | 2026-10-25 | Cân đồ: giày không cộng dồn tốc chạy, kháng hiệu ứng nhân dồn, Rìu Chiến đánh lan (3300), Đao Tán Ma đốt mana (2700), món ghép thiếu phần shop ẩn phải ra shop ẩn. Việc sau: icon thật cho Đao Tán Ma, cân bot nào lên Đao Tán Ma |
+| D-168 | Chơi thử | 2026-10-26 | Bản đồ v3 vector + đá Tripo (vách, bậc thang, cột, cụm đá), trụ sát mép lane, hốc đá trại, bờ sông kín. Việc sau: đo FPS trên máy (số mảnh đá + cây), góc vách (rock_wall_b) ở chỗ rẽ gắt, tường đá base |

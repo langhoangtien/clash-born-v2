@@ -1,7 +1,7 @@
 class_name Scenery3D
 extends Node3D
 ## Cảnh vật 3D tự dựng từ dữ liệu bản đồ (D-158) — sửa map thì cảnh tự đổi theo, không đặt tay:
-## cây rải trong vùng rừng (forest_shapes), đá dọc mép vách (cliff_shapes), bụi cỏ (D-160), cửa hàng ở shop_points,
+## cây rải trong vùng rừng (forest_shapes), vách đá / bậc thang / khối đá (RockWalls3D, D-168), bụi cỏ (D-160), cửa hàng ở shop_points,
 ## đống đổ nát chỗ trụ đã đổ. Cây / đá vẽ bằng MultiMesh chia theo ô CHUNK px để ô ngoài khung
 ## nhìn tự bị bỏ. Chỉ hình ảnh: không chặn đường, không che tầm nhìn (luật vẫn theo MapLayout).
 ## Vị trí ngẫu nhiên lấy từ RNG riêng với hạt cố định (VIEW, không phải SIM).
@@ -22,11 +22,10 @@ func build(layout: MapLayout) -> void:
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = SEED + 1
 	_place(cfg["trees"], tree_items(layout))
-	var rocks: Array[Array] = []
-	for shape: MapShape in layout.cliff_shapes:
-		for p: Vector2 in _along(shape.outer, cfg["rock_spacing"], rng):
-			rocks.append([p, rng.randi() % cfg["rocks"].size(), rng.randf_range(cfg["rock_scale"][0], cfg["rock_scale"][1]), rng.randf() * TAU])
-	_place(cfg["rocks"], rocks)
+	_place(cfg["walls"], RockWalls3D.wall_items(layout, cfg, rng))  # D-168: vách đá nối tiếp
+	_place(cfg["rocks"], RockWalls3D.fill_items(layout, cfg, rng))
+	_place([cfg["stairs"]], RockWalls3D.stair_items(layout, cfg))
+	_place([cfg["pillar"]], RockWalls3D.pillar_items(layout, cfg))
 	if cfg.has("bushes"):  # D-160: bụi cỏ (VIS-06) — tạm dùng cụm cây tròn ép thấp
 		var bushes: Array[Array] = []
 		for poly: PackedVector2Array in layout.bushes.polygons:
