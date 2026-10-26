@@ -211,6 +211,15 @@ func test_MAP_06_lane_towers_beside_lane_edge_same_offset() -> void:
 		assert_near(d, 192.0, 4.0, "trụ %s cách tim lane 192" % m.tower_ids[i])
 
 
+func _water_distance(m: MapLayout, p: Vector2) -> float:
+	var best: float = INF
+	for shape: MapShape in m.water_shapes:
+		if Geometry2D.is_point_in_polygon(p, shape.outer):
+			return 0.0
+		best = minf(best, _to_line(p, shape.outer + PackedVector2Array([shape.outer[0]])))
+	return best
+
+
 func test_MAP_07_river_banks_have_stair_openings() -> void:
 	var m: MapLayout = map
 	assert_eq(m.ramp_points.size(), 12, "6 lối xuống sông mỗi nửa")
@@ -220,6 +229,10 @@ func test_MAP_07_river_banks_have_stair_openings() -> void:
 			near_water = minf(near_water, _to_line(p, shape.outer + PackedVector2Array([shape.outer[0]])))
 		assert_true(near_water < 120.0, "lối %s nằm sát mép sông" % p)
 	assert_true(m.rock_lines.size() > 10, "có vách bờ sông")
+	for i: int in m.ramp_points.size():  # D-170: hướng dọc bờ quay sao cho bên phải là nước (bậc đi xuống nước)
+		var along: Vector2 = Vector2.from_angle(m.ramp_angles[i])
+		var down: Vector2 = Vector2(-along.y, along.x)
+		assert_true(_water_distance(m, m.ramp_points[i] + down * 120.0) < _water_distance(m, m.ramp_points[i] - down * 120.0), "lối %d: bậc đi xuống phía nước" % i)
 
 
 func test_MAP_08_every_side_camp_sits_in_ring_or_tree_alcove() -> void:

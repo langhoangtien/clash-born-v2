@@ -40,15 +40,18 @@ func build(layout: MapLayout) -> void:
 		_add_static(cfg["shop"], layout.shop_points[i], 0.0)
 
 
-## D-168, D-169: vách bờ sông, rào base / fountain, vòng đá ổ quái, bậc thang, núi đá.
+## D-168..D-170: bờ sông liền, rào base / fountain, vòng đá ổ quái, cột lối xuống sông, núi đá, cổ thụ.
 func _build_stone(layout: MapLayout, cfg: Dictionary, rng: RandomNumberGenerator) -> void:
-	_place(cfg["walls"], RockWalls3D.wall_items(layout, cfg["walls"], "rock", rng))
+	var bank: MeshInstance3D = RiverBank3D.build(layout)
+	if bank != null:
+		add_child(bank)
 	_place([cfg["fence"]], RockWalls3D.wall_items(layout, [cfg["fence"]], "fence", rng))
 	_place([cfg["pillar"]], RockWalls3D.post_items(layout, cfg))
 	_place(cfg["rings"], RockWalls3D.ring_items(layout, cfg))
-	_place([cfg["stairs"]], RockWalls3D.stair_items(layout, cfg))
 	_place([cfg["pillar"]], RockWalls3D.pillar_items(layout, cfg))
 	_place(cfg["mountains"]["models"], Mountains3D.items(layout, cfg, rng))
+	_place(cfg["mountains"]["low_models"], Mountains3D.low_items(layout, cfg, rng))
+	_place(cfg["giants"]["models"], GiantTrees3D.items(layout))
 
 
 ## Cây trong vùng rừng: [vị trí, loại, cỡ, góc]. Cố định theo map (RNG riêng) — bóng cây nướng
@@ -58,10 +61,13 @@ static func tree_items(layout: MapLayout) -> Array[Array]:
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = SEED
 	var trees: Array[Array] = []
+	var giants: Array[Array] = GiantTrees3D.items(layout)
 	for shape: MapShape in layout.forest_shapes:
 		var points: PackedVector2Array = _fill(shape, cfg["tree_spacing"], cfg["tree_inset"], rng)
 		points.append_array(_rim(shape, cfg.get("tree_edge_inset", 0.0), cfg.get("tree_edge_spacing", 0.0), rng))
 		for p: Vector2 in points:
+			if GiantTrees3D.covers(giants, p, cfg["giants"]["clear"]):
+				continue  # D-170: cổ thụ thay cả cụm
 			trees.append([p, rng.randi() % cfg["trees"].size(), rng.randf_range(cfg["tree_scale"][0], cfg["tree_scale"][1]), rng.randf() * TAU])
 	return trees
 
