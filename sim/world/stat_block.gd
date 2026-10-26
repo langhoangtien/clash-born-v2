@@ -6,6 +6,9 @@ extends RefCounted
 
 const S = StatId.Id
 const ATTRIBUTES: Array[int] = [S.STRENGTH, S.AGILITY, S.INTELLIGENCE]
+## Cộng kiểu xác suất độc lập 1 − Π(1 − v): né/chính xác (CMB-11), giảm hồi chiêu (ABL-19),
+## giảm sát thương vật lý (CMB-16), kháng hiệu ứng (ST-09, D-167).
+const INDEPENDENT: Array[int] = [S.EVASION, S.ACCURACY, S.COOLDOWN_REDUCTION, S.PHYSICAL_DAMAGE_REDUCTION, S.STATUS_RESISTANCE]
 
 var dirty: bool = true
 var balance: BalanceSettings
@@ -142,7 +145,7 @@ func _combine(stat: int, base: float, active: Array[StatModifier]) -> float:
 			ModifierDef.Op.OVERRIDE:
 				override_value = m.value
 	var value: float = base
-	if stat == S.EVASION or stat == S.ACCURACY or stat == S.COOLDOWN_REDUCTION or stat == S.PHYSICAL_DAMAGE_REDUCTION:
+	if INDEPENDENT.has(stat):
 		adds.append(base)
 		value = HitFormulas.combine_independent(adds)  # CMB-11, ABL-19
 	else:

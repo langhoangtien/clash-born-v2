@@ -15,4 +15,6 @@ enum Shape { CIRCLE, RECT, CONE }
 @export var angle: String
 @export var delay: String
 @export var falloff: String
+## ABL-22 (D-167): bỏ qua mục tiêu của ngữ cảnh (đòn chính khi đánh lan); quạt hướng về mục tiêu đó.
+@export var exclude_target: bool = false
 @export var actions: Array[ActionDef] = []
