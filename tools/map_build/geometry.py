@@ -107,7 +107,10 @@ def _tangent(ring, q, river):
     b = best.interpolate(min(best.length, d + 1.0))
     tx, ty = b.x - a.x, b.y - a.y
     n = math.hypot(tx, ty) or 1.0
-    if not unary_union(river).contains(Point(q.x - ty / n * 4.0, q.y + tx / n * 4.0)):
+    water = unary_union(river)
+    right = Point(q.x - ty / n * 3.0, q.y + tx / n * 3.0)
+    left = Point(q.x + ty / n * 3.0, q.y - tx / n * 3.0)
+    if water.distance(right) > water.distance(left):  # bên gần nước hơn là bên phải (D-170: bờ lõm)
         tx, ty = -tx, -ty
     return math.atan2(ty, tx)
 

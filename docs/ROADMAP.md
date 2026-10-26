@@ -251,3 +251,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | D-167 | Chơi thử | 2026-10-25 | Cân đồ: giày không cộng dồn tốc chạy, kháng hiệu ứng nhân dồn, Rìu Chiến đánh lan (3300), Đao Tán Ma đốt mana (2700), món ghép thiếu phần shop ẩn phải ra shop ẩn. Việc sau: icon thật cho Đao Tán Ma, cân bot nào lên Đao Tán Ma |
 | D-168 | Chơi thử | 2026-10-26 | Bản đồ v3 vector + đá Tripo (vách, bậc thang, cột, cụm đá), trụ sát mép lane, hốc đá trại, bờ sông kín. Việc sau: đo FPS trên máy (số mảnh đá + cây), góc vách (rock_wall_b) ở chỗ rẽ gắt, tường đá base |
 | D-169 | Chơi thử | 2026-10-26 | Núi đá viền map, ổ quái vòng đá / vòng cây, rào base 3 cổng, rào fountain, núi ngoài map. Việc sau: đo FPS (núi ngoài map ~400 tảng), có thể thay rào bằng mô hình tường riêng |
+| D-170 | Chơi thử | 2026-10-26 | Đá xanh đồng bộ, bậc thang vẽ nền, bỏ nền base / fountain, cổ thụ, núi liền, bờ sông dải đất liền. Việc sau: đo FPS |

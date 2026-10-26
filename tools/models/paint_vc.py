@@ -40,7 +40,8 @@ if kind.startswith('tree'):
         w = ((y < 0.10) & (r < 0.06)).astype(float)
     else:
         th = thickness(); w = smooth((th < float(sys.argv[4]) if len(sys.argv) > 4 else th < 0.14).astype(float))
-        w = ((w > 0.5) | (y < 0.16)).astype(float)
+        r = np.hypot(p[:, 0] - p[:, 0].mean(), p[:, 2] - p[:, 2].mean()) / max(1e-6, np.ptp(p[:, 0]))
+        w = (((w > 0.5) & (r < 0.22)) | (y < 0.16)).astype(float)  # thân: mảnh và gần trục, hoặc sát gốc (rễ)
     col = leaf * (1 - w[:, None]) + bark * w[:, None]
     col *= (0.75 + 0.25 * np.clip(y * 4, 0, 1))[:, None]  # gốc sẫm lại
 elif kind == 'rock':

@@ -3,10 +3,9 @@ extends RefCounted
 ## Đá và rào của bản đồ v3 (D-168, D-169), dựng từ dữ liệu map — chỉ hình ảnh, chặn đường vẫn theo
 ## MapLayout. Bề ngang mảnh = đúng độ dày vật cản, mảnh không lòi ra quá đầu đoạn (không đi xuyên đá,
 ## không có tường vô hình). Phần tử trả về cùng dạng Scenery3D._place: [vị trí, loại, cỡ, góc, (ép dọc)].
-##   wall_items   vách đá dọc `rock_lines` loại rock (bờ sông…)
-##   fence_items  khối tường dọc rào base / fountain; post_items cột ở hai đầu và giữa đoạn rào
+##   wall_items   khối tường dọc `rock_lines` một loại (rào base / fountain); post_items cột rào
 ##   ring_items   vòng đá ổ quái: lối vào của mô hình (`ring_open`, độ) xoay về hướng ghi trong map
-##   stair_items  bậc thang mỗi lối xuống sông, bậc thấp quay ra nước; pillar_items cột hai bên
+##   pillar_items cột hai bên mỗi lối xuống sông (bậc thang vẽ dưới nền, D-170 — mô hình bậc nổi che mất chân)
 
 static var _bounds: Dictionary[String, AABB] = {}
 
@@ -18,26 +17,29 @@ static func wall_items(layout: MapLayout, models: Array, kind: String, rng: Rand
 			continue
 		var line: PackedVector2Array = layout.rock_lines[i]
 		for k: int in line.size() - 1:
-			_segment(out, line[k], line[k + 1], layout.rock_line_widths[i], models, rng, kind == "rock")
+			var end: bool = k == 0 or k == line.size() - 2
+			_segment(out, line[k], line[k + 1], layout.rock_line_widths[i], models, rng, kind == "rock", end)
 	return out
 
 
 ## Chia đoạn a→b thành các mảnh dài bằng mô hình (theo bề ngang), mảnh đầu / cuối nằm gọn trong đoạn.
+## Đoạn giữa đường: mảnh giữ đúng bề ngang, được chồng sang đoạn kề; đoạn đầu / cuối (cạnh cổng) thì thu
+## mảnh cho gọn trong đoạn.
 static func _segment(out: Array[Array], a: Vector2, b: Vector2, width: float, models: Array,
-		rng: RandomNumberGenerator, rough: bool) -> void:
+		rng: RandomNumberGenerator, rough: bool, end: bool) -> void:
 	var dir: Vector2 = (b - a).normalized()
 	var length: float = a.distance_to(b)
 	var kind: int = rng.randi() % models.size()
 	var box: AABB = model_bounds(models[kind])
 	var k: float = width * MatchView3D.S / minf(box.size.x, box.size.z)
 	var piece: float = maxf(box.size.x, box.size.z) * k / MatchView3D.S
-	if piece > length:
+	if piece > length and end:
 		k *= length / piece
 		piece = length
 	var count: int = maxi(1, ceili((length - piece) / (piece * 0.8)) + 1)
 	for j: int in count:
 		var t: float = 0.5 if count == 1 else float(j) / (count - 1)
-		var at: Vector2 = a + dir * (piece * 0.5 + (length - piece) * t)
+		var at: Vector2 = a + dir * (piece * 0.5 + (length - piece) * t) if piece <= length else (a + b) * 0.5
 		var jitter: float = rng.randf_range(-0.08, 0.08) if rough else 0.0
 		var flip: float = PI if rough and rng.randf() < 0.5 else 0.0
 		out.append([at, kind if not rough else rng.randi() % models.size(), k, align(dir, box) + flip + jitter])
@@ -65,17 +67,6 @@ static func ring_items(layout: MapLayout, cfg: Dictionary) -> Array[Array]:
 	for i: int in layout.ring_points.size():
 		var turn: float = deg_to_rad(cfg["ring_open"]) - layout.ring_angles[i]
 		out.append([layout.ring_points[i], layout.ring_models[i] % cfg["rings"].size(), layout.ring_scales[i], turn])
-	return out
-
-
-static func stair_items(layout: MapLayout, cfg: Dictionary) -> Array[Array]:
-	var out: Array[Array] = []
-	var box: AABB = model_bounds(cfg["stairs"])
-	var k: float = cfg["stairs_width"] * MatchView3D.S / box.size.x
-	for i: int in layout.ramp_points.size():
-		var a: float = layout.ramp_angles[i]
-		var down: Vector2 = Vector2(-sin(a), cos(a))  # pháp tuyến bên phải hướng dọc bờ = xuống nước (MAP-07)
-		out.append([layout.ramp_points[i], 0, k, atan2(down.x, down.y), cfg["stairs_squash"]])  # bậc thấp ở +z
 	return out
 
 

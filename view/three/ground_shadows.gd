@@ -17,9 +17,16 @@ static func paint(ci: CanvasItem, layout: MapLayout) -> void:
 		return
 	var sun: Vector2 = Look3D.sun_ground_direction()
 	for it: Array in Scenery3D.tree_items(layout):
-		var size: float = RockWalls3D.model_bounds(cfg["trees"][it[1]]).size.y * it[2] / MatchView3D.S
-		var at: Vector2 = it[0] + sun * size * REACH
-		_blob(ci, at, size * SPREAD, sun)
+		_tree(ci, it, RockWalls3D.model_bounds(cfg["trees"][it[1]]), sun)
+	for it: Array in GiantTrees3D.items(layout):  # D-170
+		_tree(ci, it, RockWalls3D.model_bounds(cfg["giants"]["models"][it[1]]), sun)
+
+
+## Bóng một cây: lệch theo nắng, cỡ theo tán (cây cao hơn thì bóng dài hơn).
+static func _tree(ci: CanvasItem, it: Array, box: AABB, sun: Vector2) -> void:
+	var height: float = box.size.y * it[2] / MatchView3D.S
+	var crown: float = maxf(box.size.x, box.size.z) * it[2] / MatchView3D.S * 0.5
+	_blob(ci, it[0] + sun * height * REACH, maxf(crown, height * SPREAD * 0.6), sun)
 
 
 ## Đĩa bóng mềm, kéo dài theo hướng nắng.

@@ -66,6 +66,7 @@ def main():
     ap.add_argument('--size', type=int, default=1024)
     ap.add_argument('--team', action='store_true')
     ap.add_argument('--hue', default='150-210')
+    ap.add_argument('--tint', default='', help='tô lại theo độ sáng: "tối,sáng" mỗi màu hex, vd 1e2230,c4cee4 (D-170: đá xám → xám xanh)')
     ap.add_argument('--saturation', type=float, default=1.0, help='nhân độ đậm màu ảnh (D-168: đá viền 0.5)')
     a = ap.parse_args()
     g, binc, before = read_glb(a.src)
@@ -89,6 +90,10 @@ def main():
         im = src.convert('RGBA' if alpha else 'RGB')
         if max(im.size) > a.size:
             im = im.resize((a.size, a.size), Image.LANCZOS)
+        if a.tint:
+            from PIL import ImageOps
+            dark, light = ('#' + c for c in a.tint.split(','))
+            im = ImageOps.colorize(ImageOps.grayscale(im), black=dark, white=light, mid=None).convert(im.mode)
         if a.saturation != 1.0:
             from PIL import ImageEnhance
             im = ImageEnhance.Color(im).enhance(a.saturation)

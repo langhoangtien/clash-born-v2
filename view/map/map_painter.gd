@@ -9,9 +9,6 @@ const PEBBLE_LIGHT := Color("c4c2b4")
 const GROUND := Color("627f38")
 const GROUND_DARK := Color("4e6b2b")
 const GROUND_LIGHT := Color("7a9644")
-const BASE_FLOOR := [Color("4f7487"), Color("86625c")]
-const BASE_TILE := [Color("5b8296"), Color("94706a")]
-const BASE_EDGE := [Color("7fb6e6"), Color("e99a92")]
 const LANE := Color("dfbd85")
 const LANE_EDGE := Color("a99a5c")
 const LANE_DARK := Color("c49f68")
@@ -24,8 +21,9 @@ const FOREST_CANOPY := Color("486427")
 const FOREST_LIGHT := Color("456025")
 const CLIFF := Color("5d6b3a")
 const CLIFF_TOP := Color("6f7a48")
-const RAMP := Color("bfae80")
-const RAMP_LINE := Color("9d8c60")
+const STAIR := Color("a9adb4")
+const ROCK_FLOOR := Color("49526a")
+const ROCK_DEEP := Color("262b38")
 const CAMP_CLEARING := Color("617f37")
 const BUSH := Color("6e9236")
 const BUSH_DARK := Color("557829")
@@ -36,11 +34,11 @@ static func paint_outside(ci: CanvasItem, layout: MapLayout) -> void:
 	var size := layout.world_size()
 	var m := 4000.0
 	for r: Rect2 in [Rect2(-m, -m, size.x + 2 * m, m), Rect2(-m, size.y, size.x + 2 * m, m), Rect2(-m, 0, m, size.y), Rect2(size.x, 0, m, size.y)]:
-		ci.draw_rect(r, CLIFF)
+		ci.draw_rect(r, ROCK_FLOOR)
 
 
 ## Nền, base, sông, dốc, lane: mọi thứ đơn vị đi lên được.
-static func paint_ground(ci: CanvasItem, layout: MapLayout, detail: bool = true, fountain_radius: float = 0.0) -> void:
+static func paint_ground(ci: CanvasItem, layout: MapLayout, detail: bool = true) -> void:
 	var size := layout.world_size()
 	ci.draw_rect(Rect2(Vector2.ZERO, size), GROUND)
 	if detail:
@@ -53,11 +51,7 @@ static func paint_ground(ci: CanvasItem, layout: MapLayout, detail: bool = true,
 		_paint_specks(ci, size, rng)
 		for camp in layout.camp_points:
 			ci.draw_circle(camp, 210, CAMP_CLEARING)
-	for team in range(2):
-		_paint_base(ci, layout, team, detail)
 	_paint_water(ci, layout, detail)
-	if fountain_radius > 0.0:
-		_paint_fountains(ci, layout, fountain_radius)
 	if detail:
 		_paint_ramps(ci, layout)
 	var lane_width := layout.lane_width
@@ -66,18 +60,6 @@ static func paint_ground(ci: CanvasItem, layout: MapLayout, detail: bool = true,
 		if detail: _thick_line(ci, points, LANE_EDGE, lane_width + 36)
 		_thick_line(ci, points, LANE, lane_width)
 		if detail: _paint_lane_wear(ci, points, lane_width)
-
-
-## Vùng hồi máu fountain: nền đá sáng màu đội, viền rõ để biết ranh giới.
-static func _paint_fountains(ci: CanvasItem, layout: MapLayout, radius: float) -> void:
-	for team in range(2):
-		var c := layout.fountain_point(team)
-		ci.draw_circle(c, radius, Color(BASE_EDGE[team], 0.16))
-		ci.draw_arc(c, radius - 14, 0, TAU, 96, Color(BASE_EDGE[team], 0.95), 20, true)
-		ci.draw_arc(c, radius - 40, 0, TAU, 96, Color(1, 1, 1, 0.35), 6, true)
-		for k in range(24):  # vạch đá dọc viền
-			var a := TAU * k / 24.0
-			ci.draw_line(c + Vector2.from_angle(a) * (radius - 30), c + Vector2.from_angle(a) * (radius + 2), Color(BASE_TILE[team], 0.9), 5, true)
 
 
 ## Hoa nhỏ và sỏi rải trên cỏ (nướng một lần; lane, rừng vẽ đè lên sau).
@@ -109,19 +91,6 @@ static func _paint_lane_wear(ci: CanvasItem, points: PackedVector2Array, width: 
 				ci.draw_circle(at - side, rng.randf_range(25, 45), Color(1, 1, 1, 0.10))
 
 
-static func _paint_base(ci: CanvasItem, layout: MapLayout, team: int, detail: bool) -> void:
-	var base := layout.base_polygons[team]
-	if base.size() < 3: return
-	ci.draw_colored_polygon(base, BASE_FLOOR[team])
-	if not detail: return
-	for inner in Geometry2D.offset_polygon(base, -160, Geometry2D.JOIN_ROUND):
-		ci.draw_colored_polygon(inner, BASE_TILE[team])
-	_outline(ci, base, Color(BASE_EDGE[team], 0.55), 14)
-	# Vòng sân quanh nhà chính cho base trông như khu xây dựng.
-	for radius in [260.0, 420.0]:
-		ci.draw_arc(layout.core_point(team), radius, 0, TAU, 72, Color(BASE_EDGE[team], 0.22), 10, true)
-
-
 static func _paint_water(ci: CanvasItem, layout: MapLayout, detail: bool) -> void:
 	for shape: MapShape in layout.water_shapes:
 		ci.draw_colored_polygon(shape.outer, WATER_DEEP)
@@ -131,26 +100,30 @@ static func _paint_water(ci: CanvasItem, layout: MapLayout, detail: bool) -> voi
 				ci.draw_colored_polygon(inner, WATER_LIGHT)
 
 
-## Dốc: vài bậc thang cắt ngang khe hở của vách đá.
+## MAP-07 (D-170): lối xuống sông — 4 bậc đá vẽ phẳng dưới nền (không che chân nhân vật), ngang theo
+## bờ, sẫm dần về phía nước; mép trên mỗi bậc sáng, mép dưới tối.
 static func _paint_ramps(ci: CanvasItem, layout: MapLayout) -> void:
 	for index in range(layout.ramp_points.size()):
 		var along := Vector2.from_angle(layout.ramp_angles[index])
-		var across := along.orthogonal()
-		var center := layout.ramp_points[index]
-		var corners := PackedVector2Array([
-			center - along * 150 - across * 95, center + along * 150 - across * 95,
-			center + along * 150 + across * 95, center - along * 150 + across * 95])
-		ci.draw_colored_polygon(corners, RAMP)
-		for step in [-60.0, -20.0, 20.0, 60.0]:
-			ci.draw_line(center + across * step - along * 140, center + across * step + along * 140, RAMP_LINE, 9, true)
+		var down := Vector2(-along.y, along.x)
+		var c := layout.ramp_points[index]
+		for step in range(4):
+			var d0 := -95.0 + 47.5 * step
+			var tone := STAIR.darkened(0.12 * step)
+			ci.draw_colored_polygon(PackedVector2Array([c - along * 140 + down * d0, c + along * 140 + down * d0,
+				c + along * 140 + down * (d0 + 47.5), c - along * 140 + down * (d0 + 47.5)]), tone)
+			ci.draw_line(c - along * 138 + down * (d0 + 3), c + along * 138 + down * (d0 + 3), tone.lightened(0.25), 5, true)
+			ci.draw_line(c - along * 138 + down * (d0 + 45), c + along * 138 + down * (d0 + 45), tone.darkened(0.35), 6, true)
 
 ## Vách đá và rừng: mọi thứ chặn đường.
 static func paint_obstacles(ci: CanvasItem, layout: MapLayout, detail: bool = true) -> void:
 	for shape: MapShape in layout.cliff_shapes:
 		ci.draw_colored_polygon(shape.outer, CLIFF)
 		if detail: _outline(ci, shape.outer, CLIFF_TOP, 8)
-	for shape: MapShape in layout.rock_shapes:  # D-168: nền dưới cụm đá
-		ci.draw_colored_polygon(shape.outer, CLIFF)
+	for shape: MapShape in layout.rock_shapes:  # D-170: nền đá núi, lõi sẫm như khe vực
+		ci.draw_colored_polygon(shape.outer, ROCK_FLOOR)
+		for inner in Geometry2D.offset_polygon(shape.outer, -70, Geometry2D.JOIN_ROUND):
+			ci.draw_colored_polygon(inner, ROCK_DEEP)
 	for shape: MapShape in layout.forest_shapes:
 		ci.draw_colored_polygon(shape.outer, FOREST_BODY)
 		if detail:

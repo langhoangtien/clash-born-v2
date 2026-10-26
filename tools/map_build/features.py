@@ -46,6 +46,6 @@ def fences(src, s, frame):
     for team, p in enumerate(s["fountains"]):
         core = s["cores"][team]
         toward = math.degrees(math.atan2(core[1] - p[1], core[0] - p[0]))
-        arc = G.arc_line(p, f["fountain_r"], toward, f["fountain_gate"], n=40).intersection(frame.buffer(-f["width"]))
+        arc = G.arc_line(p, f["fountain_r"], toward, f["fountain_gate"], n=16).intersection(frame.buffer(-f["width"]))
         out += [(G.to_frame(l, frame, f["width"] + 1.0), f["width"]) for l in G.lines_of(arc)]
     return out

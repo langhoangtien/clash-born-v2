@@ -23,8 +23,6 @@ var show_walkability: bool = false
 var show_labels: bool = false
 ## SHOP-02: bán kính vẽ quanh shop ẩn (hiển thị; khớp shop_radius trong BalanceSettings).
 var shop_radius: float = 600.0
-## Vùng hồi máu fountain (hiển thị; khớp fountain_radius trong BalanceSettings).
-var fountain_radius: float = 600.0
 
 ## D-147: nướng lớp tĩnh thành ô ảnh (màn trận bật; màn xem map giữ vẽ trực tiếp để phóng to nét).
 @export var bake_static: bool = false
@@ -50,7 +48,7 @@ func _ready() -> void:
 		push_error("Dữ liệu map lỗi: " + "; ".join(errors))
 		return
 	var painters: Array[Callable] = [
-		func(ci: CanvasItem) -> void: MapPainter.paint_ground(ci, layout, true, fountain_radius),
+		func(ci: CanvasItem) -> void: MapPainter.paint_ground(ci, layout, true),
 		func(ci: CanvasItem) -> void: MapPainter.paint_obstacles(ci, layout, true),
 		_paint_shadows,
 		func(ci: CanvasItem) -> void: MapPainter.paint_bushes(ci, layout, true),
