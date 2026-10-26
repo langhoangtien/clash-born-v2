@@ -872,8 +872,8 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   dùng vật lý Godot. Thân trụ chặn đứng/đi với bán kính `tower_body_radius`. Ô lưới tìm
   đường chỉ đi được khi mọi pixel khoảng trống trong ô đủ rộng; kiểm tra đường thẳng duyệt
   từng pixel mà đoạn đi qua (không lấy mẫu), nên đường đi không bao giờ cắt góc vật cản.
-  Nguồn map (D-168) là vector: khối rừng, khối đá, vách đá (đoạn thẳng cùng độ dày `rock_width`),
-  hốc đá quanh trại, vách hai bờ sông và viền map; build dựng polygon từ đó (không dò từ ảnh).
+  Nguồn map (D-168) là vector: khối rừng, núi đá (cả viền map), vách đá (đoạn thẳng cùng độ dày),
+  ổ quái, vách hai bờ sông, rào base / fountain; build dựng polygon từ đó (không dò từ ảnh).
 - `MAP-03` Map phải đọc được (D-43): chỗ trống hẹp hơn `gap_min_world` (112) giữa rừng/đá/vách
   bị lấp thành rừng khi build; vùng trống kín không vào được cũng lấp. Kiểm tra: mọi điểm
   trống rộng ≥ 12 phải cách chỗ hero đứng được không quá 48 — tức không có khe nào
@@ -885,8 +885,13 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   T1 đặt theo MAP-04; T2/T3 giữ khoảng cách dọc lane.
 - `MAP-07` (D-168) Bờ sông có vách kín hai bên; chỉ xuống sông ở các lối (bậc thang, `ramps`) và ở
   khu mid cắt sông (MAP-05). Sông vẫn đi được.
-- `MAP-08` (D-168) Mỗi trại rừng của hai phe nằm trong hốc đá: cung vách bán kính `alcove.r`
-  quanh tâm trại, mở một khoảng `alcove.gap` độ về phía hướng ra vào.
+- `MAP-08` (D-168, D-169) Mỗi trại rừng của hai phe nằm trong ổ, một trong hai kiểu (dữ liệu từng trại):
+  **vòng đá** một mảnh có lối vào (vật cản là cung khớp đúng mô hình: bán kính `ring.r`, độ dày
+  `ring.width`, hở `ring.gap` độ) hoặc **vòng cây** (cung rừng). Trước lối vào luôn để trống `door_clear`.
+- `MAP-09` (D-169) Base là đất cao có rào đá: vào / ra base chỉ qua 3 cổng ở chỗ 3 lane đi qua (cổng
+  rộng bằng lane và khoảng trống quanh trụ cạnh cổng).
+- `MAP-10` (D-169) Vùng hồi máu fountain có rào đá theo vòng `fountain_radius`, một cổng
+  (`fountain_gate` độ) quay về phía nhà chính.
 - `MAP-04` Cân bằng (D-49): map **đối xứng xoay 180°** quanh tâm (công cụ build giữ nửa
   Blue, sinh nửa Red). Lane an toàn của Blue là BOT, của Red là TOP: ở lane an toàn đợt
   lính đầu gặp nhau ngay ngoài tầm trụ 1 của phe mình (`tower_layout` BOT 760), lane khó
@@ -900,7 +905,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 1. `INV-01` Không đơn vị nào chồng lên vật cản.
 2. `INV-02` Không đơn vị nào nhắm công trình đang khóa.
 3. `INV-03` Không lính đường nào vượt mép trước của lane quá 200.
-4. `INV-04` Không đơn vị nào ở xa origin leash quá leash + 100.
+4. `INV-04` Không đơn vị nào đang đuổi ở xa origin leash quá leash + 100 (D-169: lúc đã quay về mà đường về phải vòng qua vật cản thì không tính).
 5. `INV-05` Không đơn vị nào (trừ state cho phép) đứng yên > 2 s khi không có mục tiêu.
 6. `INV-06` Bot không ở vị trí không an toàn > 1 s (trừ ESCAPE_TOWER, RETREAT).
 7. `INV-07` Không đơn vị nào nhắm một đơn vị mà đội nó không thấy.

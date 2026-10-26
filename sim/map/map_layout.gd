@@ -53,6 +53,13 @@ var water_shapes: Array[MapShape] = []
 var rock_shapes: Array[MapShape] = []
 var rock_lines: Array[PackedVector2Array] = []
 var rock_line_widths: PackedFloat32Array = PackedFloat32Array()
+## D-169: "rock" vách đá, "fence" rào đá (base, fountain).
+var rock_line_kinds: PackedStringArray = PackedStringArray()
+## D-169: vòng đá ổ quái (MAP-08): tâm, hướng lối vào (radian), mẫu, cỡ (m / đơn vị mô hình).
+var ring_points: PackedVector2Array = PackedVector2Array()
+var ring_angles: PackedFloat32Array = PackedFloat32Array()
+var ring_models: PackedInt32Array = PackedInt32Array()
+var ring_scales: PackedFloat32Array = PackedFloat32Array()
 var collision_polygons: Array[PackedVector2Array] = []
 ## VIS-06: bụi cỏ.
 var bushes: MapBushes = MapBushes.new()
@@ -240,10 +247,17 @@ func _load_terrain(d: Dictionary) -> void:
 
 func _load_rocks(render: Dictionary) -> void:
 	rock_shapes = _shapes(render.get("rocks", []))
-	rock_lines.clear(); rock_line_widths.clear()
+	rock_lines.clear(); rock_line_widths.clear(); rock_line_kinds.clear()
 	for line: Dictionary in render.get("rock_lines", []):
 		rock_lines.append(_points(line["points"]))
 		rock_line_widths.append(float(line["width"]))
+		rock_line_kinds.append(line.get("kind", "rock"))
+	ring_points.clear(); ring_angles.clear(); ring_models.clear(); ring_scales.clear()
+	for ring: Dictionary in render.get("rings", []):
+		ring_points.append(_vec(ring["pos"]))
+		ring_angles.append(float(ring["open"]))
+		ring_models.append(int(ring["model"]))
+		ring_scales.append(float(ring["scale"]))
 
 
 ## Nhúng base64 trong JSON (hàng nối hàng, 1 byte mỗi pixel) để map không phụ thuộc

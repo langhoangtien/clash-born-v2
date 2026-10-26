@@ -222,12 +222,67 @@ func test_MAP_07_river_banks_have_stair_openings() -> void:
 	assert_true(m.rock_lines.size() > 10, "có vách bờ sông")
 
 
-func test_MAP_08_every_side_camp_sits_in_rock_alcove() -> void:
+func test_MAP_08_every_side_camp_sits_in_ring_or_tree_alcove() -> void:
 	var m: MapLayout = map
+	var rings: int = 0
 	for i: int in m.camp_ids.size():
 		if m.camp_sides[i] < 0:
 			continue
-		var wall: float = INF
-		for line: PackedVector2Array in m.rock_lines:
-			wall = minf(wall, _to_line(m.camp_points[i], line))
-		assert_true(wall > 200.0 and wall < 330.0, "trại %s có vách hốc đá quanh (cách %d)" % [m.camp_ids[i], wall])
+		var ring: bool = false
+		for p: Vector2 in m.ring_points:
+			ring = ring or p.distance_to(m.camp_points[i]) < 1.0
+		rings += 1 if ring else 0
+		var wall: int = 0
+		for k: int in 24:
+			var probe: Vector2 = m.camp_points[i] + Vector2.from_angle(TAU * k / 24.0) * 300.0
+			wall += 1 if m.clearance_at(probe) < 32.0 else 0
+		assert_true(wall >= 12, "trại %s có vòng đá / cây bao quanh (%d/24 hướng chặn)" % [m.camp_ids[i], wall])
+	assert_true(rings >= 4 and rings < 12, "có cả hai kiểu ổ: vòng đá và vòng cây")
+
+
+func _near_lane(m: MapLayout, p: Vector2, reach: float) -> bool:
+	for lane: String in MapLayout.LANES:
+		if _to_line(p, m.lanes[lane]) < reach:
+			return true
+	return false
+
+
+func _near_tower(m: MapLayout, p: Vector2, reach: float) -> bool:
+	for t: Vector2 in m.tower_points:
+		if t.distance_to(p) < reach:
+			return true
+	return false
+
+
+func test_MAP_09_base_fence_open_only_at_lanes() -> void:
+	var m: MapLayout = map
+	for team: int in 2:
+		var poly: PackedVector2Array = Geometry2D.offset_polygon(m.base_polygons[team], -32.0)[0]
+		for k: int in poly.size():
+			var a: Vector2 = poly[k]
+			var b: Vector2 = poly[(k + 1) % poly.size()]
+			for t: float in [0.25, 0.5, 0.75]:
+				var p: Vector2 = a.lerp(b, t)
+				if not m.world_rect().grow(-80.0).has_point(p) or _near_lane(m, p, m.lane_width * 0.5 + 40.0) or _near_tower(m, p, 220.0):
+					continue  # cổng = chỗ lane đi qua (kể cả khoảng trống quanh trụ cạnh cổng, MAP-04)
+				assert_true(m.clearance_at(p) < 32.0, "rào base đội %d chặn ở %s" % [team, p])
+
+
+func test_MAP_10_fountain_fence_has_one_gate_toward_core() -> void:
+	var m: MapLayout = map
+	for team: int in 2:
+		var f: Vector2 = m.fountain_point(team)
+		var toward: float = (m.core_point(team) - f).angle()
+		var open: int = 0
+		for k: int in 72:
+			var a: float = TAU * k / 72.0
+			var p: Vector2 = f + Vector2.from_angle(a) * 600.0
+			if not m.world_rect().grow(-80.0).has_point(p):
+				continue
+			var gate: bool = absf(angle_difference(a, toward)) < deg_to_rad(20.0)
+			if gate:
+				assert_true(m.clearance_at(p) >= 32.0, "cổng fountain đội %d đi được" % team)
+				open += 1
+			elif absf(angle_difference(a, toward)) > deg_to_rad(40.0):
+				assert_true(m.clearance_at(p) < 32.0, "rào fountain đội %d chặn ở góc %d°" % [team, rad_to_deg(a)])
+		assert_true(open > 0, "có cổng")

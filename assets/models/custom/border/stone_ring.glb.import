@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dm2lsw5hmyjsg"
-path="res://.godot/imported/rock_c.glb-d9f027b2b40b8a29848e384f24cc4ac9.scn"
+uid="uid://wrlsumo82h7l"
+path="res://.godot/imported/stone_ring.glb-e3b911114aefd408d1e87675c839041c.scn"
 
 [deps]
 
-source_file="res://assets/models/custom/nature/rock_c.glb"
-dest_files=["res://.godot/imported/rock_c.glb-d9f027b2b40b8a29848e384f24cc4ac9.scn"]
+source_file="res://assets/models/custom/border/stone_ring.glb"
+dest_files=["res://.godot/imported/stone_ring.glb-e3b911114aefd408d1e87675c839041c.scn"]
 
 [params]
 

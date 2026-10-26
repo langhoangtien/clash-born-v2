@@ -55,6 +55,7 @@ func _ready() -> void:
 		_paint_shadows,
 		func(ci: CanvasItem) -> void: MapPainter.paint_bushes(ci, layout, true),
 		func(ci: CanvasItem) -> void: MapPainter.paint_shops(ci, layout, shop_radius, true)]
+	_add_layer("Outside", func(ci: CanvasItem) -> void: MapPainter.paint_outside(ci, layout))  # D-169: không nướng, luôn hiện
 	var layers: Array[CanvasItem] = []
 	for i: int in painters.size():
 		layers.append(_add_layer(["Ground", "Obstacles", "Shadows", "Bushes", "Shops"][i], painters[i]))

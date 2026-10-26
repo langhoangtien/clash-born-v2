@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://yrolmhkpnhao"
-path="res://.godot/imported/rock_b.glb-b48df7b9faa9e3325aaabf4ff086ec35.scn"
+uid="uid://dr6ckyp74w1hr"
+path="res://.godot/imported/rock_ring_mossy.glb-313f623b9eb110d124114cfd0d2fc07d.scn"
 
 [deps]
 
-source_file="res://assets/models/custom/nature/rock_b.glb"
-dest_files=["res://.godot/imported/rock_b.glb-b48df7b9faa9e3325aaabf4ff086ec35.scn"]
+source_file="res://assets/models/custom/border/rock_ring_mossy.glb"
+dest_files=["res://.godot/imported/rock_ring_mossy.glb-313f623b9eb110d124114cfd0d2fc07d.scn"]
 
 [params]
 

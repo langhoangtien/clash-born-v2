@@ -50,7 +50,7 @@ static func build(layout: MapLayout) -> Array[Mark]:
 	out.append_array(_paired(layout, bush_centers, "B", Kind.BUSH))
 	out.append_array(_paired(layout, layout.ramp_points, "D", Kind.RAMP))
 	var forests: PackedVector2Array = PackedVector2Array()
-	for shape: MapShape in layout.forest_shapes:
+	for shape: MapShape in layout.forest_shapes + layout.rock_shapes:  # D-169: khối rừng hoặc núi đá
 		if absf(_area(shape.outer)) >= FOREST_MIN_AREA and not _is_border(layout, shape.outer):
 			forests.append(_inside_point(shape.outer))
 	out.append_array(_paired(layout, forests, "R", Kind.FOREST, 300.0))
