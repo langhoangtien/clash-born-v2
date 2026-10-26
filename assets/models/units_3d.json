@@ -175,7 +175,9 @@
  },
  "scenery": {
   "trees": [
-   "custom/nature/tree_a"
+   "custom/nature/tree_a",
+   "custom/nature/tree_b",
+   "custom/nature/tree_c"
   ],
   "tree_spacing": 125.0,
   "tree_scale": [
@@ -184,12 +186,14 @@
   ],
   "tree_inset": 30.0,
   "rocks": [
-   "custom/nature/rock_a"
+   "custom/nature/rock_a",
+   "custom/nature/rock_b",
+   "custom/nature/rock_c"
   ],
   "rock_spacing": 85.0,
   "rock_scale": [
-   0.3,
-   0.55
+   0.4,
+   0.7
   ],
   "shop": {
    "model": "medieval/buildings/building_market_blue",
@@ -200,7 +204,10 @@
    "height": 1.4
   },
   "bushes": [
-   "custom/nature/grass_a"
+   "custom/nature/grass_a",
+   "custom/nature/grass_b",
+   "custom/nature/grass_c",
+   "custom/nature/grass_d"
   ],
   "bush_spacing": 55.0,
   "bush_scale": [
