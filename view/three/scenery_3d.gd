@@ -20,12 +20,8 @@ func build(layout: MapLayout) -> void:
 	if cfg.is_empty():
 		return
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
-	rng.seed = SEED
-	var trees: Array[Array] = []  # [vị trí, loại, cỡ, góc]
-	for shape: MapShape in layout.forest_shapes:
-		for p: Vector2 in _fill(shape, cfg["tree_spacing"], cfg["tree_inset"], rng):
-			trees.append([p, rng.randi() % cfg["trees"].size(), rng.randf_range(cfg["tree_scale"][0], cfg["tree_scale"][1]), rng.randf() * TAU])
-	_place(cfg["trees"], trees)
+	rng.seed = SEED + 1
+	_place(cfg["trees"], tree_items(layout))
 	var rocks: Array[Array] = []
 	for shape: MapShape in layout.cliff_shapes:
 		for p: Vector2 in _along(shape.outer, cfg["rock_spacing"], rng):
@@ -39,8 +35,26 @@ func build(layout: MapLayout) -> void:
 			for p: Vector2 in _fill(shape, cfg["bush_spacing"], 10.0, rng):
 				bushes.append([p, rng.randi() % cfg["bushes"].size(), rng.randf_range(cfg["bush_scale"][0], cfg["bush_scale"][1]), rng.randf() * TAU, cfg["bush_squash"]])
 		_place(cfg["bushes"], bushes)
+	if cfg.has("edge_grass"):  # thử phối màu: khóm cỏ thưa mọc lấn mép lane và bờ nước
+		var tufts: Array[Array] = []
+		for p: Vector2 in _edges(layout, cfg["edge_spacing"], rng):
+			tufts.append([p, rng.randi() % cfg["edge_grass"].size(), rng.randf_range(cfg["edge_scale"][0], cfg["edge_scale"][1]), rng.randf() * TAU])
+		_place(cfg["edge_grass"], tufts)
 	for i: int in layout.shop_points.size():
 		_add_static(cfg["shop"], layout.shop_points[i], 0.0)
+
+
+## Cây trong vùng rừng: [vị trí, loại, cỡ, góc]. Cố định theo map (RNG riêng) — bóng cây nướng
+## xuống đất (GroundShadows) dùng đúng danh sách này.
+static func tree_items(layout: MapLayout) -> Array[Array]:
+	var cfg: Dictionary = ModelLibrary.scenery()
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.seed = SEED
+	var trees: Array[Array] = []
+	for shape: MapShape in layout.forest_shapes:
+		for p: Vector2 in _fill(shape, cfg["tree_spacing"], cfg["tree_inset"], rng):
+			trees.append([p, rng.randi() % cfg["trees"].size(), rng.randf_range(cfg["tree_scale"][0], cfg["tree_scale"][1]), rng.randf() * TAU])
+	return trees
 
 
 ## Mỗi khung: thêm đống đổ nát chỗ trụ vừa đổ (DEF-06).
@@ -81,6 +95,20 @@ static func _along(poly: PackedVector2Array, spacing: float, rng: RandomNumberGe
 		var normal: Vector2 = (b - a).orthogonal().normalized()
 		for k: int in steps:
 			out.append(a.lerp(b, (k + rng.randf()) / steps) + normal * rng.randf_range(-20.0, 20.0))
+	return out
+
+
+## Điểm dọc hai mép lane (ngay ngoài mép) và mép nước, mỗi `spacing` px.
+static func _edges(layout: MapLayout, spacing: float, rng: RandomNumberGenerator) -> PackedVector2Array:
+	var out: PackedVector2Array = PackedVector2Array()
+	for lane: String in layout.lanes:
+		var pts: PackedVector2Array = layout.lanes[lane]
+		for i: int in pts.size() - 1:
+			var side: Vector2 = (pts[i + 1] - pts[i]).normalized().orthogonal() * (layout.lane_width * 0.5 + 6.0)
+			for p: Vector2 in _along(PackedVector2Array([pts[i], pts[i + 1]]), spacing, rng):
+				out.append(p + side * (1.0 if rng.randf() < 0.5 else -1.0))
+	for shape: MapShape in layout.water_shapes:
+		out.append_array(_along(shape.outer, spacing, rng))
 	return out
 
 

@@ -3,28 +3,33 @@ extends RefCounted
 ## vào ở mốc đồ họa. Chỉ vẽ, không có logic. Dùng qua preload, không class_name.
 
 const VOID := Color("0c1719")
-const GROUND := Color("4b7b5d")
-const GROUND_DARK := Color("416e53")
+const FLOWERS := [Color("f3e7c4"), Color("f2cf55"), Color("e9a7c0")]
+const PEBBLE := Color("9c9a8c")
+const PEBBLE_LIGHT := Color("c4c2b4")
+const GROUND := Color("627f38")
+const GROUND_DARK := Color("4e6b2b")
+const GROUND_LIGHT := Color("7a9644")
 const BASE_FLOOR := [Color("4f7487"), Color("86625c")]
 const BASE_TILE := [Color("5b8296"), Color("94706a")]
 const BASE_EDGE := [Color("7fb6e6"), Color("e99a92")]
-const LANE := Color("cdb88c")
-const LANE_EDGE := Color("a08b62")
-const WATER_DEEP := Color("2a7db0")
-const WATER_LIGHT := Color("3f9ccc")
-const WATER_BANK := Color("1d5a80")
-const FOREST_SHADOW := Color("1b3d2c")
-const FOREST_BODY := Color("255639")
-const FOREST_CANOPY := Color("2f6a45")
-const FOREST_LIGHT := Color("3d7f52")
-const CLIFF := Color("263034")
-const CLIFF_TOP := Color("4f5f63")
-const RAMP := Color("7f9b82")
-const RAMP_LINE := Color("63806a")
-const CAMP_CLEARING := Color("446f53")
-const BUSH := Color("6f9a3a")
-const BUSH_DARK := Color("4e7428")
-const BUSH_LIGHT := Color("94c05a")
+const LANE := Color("dfbd85")
+const LANE_EDGE := Color("a99a5c")
+const LANE_DARK := Color("c49f68")
+const WATER_DEEP := Color("2b97a8")
+const WATER_LIGHT := Color("47b6b4")
+const WATER_BANK := Color("6d6b4c")
+const FOREST_SHADOW := Color("4c6a2a")
+const FOREST_BODY := Color("4b6829")
+const FOREST_CANOPY := Color("486427")
+const FOREST_LIGHT := Color("456025")
+const CLIFF := Color("5d6b3a")
+const CLIFF_TOP := Color("6f7a48")
+const RAMP := Color("bfae80")
+const RAMP_LINE := Color("9d8c60")
+const CAMP_CLEARING := Color("617f37")
+const BUSH := Color("6e9236")
+const BUSH_DARK := Color("557829")
+const BUSH_LIGHT := Color("9cbd55")
 
 ## Nền, base, sông, dốc, lane: mọi thứ đơn vị đi lên được.
 static func paint_ground(ci: CanvasItem, layout: MapLayout, detail: bool = true) -> void:
@@ -34,9 +39,10 @@ static func paint_ground(ci: CanvasItem, layout: MapLayout, detail: bool = true)
 		# Vệt nền đậm nhạt cố định (seed riêng của VIEW) để vùng trống không phẳng lì.
 		var rng := RandomNumberGenerator.new()
 		rng.seed = 7341
-		for index in range(70):
+		for index in range(110):
 			var center := Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
-			ci.draw_circle(center, rng.randf_range(160, 420), Color(GROUND_DARK, 0.35))
+			ci.draw_circle(center, rng.randf_range(160, 420), Color(GROUND_DARK if index % 2 == 0 else GROUND_LIGHT, 0.35))
+		_paint_specks(ci, size, rng)
 		for camp in layout.camp_points:
 			ci.draw_circle(camp, 210, CAMP_CLEARING)
 	for team in range(2):
@@ -49,7 +55,36 @@ static func paint_ground(ci: CanvasItem, layout: MapLayout, detail: bool = true)
 		var points: PackedVector2Array = layout.lanes[lane]
 		if detail: _thick_line(ci, points, LANE_EDGE, lane_width + 36)
 		_thick_line(ci, points, LANE, lane_width)
-		if detail: _thick_line(ci, points, Color(1, 1, 1, 0.07), lane_width * 0.35)
+		if detail: _paint_lane_wear(ci, points, lane_width)
+
+
+## Hoa nhỏ và sỏi rải trên cỏ (nướng một lần; lane, rừng vẽ đè lên sau).
+static func _paint_specks(ci: CanvasItem, size: Vector2, rng: RandomNumberGenerator) -> void:
+	for index in range(1400):
+		var at := Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
+		var color: Color = FLOWERS[rng.randi() % FLOWERS.size()]
+		for k in range(rng.randi_range(2, 5)):
+			ci.draw_circle(at + Vector2(rng.randf_range(-22, 22), rng.randf_range(-14, 14)), rng.randf_range(4, 7), color)
+	for index in range(700):
+		var at := Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
+		var r := rng.randf_range(7, 15)
+		ci.draw_circle(at + Vector2(0, r * 0.35), r, Color(0.2, 0.25, 0.1, 0.35))
+		ci.draw_circle(at, r, PEBBLE)
+		ci.draw_circle(at - Vector2(r, r) * 0.3, r * 0.45, PEBBLE_LIGHT)
+
+
+## Lane: mảng đất đậm nhạt và phiến đá mờ dọc đường.
+static func _paint_lane_wear(ci: CanvasItem, points: PackedVector2Array, width: float) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = int(points[0].x + points[0].y * 3.0)
+	for i in range(points.size() - 1):
+		var steps := int(points[i].distance_to(points[i + 1]) / 90.0)
+		for k in range(steps):
+			var at := points[i].lerp(points[i + 1], (k + rng.randf()) / maxi(1, steps))
+			var side := (points[i + 1] - points[i]).normalized().orthogonal() * rng.randf_range(-0.4, 0.4) * width
+			ci.draw_circle(at + side, rng.randf_range(40, 90), Color(LANE_DARK, 0.22))
+			if rng.randf() < 0.5:
+				ci.draw_circle(at - side, rng.randf_range(25, 45), Color(1, 1, 1, 0.10))
 
 
 static func _paint_base(ci: CanvasItem, layout: MapLayout, team: int, detail: bool) -> void:
@@ -93,10 +128,6 @@ static func paint_obstacles(ci: CanvasItem, layout: MapLayout, detail: bool = tr
 		ci.draw_colored_polygon(shape.outer, CLIFF)
 		if detail: _outline(ci, shape.outer, CLIFF_TOP, 8)
 	for shape: MapShape in layout.forest_shapes:
-		if detail:
-			ci.draw_set_transform(Vector2(0, 26))
-			ci.draw_colored_polygon(shape.outer, FOREST_SHADOW)
-			ci.draw_set_transform(Vector2.ZERO)
 		ci.draw_colored_polygon(shape.outer, FOREST_BODY)
 		if detail:
 			for inner in Geometry2D.offset_polygon(shape.outer, -38, Geometry2D.JOIN_ROUND):
@@ -105,7 +136,6 @@ static func paint_obstacles(ci: CanvasItem, layout: MapLayout, detail: bool = tr
 					ci.draw_set_transform(Vector2(-14, -18))
 					ci.draw_colored_polygon(top, FOREST_LIGHT)
 					ci.draw_set_transform(Vector2.ZERO)
-			_outline(ci, shape.outer, FOREST_SHADOW, 10)
 		for hole in shape.holes:
 			ci.draw_colored_polygon(hole, GROUND)
 
