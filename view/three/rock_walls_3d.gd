@@ -1,49 +1,81 @@
 class_name RockWalls3D
 extends RefCounted
-## Đá của bản đồ v3 (D-168), dựng từ dữ liệu map — chỉ hình ảnh, chặn đường vẫn theo MapLayout:
-## mảnh vách đá nối tiếp dọc từng đoạn `rock_lines` (bề ngang mảnh ≈ độ dày vách × `wall_overhang`),
-## bậc thang ở mỗi lối xuống sông (`ramp_points`) kèm hai cột hai bên, cụm đá phủ khối đá (`rock_shapes`).
-## Phần tử trả về cùng dạng Scenery3D._place: [vị trí, loại, cỡ, góc, (ép dọc)].
+## Đá và rào của bản đồ v3 (D-168, D-169), dựng từ dữ liệu map — chỉ hình ảnh, chặn đường vẫn theo
+## MapLayout. Bề ngang mảnh = đúng độ dày vật cản, mảnh không lòi ra quá đầu đoạn (không đi xuyên đá,
+## không có tường vô hình). Phần tử trả về cùng dạng Scenery3D._place: [vị trí, loại, cỡ, góc, (ép dọc)].
+##   wall_items   vách đá dọc `rock_lines` loại rock (bờ sông…)
+##   fence_items  khối tường dọc rào base / fountain; post_items cột ở hai đầu và giữa đoạn rào
+##   ring_items   vòng đá ổ quái: lối vào của mô hình (`ring_open`, độ) xoay về hướng ghi trong map
+##   stair_items  bậc thang mỗi lối xuống sông, bậc thấp quay ra nước; pillar_items cột hai bên
 
 static var _bounds: Dictionary[String, AABB] = {}
 
 
-## Mảnh vách: mỗi đoạn chia đều, mảnh chồng nhau một chút (`wall_step` < 1) cho liền.
-static func wall_items(layout: MapLayout, cfg: Dictionary, rng: RandomNumberGenerator) -> Array[Array]:
+static func wall_items(layout: MapLayout, models: Array, kind: String, rng: RandomNumberGenerator) -> Array[Array]:
 	var out: Array[Array] = []
-	var models: Array = cfg["walls"]
 	for i: int in layout.rock_lines.size():
+		if layout.rock_line_kinds[i] != kind:
+			continue
 		var line: PackedVector2Array = layout.rock_lines[i]
-		var width: float = layout.rock_line_widths[i] * cfg["wall_overhang"]
 		for k: int in line.size() - 1:
-			_segment(out, line[k], line[k + 1], width, models, cfg, rng)
+			_segment(out, line[k], line[k + 1], layout.rock_line_widths[i], models, rng, kind == "rock")
 	return out
 
 
+## Chia đoạn a→b thành các mảnh dài bằng mô hình (theo bề ngang), mảnh đầu / cuối nằm gọn trong đoạn.
 static func _segment(out: Array[Array], a: Vector2, b: Vector2, width: float, models: Array,
-		cfg: Dictionary, rng: RandomNumberGenerator) -> void:
+		rng: RandomNumberGenerator, rough: bool) -> void:
+	var dir: Vector2 = (b - a).normalized()
+	var length: float = a.distance_to(b)
 	var kind: int = rng.randi() % models.size()
 	var box: AABB = model_bounds(models[kind])
 	var k: float = width * MatchView3D.S / minf(box.size.x, box.size.z)
-	var length: float = maxf(box.size.x, box.size.z) * k / MatchView3D.S
-	var count: int = maxi(1, ceili(a.distance_to(b) / (length * cfg["wall_step"])))
-	var dir: Vector2 = (b - a).normalized()
+	var piece: float = maxf(box.size.x, box.size.z) * k / MatchView3D.S
+	if piece > length:
+		k *= length / piece
+		piece = length
+	var count: int = maxi(1, ceili((length - piece) / (piece * 0.8)) + 1)
 	for j: int in count:
-		kind = rng.randi() % models.size()
-		box = model_bounds(models[kind])
-		k = width * MatchView3D.S / minf(box.size.x, box.size.z) * rng.randf_range(0.9, 1.1)
-		var flip: float = PI if rng.randf() < 0.5 else 0.0
-		out.append([a.lerp(b, (j + 0.5) / count), kind, k, align(dir, box) + flip + rng.randf_range(-0.12, 0.12)])
+		var t: float = 0.5 if count == 1 else float(j) / (count - 1)
+		var at: Vector2 = a + dir * (piece * 0.5 + (length - piece) * t)
+		var jitter: float = rng.randf_range(-0.08, 0.08) if rough else 0.0
+		var flip: float = PI if rough and rng.randf() < 0.5 else 0.0
+		out.append([at, kind if not rough else rng.randi() % models.size(), k, align(dir, box) + flip + jitter])
 
 
-## Bậc thang mỗi lối xuống (nằm ngang theo bờ, ép thấp sát đất) và hai cột hai bên.
+## Cột rào ở hai đầu mỗi đoạn rào và dọc đường, cách nhau khoảng `post_spacing`.
+static func post_items(layout: MapLayout, cfg: Dictionary) -> Array[Array]:
+	var out: Array[Array] = []
+	var k: float = cfg["post_height"] * MatchView3D.S / model_bounds(cfg["pillar"]).size.y
+	for i: int in layout.rock_lines.size():
+		if layout.rock_line_kinds[i] != "fence":
+			continue
+		var line: PackedVector2Array = layout.rock_lines[i]
+		var since: float = 0.0
+		for j: int in line.size():
+			since += line[j].distance_to(line[j - 1]) if j > 0 else 0.0
+			if j == 0 or j == line.size() - 1 or since >= cfg["post_spacing"]:
+				out.append([line[j], 0, k, 0.0])
+				since = 0.0
+	return out
+
+
+static func ring_items(layout: MapLayout, cfg: Dictionary) -> Array[Array]:
+	var out: Array[Array] = []
+	for i: int in layout.ring_points.size():
+		var turn: float = deg_to_rad(cfg["ring_open"]) - layout.ring_angles[i]
+		out.append([layout.ring_points[i], layout.ring_models[i] % cfg["rings"].size(), layout.ring_scales[i], turn])
+	return out
+
+
 static func stair_items(layout: MapLayout, cfg: Dictionary) -> Array[Array]:
 	var out: Array[Array] = []
 	var box: AABB = model_bounds(cfg["stairs"])
+	var k: float = cfg["stairs_width"] * MatchView3D.S / box.size.x
 	for i: int in layout.ramp_points.size():
-		var dir: Vector2 = Vector2.from_angle(layout.ramp_angles[i])
-		var k: float = cfg["stairs_width"] * MatchView3D.S / maxf(box.size.x, box.size.z)
-		out.append([layout.ramp_points[i], 0, k, align(dir, box), cfg["stairs_squash"]])
+		var a: float = layout.ramp_angles[i]
+		var down: Vector2 = Vector2(-sin(a), cos(a))  # pháp tuyến bên phải hướng dọc bờ = xuống nước (MAP-07)
+		out.append([layout.ramp_points[i], 0, k, atan2(down.x, down.y), cfg["stairs_squash"]])  # bậc thấp ở +z
 	return out
 
 
@@ -51,21 +83,9 @@ static func pillar_items(layout: MapLayout, cfg: Dictionary) -> Array[Array]:
 	var out: Array[Array] = []
 	var k: float = cfg["pillar_height"] * MatchView3D.S / model_bounds(cfg["pillar"]).size.y
 	for i: int in layout.ramp_points.size():
-		var dir: Vector2 = Vector2.from_angle(layout.ramp_angles[i])
+		var along: Vector2 = Vector2.from_angle(layout.ramp_angles[i])
 		for side: float in [-1.0, 1.0]:
-			out.append([layout.ramp_points[i] + dir * side * cfg["stairs_width"] * 0.58, 0, k, layout.ramp_angles[i]])
-	return out
-
-
-## Cụm đá phủ kín khối đá: lưới lệch như rừng, cỡ ngẫu nhiên.
-static func fill_items(layout: MapLayout, cfg: Dictionary, rng: RandomNumberGenerator) -> Array[Array]:
-	var out: Array[Array] = []
-	for shape: MapShape in layout.rock_shapes:
-		var points: PackedVector2Array = Scenery3D._fill(shape, cfg["rock_spacing"], cfg["rock_inset"], rng)
-		if points.is_empty():
-			points.append(Scenery3D._rect(shape.outer).get_center())
-		for p: Vector2 in points:
-			out.append([p, rng.randi() % cfg["rocks"].size(), rng.randf_range(cfg["rock_scale"][0], cfg["rock_scale"][1]), rng.randf() * TAU])
+			out.append([layout.ramp_points[i] + along * side * cfg["stairs_width"] * 0.58, 0, k, layout.ramp_angles[i]])
 	return out
 
 

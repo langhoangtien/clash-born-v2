@@ -31,6 +31,14 @@ const BUSH := Color("6e9236")
 const BUSH_DARK := Color("557829")
 const BUSH_LIGHT := Color("9cbd55")
 
+## D-169: đất ngoài khung map (dưới dải núi ngoài map) để camera không thấy khoảng trống.
+static func paint_outside(ci: CanvasItem, layout: MapLayout) -> void:
+	var size := layout.world_size()
+	var m := 4000.0
+	for r: Rect2 in [Rect2(-m, -m, size.x + 2 * m, m), Rect2(-m, size.y, size.x + 2 * m, m), Rect2(-m, 0, m, size.y), Rect2(size.x, 0, m, size.y)]:
+		ci.draw_rect(r, CLIFF)
+
+
 ## Nền, base, sông, dốc, lane: mọi thứ đơn vị đi lên được.
 static func paint_ground(ci: CanvasItem, layout: MapLayout, detail: bool = true, fountain_radius: float = 0.0) -> void:
 	var size := layout.world_size()

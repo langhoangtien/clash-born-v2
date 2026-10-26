@@ -1,12 +1,12 @@
 """Hình bản đồ v3 (D-168) từ nguồn vector map_source.json, toạ độ guide (1 ô = `scale` đơn vị thế giới).
 
-Nguồn ghi nửa Blue (y > x); hàm `expand` sinh nửa Red bằng xoay 180° (MAP-04). Vật cản gồm:
+Nguồn ghi nửa Blue (y > x); build sinh nửa Red bằng xoay 180° (MAP-04). Vật cản gồm:
   forest      khối rừng (vẽ cây)
-  rocks       khối đá (vẽ cụm đá — nhẹ hơn cây)
-  rock_lines  vách đá: đoạn thẳng nối nhau, cùng độ dày (vẽ mảnh vách đá nối tiếp)
-  alcoves     hốc đá quanh trại rừng: cung vách mở về phía `open`
+  mountains   khối núi đá (vẽ tảng đá lớn — nhẹ hơn cây); cả viền ngoài map là núi đá
+  rock_lines  vách đá: đoạn thẳng nối nhau, cùng độ dày (vẽ mảnh vách nối tiếp)
+  alcoves     ổ quái (MAP-08): vòng đá một mảnh (mô hình ring) hoặc vòng cây, mở về phía `open`
   river_bank  vách kín hai bờ sông, chừa lối xuống (`openings`, vẽ bậc thang)
-  border      viền ngoài map (rừng, mép trong có vách đá)
+  fences      rào đá quanh base (chỉ hở ở 3 lane, MAP-09) và quanh fountain (một cổng, MAP-10)
 Rồi cắt chỗ phải trống (lane, base, trụ, trại, điểm sinh, fountain, khu mid cắt sông MAP-05) và
 lấp khe hẹp / hốc kín (MAP-03)."""
 import math
@@ -51,19 +51,37 @@ def mirrored_lines(sym, items, default_width):
     return out
 
 
-# ------------------------------------------------------------------ hốc đá trại rừng
-def alcove_line(pos, cfg, defaults):
-    """Cung vách quanh trại: tâm `pos`, bán kính r, mở `span_open` độ về hướng `open` (độ, 0 = +x, y xuống)."""
-    r = cfg.get("r", defaults["r"])
-    gap = math.radians(cfg.get("gap", defaults["gap"]))
-    a0 = math.radians(cfg["open"]) + gap / 2
+# ------------------------------------------------------------------ cung / vòng
+def arc_line(pos, r, open_deg, gap_deg, n=24):
+    """Cung tròn tâm `pos` bán kính r, hở `gap_deg` độ ở hướng `open_deg` (độ, 0 = +x, y hướng xuống)."""
+    gap = math.radians(gap_deg)
+    a0 = math.radians(open_deg) + gap / 2
     a1 = a0 + 2 * math.pi - gap
-    n = 14
-    pts = [(pos[0] + r * math.cos(a0 + (a1 - a0) * k / n), pos[1] + r * math.sin(a0 + (a1 - a0) * k / n)) for k in range(n + 1)]
+    return LineString([(pos[0] + r * math.cos(a0 + (a1 - a0) * k / n), pos[1] + r * math.sin(a0 + (a1 - a0) * k / n)) for k in range(n + 1)])
+
+
+def base_fence(base_poly, frame_poly, inset):
+    """Rào quanh base: mép polygon base (lùi vào `inset`), bỏ phần chạy dọc mép khung map, đầu rào nối tới mép khung."""
+    ring = base_poly.buffer(-inset, join_style="mitre").exterior
+    return [to_frame(l, frame_poly, inset + 1.5) for l in lines_of(ring.difference(frame_poly.exterior.buffer(inset + 1.0)))]
+
+
+def to_frame(line, frame_poly, reach):
+    """Đầu đường cách mép khung không quá `reach` thì kéo thẳng ra tới mép (không để khe hẹp sát mép map, MAP-03)."""
+    pts = list(line.coords)
+    for end, prev in ((0, 1), (-1, -2)):
+        p, q = Point(pts[end]), Point(pts[prev])
+        if frame_poly.exterior.distance(p) <= reach:
+            dx, dy = p.x - q.x, p.y - q.y
+            n = math.hypot(dx, dy) or 1.0
+            far = Point(p.x + dx / n * (reach + 2), p.y + dy / n * (reach + 2))
+            hit = LineString([p, far]).intersection(frame_poly.exterior)
+            if not hit.is_empty:
+                h = hit if hit.geom_type == "Point" else nearest_points(hit, p)[0]
+                pts[end] = (h.x, h.y)
     return LineString(pts)
 
 
-# ------------------------------------------------------------------ bờ sông
 def bank_lines(river, cfg, sym, mid_zone):
     """Vách hai bờ: đường bao sông nới `offset`, bỏ đoạn ở lối xuống (nửa Blue + bản xoay) và khu mid."""
     ring = unary_union([p.buffer(cfg["offset"], join_style="mitre").exterior for p in river])
@@ -74,30 +92,30 @@ def bank_lines(river, cfg, sym, mid_zone):
             q = nearest_points(ring, Point(c[0], c[1]))[0]
             r = c[2] if len(c) > 2 else cfg["opening_r"]
             holes.append(Point(q.x, q.y).buffer(r))
-            stairs.append((q.x, q.y, _tangent(ring, q)))
+            stairs.append((q.x, q.y, _tangent(ring, q, river)))
     cut = unary_union(holes + [mid_zone])
     lines = lines_of(ring.difference(cut).simplify(cfg.get("simplify", 1.0)))
     return lines, stairs
 
 
-def _tangent(ring, q):
+def _tangent(ring, q, river):
+    """Hướng dọc bờ tại q, đảo chiều sao cho pháp tuyến bên phải (-ty, tx) chỉ xuống nước (bậc thang đi xuống)."""
     rings = getattr(ring, "geoms", [ring])
     best = min(rings, key=lambda r: r.distance(q))
     d = best.project(q)
     a = best.interpolate(max(0.0, d - 1.0))
     b = best.interpolate(min(best.length, d + 1.0))
-    return math.atan2(b.y - a.y, b.x - a.x)
+    tx, ty = b.x - a.x, b.y - a.y
+    n = math.hypot(tx, ty) or 1.0
+    if not unary_union(river).contains(Point(q.x - ty / n * 4.0, q.y + tx / n * 4.0)):
+        tx, ty = -tx, -ty
+    return math.atan2(ty, tx)
 
 
 # ------------------------------------------------------------------ viền map
 def border_area(frame, b):
     fx0, fy0, fx1, fy1 = frame
     return box(fx0, fy0, fx1, fy1).difference(box(b["left"], b["top"], b["right"], b["bottom"]))
-
-
-def border_line(b):
-    return LineString([(b["left"], b["top"]), (b["right"], b["top"]), (b["right"], b["bottom"]),
-                       (b["left"], b["bottom"]), (b["left"], b["top"])])
 
 
 # ------------------------------------------------------------------ khu phải trống

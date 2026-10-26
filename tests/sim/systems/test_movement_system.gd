@@ -151,13 +151,18 @@ func test_MOV_04_two_units_on_same_spot_separate() -> void:
 	assert_true(_clear(w, a) and _clear(w, b))
 
 
+## Chỗ trống giữa lane TOP của Blue (D-169: quanh fountain có rào nên không dùng fountain).
+func _lane_spot(w: World) -> Vector2:
+	return w.navigation(HERO_R).nearest_clear(_map.lanes["TOP"][0].lerp(_map.lanes["TOP"][1], 0.5))
+
+
 func test_MOV_04_hero_walks_through_idle_crowd() -> void:
 	var w: World = _world()
-	var start: Vector2 = _map.fountain_point(0)
+	var start: Vector2 = _lane_spot(w)
 	var h: Entity = _unit(w, start)
 	for i: int in range(5):
-		_unit(w, start + Vector2(300, -80 + 40 * i), 300.0, 20.0)
-	var target: Vector2 = start + Vector2(600, 0)
+		_unit(w, start + Vector2(-80 + 40 * i, -300), 300.0, 20.0)
+	var target: Vector2 = start + Vector2(0, -600)
 	w.submit(Command.move_to(h.id, target))
 	_run_until_idle(w, 300)
 	assert_true(h.order.finished, "len qua được")
@@ -237,8 +242,8 @@ func test_MOV_06_move_dir_goes_straight_at_speed() -> void:
 func test_MOV_06_slides_along_obstacle_never_enters() -> void:
 	var w: World = _world()
 	var nav: MapNavigation = w.navigation(HERO_R)
-	var h: Entity = _unit(w, _map.fountain_point(0))
-	# Đi chéo lên trái tới mép map/vách rồi giữ hướng: phải trượt chứ không kẹt cứng.
+	var h: Entity = _unit(w, _lane_spot(w))
+	# Đi chéo lên trái tới mép núi viền map rồi giữ hướng: phải trượt chứ không kẹt cứng.
 	w.submit(Command.move_dir(h.id, Vector2(-1, -0.3)))
 	var positions: Array[Vector2] = []
 	for t: int in range(240):

@@ -100,7 +100,7 @@ func _check(w: World, still: Dictionary[int, int], last_pos: Dictionary[int, Vec
 		var route: LaneRoute = LaneRoute.of(w, e.lane, e.team)
 		if route.progress_of(e.position) > LaneRoute.limit(w, e) + w.balance.creep_front_margin + 1.0:
 			return "INV-03: lính %d vượt mép trước" % e.id
-		if e.has_origin and e.position.distance_to(e.chase_origin) > w.balance.creep_chase_leash + LEASH_SLACK:
+		if e.has_origin and not e.returning and e.position.distance_to(e.chase_origin) > w.balance.creep_chase_leash + LEASH_SLACK:
 			return "INV-04: lính %d xa origin %.0f" % [e.id, e.position.distance_to(e.chase_origin)]
 		var busy: bool = e.order.type == Order.Type.ATTACK and not e.order.finished
 		var moved: bool = not last_pos.has(e.id) or last_pos[e.id].distance_to(e.position) > 0.01

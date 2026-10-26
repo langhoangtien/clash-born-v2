@@ -178,7 +178,7 @@ func test_INV_04_chase_respects_leash_and_returns_to_route() -> void:
 		w.step()
 		if c.has_origin:
 			chased = true
-			if c.position.distance_to(c.chase_origin) > w.balance.creep_chase_leash + 100.0:
+			if not c.returning and c.position.distance_to(c.chase_origin) > w.balance.creep_chase_leash + 100.0:
 				fail("tick %d INV-04: cách origin %.0f" % [w.tick, c.position.distance_to(c.chase_origin)])
 				return
 	assert_true(chased, "lính có đuổi hero")

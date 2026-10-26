@@ -15,7 +15,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "..", "..", "data", "maps", "clashborn_map.json")
 sys.path.insert(0, HERE)
 from symmetry import Sym  # noqa: E402
-import geometry as G, export as X, towers as T  # noqa: E402
+import geometry as G, export as X, towers as T, features as F  # noqa: E402
 
 SRC = json.load(open(os.path.join(HERE, "map_source.json")))
 SYM = Sym(SRC["frame"])
@@ -60,48 +60,55 @@ def bush_polygons(src):
 
 
 def obstacles(s):
-    """Rừng, khối đá, vách (đoạn thẳng có độ dày) và bậc thang; đã cắt khu trống và lấp khe (MAP-03)."""
+    """Rừng, núi đá, vách / rào (đoạn có độ dày), vòng đá ổ quái, bậc thang; đã cắt khu trống và lấp khe (MAP-03)."""
     frame = box(FX0, FY0, FX1, FY1)
     mid_zone = Point(CENTER).buffer(SRC["mid_clear_world"] / SCALE)  # MAP-05
     river = [Polygon(p).buffer(0) for p in SRC["river"]]
     bank, stairs = G.bank_lines(river, SRC["river_bank"], SYM, mid_zone)
-    lines = [(l, SRC["river_bank"]["width"]) for l in bank]
-    lines += G.mirrored_lines(SYM, SRC["rock_lines"], SRC["rock_width"])
-    for c in SRC["camps"]:
-        if "alcove" in c:
-            for pos in ([c["pos"], SYM.rot(c["pos"])] if c["side"] == 0 else [c["pos"]]):
-                cfg = dict(c["alcove"]) if pos is c["pos"] else dict(c["alcove"], open=c["alcove"]["open"] + 180)
-                lines.append((G.alcove_line(pos, cfg, SRC["alcove"]), SRC["rock_width"]))
-    lines.append((G.border_line(SRC["border"]), SRC["rock_width"]))
-    extra = [(p, 20) for p in s["fountains"]] + [(p, 12) for p in s["cores"]]
-    extra += [(p, 7) for t in ("0", "1") for p in s["lane_spawns"][t].values()]
-    extra += [((x, y), SRC["river_bank"]["opening_r"]) for x, y, _ in stairs]
-    extra += [(c["pos"], c["r"]) for c in SRC.get("clear_circles", [])]
-    cut = G.clear_zone(SRC, s["lanes"], s["bases"], s["towers"], s["camps"], extra)
-    cliff = unary_union([l.buffer(w / 2, **G.FLAT) for l, w in lines]).difference(cut).difference(mid_zone)
-    forest = unary_union(G.mirrored_polys(SYM, SRC["forest"]) + [G.border_area(SRC["frame"], SRC["border"])])
-    rocks = unary_union(G.mirrored_polys(SYM, SRC["rocks"])).difference(cut)
-    forest = forest.difference(cut).difference(rocks).difference(cliff)
+    lines = [(l, SRC["river_bank"]["width"], "rock") for l in bank]
+    lines += [(l, w, "rock") for l, w in G.mirrored_lines(SYM, SRC["rock_lines"], SRC["rock_width"])]
+    ring_lines, rings, tree_rings, doors = F.camp_alcoves(SRC, SYM, SCALE)
+    fence = F.fences(SRC, s, frame)
+    lines += [(l, w, "fence") for l, w in fence]
+    cut, gates = _clear(s, stairs, doors)
+    solid = unary_union([l.buffer(w / 2, **G.FLAT) for l, w, k in lines if k == "rock"] + [l.buffer(w / 2, **G.FLAT) for l, w in ring_lines])
+    cliff = solid.difference(cut).difference(mid_zone).union(unary_union([l.buffer(w / 2, **G.FLAT) for l, w in fence]).difference(gates))
+    rocks = unary_union(G.mirrored_polys(SYM, SRC["mountains"]) + [G.border_area(SRC["frame"], SRC["border"])]).difference(cut).difference(cliff)
+    forest = unary_union(G.mirrored_polys(SYM, SRC["forest"]) + tree_rings).difference(cut).difference(rocks).difference(cliff)
     protect = cut.union(unary_union([Point(x, y).buffer(SRC["river_bank"]["opening_r"] + 2) for x, y, _ in stairs]))
     fill = G.readability(frame, unary_union([forest, rocks, cliff]), protect, s["fountains"][0], SRC["gap_min_world"] / 2 / SCALE)
     forest = unary_union([forest, fill.difference(cliff).difference(rocks)]).intersection(frame)
     print(f"MAP-03: lấp {fill.area:.0f} ô guide khe hẹp / hốc kín")
-    return {"forest": G.polys_of(forest), "rocks": G.polys_of(rocks.intersection(frame)),
-            "cliffs": G.polys_of(cliff.intersection(frame)), "water": river}, lines, stairs, cut
+    layers = {"forest": G.polys_of(forest), "rocks": G.polys_of(rocks.intersection(frame)),
+              "cliffs": G.polys_of(cliff.intersection(frame)), "water": river}
+    return layers, lines, stairs, rings, (cut, gates)
 
 
-def rock_line_data(lines, cut, frame):
-    """Đường vách cho VIEW (D-168): từng đoạn còn lại sau khi cắt khu trống, kèm độ dày."""
+def _clear(s, stairs, doors):
+    """Khu phải trống (lane, base, trụ, trại, điểm sinh, fountain, lối sông) và cổng rào (lane, điểm sinh)."""
+    extra = [(p, 20) for p in s["fountains"]] + [(p, 12) for p in s["cores"]]
+    spawns = [(p, 7) for t in ("0", "1") for p in s["lane_spawns"][t].values()]
+    extra += spawns + [((x, y), SRC["river_bank"]["opening_r"]) for x, y, _ in stairs]
+    extra += [(c["pos"], c["r"]) for c in SRC.get("clear_circles", [])] + doors
+    cut = G.clear_zone(SRC, s["lanes"], s["bases"], s["towers"], s["camps"], extra)
+    gates = unary_union([LineString(l).buffer(SRC["lane_half_width"] + 1, **G.ROUND) for l in s["lanes"].values()]
+                        + [Point(p).buffer(r) for p, r in spawns] + [Point(t["pos"]).buffer(SRC["tower_clear_radius"]) for t in s["towers"]])
+    return cut, gates
+
+
+def rock_line_data(lines, cuts, frame):
+    """Đường vách / rào cho VIEW (D-168, D-169): từng đoạn còn lại sau khi cắt khu trống, kèm độ dày và loại."""
+    cut, gates = cuts
     out = []
-    for l, w in lines:
-        for part in G.lines_of(l.difference(cut).intersection(frame)):
-            out.append({"points": [W(p) for p in part.coords], "width": w * SCALE})
+    for l, w, kind in lines:
+        for part in G.lines_of(l.difference(gates if kind == "fence" else cut).intersection(frame)):
+            out.append({"points": [W(p) for p in part.coords], "width": w * SCALE, "kind": kind})
     return out
 
 
 def main():
     s = semantics(SRC)
-    layers, lines, stairs, cut = obstacles(s)
+    layers, lines, stairs, rings, cuts = obstacles(s)
     s["stairs"] = stairs
     blocked = unary_union(layers["forest"] + layers["rocks"] + layers["cliffs"])
     collision = X.collision_pieces(blocked)
@@ -122,7 +129,8 @@ def main():
         "ramps": [{"pos": W((x, y)), "angle": round(a, 4)} for x, y, a in stairs],
         "bushes": [[W(p) for p in poly] for poly in bushes],
         "shops": _named(SRC["shops"]), "landmarks": _named(SRC.get("landmarks", [])),
-        "render": {k: X.render_polys(v, W) for k, v in layers.items()} | {"rock_lines": rock_line_data(lines, cut, box(FX0, FY0, FX1, FY1))},
+        "render": {k: X.render_polys(v, W) for k, v in layers.items()} | {"rock_lines": rock_line_data(lines, cuts, box(FX0, FY0, FX1, FY1)),
+                                                                     "rings": [{"pos": W(r["pos"]), "open": round(math.radians(r["open"]), 4), "model": r["model"], "scale": SRC["ring"]["scale"]} for r in rings]},
         "collision": [X.poly_world(p, W) for p in collision],
     }
     X.write_json(OUT, data)

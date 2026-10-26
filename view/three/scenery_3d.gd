@@ -22,10 +22,7 @@ func build(layout: MapLayout) -> void:
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = SEED + 1
 	_place(cfg["trees"], tree_items(layout))
-	_place(cfg["walls"], RockWalls3D.wall_items(layout, cfg, rng))  # D-168: vách đá nối tiếp
-	_place(cfg["rocks"], RockWalls3D.fill_items(layout, cfg, rng))
-	_place([cfg["stairs"]], RockWalls3D.stair_items(layout, cfg))
-	_place([cfg["pillar"]], RockWalls3D.pillar_items(layout, cfg))
+	_build_stone(layout, cfg, rng)
 	if cfg.has("bushes"):  # D-160: bụi cỏ (VIS-06) — tạm dùng cụm cây tròn ép thấp
 		var bushes: Array[Array] = []
 		for poly: PackedVector2Array in layout.bushes.polygons:
@@ -41,6 +38,17 @@ func build(layout: MapLayout) -> void:
 		_place(cfg["edge_grass"], tufts)
 	for i: int in layout.shop_points.size():
 		_add_static(cfg["shop"], layout.shop_points[i], 0.0)
+
+
+## D-168, D-169: vách bờ sông, rào base / fountain, vòng đá ổ quái, bậc thang, núi đá.
+func _build_stone(layout: MapLayout, cfg: Dictionary, rng: RandomNumberGenerator) -> void:
+	_place(cfg["walls"], RockWalls3D.wall_items(layout, cfg["walls"], "rock", rng))
+	_place([cfg["fence"]], RockWalls3D.wall_items(layout, [cfg["fence"]], "fence", rng))
+	_place([cfg["pillar"]], RockWalls3D.post_items(layout, cfg))
+	_place(cfg["rings"], RockWalls3D.ring_items(layout, cfg))
+	_place([cfg["stairs"]], RockWalls3D.stair_items(layout, cfg))
+	_place([cfg["pillar"]], RockWalls3D.pillar_items(layout, cfg))
+	_place(cfg["mountains"]["models"], Mountains3D.items(layout, cfg, rng))
 
 
 ## Cây trong vùng rừng: [vị trí, loại, cỡ, góc]. Cố định theo map (RNG riêng) — bóng cây nướng
