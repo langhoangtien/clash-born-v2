@@ -7,6 +7,7 @@ const MAP_PATH: String = "res://data/maps/clashborn.tres"
 func test_D_158_trees_fill_forest_but_not_holes() -> void:
 	var layout: MapLayout = load(MAP_PATH) as MapLayout
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.seed = 3
 	var total: int = 0
 	for shape: MapShape in layout.forest_shapes:
 		for p: Vector2 in Scenery3D._fill(shape, 95.0, 24.0, rng):
