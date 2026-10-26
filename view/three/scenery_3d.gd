@@ -92,12 +92,13 @@ static func _fill(shape: MapShape, spacing: float, inset: float, rng: RandomNumb
 	var out: PackedVector2Array = PackedVector2Array()
 	var inner: Array[PackedVector2Array] = Geometry2D.offset_polygon(shape.outer, -inset)
 	var box: Rect2 = _rect(shape.outer)
+	var outer_cw: bool = Geometry2D.is_polygon_clockwise(shape.outer)
 	var y: float = box.position.y
 	while y < box.end.y:
 		var x: float = box.position.x
 		while x < box.end.x:
 			var p: Vector2 = Vector2(x, y) + Vector2(rng.randf_range(-0.4, 0.4), rng.randf_range(-0.4, 0.4)) * spacing
-			if _inside(inner, p) and not _inside(shape.holes, p):
+			if _inside_rings(inner, p, outer_cw) and not _inside(shape.holes, p):
 				out.append(p)
 			x += spacing
 		y += spacing * 0.87
@@ -129,6 +130,17 @@ static func _edges(layout: MapLayout, spacing: float, rng: RandomNumberGenerator
 	for shape: MapShape in layout.water_shapes:
 		out.append_array(_along(shape.outer, spacing, rng))
 	return out
+
+
+## Trong kết quả offset_polygon: vòng cùng chiều với đa giác gốc là phần trong, ngược chiều là lỗ.
+static func _inside_rings(rings: Array[PackedVector2Array], p: Vector2, outer_cw: bool) -> bool:
+	var hit: bool = false
+	for ring: PackedVector2Array in rings:
+		if Geometry2D.is_point_in_polygon(p, ring):
+			if Geometry2D.is_polygon_clockwise(ring) != outer_cw:
+				return false
+			hit = true
+	return hit
 
 
 static func _inside(polys: Array, p: Vector2) -> bool:
