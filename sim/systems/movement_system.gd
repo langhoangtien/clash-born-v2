@@ -172,6 +172,9 @@ func _walk_path(nav: MapNavigation, e: Entity, budget: float, stop_near: Entity,
 	while budget > 0.0 and e.path_index < e.path.size():
 		var next: Vector2 = e.path[e.path_index]
 		var gap: float = e.position.distance_to(next)
+		if gap <= e.radius and e.path_index + 1 < e.path.size() and nav.has_line_of_walk(e.position, e.path[e.path_index + 1]):
+			e.path_index += 1  # MOV-07: điểm rẽ trong thân coi như đã tới (hai đơn vị không kẹt nhau ở cùng một góc)
+			continue
 		var step_to: Vector2 = next if gap <= budget else e.position + (next - e.position) / gap * budget
 		if not nav.point_is_clear(step_to):
 			blocked_steps += 1

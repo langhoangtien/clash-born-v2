@@ -49,6 +49,10 @@ var ramp_angles: PackedFloat32Array = PackedFloat32Array()
 var forest_shapes: Array[MapShape] = []
 var cliff_shapes: Array[MapShape] = []
 var water_shapes: Array[MapShape] = []
+## D-168: khối đá (chặn như rừng, vẽ bằng cụm đá) và đường vách (đoạn thẳng, độ dày) — VIEW đặt mảnh vách theo.
+var rock_shapes: Array[MapShape] = []
+var rock_lines: Array[PackedVector2Array] = []
+var rock_line_widths: PackedFloat32Array = PackedFloat32Array()
 var collision_polygons: Array[PackedVector2Array] = []
 ## VIS-06: bụi cỏ.
 var bushes: MapBushes = MapBushes.new()
@@ -219,6 +223,7 @@ func _load_terrain(d: Dictionary) -> void:
 	forest_shapes = _shapes(render["forest"])
 	cliff_shapes = _shapes(render["cliffs"])
 	water_shapes = _shapes(render["water"])
+	_load_rocks(render)
 	bushes.load_from(d.get("bushes", []))
 	landmark_names.clear(); landmark_points.clear()
 	shop_names.clear(); shop_points.clear()
@@ -231,6 +236,14 @@ func _load_terrain(d: Dictionary) -> void:
 	collision_polygons.clear()
 	for polygon: Array in d["collision"]:
 		collision_polygons.append(_points(polygon))
+
+
+func _load_rocks(render: Dictionary) -> void:
+	rock_shapes = _shapes(render.get("rocks", []))
+	rock_lines.clear(); rock_line_widths.clear()
+	for line: Dictionary in render.get("rock_lines", []):
+		rock_lines.append(_points(line["points"]))
+		rock_line_widths.append(float(line["width"]))
 
 
 ## Nhúng base64 trong JSON (hàng nối hàng, 1 byte mỗi pixel) để map không phụ thuộc

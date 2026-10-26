@@ -11,16 +11,13 @@ const RING_ALPHA: float = 0.075
 const SPREAD: float = 0.55
 const REACH: float = 0.45
 
-static var _radius: Dictionary[String, float] = {}
-
-
 static func paint(ci: CanvasItem, layout: MapLayout) -> void:
 	var cfg: Dictionary = ModelLibrary.scenery()
 	if cfg.is_empty():
 		return
 	var sun: Vector2 = Look3D.sun_ground_direction()
 	for it: Array in Scenery3D.tree_items(layout):
-		var size: float = _model_size(cfg["trees"][it[1]]) * it[2] / MatchView3D.S
+		var size: float = RockWalls3D.model_bounds(cfg["trees"][it[1]]).size.y * it[2] / MatchView3D.S
 		var at: Vector2 = it[0] + sun * size * REACH
 		_blob(ci, at, size * SPREAD, sun)
 
@@ -31,12 +28,3 @@ static func _blob(ci: CanvasItem, at: Vector2, radius: float, along: Vector2) ->
 	for k: int in RINGS:
 		ci.draw_circle(Vector2.ZERO, radius * (1.0 - 0.055 * k), Color(COLOR, RING_ALPHA))
 	ci.draw_set_transform(Vector2.ZERO)
-
-
-## Chiều cao mô hình cây (đơn vị mô hình), nhớ theo đường dẫn.
-static func _model_size(path: String) -> float:
-	if not _radius.has(path):
-		var n: Node3D = ModelLibrary.static_scene(path).instantiate() as Node3D
-		_radius[path] = ModelLibrary.bounds(n).size.y
-		n.free()
-	return _radius[path]

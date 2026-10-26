@@ -192,3 +192,42 @@ func _midpoint(route: PackedVector2Array) -> Vector2:
 			return route[i - 1].lerp(route[i], half / seg)
 		half -= seg
 	return route[-1]
+
+
+## Khoảng cách từ điểm tới đường gấp khúc.
+func _to_line(p: Vector2, line: PackedVector2Array) -> float:
+	var best: float = INF
+	for i: int in line.size() - 1:
+		best = minf(best, p.distance_to(Geometry2D.get_closest_point_to_segment(p, line[i], line[i + 1])))
+	return best
+
+
+func test_MAP_06_lane_towers_beside_lane_edge_same_offset() -> void:
+	var m: MapLayout = map
+	for i: int in m.tower_ids.size():
+		if m.tower_lanes[i] == "BASE":
+			continue
+		var d: float = _to_line(m.tower_points[i], m.lanes[m.tower_lanes[i]])
+		assert_near(d, 192.0, 4.0, "trụ %s cách tim lane 192" % m.tower_ids[i])
+
+
+func test_MAP_07_river_banks_have_stair_openings() -> void:
+	var m: MapLayout = map
+	assert_eq(m.ramp_points.size(), 12, "6 lối xuống sông mỗi nửa")
+	for p: Vector2 in m.ramp_points:
+		var near_water: float = INF
+		for shape: MapShape in m.water_shapes:
+			near_water = minf(near_water, _to_line(p, shape.outer + PackedVector2Array([shape.outer[0]])))
+		assert_true(near_water < 120.0, "lối %s nằm sát mép sông" % p)
+	assert_true(m.rock_lines.size() > 10, "có vách bờ sông")
+
+
+func test_MAP_08_every_side_camp_sits_in_rock_alcove() -> void:
+	var m: MapLayout = map
+	for i: int in m.camp_ids.size():
+		if m.camp_sides[i] < 0:
+			continue
+		var wall: float = INF
+		for line: PackedVector2Array in m.rock_lines:
+			wall = minf(wall, _to_line(m.camp_points[i], line))
+		assert_true(wall > 200.0 and wall < 330.0, "trại %s có vách hốc đá quanh (cách %d)" % [m.camp_ids[i], wall])

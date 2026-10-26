@@ -48,7 +48,7 @@ clashborn_v2/
     ART.md                 phong cách, hợp đồng hình ảnh, lộ trình đồ họa
   content/                 dữ liệu (.tres), không có logic
     heroes/  abilities/  effects/  items/  units/  balance/
-  data/maps/               map đã build (từ tools/map_build)
+  data/maps/               map đã build (từ tools/map_build: nguồn vector map_source.json, D-168)
   sim/                     tầng SIM
     core/                  công thức (mang từ v1): stat, sát thương, trúng/né
     rules.gd               Rules: khoảng cách mép–mép, trong tầm, nhắm được (DEF, ST)
