@@ -32,7 +32,7 @@ const BUSH_DARK := Color("557829")
 const BUSH_LIGHT := Color("9cbd55")
 
 ## Nền, base, sông, dốc, lane: mọi thứ đơn vị đi lên được.
-static func paint_ground(ci: CanvasItem, layout: MapLayout, detail: bool = true) -> void:
+static func paint_ground(ci: CanvasItem, layout: MapLayout, detail: bool = true, fountain_radius: float = 0.0) -> void:
 	var size := layout.world_size()
 	ci.draw_rect(Rect2(Vector2.ZERO, size), GROUND)
 	if detail:
@@ -48,6 +48,8 @@ static func paint_ground(ci: CanvasItem, layout: MapLayout, detail: bool = true)
 	for team in range(2):
 		_paint_base(ci, layout, team, detail)
 	_paint_water(ci, layout, detail)
+	if fountain_radius > 0.0:
+		_paint_fountains(ci, layout, fountain_radius)
 	if detail:
 		_paint_ramps(ci, layout)
 	var lane_width := layout.lane_width
@@ -56,6 +58,18 @@ static func paint_ground(ci: CanvasItem, layout: MapLayout, detail: bool = true)
 		if detail: _thick_line(ci, points, LANE_EDGE, lane_width + 36)
 		_thick_line(ci, points, LANE, lane_width)
 		if detail: _paint_lane_wear(ci, points, lane_width)
+
+
+## Vùng hồi máu fountain: nền đá sáng màu đội, viền rõ để biết ranh giới.
+static func _paint_fountains(ci: CanvasItem, layout: MapLayout, radius: float) -> void:
+	for team in range(2):
+		var c := layout.fountain_point(team)
+		ci.draw_circle(c, radius, Color(BASE_EDGE[team], 0.16))
+		ci.draw_arc(c, radius - 14, 0, TAU, 96, Color(BASE_EDGE[team], 0.95), 20, true)
+		ci.draw_arc(c, radius - 40, 0, TAU, 96, Color(1, 1, 1, 0.35), 6, true)
+		for k in range(24):  # vạch đá dọc viền
+			var a := TAU * k / 24.0
+			ci.draw_line(c + Vector2.from_angle(a) * (radius - 30), c + Vector2.from_angle(a) * (radius + 2), Color(BASE_TILE[team], 0.9), 5, true)
 
 
 ## Hoa nhỏ và sỏi rải trên cỏ (nướng một lần; lane, rừng vẽ đè lên sau).

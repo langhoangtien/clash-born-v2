@@ -179,10 +179,10 @@
    "custom/nature/tree_b",
    "custom/nature/tree_c"
   ],
-  "tree_spacing": 125.0,
+  "tree_spacing": 95.0,
   "tree_scale": [
-   0.78,
-   1.0
+   0.55,
+   0.75
   ],
   "tree_inset": 30.0,
   "rocks": [
@@ -224,7 +224,9 @@
   "edge_scale": [
    0.35,
    0.6
-  ]
+  ],
+  "tree_edge_inset": 70.0,
+  "tree_edge_spacing": 85.0
  },
  "sprite_scale": 0.75
 }
