@@ -8,12 +8,12 @@ func test_D_146_every_entry_resolves() -> void:
 	for id: String in units:
 		var cfg: Dictionary = units[id]
 		assert_true(ResourceLoader.exists(ModelLibrary.ROOT + cfg["model"] + ".glb"), "%s: mô hình" % id)
-		for suffix: String in ["", "_blue", "_red"]:
+		for suffix: String in (["", "_blue", "_red"] if cfg.has("tex") else []):  # D-173: mô hình tự mang ảnh màu
 			assert_true(ResourceLoader.exists(ModelLibrary.ROOT + cfg["tex"] + "_texture" + suffix + ".png"), "%s: bảng màu%s" % [id, suffix])
 		for hand: String in ["right", "left"]:
 			if cfg.has(hand):
 				assert_true(ResourceLoader.exists(ModelLibrary.ROOT + cfg[hand] + ".gltf"), "%s: vũ khí %s" % [id, hand])
-		var lib: AnimationLibrary = ModelLibrary.animations(cfg["rig"])
+		var lib: AnimationLibrary = ModelLibrary.unit_animations(cfg)
 		var rig: Dictionary = ModelLibrary.rig(cfg["rig"])
 		for key: String in ["idle", "run", "dash", "hit", "death"]:
 			assert_true(lib.has_animation(rig[key]), "%s: hoạt ảnh %s" % [id, key])

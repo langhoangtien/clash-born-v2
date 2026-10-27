@@ -55,6 +55,17 @@ static func animations(rig_name: String) -> AnimationLibrary:
 	return lib
 
 
+## Hoạt ảnh của một đơn vị: rig KayKit dùng chung, hoặc (D-173, rig `own`) hoạt ảnh nằm sẵn trong mô hình.
+static func unit_animations(cfg: Dictionary) -> AnimationLibrary:
+	if not rig(cfg["rig"]).get("own", false):
+		return animations(cfg["rig"])
+	var holder: Node = scene(cfg["model"] + ".glb").instantiate()
+	var ap: AnimationPlayer = holder.find_children("*", "AnimationPlayer", true, false)[0]
+	var lib: AnimationLibrary = ap.get_animation_library(&"")
+	holder.free()
+	return lib
+
+
 ## Vật liệu dùng bảng màu `tex` theo đội (0 xanh, 1 đỏ, khác: gốc), sao từ vật liệu gốc `base`.
 static func team_material(base: Material, tex: String, team: int) -> Material:
 	var key: String = "%s_%d" % [tex, team]
