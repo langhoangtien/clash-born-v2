@@ -19,7 +19,7 @@ func test_MAP_01_map_data_validates() -> void:
 
 
 func test_MAP_02_world_size() -> void:
-	assert_eq(map.world_size(), Vector2(8448, 8448))
+	assert_eq(map.world_size(), Vector2(9216, 9216))  # D-172: lớn hơn 9%
 
 
 func test_MAP_02_blue_bottom_left_red_top_right() -> void:
@@ -92,7 +92,7 @@ func test_empty_layout_reports_errors() -> void:
 
 
 func _forest_center() -> Vector2:
-	for shape: MapShape in map.forest_shapes:
+	for shape: MapShape in map.forest_shapes + map.rock_shapes:  # D-171: khối đá cũng là vật cản vẽ ra
 		var center: Vector2 = Vector2.ZERO
 		for point: Vector2 in shape.outer:
 			center += point

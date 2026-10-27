@@ -72,6 +72,7 @@ def obstacles(s):
     solid = unary_union([l.buffer(w / 2, **G.FLAT) for l, w, k in lines if k != "fence"])
     cliff = solid.difference(cut).difference(mid_zone).union(unary_union([l.buffer(w / 2, **G.FLAT) for l, w in fence]).difference(gates))
     rocks = unary_union(G.mirrored_polys(SYM, SRC["mountains"]) + [G.border_area(SRC["frame"], SRC["border"])]).difference(cut).difference(cliff).difference(mid_zone)
+    rocks = unary_union([p for p in G.polys_of(rocks) if 2 * p.area / p.length >= SRC.get("rock_min_thick", 0)])  # D-172: bỏ vệt đá mảnh sau khi cắt lane / trụ
     forest = unary_union(G.mirrored_polys(SYM, SRC["forest"])).difference(cut).difference(rocks).difference(cliff).difference(mid_zone)
     fill = G.readability(frame, unary_union([forest, rocks, cliff]), cut, s["fountains"][0], SRC["gap_min_world"] / 2 / SCALE)
     forest = unary_union([forest, fill.difference(cliff).difference(rocks)]).intersection(frame)
