@@ -64,7 +64,7 @@ def obstacles(s):
     frame = box(FX0, FY0, FX1, FY1)
     mid_zone = Point(CENTER).buffer(SRC["mid_clear_world"] / SCALE)  # MAP-05
     river = [Polygon(p).buffer(0) for p in SRC["river"]]
-    bank, stairs = G.bank_lines(river, SRC["river_bank"], SYM, mid_zone)
+    bank, stairs = G.bank_lines(river, SRC["river_bank"], SYM, mid_zone) if "river_bank" in SRC else ([], [])
     lines = [(l, SRC["river_bank"]["width"], "bank") for l in bank]  # D-170: vẽ dải bờ đất liền
     lines += [(l, w, "rock") for l, w in G.mirrored_lines(SYM, SRC["rock_lines"], SRC["rock_width"])]
     ring_lines, rings, tree_rings, doors = F.camp_alcoves(SRC, SYM, SCALE)
@@ -73,8 +73,8 @@ def obstacles(s):
     cut, gates = _clear(s, stairs, doors)
     solid = unary_union([l.buffer(w / 2, **G.FLAT) for l, w, k in lines if k != "fence"] + [l.buffer(w / 2, **G.FLAT) for l, w in ring_lines])
     cliff = solid.difference(cut).difference(mid_zone).union(unary_union([l.buffer(w / 2, **G.FLAT) for l, w in fence]).difference(gates))
-    rocks = unary_union(G.mirrored_polys(SYM, SRC["mountains"]) + [G.border_area(SRC["frame"], SRC["border"])]).difference(cut).difference(cliff)
-    forest = unary_union(G.mirrored_polys(SYM, SRC["forest"]) + tree_rings).difference(cut).difference(rocks).difference(cliff)
+    rocks = unary_union(G.mirrored_polys(SYM, SRC["mountains"]) + [G.border_area(SRC["frame"], SRC["border"])]).difference(cut).difference(cliff).difference(mid_zone)
+    forest = unary_union(G.mirrored_polys(SYM, SRC["forest"]) + tree_rings).difference(cut).difference(rocks).difference(cliff).difference(mid_zone)
     protect = cut.union(unary_union([Point(x, y).buffer(SRC["river_bank"]["opening_r"] + 2) for x, y, _ in stairs]))
     fill = G.readability(frame, unary_union([forest, rocks, cliff]), protect, s["fountains"][0], SRC["gap_min_world"] / 2 / SCALE)
     forest = unary_union([forest, fill.difference(cliff).difference(rocks)]).intersection(frame)
