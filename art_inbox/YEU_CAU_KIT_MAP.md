@@ -80,6 +80,7 @@ with identical cross-section, constant thickness and height along the whole leng
 
 K0 làm lại theo bản 2: bản 1 có vách giống tường gạch và mảng rừng nguyên khối, không đạt phong cách mới.
 K0 chỉnh tiếp theo ảnh Tốc Chiến người dùng gửi: cây và đá tự nhiên hơn, màu xanh rêu/xám đá trầm hơn; thay bốn ảnh K0 để đồng bộ.
+K0 chỉnh theo ảnh trận mới: cây mẫu đổi sang dáng thông (giữ tên `cay_tron_a.png` để không đứt luồng thử hiện tại); viền đá và bờ sông chỉ còn khối đá lớn, không dựng cây/bụi trên đá để giảm số tam giác khi chuyển 3D. Cần chốt tên cây chính thức khi duyệt.
 
 ## Đợt K1 — Dãy đá (game uốn cong theo đường)
 
