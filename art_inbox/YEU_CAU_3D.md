@@ -154,7 +154,7 @@ Cần trước (đang có trong game — cột "thay cho" là mã dữ liệu hi
 | [ ] `jungle_wolf` | `neutral_wolf` (Sói con) | quái nhỏ, đánh gần, đi cặp | bốn chân | **2.000–4.000** | 512–1024 |
 | [ ] `jungle_bear` | `neutral_bear` (Gấu đá) | quái vừa, đánh gần, trâu | bốn chân | **3.000–6.000** | 1024 |
 | [ ] `jungle_shaman` | `neutral_shaman` (Pháp sư rừng) | quái vừa, **đánh xa** 450 | hai chân | **2.000–4.000** | 512–1024 |
-| [ ] `jungle_boar` | `neutral_buffalo` (Trâu rừng) | đầu trại lớn, to nhất rừng hiện nay | bốn chân | **4.000–8.000** | 1024 |
+| [x] `jungle_boar` | `neutral_buffalo` (Trâu rừng) | đầu trại lớn, to nhất rừng hiện nay | bốn chân | **3.070 tam giác** (nguồn Tripo, thấp hơn mục tiêu 4.000–8.000; chờ duyệt) | 1024 |
 
 Làm sau (chưa có trong game — cần thiết kế trại / chỉ số trước khi dùng):
 
