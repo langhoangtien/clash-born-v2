@@ -77,7 +77,6 @@ def validate(clear, src, W, scale):
     checks += [(f"tower {t['id']} approach", t["pos"], 252) for t in src["towers"]]
     checks += [(f"camp {c['id']}", c["pos"], 60) for c in src["camps"]]
     checks += [(f"core {i} approach", p, 265) for i, p in enumerate(src["cores"])]
-    checks += [(f"ramp {i}", (r[0], r[1]), 60) for i, r in enumerate(src["stairs"])]
     errors += ["Unreachable: " + name for name, p, rad in checks if not near(p, rad)]
     for k, l in src["lanes"].items():
         for i, p in enumerate(l):
@@ -117,7 +116,7 @@ def clearance_block(clear, scale):
 
 
 def preview(path, frame, layers, src, bushes, bad):
-    """Ảnh xem trước 2 px / ô guide: nước, lane, rừng, đá, vách, bụi, bậc, trụ, trại; hồng = chỗ đi được nhưng không tới được."""
+    """Ảnh xem trước 2 px / ô guide: nước, lane, rừng, đá, vách, bụi, trụ, trại; hồng = chỗ đi được nhưng không tới được."""
     fx0, fy0, fx1, fy1 = frame
     S = 2
     im = Image.new("RGB", ((fx1 - fx0) * S, (fy1 - fy0) * S), (98, 128, 61))
@@ -136,8 +135,6 @@ def preview(path, frame, layers, src, bushes, bad):
                 d.polygon(gp(h.coords), fill=(98, 128, 61))
     for poly in bushes:
         d.polygon(gp(poly), fill=(140, 200, 60, 200), outline=(220, 255, 120))
-    for x, y, a in src["stairs"]:
-        d.ellipse(((x - fx0) * S - 6, (y - fy0) * S - 6, (x - fx0) * S + 6, (y - fy0) * S + 6), fill=(230, 230, 230))
     for t in src["towers"]:
         x, y = (t["pos"][0] - fx0) * S, (t["pos"][1] - fy0) * S
         d.ellipse((x - 7, y - 7, x + 7, y + 7), fill=(60, 140, 255) if t["team"] == 0 else (255, 80, 80), outline=(0, 0, 0))

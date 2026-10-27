@@ -23,7 +23,6 @@ func test_D_77_tower_and_camp_names() -> void:
 	assert_eq(MapLabels.tower_name("red_base_guard_right"), "Đ-NHÀ-P")
 	assert_eq(MapLabels.camp_name("camp_blue_03"), "TX3")
 	assert_eq(MapLabels.camp_name("camp_red_06"), "TĐ6")
-	assert_eq(MapLabels.camp_name("boss_pit"), "BOSS")
 
 
 func test_D_77_all_names_unique_and_mirrored() -> void:
@@ -37,7 +36,7 @@ func test_D_77_all_names_unique_and_mirrored() -> void:
 		at[k.text] = k.position
 	for i: int in range(1, 8):
 		assert_true(seen.has("B%d" % i) and seen.has("B%d'" % i), "bụi B%d có cặp" % i)
-	for name: String in ["K1", "K2", "K1'", "K2'", "X-TOP-1", "Đ-MID-3", "TX6", "TĐ6", "BOSS"]:
+	for name: String in ["S1", "S1'", "X-TOP-1", "Đ-MID-3", "TX6", "TĐ6"]:
 		assert_true(seen.has(name), name)
 	var pairs: int = 0
 	for name: String in at:
@@ -49,4 +48,4 @@ func test_D_77_all_names_unique_and_mirrored() -> void:
 				assert_true((m.world_size() - at[name]).distance_to(at[base]) < 300.0, "%s đối xứng với %s" % [name, base])
 	var forests: int = marks.filter(func(k: MapLabels.Mark) -> bool: return k.kind == MapLabels.Kind.FOREST).size()
 	assert_true(forests >= 10, "đặt tên các khối rừng lớn (%d)" % forests)
-	assert_true(pairs > 20)
+	assert_true(pairs > 12, "cặp tên đối xứng (%d)" % pairs)  # D-171: hết lối xuống sông (D) và K1, K2

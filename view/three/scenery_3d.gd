@@ -40,15 +40,10 @@ func build(layout: MapLayout) -> void:
 		_add_static(cfg["shop"], layout.shop_points[i], 0.0)
 
 
-## D-168..D-170: bờ sông liền, rào base / fountain, vòng đá ổ quái, cột lối xuống sông, núi đá, cổ thụ.
+## D-168..D-171: rào base / fountain, núi đá (khối đá bản vẽ — cả bờ sông, hốc trại), cổ thụ.
 func _build_stone(layout: MapLayout, cfg: Dictionary, rng: RandomNumberGenerator) -> void:
-	var bank: MeshInstance3D = RiverBank3D.build(layout)
-	if bank != null:
-		add_child(bank)
 	_place([cfg["fence"]], RockWalls3D.wall_items(layout, [cfg["fence"]], "fence", rng))
 	_place([cfg["pillar"]], RockWalls3D.post_items(layout, cfg))
-	_place(cfg["rings"], RockWalls3D.ring_items(layout, cfg))
-	_place([cfg["pillar"]], RockWalls3D.pillar_items(layout, cfg))
 	_place(cfg["mountains"]["models"], Mountains3D.items(layout, cfg, rng))
 	_place(cfg["mountains"]["low_models"], Mountains3D.low_items(layout, cfg, rng))
 	_place(cfg["giants"]["models"], GiantTrees3D.items(layout))

@@ -4,8 +4,7 @@ Nguồn ghi nửa Blue (y > x); build sinh nửa Red bằng xoay 180° (MAP-04).
   forest      khối rừng (vẽ cây)
   mountains   khối núi đá (vẽ tảng đá lớn — nhẹ hơn cây); cả viền ngoài map là núi đá
   rock_lines  vách đá: đoạn thẳng nối nhau, cùng độ dày (vẽ mảnh vách nối tiếp)
-  alcoves     ổ quái (MAP-08): vòng đá một mảnh (mô hình ring) hoặc vòng cây, mở về phía `open`
-  river_bank  vách kín hai bờ sông, chừa lối xuống (`openings`, vẽ bậc thang)
+  mountains từ bản vẽ (D-171, from_sketch.py) cũng là bờ sông và hốc bãi quái (MAP-07, MAP-08)
   fences      rào đá quanh base (chỉ hở ở 3 lane, MAP-09) và quanh fountain (một cổng, MAP-10)
 Rồi cắt chỗ phải trống (lane, base, trụ, trại, điểm sinh, fountain, khu mid cắt sông MAP-05) và
 lấp khe hẹp / hốc kín (MAP-03)."""
@@ -80,39 +79,6 @@ def to_frame(line, frame_poly, reach):
                 h = hit if hit.geom_type == "Point" else nearest_points(hit, p)[0]
                 pts[end] = (h.x, h.y)
     return LineString(pts)
-
-
-def bank_lines(river, cfg, sym, mid_zone):
-    """Vách hai bờ: đường bao sông nới `offset`, bỏ đoạn ở lối xuống (nửa Blue + bản xoay) và khu mid."""
-    ring = unary_union([p.buffer(cfg["offset"], join_style="mitre").exterior for p in river])
-    holes = []
-    stairs = []
-    for o in cfg["openings"]:
-        for c in (o, sym.rot(o[:2]) + o[2:]):
-            q = nearest_points(ring, Point(c[0], c[1]))[0]
-            r = c[2] if len(c) > 2 else cfg["opening_r"]
-            holes.append(Point(q.x, q.y).buffer(r))
-            stairs.append((q.x, q.y, _tangent(ring, q, river)))
-    cut = unary_union(holes + [mid_zone])
-    lines = lines_of(ring.difference(cut).simplify(cfg.get("simplify", 1.0)))
-    return lines, stairs
-
-
-def _tangent(ring, q, river):
-    """Hướng dọc bờ tại q, đảo chiều sao cho pháp tuyến bên phải (-ty, tx) chỉ xuống nước (bậc thang đi xuống)."""
-    rings = getattr(ring, "geoms", [ring])
-    best = min(rings, key=lambda r: r.distance(q))
-    d = best.project(q)
-    a = best.interpolate(max(0.0, d - 1.0))
-    b = best.interpolate(min(best.length, d + 1.0))
-    tx, ty = b.x - a.x, b.y - a.y
-    n = math.hypot(tx, ty) or 1.0
-    water = unary_union(river)
-    right = Point(q.x - ty / n * 3.0, q.y + tx / n * 3.0)
-    left = Point(q.x + ty / n * 3.0, q.y - tx / n * 3.0)
-    if water.distance(right) > water.distance(left):  # bên gần nước hơn là bên phải (D-170: bờ lõm)
-        tx, ty = -tx, -ty
-    return math.atan2(ty, tx)
 
 
 # ------------------------------------------------------------------ viền map

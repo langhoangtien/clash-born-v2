@@ -21,7 +21,6 @@ const FOREST_CANOPY := Color("486427")
 const FOREST_LIGHT := Color("456025")
 const CLIFF := Color("5d6b3a")
 const CLIFF_TOP := Color("6f7a48")
-const STAIR := Color("a9adb4")
 const ROCK_FLOOR := Color("49526a")
 const ROCK_DEEP := Color("262b38")
 const CAMP_CLEARING := Color("617f37")
@@ -52,8 +51,6 @@ static func paint_ground(ci: CanvasItem, layout: MapLayout, detail: bool = true)
 		for camp in layout.camp_points:
 			ci.draw_circle(camp, 210, CAMP_CLEARING)
 	_paint_water(ci, layout, detail)
-	if detail:
-		_paint_ramps(ci, layout)
 	var lane_width := layout.lane_width
 	for lane: String in layout.lanes:
 		var points: PackedVector2Array = layout.lanes[lane]
@@ -99,21 +96,6 @@ static func _paint_water(ci: CanvasItem, layout: MapLayout, detail: bool) -> voi
 			for inner in Geometry2D.offset_polygon(shape.outer, -70, Geometry2D.JOIN_ROUND):
 				ci.draw_colored_polygon(inner, WATER_LIGHT)
 
-
-## MAP-07 (D-170): lối xuống sông — 4 bậc đá vẽ phẳng dưới nền (không che chân nhân vật), ngang theo
-## bờ, sẫm dần về phía nước; mép trên mỗi bậc sáng, mép dưới tối.
-static func _paint_ramps(ci: CanvasItem, layout: MapLayout) -> void:
-	for index in range(layout.ramp_points.size()):
-		var along := Vector2.from_angle(layout.ramp_angles[index])
-		var down := Vector2(-along.y, along.x)
-		var c := layout.ramp_points[index]
-		for step in range(4):
-			var d0 := -95.0 + 47.5 * step
-			var tone := STAIR.darkened(0.12 * step)
-			ci.draw_colored_polygon(PackedVector2Array([c - along * 140 + down * d0, c + along * 140 + down * d0,
-				c + along * 140 + down * (d0 + 47.5), c - along * 140 + down * (d0 + 47.5)]), tone)
-			ci.draw_line(c - along * 138 + down * (d0 + 3), c + along * 138 + down * (d0 + 3), tone.lightened(0.25), 5, true)
-			ci.draw_line(c - along * 138 + down * (d0 + 45), c + along * 138 + down * (d0 + 45), tone.darkened(0.35), 6, true)
 
 ## Vách đá và rừng: mọi thứ chặn đường.
 static func paint_obstacles(ci: CanvasItem, layout: MapLayout, detail: bool = true) -> void:

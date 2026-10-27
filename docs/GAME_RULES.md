@@ -872,22 +872,22 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   dùng vật lý Godot. Thân trụ chặn đứng/đi với bán kính `tower_body_radius`. Ô lưới tìm
   đường chỉ đi được khi mọi pixel khoảng trống trong ô đủ rộng; kiểm tra đường thẳng duyệt
   từng pixel mà đoạn đi qua (không lấy mẫu), nên đường đi không bao giờ cắt góc vật cản.
-  Nguồn map (D-168) là vector: khối rừng, núi đá (cả viền map), vách đá (đoạn thẳng cùng độ dày),
-  ổ quái, vách hai bờ sông, rào base / fountain; build dựng polygon từ đó (không dò từ ảnh).
+  Nguồn map (D-168, D-171) là vector: khối đá đọc từ bản vẽ người duyệt (`tools/map_build/sketch/`,
+  `from_sketch.py`, thu vào `SHRINK` ô mỗi phía), vách đá, rào base / fountain; build dựng polygon từ đó.
 - `MAP-03` Map phải đọc được (D-43): chỗ trống hẹp hơn `gap_min_world` (112) giữa rừng/đá/vách
   bị lấp thành rừng khi build; vùng trống kín không vào được cũng lấp. Kiểm tra: mọi điểm
   trống rộng ≥ 12 phải cách chỗ hero đứng được không quá 48 — tức không có khe nào
   trông như lối đi mà hero không lọt.
-- `MAP-02` Map 8448 × 8448; Blue dưới–trái, Red trên–phải; 3 lane; sông; vách đá chỉ
-  qua ở lối (bậc thang); 11 trụ mỗi đội; 6 trại mỗi phe + 1 boss pit trên trục sông.
+- `MAP-02` Map 8448 × 8448; Blue dưới–trái, Red trên–phải; 3 lane; sông; 11 trụ mỗi đội;
+  6 trại mỗi phe, không có boss (D-171).
 - `MAP-06` (D-168) Trụ lane đứng sát mép lane, cùng một bên cho cả lane (TOP, BOT: phía trong
   map; MID: bên phải theo chiều Blue → Red), tâm cách tim lane `tower_offset` (12 ô guide = 192).
   T1 đặt theo MAP-04; T2/T3 giữ khoảng cách dọc lane.
-- `MAP-07` (D-168) Bờ sông có vách kín hai bên; chỉ xuống sông ở các lối (bậc thang, `ramps`) và ở
-  khu mid cắt sông (MAP-05). Sông vẫn đi được.
-- `MAP-08` (D-168, D-169) Mỗi trại rừng của hai phe nằm trong ổ, một trong hai kiểu (dữ liệu từng trại):
-  **vòng đá** một mảnh có lối vào (vật cản là cung khớp đúng mô hình: bán kính `ring.r`, độ dày
-  `ring.width`, hở `ring.gap` độ) hoặc **vòng cây** (cung rừng). Trước lối vào luôn để trống `door_clear`.
+- `MAP-07` (D-171) Bờ sông là các khối đá của bản vẽ: phần lớn mép sông (ngoài lane và khu mid) bị
+  đá chặn; chỉ xuống sông ở chỗ lối rừng chạm sông (mỗi nửa ít nhất 2 lối), ở lane và khu mid
+  cắt sông (MAP-05). Không có bậc thang. Sông vẫn đi được.
+- `MAP-08` (D-171) Mỗi trại nằm trong hốc của khối đá (bản vẽ): quanh trại, ở bán kính 330, ít nhất
+  10/24 hướng bị đá chặn và còn ít nhất một hướng mở làm cửa.
 - `MAP-09` (D-169) Base là đất cao có rào đá: vào / ra base chỉ qua 3 cổng ở chỗ 3 lane đi qua (cổng
   rộng bằng lane và khoảng trống quanh trụ cạnh cổng).
 - `MAP-10` (D-169) Vùng hồi máu fountain có rào đá theo vòng `fountain_radius`, một cổng
