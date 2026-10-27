@@ -95,7 +95,7 @@ func test_MOV_01_crosses_map_without_clipping_and_arrives() -> void:
 func test_MOV_02_destination_in_forest_goes_to_nearest_standable_point() -> void:
 	var w: World = _world()
 	var forest: Vector2 = Vector2.ZERO
-	for shape: MapShape in _map.forest_shapes:
+	for shape: MapShape in _map.forest_shapes + _map.rock_shapes:  # D-171: khối đá cũng là vật cản vẽ ra
 		var c: Vector2 = Vector2.ZERO
 		for p: Vector2 in shape.outer:
 			c += p

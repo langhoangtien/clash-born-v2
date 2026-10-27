@@ -19,8 +19,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, "map_source.json")
 IMG = os.path.join(HERE, "sketch", "map_sketch.png")
 RIVER_SLOPE = 0.747
-BASE_R = 0.345  # bán kính nền base / cạnh ảnh
+BASE_ART_R = 0.345  # bán kính hình base trong bản vẽ / cạnh ảnh
+BASE_R = 0.29       # D-172: nền base (đất cao) nhỏ hơn hình vẽ; phần hình base thừa thành đất đi được
 SHRINK = 2.5     # D-171: thu khối đá vào mỗi phía (ô guide) — lối đi rộng hơn nét vẽ
+MIN_THICK = 4.0  # D-172: bề dày tối thiểu của khối (2·diện tích/chu vi, ô guide)
+ROUND = 2.0      # D-172: bo tròn mỏm nhọn / khía nhỏ (ô guide) — khối dễ dựng 3D, ít tam giác
+BANK = 3.0       # D-172: đá bờ sông không thu phía sông và lấn vào sông chừng này (ô guide)
+## D-172: lối cắt xuyên khối đá (nửa Blue, ô guide): [đầu, cuối, bề rộng]
+CUTS = [[[250, 385], [324, 459], 12]]  # khối G11/H10 cạnh trụ 1 mid: lối từ mid vào rừng
 BUSHES = 7       # bụi cỏ mỗi nửa (D-72: 14 bụi cả map)  # hướng sông trên bản vẽ (đường cắt đối xứng qua tâm)
 
 
@@ -66,6 +72,29 @@ def polygons(m, k, min_area):
     return out
 
 
+def shape_blocks(raw, rivers, frame):
+    """D-171/172: thu khối (lối rộng hơn) trừ phía bờ sông, đá bờ lấn vào sông BANK, bo mỏm nhọn, cắt lối CUTS."""
+    from shapely.geometry import LineString
+    from shapely.ops import unary_union
+    water = unary_union(rivers)
+    cuts = unary_union([LineString([a, b]).buffer(w / 2) for a, b, w in CUTS]) if CUTS else None
+    side = frame[2] - frame[0]
+    near_base = lambda q: Point(frame[0], frame[3]).distance(q.centroid) < BASE_ART_R * side * 1.4
+    out = []
+    for p in raw:
+        g = p.buffer(-SHRINK, join_style="round")
+        if p.distance(water) < 1.5:
+            g = g.union(p.intersection(water.buffer(SHRINK + 1.0))).union(p.buffer(BANK).intersection(water))
+        g = g.buffer(-ROUND, join_style="round").buffer(2 * ROUND, join_style="round").buffer(-ROUND, join_style="round")
+        g = g.intersection(p.buffer(BANK))  # bo lại không lấn ra lối
+        if cuts is not None:
+            g = g.difference(cuts)
+        out += [q for q in getattr(g, "geoms", [g]) if q.geom_type == "Polygon" and q.area >= 4.0
+                and (2 * q.area / q.length >= MIN_THICK or q.distance(water) < 1.0)
+                and not (near_base(q) and 2 * q.area / q.length < 2 * MIN_THICK)]  # bỏ vệt mảnh (nét viền hình base)
+    return out
+
+
 def snap(c, frame):
     """Điểm sát khung (≤ 3 ô) dính hẳn vào khung: mép base trùng mép map không sinh rào (MAP-09)."""
     x, y = c
@@ -85,20 +114,20 @@ def main():
     walk, river, base = symmetric(walk), symmetric(river), symmetric(base)
     n0 = base.shape[0]
     yy, xx = np.mgrid[0:n0, 0:n0]
-    disk = np.hypot(xx, n0 - 1 - yy) < BASE_R * n0  # nền base = phần tư hình tròn góc (cả nét tối của hình base)
-    base = ((base & ndimage.binary_dilation(disk, iterations=40)) | disk)
-    base = symmetric(ndimage.binary_fill_holes(base | base[::-1, ::-1]) & ~walk)
+    corner = np.hypot(xx, n0 - 1 - yy)
+    art = ((base & ndimage.binary_dilation(corner < BASE_ART_R * n0, iterations=40)) | (corner < BASE_ART_R * n0))
+    art = symmetric(ndimage.binary_fill_holes(art | art[::-1, ::-1]) & ~walk)  # cả nét tối của hình base
+    base = symmetric(art & (corner < BASE_R * n0))
+    walk = walk | (art & ~base)
     block = ~(walk | river | base)
     blue = lambda p: p.y > p.x
-    blocks = [g for p in polygons(block, k, 4.0) if blue(p.representative_point())
-              for g in getattr(p.buffer(-SHRINK, join_style="round"), "geoms", [p.buffer(-SHRINK, join_style="round")])
-              if g.area >= 4.0 and g.geom_type == "Polygon"]
     rivers = polygons(river, k, 20.0)
+    blocks = shape_blocks([p for p in polygons(block, k, 4.0) if blue(p.representative_point())], rivers, src["frame"])
     bases = [p for p in polygons(base, k, 200.0) if blue(p.representative_point())]
     camps = [Point(k(x, y)) for x, y in spots(red)]
     shops = [Point(k(x, y)) for x, y in spots(cyan)]
     out = {
-        "mountains": [[[round(x, 1), round(y, 1)] for x, y in p.simplify(0.4).exterior.coords[:-1]] for p in blocks],
+        "mountains": [[[round(x, 1), round(y, 1)] for x, y in p.simplify(0.8).exterior.coords[:-1]] for p in blocks],
         "river": [[list(c) for c in p.exterior.coords[:-1]] for p in rivers],
         "base0": [snap(c, src["frame"]) for c in max(bases, key=lambda p: p.area).simplify(1.0).exterior.coords[:-1]],
         "camps": [[round(p.x, 1), round(p.y, 1)] for p in camps if blue(p)],
@@ -154,12 +183,12 @@ def bushes(src, out):
     for x in range(int(fx0), int(fx1), 2):
         for y in range(int(fy0), int(fy1), 2):
             q = Point(x, y)
-            if y < x + 6 or not walk.contains(q.buffer(7)) or water.distance(q) < 6 or lanes.distance(q) < 13:
+            if y < x + 6 or not fx0 + 60 < x < fx1 - 60 or not fy0 + 60 < y < fy1 - 60 or not walk.contains(q.buffer(7)) or water.distance(q) < 6 or lanes.distance(q) < 13:
                 continue
             if min(t.distance(q) for t in towers) < 550 / sc + 13 or min(c.distance(q) for c in camps) < 36:  # xa trại: không che lối kéo quái (D-76)
                 continue
             cand.append(q)
-    pick = [min(cand, key=lambda q: q.distance(Point(300, 420)))]
+    pick = [min(cand, key=lambda q: q.distance(Point(fx0 + 0.5 * (fx1 - fx0), fy0 + 0.73 * (fy1 - fy0))))]
     while len(pick) < BUSHES:
         far = lambda q: min(min(q.distance(p), q.distance(Point(rot((p.x, p.y))))) for p in pick)
         pick.append(max(cand, key=far))

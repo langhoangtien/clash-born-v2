@@ -155,7 +155,7 @@ func test_D_94_buys_build_in_order_and_goes_to_secret_shop() -> void:
 		w.step()
 	assert_true(Items.slots(e).any(func(it: ItemInstance) -> bool: return it != null and it.def.id == &"bracer"), "món đầu trong thứ tự lên đồ")
 	var g: World = _world()
-	var s: Entity = _bot(g, &"myra", _map.fountain_point(1) + (_mid() - _map.fountain_point(1)).normalized() * 800.0)
+	var s: Entity = _bot(g, &"myra", _map.fountain_point(1) + (_mid() - _map.fountain_point(1)).normalized() * 1500.0)  # D-172: shop ẩn trong 5000
 	s.hero_def = s.hero_def.duplicate()
 	s.hero_def.bot_item_build = [&"frost_orb"]
 	s.gold = 2300

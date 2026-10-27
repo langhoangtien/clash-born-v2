@@ -878,7 +878,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   bị lấp thành rừng khi build; vùng trống kín không vào được cũng lấp. Kiểm tra: mọi điểm
   trống rộng ≥ 12 phải cách chỗ hero đứng được không quá 48 — tức không có khe nào
   trông như lối đi mà hero không lọt.
-- `MAP-02` Map 8448 × 8448; Blue dưới–trái, Red trên–phải; 3 lane; sông; 11 trụ mỗi đội;
+- `MAP-02` Map 9216 × 9216 (D-172); Blue dưới–trái, Red trên–phải; 3 lane; sông; 11 trụ mỗi đội;
   6 trại mỗi phe, không có boss (D-171).
 - `MAP-06` (D-168) Trụ lane đứng sát mép lane, cùng một bên cho cả lane (TOP, BOT: phía trong
   map; MID: bên phải theo chiều Blue → Red), tâm cách tim lane `tower_offset` (12 ô guide = 192).

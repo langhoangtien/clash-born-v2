@@ -5,7 +5,7 @@ extends RefCounted
 ## id (D-30); `sorted = false` nhanh hơn, người gọi phải tự phân xử hòa theo id.
 
 const CELL: float = 256.0
-## 40 × 256 = 10240 > cạnh map 8448.
+## 40 × 256 = 10240 > cạnh map 9216.
 const SIDE: int = 40
 
 var built_tick: int = -1
