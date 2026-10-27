@@ -70,13 +70,15 @@ with identical cross-section, constant thickness and height along the whole leng
 
 ## Đợt K0 — Thử phong cách (4 ảnh) — làm rồi DỪNG
 
-- [ ] `vach_48.png` — viền đá 4,8 × 1,2 × 1,2 m (**4 : 1 : 1**). 3–4 khối đá to mượt liền thành gờ thấp,
+- [x] `vach_48.png` — viền đá 4,8 × 1,2 × 1,2 m (**4 : 1 : 1**). 3–4 khối đá to mượt liền thành gờ thấp,
   cỏ phủ mặt trên tràn nhẹ xuống mép.
-- [ ] `bo_song_48.png` — bờ sông 4,8 × 1,2 × 0,5 m. Gờ đá thấp: một cạnh dài mép cỏ, cạnh kia **mặt đá
+- [x] `bo_song_48.png` — bờ sông 4,8 × 1,2 × 0,5 m. Gờ đá thấp: một cạnh dài mép cỏ, cạnh kia **mặt đá
   dốc tối ướt** xuống nước.
-- [ ] `cay_tron_a.png` — một cây tán tròn, tán Ø 2,4 m, cao 2,8 m; 4–5 chùm lá to, ba tầng sắc
+- [x] `cay_tron_a.png` — một cây tán tròn, tán Ø 2,4 m, cao 2,8 m; 4–5 chùm lá to, ba tầng sắc
   (vàng xanh / xanh lá / xanh lam đậm) như mục Phong cách.
-- [ ] `bui_a.png` — cụm cỏ 1,2 × 1,2 × 0,6 m, lá to, khối đặc, ngọn sáng gốc tối.
+- [x] `bui_a.png` — cụm cỏ 1,2 × 1,2 × 0,6 m, lá to, khối đặc, ngọn sáng gốc tối.
+
+K0 làm lại theo bản 2: bản 1 có vách giống tường gạch và mảng rừng nguyên khối, không đạt phong cách mới.
 
 ## Đợt K1 — Dãy đá (game uốn cong theo đường)
 
