@@ -24,7 +24,7 @@ BASE_R = 0.29       # D-172: nền base (đất cao) nhỏ hơn hình vẽ; ph�
 SHRINK = 2.5     # D-171: thu khối đá vào mỗi phía (ô guide) — lối đi rộng hơn nét vẽ
 MIN_THICK = 4.0  # D-172: bề dày tối thiểu của khối (2·diện tích/chu vi, ô guide)
 ROUND = 2.0      # D-172: bo tròn mỏm nhọn / khía nhỏ (ô guide) — khối dễ dựng 3D, ít tam giác
-BANK_LAND_THIN = 7.0  # D-172: dải đá bờ sông mảnh trong bản vẽ dày thêm chừng này về phía đất
+BANK_LAND_THIN = 0.5  # D-172: dải đá bờ sông mảnh trong bản vẽ: giữ mảnh như hàng rào đá thấp ven sông
 BANK_LAND = 2.0  # D-172: đá bờ sông dày thêm về phía đất (ô guide)
 BANK = 3.0       # D-172: đá bờ sông không thu phía sông và lấn vào sông chừng này (ô guide)
 ## D-172: lối cắt xuyên khối đá (nửa Blue, ô guide): [đầu, cuối, bề rộng]

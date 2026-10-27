@@ -27,6 +27,15 @@
     "MovementBasic",
     "CombatMelee"
    ]
+  },
+  "Boar": {
+   "_ghi_chu": "D-173: hoạt ảnh nằm sẵn trong mô hình (own), cỡ gốc lấy theo hộp bao",
+   "own": true,
+   "idle": "idle",
+   "run": "run",
+   "dash": "run",
+   "hit": "hit",
+   "death": "death"
   }
  },
  "units": {
@@ -148,6 +157,14 @@
    "right": "druid_staff",
    "attack": "Ranged_Magic_Shoot",
    "height": 1.15
+  },
+  "neutral_buffalo": {
+   "model": "../custom/jungle/jungle_boar",
+   "rig": "Boar",
+   "attack": "attack",
+   "height": 1.15,
+   "yaw": 180.0,
+   "impact": 0.45
   }
  },
  "_ghi_chu_cong_trinh": "D-158: công trình và cảnh vật 3D từ KayKit Medieval Hexagon (CC0) trong assets/models/medieval/; bụi từ KayKit Forest Nature (CC0) trong assets/models/forest/ (D-165). Đường dẫn model tính từ assets/models/. structures: theo art_id (trụ thêm _t<bậc>), model là tên file không có _blue/_red (thêm theo đội), height: chiều cao trên sân (đơn vị 3D). scenery: cây rải trong forest_shapes, đá dọc cliff_shapes, cửa hàng, đống đổ nát chỗ trụ đã đổ; spacing là khoảng cách lưới (px thế giới), scale là [nhỏ nhất, lớn nhất] so với cỡ gốc.",

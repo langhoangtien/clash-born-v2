@@ -66,11 +66,12 @@ func _make_model(e: Entity, cfg: Dictionary) -> void:
 	add_child(model)
 	_model = model
 	add_child(Look3D.blob(height))  # D-150: bóng mờ dưới chân
-	model.scale = Vector3.ONE * (height / float(_rig["native"]))
-	var skel: Skeleton3D = model.find_children("*", "Skeleton3D", true, false)[0]
-	_attach(skel, cfg.get("right", ""), "handslot.r")
-	_attach(skel, cfg.get("left", ""), "handslot.l")
-	_paint(model, cfg["tex"], e.team)
+	model.scale = Vector3.ONE * (height / float(_rig.get("native", ModelLibrary.bounds(model).size.y)))
+	model.rotation.y = deg_to_rad(cfg.get("yaw", 0.0))
+	if _rig.get("own", false):  # D-173: mô hình tự mang xương + hoạt ảnh (quái rừng Tripo / Blender)
+		_anim = model.find_children("*", "AnimationPlayer", true, false)[0]
+	else:
+		_kaykit(model, e, cfg)
 	for n: Node in model.find_children("*", "GeometryInstance3D", true, false):
 		_meshes.append(n as GeometryInstance3D)
 		var mats: Array = []
@@ -78,11 +79,19 @@ func _make_model(e: Entity, cfg: Dictionary) -> void:
 			for k: int in (n as MeshInstance3D).mesh.get_surface_count():
 				mats.append((n as MeshInstance3D).get_active_material(k))
 		_solid.append(mats)
+	for key: String in ["idle", "run"]:
+		_anim.get_animation(_rig[key]).loop_mode = Animation.LOOP_LINEAR
+
+
+## Nhân vật KayKit: vũ khí gắn tay, bảng màu theo đội, hoạt ảnh dùng chung của rig.
+func _kaykit(model: Node3D, e: Entity, cfg: Dictionary) -> void:
+	var skel: Skeleton3D = model.find_children("*", "Skeleton3D", true, false)[0]
+	_attach(skel, cfg.get("right", ""), "handslot.r")
+	_attach(skel, cfg.get("left", ""), "handslot.l")
+	_paint(model, cfg["tex"], e.team)
 	_anim = AnimationPlayer.new()
 	model.add_child(_anim)
 	_anim.add_animation_library(&"", ModelLibrary.animations(cfg["rig"]))
-	for key: String in ["idle", "run"]:
-		_anim.get_animation(_rig[key]).loop_mode = Animation.LOOP_LINEAR
 
 
 func _attach(skel: Skeleton3D, weapon: String, bone: String) -> void:
