@@ -56,9 +56,9 @@ func test_MAP_02_tower_prerequisites() -> void:
 	assert_eq(map.tower_prerequisites[map.tower_index("red_base_guard_left")].size(), 3, "T4 cần một trong ba T3")
 
 
-func test_MAP_02_six_camps_per_side_plus_boss_pit() -> void:
-	assert_eq(map.camp_points.size(), 13)
-	assert_eq(map.camp_kinds.count("boss"), 1)
+func test_MAP_02_six_camps_per_side_no_boss() -> void:
+	assert_eq(map.camp_points.size(), 12)
+	assert_eq(map.camp_kinds.count("boss"), 0, "D-171: bỏ boss")
 	assert_eq(Array(map.camp_sides).count(0), 6)
 	assert_eq(Array(map.camp_sides).count(1), 6)
 
@@ -71,12 +71,6 @@ func test_MAP_02_three_distinct_lanes_from_spawn_to_enemy_spawn() -> void:
 			var route: PackedVector2Array = map.route(lane, team)
 			assert_eq(route[0], map.lane_spawn_point(team, lane), "%s đội %d bắt đầu ở điểm sinh lính" % [lane, team])
 			assert_eq(route[-1], map.lane_spawn_point(1 - team, lane), "%s đội %d kết thúc ở điểm sinh lính địch" % [lane, team])
-
-
-func test_MAP_02_ramps_walkable_for_hero() -> void:
-	assert_true(map.ramp_points.size() > 0)
-	for index: int in range(map.ramp_points.size()):
-		assert_true(map.clearance_at(map.ramp_points[index]) >= 32.0, "dốc %d đi được" % index)
 
 
 func test_MAP_01_drawn_forest_is_blocked_in_clearance() -> void:
@@ -220,37 +214,42 @@ func _water_distance(m: MapLayout, p: Vector2) -> float:
 	return best
 
 
-func test_MAP_07_river_banks_have_stair_openings() -> void:
+func test_MAP_07_river_edge_is_rock_with_few_openings() -> void:
 	var m: MapLayout = map
-	assert_eq(m.ramp_points.size(), 12, "6 lối xuống sông mỗi nửa")
-	for p: Vector2 in m.ramp_points:
-		var near_water: float = INF
-		for shape: MapShape in m.water_shapes:
-			near_water = minf(near_water, _to_line(p, shape.outer + PackedVector2Array([shape.outer[0]])))
-		assert_true(near_water < 120.0, "lối %s nằm sát mép sông" % p)
-	assert_true(m.rock_lines.size() > 10, "có vách bờ sông")
-	for i: int in m.ramp_points.size():  # D-170: hướng dọc bờ quay sao cho bên phải là nước (bậc đi xuống nước)
-		var along: Vector2 = Vector2.from_angle(m.ramp_angles[i])
-		var down: Vector2 = Vector2(-along.y, along.x)
-		assert_true(_water_distance(m, m.ramp_points[i] + down * 120.0) < _water_distance(m, m.ramp_points[i] - down * 120.0), "lối %d: bậc đi xuống phía nước" % i)
+	var open_spots: Array[Vector2] = []
+	var samples: int = 0
+	var blocked: int = 0
+	for shape: MapShape in m.water_shapes:
+		var ring: PackedVector2Array = shape.outer + PackedVector2Array([shape.outer[0]])
+		for i: int in shape.outer.size():
+			var a: Vector2 = ring[i]
+			var b: Vector2 = ring[i + 1]
+			var steps: int = int(a.distance_to(b) / 80.0)
+			for k: int in steps:
+				var p: Vector2 = a.lerp(b, (k + 0.5) / steps)
+				var out: Vector2 = p + (b - a).normalized().orthogonal() * 90.0
+				if _water_distance(m, out) < 40.0:
+					out = p - (b - a).normalized().orthogonal() * 90.0
+				if _near_lane(m, out, 600.0) or out.distance_to(m.world_size() * 0.5) < 700.0:
+					continue
+				samples += 1
+				if m.clearance_at(out) < 32.0:
+					blocked += 1
+				elif open_spots.all(func(q: Vector2) -> bool: return q.distance_to(out) > 400.0):
+					open_spots.append(out)
+	assert_true(blocked > samples * 0.6, "bờ sông phần lớn là khối đá (%d/%d)" % [blocked, samples])
+	var blue: int = open_spots.filter(func(q: Vector2) -> bool: return q.y > q.x).size()
+	assert_true(blue >= 2 and open_spots.size() - blue >= 2, "mỗi nửa có lối xuống sông (%d / %d)" % [blue, open_spots.size() - blue])
 
 
-func test_MAP_08_every_side_camp_sits_in_ring_or_tree_alcove() -> void:
+func test_MAP_08_every_camp_sits_in_rock_hook() -> void:
 	var m: MapLayout = map
-	var rings: int = 0
 	for i: int in m.camp_ids.size():
-		if m.camp_sides[i] < 0:
-			continue
-		var ring: bool = false
-		for p: Vector2 in m.ring_points:
-			ring = ring or p.distance_to(m.camp_points[i]) < 1.0
-		rings += 1 if ring else 0
 		var wall: int = 0
 		for k: int in 24:
-			var probe: Vector2 = m.camp_points[i] + Vector2.from_angle(TAU * k / 24.0) * 300.0
+			var probe: Vector2 = m.camp_points[i] + Vector2.from_angle(TAU * k / 24.0) * 330.0
 			wall += 1 if m.clearance_at(probe) < 32.0 else 0
-		assert_true(wall >= 12, "trại %s có vòng đá / cây bao quanh (%d/24 hướng chặn)" % [m.camp_ids[i], wall])
-	assert_true(rings >= 4 and rings < 12, "có cả hai kiểu ổ: vòng đá và vòng cây")
+		assert_true(wall >= 10 and wall < 24, "trại %s nằm trong hốc đá có cửa (%d/24 hướng chặn)" % [m.camp_ids[i], wall])
 
 
 func _near_lane(m: MapLayout, p: Vector2, reach: float) -> bool:

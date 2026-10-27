@@ -10,7 +10,7 @@ const COLUMNS: String = "ABCDEFGHIJKLMNOP"
 ## Khối rừng nhỏ hơn diện tích này (đơn vị²) không đặt tên.
 const FOREST_MIN_AREA: float = 250000.0
 
-enum Kind { TOWER, CAMP, BUSH, RAMP, FOREST, LANDMARK, SHOP }
+enum Kind { TOWER, CAMP, BUSH, FOREST, LANDMARK, SHOP }
 
 
 class Mark:
@@ -48,7 +48,6 @@ static func build(layout: MapLayout) -> Array[Mark]:
 	for poly: PackedVector2Array in layout.bushes.polygons:
 		bush_centers.append(_centroid(poly))
 	out.append_array(_paired(layout, bush_centers, "B", Kind.BUSH))
-	out.append_array(_paired(layout, layout.ramp_points, "D", Kind.RAMP))
 	var forests: PackedVector2Array = PackedVector2Array()
 	for shape: MapShape in layout.forest_shapes + layout.rock_shapes:  # D-169: khối rừng hoặc núi đá
 		if absf(_area(shape.outer)) >= FOREST_MIN_AREA and not _is_border(layout, shape.outer):
@@ -70,10 +69,8 @@ static func tower_name(id: String) -> String:
 	return "%s-%s-%s" % [side, parts[1].to_upper(), parts[2].trim_prefix("t")]
 
 
-## "camp_blue_03" → "TX3"; "camp_red_06" → "TĐ6"; khác (boss_pit) → "BOSS".
+## "camp_blue_03" → "TX3"; "camp_red_06" → "TĐ6".
 static func camp_name(id: String) -> String:
-	if not id.begins_with("camp_"):
-		return "BOSS"
 	var parts: PackedStringArray = id.split("_")
 	return ("TX" if parts[1] == "blue" else "TĐ") + str(int(parts[2]))
 

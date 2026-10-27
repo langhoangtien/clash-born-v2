@@ -8,7 +8,6 @@ const COLORS: Dictionary = {
 	MapLabels.Kind.TOWER: Color(1.0, 1.0, 1.0),
 	MapLabels.Kind.CAMP: Color(1.0, 0.85, 0.3),
 	MapLabels.Kind.BUSH: Color(0.7, 1.0, 0.45),
-	MapLabels.Kind.RAMP: Color(0.8, 0.85, 0.9),
 	MapLabels.Kind.FOREST: Color(0.55, 0.9, 0.7),
 	MapLabels.Kind.LANDMARK: Color(1.0, 0.55, 0.9),
 	MapLabels.Kind.SHOP: Color(1.0, 0.8, 0.2),

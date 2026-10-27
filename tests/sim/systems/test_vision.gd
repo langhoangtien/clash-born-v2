@@ -111,7 +111,7 @@ func test_VIS_05_target_leaving_vision_cancels_attack_but_projectile_hits() -> v
 	w.step()
 	assert_true(me.order.finished, "mất tầm nhìn thì lệnh đánh bị hủy")
 	assert_eq(me.attack_phase, Entity.AttackPhase.NONE)
-	var shooter: Entity = _unit(w, 0, _center() + _dir().orthogonal() * 300.0, 1000.0)
+	var shooter: Entity = _unit(w, 0, _center() - _dir() * 300.0, 1000.0)  # D-171: dọc mid, ngoài khối đá
 	shooter.projectile_speed = 300.0
 	var mark: Entity = _unit(w, 1, shooter.position + _dir() * 550.0)
 	w.step()

@@ -217,16 +217,9 @@
   ],
   "tree_edge_inset": 70.0,
   "tree_edge_spacing": 85.0,
-  "stairs_width": 250.0,
   "pillar": "custom/border/stone_pillar",
-  "pillar_height": 150.0,
   "fence": "custom/border/stone_blocks",
   "post_height": 110.0,
-  "rings": [
-   "custom/border/stone_ring",
-   "custom/border/rock_ring_mossy"
-  ],
-  "ring_open": 130.0,
   "mountains": {
    "models": [
     "custom/border/rock_wall_a",

@@ -1,40 +1,8 @@
-"""Ổ quái và rào của map v3.1 (D-169), toạ độ guide.
-
-Ổ quái (MAP-08) có hai kiểu, khai báo ở từng trại (`alcove.style`):
-  ring   vòng đá một mảnh (mô hình Tripo có lối vào): vật cản là cung tròn khớp đúng mô hình —
-         bán kính / độ dày / góc hở lấy từ số đo mô hình (`ring`), xoay cho lối vào nhìn về `open`
-  trees  vòng cây: cung rừng dày `tree_width`, hở `tree_gap` độ về `open`
-Rào đá (vẽ khối tường + cột): quanh base, chỉ hở chỗ 3 lane đi qua (MAP-09); quanh vùng hồi máu
+"""Rào của map (D-169), toạ độ guide. Rào đá (vẽ khối tường + cột): quanh base, chỉ hở chỗ 3 lane đi qua (MAP-09); quanh vùng hồi máu
 fountain, một cổng hướng về nhà chính (MAP-10)."""
 import math
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Polygon
 import geometry as G
-
-
-def camp_alcoves(src, sym, scale):
-    """→ (vật cản vòng đá [(line, width)], vòng đá để vẽ [dict], polygon vòng cây [Polygon],
-    vòng tròn trước cửa ổ phải trống [(tâm, bán kính)])."""
-    ring = src["ring"]
-    world = ring["scale"] * 100.0 / scale  # mô hình (m) → ô guide: 1 m = 100 thế giới
-    lines, rings, trees, doors = [], [], [], []
-    for c in src["camps"]:
-        a = c.get("alcove")
-        if a is None:
-            continue
-        spots = [(c["pos"], a["open"])]
-        if c["side"] == 0:
-            spots.append((sym.rot(c["pos"]), a["open"] + 180))
-        for pos, open_deg in spots:
-            reach = (ring["r"] + ring["width"]) * world if a["style"] == "ring" else src["tree_alcove"]["r"] + src["tree_alcove"]["width"]
-            t = math.radians(open_deg)
-            doors.append(((pos[0] + math.cos(t) * reach, pos[1] + math.sin(t) * reach), src["door_clear"]))
-            if a["style"] == "ring":
-                lines.append((G.arc_line(pos, ring["r"] * world, open_deg, ring["gap"]), ring["width"] * world))
-                rings.append({"pos": pos, "open": open_deg, "model": a.get("model", 0)})
-            else:
-                arc = G.arc_line(pos, src["tree_alcove"]["r"], open_deg, src["tree_alcove"]["gap"])
-                trees.append(arc.buffer(src["tree_alcove"]["width"] / 2, **G.ROUND))
-    return lines, rings, trees, doors
 
 
 def fences(src, s, frame):

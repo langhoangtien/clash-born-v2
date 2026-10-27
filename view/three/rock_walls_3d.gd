@@ -4,8 +4,6 @@ extends RefCounted
 ## MapLayout. Bề ngang mảnh = đúng độ dày vật cản, mảnh không lòi ra quá đầu đoạn (không đi xuyên đá,
 ## không có tường vô hình). Phần tử trả về cùng dạng Scenery3D._place: [vị trí, loại, cỡ, góc, (ép dọc)].
 ##   wall_items   khối tường dọc `rock_lines` một loại (rào base / fountain); post_items cột rào
-##   ring_items   vòng đá ổ quái: lối vào của mô hình (`ring_open`, độ) xoay về hướng ghi trong map
-##   pillar_items cột hai bên mỗi lối xuống sông (bậc thang vẽ dưới nền, D-170 — mô hình bậc nổi che mất chân)
 
 static var _bounds: Dictionary[String, AABB] = {}
 
@@ -59,24 +57,6 @@ static func post_items(layout: MapLayout, cfg: Dictionary) -> Array[Array]:
 			if j == 0 or j == line.size() - 1 or since >= cfg["post_spacing"]:
 				out.append([line[j], 0, k, 0.0])
 				since = 0.0
-	return out
-
-
-static func ring_items(layout: MapLayout, cfg: Dictionary) -> Array[Array]:
-	var out: Array[Array] = []
-	for i: int in layout.ring_points.size():
-		var turn: float = deg_to_rad(cfg["ring_open"]) - layout.ring_angles[i]
-		out.append([layout.ring_points[i], layout.ring_models[i] % cfg["rings"].size(), layout.ring_scales[i], turn])
-	return out
-
-
-static func pillar_items(layout: MapLayout, cfg: Dictionary) -> Array[Array]:
-	var out: Array[Array] = []
-	var k: float = cfg["pillar_height"] * MatchView3D.S / model_bounds(cfg["pillar"]).size.y
-	for i: int in layout.ramp_points.size():
-		var along: Vector2 = Vector2.from_angle(layout.ramp_angles[i])
-		for side: float in [-1.0, 1.0]:
-			out.append([layout.ramp_points[i] + along * side * cfg["stairs_width"] * 0.58, 0, k, layout.ramp_angles[i]])
 	return out
 
 
