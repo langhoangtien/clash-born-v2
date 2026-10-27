@@ -1,124 +1,119 @@
-# Yêu cầu ảnh — Bộ mảnh chuẩn dựng map (kit map)
+# Yêu cầu ảnh — Bộ mảnh chuẩn dựng map (kit map) — bản 2
 
-Phiếu việc cho **Codex tạo ảnh tham chiếu**. Mỗi ảnh sau đó được đưa vào Tripo (tạo 3D từ ảnh) — việc
-gọi Tripo, giảm lưới, tô màu và đưa vào game do người ghép (Claude) làm, Codex **chỉ làm ảnh**.
+Phiếu việc cho **Codex tạo ảnh tham chiếu**. Mỗi ảnh sau đó được đưa vào Tripo (tạo 3D từ ảnh); gọi Tripo,
+giảm lưới, tô màu và đưa vào game do người ghép (Claude) làm. Codex **chỉ làm ảnh**.
 
-Map được dựng lại hoàn toàn từ bộ mảnh này: vách đá, bờ sông, rào là **dãy dài** game tự uốn theo
-đường cong; rừng là **mảng nguyên khối**; bụi cỏ là **cụm nhỏ** rải kín vùng bụi. Vật cản lấy đúng theo
-chân của mảnh, nên **hình dáng và tỉ lệ trong ảnh là yêu cầu quan trọng nhất**.
+**Bản 2 (2026-10-27) thay toàn bộ bản 1.** Bản 1 (vách kiểu tường gạch, mảng rừng nguyên khối) không đạt.
+Ảnh mới **ghi đè** ảnh cũ cùng tên trong `art_inbox/07_kit/`.
+
+Cách dựng map: mỗi khối rừng / khối đá có **viền đá bo** (dãy đá dài, game tự uốn theo đường cong) —
+viền đá chính là vùng chặn đường. **Bên trong** viền thả **cây riêng lẻ** (chỉ trang trí). Bờ sông, rào base
+cũng là dãy dài. Bụi cỏ là cụm nhỏ rải kín vùng bụi.
 
 ## Cách làm việc (bắt buộc)
 
 1. Làm **theo đợt**. Xong mỗi đợt **DỪNG**, báo người dùng duyệt rồi mới làm đợt sau.
-2. Mỗi ảnh đính kèm hai ảnh tham chiếu: `art_inbox/00_style/style_3d_sheet.png` và
-   `docs/art/reference_style_01.png`. Không thấy file → `git pull` trước, không dùng ảnh khác thay.
-3. Lưu `art_inbox/07_kit/<tên>.png`, đúng tên trong bảng (chữ thường, gạch dưới). Không thêm `_v2`, `_final`.
-4. Làm xong ảnh nào đánh dấu `[x]` ở dòng đó. Làm lại thì ghi ngắn lý do.
+2. Mỗi ảnh đính kèm ảnh tham chiếu phong cách người dùng đưa (ảnh chụp game kiểu Liên Quân / Tốc Chiến).
+   Lấy **tinh thần** phong cách, không chép nguyên vật thể nào trong ảnh tham chiếu.
+3. Lưu `art_inbox/07_kit/<tên>.png`, đúng tên trong bảng. Không thêm `_v2`, `_final`.
+4. Làm xong ảnh nào đánh dấu `[x]`. Làm lại thì ghi ngắn lý do.
 5. Không sửa file nào ngoài `art_inbox/`.
 
-## Quy tắc chung cho ảnh (để Tripo dựng 3D đúng)
+## Phong cách (kiểu Liên Quân / Tốc Chiến)
 
-- **Một vật thể, nhìn trọn vẹn**, nằm giữa khung, cách mép ≥ 8%, không bị cắt, không vật thể phụ.
-- **Góc nhìn:** 3/4 từ trên xuống (camera nghiêng ~45°), nhìn vào **cạnh dài** của vật, hơi lệch ~20°
-  để thấy cả mặt trên, mặt dài và một đầu.
-- **Nền trắng trơn `#FFFFFF`**, không gradient, không bóng đổ xuống nền, không mặt đất, không cỏ quanh chân.
-- **Ánh sáng dịu đều** từ trên–trái, không bóng gắt (bóng gắt bị nướng sai vào 3D).
-- **Đáy phẳng:** vật đặt trên mặt phẳng, chân không bo vào trong, không lơ lửng.
-- **Tỉ lệ đúng như bảng** (dài : dày : cao). Đây là kích thước thật trong game, sai tỉ lệ thì ghép không khít.
-- **Phong cách:** vẽ tay cách điệu như ảnh neo — khối to, cạnh vát tròn, ít chi tiết vụn, màu tươi.
-  Đá: **xám xanh lạnh**, mặt trên có rêu xanh lá, khe tối. Không chữ, không logo.
-- **Mặt hướng về sau / đáy** không cần chi tiết.
+- **Ít khối, khối to.** Mặt đá rộng, mượt, cạnh bo tròn mềm. **Không** vân gạch, không viên đá nhỏ xếp
+  đều, không vết nứt vụn. Nhìn xa vẫn đọc rõ dáng.
+- **Sáng tối vẽ sẵn, chuyển mềm:** mặt trên sáng ấm, xuống dưới tối lạnh dần, chân tối hẳn; khe giữa các
+  khối tối (tạo chiều sâu); mép trên có viền sáng nhẹ. Đây là thứ làm vật thể đơn giản vẫn đẹp.
+- **Đá:** xám xanh lạnh (hơi ngả xanh lam / ngọc). **Mép trên có lớp cỏ phủ, tràn nhẹ xuống mép** —
+  vách nhìn như mép đất nhô lên có cỏ, không phải tường xây.
+- **Cây:** ít chùm lá, mỗi chùm to tròn. **Mỗi tầng lá một sắc:** tầng trên vàng xanh sáng, tầng giữa
+  xanh lá, tầng dưới xanh lam đậm; khe giữa các chùm tối. Thân ngắn, nâu ấm, chỉ lộ chút dưới tán.
+- **Cỏ / bụi:** lá to, khối đặc; ngọn sáng vàng xanh, gốc tối.
+- Màu tươi nhưng không gắt. Không chữ, không logo.
 
-### Riêng các dãy dài (vách, bờ sông, rào) — điều kiện để nối khít
+## Quy tắc ảnh (để Tripo dựng 3D đúng)
 
-- **Hai đầu cắt phẳng thẳng đứng**, vuông góc với chiều dài, như khúc bánh mì cắt ngang.
-- **Mặt cắt hai đầu giống hệt nhau** (cùng dày, cùng cao, cùng dáng): đặt đầu mảnh này sát đầu mảnh kia
-  phải liền như một khối.
-- **Dày và cao đều suốt chiều dài**, không phình giữa, không thót hai đầu. Mép trên được gợn nhẹ.
-- Chi tiết (tảng, khe, rêu) phân bố đều dọc chiều dài, không có điểm nhấn lớn ở một chỗ (vì sẽ lặp lại).
+- **Một vật thể, nhìn trọn vẹn**, giữa khung, cách mép ≥ 8%, không vật thể phụ.
+- **Góc nhìn 3/4 từ trên xuống** (~45°), nhìn vào **cạnh dài**, lệch ~20° để thấy mặt trên, mặt dài, một đầu.
+- **Nền trắng trơn `#FFFFFF`**, không bóng đổ xuống nền, không mặt đất, không cỏ rời quanh chân.
+- **Ánh sáng dịu đều** từ trên–trái (sáng tối vẽ trên vật thể như mục Phong cách, nhưng không bóng gắt).
+- **Đáy phẳng**, vật đặt trên mặt phẳng.
+- **Tỉ lệ đúng như bảng** (dài : dày : cao) — kích thước thật trong game.
+
+### Riêng dãy dài (vách, bờ sông, rào) — để nối khít
+
+- **Hai đầu cắt phẳng thẳng đứng**, vuông góc chiều dài; **mặt cắt hai đầu giống hệt nhau**.
+- **Dày và cao đều suốt chiều dài**, không phình giữa, không thót đầu. Mép trên được gợn nhẹ.
+- Khối đá to phân bố đều dọc chiều dài, không có điểm nhấn lớn ở một chỗ (vì sẽ lặp lại).
 
 ### Câu lệnh gốc (ghép trước mô tả từng ảnh)
 
 ```
-Stylized hand-painted 3D game asset concept for a mobile MOBA, chunky rounded shapes, low detail,
-soft beveled edges, saturated colors, same art style as the attached reference images,
-single object fully visible and centered, 3/4 top-down view at about 45 degrees,
-plain pure white background, soft even light from top-left, no cast shadow, no ground,
+Stylized hand-painted 3D game asset concept in the style of top-down mobile MOBA maps (Wild Rift /
+Arena of Valor feel), few large simple shapes, smooth broad surfaces, soft rounded edges, no small
+details, no brick pattern, painted soft gradient lighting: bright warm top, darker cool bottom, dark
+ambient occlusion in gaps, subtle rim highlight on top edges, single object fully visible and centered,
+3/4 top-down view at about 45 degrees, plain pure white background, no cast shadow, no ground,
 flat bottom, no text, no watermark.
 ```
 
 Thêm cho dãy dài:
 
 ```
-Long straight modular wall segment, both ends cut perfectly flat and vertical with identical
-cross-section, constant thickness and height along the whole length, evenly distributed details.
+Long straight modular rock edge segment, a few big smooth boulders merged into one low ridge,
+thick grass cap on top slightly overhanging the edges, both ends cut perfectly flat and vertical
+with identical cross-section, constant thickness and height along the whole length.
 ```
 
 ---
 
-## Đợt K0 — Thử phong cách (3 ảnh) — làm rồi DỪNG
+## Đợt K0 — Thử phong cách (4 ảnh) — làm rồi DỪNG
 
-- [x] `vach_48.png` — vách đá dài 4,8 m, dày 1,2 m, cao 1,2 m (**4 : 1 : 1**). Tảng đá xám xanh xếp
-  liền thành bức tường thấp, mặt trên có rêu.
-- [x] `rung_tron_m.png` — mảng rừng tròn Ø 7,2 m, cao 2,6–3 m. Khoảng 6–8 cây tán tròn bồng **dính liền
-  thành một khối tán**, tán phủ ra sát mép chân khối, thân chỉ lộ chút ở rìa.
-- [x] `bui_a.png` — cụm cỏ 1,2 × 1,2 m, cao 0,6 m. Lá to nhọn, **khối đặc** (không lá mỏng tách rời).
+- [ ] `vach_48.png` — viền đá 4,8 × 1,2 × 1,2 m (**4 : 1 : 1**). 3–4 khối đá to mượt liền thành gờ thấp,
+  cỏ phủ mặt trên tràn nhẹ xuống mép.
+- [ ] `bo_song_48.png` — bờ sông 4,8 × 1,2 × 0,5 m. Gờ đá thấp: một cạnh dài mép cỏ, cạnh kia **mặt đá
+  dốc tối ướt** xuống nước.
+- [ ] `cay_tron_a.png` — một cây tán tròn, tán Ø 2,4 m, cao 2,8 m; 4–5 chùm lá to, ba tầng sắc
+  (vàng xanh / xanh lá / xanh lam đậm) như mục Phong cách.
+- [ ] `bui_a.png` — cụm cỏ 1,2 × 1,2 × 0,6 m, lá to, khối đặc, ngọn sáng gốc tối.
 
 ## Đợt K1 — Dãy đá (game uốn cong theo đường)
 
-| | Tên | Dài × dày × cao (m) | Tỉ lệ | Mô tả |
-|---|---|---|---|---|
-| [ ] | `vach_24` | 2,4 × 1,2 × 1,2 | 2:1:1 | Như `vach_48`, ngắn |
-| [ ] | `vach_48b` | 4,8 × 1,2 × 1,2 | 4:1:1 | Biến thể thứ hai của `vach_48` (tảng khác chỗ) |
-| [ ] | `vach_dau` | 1,2 × 1,2 × 1,2 | 1:1:1 | Đầu bo: **một đầu cắt phẳng** (nối vào dãy), **đầu kia bo tròn** |
-| [ ] | `vach_goc` | 2,4 × 2,4 × 1,2 | — | Góc vuông 90°: hình chữ L, hai cánh dày 1,2 m, hai đầu cánh cắt phẳng |
-| [ ] | `bo_song_24` | 2,4 × 1,2 × 0,5 | — | Bờ sông: một cạnh dài là **mặt dốc đá ướt sẫm xuống nước**, cạnh kia mép cỏ |
-| [ ] | `bo_song_48` | 4,8 × 1,2 × 0,5 | — | Như trên, dài |
-| [ ] | `bo_song_dau` | 1,2 × 1,2 × 0,5 | — | Đầu bờ sông bo tròn thấp dần xuống đất (cạnh lối xuống sông) |
-| [ ] | `rao_24` | 2,4 × 0,8 × 0,8 | 3:1:1 | Rào base: khối đá đẽo vuông xếp, viền vàng kim nhẹ trên đỉnh |
-| [ ] | `rao_48` | 4,8 × 0,8 × 0,8 | 6:1:1 | Như trên, dài |
-| [ ] | `rao_cot` | 0,9 × 0,9 × 1,3 | — | Cột rào vuông, chóp vàng kim (đặt ở đầu / chỗ gập rào) |
-
-## Đợt K2 — Khối núi (lấp vùng đá lớn, viền map; không uốn)
-
-Cao 3–4 m, nhiều tảng chồng thành một khối núi, đỉnh có rêu, chân to chạm đất kín.
-
-| | Tên | Chân (m) | Cao (m) |
+| | Tên | Dài × dày × cao (m) | Mô tả |
 |---|---|---|---|
-| [ ] | `nui_s` | 4,8 × 4,8 | 3 |
-| [ ] | `nui_m` | 9,6 × 4,8 | 3,5 |
-| [ ] | `nui_l` | 9,6 × 9,6 | 4 |
+| [ ] | `vach_24` | 2,4 × 1,2 × 1,2 | Như `vach_48`, ngắn |
+| [ ] | `vach_48b` | 4,8 × 1,2 × 1,2 | Biến thể thứ hai của `vach_48` (khối đá khác chỗ) |
+| [ ] | `vach_dau` | 1,2 × 1,2 × 1,2 | Đầu bo: **một đầu cắt phẳng** (nối dãy), **đầu kia bo tròn** như đầu nấm |
+| [ ] | `bo_song_24` | 2,4 × 1,2 × 0,5 | Như `bo_song_48`, ngắn |
+| [ ] | `bo_song_dau` | 1,2 × 1,2 × 0,5 | Đầu bờ sông bo tròn, thấp dần xuống đất (cạnh lối xuống sông) |
+| [ ] | `rao_24` | 2,4 × 0,8 × 0,8 | Rào base: đá đẽo khối to mượt, viền vàng kim nhẹ trên đỉnh |
+| [ ] | `rao_48` | 4,8 × 0,8 × 0,8 | Như trên, dài |
+| [ ] | `rao_cot` | 0,9 × 0,9 × 1,3 | Cột rào vuông, chóp vàng kim |
 
-## Đợt K3 — Mảng rừng (8 mảng, lưới 2,4 m)
+## Đợt K2 — Cây (thả bên trong viền đá) và bụi
 
-Nhiều cây tán tròn bồng (xen 1–2 cây thông) **dính liền một khối tán**, cao 2,5–3 m. **Tán phủ đúng tới
-mép chân khối** — chân khối chính là vùng chặn đường. Mép ngoài tán gợn tròn tự nhiên, không phẳng như hộp.
-
-| | Tên | Chân (m) | Dáng |
+| | Tên | Cỡ | Mô tả |
 |---|---|---|---|
-| [ ] | `rung_tron_s` | Ø 4,8 | tròn nhỏ |
-| [ ] | `rung_tron_l` | Ø 9,6 | tròn lớn |
-| [ ] | `rung_ovan` | 9,6 × 4,8 | ô van dài |
-| [ ] | `rung_dai` | 9,6 × 2,4 | dải mỏng một hàng cây |
-| [ ] | `rung_cung` | ¼ vòng: bán kính trong 4,8, ngoài 9,6 | cung cong |
-| [ ] | `rung_l` | 9,6 × 9,6, cánh rộng 4,8 | chữ L (góc) |
-| [ ] | `rung_nem` | tam giác vuông cạnh 7,2 | nêm lấp góc nhọn |
+| [ ] | `cay_tron_b` | tán Ø 2,0 m, cao 2,4 m | Tán tròn lệch, 3–4 chùm |
+| [ ] | `cay_thong` | tán Ø 1,8 m, cao 3,2 m | Thông 3–4 tầng lá to, mỗi tầng một sắc |
+| [ ] | `cay_thap` | Ø 2,4 m, cao 1,4 m | Cây bụi thấp tán rộng (đặt sát mép trong viền đá, không che tướng) |
+| [ ] | `bui_b` | 1,8 × 1,2 × 0,5 m | Cụm cỏ thấp rộng |
+| [ ] | `bui_c` | 1,0 × 1,0 × 0,7 m | Cụm cỏ cao thẳng |
 
-## Đợt K4 — Bụi cỏ (rải kín vùng bụi) và fountain
+## Đợt K3 — Fountain
 
-| | Tên | Cỡ (m) | Mô tả |
+| | Tên | Cỡ | Mô tả |
 |---|---|---|---|
-| [ ] | `bui_b` | 1,8 × 1,2 × 0,5 | cụm cỏ thấp rộng |
-| [ ] | `bui_c` | 1,0 × 1,0 × 0,7 | cụm cỏ cao thẳng |
-| [ ] | `fountain_set_blue` | Ø 12 | Vòng rào đá thấp (cao 0,8 m, dày 0,8 m) quanh nền đá tròn; **một cổng hở 55°** ở phía trước; giữa là đài suối pha lê xanh `#3D8BFF` phát sáng; sát rào phía sau một **trụ bắn nhỏ** cao ~2,5 m, chóp pha lê xanh. Nhìn từ phía cổng. |
-| [ ] | `fountain_set_red` | Ø 12 | **Đính kèm bản xanh**, chỉ đổi pha lê và phần màu phe sang đỏ `#FF4D4D`, giữ nguyên hình |
+| [ ] | `fountain_set_blue` | Ø 12 m | Vòng rào đá thấp (cao 0,8 m, dày 0,8 m) quanh nền đá tròn; **một cổng hở 55°** phía trước; giữa là đài suối pha lê xanh `#3D8BFF` phát sáng; sát rào phía sau một **trụ bắn nhỏ** cao ~2,5 m, chóp pha lê xanh. Nhìn từ phía cổng. |
+| [ ] | `fountain_set_red` | Ø 12 m | **Đính kèm bản xanh**, chỉ đổi pha lê và phần màu phe sang đỏ `#FF4D4D`, giữ nguyên hình |
 
 ## Ghi chú cho người ghép (không phải việc của Codex)
 
-- Tỉ lệ đơn vị: 1 m = 100 đơn vị thế giới. Lane rộng 2,9 m; vách hiện dày ~1 m → kit dày 1,2 m.
-- Tripo: image-to-3D, giới hạn mặt — dãy 2,4 m ≤ 500, dãy 4,8 m ≤ 900, đầu / cột ≤ 300, núi 1.500–2.500,
-  mảng rừng 1.500–3.000, bụi 200–400, fountain 4.000–6.000.
-- Dãy đá: bỏ ảnh màu Tripo, dùng màu đỉnh + một texture đá lặp phủ theo toạ độ thế giới; chia lưới đều
-  dọc chiều dài để uốn; co giãn không đều cho đúng kích thước chuẩn. Rừng / bụi / núi: gộp ảnh màu vào
-  một atlas. Chân mọi mảnh pha dần sang màu nền.
+- 1 m = 100 đơn vị thế giới; lưới chuẩn 1,2 m; bán kính uốn nhỏ nhất ~3 m. Lane rộng 2,9 m.
+- Tripo image-to-3D, giới hạn mặt: dãy 2,4 m ≤ 500, dãy 4,8 m ≤ 900, đầu / cột ≤ 300, cây 300–500,
+  bụi 200–400, fountain 4.000–6.000.
+- Dãy dài: co giãn không đều cho đúng kích thước chuẩn, uốn theo đường (thử K0 bản 1: nối liền, không giãn).
+- Cây / bụi: thêm màu đỉnh theo độ cao và khe (tools/models/paint_vc.py) để tăng sáng tối.
 - Fountain bắn theo STR-04 sẵn có; trụ trong bộ chỉ là hình. Shop vẫn là mô hình riêng theo `shops`.
+- Ngoài mép map để trống / nền đơn giản (không rải núi, cây ngoài map).
