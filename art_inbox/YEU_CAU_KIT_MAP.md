@@ -62,8 +62,9 @@ at about 45 degrees, plain pure white background, no cast shadow, no ground, fla
 ## Đợt S — Bảng phong cách (1 ảnh) — làm rồi DỪNG
 
 - [x] `bang_phong_cach.png` — **một góc map nhìn từ camera game** (nghiêng ~46° từ trên xuống), vuông,
-  không phải ảnh vật thể nền trắng. Gồm: nền cỏ có một lối đất; **một khối đá lớn** (cao ~1,5 m, đỉnh phủ
-  cỏ) có **2 cây thông** điểm trên đỉnh; **một vùng bụi cỏ**; một khúc **mép sông** có 1–2 khối đá bờ;
+  không phải ảnh vật thể nền trắng. Gồm: nền cỏ có một lối đất; **một khối đá lớn** (cao hơn nhân vật,
+  đỉnh phủ cỏ nhưng không phẳng trống, có 2–3 khối đá lớn đơn giản chân chìm vào đỉnh) và **2 cây thông**
+  điểm trên đỉnh; cây là asset riêng, có thể thêm/bớt khi ghép map. Có **một vùng bụi cỏ**; một khúc **mép sông** có 1–2 khối đá bờ;
   một đoạn **rào đá thẳng**; một nhân vật nhỏ cao ~1,2 m để so tỉ lệ. Dùng đúng bảng màu trên, màu dịu,
   mọi vật hài hòa với nhau. Đây là ảnh neo cho mọi ảnh sau.
 
