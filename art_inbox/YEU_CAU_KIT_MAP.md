@@ -63,10 +63,12 @@ at about 45 degrees, plain pure white background, no cast shadow, no ground, fla
 
 - [x] `bang_phong_cach.png` — **một góc map nhìn từ camera game** (nghiêng ~46° từ trên xuống), vuông,
   không phải ảnh vật thể nền trắng. Gồm: nền cỏ có một lối đất; **một khối đá lớn** (cao hơn nhân vật,
-  đỉnh phủ cỏ nhưng không phẳng trống, có 2–3 khối đá lớn đơn giản chân chìm vào đỉnh) và **2 cây thông**
+  đỉnh phủ cỏ nhưng không phẳng trống, có hai mỏm đá lớn khác dáng nhô liền từ thân vách) và **2 cây thông**
   điểm trên đỉnh; cây là asset riêng, có thể thêm/bớt khi ghép map. Có **một vùng bụi cỏ**; một khúc **mép sông** có 1–2 khối đá bờ;
   một đoạn **rào đá thẳng**; một nhân vật nhỏ cao ~1,2 m để so tỉ lệ. Dùng đúng bảng màu trên, màu dịu,
   mọi vật hài hòa với nhau. Đây là ảnh neo cho mọi ảnh sau.
+
+Đợt S đã duyệt hướng mỏm đá liền thân vách (phương án C); khi dựng 3D ưu tiên vài mặt lớn và đo số tam giác thực tế sau Tripo.
 
 ## Đợt R — Rào, rìa map, bụi, cây (vật thể nền trắng)
 
