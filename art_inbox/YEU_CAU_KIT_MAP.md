@@ -82,6 +82,9 @@ at about 45 degrees, plain pure white background, no cast shadow, no ground, fla
 | [ ] | `rim_goc` | 2,4 × 2,4 × 2,5 | Góc vuông rìa map (chữ L), hai đầu cánh cắt phẳng khớp `rim_48` |
 | [ ] | `bui_a` | 1,2 × 1,2 × 0,6 | Bụi cỏ: **ít lá, lá to bản** dày (8–12 lá), khối đặc; ngọn sáng gốc tối |
 | [ ] | `bui_b` | 1,8 × 1,2 × 0,5 | Bụi cỏ thấp rộng, cùng kiểu lá |
+| [ ] | `tile_co` | ô 1024 px ≈ 4 × 4 m | **Ảnh nền lặp** (không phải vật thể): cỏ nhìn thẳng từ trên xuống, giống nền cỏ trong bảng phong cách, **lặp liền mép 4 cạnh**, không vật thể, không bóng |
+| [ ] | `tile_dat` | ô 1024 px ≈ 4 × 4 m | Ảnh nền lặp: đất lối đi như bảng phong cách, lặp liền mép |
+| [ ] | `tile_nuoc` | ô 1024 px ≈ 4 × 4 m | Ảnh nền lặp: mặt nước như bảng phong cách, lặp liền mép |
 | [ ] | `cay_thong` | tán Ø 1,8, cao 3,0 | Thông 3–4 tầng lá to, mỗi tầng một sắc, màu dịu theo bảng |
 
 ## Đợt B — Khối đá (sau khi phác xong map)
