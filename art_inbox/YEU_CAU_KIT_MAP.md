@@ -70,8 +70,8 @@ with identical cross-section, constant thickness and height along the whole leng
 
 ## Đợt K0 — Thử phong cách (4 ảnh) — làm rồi DỪNG
 
-- [x] `vach_48.png` — viền đá 4,8 × 1,2 × 1,2 m (**4 : 1 : 1**). 3–4 khối đá to mượt liền thành gờ thấp,
-  cỏ phủ mặt trên tràn nhẹ xuống mép.
+- [x] `vach_48.png` — viền đá 4,8 × 1,2 × khoảng 1,5 m. 3–4 khối đá lớn liền thành vách cao gần mặt tướng,
+  đủ rõ là vùng không đi qua; mặt đá trơ, không dựng cây/bụi trên vách.
 - [x] `bo_song_48.png` — bờ sông 4,8 × 1,2 × 0,5 m. Gờ đá thấp: một cạnh dài mép cỏ, cạnh kia **mặt đá
   dốc tối ướt** xuống nước.
 - [x] `cay_tron_a.png` — một cây tán tròn, tán Ø 2,4 m, cao 2,8 m; 4–5 chùm lá to, ba tầng sắc
@@ -81,6 +81,7 @@ with identical cross-section, constant thickness and height along the whole leng
 K0 làm lại theo bản 2: bản 1 có vách giống tường gạch và mảng rừng nguyên khối, không đạt phong cách mới.
 K0 chỉnh tiếp theo ảnh Tốc Chiến người dùng gửi: cây và đá tự nhiên hơn, màu xanh rêu/xám đá trầm hơn; thay bốn ảnh K0 để đồng bộ.
 K0 chỉnh theo ảnh trận mới: cây mẫu đổi sang dáng thông (giữ tên `cay_tron_a.png` để không đứt luồng thử hiện tại); viền đá và bờ sông chỉ còn khối đá lớn, không dựng cây/bụi trên đá để giảm số tam giác khi chuyển 3D. Cần chốt tên cây chính thức khi duyệt.
+K0 tăng chiều cao riêng `vach_48` từ 1,2 m lên khoảng 1,5 m theo góp ý: mặt vách tới gần mặt tướng để nhận ra vật cản. `bo_song_48` vẫn là bờ thấp 0,5 m.
 
 ## Đợt K1 — Dãy đá (game uốn cong theo đường)
 
