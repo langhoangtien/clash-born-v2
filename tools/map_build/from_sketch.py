@@ -24,6 +24,8 @@ BASE_R = 0.29       # D-172: nền base (đất cao) nhỏ hơn hình vẽ; ph�
 SHRINK = 2.5     # D-171: thu khối đá vào mỗi phía (ô guide) — lối đi rộng hơn nét vẽ
 MIN_THICK = 4.0  # D-172: bề dày tối thiểu của khối (2·diện tích/chu vi, ô guide)
 ROUND = 2.0      # D-172: bo tròn mỏm nhọn / khía nhỏ (ô guide) — khối dễ dựng 3D, ít tam giác
+BANK_LAND_THIN = 7.0  # D-172: dải đá bờ sông mảnh trong bản vẽ dày thêm chừng này về phía đất
+BANK_LAND = 2.0  # D-172: đá bờ sông dày thêm về phía đất (ô guide)
 BANK = 3.0       # D-172: đá bờ sông không thu phía sông và lấn vào sông chừng này (ô guide)
 ## D-172: lối cắt xuyên khối đá (nửa Blue, ô guide): [đầu, cuối, bề rộng]
 CUTS = [[[250, 385], [324, 459], 12]]  # khối G11/H10 cạnh trụ 1 mid: lối từ mid vào rừng
@@ -83,10 +85,11 @@ def shape_blocks(raw, rivers, frame):
     out = []
     for p in raw:
         g = p.buffer(-SHRINK, join_style="round")
-        if p.distance(water) < 1.5:
-            g = g.union(p.intersection(water.buffer(SHRINK + 1.0))).union(p.buffer(BANK).intersection(water))
+        if p.distance(water) < 1.5:  # đá bờ sông: không thu, dày thêm về phía đất và lấn vào sông
+            grow = BANK_LAND if 2 * p.area / p.length >= MIN_THICK * 2 else BANK_LAND_THIN  # dải bờ mảnh dày hơn hẳn
+            g = p.buffer(grow, join_style="round").union(p.buffer(BANK).intersection(water))
         g = g.buffer(-ROUND, join_style="round").buffer(2 * ROUND, join_style="round").buffer(-ROUND, join_style="round")
-        g = g.intersection(p.buffer(BANK))  # bo lại không lấn ra lối
+        g = g.intersection(p.buffer(max(BANK, BANK_LAND_THIN)))  # bo lại không lấn ra lối
         if cuts is not None:
             g = g.difference(cuts)
         out += [q for q in getattr(g, "geoms", [g]) if q.geom_type == "Polygon" and q.area >= 4.0
