@@ -25,6 +25,8 @@ xong map)**.
 ## Phong cách và bảng màu
 
 - **Ít khối, khối to**, mặt mượt, cạnh bo mềm. Không vân gạch, không đá vụn, không vết nứt nhỏ.
+- **Khối đá chặn đường có hai tầng rõ ràng:** vách dưới cao, tầng trên là vài mỏm lớn gồ lệch; không để
+  mặt phẳng rộng trên đỉnh khiến người chơi tưởng có thể blink lên đứng. Dùng ít mặt đá lớn để tiết kiệm tam giác.
 - **Sáng tối vẽ sẵn, chuyển mềm:** mặt trên sáng ấm, xuống dưới tối lạnh dần; khe giữa khối tối; mép trên
   viền sáng nhẹ.
 - **Màu dịu, không tươi gắt** (bản trước cây cỏ quá tươi, nhìn bết). Độ bão hòa vừa phải, các vật cùng tông.
