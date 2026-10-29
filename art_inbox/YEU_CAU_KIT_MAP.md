@@ -93,6 +93,19 @@ Người ghép sẽ thêm ở đây **bản vẽ từng khối** (`art_inbox/07_
 xuống có thước mét, chiều cao, chỗ đặt cây thông). Mỗi khối vẽ một ảnh **góc 3/4** giữ đúng dáng hình chiếu.
 Bờ sông cũng là các khối riêng trong đợt này.
 
+### Đợt B0 — Thử 3 khối (làm rồi DỪNG)
+
+Mỗi khối có bản vẽ hình chiếu từ trên xuống trong `art_inbox/07_kit/ban_ve/` (khối đen trên lưới 1 m).
+Vẽ **một ảnh góc 3/4** mỗi khối (quy tắc ảnh vật thể ở trên, nền trắng), đính kèm `bang_phong_cach.png`
+và bản vẽ của khối đó. **Nhìn từ trên xuống, chân khối phải đúng dáng đen trong bản vẽ** (cả chỗ lõm,
+mỏm, đầu bo) — sai dáng thì khối không khớp lối đi. Cạnh khối dựng gần thẳng đứng, không loe chân.
+
+| | Tên ảnh | Bản vẽ | Cao | Mô tả |
+|---|---|---|---|---|
+| [ ] | `khoi_13.png` | `ban_ve/khoi_13.png` | 1,3 m | Khối đá vừa: vài tảng đá lớn mượt liền nhau, đỉnh 2 tầng gồ lệch có cỏ phủ, 1 cây thông nhỏ |
+| [ ] | `khoi_19.png` | `ban_ve/khoi_19.png` | 1,3 m | Khối lớn ôm hốc bãi quái (chỗ lõm hình tròn là sân quái, để trống), đỉnh gồ lệch có cỏ, 2 cây thông |
+| [ ] | `bo_song_16.png` | `ban_ve/bo_song_16.png` | 0,5 m | Hàng đá thấp ven sông như rào đá tự nhiên: các tảng đá tròn thấp nối nhau, mặt phía nước (trên–trái) sẫm ướt |
+
 ## Ghi chú cho người ghép (không phải việc của Codex)
 
 - 1 m = 100 đơn vị thế giới. Lane rộng 2,9 m. Vật cản của khối = hình chiếu chân mô hình thật (đo sau
