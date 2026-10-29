@@ -1,5 +1,7 @@
 # Yêu cầu ảnh — Đồ họa map (bản 3)
 
+> **Đã thay bằng `YEU_CAU_STYLE.md` (D-178)** — không làm tiếp phiếu này.
+
 Phiếu việc cho **Codex tạo ảnh tham chiếu**. Ảnh sau đó đưa vào Tripo (tạo 3D từ ảnh); gọi Tripo, giảm lưới,
 tô màu và đưa vào game do người ghép (Claude) làm. Codex **chỉ làm ảnh**.
 

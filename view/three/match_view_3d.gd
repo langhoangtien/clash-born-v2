@@ -7,7 +7,7 @@ extends Node3D
 ## 1 px thế giới = 0,01 đơn vị 3D.
 const S: float = 0.01
 ## D-151: lớp mặt đất chỉ phủ vùng camera thấy (tính từ khung nhìn), ảnh LAYER_SCALE điểm ảnh mỗi px
-## thế giới (khớp MapBaker). Xa quá FAR_PX phía trước bị sương che, không vẽ; nới GROUND_MARGIN mỗi phía.
+## thế giới. Xa quá FAR_PX phía trước bị sương che, không vẽ; nới GROUND_MARGIN mỗi phía.
 const LAYER_SCALE: float = 0.5
 const FAR_PX: float = 1500.0
 const GROUND_MARGIN: float = 96.0
@@ -59,6 +59,7 @@ func setup(w: World, units_view: UnitsView, ground_nodes: Array[Node]) -> void:
 	units = units_view
 	layer = SubViewport.new()
 	layer.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	layer.transparent_bg = true  # D-178: lớp 2D chỉ còn phủ (sương, vùng, mũi nhắm), mặt đất do Terrain3D vẽ
 	add_child(layer)
 	for n: Node in ground_nodes:
 		n.reparent(layer, false)
@@ -67,7 +68,7 @@ func setup(w: World, units_view: UnitsView, ground_nodes: Array[Node]) -> void:
 	layer.add_child(_layer_cam)
 	_ground = MeshInstance3D.new()
 	_ground.mesh = PlaneMesh.new()
-	_ground.material_override = Look3D.ground_material(layer.get_texture())  # D-150
+	_ground.material_override = Terrain3D.ground_material(layer.get_texture())  # D-178
 	add_child(_ground)
 	camera = Camera3D.new()
 	camera.fov = CAM_FOV
@@ -76,15 +77,11 @@ func setup(w: World, units_view: UnitsView, ground_nodes: Array[Node]) -> void:
 	_fit_ground()
 	get_viewport().size_changed.connect(_fit_ground)
 	Look3D.add_lights(self)  # D-150
-	scenery = Scenery3D.new()  # D-158: cây, đá, cửa hàng, đổ nát dựng từ dữ liệu map
+	scenery = Scenery3D.new()  # D-158, D-178: cây, đá, rào, tường thành, cửa hàng, đổ nát dựng từ dữ liệu map
 	add_child(scenery)
 	if world.map != null:
 		scenery.build(world.map)
-		var mat: ShaderMaterial = _ground.material_override as ShaderMaterial
-		mat.set_shader_parameter("map_size", world.map.world_size() * S)
-		WaterMask.bake(self, world.map).done.connect(func(t: Texture2D) -> void:  # D-160: sông gợn sóng
-			mat.set_shader_parameter("water_mask", t)
-			mat.set_shader_parameter("has_water", true))
+		add_child(Terrain3D.water(world.map))  # D-178
 
 
 func to_3d(p: Vector2) -> Vector3:

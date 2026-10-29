@@ -63,7 +63,7 @@ func test_INV_01_05_and_08_ten_minutes() -> void:
 		if t % 900 == 899:
 			checkpoints.append(w.state_hash())
 		if w.tick == SimClock.seconds_to_ticks(w.balance.jungle_first_spawn) + 1:
-			assert_eq(w.entities.filter(func(e: Entity) -> bool: return e.kind == Entity.Kind.NEUTRAL).size(), 28, "12 trại đủ quái (JGL-05)")
+			assert_eq(w.entities.filter(func(e: Entity) -> bool: return e.kind == Entity.Kind.NEUTRAL).size(), 36, "16 trại đủ quái (JGL-05; MAP-02: mỗi phe 2 lớn × 3 + 3 vừa × 2 + 3 nhỏ × 2)")
 	assert_eq(mover.blocked_steps, 0, "MOV-05: không bước nào bị chặn vì vật cản")
 	var last_hits: int = 0
 	for e: Entity in w.entities:

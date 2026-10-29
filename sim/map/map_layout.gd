@@ -54,8 +54,6 @@ var rock_line_widths: PackedFloat32Array = PackedFloat32Array()
 ## D-169: "rock" vách đá, "fence" rào đá (base, fountain).
 var rock_line_kinds: PackedStringArray = PackedStringArray()
 var collision_polygons: Array[PackedVector2Array] = []
-## D-175: khối đá dựng sẵn (chỉ để vẽ): model, pos, anchor, yaw, flip, scale, height_scale, foot, min_y.
-var block_models: Array[Dictionary] = []
 ## VIS-06: bụi cỏ.
 var bushes: MapBushes = MapBushes.new()
 ## M5.6: điểm có tên cho map dev (khe, lối…), chỉ để hiển thị.
@@ -238,7 +236,6 @@ func _load_terrain(d: Dictionary) -> void:
 
 func _load_rocks(render: Dictionary) -> void:
 	rock_shapes = _shapes(render.get("rocks", []))
-	block_models.assign(render.get("block_models", []))
 	rock_lines.clear(); rock_line_widths.clear(); rock_line_kinds.clear()
 	for line: Dictionary in render.get("rock_lines", []):
 		rock_lines.append(_points(line["points"]))

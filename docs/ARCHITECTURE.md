@@ -48,7 +48,8 @@ clashborn_v2/
     ART.md                 phong cách, hợp đồng hình ảnh, lộ trình đồ họa
   content/                 dữ liệu (.tres), không có logic
     heroes/  abilities/  effects/  items/  units/  balance/
-  data/maps/               map đã build (từ tools/map_build: nguồn vector map_source.json, D-168)
+  data/maps/               map đã build (từ tools/map_build: nguồn vector map_source.json, D-168);
+                           clashborn_decor.json: cảnh vật + mặt nạ nền đất cho VIEW (decor.py, D-178), SIM không đọc
   sim/                     tầng SIM
     core/                  công thức (mang từ v1): stat, sát thương, trúng/né
     rules.gd               Rules: khoảng cách mép–mép, trong tầm, nhắm được (DEF, ST)
@@ -68,16 +69,16 @@ clashborn_v2/
     map/                   MapLayout, MapNavigation, MapValidator, MapShape (mang từ v1), LaneRoute (tiến độ lane)
   view/                    vẽ đơn vị, map, hiệu ứng, HUD, điều khiển cảm ứng;
                            ArtLibrary: tra hình theo id, thiếu thì hình tạm (ART.md)
-    map/                   MapView, MapPainter (vẽ tạm bằng hình phẳng), MapBaker (nướng lớp tĩnh thành ô ảnh, D-147)
+    map/                   MapView (màn trận: chỉ lớp phủ, D-178), MapPainter (vẽ phẳng cho màn xem map, minimap)
     units/                 UnitsView: phần dưới đất của đơn vị (bóng, vòng đội / siêu cấp / về thành / tái
                            sinh, mắt), nội suy giữa hai tick; UnitSprite (ảnh đứng, D-144), Vfx (hiệu ứng chiêu /
                            đòn), ZonePainter (vùng kỹ năng), StateMarks (dấu trạng thái)
     three/                 Trận vẽ 3D (D-145, D-157): MatchView3D (mặt đất 2D trong SubViewport dán lên mặt
                            phẳng, camera), Actor3D (một đơn vị: nhân vật KayKit hoặc ảnh billboard), ModelLibrary
                            (tra assets/models/units_3d.json), Bars3D (thanh máu, dấu trạng thái, ổ khóa),
-                           Look3D + ground.gdshader (ánh sáng, môi trường, bóng chân, vân mặt đất) — D-146, D-150;
-                           Scenery3D (cây, đá, bụi, chợ, đổ nát dựng từ dữ liệu map, D-158, D-165), WaterMask (mặt nạ sông
-                           cho sóng nước, D-160)
+                           Look3D (ánh sáng, môi trường, bóng chân) — D-146, D-150; Terrain3D + ground / water /
+                           kit / kit_tex .gdshader (mặt đất ảnh nền theo mặt nạ, nước, vật liệu cảnh vật vẽ sẵn sáng
+                           tối — D-178); Scenery3D (cảnh vật decor.py, bụi, chợ, đổ nát, D-158, D-178)
     art/                   ArtLibrary: res://assets/art/<art_id>.png, thiếu → hình tạm
     ui/                    UiStyle (phông, màu, khung, nút, xu), UiGlyphs (icon nét) — D-130
     menu/                  HeroSelect, HeroDetail, HeroPreview (màn chọn tướng), GraphicsSetting (mức đồ họa, D-157)
@@ -89,7 +90,10 @@ clashborn_v2/
                            MatchInput: joystick/WASD/chạm → Command (CTL-01);
                            Updater: tự kiểm tra / tải / cài bản Android mới (D-148)
   tests/                   test (framework nhỏ tự viết, xem mục 9)
-  tools/                   script ngoài Godot (build map...); sim_profile.gd đo ms mỗi tick theo hệ thống (D-152)
+  tools/                   script ngoài Godot; sim_profile.gd đo ms mỗi tick theo hệ thống (D-152)
+                           map_build (D-178): from_sketch.py (sông, base, shop từ bản vẽ) → plateau_design.py --write
+                           (bục rừng, đá bờ, rìa map, trại, bụi) → build_map.py (dữ liệu SIM) → decor.py (cảnh vật VIEW)
+                           models/style_kit.py: bộ asset Blender (cần bpy, xem handoff.md)
 ```
 
 ## 3. Mô hình dữ liệu trong SIM

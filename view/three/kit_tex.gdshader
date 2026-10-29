@@ -1,14 +1,13 @@
 shader_type spatial;
-// Đá / tường bộ asset mới: màu đỉnh vẽ sẵn sáng tối (style_kit.py) × vân ảnh (rock_face / wall_face) chiếu theo
-// trục chính của mặt (mỗi mặt phẳng một lần đọc ảnh — rẻ, mặt low-poly phẳng nên không lộ mối). Ảnh chia cho
-// màu trung bình của nó: vân chỉ thêm chi tiết, tông vẫn theo màu đỉnh. Không đèn.
+// D-178: đá / rào / tường / tán cây: màu đỉnh vẽ sẵn sáng tối (style_kit.py) × vân ảnh chiếu theo trục chính
+// của mặt (mỗi mặt phẳng một lần đọc ảnh — rẻ, mặt low-poly phẳng nên không lộ mối). Ảnh chia cho màu trung
+// bình của nó: vân chỉ thêm chi tiết, tông theo màu đỉnh. luma_only: chỉ lấy sáng tối (tán cây). Không đèn.
 render_mode unshaded, cull_disabled;
 
 uniform sampler2D face_tex : source_color, filter_linear_mipmap, repeat_enable;
 uniform vec3 face_mean = vec3(0.4);
 uniform float meters = 3.0;
 uniform float strength = 1.0;
-// true: chỉ lấy sáng tối của vân (giữ màu đỉnh — tán cây mượn nét cọ của ảnh cỏ / nền rừng).
 uniform bool luma_only = false;
 
 varying vec3 wpos;

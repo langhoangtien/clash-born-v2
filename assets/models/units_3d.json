@@ -167,7 +167,7 @@
    "impact": 0.45
   }
  },
- "_ghi_chu_cong_trinh": "D-158: công trình và cảnh vật 3D từ KayKit Medieval Hexagon (CC0) trong assets/models/medieval/; bụi từ KayKit Forest Nature (CC0) trong assets/models/forest/ (D-165). Đường dẫn model tính từ assets/models/. structures: theo art_id (trụ thêm _t<bậc>), model là tên file không có _blue/_red (thêm theo đội), height: chiều cao trên sân (đơn vị 3D). scenery: cây rải trong forest_shapes, đá dọc cliff_shapes, cửa hàng, đống đổ nát chỗ trụ đã đổ; spacing là khoảng cách lưới (px thế giới), scale là [nhỏ nhất, lớn nhất] so với cỡ gốc.",
+ "_ghi_chu_cong_trinh": "D-158: công trình và cảnh vật 3D từ KayKit Medieval Hexagon (CC0) trong assets/models/medieval/; bụi từ KayKit Forest Nature (CC0) trong assets/models/forest/ (D-165). Đường dẫn model tính từ assets/models/. structures: theo art_id (trụ thêm _t<bậc>), model là tên file không có _blue/_red (thêm theo đội), height: chiều cao trên sân (đơn vị 3D). scenery: bụi cỏ (bushes, spacing px thế giới, scale [nhỏ nhất, lớn nhất]), cửa hàng, đống đổ nát chỗ trụ đã đổ; style: cảnh vật + mặt đất + nước D-178.",
  "structures": {
   "tower_t1": {
    "model": "custom/structures/tower_t1",
@@ -191,17 +191,6 @@
   }
  },
  "scenery": {
-  "trees": [
-   "custom/nature/low_tree_round",
-   "custom/nature/low_tree_pine",
-   "custom/nature/low_tree_twin"
-  ],
-  "tree_spacing": 95.0,
-  "tree_scale": [
-   0.75,
-   0.95
-  ],
-  "tree_inset": 30.0,
   "shop": {
    "model": "medieval/buildings/building_market_blue",
    "height": 1.8
@@ -222,88 +211,66 @@
    0.9
   ],
   "bush_squash": 1.0,
-  "edge_grass": [
-   "custom/nature/grass_b",
-   "custom/nature/grass_d",
-   "custom/nature/grass_c"
-  ],
-  "edge_spacing": 240.0,
-  "edge_scale": [
-   0.35,
-   0.6
-  ],
-  "tree_edge_inset": 70.0,
-  "tree_edge_spacing": 85.0,
-  "pillar": "custom/border/stone_pillar",
-  "fence": "custom/border/stone_blocks",
-  "post_height": 110.0,
-  "mountains": {
-   "models": [
-    "custom/border/rock_wall_a",
-    "custom/border/rock_wall_c",
-    "custom/border/rock_b"
-   ],
-   "spacing": 210.0,
-   "inset": 120.0,
-   "scale": [
-    3.2,
-    4.6
-   ],
-   "rim_inset": 70.0,
-   "rim_spacing": 120.0,
-   "rim_scale": [
-    1.6,
-    2.3
-   ],
-   "outside": 2200.0,
-   "outside_spacing": 460.0,
-   "outside_scale": [
-    4.5,
-    6.5
-   ],
-   "low_models": [
-    "custom/border/rock_wall_d",
-    "custom/border/rock_c",
-    "custom/border/rock_pile"
-   ],
-   "low_spacing": 120.0,
-   "low_inset": 40.0,
-   "low_scale": [
-    2.0,
-    3.0
-   ],
-   "edge_offset": 170.0,
-   "edge_spacing": 190.0,
-   "edge_scale": [
-    2.6,
-    3.6
-   ]
-  },
-  "post_spacing": 380.0,
-  "giants": {
-   "models": [
-    "custom/nature/ancient_tree",
-    "custom/nature/tree_b"
-   ],
-   "spacing": 600.0,
-   "inset": [
-    330.0,
-    150.0
-   ],
-   "chance": 0.0,
-   "scale": [
-    [
-     7.0,
-     8.5
+  "style": {
+   "_ghi_chu": "D-178: cảnh vật bộ asset mới (assets/models/style/, decor.py đặt sẵn vị trí) và ảnh nền (assets/textures/style/). faces: mô hình có tên bắt đầu bằng khóa dùng ảnh vân [ảnh, số mét một lần lặp, chỉ lấy sáng tối, độ mạnh]; còn lại tô màu đỉnh. ground / water: số mét một lần lặp ảnh nền.",
+   "textures": "res://assets/textures/style/",
+   "faces": {
+    "rock": [
+     "rock_face",
+     3.0,
+     false,
+     1.0
     ],
-    [
-     2.2,
-     2.6
+    "boulder": [
+     "rock_face",
+     2.0,
+     false,
+     1.0
+    ],
+    "fence": [
+     "wall_face",
+     4.0,
+     false,
+     1.0
+    ],
+    "great_wall": [
+     "wall_face",
+     4.0,
+     false,
+     1.0
+    ],
+    "wall_low": [
+     "wall_face",
+     4.0,
+     false,
+     1.0
+    ],
+    "pine": [
+     "foliage_pine",
+     2.0,
+     true,
+     0.8
+    ],
+    "tree": [
+     "foliage_leaf",
+     2.0,
+     true,
+     0.8
     ]
-   ],
-   "clear": 260.0,
-   "outside": 2000.0,
-   "outside_spacing": 950.0
+   },
+   "ground": {
+    "grass": "grass",
+    "forest": "grass_dark",
+    "dirt": "dirt",
+    "pave": "pave",
+    "grass_m": 7.0,
+    "dirt_m": 6.0,
+    "pave_m": 5.0
+   },
+   "water": {
+    "bed": "riverbed",
+    "bed_m": 6.0
+   }
   }
  },
  "sprite_scale": 0.75

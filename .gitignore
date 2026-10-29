@@ -9,4 +9,3 @@ _to_delete/
 __pycache__/
 build/
 app/build.json
-tools/style_sample/out/
