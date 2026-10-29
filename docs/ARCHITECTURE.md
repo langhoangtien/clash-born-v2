@@ -77,7 +77,7 @@ clashborn_v2/
                            (tra assets/models/units_3d.json), Bars3D (thanh máu, dấu trạng thái, ổ khóa),
                            Look3D + ground.gdshader (ánh sáng, môi trường, bóng chân, vân mặt đất) — D-146, D-150;
                            Scenery3D (cây, đá, bụi, chợ, đổ nát dựng từ dữ liệu map, D-158, D-165), WaterMask (mặt nạ sông
-                           cho sóng nước, D-160), TreeFade + tree_fade.gdshader (cây che tướng vẽ thưa, D-176)
+                           cho sóng nước, D-160)
     art/                   ArtLibrary: res://assets/art/<art_id>.png, thiếu → hình tạm
     ui/                    UiStyle (phông, màu, khung, nút, xu), UiGlyphs (icon nét) — D-130
     menu/                  HeroSelect, HeroDetail, HeroPreview (màn chọn tướng), GraphicsSetting (mức đồ họa, D-157)
