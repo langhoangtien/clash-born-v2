@@ -8,7 +8,7 @@ Tóm tắt để phiên làm việc mới (tài khoản Claude mới) làm tiế
 - Repo: `langhoangtien/clash-born-v2`. Game Godot **4.7.2**, MOBA 3D, máy thử: Huawei MatePad 11.5.
 - **Nhánh đang làm: `thu-asset-tu-lam`** (nhánh thử hình / map, **chưa gộp vào `main`**).
   `main` dừng ở D-167. Mọi thay đổi D-168 → D-176 chỉ có trên nhánh này.
-- Test: **662 xanh**, có soak **666 xanh** (D-176) (`GODOT=... bash tools/run_tests.sh`); bản có soak (`--soak`) xanh lần cuối ở D-172
+- Test: **663 xanh** (D-177), có soak 666 xanh ở D-176 (`GODOT=... bash tools/run_tests.sh`); bản có soak (`--soak`) xanh lần cuối ở D-172
   (660) và ở D-176 (666).
 - **Không build APK / web khi người dùng chưa bảo** (người dùng thử trên PC).
 - Người dùng nói tiếng Việt; muốn **bàn trước khi làm** việc lớn. Không kiểm tra id hero / chiêu / đồ trong code.
@@ -30,7 +30,7 @@ Tóm tắt để phiên làm việc mới (tài khoản Claude mới) làm tiế
 
 1. **D-176 chờ chơi thử** (người dùng thấy khối đá D-175 thấp, lối hẹp, giao tranh chật → chọn phương án 3):
    đá chỉ ở bờ sông, còn lại là rừng cây low-poly (`tools/map_build/forest.py`, `tools/models/make_low_trees.py`),
-   lối rừng rộng hơn, khe xuyên khối rừng lớn, cây che tướng vẽ thưa (`TreeFade`). Luật MAP-11. Chờ người dùng
+   lối rừng rộng hơn, khe xuyên khối rừng lớn. Luật MAP-11. Làm mờ cây che tướng đã bỏ (D-177). Chờ người dùng
    chơi thử và **đo FPS trên MatePad** lúc giao tranh trong rừng. Chỉnh độ rộng: `FOREST_SHRINK` trong forest.py
    (6 ô; 4 = chật hơn, 8 = gần như trống), rồi `from_sketch.py --write` + `build_map.py`.
 2. Đợt B (khối đá Tripo cho cả map) **không cần nữa** trừ bờ sông: khối trong rừng giờ là cây. Mô hình thử
@@ -45,6 +45,12 @@ Tóm tắt để phiên làm việc mới (tài khoản Claude mới) làm tiế
 5. Khi người dùng chơi thử ổn: chạy soak, cập nhật ROADMAP, gộp `thu-asset-tu-lam` vào `main`.
 
 ## 4. Công cụ và lệnh
+
+- **Blender trong container (D-177):** tải trang blender.org bị chặn, nhưng gói `bpy` (Blender 5.0.1 dạng thư viện
+  Python, cần Python 3.11) cài được qua pip — mất 2–3 phút mỗi phiên mới:
+  `uv venv -p /usr/bin/python3.11 <scratchpad>/bvenv && VIRTUAL_ENV=<scratchpad>/bvenv uv pip install bpy`,
+  rồi chạy script dựng mô hình bằng `<scratchpad>/bvenv/bin/python script.py` (xuất .glb bằng `bpy.ops.export_scene.gltf`).
+- **Godot trong container:** tải `Godot_v4.7.2-stable_linux.x86_64.zip` từ GitHub releases vào scratchpad.
 
 - Godot: `GODOT=<đường dẫn godot> bash tools/run_tests.sh [--filter=...] [--soak]`. Import trước khi chạy cảnh:
   `godot --headless --path . --import`.
