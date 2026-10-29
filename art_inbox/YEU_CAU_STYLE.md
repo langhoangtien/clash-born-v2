@@ -29,13 +29,13 @@ Phiếu này **thay hướng** của `YEU_CAU_KIT_MAP.md` (bản 3): không còn
 
 | Xong | Tên | Nội dung | Ảnh 1024 phủ |
 |---|---|---|---|
-| [ ] | `grass` | Cỏ nền: ô-liu `#6E7C50`, mảng đậm xanh lam `#45584A`, nét cọ cỏ ngắn, vài đốm hoa / lá vàng nhỏ li ti | 7 m |
-| [ ] | `grass_dark` | Nền rừng dưới tán: cỏ tối xanh lam `#3E5048`, lá thông rụng, ít ánh sáng | 7 m |
-| [ ] | `dirt` | Đường đất / bãi đất: vàng nâu nhạt `#9C8A62`, vệt bánh xe mờ, sỏi nhỏ | 6 m |
-| [ ] | `pave` | Đá lát lane: phiến đá xám `#8A8A80` không đều, khe sẫm, rêu xanh trong khe | 5 m |
-| [ ] | `rock_face` | Mặt đá vách (dán lên khối đá chặn): đá xám lam `#7C8490` – `#5A6270`, vân nứt dọc vài đường, mảng đẽo phẳng | 3 m |
-| [ ] | `wall_face` | Mặt tường thành cổ: các lớp đá khối lớn xếp hàng ngang (mỗi viên ~1 × 0,6 m), mạch vữa sẫm, rêu ở mép dưới; **lặp liền mép theo chiều ngang** (chiều dọc cũng lặp) | 4 m |
-| [ ] | `riverbed` | Đáy sông nông: sỏi, đá cuội xanh lam sẫm `#2C4C58`, vài cọng rong | 6 m |
+| [x] | `grass` | Cỏ nền: ô-liu `#6E7C50`, mảng đậm xanh lam `#45584A`, nét cọ cỏ ngắn, vài đốm hoa / lá vàng nhỏ li ti | 7 m |
+| [x] | `grass_dark` | Nền rừng dưới tán: cỏ tối xanh lam `#3E5048`, lá thông rụng, ít ánh sáng | 7 m |
+| [x] | `dirt` | Đường đất / bãi đất: vàng nâu nhạt `#9C8A62`, vệt bánh xe mờ, sỏi nhỏ | 6 m |
+| [x] | `pave` | Đá lát lane: phiến đá xám `#8A8A80` không đều, khe sẫm, rêu xanh trong khe | 5 m |
+| [x] | `rock_face` | Mặt đá vách (dán lên khối đá chặn): đá xám lam `#7C8490` – `#5A6270`, vân nứt dọc vài đường, mảng đẽo phẳng | 3 m |
+| [x] | `wall_face` | Mặt tường thành cổ: các lớp đá khối lớn xếp hàng ngang (mỗi viên ~1 × 0,6 m), mạch vữa sẫm, rêu ở mép dưới; **lặp liền mép theo chiều ngang** (chiều dọc cũng lặp) | 4 m |
+| [x] | `riverbed` | Đáy sông nông: sỏi, đá cuội xanh lam sẫm `#2C4C58`, vài cọng rong | 6 m |
 
 ## Đợt C — thẻ so màu (sau khi đợt T được duyệt)
 
