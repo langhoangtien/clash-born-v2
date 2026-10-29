@@ -9,6 +9,8 @@ static func items(layout: MapLayout, cfg: Dictionary, rng: RandomNumberGenerator
 	var m: Dictionary = cfg["mountains"]
 	var out: Array[Array] = []
 	for shape: MapShape in layout.rock_shapes:
+		if built(layout, shape):
+			continue  # D-175: khối đã có mô hình dựng sẵn
 		for p: Vector2 in Scenery3D._fill(shape, m["spacing"], m["inset"], rng):
 			out.append(_rock(p, m["scale"], m, rng))
 		for p: Vector2 in Scenery3D._rim(shape, m["rim_inset"], m["rim_spacing"], rng):
@@ -33,6 +35,8 @@ static func low_items(layout: MapLayout, cfg: Dictionary, rng: RandomNumberGener
 	var m: Dictionary = cfg["mountains"]
 	var out: Array[Array] = []
 	for shape: MapShape in layout.rock_shapes:
+		if built(layout, shape):
+			continue  # D-175: khối đã có mô hình dựng sẵn
 		for p: Vector2 in Scenery3D._fill(shape, m["low_spacing"], m["low_inset"], rng):
 			out.append([p, rng.randi() % m["low_models"].size(), rng.randf_range(m["low_scale"][0], m["low_scale"][1]), rng.randf() * TAU])
 	return out
@@ -58,3 +62,11 @@ static func _outside(layout: MapLayout, m: Dictionary, rng: RandomNumberGenerato
 			x += step
 		y += step * 0.87
 	return out
+
+
+## D-175: khối đá này đã có mô hình dựng sẵn (điểm neo của mô hình nằm trong khối).
+static func built(layout: MapLayout, shape: MapShape) -> bool:
+	for b: Dictionary in layout.block_models:
+		if Geometry2D.is_point_in_polygon(Vector2(float(b["anchor"][0]), float(b["anchor"][1])), shape.outer):
+			return true
+	return false

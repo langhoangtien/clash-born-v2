@@ -2941,5 +2941,73 @@
    ]
   ]
  ],
- "rock_min_thick": 6.0
+ "rock_min_thick": 6.0,
+ "block_models": [
+  {
+   "model": "custom/kit/khoi_19",
+   "center": [
+    136.54,
+    312.63
+   ],
+   "anchor": [
+    118.07,
+    309.65
+   ],
+   "height": 130,
+   "yaw": 276,
+   "flip_x": 1,
+   "scale": 1782.279,
+   "iou": 0.706,
+   "foot_center": [
+    -0.01791,
+    0.06447
+   ],
+   "min_y": -0.15316,
+   "model_height": 0.3086
+  },
+  {
+   "model": "custom/kit/khoi_13",
+   "center": [
+    296.69,
+    393.02
+   ],
+   "anchor": [
+    298.9,
+    394.2
+   ],
+   "height": 130,
+   "yaw": 255,
+   "flip_x": 1,
+   "scale": 587.149,
+   "iou": 0.839,
+   "foot_center": [
+    -0.03037,
+    0.05512
+   ],
+   "min_y": -0.29183,
+   "model_height": 0.58586
+  },
+  {
+   "model": "custom/kit/bo_song_16",
+   "center": [
+    353.93,
+    380.66
+   ],
+   "anchor": [
+    338.06,
+    375.85
+   ],
+   "height": 50,
+   "yaw": 234,
+   "flip_x": 1,
+   "scale": 1603.071,
+   "iou": 0.606,
+   "foot_center": [
+    0.05034,
+    -0.00546
+   ],
+   "min_y": -0.04202,
+   "model_height": 0.08367
+  }
+ ]
 }
