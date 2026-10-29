@@ -18,6 +18,10 @@ func _world() -> World:
 	return w
 
 
+## Bán kính thân mọi đơn vị trong test (_unit, cả người lướt).
+const DASHER_RADIUS: float = 24.0
+
+
 func _origin() -> Vector2:
 	return _map.world_size() * 0.5 + Vector2(-900, 900)
 
@@ -30,7 +34,7 @@ func _unit(w: World, team: int, at: Vector2, kind: Entity.Kind = Entity.Kind.HER
 	var e: Entity = Entity.new()
 	e.team = team
 	e.kind = kind
-	e.radius = 24.0
+	e.radius = DASHER_RADIUS
 	e.position = at
 	e.attack_point = 0.3
 	e.stats = StatBlock.new(w.balance)
@@ -146,7 +150,7 @@ func test_ABL_08_stops_at_terrain_without_hitting() -> void:
 	for k: int in range(32):
 		var d: Vector2 = Vector2.from_angle(TAU * k / 32.0)
 		for step: int in range(4, 40):
-			if _map.clearance_at(origin + d * step * 16.0) <= 30.0:
+			if _map.clearance_at(origin + d * step * 16.0) < DASHER_RADIUS:  # chỗ thân người lướt (24) không lọt
 				if step * 16.0 >= 200.0 and step * 16.0 <= 600.0:
 					dir = d
 					wall = step * 16.0

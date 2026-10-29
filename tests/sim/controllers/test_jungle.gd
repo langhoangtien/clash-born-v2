@@ -67,7 +67,7 @@ func test_JGL_05_06_first_spawn_by_kind() -> void:
 	_steps(w, SimClock.seconds_to_ticks(w.balance.jungle_first_spawn) - 2)
 	assert_eq(w.entities.filter(func(e: Entity) -> bool: return e.kind == Entity.Kind.NEUTRAL).size(), 0, "chưa tới giây 30")
 	_spawned(w)
-	assert_eq(w.camps.size(), 12, "12 trại; boss pit chưa có quái")
+	assert_eq(w.camps.size(), 16, "MAP-02: 8 trại mỗi phe, không boss (D-178)")
 	var sizes: Dictionary = {&"small": 2, &"medium": 2, &"large": 3}
 	for c: CampState in w.camps:
 		var m: Array[Entity] = _members(w, c)
