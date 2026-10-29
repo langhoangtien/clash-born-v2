@@ -102,9 +102,9 @@ mỏm, đầu bo) — sai dáng thì khối không khớp lối đi. Cạnh kh�
 
 | | Tên ảnh | Bản vẽ | Cao | Mô tả |
 |---|---|---|---|---|
-| [ ] | `khoi_13.png` | `ban_ve/khoi_13.png` | 1,3 m | Khối đá vừa: vài tảng đá lớn mượt liền nhau, đỉnh 2 tầng gồ lệch có cỏ phủ, 1 cây thông nhỏ |
-| [ ] | `khoi_19.png` | `ban_ve/khoi_19.png` | 1,3 m | Khối lớn ôm hốc bãi quái (chỗ lõm hình tròn là sân quái, để trống), đỉnh gồ lệch có cỏ, 2 cây thông |
-| [ ] | `bo_song_16.png` | `ban_ve/bo_song_16.png` | 0,5 m | Hàng đá thấp ven sông như rào đá tự nhiên: các tảng đá tròn thấp nối nhau, mặt phía nước (trên–trái) sẫm ướt |
+| [x] | `khoi_13.png` | `ban_ve/khoi_13.png` | 1,3 m | Khối đá vừa: vài tảng đá lớn mượt liền nhau, đỉnh 2 tầng gồ lệch có cỏ phủ, 1 cây thông nhỏ |
+| [x] | `khoi_19.png` | `ban_ve/khoi_19.png` | 1,3 m | Khối lớn ôm hốc bãi quái (chỗ lõm hình tròn là sân quái, để trống), đỉnh gồ lệch có cỏ, 2 cây thông |
+| [x] | `bo_song_16.png` | `ban_ve/bo_song_16.png` | 0,5 m | Hàng đá thấp ven sông như rào đá tự nhiên: các tảng đá tròn thấp nối nhau, mặt phía nước (trên–trái) sẫm ướt |
 
 ## Ghi chú cho người ghép (không phải việc của Codex)
 
