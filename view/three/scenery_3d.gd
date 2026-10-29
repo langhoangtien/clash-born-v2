@@ -1,10 +1,10 @@
 class_name Scenery3D
 extends Node3D
-## Cảnh vật 3D tự dựng từ dữ liệu bản đồ (D-158) — sửa map thì cảnh tự đổi theo, không đặt tay:
-## cây rải trong vùng rừng (forest_shapes), vách đá / bậc thang / khối đá (RockWalls3D, D-168), bụi cỏ (D-160), cửa hàng ở shop_points,
-## đống đổ nát chỗ trụ đã đổ. Cây / đá vẽ bằng MultiMesh chia theo ô CHUNK px để ô ngoài khung
+## Cảnh vật 3D dựng từ dữ liệu bản đồ — sửa map thì cảnh tự đổi theo, không đặt tay (D-158). D-178: cây, đá
+## viền bục, bờ sông, rào, tường thành đặt sẵn bởi decor.py (Terrain3D.items); bụi cỏ (D-160) rải trong vùng bụi;
+## cửa hàng ở shop_points; đống đổ nát chỗ trụ đã đổ. Vẽ bằng MultiMesh chia theo ô CHUNK px để ô ngoài khung
 ## nhìn tự bị bỏ. Chỉ hình ảnh: không chặn đường, không che tầm nhìn (luật vẫn theo MapLayout).
-## Vị trí ngẫu nhiên lấy từ RNG riêng với hạt cố định (VIEW, không phải SIM).
+## Vị trí ngẫu nhiên (bụi) lấy từ RNG riêng với hạt cố định (VIEW, không phải SIM).
 
 ## Cạnh ô chia MultiMesh (px thế giới).
 const CHUNK: float = 1056.0
@@ -19,71 +19,18 @@ func build(layout: MapLayout) -> void:
 	var cfg: Dictionary = ModelLibrary.scenery()
 	if cfg.is_empty():
 		return
+	_place_decor(Terrain3D.items())
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = SEED + 1
-	_place(cfg["trees"], tree_items(layout))
-	_build_stone(layout, cfg, rng)
-	if cfg.has("bushes"):  # D-160: bụi cỏ (VIS-06) — tạm dùng cụm cây tròn ép thấp
-		var bushes: Array[Array] = []
-		for poly: PackedVector2Array in layout.bushes.polygons:
-			var shape: MapShape = MapShape.new()
-			shape.outer = poly
-			for p: Vector2 in _fill(shape, cfg["bush_spacing"], 10.0, rng):
-				bushes.append([p, rng.randi() % cfg["bushes"].size(), rng.randf_range(cfg["bush_scale"][0], cfg["bush_scale"][1]), rng.randf() * TAU, cfg["bush_squash"]])
-		_place(cfg["bushes"], bushes)
-	if cfg.has("edge_grass"):  # thử phối màu: khóm cỏ thưa mọc lấn mép lane và bờ nước
-		var tufts: Array[Array] = []
-		for p: Vector2 in _edges(layout, cfg["edge_spacing"], rng):
-			tufts.append([p, rng.randi() % cfg["edge_grass"].size(), rng.randf_range(cfg["edge_scale"][0], cfg["edge_scale"][1]), rng.randf() * TAU])
-		_place(cfg["edge_grass"], tufts)
+	var bushes: Array[Array] = []
+	for poly: PackedVector2Array in layout.bushes.polygons:
+		var shape: MapShape = MapShape.new()
+		shape.outer = poly
+		for p: Vector2 in _fill(shape, cfg["bush_spacing"], 10.0, rng):
+			bushes.append([p, rng.randi() % cfg["bushes"].size(), rng.randf_range(cfg["bush_scale"][0], cfg["bush_scale"][1]), rng.randf() * TAU, cfg["bush_squash"]])
+	_place(cfg["bushes"], bushes)
 	for i: int in layout.shop_points.size():
 		_add_static(cfg["shop"], layout.shop_points[i], 0.0)
-
-
-## D-168..D-171: rào base / fountain, núi đá (khối đá bản vẽ — cả bờ sông, hốc trại), cổ thụ.
-func _build_stone(layout: MapLayout, cfg: Dictionary, rng: RandomNumberGenerator) -> void:
-	_place([cfg["fence"]], RockWalls3D.wall_items(layout, [cfg["fence"]], "fence", rng))
-	_place([cfg["pillar"]], RockWalls3D.post_items(layout, cfg))
-	for b: Dictionary in layout.block_models:
-		_add_block(b)
-	_place(cfg["mountains"]["models"], Mountains3D.items(layout, cfg, rng))
-	_place(cfg["mountains"]["low_models"], Mountains3D.low_items(layout, cfg, rng))
-	_place(cfg["giants"]["models"], GiantTrees3D.items(layout))
-
-
-## Cây trong vùng rừng: [vị trí, loại, cỡ, góc]. Cố định theo map (RNG riêng) — bóng cây nướng
-## xuống đất (GroundShadows) dùng đúng danh sách này.
-static func tree_items(layout: MapLayout) -> Array[Array]:
-	var cfg: Dictionary = ModelLibrary.scenery()
-	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
-	rng.seed = SEED
-	var trees: Array[Array] = []
-	var giants: Array[Array] = GiantTrees3D.items(layout)
-	for shape: MapShape in layout.forest_shapes:
-		var points: PackedVector2Array = _fill(shape, cfg["tree_spacing"], cfg["tree_inset"], rng)
-		points.append_array(_rim(shape, cfg.get("tree_edge_inset", 0.0), cfg.get("tree_edge_spacing", 0.0), rng))
-		for p: Vector2 in points:
-			if GiantTrees3D.covers(giants, p, cfg["giants"]["clear"]):
-				continue  # D-170: cổ thụ thay cả cụm
-			trees.append([p, rng.randi() % cfg["trees"].size(), rng.randf_range(cfg["tree_scale"][0], cfg["tree_scale"][1]), rng.randf() * TAU])
-	return trees
-
-
-## Hàng cây sát mép rừng (cách mép `inset`): tán phủ kín chỗ chặn đường, không để mép trống
-## trông như đi được. Khối rừng hẹp hơn 2 × inset thì đặt một cây ở giữa.
-static func _rim(shape: MapShape, inset: float, spacing: float, rng: RandomNumberGenerator) -> PackedVector2Array:
-	var out: PackedVector2Array = PackedVector2Array()
-	if spacing <= 0.0:
-		return out
-	var rings: Array[PackedVector2Array] = Geometry2D.offset_polygon(shape.outer, -inset)
-	for hole: PackedVector2Array in shape.holes:
-		rings.append_array(Geometry2D.offset_polygon(hole, inset))
-	for ring: PackedVector2Array in rings:
-		out.append_array(_along(ring, spacing, rng))
-	if rings.is_empty():
-		var box: Rect2 = _rect(shape.outer)
-		out.append(box.get_center())
-	return out
 
 
 ## Mỗi khung: thêm đống đổ nát chỗ trụ vừa đổ (DEF-06).
@@ -95,6 +42,19 @@ func update(world: World) -> void:
 		if world.destroyed_structures.has(id) and not _rubble.has(id):
 			_rubble[id] = true
 			_add_static(ModelLibrary.scenery()["rubble"], _layout.tower_points[i], float(i))
+
+
+## D-178: cảnh vật decor.py [mô hình, x, z, góc, cỡ, (y m)] gom theo (ô, mô hình), vật liệu theo Terrain3D.
+func _place_decor(items: Array) -> void:
+	var groups: Dictionary[String, Array] = {}
+	for it: Array in items:
+		var key: String = "%d:%d:%s" % [floori(float(it[1]) / CHUNK), floori(float(it[2]) / CHUNK), it[0]]
+		if not groups.has(key):
+			groups[key] = []
+		groups[key].append([Vector2(float(it[1]), float(it[2])), 0, float(it[4]), float(it[3]), 1.0, float(it[5]) if it.size() > 5 else 0.0])
+	for key: String in groups:
+		var model: String = key.get_slice(":", 2)
+		_multimesh(Terrain3D.MODEL_DIR + model, groups[key], Terrain3D.material_for(model))
 
 
 ## Điểm lưới lệch ngẫu nhiên nằm trong `shape` (trừ lỗ), cách mép ít nhất `inset`.
@@ -112,33 +72,6 @@ static func _fill(shape: MapShape, spacing: float, inset: float, rng: RandomNumb
 				out.append(p)
 			x += spacing
 		y += spacing * 0.87
-	return out
-
-
-## Điểm dọc mép `poly`, mỗi `spacing` px, lệch nhẹ vào trong / ra ngoài.
-static func _along(poly: PackedVector2Array, spacing: float, rng: RandomNumberGenerator) -> PackedVector2Array:
-	var out: PackedVector2Array = PackedVector2Array()
-	for i: int in poly.size():
-		var a: Vector2 = poly[i]
-		var b: Vector2 = poly[(i + 1) % poly.size()]
-		var steps: int = maxi(1, int(a.distance_to(b) / spacing))
-		var normal: Vector2 = (b - a).orthogonal().normalized()
-		for k: int in steps:
-			out.append(a.lerp(b, (k + rng.randf()) / steps) + normal * rng.randf_range(-20.0, 20.0))
-	return out
-
-
-## Điểm dọc hai mép lane (ngay ngoài mép) và mép nước, mỗi `spacing` px.
-static func _edges(layout: MapLayout, spacing: float, rng: RandomNumberGenerator) -> PackedVector2Array:
-	var out: PackedVector2Array = PackedVector2Array()
-	for lane: String in layout.lanes:
-		var pts: PackedVector2Array = layout.lanes[lane]
-		for i: int in pts.size() - 1:
-			var side: Vector2 = (pts[i + 1] - pts[i]).normalized().orthogonal() * (layout.lane_width * 0.5 + 6.0)
-			for p: Vector2 in _along(PackedVector2Array([pts[i], pts[i + 1]]), spacing, rng):
-				out.append(p + side * (1.0 if rng.randf() < 0.5 else -1.0))
-	for shape: MapShape in layout.water_shapes:
-		out.append_array(_along(shape.outer, spacing, rng))
 	return out
 
 
@@ -167,7 +100,7 @@ static func _rect(poly: PackedVector2Array) -> Rect2:
 	return r
 
 
-## Gom `items` ([vị trí, loại, cỡ, góc]) theo (ô, loại) rồi dựng một MultiMesh cho mỗi nhóm.
+## Gom `items` ([vị trí, loại, cỡ, góc, (ép dọc)]) theo (ô, loại) rồi dựng một MultiMesh cho mỗi nhóm.
 func _place(models: Array, items: Array[Array]) -> void:
 	var groups: Dictionary[Vector3i, Array] = {}
 	for it: Array in items:
@@ -176,10 +109,11 @@ func _place(models: Array, items: Array[Array]) -> void:
 			groups[key] = []
 		groups[key].append(it)
 	for key: Vector3i in groups:
-		_multimesh(models[key.z], groups[key])
+		_multimesh(models[key.z], groups[key], null)
 
 
-func _multimesh(model: String, items: Array) -> void:
+## `items`: [vị trí, loại, cỡ, góc, (ép dọc), (y m)]; `material` (nếu có) thay vật liệu của mô hình.
+func _multimesh(model: String, items: Array, material: Material) -> void:
 	var src: Node3D = ModelLibrary.static_scene(model).instantiate() as Node3D
 	var mi: MeshInstance3D = src.find_children("*", "MeshInstance3D", true, false)[0]
 	ModelLibrary.use_vertex_colors(mi.mesh)  # D-167
@@ -193,25 +127,15 @@ func _multimesh(model: String, items: Array) -> void:
 	for i: int in items.size():
 		var it: Array = items[i]
 		var squash: float = it[4] if it.size() > 4 else 1.0
-		var t: Transform3D = Transform3D(Basis(Vector3.UP, it[3]).scaled(Vector3(it[2], it[2] * squash, it[2])), Vector3(it[0].x, 0, it[0].y) * MatchView3D.S)
+		var y: float = it[5] if it.size() > 5 else 0.0
+		var t: Transform3D = Transform3D(Basis(Vector3.UP, it[3]).scaled(Vector3(it[2], it[2] * squash, it[2])), Vector3(it[0].x * MatchView3D.S, y, it[0].y * MatchView3D.S))
 		mm.set_instance_transform(i, t * base)
 	src.free()
 	var node: MultiMeshInstance3D = MultiMeshInstance3D.new()
 	node.multimesh = mm
+	node.material_override = material
 	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(node)
-
-
-## D-175: khối đá dựng sẵn — cỡ / góc / lật đã khớp chân mô hình với khối trong map (fit_block.py).
-func _add_block(b: Dictionary) -> void:
-	var n: Node3D = ModelLibrary.static_scene(b["model"]).instantiate() as Node3D
-	add_child(n)
-	var k: float = float(b["scale"]) * MatchView3D.S
-	var ky: float = float(b["height_scale"]) * MatchView3D.S
-	n.scale = Vector3(k * float(b["flip"]), ky, k)
-	n.rotation.y = float(b["yaw"])
-	var foot: Vector3 = Vector3(float(b["foot"][0]) * k * float(b["flip"]), 0.0, float(b["foot"][1]) * k).rotated(Vector3.UP, n.rotation.y)
-	n.position = Vector3(float(b["pos"][0]), 0.0, float(b["pos"][1])) * MatchView3D.S - foot + Vector3(0, -float(b["min_y"]) * ky, 0)
 
 
 func _add_static(cfg: Dictionary, at: Vector2, angle: float) -> void:

@@ -125,8 +125,7 @@ def main():
         "bases": [dict(team=b["team"], polygon=[W(p) for p in b["polygon"]]) for b in s["bases"]],
         "bushes": [[W(p) for p in poly] for poly in bushes],
         "shops": _named(SRC["shops"]), "landmarks": _named(SRC.get("landmarks", [])),
-        "render": {k: X.render_polys(v, W) for k, v in layers.items()} | {"rock_lines": rock_line_data(lines, cuts, box(FX0, FY0, FX1, FY1)),
-                                                                     "block_models": block_models()},
+        "render": {k: X.render_polys(v, W) for k, v in layers.items()} | {"rock_lines": rock_line_data(lines, cuts, box(FX0, FY0, FX1, FY1))},
         "collision": [X.poly_world(p, W) for p in collision],
     }
     X.write_json(OUT, data)
@@ -136,18 +135,6 @@ def main():
         print("VALIDATION ERRORS:\n  - " + "\n  - ".join(errors))
         sys.exit(1)
     print("validation OK")
-
-
-def block_models():
-    """D-175: khối đá dựng sẵn (Tripo) đặt đúng chỗ khối trong map, nửa Red xoay 180°; chỉ để vẽ."""
-    out = []
-    for b in SRC.get("block_models", []):
-        for red in (False, True):
-            c, a = (SYM.rot(b["center"]), SYM.rot(b["anchor"])) if red else (b["center"], b["anchor"])
-            out.append({"model": b["model"], "pos": W(c), "anchor": W(a), "yaw": round(math.radians(b["yaw"] + (180 if red else 0)), 4),
-                        "flip": b["flip_x"], "scale": b["scale"], "height_scale": b["height"] / b["model_height"],
-                        "foot": b["foot_center"], "min_y": b["min_y"]})
-    return out
 
 
 def _named(items):

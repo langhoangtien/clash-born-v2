@@ -3204,29 +3204,5 @@
    ]
   ]
  ],
- "rock_min_thick": 6.0,
- "block_models": [
-  {
-   "model": "custom/kit/bo_song_16",
-   "center": [
-    353.93,
-    380.66
-   ],
-   "anchor": [
-    338.06,
-    375.85
-   ],
-   "height": 50,
-   "yaw": 234,
-   "flip_x": 1,
-   "scale": 1603.071,
-   "iou": 0.606,
-   "foot_center": [
-    0.05034,
-    -0.00546
-   ],
-   "min_y": -0.04202,
-   "model_height": 0.08367
-  }
- ]
+ "rock_min_thick": 6.0
 }

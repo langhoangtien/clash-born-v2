@@ -228,6 +228,18 @@ def great_wall(name, rng, length=10.0, height=14.0, thick=7.0):
     return obj
 
 
+def wall_low(name, rng, length=10.0, height=1.8, thick=3.0):
+    """Tường thành cạnh nam (gần camera, MAP-12): thấp, chân loe, lan can phẳng — không che tướng."""
+    bm = bmesh.new()
+    box(bm, length, thick + 0.8, 0, 0.5)
+    box(bm, length, thick, 0.5, height - 0.3)
+    box(bm, length, thick + 0.2, height - 0.3, height)
+    box(bm, 1.2, thick + 1.0, 0, height + 0.2, 0.0)
+    obj = finish(name, bm)
+    paint(obj, lambda c, n: (WALL_TOP, WALL_TOP) if n.z > 0.5 else ((WALL_DARK, None) if c.z < 0.5 else (WALL, None)), rng)
+    return obj
+
+
 def box(bm, lx, ly, z0, z1, x=0.0):
     res = bmesh.ops.create_cube(bm, size=1.0)
     for v in res["verts"]:
@@ -266,7 +278,7 @@ def main():
         lambda: slab("rock_low", 1.5, 1.1, 1.1, rng), lambda: slab("rock_small", 0.8, 0.7, 0.5, rng),
         lambda: fence("fence", rng), lambda: great_wall("great_wall", rng),
         lambda: blades("reeds", 15, 1.3, 0.45, REED, REED_TIP, rng, 0.09), lambda: blades("grass_tuft", 8, 0.45, 0.25, TUFT, REED, rng, 0.06),
-        lambda: lily("lily", rng), lambda: boulder("boulder_a", rng, 1.0, 0.6), lambda: boulder("boulder_b", rng, 0.7, 0.72),
+        lambda: lily("lily", rng), lambda: wall_low("wall_low", rng), lambda: boulder("boulder_a", rng, 1.0, 0.6), lambda: boulder("boulder_b", rng, 0.7, 0.72),
     ]
     for build in builders:
         reset()

@@ -30,18 +30,13 @@ func test_overlay_toggles() -> void:
 	view.free()
 
 
-func test_D_147_baking_skipped_headless_keeps_live_layers() -> void:
-	assert_false(MapBaker.can_bake(), "test chạy headless: không nướng")
+func test_D_178_match_map_view_draws_only_overlays() -> void:
 	var view: MapView = MapView.new()
 	view.layout = load("res://data/maps/clashborn.tres") as MapLayout
-	view.bake_static = true
+	view.terrain = false
 	(Engine.get_main_loop() as SceneTree).root.add_child(view)
-	assert_true(view.baker == null)
-	assert_true((view.get_node("Ground") as CanvasItem).visible, "lớp gốc vẫn vẽ")
+	for layer: String in ["Outside", "Ground", "Obstacles"]:
+		assert_true(view.get_node_or_null(layer) == null, "mặt đất 3D vẽ thay lớp %s" % layer)
+	for layer: String in ["Bushes", "Shops", "Overlay"]:
+		assert_true(view.get_node_or_null(layer) != null, "vẫn có lớp %s" % layer)
 	view.free()
-
-
-func test_D_147_tile_grid_covers_map() -> void:
-	var size: Vector2 = (load("res://data/maps/clashborn.tres") as MapLayout).world_size()
-	assert_true(ceili(size.x / MapBaker.TILE) * MapBaker.TILE >= size.x)
-	assert_true(MapBaker.TILE * MapBaker.SCALE <= 2048.0, "ô vừa giới hạn kết cấu của máy yếu")

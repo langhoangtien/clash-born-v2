@@ -1,7 +1,8 @@
 class_name Look3D
 extends RefCounted
-## Ánh sáng, môi trường và bóng chân cho bản thử 3D (D-150). Chỉ dùng thứ rẻ trên GL Compatibility:
-## một đèn mặt trời, ánh sáng nền, tông màu tuyến tính (giữ màu map như bản 2D), sương xa; bóng là đĩa mờ dưới chân thay cho bóng thật.
+## Ánh sáng, môi trường và bóng chân cho bản 3D (D-150). Chỉ dùng thứ rẻ trên GL Compatibility:
+## một đèn mặt trời (cho nhân vật — cảnh vật D-178 vẽ không đèn), ánh sáng nền, sương xa; bóng là đĩa mờ dưới
+## chân thay cho bóng thật.
 
 ## Màu nắng / ánh sáng nền / sương xa (hằng số hiển thị).
 const SUN_COLOR: Color = Color(1.0, 0.90, 0.74)
@@ -15,7 +16,6 @@ const BLOB_RADIUS: float = 0.48
 
 static var _blob_material: StandardMaterial3D
 static var _blob_mesh: QuadMesh
-const GROUND_SHADER: Shader = preload("res://view/three/ground.gdshader")
 
 
 ## Mặt trời chếch sau lưng camera một chút để mặt nhân vật sáng, cộng môi trường.
@@ -28,12 +28,6 @@ static func add_lights(parent: Node3D) -> void:
 	var env: WorldEnvironment = WorldEnvironment.new()
 	env.environment = environment()
 	parent.add_child(env)
-
-
-## Hướng bóng đổ trên mặt đất (toạ độ map, đã chuẩn hoá): hướng ánh nắng chiếu tới, bỏ trục đứng.
-static func sun_ground_direction() -> Vector2:
-	var d: Vector3 = Basis.from_euler(SUN_DEGREES * PI / 180.0) * Vector3.FORWARD
-	return Vector2(d.x, d.z).normalized()
 
 
 static func environment() -> Environment:
@@ -92,30 +86,3 @@ static func _make_blob_material() -> StandardMaterial3D:
 	mat.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED
 	mat.disable_fog = true
 	return mat
-
-
-## Vật liệu mặt đất: ảnh lớp `layer` + vân chi tiết (nhiễu liền mép, có mipmap) cho đỡ phẳng.
-static func ground_material(layer: Texture2D) -> ShaderMaterial:
-	var mat: ShaderMaterial = ShaderMaterial.new()
-	mat.shader = GROUND_SHADER
-	mat.set_shader_parameter("layer", layer)
-	mat.set_shader_parameter("detail", _detail_texture())
-	return mat
-
-
-## Hai kênh nhiễu liền mép 256 px: R vân mịn, G vân lớn.
-static func _detail_texture() -> Texture2D:
-	var fine: FastNoiseLite = FastNoiseLite.new()
-	fine.frequency = 0.045
-	fine.fractal_octaves = 3
-	var broad: FastNoiseLite = FastNoiseLite.new()
-	broad.seed = 7
-	broad.frequency = 0.012
-	var a: Image = fine.get_seamless_image(256, 256)
-	var b: Image = broad.get_seamless_image(256, 256)
-	var img: Image = Image.create(256, 256, false, Image.FORMAT_RGB8)
-	for y: int in 256:
-		for x: int in 256:
-			img.set_pixel(x, y, Color(a.get_pixel(x, y).r, b.get_pixel(x, y).r, 0.0))
-	img.generate_mipmaps()
-	return ImageTexture.create_from_image(img)
