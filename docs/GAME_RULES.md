@@ -761,7 +761,7 @@ chơi và bot (`Rules.pick_attack_target`), nút trên màn hình chỉ gọi h�
 
 ## MOV — Di chuyển
 
-- `MOV-01` Đơn vị có lệnh MOVE đi theo đường ngắn nhất né rừng, vách và thân trụ
+- `MOV-01` Đơn vị có lệnh MOVE đi theo đường ngắn nhất né rừng, vách, thân trụ và thân nhà chính
   (MapNavigation, MAP-01), mỗi giây đi `movement_speed` đơn vị.
 - `MOV-02` Điểm đến không đứng được → đi tới điểm đứng được gần nhất (tìm trong 1600);
   không có điểm nào → lệnh xong ngay, đứng yên.
@@ -869,11 +869,14 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 
 - `MAP-01` Hình vẽ, va chạm, tìm đường dùng chung polygon từ `tools/map_build`. Va chạm
   và tìm đường đọc trường khoảng trống (clearance) dựng từ chính các polygon đó; không
-  dùng vật lý Godot. Thân trụ chặn đứng/đi với bán kính `tower_body_radius`. Ô lưới tìm
+  dùng vật lý Godot. Thân trụ chặn đứng/đi với bán kính `tower_body_radius`, thân nhà chính với
+  `core_body_radius` (D-176). Ô lưới tìm
   đường chỉ đi được khi mọi pixel khoảng trống trong ô đủ rộng; kiểm tra đường thẳng duyệt
   từng pixel mà đoạn đi qua (không lấy mẫu), nên đường đi không bao giờ cắt góc vật cản.
-  Nguồn map (D-168, D-171) là vector: khối đá đọc từ bản vẽ người duyệt (`tools/map_build/sketch/`,
-  `from_sketch.py`, thu vào `SHRINK` ô mỗi phía), vách đá, rào base / fountain; build dựng polygon từ đó.
+  Nguồn map (D-168, D-171) là vector: khối chặn đọc từ bản vẽ người duyệt (`tools/map_build/sketch/`,
+  `from_sketch.py`, thu vào `SHRINK` ô mỗi phía) rồi tách thành đá ven sông và rừng cây (D-176, MAP-11),
+  vách đá, rào base / fountain; build dựng polygon từ đó. Đá và rừng chặn như nhau; cây không che tầm
+  nhìn (VIS-01 chỉ tính khoảng cách).
 - `MAP-03` Map phải đọc được (D-43): chỗ trống hẹp hơn `gap_min_world` (112) giữa rừng/đá/vách
   bị lấp thành rừng khi build; vùng trống kín không vào được cũng lấp. Kiểm tra: mọi điểm
   trống rộng ≥ 12 phải cách chỗ hero đứng được không quá 48 — tức không có khe nào
@@ -883,15 +886,23 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 - `MAP-06` (D-168) Trụ lane đứng sát mép lane, cùng một bên cho cả lane (TOP, BOT: phía trong
   map; MID: bên phải theo chiều Blue → Red), tâm cách tim lane `tower_offset` (12 ô guide = 192).
   T1 đặt theo MAP-04; T2/T3 giữ khoảng cách dọc lane.
-- `MAP-07` (D-171) Bờ sông là các khối đá của bản vẽ: phần lớn mép sông (ngoài lane và khu mid) bị
-  đá chặn; chỉ xuống sông ở chỗ lối rừng chạm sông (mỗi nửa ít nhất 2 lối), ở lane và khu mid
+- `MAP-07` (D-171, D-176) Bờ sông là đá: phần khối bản vẽ cách nước ≤ 7 ô guide (112) là đá, phần
+  lớn mép sông (ngoài lane và khu mid) bị đá chặn; chỉ xuống sông ở chỗ lối rừng chạm sông (mỗi nửa ít nhất 2 lối), ở lane và khu mid
   cắt sông (MAP-05). Không có bậc thang. Sông vẫn đi được.
-- `MAP-08` (D-171) Mỗi trại nằm trong hốc của khối đá (bản vẽ): quanh trại, ở bán kính 330, ít nhất
-  10/24 hướng bị đá chặn và còn ít nhất một hướng mở làm cửa.
+- `MAP-08` (D-171, D-176) Mỗi trại nằm trong hốc của khối bản vẽ (đá hoặc rừng cây): quanh trại, ở bán
+  kính 330, ít nhất 10/24 hướng bị chặn và còn ít nhất một hướng mở làm cửa. Rừng trong bán kính 416
+  quanh trại giữ nguyên hình bản vẽ (không thu như MAP-11).
 - `MAP-09` (D-169) Base là đất cao có rào đá: vào / ra base chỉ qua 3 cổng ở chỗ 3 lane đi qua (cổng
   rộng bằng lane và khoảng trống quanh trụ cạnh cổng).
 - `MAP-10` (D-169) Vùng hồi máu fountain có rào đá theo vòng `fountain_radius`, một cổng
   (`fountain_gate` độ) quay về phía nhà chính.
+- `MAP-11` (D-176) Rừng cây: khối bản vẽ ngoài dải đá bờ sông là rừng cây, thu thêm 6 ô guide (96)
+  mỗi phía so với đá (trừ khối rìa map, sát khung, giữ nguyên để ngoài lane vẫn kín; trừ hốc trại
+  MAP-08). Đo trong vùng rừng (cách mép map 1100, cách tim lane quá nửa lane + 250, ngoài base):
+  vật cản ≤ 25%; vật cản ngoài bờ sông là rừng cây; bề rộng lối (gấp đôi khoảng trống ở sống lối)
+  trung vị ≥ 450, lối hẹp hơn 300 không quá 10%. Khối rừng giữa map lớn hơn 1400 ô guide² (≈ 360.000
+  đơn vị², cỡ 600 × 600) bị chia bằng khe thẳng rộng 160, hai đầu ra đất trống, không qua lòng trại
+  (cách tâm < 224); khối ôm trại (cách trại < 400) và rìa map không bắt buộc có khe.
 - `MAP-04` Cân bằng (D-49): map **đối xứng xoay 180°** quanh tâm (công cụ build giữ nửa
   Blue, sinh nửa Red). Lane an toàn của Blue là BOT, của Red là TOP: ở lane an toàn đợt
   lính đầu gặp nhau ngay ngoài tầm trụ 1 của phe mình (`tower_layout` BOT 760), lane khó
@@ -948,6 +959,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | first_wave_time | 15 s | | creep_front_margin | 200 |
 | fountain_regen | 0.05 / s | | fountain_damage / attack_interval | 300 / 1 s |
 | evasion_cap | 1.0 (không giới hạn) | | tower_body_radius | 52 |
+| | | | core_body_radius | 80 |
 | minimum_movement_speed | 0 (bị chậm hết thì đứng yên) | | separation_speed | 400 / s |
 
 Mục tiêu đo được: trung vị thời lượng trận bot đấu bot nằm trong `match_target_minutes`,

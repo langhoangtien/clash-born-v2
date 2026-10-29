@@ -21,7 +21,7 @@ func build(layout: MapLayout) -> void:
 		return
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = SEED + 1
-	_place(cfg["trees"], tree_items(layout))
+	_place(cfg["trees"], tree_items(layout), TreeFade.material())  # D-176: cây che tướng thì vẽ thưa
 	_build_stone(layout, cfg, rng)
 	if cfg.has("bushes"):  # D-160: bụi cỏ (VIS-06) — tạm dùng cụm cây tròn ép thấp
 		var bushes: Array[Array] = []
@@ -167,8 +167,9 @@ static func _rect(poly: PackedVector2Array) -> Rect2:
 	return r
 
 
-## Gom `items` ([vị trí, loại, cỡ, góc]) theo (ô, loại) rồi dựng một MultiMesh cho mỗi nhóm.
-func _place(models: Array, items: Array[Array]) -> void:
+## Gom `items` ([vị trí, loại, cỡ, góc]) theo (ô, loại) rồi dựng một MultiMesh cho mỗi nhóm;
+## `material` (nếu có) thay vật liệu của mô hình.
+func _place(models: Array, items: Array[Array], material: Material = null) -> void:
 	var groups: Dictionary[Vector3i, Array] = {}
 	for it: Array in items:
 		var key: Vector3i = Vector3i(floori(it[0].x / CHUNK), floori(it[0].y / CHUNK), it[1])
@@ -176,10 +177,10 @@ func _place(models: Array, items: Array[Array]) -> void:
 			groups[key] = []
 		groups[key].append(it)
 	for key: Vector3i in groups:
-		_multimesh(models[key.z], groups[key])
+		_multimesh(models[key.z], groups[key], material)
 
 
-func _multimesh(model: String, items: Array) -> void:
+func _multimesh(model: String, items: Array, material: Material) -> void:
 	var src: Node3D = ModelLibrary.static_scene(model).instantiate() as Node3D
 	var mi: MeshInstance3D = src.find_children("*", "MeshInstance3D", true, false)[0]
 	ModelLibrary.use_vertex_colors(mi.mesh)  # D-167
@@ -198,6 +199,7 @@ func _multimesh(model: String, items: Array) -> void:
 	src.free()
 	var node: MultiMeshInstance3D = MultiMeshInstance3D.new()
 	node.multimesh = mm
+	node.material_override = material
 	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(node)
 

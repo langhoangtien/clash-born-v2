@@ -108,17 +108,15 @@ func test_ABL_10_cancels_order_and_cast() -> void:
 
 func test_ABL_10_stops_at_terrain_never_through() -> void:
 	var w: World = _world()
-	var origin: Vector2 = _origin()
+	var origin: Vector2 = Vector2.ZERO
 	var dir: Vector2 = Vector2.ZERO
 	var wall: float = 0.0
-	for k: int in range(32):
-		var d: Vector2 = Vector2.from_angle(TAU * k / 32.0)
-		for step: int in range(4, 30):
-			if _map.clearance_at(origin + d * step * 16.0) <= 30.0:
-				if step * 16.0 >= 150.0 and step * 16.0 <= 350.0:
-					dir = d
-					wall = step * 16.0
-				break
+	for i: int in range(12):  # chỗ thử: quanh _origin(), lần lượt xa dần — không phụ thuộc một chỗ cố định của map
+		origin = _origin() + Vector2.from_angle(TAU * i / 12.0) * 200.0 * (i / 4)
+		if _map.clearance_at(origin) > 60.0:
+			var hit: Array = _wall_near(origin)
+			dir = hit[0]
+			wall = hit[1]
 		if dir != Vector2.ZERO:
 			break
 	assert_true(dir != Vector2.ZERO, "tìm được vách/rừng trong 150–350")
@@ -129,6 +127,18 @@ func test_ABL_10_stops_at_terrain_never_through() -> void:
 	assert_true(foe.position.distance_to(origin) < wall, "dừng trước vật cản")
 	assert_true(w.navigation(foe.radius).point_is_clear(foe.position), "không đứng trong vật cản")
 	assert_false(Rules.has_state(foe, UnitState.Id.STUNNED))
+
+
+## Hướng có vật cản cách `origin` 150–350 (và khoảng cách đó); không có → [Vector2.ZERO, 0].
+func _wall_near(origin: Vector2) -> Array:
+	for k: int in range(32):
+		var d: Vector2 = Vector2.from_angle(TAU * k / 32.0)
+		for step: int in range(4, 30):
+			if _map.clearance_at(origin + d * step * 16.0) <= 30.0:
+				if step * 16.0 >= 150.0 and step * 16.0 <= 350.0:
+					return [d, step * 16.0]
+				break
+	return [Vector2.ZERO, 0.0]
 
 
 func test_ABL_10_blocked_by_tower_body() -> void:

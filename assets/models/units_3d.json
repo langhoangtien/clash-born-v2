@@ -192,14 +192,14 @@
  },
  "scenery": {
   "trees": [
-   "custom/nature/tree_a",
-   "custom/nature/tree_b",
-   "custom/nature/tree_c"
+   "custom/nature/low_tree_round",
+   "custom/nature/low_tree_pine",
+   "custom/nature/low_tree_twin"
   ],
   "tree_spacing": 95.0,
   "tree_scale": [
-   0.55,
-   0.75
+   0.75,
+   0.95
   ],
   "tree_inset": 30.0,
   "shop": {

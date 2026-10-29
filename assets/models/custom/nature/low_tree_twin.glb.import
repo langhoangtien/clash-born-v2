@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://e70g8u6f2sbk"
-path="res://.godot/imported/khoi_13.glb-f93ef1ae797d465cd5989ecb64788166.scn"
+uid="uid://c7g20rvda4v0t"
+path="res://.godot/imported/low_tree_twin.glb-8ede915d0ef3a9f2fb2fba7f6784e312.scn"
 
 [deps]
 
-source_file="res://assets/models/custom/kit/khoi_13.glb"
-dest_files=["res://.godot/imported/khoi_13.glb-f93ef1ae797d465cd5989ecb64788166.scn"]
+source_file="res://assets/models/custom/nature/low_tree_twin.glb"
+dest_files=["res://.godot/imported/low_tree_twin.glb-8ede915d0ef3a9f2fb2fba7f6784e312.scn"]
 
 [params]
 

@@ -5,6 +5,7 @@ const MAP_PATH: String = "res://data/maps/clashborn.tres"
 ## Bán kính thân trụ dùng trong test (giá trị thật sẽ nằm trong content ở M2).
 const TOWER_BODY: float = 52.0
 const HERO_RADIUS: float = 32.0
+const CORE_BODY: float = 80.0
 
 static var _map: MapLayout
 static var _nav: MapNavigation
@@ -85,6 +86,23 @@ func test_MAP_01_tower_body_blocks_standing() -> void:
 	var tower: Vector2 = _map.tower_points[0]
 	assert_false(_nav.point_is_clear(tower + Vector2(TOWER_BODY + HERO_RADIUS - 1, 0)))
 	assert_true(_nav.nearest_clear(tower).distance_to(tower) >= TOWER_BODY + HERO_RADIUS - 0.001)
+
+
+## D-176: đường thẳng fountain → mid đi qua tâm nhà chính; tìm đường không né thân nhà chính thì
+## đơn vị đâm vào, bị đẩy lại mãi (bot đứng yên, BOT-11).
+func test_MOV_01_path_avoids_core_body() -> void:
+	var nav: MapNavigation = MapNavigation.new(_map, HERO_RADIUS, TOWER_BODY, CORE_BODY)
+	var reach: float = CORE_BODY + HERO_RADIUS
+	for team: int in 2:
+		var core: Vector2 = _map.core_point(team)
+		assert_false(nav.point_is_clear(core + Vector2(reach - 1, 0)), "không đứng chồng nhà chính")
+		assert_false(nav.has_line_of_walk(core - Vector2(reach + 40, 0), core + Vector2(reach + 40, 0)), "không đi thẳng xuyên nhà chính")
+		var mid: Vector2 = nav.nearest_clear(_map.tower_point("%s_mid_t1" % ["blue", "red"][team]))
+		var path: PackedVector2Array = nav.path(_map.fountain_point(team), mid)
+		assert_false(path.is_empty())
+		for i: int in path.size() - 1:
+			var near: Vector2 = Geometry2D.get_closest_point_to_segment(core, path[i], path[i + 1])
+			assert_true(near.distance_to(core) >= reach - 0.5, "đường fountain → mid né thân nhà chính")
 
 
 func test_MAP_01_exact_destination_retained() -> void:

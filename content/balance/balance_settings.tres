@@ -23,6 +23,7 @@ status_resistance_cap = 0.6
 minimum_movement_speed = 0.0
 separation_speed = 400.0
 tower_body_radius = 52.0
+core_body_radius = 80.0
 attribute_bonus = 2.0
 hero_structure_damage = 0.5
 tower_creep_damage = 0.6

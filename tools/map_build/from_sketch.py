@@ -2,10 +2,11 @@
 """Đọc bản vẽ map (sketch/map_sketch.png, D-171) → nửa Blue cho map_source.json.
 
 Quy ước màu bản vẽ (ảnh vuông = cả khung map, base Blue góc dưới trái):
-  vàng xanh = đi được, đen = khối đá chặn, xanh nước = sông, xanh xám = base,
+  vàng xanh = đi được, đen = khối chặn, xanh nước = sông, xanh xám = base,
   chấm đỏ = bãi quái, chấm xanh ngọc = shop ẩn.
 Ảnh vẽ tay không đối xứng tuyệt đối: lấy nửa Blue (phía dưới đường sông qua tâm) rồi xoay 180° (MAP-04).
-Ghi: mountains (khối đá nửa Blue), river (cả sông), bases[0], camps, shops → in JSON ra stdout / --write.
+Khối chặn tách thành đá ven sông (mountains) và rừng cây (forest), khối rừng lớn có khe (D-176, forest.py).
+Ghi: mountains, forest (nửa Blue), river (cả sông), bases[0], camps, shops → sketch_import.json / --write.
 
   python3 tools/map_build/from_sketch.py [--write]
 """
@@ -13,9 +14,12 @@ import json, math, os, sys
 import numpy as np, cv2
 from PIL import Image
 from scipy import ndimage
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Polygon, Point, box
+from shapely.ops import unary_union
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import forest as FO  # noqa: E402
 SRC = os.path.join(HERE, "map_source.json")
 IMG = os.path.join(HERE, "sketch", "map_sketch.png")
 RIVER_SLOPE = 0.747
@@ -128,15 +132,18 @@ def main():
     blocks = shape_blocks([p for p in polygons(block, k, 4.0) if blue(p.representative_point())], rivers, src["frame"])
     bases = [p for p in polygons(base, k, 200.0) if blue(p.representative_point())]
     camps = [Point(k(x, y)) for x, y in spots(red)]
+    rocks, wood, gaps = woods(blocks, rivers, max(bases, key=lambda p: p.area), [(p.x, p.y) for p in camps], src)
     shops = [Point(k(x, y)) for x, y in spots(cyan)]
     out = {
-        "mountains": [[[round(x, 1), round(y, 1)] for x, y in p.simplify(0.8).exterior.coords[:-1]] for p in blocks],
+        "mountains": [_ring(p) for p in rocks],
+        "forest": [_ring(p) for p in wood],
+        "gaps": [[list(c) for c in g.coords] for g in gaps],
         "river": [[list(c) for c in p.exterior.coords[:-1]] for p in rivers],
         "base0": [snap(c, src["frame"]) for c in max(bases, key=lambda p: p.area).simplify(1.0).exterior.coords[:-1]],
         "camps": [[round(p.x, 1), round(p.y, 1)] for p in camps if blue(p)],
         "shops": [[round(p.x, 1), round(p.y, 1)] for p in shops if blue(p)],
     }
-    print(f"khối nửa Blue {len(blocks)}, sông {len(rivers)}, trại {len(out['camps'])}, shop ẩn {len(out['shops'])}", file=sys.stderr)
+    print(f"khối nửa Blue {len(blocks)} → đá {len(rocks)}, rừng {len(wood)}, khe {len(gaps)}; sông {len(rivers)}, trại {len(out['camps'])}, shop ẩn {len(out['shops'])}", file=sys.stderr)
     json.dump(out, open(os.path.join(HERE, "sketch", "sketch_import.json"), "w"), indent=0)
     if "--write" in sys.argv:
         apply(src, out)
@@ -144,14 +151,29 @@ def main():
         print("đã ghi map_source.json", file=sys.stderr)
 
 
+def woods(blocks, rivers, base, camps, src):
+    """D-176: đá ven sông + rừng cây (lối rộng hơn), khe xuyên khối rừng lớn."""
+    water = unary_union(rivers)
+    frame = box(*src["frame"])
+    hook = FO.hooks(camps)
+    rocks, wood = FO.split(blocks, water, frame, hook, src["rock_min_thick"])
+    b = src["border"]
+    open_area = box(b["left"], b["top"], b["right"], b["bottom"]).difference(unary_union(rocks + wood + [base]))
+    wood, gaps = FO.cut_gaps(wood, rocks, open_area, frame, FO.hooks(camps, FO.CAMP_GAP_R))
+    return rocks, wood, gaps
+
+
+def _ring(p):
+    return [[round(x, 1), round(y, 1)] for x, y in p.simplify(0.8).exterior.coords[:-1]]
+
+
 def apply(src, out):
     """Thay vật cản / sông / base / trại / shop của nguồn bằng bản vẽ; trại giữ id, loại theo trại cũ gần nhất."""
-    src["mountains"], src["river"], src["forest"], src["rock_lines"] = out["mountains"], out["river"], [], []
+    src["mountains"], src["river"], src["forest"], src["rock_lines"] = out["mountains"], out["river"], out["forest"], []
     src["bases"][0]["polygon"] = out["base0"]
-    for key in ("river_bank", "ring", "tree_alcove", "door_clear"):  # D-171: bờ sông, hốc trại là khối đá
+    for key in ("river_bank", "ring", "tree_alcove", "door_clear"):  # D-171: bờ sông, hốc trại là khối bản vẽ
         src.pop(key, None)
     src["clear_circles"] = []
-    solid = [Polygon(p).buffer(0) for p in out["mountains"] + out["river"]]
     src["camps"] = [c for c in src["camps"] if c["side"] != -1]  # D-171: bỏ boss
     src.pop("landmarks", None)
     src["bushes"] = bushes(src, out)
@@ -172,8 +194,8 @@ def bushes(src, out):
     from shapely.ops import unary_union
     fx0, fy0, fx1, fy1 = src["frame"]
     rot = lambda q: (fx0 + fx1 - q[0], fy0 + fy1 - q[1])
-    solid = [Polygon(p).buffer(0) for p in out["mountains"]]
-    solid += [Polygon([rot(q) for q in p]).buffer(0) for p in out["mountains"]]
+    solid = [Polygon(p).buffer(0) for p in out["mountains"] + out["forest"]]
+    solid += [Polygon([rot(q) for q in p]).buffer(0) for p in out["mountains"] + out["forest"]]
     base = Polygon(out["base0"]).buffer(0)
     walk = box(fx0, fy0, fx1, fy1).difference(unary_union(solid + [base, Polygon([rot(q) for q in out["base0"]]).buffer(0)]))
     water = unary_union([Polygon(p).buffer(0) for p in out["river"]])

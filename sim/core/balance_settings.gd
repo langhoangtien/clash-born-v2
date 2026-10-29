@@ -177,6 +177,8 @@ extends Resource
 @export var separation_speed: float
 ## MAP-01: bán kính thân trụ chặn đứng/đi.
 @export var tower_body_radius: float
+## MAP-01 (D-176): bán kính thân nhà chính chặn đứng/đi (bằng collision_radius của nhà chính).
+@export var core_body_radius: float
 
 
 func validation_errors() -> PackedStringArray:
@@ -193,8 +195,8 @@ func validation_errors() -> PackedStringArray:
 		errors.append("evasion_cap trong [0, 1]")
 	if status_resistance_cap < 0.0 or status_resistance_cap > 1.0:
 		errors.append("status_resistance_cap trong [0, 1]")
-	if separation_speed <= 0.0 or tower_body_radius <= 0.0:
-		errors.append("separation_speed và tower_body_radius phải > 0")
+	if separation_speed <= 0.0 or tower_body_radius <= 0.0 or core_body_radius <= 0.0:
+		errors.append("separation_speed, tower_body_radius, core_body_radius phải > 0")
 	if hp_per_strength <= 0.0 or mana_per_intelligence < 0.0 or minimum_movement_speed < 0.0:
 		errors.append("hệ số thuộc tính / tốc chạy không hợp lệ")
 	return errors

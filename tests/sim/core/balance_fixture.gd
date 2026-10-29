@@ -38,6 +38,7 @@ static func make() -> BalanceSettings:
 	b.creep_hero_aggro_time = 2.5
 	b.creep_front_margin = 200.0
 	b.tower_body_radius = 52.0
+	b.core_body_radius = 80.0
 	b.respawn_base = 5.0
 	b.attribute_bonus_max = 7
 	b.talent_level = 20

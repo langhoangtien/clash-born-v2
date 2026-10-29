@@ -121,9 +121,9 @@ func add_entity(e: Entity) -> Entity:
 
 ## Tìm đường cho đơn vị bán kính `radius` trên map của trận (MAP-01).
 func navigation(radius: float) -> MapNavigation:
-	var key: String = "%d:%s:%s" % [map.get_instance_id(), radius, balance.tower_body_radius]
+	var key: String = "%d:%s:%s:%s" % [map.get_instance_id(), radius, balance.tower_body_radius, balance.core_body_radius]
 	if not _nav_cache.has(key):
-		_nav_cache[key] = MapNavigation.new(map, radius, balance.tower_body_radius)
+		_nav_cache[key] = MapNavigation.new(map, radius, balance.tower_body_radius, balance.core_body_radius)
 		nav_builds += 1
 	return _nav_cache[key]
 

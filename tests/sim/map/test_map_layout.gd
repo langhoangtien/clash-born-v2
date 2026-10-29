@@ -242,14 +242,14 @@ func test_MAP_07_river_edge_is_rock_with_few_openings() -> void:
 	assert_true(blue >= 2 and open_spots.size() - blue >= 2, "mỗi nửa có lối xuống sông (%d / %d)" % [blue, open_spots.size() - blue])
 
 
-func test_MAP_08_every_camp_sits_in_rock_hook() -> void:
+func test_MAP_08_every_camp_sits_in_rock_or_forest_hook() -> void:
 	var m: MapLayout = map
 	for i: int in m.camp_ids.size():
 		var wall: int = 0
 		for k: int in 24:
 			var probe: Vector2 = m.camp_points[i] + Vector2.from_angle(TAU * k / 24.0) * 330.0
 			wall += 1 if m.clearance_at(probe) < 32.0 else 0
-		assert_true(wall >= 10 and wall < 24, "trại %s nằm trong hốc đá có cửa (%d/24 hướng chặn)" % [m.camp_ids[i], wall])
+		assert_true(wall >= 10 and wall < 24, "trại %s nằm trong hốc đá / rừng có cửa (%d/24 hướng chặn)" % [m.camp_ids[i], wall])
 
 
 func _near_lane(m: MapLayout, p: Vector2, reach: float) -> bool:

@@ -112,6 +112,7 @@ func update(focus: Vector2) -> void:
 	_layer_cam.position = focus + _ground_rect.get_center()
 	_ground.position = to_3d(focus + _ground_rect.get_center())
 	var keep: Dictionary[int, bool] = {}
+	var heroes: PackedVector3Array = PackedVector3Array()
 	for e: Entity in world.entities:
 		if not e.alive or not units.seen(e) or e.kind == Entity.Kind.WARD:
 			continue
@@ -124,7 +125,9 @@ func update(focus: Vector2) -> void:
 			add_child(a)
 			_actors[e.id] = a
 		a.sync(world, e, to_3d(units.display_position(e)), units.is_moving(e), world.tick - units.hit_tick(e), units.faded(e))
-	_dispatch_events()
+		if e.kind == Entity.Kind.HERO:
+			heroes.append(a.position)
+	TreeFade.set_focus(heroes)  # D-176	_dispatch_events()
 	for id: int in _actors.keys():
 		if not keep.has(id):
 			_actors[id].queue_free()
