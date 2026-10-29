@@ -28,6 +28,16 @@ Tóm tắt để phiên làm việc mới (tài khoản Claude mới) làm tiế
 
 ## 3. Đang dở / việc tiếp theo (theo thứ tự)
 
+0. **Đồ họa mới, bước 1 — cảnh mẫu (đang làm, chưa vào game).** Người dùng duyệt hướng: theo concept
+   `art_inbox/08_style/concept.webp` (camera cố định → màu + sáng tối vẽ sẵn vào mô hình, vẽ không đèn), ngân sách
+   cảnh tĩnh < 100k tam giác trên màn hình; vật cản là "bục rừng" viền tường đá, cây cao lùi phía bắc, mép nam
+   chỉ đá thấp / khóm lá (thay làm mờ, D-177); rìa map = rào đá thấp đỉnh phẳng + tường thành khổng lồ (cạnh
+   nam thấp ≤ 2 m vì camera ở nam). Bộ asset: `tools/models/style_kit.py` (Blender bpy) → `assets/models/style/`.
+   Cảnh mẫu 40 × 40 m: `python3 tools/style_sample/make_sample.py` rồi
+   `xvfb-run -a godot --path . --rendering-driver opengl3 -s res://tools/style_sample/render.gd -- <thư_mục_ảnh>`.
+   Chờ: người dùng nhận xét ảnh mẫu; Codex làm ảnh nền theo `art_inbox/YEU_CAU_STYLE.md`. Sau đó: vẽ lại map
+   kiểu bục rừng (ít khối to, ~8–10 / nửa), đưa bộ asset + shader vào game, bỏ cây / núi đá cũ.
+
 1. **D-176 chờ chơi thử** (người dùng thấy khối đá D-175 thấp, lối hẹp, giao tranh chật → chọn phương án 3):
    đá chỉ ở bờ sông, còn lại là rừng cây low-poly (`tools/map_build/forest.py`, `tools/models/make_low_trees.py`),
    lối rừng rộng hơn, khe xuyên khối rừng lớn. Luật MAP-11. Làm mờ cây che tướng đã bỏ (D-177). Chờ người dùng

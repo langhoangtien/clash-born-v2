@@ -1,0 +1,231 @@
+#!/usr/bin/env python3
+"""Bộ asset tĩnh phong cách mới (bước 1 đồ họa): dựng bằng Blender (bpy), màu + sáng tối vẽ sẵn vào màu đỉnh
+(camera cố định → không cần đèn, vẽ unshaded). Mỗi mặt một màu: hướng nắng (trên-trái-sau màn hình) chia 3 dải
+sáng / vừa / tối; tối ngả xanh lạnh, sáng ngả ấm; chân tối dần (giả AO).
+
+  <venv có bpy>/bin/python tools/models/style_kit.py
+Ghi assets/models/style/*.glb (gốc ở giữa đáy, đơn vị mét = 100 px thế giới).
+"""
+import math, os, random
+import bpy, bmesh
+from mathutils import Vector
+
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "assets", "models", "style")
+SUN = Vector((-0.5, -0.55, 1.0)).normalized()  # Blender: x đông, y bắc, z lên — nắng từ trên, chếch tây nam (phía camera) như concept
+
+# Bảng màu (sRGB 0–255) lấy từ concept người chơi duyệt.
+PINE = (46, 84, 84)
+PINE_LIGHT = (92, 126, 96)
+TRUNK = (92, 50, 44)
+ROUND = (112, 134, 70)
+AUTUMN = (196, 128, 52)
+LEAF_ORANGE = (214, 112, 48)
+STONE = (104, 110, 116)
+STONE_TOP = (138, 140, 140)
+MOSS = (104, 120, 64)
+WALL = (112, 110, 104)
+WALL_TOP = (150, 144, 132)
+WALL_DARK = (84, 84, 82)
+
+
+def reset():
+    bpy.ops.wm.read_factory_settings(use_empty=True)
+
+
+def shade(color, n, z, height, rng, light=None):
+    """Màu một mặt: 3 dải theo hướng nắng, bóng ngả xanh lạnh, sáng ngả ấm, chân tối (z/height)."""
+    t = n.dot(SUN)
+    base = Vector(color) / 255.0
+    hi = Vector(light) / 255.0 if light else base * 1.12 + Vector((0.04, 0.03, 0.0))
+    lo = Vector((base.x * 0.55, base.y * 0.62, base.z * 0.68 + 0.02))
+    c = lo if t < 0.05 else (base if t < 0.55 else hi)
+    ao = 0.72 + 0.28 * min(1.0, max(0.0, z / max(0.01, height)) ** 0.6)
+    c = c * ao * rng.uniform(0.95, 1.05)
+    return (min(1, c.x), min(1, c.y), min(1, c.z), 1.0)
+
+
+def paint(obj, zone, rng):
+    """zone(face_center, normal) → (màu, màu sáng hoặc None). Ghi màu theo góc mặt (flat)."""
+    me = obj.data
+    height = max(v.co.z for v in me.vertices) or 1.0
+    attr = me.color_attributes.new("Col", "BYTE_COLOR", "CORNER")
+    for poly in me.polygons:
+        col, light = zone(poly.center, poly.normal)
+        c = shade(col, poly.normal, poly.center.z, height, rng, light)
+        for li in poly.loop_indices:
+            attr.data[li].color = c
+    me.color_attributes.active_color = attr
+
+
+def mesh_from(name, verts, faces):
+    me = bpy.data.meshes.new(name)
+    me.from_pydata(verts, [], faces)
+    me.update()
+    obj = bpy.data.objects.new(name, me)
+    bpy.context.scene.collection.objects.link(obj)
+    return obj
+
+
+def cone_tier(bm, r, h, z0, segs, droop, rng, twist):
+    """Một tầng lá thông: đáy răng cưa (đỉnh xen kẽ trễ xuống), chóp nhọn."""
+    ring = []
+    for i in range(segs * 2):
+        a = twist + math.pi * i / segs
+        rr = r * (1.0 if i % 2 == 0 else 0.8) * rng.uniform(0.92, 1.06)
+        zz = z0 - (droop if i % 2 == 0 else 0.0)
+        ring.append(bm.verts.new((rr * math.cos(a), rr * math.sin(a), zz)))
+    top = bm.verts.new((0, 0, z0 + h))
+    mid = bm.verts.new((0, 0, z0 + 0.05))
+    for i in range(len(ring)):
+        bm.faces.new((ring[i], ring[(i + 1) % len(ring)], top))
+        bm.faces.new((ring[(i + 1) % len(ring)], ring[i], mid))
+
+
+def trunk(bm, r, h, segs=5):
+    bot = [bm.verts.new((r * math.cos(2 * math.pi * i / segs), r * math.sin(2 * math.pi * i / segs), 0)) for i in range(segs)]
+    top = [bm.verts.new((v.co.x * 0.7, v.co.y * 0.7, h)) for v in bot]
+    for i in range(segs):
+        j = (i + 1) % segs
+        bm.faces.new((bot[i], bot[j], top[j], top[i]))
+
+
+def pine(name, height, rng):
+    bm = bmesh.new()
+    trunk(bm, 0.16 * height / 4, 0.9)
+    tiers = 4 if height < 4 else (5 if height < 5 else 6)
+    for k in range(tiers):
+        f = k / tiers
+        r = (1.25 - 0.85 * f) * height / 4.2
+        z0 = 0.7 + f * (height - 1.6)
+        cone_tier(bm, r, 1.25 * height / 4.2, z0, 7, 0.22 * height / 4.2, rng, rng.uniform(0, 1))
+    obj = finish(name, bm)
+    paint(obj, lambda c, n: (TRUNK, None) if c.z < 0.75 and Vector((c.x, c.y)).length < 0.3 else (PINE, PINE_LIGHT), rng)
+    return obj
+
+
+def puff_tree(name, color, rng, height=3.2):
+    bm = bmesh.new()
+    trunk(bm, 0.2, 1.4)
+    for (x, y, z, r, sub) in ((0, 0, 2.15, 1.15, 2), (0.55, -0.2, 1.75, 0.8, 1), (-0.5, 0.3, 1.8, 0.85, 1), (0.1, 0.35, 2.75, 0.7, 1)):
+        res = bmesh.ops.create_icosphere(bm, subdivisions=sub, radius=r * height / 3.2)
+        for v in res["verts"]:
+            v.co = Vector((v.co.x * rng.uniform(0.9, 1.1) + x, v.co.y * rng.uniform(0.9, 1.1) + y, v.co.z * 0.85 * rng.uniform(0.92, 1.05) + z * height / 3.2))
+    obj = finish(name, bm)
+    paint(obj, lambda c, n: (TRUNK, None) if c.z < 1.3 and Vector((c.x, c.y)).length < 0.35 else (color, None), rng)
+    return obj
+
+
+def leaf_plant(name, rng):
+    """Khóm lá cam thấp (lá dày hình thoi tỏa tròn) — điểm màu như concept."""
+    bm = bmesh.new()
+    for i in range(7):
+        a = 2 * math.pi * i / 7 + rng.uniform(-0.2, 0.2)
+        d = Vector((math.cos(a), math.sin(a), 0))
+        s = Vector((-d.y, d.x, 0)) * 0.16
+        L = rng.uniform(0.55, 0.75)
+        p = [bm.verts.new(q) for q in (Vector((0, 0, 0.12)), d * L * 0.5 + s + Vector((0, 0, 0.32)), d * L + Vector((0, 0, 0.22)), d * L * 0.5 - s + Vector((0, 0, 0.32)))]
+        bm.faces.new(p)  # một mặt: shader bộ asset vẽ cả hai phía
+    obj = finish(name, bm)
+    paint(obj, lambda c, n: (LEAF_ORANGE, None), rng)
+    return obj
+
+
+def slab(name, w, d, h, rng, lean=0.05):
+    """Khối đá dựng kiểu concept: thân hộp hơi thuôn, mép đứng vát, đỉnh đẽo thành 2–3 mặt lệch nhau."""
+    bm = bmesh.new()
+    bmesh.ops.create_cube(bm, size=1.0)
+    top_edges = [e for e in bm.edges if all(v.co.z > 0 for v in e.verts)]
+    bmesh.ops.subdivide_edges(bm, edges=top_edges, cuts=1, use_grid_fill=True)
+    for v in bm.verts:
+        top = v.co.z > 0
+        k = rng.uniform(0.82, 0.92) if top else 1.0
+        v.co = Vector((v.co.x * w * k + (lean * h if top else 0.0), v.co.y * d * k, (v.co.z + 0.5) * h))
+        if top:
+            v.co.z -= rng.uniform(0.0, 0.16) * h * (abs(v.co.x) / w + abs(v.co.y) / d)
+    bmesh.ops.bevel(bm, geom=[e for e in bm.edges if abs(e.verts[0].co.z - e.verts[1].co.z) > h * 0.5], offset=min(w, d) * 0.14, segments=1, affect="EDGES")
+    side = [f for f in bm.faces if abs(f.normal.z) < 0.3 and f.calc_area() > w * h * 0.3]
+    res = bmesh.ops.subdivide_edges(bm, edges=list({e for f in side for e in f.edges if abs(e.verts[0].co.z - e.verts[1].co.z) < 0.01}), cuts=1)
+    for v in res["geom_inner"]:
+        if isinstance(v, bmesh.types.BMVert):  # khía dọc thân: đá đẽo, không phẳng như gạch
+            v.co.x *= rng.uniform(0.86, 1.0)
+            v.co.y *= rng.uniform(0.86, 1.0)
+    for v in bm.verts:
+        v.co += Vector((rng.uniform(-1, 1), rng.uniform(-1, 1), rng.uniform(-0.5, 0.5))) * 0.05 * w
+    obj = finish(name, bm)
+    paint(obj, lambda c, n: (MOSS, None) if n.z > 0.8 and c.z < h * 0.85 and rng.random() < 0.5 else ((STONE, STONE_TOP) if n.z <= 0.6 else (STONE_TOP, STONE_TOP)), rng)
+    return obj
+
+
+def fence(name, rng, length=4.0, height=1.1, thick=0.6):
+    """Đoạn rào đá ranh giới: chân đậm, thân, nắp phẳng nhô ra, trụ vuông ở đầu — đỉnh ngang đều khi ghép nối."""
+    bm = bmesh.new()
+    box(bm, length, thick + 0.1, 0, 0.25)
+    box(bm, length, thick, 0.25, height - 0.18)
+    box(bm, length, thick + 0.16, height - 0.18, height)
+    box(bm, 0.55, thick + 0.3, 0, height + 0.25, -length / 2 + 0.28)
+    obj = finish(name, bm)
+    paint(obj, lambda c, n: (WALL_TOP, WALL_TOP) if n.z > 0.5 else ((WALL_DARK, None) if c.z < 0.25 else (WALL, None)), rng)
+    return obj
+
+
+def great_wall(name, rng, length=10.0, height=14.0, thick=7.0):
+    """Đoạn tường thành khổng lồ: chân loe, thân chia lớp đá (gờ lùi dần), trụ ốp giữa đoạn, lan can đỉnh phẳng
+    liên tục. Lớp dưới đậm hơn (rêu, ẩm)."""
+    bm = bmesh.new()
+    box(bm, length, thick + 2.0, 0, 1.6)
+    for k in range(4):
+        z0 = 1.6 + k * (height - 3.0) / 4
+        box(bm, length, thick + 1.2 - k * 0.25, z0, z0 + (height - 3.0) / 4 - 0.15)
+        box(bm, length, thick + 1.4 - k * 0.25, z0 + (height - 3.0) / 4 - 0.15, z0 + (height - 3.0) / 4)
+    box(bm, 1.6, thick + 2.2, 0, height - 1.4, 0.0)        # trụ ốp
+    box(bm, length, thick, height - 1.4, height)
+    obj = finish(name, bm)
+    paint(obj, lambda c, n: (WALL_TOP, WALL_TOP) if n.z > 0.5 else ((WALL_DARK, None) if c.z < 4.0 else (WALL, None)), rng)
+    return obj
+
+
+def box(bm, lx, ly, z0, z1, x=0.0):
+    res = bmesh.ops.create_cube(bm, size=1.0)
+    for v in res["verts"]:
+        v.co = Vector((x + v.co.x * lx, v.co.y * ly, z0 + (v.co.z + 0.5) * (z1 - z0)))
+
+
+def finish(name, bm):
+    me = bpy.data.meshes.new(name)
+    bm.normal_update()
+    bmesh.ops.recalc_face_normals(bm, faces=list(bm.faces))
+    bm.to_mesh(me)
+    bm.free()
+    obj = bpy.data.objects.new(name, me)
+    bpy.context.scene.collection.objects.link(obj)
+    return obj
+
+
+def export(obj):
+    bpy.ops.object.select_all(action="DESELECT")
+    obj.select_set(True)
+    bpy.context.view_layer.objects.active = obj
+    path = os.path.join(OUT, obj.name + ".glb")
+    bpy.ops.export_scene.gltf(filepath=path, use_selection=True, export_vertex_color="ACTIVE", export_normals=False,
+                              export_materials="NONE", export_yup=True)
+    print(f"{obj.name}: {sum(len(p.vertices) - 2 for p in obj.data.polygons)} tam giác")
+
+
+def main():
+    os.makedirs(OUT, exist_ok=True)
+    rng = random.Random(1)
+    builders = [
+        lambda: pine("pine_s", 3.2, rng), lambda: pine("pine_m", 4.4, rng), lambda: pine("pine_l", 5.6, rng),
+        lambda: puff_tree("tree_round", ROUND, rng), lambda: puff_tree("tree_autumn", AUTUMN, rng, 3.6),
+        lambda: leaf_plant("plant_orange", rng),
+        lambda: slab("rock_tall", 1.3, 1.1, 2.4, rng), lambda: slab("rock_wide", 1.9, 1.2, 1.8, rng),
+        lambda: slab("rock_low", 1.5, 1.1, 1.1, rng), lambda: slab("rock_small", 0.8, 0.7, 0.5, rng),
+        lambda: fence("fence", rng), lambda: great_wall("great_wall", rng),
+    ]
+    for build in builders:
+        reset()
+        export(build())
+
+
+if __name__ == "__main__":
+    main()
