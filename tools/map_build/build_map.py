@@ -61,7 +61,7 @@ def bush_polygons(src):
 
 def obstacles(s):
     """Khối đá (bản vẽ, D-171), rừng, vách / rào (đoạn có độ dày); đã cắt khu trống và lấp khe (MAP-03).
-    Bờ sông và hốc bãi quái chính là khối đá trong bản vẽ (MAP-07, MAP-08)."""
+    Bờ sông là đá, khối còn lại của bản vẽ là rừng cây (D-176, MAP-07, MAP-11)."""
     frame = box(FX0, FY0, FX1, FY1)
     mid_zone = Point(CENTER).buffer(SRC["mid_clear_world"] / SCALE)  # MAP-05
     river = [Polygon(p).buffer(0) for p in SRC["river"]]

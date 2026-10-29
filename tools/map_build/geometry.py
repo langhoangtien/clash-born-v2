@@ -4,7 +4,8 @@ Nguồn ghi nửa Blue (y > x); build sinh nửa Red bằng xoay 180° (MAP-04).
   forest      khối rừng (vẽ cây)
   mountains   khối núi đá (vẽ tảng đá lớn — nhẹ hơn cây); cả viền ngoài map là núi đá
   rock_lines  vách đá: đoạn thẳng nối nhau, cùng độ dày (vẽ mảnh vách nối tiếp)
-  mountains từ bản vẽ (D-171, from_sketch.py) cũng là bờ sông và hốc bãi quái (MAP-07, MAP-08)
+  từ bản vẽ (D-171, D-176, from_sketch.py): mountains là đá bờ sông (MAP-07), forest là rừng cây (MAP-11),
+  hốc bãi quái là khối đá hoặc rừng (MAP-08)
   fences      rào đá quanh base (chỉ hở ở 3 lane, MAP-09) và quanh fountain (một cổng, MAP-10)
 Rồi cắt chỗ phải trống (lane, base, trụ, trại, điểm sinh, fountain, khu mid cắt sông MAP-05) và
 lấp khe hẹp / hốc kín (MAP-03)."""

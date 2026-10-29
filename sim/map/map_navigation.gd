@@ -2,7 +2,7 @@ class_name MapNavigation
 extends RefCounted
 ## Tìm đường theo bán kính trên trường khoảng trống của map (MAP-01).
 ## Ô đi được khi vật bán kính `agent_radius` đứng ở tâm ô không chạm địa hình và không
-## chạm thân trụ. Đường từ AStarGrid2D rồi kéo thẳng bằng kiểm tra tầm đi, nên đơn vị
+## chạm thân công trình (trụ, nhà chính — D-176). Đường từ AStarGrid2D rồi kéo thẳng bằng kiểm tra tầm đi, nên đơn vị
 ## đi đường thẳng thay vì zig-zag theo ô. Mỗi bán kính một instance. Xác định (D-30).
 
 ## Hằng số kỹ thuật: biên an toàn khi đánh dấu ô, số vòng ô tìm ô bắt đầu.
@@ -14,12 +14,20 @@ var grid: AStarGrid2D = AStarGrid2D.new()
 var agent_radius: float
 var tower_body_radius: float
 var cell_size: float
+## Thân công trình chặn đường: tâm và bán kính (trụ: tower_body_radius, nhà chính: core_body_radius).
+var _body_points: PackedVector2Array = PackedVector2Array()
+var _body_radii: PackedFloat32Array = PackedFloat32Array()
 
 
-func _init(map: MapLayout, radius: float, tower_radius: float) -> void:
+func _init(map: MapLayout, radius: float, tower_radius: float, core_radius: float = 0.0) -> void:
 	layout = map
 	agent_radius = maxf(0.0, radius)
 	tower_body_radius = maxf(0.0, tower_radius)
+	for p: Vector2 in map.tower_points:
+		_add_body(p, tower_body_radius)
+	for p: Vector2 in map.core_points:
+		_add_body(p, core_radius)  # D-176
+
 	cell_size = map.nav_cell
 	var cells: Vector2i = Vector2i(ceili(map.world_size().x / cell_size), ceili(map.world_size().y / cell_size))
 	grid.region = Rect2i(Vector2i.ZERO, cells)
@@ -31,7 +39,13 @@ func _init(map: MapLayout, radius: float, tower_radius: float) -> void:
 	grid.jumping_enabled = true
 	grid.update()
 	_mark_terrain(cells)
-	_mark_towers()
+	_mark_bodies()
+
+
+func _add_body(p: Vector2, r: float) -> void:
+	if r > 0.0:
+		_body_points.append(p)
+		_body_radii.append(r)
 
 
 ## Ô đi được khi MỌI pixel khoảng trống trong ô đủ rộng, nên mọi điểm trong ô đều đứng
@@ -52,10 +66,11 @@ func _cell_min_clearance(cell: Vector2i, per_cell: int) -> float:
 	return lowest
 
 
-## Thân trụ là vật cản cố định khi lập đường.
-func _mark_towers() -> void:
-	var reach: float = tower_body_radius + agent_radius + SAFETY_MARGIN
-	for tower: Vector2 in layout.tower_points:
+## Thân công trình là vật cản cố định khi lập đường.
+func _mark_bodies() -> void:
+	for i: int in _body_points.size():
+		var tower: Vector2 = _body_points[i]
+		var reach: float = _body_radii[i] + agent_radius + SAFETY_MARGIN
 		var first: Vector2i = _cell(tower - Vector2.ONE * reach)
 		var last: Vector2i = _cell(tower + Vector2.ONE * reach)
 		for y: int in range(first.y, last.y + 1):
@@ -65,29 +80,30 @@ func _mark_towers() -> void:
 					grid.set_point_solid(cell, true)
 
 
-## Vật bán kính này đứng được ở `point` (không chạm địa hình, không chạm thân trụ).
+## Vật bán kính này đứng được ở `point` (không chạm địa hình, không chạm thân công trình).
 func point_is_clear(point: Vector2) -> bool:
 	if not point.is_finite() or layout.clearance_at(point) < agent_radius:
 		return false
-	for tower: Vector2 in layout.tower_points:
-		if point.distance_to(tower) < tower_body_radius + agent_radius:
+	for i: int in _body_points.size():
+		if point.distance_to(_body_points[i]) < _body_radii[i] + agent_radius:
 			return false
 	return true
 
 
-## Điểm đứng được gần `point` nhất (tính cả thân trụ).
+## Điểm đứng được gần `point` nhất (tính cả thân công trình).
 func nearest_clear(point: Vector2, max_distance: float = 1600.0) -> Vector2:
 	return MapLayout.search_rings(point, layout.clearance_pixel, max_distance, point_is_clear)
 
 
-## Đi thẳng từ a tới b không chạm địa hình và trụ.
+## Đi thẳng từ a tới b không chạm địa hình và thân công trình.
 ## Kiểm tra chính xác: mọi pixel của trường khoảng trống mà đoạn thẳng đi qua (duyệt
-## theo lưới, không lấy mẫu) và khoảng cách từ đoạn tới mọi thân trụ.
+## theo lưới, không lấy mẫu) và khoảng cách từ đoạn tới mọi thân công trình.
 func has_line_of_walk(a: Vector2, b: Vector2) -> bool:
 	if not a.is_finite() or not b.is_finite():
 		return false
-	for tower: Vector2 in layout.tower_points:
-		if Geometry2D.get_closest_point_to_segment(tower, a, b).distance_to(tower) < tower_body_radius + agent_radius:
+	for i: int in _body_points.size():
+		var c: Vector2 = _body_points[i]
+		if Geometry2D.get_closest_point_to_segment(c, a, b).distance_to(c) < _body_radii[i] + agent_radius:
 			return false
 	return _terrain_clear_along(a, b)
 
