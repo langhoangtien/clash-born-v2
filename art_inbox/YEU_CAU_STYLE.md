@@ -44,8 +44,8 @@ giữ màu mô hình). Cùng yêu cầu kỹ thuật như đợt T (1024, lặp 
 
 | Xong | Tên | Nội dung | Ảnh 1024 phủ |
 |---|---|---|---|
-| [ ] | `foliage_pine` | Lá kim thông vẽ tay: các cụm lá nhọn rủ xuống, xếp chồng như vảy, xanh lam đậm `#2E5454` – sáng `#5C7E60` | 2 m |
-| [ ] | `foliage_leaf` | Lá cây tán tròn vẽ tay: các chùm lá tròn nhỏ chồng lớp, ô-liu `#70864A` – sáng `#9AAE66` | 2 m |
+| [x] | `foliage_pine` | Lá kim thông vẽ tay: các cụm lá nhọn rủ xuống, xếp chồng như vảy, xanh lam đậm `#2E5454` – sáng `#5C7E60` | 2 m |
+| [x] | `foliage_leaf` | Lá cây tán tròn vẽ tay: các chùm lá tròn nhỏ chồng lớp, ô-liu `#70864A` – sáng `#9AAE66` | 2 m |
 
 ## Đợt C — thẻ so màu (sau khi đợt T được duyệt)
 
