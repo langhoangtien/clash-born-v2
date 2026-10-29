@@ -22,28 +22,33 @@ MAIN, SIDE, GAP = 40.0, 30.0, 20.0  # bề rộng lối (ô guide): chính 640, 
 # Trại nửa Blue (id → vị trí): 3 trại rừng trái (giữa lane trên, sông, mid), 3 trại rừng dưới; trại 6 sát lane
 # dưới (kéo quái, D-76). Mỗi trại là hốc có 2 cửa, nằm cạnh (không nằm trên) lối chính.
 CAMPS = {"camp_blue_01": (130, 380), "camp_blue_02": (222, 296), "camp_blue_03": (160, 420),
-         "camp_blue_04": (340, 480), "camp_blue_05": (296, 516), "camp_blue_06": (488, 530)}
+         "camp_blue_04": (380, 522), "camp_blue_05": (282, 510), "camp_blue_06": (488, 528),
+         "camp_blue_07": (342, 420), "camp_blue_08": (440, 460)}
+# Loại trại mới (07, 08) — các trại cũ giữ loại trong map_source.
+NEW_KINDS = {"camp_blue_07": "medium", "camp_blue_08": "small"}
 P = {
     "c1": CAMPS["camp_blue_01"], "c2": CAMPS["camp_blue_02"], "c3": CAMPS["camp_blue_03"],
     "c4": CAMPS["camp_blue_04"], "c5": CAMPS["camp_blue_05"], "c6": CAMPS["camp_blue_06"],
+    "c7": CAMPS["camp_blue_07"], "c8": CAMPS["camp_blue_08"],
     "top_hi": (92, 196), "top_a": (92, 262), "top_c1": (92, 384),
     "j1": (186, 368), "mid_a": (252, 396), "mid_c3": (200, 448), "riv_head": (138, 214), "riv_c2": (256, 300),
-    "mid_b": (306, 342), "j2": (360, 418), "j3": (424, 474), "bot_main": (420, 562),
-    "riv_j2": (392, 404), "riv_j3": (468, 464), "bot_c5": (290, 562), "bot_c6": (540, 556),
+    "m1": (270, 378), "j2": (322, 476), "j3": (432, 486), "bot_main": (436, 562),
+    "riv_c7": (350, 372), "riv_c8": (468, 446), "bot_c5": (262, 562), "bot_c4": (396, 562), "bot_c6": (540, 556),
     "mid_back": (196, 452), "bot_back": (222, 562),
 }
 PATHS = [
-    # rừng trái
+    # rừng trái (3 trại)
     (["top_a", "j1", "mid_a"], MAIN),           # lối chính: lane trên → giữa rừng → mid
     (["j1", "c1"], SIDE), (["c1", "top_c1"], GAP),      # trại 1: cửa từ lối chính + khe ra lane trên
     (["j1", "c2"], SIDE), (["c2", "riv_c2"], GAP),      # trại 2 (ven sông): cửa từ lối chính + khe xuống sông
     (["j1", "c3"], SIDE), (["c3", "mid_c3"], GAP),      # trại 3: cửa từ lối chính + khe ra mid
     (["top_hi", "riv_head"], SIDE),             # lane trên → đầu sông
-    # rừng dưới
-    (["mid_b", "j2", "j3", "bot_main"], MAIN),  # lối chính: mid → giữa rừng → lane dưới
-    (["j2", "riv_j2"], SIDE), (["j3", "riv_j3"], SIDE),  # xuống sông
-    (["j2", "c4"], SIDE), (["c4", "c5"], GAP),          # trại 4: cửa từ lối chính + khe sang trại 5
-    (["bot_c5", "c5"], SIDE),                           # trại 5: cửa từ lane dưới
+    # rừng dưới — rừng carry, 5 trại hai hàng: ven sông (7, 8), ven lane (5, 4, 6); lối chính chạy giữa hai hàng
+    (["m1", "j2", "j3", "bot_main"], MAIN),     # mid → giữa rừng → lane dưới
+    (["j2", "c7"], SIDE), (["c7", "riv_c7"], GAP),      # trại 7: cửa từ lối chính + khe xuống sông
+    (["j3", "c8"], SIDE), (["c8", "riv_c8"], GAP),      # trại 8: cửa từ lối chính + khe xuống sông
+    (["j2", "c5"], SIDE), (["c5", "bot_c5"], GAP),      # trại 5: cửa từ lối chính + khe ra lane
+    (["j2", "c4"], GAP), (["c4", "bot_c4"], SIDE),      # trại 4: khe từ lối chính + cửa ra lane
     (["j3", "c6"], SIDE), (["c6", "bot_c6"], GAP),      # trại 6: cửa từ lối chính + khe ra lane (kéo quái)
     (["mid_back", "bot_back"], GAP),            # sau trụ: mid → lane dưới (về base)
 ]
@@ -87,6 +92,13 @@ def playable(lanes):
     return unary_union([inner, Polygon(SRC["bases"][0]["polygon"]), Polygon([rot(p) for p in SRC["bases"][0]["polygon"]])])
 
 
+def kinds():
+    """id trại nửa Blue → loại (cũ theo map_source, mới theo NEW_KINDS)."""
+    out = {c["id"]: c["kind"] for c in SRC["camps"] if c["side"] == 0}
+    out.update(NEW_KINDS)
+    return out
+
+
 def design():
     lanes = lanes_all()
     rivers = [Polygon(r).buffer(0) for r in SRC["river"]]
@@ -94,13 +106,13 @@ def design():
     towers = json.load(open(os.path.join(HERE, "..", "..", "data", "maps", "clashborn_map.json")))["towers"]
     tpts = [Point(t["pos"][0] / SRC["scale"] + FX0, t["pos"][1] / SRC["scale"] + FY0) for t in towers]
     corridors = unary_union([LineString([P[n] for n in names]).buffer(w / 2, cap_style="round", join_style="round") for names, w in PATHS])
-    camps = unary_union([Point(CAMPS[c["id"]]).buffer(CAMP_R[c["kind"]]) for c in SRC["camps"]])
+    camps = unary_union([Point(CAMPS[cid]).buffer(CAMP_R[k]) for cid, k in kinds().items()])
     clear = unary_union([corridors, camps] + [l.buffer(SRC["lane_half_width"] + 6) for l in lanes]
                         + [t.buffer(SRC["tower_clear_radius"] + 2) for t in tpts] + [water.buffer(3)]
                         + [Polygon(SRC["bases"][0]["polygon"]).buffer(4), Point(C, C).buffer(SRC["mid_clear_world"] / SRC["scale"])])
     region = half_region().intersection(playable(lanes))
     raw = region.difference(clear).buffer(-INSET, join_style="mitre")
-    rings = unary_union([Point(CAMPS[c["id"]]).buffer(CAMP_R[c["kind"]] + HOOK_W).difference(Point(CAMPS[c["id"]]).buffer(CAMP_R[c["kind"]])) for c in SRC["camps"]])
+    rings = unary_union([Point(CAMPS[cid]).buffer(CAMP_R[k] + HOOK_W).difference(Point(CAMPS[cid]).buffer(CAMP_R[k])) for cid, k in kinds().items()])
     raw = unary_union([raw, rings.difference(clear.difference(camps))])  # vách hốc trại: lối khoét ra cửa
     blocks = []
     for g in getattr(raw, "geoms", [raw]):
