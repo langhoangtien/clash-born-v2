@@ -100,10 +100,57 @@ def scatter(items, solid):
 
 
 def river_bank(items):
+    """Bờ sông tự nhiên: cụm 2–4 đá lệch cỡ (khối ra phía nước thì lún nửa), xen quãng lau sậy mép nước +
+    khóm cỏ / lá cam trên bờ, thỉnh thoảng cây nhỏ sau bờ. Bờ phía nam (gần camera) chỉ vật thấp."""
     edge = RIVER.exterior
-    north_side = [p for p in (edge.interpolate(d) for d in np.arange(0, edge.length, 1.6)) if p.y < 33 + (40 - p.x) * 0.5 and 2 < p.x < 39 and p.y < 39]
-    for p in north_side[: len(north_side) // 2]:
-        items.append([rng.choice(["rock_wide", "rock_low"]), p.x, p.y, rng.uniform(-0.3, 0.3), rng.uniform(0.8, 1.0)])
+    d = 0.0
+    while d < edge.length - 1.0:
+        p, q = edge.interpolate(d), edge.interpolate(d + 0.5)
+        n = math.hypot(q.x - p.x, q.y - p.y) or 1.0
+        tx, tz = (q.x - p.x) / n, (q.y - p.y) / n
+        nx, nz = -tz, tx
+        if RIVER.contains(Point(p.x + nx * 0.6, p.y + nz * 0.6)):
+            nx, nz = -nx, -nz                                   # (nx, nz) hướng lên bờ
+        if not (1.5 < p.x < 39.5 and 1.5 < p.y < 39.5):
+            d += 1.0
+            continue
+        south = nz > 0.4
+        if rng.random() < 0.5:
+            d += _rock_cluster(items, p, tx, tz, nx, nz, south)
+        else:
+            d += _reed_gap(items, p, tx, tz, nx, nz, south)
+    for _ in range(12):  # lá súng gom đám chỗ nước nông gần bờ
+        c = edge.interpolate(rng.uniform(0, edge.length))
+        for _ in range(rng.randint(2, 4)):
+            pt = Point(c.x + rng.uniform(-1.5, 1.5), c.y + rng.uniform(-1.5, 1.5))
+            if RIVER.buffer(-0.5).contains(pt) and 1 < pt.x < 39 and 1 < pt.y < 39:
+                items.append(["lily", pt.x, pt.y, rng.uniform(0, 6.28), rng.uniform(0.6, 1.1), 0.03])
+
+
+def _rock_cluster(items, p, tx, tz, nx, nz, south):
+    k = rng.randint(2, 4)
+    kinds = ["boulder_a", "boulder_b", "rock_small"] if south else ["boulder_a", "boulder_b", "boulder_a", "rock_low", "rock_wide"]
+    for i in range(k):
+        off = rng.uniform(-0.9, 0.7)
+        x, z = p.x + tx * i * 1.1 + nx * off, p.y + tz * i * 1.1 + nz * off
+        sink = -rng.uniform(0.25, 0.6) if off < -0.3 else 0.0
+        items.append([rng.choice(kinds), x, z, math.atan2(-tz, tx) + rng.uniform(-0.4, 0.4), rng.uniform(0.55, 1.05), sink])
+    if rng.random() < 0.6:
+        items.append(["grass_tuft", p.x + nx * 1.2, p.y + nz * 1.2, rng.uniform(0, 6.28), rng.uniform(0.8, 1.2)])
+    return k * 1.1 + rng.uniform(0.4, 1.4)
+
+
+def _reed_gap(items, p, tx, tz, nx, nz, south):
+    span = rng.uniform(2.0, 3.6)
+    for _ in range(rng.randint(3, 6)):
+        a, o = rng.uniform(0, span), rng.uniform(-0.9, 0.1)
+        items.append(["reeds", p.x + tx * a + nx * o, p.y + tz * a + nz * o, rng.uniform(0, 6.28), rng.uniform(0.7, 1.1)])
+    for _ in range(rng.randint(1, 2)):
+        a, o = rng.uniform(0, span), rng.uniform(0.5, 1.6)
+        items.append([rng.choice(["grass_tuft", "grass_tuft", "plant_orange"]), p.x + tx * a + nx * o, p.y + tz * a + nz * o, rng.uniform(0, 6.28), rng.uniform(0.8, 1.1)])
+    if not south and rng.random() < 0.45:
+        items.append([rng.choice(["pine_s", "pine_m", "tree_round"]), p.x + nx * 2.4, p.y + nz * 2.4, rng.uniform(0, 6.28), rng.uniform(0.8, 1.0)])
+    return span
 
 
 def mask(blocks):
@@ -132,18 +179,22 @@ def mask(blocks):
 
 
 SHADOW_R = {"pine_l": 1.4, "pine_m": 1.2, "pine_s": 1.0, "tree_round": 1.5, "tree_autumn": 1.6, "rock_tall": 1.0,
-            "rock_wide": 1.2, "rock_low": 0.9, "rock_small": 0.5, "plant_orange": 0.4, "fence": 0.0, "great_wall": 0.0}
+            "rock_wide": 1.2, "rock_low": 0.9, "rock_small": 0.5, "plant_orange": 0.4, "fence": 0.0, "great_wall": 0.0,
+            "reeds": 0.35, "grass_tuft": 0.2, "lily": 0.0, "boulder_a": 0.8, "boulder_b": 0.55}
 
 
 def shadows(items):
     n = int(SIZE * PPM)
     img = Image.new("L", (n, n), 0)
     d = ImageDraw.Draw(img)
-    for kind, x, z, _, sc in items:
+    for kind, x, z, _, sc, *_ in items:
         r = SHADOW_R[kind] * sc
         if r > 0:
             cx, cz = (x + r * 0.45) * PPM, (z + r * 0.35) * PPM
             d.ellipse([cx - r * PPM, cz - r * 0.8 * PPM, cx + r * PPM, cz + r * 0.8 * PPM], fill=200)
+    bank = RIVER.buffer(1.3).difference(RIVER)  # dải đất ẩm sẫm dọc mép nước
+    for g in getattr(bank, "geoms", [bank]):
+        d.polygon([(x * PPM, z * PPM) for x, z in g.exterior.coords], fill=110)
     for x in np.arange(FENCE_W, SIZE, 0.5):  # bóng rào phía nam / đông của rào
         d.rectangle([x * PPM, FENCE_N * PPM, (x + 0.5) * PPM, (FENCE_N + 0.7) * PPM], fill=150)
     d.rectangle([FENCE_W * PPM, FENCE_N * PPM, (FENCE_W + 0.8) * PPM, SIZE * PPM], fill=150)

@@ -22,7 +22,11 @@ AUTUMN = (196, 128, 52)
 LEAF_ORANGE = (214, 112, 48)
 STONE = (104, 110, 116)
 STONE_TOP = (138, 140, 140)
-MOSS = (104, 120, 64)
+MOSS = (82, 98, 56)
+REED = (112, 124, 66)
+REED_TIP = (156, 134, 74)
+TUFT = (92, 112, 60)
+LILY = (66, 96, 58)
 WALL = (112, 110, 104)
 WALL_TOP = (150, 144, 132)
 WALL_DARK = (84, 84, 82)
@@ -156,6 +160,46 @@ def slab(name, w, d, h, rng, lean=0.05):
     return obj
 
 
+def blades(name, count, height, spread, color, tip, rng, width=0.07):
+    """Khóm lá mảnh (lau sậy / cỏ): mỗi lá một tam giác dựng hơi nghiêng, ngọn ngả màu."""
+    bm = bmesh.new()
+    for _ in range(count):
+        a = rng.uniform(0, 2 * math.pi)
+        base = Vector((math.cos(a), math.sin(a), 0)) * rng.uniform(0, spread)
+        side = Vector((-math.sin(a), math.cos(a), 0)) * width
+        h = height * rng.uniform(0.6, 1.1)
+        lean = Vector((math.cos(a), math.sin(a), 0)) * h * rng.uniform(0.1, 0.35)
+        bm.faces.new([bm.verts.new(base - side), bm.verts.new(base + side), bm.verts.new(base + lean + Vector((0, 0, h)))])
+    obj = finish(name, bm)
+    paint(obj, lambda c, n: (tip, None) if c.z > height * 0.55 else (color, None), rng)
+    return obj
+
+
+def boulder(name, rng, r, squash):
+    """Đá cuội tròn mép nước: cầu ico thô, dẹt, lệch đỉnh ngẫu nhiên (cùng đỉnh cùng độ lệch — không hở mặt)."""
+    bm = bmesh.new()
+    bmesh.ops.create_icosphere(bm, subdivisions=2, radius=r)
+    bulge = {}
+    for v in bm.verts:
+        k = bulge.setdefault(tuple(round(c, 3) for c in v.co), rng.uniform(0.88, 1.08))
+        v.co = Vector((v.co.x * k, v.co.y * k * rng.uniform(0.85, 1.0), (v.co.z * k * squash) + r * squash * 0.55))
+    obj = finish(name, bm)
+    paint(obj, lambda c, n: (MOSS, None) if n.z > 0.75 and rng.random() < 0.35 else ((STONE, STONE_TOP) if n.z <= 0.6 else (STONE_TOP, STONE_TOP)), rng)
+    return obj
+
+
+def lily(name, rng, r=0.32):
+    """Lá súng: đĩa dẹt 9 cạnh có khía, nổi sát mặt nước."""
+    bm = bmesh.new()
+    center = bm.verts.new((0, 0, 0.02))
+    ring = [bm.verts.new((r * math.cos(2 * math.pi * i / 9 + 0.5), r * math.sin(2 * math.pi * i / 9 + 0.5), 0.02)) for i in range(9)]
+    for i in range(8):  # chừa một khía
+        bm.faces.new((center, ring[i], ring[i + 1]))
+    obj = finish(name, bm)
+    paint(obj, lambda c, n: (LILY, None), rng)
+    return obj
+
+
 def fence(name, rng, length=4.0, height=1.1, thick=0.6):
     """Đoạn rào đá ranh giới: chân đậm, thân, nắp phẳng nhô ra, trụ vuông ở đầu — đỉnh ngang đều khi ghép nối."""
     bm = bmesh.new()
@@ -221,6 +265,8 @@ def main():
         lambda: slab("rock_tall", 1.3, 1.1, 2.4, rng), lambda: slab("rock_wide", 1.9, 1.2, 1.8, rng),
         lambda: slab("rock_low", 1.5, 1.1, 1.1, rng), lambda: slab("rock_small", 0.8, 0.7, 0.5, rng),
         lambda: fence("fence", rng), lambda: great_wall("great_wall", rng),
+        lambda: blades("reeds", 15, 1.3, 0.45, REED, REED_TIP, rng, 0.09), lambda: blades("grass_tuft", 8, 0.45, 0.25, TUFT, REED, rng, 0.06),
+        lambda: lily("lily", rng), lambda: boulder("boulder_a", rng, 1.0, 0.6), lambda: boulder("boulder_b", rng, 0.7, 0.72),
     ]
     for build in builders:
         reset()

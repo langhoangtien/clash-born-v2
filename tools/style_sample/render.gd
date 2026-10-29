@@ -7,10 +7,10 @@ const DIR: String = "res://tools/style_sample/"
 const MODELS: String = "res://assets/models/style/"
 const TEXTURES: String = "res://art_inbox/08_style/"
 ## Ảnh vân dán lên mặt khối theo tiền tố tên mô hình.
-## Tán cây mượn nét cọ của ảnh nền (chỉ sáng tối): [ảnh, mét, chỉ sáng tối, độ mạnh].
-const FACES: Dictionary = {"rock": ["rock_face", 3.0, false, 1.0], "fence": ["wall_face", 4.0, false, 1.0],
-	"great_wall": ["wall_face", 4.0, false, 1.0], "pine": ["grass_dark", 1.6, true, 0.45], "tree": ["grass", 1.8, true, 0.55]}
-const SHOTS: Array[Vector2] = [Vector2(19.5, 21.5), Vector2(11.0, 10.0), Vector2(29.0, 30.0), Vector2(22.0, 3.0)]
+## Tán cây dùng ảnh lá Codex (chỉ sáng tối, giữ màu mô hình): [ảnh, mét, chỉ sáng tối, độ mạnh].
+const FACES: Dictionary = {"rock": ["rock_face", 3.0, false, 1.0], "boulder": ["rock_face", 2.0, false, 1.0], "fence": ["wall_face", 4.0, false, 1.0],
+	"great_wall": ["wall_face", 4.0, false, 1.0], "pine": ["foliage_pine", 2.0, true, 0.8], "tree": ["foliage_leaf", 2.0, true, 0.8]}
+const SHOTS: Array[Vector2] = [Vector2(19.5, 21.5), Vector2(11.0, 10.0), Vector2(29.0, 30.0), Vector2(22.0, 3.0), Vector2(31.0, 35.0)]
 
 var _root: Node3D
 var _cam: Camera3D
@@ -143,7 +143,7 @@ func _items(items: Array) -> void:
 		mm.instance_count = groups[model].size()
 		for i: int in groups[model].size():
 			var it: Array = groups[model][i]
-			mm.set_instance_transform(i, Transform3D(Basis(Vector3.UP, it[3]).scaled(Vector3.ONE * it[4]), Vector3(it[1], 0, it[2])))
+			mm.set_instance_transform(i, Transform3D(Basis(Vector3.UP, it[3]).scaled(Vector3.ONE * it[4]), Vector3(it[1], it[5] if it.size() > 5 else 0.0, it[2])))
 		_triangles += mesh.get_faces().size() / 3 * mm.instance_count
 		var node: MultiMeshInstance3D = MultiMeshInstance3D.new()
 		node.multimesh = mm
