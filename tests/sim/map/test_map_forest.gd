@@ -1,5 +1,5 @@
 extends TestCase
-## MAP-07, MAP-11 (D-176): bờ sông là đá, rừng giữa map là rừng cây thưa có lối rộng và khe.
+## MAP-07, MAP-11 (D-176, D-178): bờ sông là đá, rừng là bục rừng lớn với lối rộng.
 
 const MAP_PATH: String = "res://data/maps/clashborn.tres"
 ## Vùng rừng để đo: cách mép map JUNGLE_INSET, cách tim lane quá nửa lane + LANE_MARGIN, ngoài base.
@@ -7,17 +7,18 @@ const JUNGLE_INSET: float = 1100.0
 const LANE_MARGIN: float = 250.0
 ## Bước lấy mẫu (điểm ảnh khoảng trống).
 const STEP: int = 2
-## MAP-11: vật cản ≤ 25% vùng rừng; bề rộng lối (gấp đôi khoảng trống ở sống lối) trung vị ≥ 450,
-## lối hẹp hơn 300 ≤ 10%; khối rừng giữa map > 360 000 đơn vị² phải có khe, trừ khối ôm trại.
-const MAX_BLOCKED: float = 0.25
-const MIN_MEDIAN_WIDTH: float = 450.0
+## MAP-11: vật cản ≤ 45% vùng rừng; bề rộng lối (gấp đôi khoảng trống ở sống lối) trung vị ≥ 500,
+## lối hẹp hơn 300 ≤ 5%; mỗi nửa 10–16 bục lớn (≥ 150 ô guide² = 38 400 đơn vị²).
+const MAX_BLOCKED: float = 0.45
+const MIN_MEDIAN_WIDTH: float = 500.0
 const NARROW_WIDTH: float = 300.0
-const MAX_NARROW: float = 0.10
-const GAP_AREA: float = 360000.0
-const HOOK_REACH: float = 400.0
-const EDGE: float = 96.0
+const MAX_NARROW: float = 0.05
+const PLATEAU_AREA: float = 38400.0
+const PLATEAUS: Vector2i = Vector2i(10, 16)
 ## Đá cách nước dưới chừng này là đá bờ sông.
 const BANK_REACH: float = 250.0
+## Hướng đường chia hai nửa (dọc sông, plateau_design.SLOPE).
+const RIVER_SLOPE: float = 0.747
 
 var map: MapLayout
 
@@ -82,16 +83,16 @@ func test_MAP_11_jungle_paths_wide() -> void:
 	assert_true(narrow <= widths.size() * MAX_NARROW, "lối hẹp hơn %.0f: %d/%d" % [NARROW_WIDTH, narrow, widths.size()])
 
 
-func test_MAP_11_big_forest_blocks_have_gaps() -> void:
-	var rect: Rect2 = map.world_rect().grow(-EDGE)
+func test_MAP_11_few_large_plateaus_per_half() -> void:
+	var size: Vector2 = map.world_size()
+	var halves: Array[int] = [0, 0]
 	for shape: MapShape in map.forest_shapes:
-		var box: Rect2 = Rect2(shape.outer[0], Vector2.ZERO)
-		for q: Vector2 in shape.outer:
-			box = box.expand(q)
-		if not rect.encloses(box) or _near_camp(shape.outer):
-			continue  # rìa map / khối ôm trại (MAP-08)
-		var area: float = absf(_area(shape.outer))
-		assert_true(area <= GAP_AREA, "khối rừng quanh %s rộng %.0f phải có khe" % [box.get_center(), area])
+		if absf(_area(shape.outer)) < PLATEAU_AREA:
+			continue  # mảnh lấp khe (MAP-03)
+		var c: Vector2 = _centroid(shape.outer)
+		halves[0 if c.y - size.y * 0.5 > (c.x - size.x * 0.5) * RIVER_SLOPE else 1] += 1
+	for h: int in halves:
+		assert_true(h >= PLATEAUS.x and h <= PLATEAUS.y, "số bục mỗi nửa %s" % [halves])
 
 
 ## Điểm lấy mẫu trong vùng rừng (giữa map, ngoài lane, ngoài base).
@@ -125,14 +126,6 @@ func _near_lane(p: Vector2) -> bool:
 	return false
 
 
-func _near_camp(poly: PackedVector2Array) -> bool:
-	for c: Vector2 in map.camp_points:
-		for q: Vector2 in poly:
-			if q.distance_to(c) < HOOK_REACH:
-				return true
-	return false
-
-
 func _water_distance(p: Vector2) -> float:
 	var best: float = INF
 	for shape: MapShape in map.water_shapes:
@@ -150,6 +143,13 @@ func _in_shapes(shapes: Array[MapShape], p: Vector2) -> bool:
 		if Geometry2D.is_point_in_polygon(p, shape.outer):
 			return true
 	return false
+
+
+func _centroid(poly: PackedVector2Array) -> Vector2:
+	var c: Vector2 = Vector2.ZERO
+	for q: Vector2 in poly:
+		c += q
+	return c / poly.size()
 
 
 func _area(poly: PackedVector2Array) -> float:

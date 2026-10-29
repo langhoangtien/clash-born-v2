@@ -2,10 +2,14 @@
 """Thiết kế map kiểu bục rừng (đồ họa bước 2): vẽ MẠNG LỐI ĐI cho nửa Blue (lối chính, lối phụ, khe luồn,
 bãi trại, chỗ xuống sông), bục rừng = phần đất rừng còn lại (bỏ mảnh vụn, mép vuông vức). Nửa Red xoay 180°.
 
-  python3 tools/map_build/plateau_design.py [ảnh.png]
-In số khối, bề rộng lối; vẽ ảnh xem trước (bục, lối, sông, lane, trụ, trại). Toạ độ ô guide (1 ô = 16 đơn vị).
+  python3 tools/map_build/plateau_design.py [ảnh.png] [--write]
+In số khối, bề rộng lối, MAP-08; vẽ ảnh xem trước (bục, lối, sông, lane, trụ, trại). Toạ độ ô guide (1 ô = 16
+đơn vị). --write ghi vào map_source.json (D-178): forest = bục rừng, mountains = đá bờ sông + rìa map (MAP-12),
+camps (8 trại nửa Blue), bushes. Sau đó chạy build_map.py.
 """
 import json, math, os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import bushes as B  # noqa: E402
 import numpy as np
 from PIL import Image, ImageDraw
 from scipy import ndimage as ndi
@@ -84,12 +88,13 @@ def lanes_all():
 
 
 def playable(lanes):
-    """Hộp trong mép ngoài các lane (lane + lề 4 ô) cộng hai base; ngoài là rìa map (rào + tường thành)."""
+    """Trong vòng lane (lane trên + lane dưới khép qua hai base) + lane + lề 4 ô + hai base; ngoài là rìa map
+    (rào + tường thành, MAP-12)."""
+    top, bot = SRC["lanes"]["TOP"], SRC["lanes"]["BOT"]
+    ring = Polygon(top + bot[::-1]).buffer(0)
     m = SRC["lane_half_width"] + 4
-    xs = [p[0] for l in lanes for p in l.coords]
-    ys = [p[1] for l in lanes for p in l.coords]
-    inner = box(min(xs) - m, min(ys) - m, max(xs) + m, max(ys) + m)
-    return unary_union([inner, Polygon(SRC["bases"][0]["polygon"]), Polygon([rot(p) for p in SRC["bases"][0]["polygon"]])])
+    return unary_union([ring] + [l.buffer(m) for l in lanes]
+                       + [Polygon(SRC["bases"][0]["polygon"]), Polygon([rot(p) for p in SRC["bases"][0]["polygon"]])])
 
 
 def kinds():
@@ -180,13 +185,34 @@ def draw(path, blocks, rocks, lanes, rivers, tpts, edge_free):
     img.save(path)
 
 
+def _ring(p):
+    return [[round(x, 1), round(y, 1)] for x, y in p.exterior.coords[:-1]]
+
+
+def write_source(blocks, rocks, edge_free):
+    """Ghi thiết kế vào map_source.json (nửa Blue; build_map xoay ra nửa Red)."""
+    edge = box(FX0, FY0, FX1, FY1).difference(edge_free).intersection(half_region())
+    edges = [q for q in getattr(edge, "geoms", [edge]) if q.geom_type == "Polygon" and q.area > 1.0]
+    SRC["forest"] = [_ring(b) for b in blocks]
+    SRC["mountains"] = [_ring(r) for r in rocks + edges]
+    k = kinds()
+    SRC["camps"] = [{"id": cid, "side": 0, "kind": k[cid], "pos": [float(CAMPS[cid][0]), float(CAMPS[cid][1])]} for cid in sorted(CAMPS)]
+    SRC["bushes"] = B.place(SRC, {"mountains": SRC["mountains"], "forest": SRC["forest"], "base0": SRC["bases"][0]["polygon"],
+                                  "river": SRC["river"], "camps": [list(c) for c in CAMPS.values()]})
+    json.dump(SRC, open(os.path.join(HERE, "map_source.json"), "w"), ensure_ascii=False, indent=1)
+    print("đã ghi map_source.json")
+
+
 def main():
     blocks, rocks, lanes, rivers, tpts, edge_free = design()
     med, narrow, wide, blocked = measure(blocks + rocks, lanes, rivers, edge_free)
     solid = unary_union(blocks + rocks + [box(FX0, FY0, FX1, FY1).difference(edge_free)])
     print("MAP-08 hướng chặn / 24:", camp_walls(solid))
     print(f"bục / nửa {len(blocks)}; lối rộng trung vị {med:.0f}, hẹp < 300: {narrow * 100:.0f}%, ≥ 500: {wide * 100:.0f}%; vật cản {blocked * 100:.0f}% khung")
-    draw(sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, "plateau_preview.png"), blocks, rocks, lanes, rivers, tpts, edge_free)
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    draw(args[0] if args else os.path.join(HERE, "plateau_preview.png"), blocks, rocks, lanes, rivers, tpts, edge_free)
+    if "--write" in sys.argv:
+        write_source(blocks, rocks, edge_free)
 
 
 if __name__ == "__main__":

@@ -56,11 +56,11 @@ func test_MAP_02_tower_prerequisites() -> void:
 	assert_eq(map.tower_prerequisites[map.tower_index("red_base_guard_left")].size(), 3, "T4 cần một trong ba T3")
 
 
-func test_MAP_02_six_camps_per_side_no_boss() -> void:
-	assert_eq(map.camp_points.size(), 12)
+func test_MAP_02_eight_camps_per_side_no_boss() -> void:
+	assert_eq(map.camp_points.size(), 16)
 	assert_eq(map.camp_kinds.count("boss"), 0, "D-171: bỏ boss")
-	assert_eq(Array(map.camp_sides).count(0), 6)
-	assert_eq(Array(map.camp_sides).count(1), 6)
+	assert_eq(Array(map.camp_sides).count(0), 8)
+	assert_eq(Array(map.camp_sides).count(1), 8)
 
 
 func test_MAP_02_three_distinct_lanes_from_spawn_to_enemy_spawn() -> void:
