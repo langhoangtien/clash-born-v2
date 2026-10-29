@@ -103,6 +103,8 @@ static func paint_obstacles(ci: CanvasItem, layout: MapLayout, detail: bool = tr
 		ci.draw_colored_polygon(shape.outer, CLIFF)
 		if detail: _outline(ci, shape.outer, CLIFF_TOP, 8)
 	for shape: MapShape in layout.rock_shapes:  # D-170: nền đá núi, lõi sẫm như khe vực
+		if detail and Mountains3D.built(layout, shape):
+			continue  # D-175: khối có mô hình dựng sẵn — không vẽ nền đá lòi ra quanh chân mô hình
 		ci.draw_colored_polygon(shape.outer, ROCK_FLOOR)
 		for inner in Geometry2D.offset_polygon(shape.outer, -70, Geometry2D.JOIN_ROUND):
 			ci.draw_colored_polygon(inner, ROCK_DEEP)

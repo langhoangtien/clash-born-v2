@@ -44,6 +44,8 @@ func build(layout: MapLayout) -> void:
 func _build_stone(layout: MapLayout, cfg: Dictionary, rng: RandomNumberGenerator) -> void:
 	_place([cfg["fence"]], RockWalls3D.wall_items(layout, [cfg["fence"]], "fence", rng))
 	_place([cfg["pillar"]], RockWalls3D.post_items(layout, cfg))
+	for b: Dictionary in layout.block_models:
+		_add_block(b)
 	_place(cfg["mountains"]["models"], Mountains3D.items(layout, cfg, rng))
 	_place(cfg["mountains"]["low_models"], Mountains3D.low_items(layout, cfg, rng))
 	_place(cfg["giants"]["models"], GiantTrees3D.items(layout))
@@ -198,6 +200,18 @@ func _multimesh(model: String, items: Array) -> void:
 	node.multimesh = mm
 	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(node)
+
+
+## D-175: khối đá dựng sẵn — cỡ / góc / lật đã khớp chân mô hình với khối trong map (fit_block.py).
+func _add_block(b: Dictionary) -> void:
+	var n: Node3D = ModelLibrary.static_scene(b["model"]).instantiate() as Node3D
+	add_child(n)
+	var k: float = float(b["scale"]) * MatchView3D.S
+	var ky: float = float(b["height_scale"]) * MatchView3D.S
+	n.scale = Vector3(k * float(b["flip"]), ky, k)
+	n.rotation.y = float(b["yaw"])
+	var foot: Vector3 = Vector3(float(b["foot"][0]) * k * float(b["flip"]), 0.0, float(b["foot"][1]) * k).rotated(Vector3.UP, n.rotation.y)
+	n.position = Vector3(float(b["pos"][0]), 0.0, float(b["pos"][1])) * MatchView3D.S - foot + Vector3(0, -float(b["min_y"]) * ky, 0)
 
 
 func _add_static(cfg: Dictionary, at: Vector2, angle: float) -> void:
