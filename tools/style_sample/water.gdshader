@@ -1,12 +1,15 @@
 shader_type spatial;
-// Nước cảnh mẫu: mép nông sáng, giữa sâu đậm (kênh A mặt nạ), gợn sáng mảnh trôi chậm. Đục, không đèn.
+// Nước cảnh mẫu: chỗ nông thấy đáy sông (ảnh Codex), xuống sâu chuyển xanh lam sẫm; mép bờ sáng, gợn sáng mảnh
+// trôi chậm. Đục, không đèn.
 render_mode unshaded;
 
 uniform sampler2D mask_tex : filter_linear, repeat_disable;
+uniform sampler2D bed_tex : source_color, filter_linear_mipmap, repeat_enable;
 uniform float area = 40.0;
-uniform vec3 shallow = vec3(0.16, 0.42, 0.48);
-uniform vec3 deep = vec3(0.04, 0.16, 0.26);
-uniform vec3 glint = vec3(0.55, 0.78, 0.80);
+uniform float bed_m = 6.0;
+uniform vec3 shallow_tint = vec3(0.75, 1.0, 1.05);
+uniform vec3 deep = vec3(0.10, 0.28, 0.36);
+uniform vec3 glint = vec3(0.45, 0.70, 0.74);
 
 varying vec2 xz;
 
@@ -16,10 +19,11 @@ void vertex() {
 
 void fragment() {
 	float d = texture(mask_tex, xz / area).a;
-	vec3 col = mix(shallow, deep, smoothstep(0.0, 0.8, d));
+	vec3 bed = texture(bed_tex, (xz + sin(xz.yx * 1.3 + TIME) * 0.08) / bed_m).rgb * shallow_tint;
+	vec3 col = mix(bed, deep, smoothstep(0.05, 0.75, d));
 	float w = sin(xz.x * 1.7 + xz.y * 0.9 + TIME * 0.8 + sin(xz.y * 0.7 + TIME * 0.3) * 2.0);
 	float lines = smoothstep(0.97, 1.0, w) * (1.0 - smoothstep(0.2, 0.9, d) * 0.6);
-	float rim = 1.0 - smoothstep(0.0, 0.12, d);
-	col = mix(col, glint, lines * 0.3 + rim * 0.45);
+	float rim = 1.0 - smoothstep(0.0, 0.1, d);
+	col = mix(col, glint, lines * 0.25 + rim * 0.35);
 	ALBEDO = col;
 }

@@ -37,6 +37,16 @@ Phiếu này **thay hướng** của `YEU_CAU_KIT_MAP.md` (bản 3): không còn
 | [x] | `wall_face` | Mặt tường thành cổ: các lớp đá khối lớn xếp hàng ngang (mỗi viên ~1 × 0,6 m), mạch vữa sẫm, rêu ở mép dưới; **lặp liền mép theo chiều ngang** (chiều dọc cũng lặp) | 4 m |
 | [x] | `riverbed` | Đáy sông nông: sỏi, đá cuội xanh lam sẫm `#2C4C58`, vài cọng rong | 6 m |
 
+## Đợt T2 — vân tán lá (thêm sau vòng 2 cảnh mẫu)
+
+Tán cây là mô hình low-poly đã tô màu sẵn; ảnh này chỉ dán lên để có **nét cọ lá** (game lấy sáng tối của ảnh,
+giữ màu mô hình). Cùng yêu cầu kỹ thuật như đợt T (1024, lặp liền mép, nhìn thẳng, không bóng theo hướng).
+
+| Xong | Tên | Nội dung | Ảnh 1024 phủ |
+|---|---|---|---|
+| [ ] | `foliage_pine` | Lá kim thông vẽ tay: các cụm lá nhọn rủ xuống, xếp chồng như vảy, xanh lam đậm `#2E5454` – sáng `#5C7E60` | 2 m |
+| [ ] | `foliage_leaf` | Lá cây tán tròn vẽ tay: các chùm lá tròn nhỏ chồng lớp, ô-liu `#70864A` – sáng `#9AAE66` | 2 m |
+
 ## Đợt C — thẻ so màu (sau khi đợt T được duyệt)
 
 | Xong | Tên | Nội dung |

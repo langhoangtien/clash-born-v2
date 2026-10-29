@@ -5,6 +5,11 @@ extends SceneTree
 
 const DIR: String = "res://tools/style_sample/"
 const MODELS: String = "res://assets/models/style/"
+const TEXTURES: String = "res://art_inbox/08_style/"
+## Ảnh vân dán lên mặt khối theo tiền tố tên mô hình.
+## Tán cây mượn nét cọ của ảnh nền (chỉ sáng tối): [ảnh, mét, chỉ sáng tối, độ mạnh].
+const FACES: Dictionary = {"rock": ["rock_face", 3.0, false, 1.0], "fence": ["wall_face", 4.0, false, 1.0],
+	"great_wall": ["wall_face", 4.0, false, 1.0], "pine": ["grass_dark", 1.6, true, 0.45], "tree": ["grass", 1.8, true, 0.55]}
 const SHOTS: Array[Vector2] = [Vector2(19.5, 21.5), Vector2(11.0, 10.0), Vector2(29.0, 30.0), Vector2(22.0, 3.0)]
 
 var _root: Node3D
@@ -50,6 +55,20 @@ func _process(_delta: float) -> bool:
 	return false
 
 
+## Ảnh Codex (art_inbox/08_style), có mipmap.
+func _art(name: String) -> ImageTexture:
+	var img: Image = Image.load_from_file(ProjectSettings.globalize_path(TEXTURES + name + ".png"))
+	img.generate_mipmaps()
+	return ImageTexture.create_from_image(img)
+
+
+func _mean(t: ImageTexture) -> Vector3:
+	var img: Image = t.get_image()
+	img.resize(1, 1, Image.INTERPOLATE_BILINEAR)
+	var c: Color = img.get_pixel(0, 0)
+	return Vector3(c.r, c.g, c.b)
+
+
 func _tex(file: String) -> Texture2D:
 	return ImageTexture.create_from_image(Image.load_from_file(ProjectSettings.globalize_path(DIR + file)))
 
@@ -66,10 +85,8 @@ func _ground(mask: Texture2D, area: float) -> void:
 	var m: ShaderMaterial = _shader("ground.gdshader")
 	m.set_shader_parameter("mask_tex", mask)
 	m.set_shader_parameter("shadow_tex", _tex("out/shadow.png"))
-	for k: String in ["grass", "dirt", "pave"]:
-		var img: Image = Image.load_from_file(ProjectSettings.globalize_path(DIR + "out/%s.png" % k))
-		img.generate_mipmaps()
-		m.set_shader_parameter(k + "_tex", ImageTexture.create_from_image(img))
+	for k: Array in [["grass_tex", "grass"], ["forest_tex", "grass_dark"], ["dirt_tex", "dirt"], ["pave_tex", "pave"]]:
+		m.set_shader_parameter(k[0], _art(k[1]))
 	m.set_shader_parameter("area", area)
 	var plane: PlaneMesh = PlaneMesh.new()
 	plane.size = Vector2(area + 40, area + 40)
@@ -93,6 +110,7 @@ func _water(points: Array, mask: Texture2D, area: float) -> void:
 	mi.mesh = st.commit()
 	var m: ShaderMaterial = _shader("water.gdshader")
 	m.set_shader_parameter("mask_tex", mask)
+	m.set_shader_parameter("bed_tex", _art("riverbed"))
 	m.set_shader_parameter("area", area)
 	mi.material_override = m
 	_root.add_child(mi)
@@ -104,7 +122,17 @@ func _items(items: Array) -> void:
 		if not groups.has(it[0]):
 			groups[it[0]] = []
 		groups[it[0]].append(it)
-	var mat: ShaderMaterial = _shader("kit.gdshader")
+	var plain: ShaderMaterial = _shader("kit.gdshader")
+	var faced: Dictionary = {}
+	for key: String in FACES:
+		var t: ImageTexture = _art(FACES[key][0])
+		var fm: ShaderMaterial = _shader("kit_tex.gdshader")
+		fm.set_shader_parameter("face_tex", t)
+		fm.set_shader_parameter("face_mean", _mean(t))
+		fm.set_shader_parameter("meters", FACES[key][1])
+		fm.set_shader_parameter("luma_only", FACES[key][2])
+		fm.set_shader_parameter("strength", FACES[key][3])
+		faced[key] = fm
 	for model: String in groups:
 		var src: Node3D = (load(MODELS + model + ".glb") as PackedScene).instantiate() as Node3D
 		var mesh: Mesh = (src.find_children("*", "MeshInstance3D", true, false)[0] as MeshInstance3D).mesh
@@ -119,7 +147,10 @@ func _items(items: Array) -> void:
 		_triangles += mesh.get_faces().size() / 3 * mm.instance_count
 		var node: MultiMeshInstance3D = MultiMeshInstance3D.new()
 		node.multimesh = mm
-		node.material_override = mat
+		node.material_override = plain
+		for key: String in faced:
+			if model.begins_with(key):
+				node.material_override = faced[key]
 		node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		_root.add_child(node)
 
