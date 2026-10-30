@@ -243,18 +243,6 @@
      4.0,
      false,
      1.0
-    ],
-    "pine": [
-     "foliage_pine",
-     2.0,
-     true,
-     0.8
-    ],
-    "tree": [
-     "foliage_leaf",
-     2.0,
-     true,
-     0.8
     ]
    },
    "ground": {
