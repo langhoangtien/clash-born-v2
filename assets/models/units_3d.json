@@ -225,24 +225,6 @@
      2.0,
      false,
      1.0
-    ],
-    "fence": [
-     "wall_face",
-     4.0,
-     false,
-     1.0
-    ],
-    "great_wall": [
-     "wall_face",
-     4.0,
-     false,
-     1.0
-    ],
-    "wall_low": [
-     "wall_face",
-     4.0,
-     false,
-     1.0
     ]
    },
    "ground": {

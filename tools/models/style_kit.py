@@ -29,9 +29,6 @@ TUFT = (92, 112, 60)
 BUSH = (70, 100, 56)        # bụi cỏ (VIS-06): cùng sắc cỏ nền (98, 113, 71), đậm hơn cho rõ vùng bụi
 BUSH_TIP = (124, 138, 72)
 LILY = (66, 96, 58)
-WALL = (112, 110, 104)
-WALL_TOP = (150, 144, 132)
-WALL_DARK = (84, 84, 82)
 
 
 def reset():
@@ -223,52 +220,6 @@ def lily(name, rng, r=0.32):
     return obj
 
 
-def fence(name, rng, length=4.0, height=1.1, thick=0.6):
-    """Đoạn rào đá ranh giới: chân đậm, thân, nắp phẳng nhô ra, trụ vuông ở đầu — đỉnh ngang đều khi ghép nối."""
-    bm = bmesh.new()
-    box(bm, length, thick + 0.1, 0, 0.25)
-    box(bm, length, thick, 0.25, height - 0.18)
-    box(bm, length, thick + 0.16, height - 0.18, height)
-    box(bm, 0.55, thick + 0.3, 0, height + 0.25, -length / 2 + 0.28)
-    obj = finish(name, bm)
-    paint(obj, lambda c, n: (WALL_TOP, WALL_TOP) if n.z > 0.5 else ((WALL_DARK, None) if c.z < 0.25 else (WALL, None)), rng)
-    return obj
-
-
-def great_wall(name, rng, length=10.0, height=14.0, thick=7.0):
-    """Đoạn tường thành khổng lồ: chân loe, thân chia lớp đá (gờ lùi dần), trụ ốp giữa đoạn, lan can đỉnh phẳng
-    liên tục. Lớp dưới đậm hơn (rêu, ẩm)."""
-    bm = bmesh.new()
-    box(bm, length, thick + 2.0, 0, 1.6)
-    for k in range(4):
-        z0 = 1.6 + k * (height - 3.0) / 4
-        box(bm, length, thick + 1.2 - k * 0.25, z0, z0 + (height - 3.0) / 4 - 0.15)
-        box(bm, length, thick + 1.4 - k * 0.25, z0 + (height - 3.0) / 4 - 0.15, z0 + (height - 3.0) / 4)
-    box(bm, 1.6, thick + 2.2, 0, height - 1.4, 0.0)        # trụ ốp
-    box(bm, length, thick, height - 1.4, height)
-    obj = finish(name, bm)
-    paint(obj, lambda c, n: (WALL_TOP, WALL_TOP) if n.z > 0.5 else ((WALL_DARK, None) if c.z < 4.0 else (WALL, None)), rng)
-    return obj
-
-
-def wall_low(name, rng, length=10.0, height=1.8, thick=3.0):
-    """Tường thành cạnh nam (gần camera, MAP-12): thấp, chân loe, lan can phẳng — không che tướng."""
-    bm = bmesh.new()
-    box(bm, length, thick + 0.8, 0, 0.5)
-    box(bm, length, thick, 0.5, height - 0.3)
-    box(bm, length, thick + 0.2, height - 0.3, height)
-    box(bm, 1.2, thick + 1.0, 0, height + 0.2, 0.0)
-    obj = finish(name, bm)
-    paint(obj, lambda c, n: (WALL_TOP, WALL_TOP) if n.z > 0.5 else ((WALL_DARK, None) if c.z < 0.5 else (WALL, None)), rng)
-    return obj
-
-
-def box(bm, lx, ly, z0, z1, x=0.0):
-    res = bmesh.ops.create_cube(bm, size=1.0)
-    for v in res["verts"]:
-        v.co = Vector((x + v.co.x * lx, v.co.y * ly, z0 + (v.co.z + 0.5) * (z1 - z0)))
-
-
 def finish(name, bm):
     me = bpy.data.meshes.new(name)
     bm.normal_update()
@@ -291,6 +242,7 @@ def export(obj):
 
 
 def main():
+    import style_walls as W  # D-185: rào / tường thành dựng bằng khối đá
     os.makedirs(OUT, exist_ok=True)
     rng = random.Random(1)
     builders = [
@@ -299,9 +251,9 @@ def main():
         lambda: leaf_plant("plant_orange", rng),
         lambda: slab("rock_tall", 1.3, 1.1, 2.4, rng), lambda: slab("rock_wide", 1.9, 1.2, 1.8, rng),
         lambda: slab("rock_low", 1.5, 1.1, 1.1, rng), lambda: slab("rock_small", 0.8, 0.7, 0.5, rng),
-        lambda: fence("fence", rng), lambda: great_wall("great_wall", rng),
+        lambda: W.fence("fence", random.Random(51)), lambda: W.great_wall("great_wall", random.Random(52)),
         lambda: blades("reeds", 15, 1.3, 0.45, REED, REED_TIP, rng, 0.09), lambda: blades("grass_tuft", 8, 0.45, 0.25, TUFT, REED, rng, 0.06),
-        lambda: lily("lily", rng), lambda: wall_low("wall_low", rng), lambda: boulder("boulder_a", rng, 1.0, 0.6), lambda: boulder("boulder_b", rng, 0.7, 0.72),
+        lambda: lily("lily", rng), lambda: W.wall_low("wall_low", random.Random(53)), lambda: boulder("boulder_a", rng, 1.0, 0.6), lambda: boulder("boulder_b", rng, 0.7, 0.72),
         lambda: bush("bush_a", rng, 56), lambda: bush("bush_b", rng, 46, 0.65, 0.9), lambda: bush("bush_c", rng, 64, 0.85, 1.1),
     ]
     for build in builders:
