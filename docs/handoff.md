@@ -1,13 +1,13 @@
 # Bàn giao — Clashborn v2 (2026-10-29)
 
 Tóm tắt để phiên làm việc mới (tài khoản Claude mới) làm tiếp. Đọc file này rồi đọc `AGENTS.md`
-(quy trình bắt buộc), `docs/DECISIONS.md` (các dòng D-167 → D-180) và `art_inbox/YEU_CAU_STYLE.md`.
+(quy trình bắt buộc), `docs/DECISIONS.md` (các dòng D-167 → D-181) và `art_inbox/YEU_CAU_STYLE.md`.
 
 ## 1. Trạng thái repo
 
 - Repo: `langhoangtien/clash-born-v2`. Game Godot **4.7.2**, MOBA 3D, máy thử: Huawei MatePad 11.5.
 - **Nhánh đang làm: `thu-asset-tu-lam`** (nhánh thử hình / map, **chưa gộp vào `main`**).
-  `main` dừng ở D-167. Mọi thay đổi D-168 → D-180 chỉ có trên nhánh này.
+  `main` dừng ở D-167. Mọi thay đổi D-168 → D-181 chỉ có trên nhánh này.
 - Test (`GODOT=... bash tools/run_tests.sh [--soak]`): xem số mới nhất trong dòng D-178 của ROADMAP / tin nhắn cuối.
 - **Không build APK / web khi người dùng chưa bảo** (người dùng thử trên PC).
 - Người dùng nói tiếng Việt; muốn **bàn trước khi làm** việc lớn. Không kiểm tra id hero / chiêu / đồ trong code.
@@ -23,10 +23,11 @@ Tóm tắt để phiên làm việc mới (tài khoản Claude mới) làm tiế
 | **D-178** | **Đồ họa mới + map bục rừng.** Phong cách theo concept `art_inbox/08_style/concept.webp`: camera cố định → màu + sáng tối vẽ sẵn vào mô hình (Blender, `tools/models/style_kit.py` → `assets/models/style/`), vẽ không đèn; ảnh nền Codex (`assets/textures/style/`, nén GPU). Map: `plateau_design.py` (mạng lối đi → bục rừng 13 / nửa, đá bờ sông, rìa map, 8 trại / phe: rừng carry 5, lane khó 3) → `build_map.py` → `decor.py` (vị trí cảnh vật + mặt nạ nền + bóng, `data/maps/clashborn_decor.json`, chỉ VIEW đọc). VIEW: `Terrain3D` (mặt đất ảnh nền theo mặt nạ, nước, vật liệu), `Scenery3D` (cảnh vật). Rìa map: rào đá + tường thành (nam thấp). Luật MAP-01/02/07/08/11/12. |
 | **D-179** | Bảng chẩn đoán FPS trong trận (`view/hud/diag_panel.gd`, phím G); đá viền nằm hẳn trong vùng chặn, chiều cao đá / cây theo khoảng trống phía bắc (không che tướng); lối rộng hơn + 5 lối cắt bục; bụi cỏ mới `style/bush_*` to hơn. APK có bảng chẩn đoán đã gửi người dùng đo. |
 | **D-180** | Bỏ lớp 2D (SubViewport) trong trận: hình trên đất vẽ bằng `GroundCanvas` (MultiMesh + shader cắt hình), sương trong shader mặt đất, shader đất 6 lần đọc ảnh. Người chơi đo D-179: độ phân giải 8–10 fps, lớp 2D 4–5, cảnh vật 1–2; giảm độ phân giải 3D không thấy mờ → chọn mặc định thấp hơn sau khi đo lại. |
+| **D-181** | Đo D-180: mid 38–40 fps, đi đường 57–62. Mức đồ họa = độ phân giải 3D: Thấp 50% (mặc định) / Vừa 75% / Cao 100%, bỏ MSAA. |
 
 ## 3. Đang dở / việc tiếp theo (theo thứ tự)
 
-1. **D-180 chờ người dùng đo lại FPS** (bảng chẩn đoán, phím G) → chọn độ phân giải 3D mặc định. Sau đó:
+1. FPS đã ổn (D-181). Bảng chẩn đoán (phím G) giữ trong bản thử. Tiếp theo:
    thiết kế trụ / nhà chính + quái rừng theo concept, rồi tướng / lính (người dùng đã chốt thứ tự).
    Chỉnh nhanh: bề rộng lối `MAIN / SIDE / GAP`, vị trí trại `CAMPS`, mạng lối `PATHS` trong
    `tools/map_build/plateau_design.py` → `--write` → `build_map.py` → `decor.py`. Mật độ / quy tắc cảnh vật:
@@ -36,6 +37,9 @@ Tóm tắt để phiên làm việc mới (tài khoản Claude mới) làm tiế
 3. Minimap / màn xem map còn vẽ phẳng kiểu cũ (MapPainter) — đổi màu theo bảng mới nếu người dùng muốn.
 4. Quái rừng khác: Mixamo (hình người) / Tripo rig quadruped (4 chân), sửa da bằng `reweight_skin.py` nếu hỏng.
 5. Khi người dùng chơi thử ổn: chạy soak, cập nhật ROADMAP (thêm D-168 → D-178), gộp `thu-asset-tu-lam` vào `main`.
+
+- Trang chủ game trên VPS của người dùng (giới thiệu, changelog, tải APK): **để sau**, người dùng sẽ cho truy cập
+  qua Claude trên máy tính (container cloud không SSH ra ngoài được — cổng 22 bị chặn).
 
 ## 4. Công cụ và lệnh
 
