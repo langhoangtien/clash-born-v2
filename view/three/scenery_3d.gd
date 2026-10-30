@@ -109,7 +109,8 @@ func _place(models: Array, items: Array[Array]) -> void:
 			groups[key] = []
 		groups[key].append(it)
 	for key: Vector3i in groups:
-		_multimesh(models[key.z], groups[key], null)
+		var model: String = models[key.z]
+		_multimesh(model, groups[key], Terrain3D.material_for(model.trim_prefix(Terrain3D.MODEL_DIR)))  # D-179: cùng vật liệu bộ asset
 
 
 ## `items`: [vị trí, loại, cỡ, góc, (ép dọc), (y m)]; `material` (nếu có) thay vật liệu của mô hình.

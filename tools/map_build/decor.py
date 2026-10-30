@@ -9,8 +9,9 @@ data/maps/clashborn_decor.json:
   mask_origin, mask_px: góc trên trái (px thế giới) và số px thế giới mỗi điểm ảnh mặt nạ
 
   python3 tools/map_build/decor.py
-Quy tắc đặt (cảnh mẫu bước 1 đã duyệt): mép bục quay bắc (xa camera) đá cao, quay nam (gần camera) đá thấp +
-khóm lá — không che tướng; cây cao ở nửa bắc bục, thấp ở nửa nam; bờ sông cụm đá lệch cỡ xen lau sậy.
+Quy tắc đặt (D-179, decor_place): vật cao che đất phía bắc sau nó (camera ở nam) — mép bục quay nam là vách đá
+cao, quay bắc đá thấp + khóm lá; cây chỉ cao tới mức không che lối phía bắc bục; bờ sông cụm đá lệch cỡ xen lau
+sậy, bờ bắc vật thấp. Đá viền nằm hẳn trong vùng chặn.
 """
 import base64, io, json, math, os, random, sys
 import numpy as np

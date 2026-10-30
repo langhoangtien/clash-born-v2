@@ -22,7 +22,7 @@ FX0, FY0, FX1, FY1 = SRC["frame"]
 C = (FX0 + FX1) / 2
 SLOPE = 0.747  # đường chia hai nửa dọc theo sông (from_sketch.RIVER_SLOPE)
 
-MAIN, SIDE, GAP = 40.0, 30.0, 20.0  # bề rộng lối (ô guide): chính 640, phụ 480, khe luồn 320
+MAIN, SIDE, GAP = 44.0, 32.0, 22.0  # bề rộng lối (ô guide): chính 704, phụ 512, khe luồn 352
 # Trại nửa Blue (id → vị trí): 3 trại rừng trái (giữa lane trên, sông, mid), 3 trại rừng dưới; trại 6 sát lane
 # dưới (kéo quái, D-76). Mỗi trại là hốc có 2 cửa, nằm cạnh (không nằm trên) lối chính.
 CAMPS = {"camp_blue_01": (130, 380), "camp_blue_02": (222, 296), "camp_blue_03": (160, 420),
@@ -39,6 +39,7 @@ P = {
     "m1": (270, 378), "j2": (322, 476), "j3": (432, 486), "bot_main": (436, 562),
     "riv_c7": (350, 372), "riv_c8": (468, 446), "bot_c5": (262, 562), "bot_c4": (396, 562), "bot_c6": (540, 556),
     "mid_back": (196, 452), "bot_back": (222, 562),
+    "cut_a1": (164, 232), "cut_a2": (178, 336), "cut_b1": (250, 462), "cut_b2": (246, 574), "j23": (377, 481), "riv_mid": (395, 402), "cut_c": (328, 574),
 }
 PATHS = [
     # rừng trái (3 trại)
@@ -55,11 +56,19 @@ PATHS = [
     (["j2", "c4"], GAP), (["c4", "bot_c4"], SIDE),      # trại 4: khe từ lối chính + cửa ra lane
     (["j3", "c6"], SIDE), (["c6", "bot_c6"], GAP),      # trại 6: cửa từ lối chính + khe ra lane (kéo quái)
     (["mid_back", "bot_back"], GAP),            # sau trụ: mid → lane dưới (về base)
+    # D-179: lối cắt bục lớn (bục nhỏ lại, nhiều chỗ giao tranh)
+    (["cut_a1", "cut_a2"], SIDE),               # bờ sông → lối chính rừng trái (cắt bục giữa lane trên / sông)
+    (["cut_b1", "cut_b2"], GAP),                # mid → lane dưới (cắt bục trước trại 5; khe để trại 5 còn kín)
+    (["j2", "mid_c3"], SIDE),                   # rừng carry → mid (cắt bục giữa trại 3 / 5)
+    (["j23", "riv_mid"], SIDE),                 # giữa trại 7 / 8 xuống sông
+    (["j2", "cut_c"], SIDE),                    # lối carry → lane dưới (cắt bục giữa trại 5 / 4)
 ]
 CAMP_R = {"large": 17.0, "medium": 16.0, "small": 15.0}  # bãi trại (MAP-08 dò ở 330 = 20,6 ô)
 HOOK_W = 12.0       # bề dày vách quanh bãi trại (ô)
 BANK = 5.0          # tường đá bờ sông dày (ô), hở ở chỗ lối chạm sông
 MIN_BLOCK = 150.0   # mảnh bục nhỏ hơn (ô²) thì bỏ — thành đất trống
+MIN_THICK = 10.0    # D-179: bục mảnh hơn (bề dày trung bình 2·diện tích / chu vi, ô) thì bỏ — nhìn như vách đá che
+                    # tướng; trừ vách hốc trại (MAP-08)
 SIMPLIFY = 3.0      # mép vuông vức (ô)
 ROUND = 2.5         # bo nhẹ góc nhọn
 INSET = 3.0         # thu mép bục (ô) — chừa dải đất quanh tường đá
@@ -123,7 +132,7 @@ def design():
     for g in getattr(raw, "geoms", [raw]):
         g = g.buffer(-ROUND, join_style="round").buffer(ROUND, join_style="round").simplify(SIMPLIFY)
         for q in getattr(g, "geoms", [g]):
-            if q.geom_type == "Polygon" and q.area >= MIN_BLOCK:
+            if q.geom_type == "Polygon" and q.area >= MIN_BLOCK and (2 * q.area / q.length >= MIN_THICK or q.intersects(rings)):
                 blocks.append(q)
     keep_open = unary_union([corridors] + [l.buffer(SRC["lane_half_width"] + 6) for l in lanes] + [Point(C, C).buffer(SRC["mid_clear_world"] / SRC["scale"])])
     bank = water.buffer(BANK).difference(water.buffer(0.5)).intersection(half_region()).difference(keep_open)

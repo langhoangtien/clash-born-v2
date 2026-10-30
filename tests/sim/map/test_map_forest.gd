@@ -1,5 +1,5 @@
 extends TestCase
-## MAP-07, MAP-11 (D-176, D-178): bờ sông là đá, rừng là bục rừng lớn với lối rộng.
+## MAP-07, MAP-11 (D-176, D-178, D-179): bờ sông là đá, rừng là bục rừng lớn với lối rộng.
 
 const MAP_PATH: String = "res://data/maps/clashborn.tres"
 ## Vùng rừng để đo: cách mép map JUNGLE_INSET, cách tim lane quá nửa lane + LANE_MARGIN, ngoài base.
@@ -8,13 +8,13 @@ const LANE_MARGIN: float = 250.0
 ## Bước lấy mẫu (điểm ảnh khoảng trống).
 const STEP: int = 2
 ## MAP-11: vật cản ≤ 45% vùng rừng; bề rộng lối (gấp đôi khoảng trống ở sống lối) trung vị ≥ 500,
-## lối hẹp hơn 300 ≤ 5%; mỗi nửa 10–16 bục lớn (≥ 150 ô guide² = 38 400 đơn vị²).
+## lối hẹp hơn 300 ≤ 5%; mỗi nửa 14–22 bục (≥ 150 ô guide² = 38 400 đơn vị²; D-179: bục nhỏ hơn, nhiều lối hơn).
 const MAX_BLOCKED: float = 0.45
 const MIN_MEDIAN_WIDTH: float = 500.0
 const NARROW_WIDTH: float = 300.0
 const MAX_NARROW: float = 0.05
 const PLATEAU_AREA: float = 38400.0
-const PLATEAUS: Vector2i = Vector2i(10, 16)
+const PLATEAUS: Vector2i = Vector2i(14, 22)
 ## Đá cách nước dưới chừng này là đá bờ sông.
 const BANK_REACH: float = 250.0
 ## Hướng đường chia hai nửa (dọc sông, plateau_design.SLOPE).

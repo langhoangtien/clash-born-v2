@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://sy8g1s403yny"
-path="res://.godot/imported/grass_d.glb-0bd33666baa93c5b8e006650022679c0.scn"
+uid="uid://dvnk4x25vgjyo"
+path="res://.godot/imported/bush_c.glb-ea4ca3684f5da3dbc32fe85b0c60099e.scn"
 
 [deps]
 
-source_file="res://assets/models/custom/nature/grass_d.glb"
-dest_files=["res://.godot/imported/grass_d.glb-0bd33666baa93c5b8e006650022679c0.scn"]
+source_file="res://assets/models/style/bush_c.glb"
+dest_files=["res://.godot/imported/bush_c.glb-ea4ca3684f5da3dbc32fe85b0c60099e.scn"]
 
 [params]
 

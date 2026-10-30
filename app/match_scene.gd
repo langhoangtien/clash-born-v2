@@ -86,9 +86,9 @@ func _ready() -> void:
 	runner.before_step.connect(_before_step)
 	_setup_audio()
 	_setup_quick_buy()
-	_setup_test_panel()
 	camera.position = hero.position
 	_setup_3d()
+	_setup_test_panel()  # sau 3D: bảng chẩn đoán D-179 cần view_3d
 	skills.world = world
 	skills.hero = hero
 	skills.input = input
@@ -263,6 +263,13 @@ func _setup_test_panel() -> void:
 	$Hud.add_child(panel)
 	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	panel.action.connect(_on_test_action)
+	var diag: DiagPanel = DiagPanel.new()  # D-179
+	diag.name = "DiagPanel"
+	diag.view_3d = view_3d
+	diag.fog = fog
+	$Hud.add_child(diag)
+	diag.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	diag.read_viewport(get_viewport())
 
 
 func _on_test_action(who: int, what: StringName) -> void:

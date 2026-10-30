@@ -4,6 +4,7 @@ import math
 import numpy as np
 from PIL import Image, ImageFilter
 from shapely.geometry import LineString, Point, box
+from shapely.geometry.polygon import orient
 from shapely.ops import unary_union
 
 M = 100.0  # px mỗi mét
@@ -11,8 +12,8 @@ M = 100.0  # px mỗi mét
 SHADOW_R = {"pine_l": 1.4, "pine_m": 1.2, "pine_s": 1.0, "tree_round": 1.5, "tree_autumn": 1.6, "rock_tall": 1.0,
             "rock_wide": 1.2, "rock_low": 0.9, "rock_small": 0.5, "plant_orange": 0.4, "reeds": 0.35,
             "grass_tuft": 0.2, "boulder_a": 0.8, "boulder_b": 0.55}
-TREE_STEP = (1.9 * M, 1.7 * M)   # lưới cây trong bục
-TREE_INSET = 1.2 * M
+TREE_STEP = (1.6 * M, 1.45 * M) # lưới cây trong bục (D-179: dày hơn — bục nhìn kín)
+TREE_INSET = 0.95 * M            # sau hàng đá viền (bề sâu ~1,1 m), tán cây chồng lên đỉnh đá
 FENCE_STEP = 3.8 * M             # đoạn rào dài 4 m, chồng nhẹ
 WALL_STEP = 10.0 * M             # đoạn tường thành 10 m
 
@@ -27,45 +28,66 @@ def ragged(img, blur_m, seed, mask_px=8.0):
     return hard.filter(ImageFilter.GaussianBlur(0.25 * M / mask_px))
 
 
-def _outward(seg, poly):
-    """Pháp tuyến đơn vị của đoạn `seg` (a, b) hướng ra ngoài polygon."""
-    (ax, az), (bx, bz) = seg
-    n = math.hypot(bx - ax, bz - az) or 1.0
-    nx, nz = (bz - az) / n, -(bx - ax) / n
-    mid = ((ax + bx) / 2 + nx * 5, (az + bz) / 2 + nz * 5)
-    return (-nx, -nz) if poly.contains(Point(mid)) else (nx, nz)
-
-
 def plateaus(items, forest, rng):
-    """Mỗi bục: tường đá liền dọc mép (bắc cao, nam thấp + khóm lá), cây trong bục (bắc cao, nam thấp)."""
+    """Mỗi bục (D-179): tường đá liền dọc mép, mặt ngoài đá trùng mép vùng chặn (nhìn là chặn thì đúng là chặn,
+    không hở khe). Camera ở nam nhìn chếch xuống: vật cao h che h·CAM_SPILL mét đất phía bắc sau nó, nên đá và
+    cây chỉ cao tới mức không che lối đi phía bắc bục (mép nam bục dày thành vách cao, mép bắc đá thấp)."""
     for poly in forest:
+        poly = orient(poly, 1.0)  # vòng ngoài ngược kim, lỗ xuôi kim: trong bục luôn ở bên trái chiều đi
         for ring in [poly.exterior] + list(poly.interiors):
-            coords = list(ring.coords)
-            for a, b in zip(coords, coords[1:]):
-                _edge_run(items, (a, b), _outward((a, b), poly), rng)
+            _edge_run(items, ring, poly, rng)
         _trees(items, poly, rng)
 
 
-def _edge_run(items, seg, out, rng):
-    (ax, az), (bx, bz) = seg
-    length = math.hypot(bx - ax, bz - az)
-    north, south = out[1] < -0.35, out[1] > 0.2  # mép hơi quay về nam (phía camera) đã tính là nam
-    ang = -math.atan2(bz - az, bx - ax)
-    d = 0.0
-    while d < length:
-        t = d / max(length, 1e-6)
-        x, z = ax + (bx - ax) * t, az + (bz - az) * t
-        if south:
-            kind, step = rng.choice([("rock_low", 1.5), ("rock_low", 1.5), ("plant_orange", 1.0)])
-        else:
-            kind, step = rng.choice([("rock_tall", 1.3), ("rock_wide", 1.8)] if north else [("rock_wide", 1.8), ("rock_low", 1.5)])
-        if rng.random() > 0.08:
-            items.append([kind, x, z, ang + rng.uniform(-0.12, 0.12), rng.uniform(0.9, 1.15)])
-        d += step * M * rng.uniform(0.85, 1.0)
+# Bề sâu / chiều cao đá viền (m, theo style_kit.slab): tâm đá lùi vào trong bục nửa bề sâu.
+ROCK_DEPTH = {"rock_tall": 1.1, "rock_wide": 1.2, "rock_low": 1.1}
+ROCK_H = {"rock_tall": 2.4, "rock_wide": 1.8, "rock_low": 1.1}
+ROCK_STEP = {"rock_tall": 1.2, "rock_wide": 1.7, "rock_low": 1.4}
+TANGENT = 40.0  # px: lấy hướng mép từ hai điểm cách nhau chừng này (mép build_map gồm nhiều đoạn ngắn)
+
+
+def _edge_run(items, ring, poly, rng):
+    """Rải đá đều theo độ dài cả vòng mép (không theo từng đoạn — đoạn ngắn làm đá dồn cục). Đá cao nhất vừa
+    khoảng trống phía bắc (như cây): mép nam bục dày thành vách cao, mép bắc / vách mảnh đá thấp."""
+    d = rng.uniform(0, 60)
+    while d < ring.length:
+        p, q = ring.interpolate(d - TANGENT / 2), ring.interpolate(d + TANGENT / 2)
+        n = math.hypot(q.x - p.x, q.y - p.y) or 1.0
+        tx, tz = (q.x - p.x) / n, (q.y - p.y) / n
+        out = (tz, -tx)  # bên phải chiều đi = ngoài bục
+        c = ring.interpolate(d)
+        sc = rng.uniform(0.95, 1.15)
+        kind = "rock_low"
+        for back in (0.6 * M * sc, 0.3 * M * sc):
+            at = Point(c.x - out[0] * back, c.y - out[1] * back)
+            if poly.contains(at):  # bục mảnh / mũi nhọn: lùi ít hơn, vẫn phải trong bục
+                kind = _rock_kind(_north_room(poly, at), sc, rng)
+                items.append([kind, at.x, at.y, -math.atan2(tz, tx) + rng.uniform(-0.08, 0.08), sc])
+                if out[1] < -0.35 and rng.random() < 0.3:  # khóm lá cam trước đá thấp mép bắc (trong bục)
+                    items.append(["plant_orange", at.x - out[0] * 90, at.y - out[1] * 90, rng.uniform(0, 6.28), rng.uniform(0.9, 1.1)])
+                break
+        d += ROCK_STEP[kind] * M * rng.uniform(0.8, 0.92)
+
+
+def _rock_kind(room, sc, rng):
+    fit = lambda k: ROCK_H[k] * sc * CAM_SPILL <= room / M + TREE_SPILL
+    if fit("rock_tall"):
+        return rng.choice(["rock_tall", "rock_wide"])
+    if fit("rock_wide"):
+        return rng.choice(["rock_wide", "rock_low"])
+    return "rock_low"
+
+
+# Chiều cao cây (m, style_kit) — cây cao h·cỡ chỉ đặt khi cách mép bắc ≥ h·cỡ·CAM_SPILL − TREE_SPILL.
+TREE_H = {"pine_l": 5.6, "pine_m": 4.4, "tree_autumn": 3.6, "pine_s": 3.2, "tree_round": 3.2}
+CAM_SPILL = 0.97   # camera chúc ~46°: vật cao 1 m che ~0,97 m đất sau nó
+TREE_SPILL = 1.0   # cho tán che lấn ra ngoài bục tối đa 1 m (chưa tới đầu tướng)
 
 
 def _trees(items, poly, rng):
     inner = poly.buffer(-TREE_INSET)
+    if inner.is_empty:
+        inner = poly.buffer(-TREE_INSET * 0.5)  # bục mảnh: vẫn có cây giữa, không trống như lối đi
     if inner.is_empty:
         return
     x0, z0, x1, z1 = inner.bounds
@@ -75,18 +97,35 @@ def _trees(items, poly, rng):
         while x < x1:
             p = Point(x + rng.uniform(-50, 50), z + rng.uniform(-50, 50))
             if inner.contains(p):
-                t = (p.y - z0) / max(1.0, z1 - z0)  # 0 bắc → 1 nam
-                kind = "pine_l" if t < 0.35 else ("pine_m" if t < 0.7 else "pine_s")
-                if rng.random() < 0.14:
-                    kind = rng.choice(["tree_round", "tree_autumn"])
-                items.append([kind, p.x, p.y, rng.uniform(0, 6.28), rng.uniform(0.85, 1.1)])
+                _tree(items, p, _north_room(poly, p), rng)
             x += TREE_STEP[0]
         z += TREE_STEP[1]
 
 
+def _tree(items, p, room, rng):
+    """Cây cao nhất vừa chỗ (ưu tiên thông, thỉnh thoảng cây tán tròn); không vừa thì khóm lá thấp."""
+    sc = rng.uniform(0.85, 1.1)
+    fits = [k for k, h in TREE_H.items() if h * sc * CAM_SPILL <= room / M + TREE_SPILL]
+    if not fits:
+        if rng.random() < 0.5:
+            items.append(["plant_orange", p.x, p.y, rng.uniform(0, 6.28), rng.uniform(0.9, 1.1)])
+        return
+    kind = fits[0]
+    if rng.random() < 0.14 and any(k.startswith("tree") for k in fits):
+        kind = rng.choice([k for k in fits if k.startswith("tree")])
+    items.append([kind, p.x, p.y, rng.uniform(0, 6.28), sc])
+
+
+def _north_room(poly, p):
+    """Khoảng (px) từ p đi thẳng về bắc (−z) tới mép bục."""
+    hit = LineString([(p.x, p.y), (p.x, p.y - 3000)]).intersection(poly.boundary)
+    pts = [hit] if hit.geom_type == "Point" else list(getattr(hit, "geoms", []))
+    return min((p.y - q.y for q in pts if q.geom_type == "Point"), default=0.0)
+
+
 def river(items, water, bank, rng):
     """Bờ sông: chỗ có đá bờ → cụm đá lệch cỡ / đá cuội (lún nửa ra phía nước); chỗ hở (lối xuống sông) →
-    lau sậy + khóm cỏ; lá súng chỗ nước nông. Bờ nam (gần camera) chỉ vật thấp."""
+    lau sậy + khóm cỏ; lá súng chỗ nước nông. Bờ bắc (đất liền ở bắc, sau vật nhìn từ camera) chỉ vật thấp (D-179)."""
     rocky = unary_union(bank).buffer(60) if bank else None
     for g in water:
         edge = g.exterior
@@ -98,7 +137,7 @@ def river(items, water, bank, rng):
             nx, nz = -tz, tx
             if g.contains(Point(p.x + nx * 60, p.y + nz * 60)):
                 nx, nz = -nx, -nz
-            frame = (tx, tz, nx, nz, nz > 0.4)
+            frame = (tx, tz, nx, nz, nz < -0.4)  # pháp tuyến ra đất liền chỉ về bắc → bờ bắc, vật thấp
             d += _cluster(items, p, frame, rng) if rocky is not None and rocky.contains(p) else _reeds(items, p, frame, rng)
         for _ in range(int(edge.length / 900)):
             c = edge.interpolate(rng.uniform(0, edge.length))
@@ -109,9 +148,9 @@ def river(items, water, bank, rng):
 
 
 def _cluster(items, p, frame, rng):
-    tx, tz, nx, nz, south = frame
+    tx, tz, nx, nz, low = frame
     k = rng.randint(2, 4)
-    kinds = ["boulder_a", "boulder_b", "rock_small"] if south else ["boulder_a", "boulder_b", "boulder_a", "rock_low", "rock_wide"]
+    kinds = ["boulder_b", "rock_small", "rock_small"] if low else ["boulder_a", "boulder_b", "boulder_a", "rock_low", "rock_wide"]
     for i in range(k):
         off = rng.uniform(-0.9, 0.7) * M
         x, z = p.x + tx * i * 110 + nx * off, p.y + tz * i * 110 + nz * off
@@ -121,7 +160,7 @@ def _cluster(items, p, frame, rng):
 
 
 def _reeds(items, p, frame, rng):
-    tx, tz, nx, nz, south = frame
+    tx, tz, nx, nz, _low = frame
     span = rng.uniform(200, 360)
     for _ in range(rng.randint(3, 6)):
         a, o = rng.uniform(0, span), rng.uniform(-90, 10)

@@ -26,6 +26,8 @@ MOSS = (82, 98, 56)
 REED = (112, 124, 66)
 REED_TIP = (156, 134, 74)
 TUFT = (92, 112, 60)
+BUSH = (70, 100, 56)        # bụi cỏ (VIS-06): cùng sắc cỏ nền (98, 113, 71), đậm hơn cho rõ vùng bụi
+BUSH_TIP = (124, 138, 72)
 LILY = (66, 96, 58)
 WALL = (112, 110, 104)
 WALL_TOP = (150, 144, 132)
@@ -175,6 +177,27 @@ def blades(name, count, height, spread, color, tip, rng, width=0.07):
     return obj
 
 
+def bush(name, rng, blades_n=44, r=0.75, height=1.0):
+    """Bụi cỏ (VIS-06, D-179): lõi vòm thấp màu đậm lấp chân + lá dài tỏa ra, cao giữa thấp mép, ngọn ngả vàng."""
+    bm = bmesh.new()
+    res = bmesh.ops.create_icosphere(bm, subdivisions=1, radius=r * 0.7)
+    for v in res["verts"]:
+        v.co = Vector((v.co.x, v.co.y, max(0.0, v.co.z) * 0.4))
+    for _ in range(blades_n):
+        a = rng.uniform(0, 2 * math.pi)
+        k = math.sqrt(rng.uniform(0, 1))
+        out = Vector((math.cos(a), math.sin(a), 0))
+        base = out * k * r * 0.85
+        side = Vector((-out.y, out.x, 0)) * 0.13
+        h = height * (1.0 - 0.45 * k * k) * rng.uniform(0.75, 1.1)
+        tip = base + out * h * rng.uniform(0.2, 0.45) + Vector((0, 0, h))
+        bm.faces.new([bm.verts.new(base - side), bm.verts.new(base + side), bm.verts.new(tip)])
+    obj = finish(name, bm)
+    # lõi (mặt gần ngang) một màu đậm, không dải sáng — khỏi thành mảng chanh dưới nắng
+    paint(obj, lambda c, n: (BUSH, BUSH) if abs(n.z) > 0.5 else ((BUSH_TIP, None) if c.z > height * 0.6 else (BUSH, None)), rng)
+    return obj
+
+
 def boulder(name, rng, r, squash):
     """Đá cuội tròn mép nước: cầu ico thô, dẹt, lệch đỉnh ngẫu nhiên (cùng đỉnh cùng độ lệch — không hở mặt)."""
     bm = bmesh.new()
@@ -279,6 +302,7 @@ def main():
         lambda: fence("fence", rng), lambda: great_wall("great_wall", rng),
         lambda: blades("reeds", 15, 1.3, 0.45, REED, REED_TIP, rng, 0.09), lambda: blades("grass_tuft", 8, 0.45, 0.25, TUFT, REED, rng, 0.06),
         lambda: lily("lily", rng), lambda: wall_low("wall_low", rng), lambda: boulder("boulder_a", rng, 1.0, 0.6), lambda: boulder("boulder_b", rng, 0.7, 0.72),
+        lambda: bush("bush_a", rng, 56), lambda: bush("bush_b", rng, 46, 0.65, 0.9), lambda: bush("bush_c", rng, 64, 0.85, 1.1),
     ]
     for build in builders:
         reset()

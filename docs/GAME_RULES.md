@@ -897,9 +897,9 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   rộng bằng lane và khoảng trống quanh trụ cạnh cổng).
 - `MAP-10` (D-169) Vùng hồi máu fountain có rào đá theo vòng `fountain_radius`, một cổng
   (`fountain_gate` độ) quay về phía nhà chính.
-- `MAP-11` (D-176, D-178) Rừng là **bục rừng** dựng từ mạng lối đi thiết kế (`plateau_design.py`): lối
-  chính rộng 640, lối phụ 480, khe luồn 320, bãi trại; phần đất rừng còn lại là bục (mép vuông vức, bỏ mảnh
-  nhỏ hơn 150 ô guide²), mỗi nửa 10–16 bục lớn. Đo trong vùng rừng (cách mép map 1100, cách tim lane quá
+- `MAP-11` (D-176, D-178, D-179) Rừng là **bục rừng** dựng từ mạng lối đi thiết kế (`plateau_design.py`): lối
+  chính rộng 704, lối phụ 512, khe luồn 352, bãi trại; bục lớn bị lối cắt chia nhỏ; phần đất rừng còn lại là
+  bục (mép vuông vức, bỏ mảnh nhỏ hơn 150 ô guide²), mỗi nửa 14–22 bục. Đo trong vùng rừng (cách mép map 1100, cách tim lane quá
   nửa lane + 250, ngoài base): vật cản ≤ 45%; vật cản ngoài bờ sông là rừng; bề rộng lối (gấp đôi khoảng
   trống ở sống lối) trung vị ≥ 500, lối hẹp hơn 300 không quá 5%.
 - `MAP-12` (D-178) Rìa map: ngoài mép ngoài các lane (cách tim lane quá nửa lane + 4 ô guide = 208), trừ

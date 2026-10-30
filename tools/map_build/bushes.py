@@ -6,6 +6,8 @@ from shapely.ops import unary_union
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BUSHES = 7  # bụi cỏ mỗi nửa (D-72: 14 bụi cả map)
+RX, RY = 15, 8  # bán trục bụi (ô guide; D-179: 240 × 128, to hơn 176 × 96)
+WOB = 1.25      # build_map làm mép bụi gợn, bán kính tới WOB × bán trục
 
 
 def place(src, out):
@@ -28,9 +30,9 @@ def place(src, out):
     for x in range(int(fx0), int(fx1), 2):
         for y in range(int(fy0), int(fy1), 2):
             q = Point(x, y)
-            if y < x + 6 or not fx0 + 60 < x < fx1 - 60 or not fy0 + 60 < y < fy1 - 60 or not walk.contains(q.buffer(7)) or water.distance(q) < 6 or lanes.distance(q) < 13:
+            if y < x + 6 or not fx0 + 60 < x < fx1 - 60 or not fy0 + 60 < y < fy1 - 60 or not walk.contains(q.buffer(RY * WOB)) or water.distance(q) < 6 or lanes.distance(q) < RX:
                 continue
-            if min(t.distance(q) for t in towers) < 550 / sc + 13 or min(c.distance(q) for c in camps) < 36:  # xa trại: không che lối kéo quái (D-76)
+            if min(t.distance(q) for t in towers) < 550 / sc + RX * WOB or min(c.distance(q) for c in camps) < 36:  # xa trại: không che lối kéo quái (D-76)
                 continue
             cand.append(q)
     pick = [min(cand, key=lambda q: q.distance(Point(fx0 + 0.5 * (fx1 - fx0), fy0 + 0.73 * (fy1 - fy0))))]
@@ -39,11 +41,11 @@ def place(src, out):
         pick.append(max(cand, key=far))
     out_b = []
     for q in pick:
-        near = [c for c in cand if c.distance(q) < 14] or [q]
+        near = [c for c in cand if c.distance(q) < RX + 3] or [q]
         xs = np.array([[c.x - q.x, c.y - q.y] for c in near])
         ang = 0.0
         if len(xs) > 2:
             w, v = np.linalg.eigh(xs.T @ xs)
             ang = math.degrees(math.atan2(v[1, 1], v[0, 1]))
-        out_b.append({"pos": [q.x, q.y], "rx": 11, "ry": 6, "angle": round(ang)})
+        out_b.append({"pos": [q.x, q.y], "rx": RX, "ry": RY, "angle": round(ang)})
     return out_b

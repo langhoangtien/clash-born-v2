@@ -1,13 +1,13 @@
 # Bàn giao — Clashborn v2 (2026-10-29)
 
 Tóm tắt để phiên làm việc mới (tài khoản Claude mới) làm tiếp. Đọc file này rồi đọc `AGENTS.md`
-(quy trình bắt buộc), `docs/DECISIONS.md` (các dòng D-167 → D-178) và `art_inbox/YEU_CAU_STYLE.md`.
+(quy trình bắt buộc), `docs/DECISIONS.md` (các dòng D-167 → D-179) và `art_inbox/YEU_CAU_STYLE.md`.
 
 ## 1. Trạng thái repo
 
 - Repo: `langhoangtien/clash-born-v2`. Game Godot **4.7.2**, MOBA 3D, máy thử: Huawei MatePad 11.5.
 - **Nhánh đang làm: `thu-asset-tu-lam`** (nhánh thử hình / map, **chưa gộp vào `main`**).
-  `main` dừng ở D-167. Mọi thay đổi D-168 → D-178 chỉ có trên nhánh này.
+  `main` dừng ở D-167. Mọi thay đổi D-168 → D-179 chỉ có trên nhánh này.
 - Test (`GODOT=... bash tools/run_tests.sh [--soak]`): xem số mới nhất trong dòng D-178 của ROADMAP / tin nhắn cuối.
 - **Không build APK / web khi người dùng chưa bảo** (người dùng thử trên PC).
 - Người dùng nói tiếng Việt; muốn **bàn trước khi làm** việc lớn. Không kiểm tra id hero / chiêu / đồ trong code.
@@ -21,10 +21,12 @@ Tóm tắt để phiên làm việc mới (tài khoản Claude mới) làm tiế
 | D-173, D-174 | Quái rừng 3D tự mang xương (`jungle_boar`), `tools/models/reweight_skin.py` sửa da. Người dùng chưa xác nhận trong game. |
 | D-175…D-177 | Thử khối đá Tripo, rừng cây low-poly, làm mờ cây — **đều đã thay bằng D-178** (code / asset đã gỡ, còn trong lịch sử git). D-177 cũng sửa lỗi sự kiện hoạt ảnh 3D. |
 | **D-178** | **Đồ họa mới + map bục rừng.** Phong cách theo concept `art_inbox/08_style/concept.webp`: camera cố định → màu + sáng tối vẽ sẵn vào mô hình (Blender, `tools/models/style_kit.py` → `assets/models/style/`), vẽ không đèn; ảnh nền Codex (`assets/textures/style/`, nén GPU). Map: `plateau_design.py` (mạng lối đi → bục rừng 13 / nửa, đá bờ sông, rìa map, 8 trại / phe: rừng carry 5, lane khó 3) → `build_map.py` → `decor.py` (vị trí cảnh vật + mặt nạ nền + bóng, `data/maps/clashborn_decor.json`, chỉ VIEW đọc). VIEW: `Terrain3D` (mặt đất ảnh nền theo mặt nạ, nước, vật liệu), `Scenery3D` (cảnh vật). Rìa map: rào đá + tường thành (nam thấp). Luật MAP-01/02/07/08/11/12. |
+| **D-179** | Bảng chẩn đoán FPS trong trận (`view/hud/diag_panel.gd`, phím G); đá viền nằm hẳn trong vùng chặn, chiều cao đá / cây theo khoảng trống phía bắc (không che tướng); lối rộng hơn + 5 lối cắt bục; bụi cỏ mới `style/bush_*` to hơn. APK có bảng chẩn đoán đã gửi người dùng đo. |
 
 ## 3. Đang dở / việc tiếp theo (theo thứ tự)
 
-1. **D-178 chờ người dùng chơi thử + đo FPS trên MatePad** (giao tranh trong rừng, nhìn rìa map, sông).
+1. **D-179 chờ người dùng chơi thử + đo FPS bằng bảng chẩn đoán** (tắt từng phần xem phần nào tốn). Sau đó:
+   thiết kế trụ / nhà chính + quái rừng theo concept, rồi tướng / lính (người dùng đã chốt thứ tự).
    Chỉnh nhanh: bề rộng lối `MAIN / SIDE / GAP`, vị trí trại `CAMPS`, mạng lối `PATHS` trong
    `tools/map_build/plateau_design.py` → `--write` → `build_map.py` → `decor.py`. Mật độ / quy tắc cảnh vật:
    `tools/map_build/decor_place.py`. Màu / dáng mô hình: `tools/models/style_kit.py` (cần bpy).
