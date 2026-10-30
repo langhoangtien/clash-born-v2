@@ -16,7 +16,7 @@ const WATER_Y: float = 0.03
 
 static var _decor: Dictionary = {}
 static var _mask: Image
-static var _shadow: Image
+static var _depth: Image
 static var _textures: Dictionary[String, Texture2D] = {}
 static var _materials: Dictionary[String, Material] = {}
 
@@ -38,10 +38,11 @@ static func mask_image() -> Image:
 	return _mask
 
 
-static func shadow_image() -> Image:
-	if _shadow == null:
-		_shadow = _png(decor()["shadow"])
-	return _shadow
+## D-180: độ sâu nước (L).
+static func depth_image() -> Image:
+	if _depth == null:
+		_depth = _png(decor()["water"])
+	return _depth
 
 
 ## Vùng mặt nạ (px thế giới).
@@ -50,12 +51,11 @@ static func mask_rect() -> Rect2:
 	return Rect2(Vector2(float(o[0]), float(o[1])), Vector2(mask_image().get_size()) * float(decor()["mask_px"]))
 
 
-## Vật liệu mặt đất: ảnh nền theo mặt nạ, phủ lớp 2D `layer` (trong suốt chỗ không vẽ).
-static func ground_material(layer: Texture2D) -> ShaderMaterial:
+## Vật liệu mặt đất: ảnh nền theo mặt nạ (kênh A là bóng vẽ sẵn); sương đặt mỗi khung qua `eyes` (D-180).
+static func ground_material() -> ShaderMaterial:
 	var cfg: Dictionary = _style()["ground"]
 	var m: ShaderMaterial = _masked(GROUND_SHADER)
-	m.set_shader_parameter("layer", layer)
-	m.set_shader_parameter("shadow_tex", ImageTexture.create_from_image(shadow_image()))
+	m.set_shader_parameter("mask_tex", ImageTexture.create_from_image(mask_image()))
 	for key: String in ["grass", "forest", "dirt", "pave"]:
 		m.set_shader_parameter(key + "_tex", texture(cfg[key]))
 	for key: String in ["grass_m", "dirt_m", "pave_m"]:
@@ -73,6 +73,7 @@ static func water(layout: MapLayout) -> MeshInstance3D:
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.mesh = st.commit()
 	var m: ShaderMaterial = _masked(WATER_SHADER)
+	m.set_shader_parameter("depth_tex", ImageTexture.create_from_image(depth_image()))
 	m.set_shader_parameter("bed_tex", texture(_style()["water"]["bed"]))
 	m.set_shader_parameter("bed_m", float(_style()["water"]["bed_m"]))
 	mi.material_override = m
@@ -113,12 +114,11 @@ static func _faced(f: Array) -> ShaderMaterial:
 	return m
 
 
-## Vật liệu đọc mặt nạ map (mặt đất, nước): ảnh + vùng phủ theo mét.
+## Vật liệu đọc ảnh phủ map (mặt đất, nước): vùng phủ theo mét.
 static func _masked(shader: Shader) -> ShaderMaterial:
 	var m: ShaderMaterial = ShaderMaterial.new()
 	m.shader = shader
 	var r: Rect2 = mask_rect()
-	m.set_shader_parameter("mask_tex", ImageTexture.create_from_image(mask_image()))
 	m.set_shader_parameter("mask_origin", r.position * MatchView3D.S)
 	m.set_shader_parameter("mask_size", r.size * MatchView3D.S)
 	return m

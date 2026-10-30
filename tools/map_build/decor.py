@@ -4,8 +4,9 @@
 Đọc data/maps/clashborn_map.json (toạ độ thế giới, 100 px = 1 m) và mạng lối đi (plateau_design.py), ghi
 data/maps/clashborn_decor.json:
   items   [mô hình, x, z, góc, cỡ, y (m)] — mô hình trong assets/models/style/
-  mask    PNG base64 RGBA: R đường đất, G đá lát (lane, base, sân rìa map), B nền rừng, A độ sâu nước
-  shadow  PNG base64 L: bóng vẽ sẵn (nắng tây bắc → bóng lệch đông nam)
+  mask    PNG base64 RGBA: R đường đất, G đá lát (lane, base, sân rìa map), B nền rừng, A bóng vẽ sẵn (nắng tây
+          bắc → bóng lệch đông nam) — D-180: gộp một ảnh để shader mặt đất đọc một lần
+  water   PNG base64 L: độ sâu nước (shader nước)
   mask_origin, mask_px: góc trên trái (px thế giới) và số px thế giới mỗi điểm ảnh mặt nạ
 
   python3 tools/map_build/decor.py
@@ -72,8 +73,7 @@ def mask_images(m, forest, rocks, water, edge):
         dw.polygon(T(g.exterior.coords), fill=255)
     depth = np.array(wet.filter(ImageFilter.GaussianBlur(160 / MASK_PX))).astype(float)
     depth = (np.clip((depth - 128) * 2, 0, 255) * (np.array(wet) > 0)).astype(np.uint8)
-    out = Image.merge("RGBA", [DP.ragged(dirt, 3, 5), DP.ragged(pave, 0.6, 2), DP.ragged(floor, 6, 7), Image.fromarray(depth)])
-    return out, n
+    return [DP.ragged(dirt, 3, 5), DP.ragged(pave, 0.6, 2), DP.ragged(floor, 6, 7)], Image.fromarray(depth), n
 
 
 def shadow_image(items, n, water, edge):
@@ -115,9 +115,10 @@ def main():
     DP.border(items, edge, size, rng)
     DP.base_fences(items, m["render"].get("rock_lines", []))
     DP.scatter(items, m, forest, wet, rng)
-    mask, n = mask_images(m, forest, rocks, water, edge)
+    rgb, depth, n = mask_images(m, forest, rocks, water, edge)
+    mask = Image.merge("RGBA", rgb + [shadow_image(items, n, water, edge)])
     data = {"items": [[k, round(x, 1), round(z, 1), round(a, 3), round(s, 3)] + ([round(y[0], 3)] if y else []) for k, x, z, a, s, *y in items],
-            "mask": b64(mask), "shadow": b64(shadow_image(items, n, water, edge)),
+            "mask": b64(mask), "water": b64(depth),
             "mask_origin": [-MARGIN, -MARGIN], "mask_px": MASK_PX}
     json.dump(data, open(os.path.join(DATA, "clashborn_decor.json"), "w"), separators=(",", ":"))
     counts = {}

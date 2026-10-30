@@ -14,7 +14,7 @@ const SEED: int = 1
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
 const SPEEDS: Array[int] = [1, 2, 4, 8]
 const MENU_SCENE: String = "res://app/main.tscn"
-const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · 4–9 dùng đồ · H về thành · B shop · F2 ký hiệu map · Esc"
+const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · 4–9 dùng đồ · H về thành · B shop · Esc"
 
 @onready var map_view: MapView = $MapView
 @onready var units_view: UnitsView = $UnitsView
@@ -37,7 +37,6 @@ var input: MatchInput = MatchInput.new()
 var result: ResultPanel
 var hero_def: HeroDef
 var skills: SkillControls = SkillControls.new()
-var fog: FogView
 var audio: AudioView
 var death_cam: DeathCamera = DeathCamera.new()
 var quick_buy: QuickBuy
@@ -69,13 +68,6 @@ func _ready() -> void:
 		bot_unit = foe
 	units_view.world = world
 	units_view.viewer_team = hero.team
-	fog = FogView.new()
-	fog.name = "Fog"
-	fog.world = world
-	fog.team = hero.team
-	fog.place = units_view.display_position
-	add_child(fog)
-	move_child(fog, units_view.get_index())  # trên map, dưới đơn vị
 	minimap = Minimap.new()
 	minimap.name = "Minimap"
 	$Hud.add_child(minimap)
@@ -148,12 +140,10 @@ func tick_frame(delta: float) -> void:
 		quick_buy.show_item(next, Shop.price(world, hero, next) if next != null else 0)
 	var view_size: Vector2 = get_viewport_rect().size / camera.zoom
 	minimap.camera_rect = Rect2(camera.position - view_size * 0.5, view_size)
-	fog.view_rect = minimap.camera_rect  # D-108: chỉ tô sương trong khung camera
 	audio.listener = camera.position
 	if view_3d != null:
+		units_view.view_rect = view_3d.ground_world_rect(camera.position)  # D-149, D-151: không vẽ đơn vị ngoài khung nhìn
 		view_3d.update(camera.position)
-		fog.view_rect = view_3d.ground_world_rect(camera.position)  # D-151
-	units_view.view_rect = fog.view_rect  # D-149: không vẽ đơn vị ngoài khung nhìn
 	match_hud.speed = runner.speed
 	match_hud.sim_ms = runner.step_ms
 	skills.refresh()
@@ -206,8 +196,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		cycle_speed()
 	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_B:
 		shop.toggle()  # D-81: bảng shop tạm
-	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_F2:
-		map_view.toggle_overlay(&"labels")  # D-77: ký hiệu map dev
 	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and skills.handle_key(event, _world_point(get_viewport().get_mouse_position())):
 		pass
 	elif event is InputEventKey and event.pressed and (event as InputEventKey).keycode == KEY_ESCAPE:
@@ -241,9 +229,10 @@ func _map_bounds() -> Rect2:
 	return Rect2(Vector2.ZERO, world.map.world_size())
 
 
-## D-145: bản thử 3D — các lớp 2D trên mặt đất vào SubViewport, đơn vị thành mô hình / ảnh đứng.
+## D-145: trận 3D — đơn vị là mô hình; D-180: hình trên đất (GroundCanvas) và sương do MatchView3D vẽ.
 func _setup_3d() -> void:
-	view_3d = MatchView3D.create(self, $Hud, world, units_view, [map_view, fog, units_view, aim_indicator])
+	view_3d = MatchView3D.create(self, $Hud, world, units_view, aim_indicator)
+	view_3d.fog_team = hero.team  # VIS-01: sương tính trong shader mặt đất (D-180)
 	view_3d.hero_id = hero.id  # D-159
 	GraphicsSetting.apply(get_viewport(), GraphicsSetting.load_level())  # D-157
 
@@ -266,7 +255,6 @@ func _setup_test_panel() -> void:
 	var diag: DiagPanel = DiagPanel.new()  # D-179
 	diag.name = "DiagPanel"
 	diag.view_3d = view_3d
-	diag.fog = fog
 	$Hud.add_child(diag)
 	diag.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	diag.read_viewport(get_viewport())

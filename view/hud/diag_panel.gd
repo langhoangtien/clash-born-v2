@@ -10,7 +10,7 @@ const BUTTON: Rect2 = Rect2(584, 214, 170, 44)
 const PANEL: Rect2 = Rect2(864, 266, 470, 340)
 const CELL: Vector2 = Vector2(215, 56)
 const KEYS: Array[StringName] = [&"scenery", &"ground", &"layer", &"fog", &"actors", &"water", &"scale", &"msaa"]
-const LABELS: Array[String] = ["Cảnh vật", "Nền ảnh", "Lớp 2D", "Sương", "Nhân vật", "Nước", "Độ phân giải", "MSAA"]
+const LABELS: Array[String] = ["Cảnh vật", "Nền ảnh", "Lớp phủ", "Sương", "Nhân vật", "Nước", "Độ phân giải", "MSAA"]
 ## Giá trị mỗi ô: bật / tắt, riêng độ phân giải (%) và MSAA (×) quay vòng.
 const SCALES: Array[int] = [100, 75, 60, 50]
 const MSAAS: Array[int] = [0, 2, 4]
@@ -20,7 +20,6 @@ var open: bool = false
 var values: Dictionary[StringName, int] = {&"scenery": 1, &"ground": 1, &"layer": 1, &"fog": 1, &"actors": 1, &"water": 1, &"scale": 1, &"msaa": 0}
 ## Nơi áp (APP đặt); null thì chỉ báo `changed`.
 var view_3d: MatchView3D
-var fog: CanvasItem
 
 
 ## Lấy độ phân giải / MSAA đang dùng (mức đồ họa D-157) làm giá trị đầu.
@@ -53,9 +52,7 @@ func press_at(at: Vector2) -> void:
 
 func _apply(key: StringName) -> void:
 	var on: bool = value_of(key) != 0
-	if key == &"fog" and fog != null:
-		fog.visible = on
-	elif key == &"scale":
+	if key == &"scale":
 		get_viewport().scaling_3d_scale = value_of(key) / 100.0
 	elif key == &"msaa":
 		get_viewport().msaa_3d = [Viewport.MSAA_DISABLED, Viewport.MSAA_2X, Viewport.MSAA_4X][values[key]]

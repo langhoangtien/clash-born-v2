@@ -1,7 +1,11 @@
 class_name Bars3D
 extends Control
 ## Thanh máu, dấu trạng thái (StateMarks) và ổ khóa công trình (STR-02) trên đầu đơn vị (D-145, D-157):
-## chiếu đỉnh đầu / chân ra màn hình rồi vẽ.
+## chiếu đỉnh đầu / chân ra màn hình rồi vẽ. D-180: cả chữ nổi (FloatingText) và biểu tượng Quyết Đấu.
+
+## Độ cao (m) điểm chiếu chữ nổi / biểu tượng Quyết Đấu trên mặt đất.
+const TEXT_HEIGHT: float = 1.8
+const ICON_HEIGHT: float = 2.6
 
 var view: MatchView3D
 
@@ -37,6 +41,11 @@ func _draw() -> void:
 			StateMarks.draw(self, e, foot, (foot as Vector2).y - (at as Vector2).y, view.world.tick)
 		if e.locked:
 			_draw_lock((at as Vector2) + Vector2(0, 30))
+	FloatingText.draw(self, view.world, func(p: Vector2) -> Variant: return view.ground_screen(p, TEXT_HEIGHT))
+	for d: Array in Vfx.duel_icons(view.world):
+		var c: Variant = view.ground_screen(d[0], ICON_HEIGHT)
+		if c != null:
+			draw_texture_rect(d[1], Rect2((c as Vector2) - Vector2(36, 36), Vector2(72, 72)), false, Color(1, 1, 1, d[2]))
 
 
 ## STR-02: ổ khóa trên công trình đang khóa.

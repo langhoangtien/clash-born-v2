@@ -1,19 +1,23 @@
 class_name MatchView3D
 extends Node3D
-## Bản thử 3D (D-145): mặt đất là lớp 2D (map, sương, vùng, mũi nhắm…) vẽ vào SubViewport quanh
-## camera rồi dán lên mặt phẳng; tướng là mô hình 3D có hoạt ảnh, đơn vị khác là ảnh đứng (billboard).
-## Camera nghiêng kiểu Liên Quân. Chỉ đọc World (qua UnitsView để lấy vị trí nội suy, ai thấy được).
+## Bản 3D (D-145): mặt đất Terrain3D (sương tính trong shader), hình phẳng trên đất (vòng đội, vùng chiêu,
+## hiệu ứng, mũi nhắm, viền bụi…) vẽ bằng GroundCanvas (D-180, thay lớp 2D vẽ vào SubViewport); đơn vị là
+## mô hình 3D có hoạt ảnh. Camera nghiêng kiểu Liên Quân. Chỉ đọc World (qua UnitsView để lấy vị trí nội
+## suy, ai thấy được).
 
 ## 1 px thế giới = 0,01 đơn vị 3D.
 const S: float = 0.01
-## D-151: lớp mặt đất chỉ phủ vùng camera thấy (tính từ khung nhìn), ảnh LAYER_SCALE điểm ảnh mỗi px
-## thế giới. Xa quá FAR_PX phía trước bị sương che, không vẽ; nới GROUND_MARGIN mỗi phía.
-const LAYER_SCALE: float = 0.5
+## D-151: vùng camera thấy (tính từ khung nhìn) để lọc đơn vị / mắt sương; xa quá FAR_PX phía trước bị
+## sương che; nới GROUND_MARGIN mỗi phía.
 const FAR_PX: float = 1500.0
 const GROUND_MARGIN: float = 96.0
 ## Camera: lệch khỏi điểm nhìn (đơn vị 3D), góc nhìn.
 const CAM_OFFSET: Vector3 = Vector3(0, 11.5, 11.0)
 const CAM_FOV: float = 40.0
+## Số mắt sương tối đa gửi shader mặt đất (khớp mảng eyes trong ground.gdshader).
+const FOG_EYES: int = 64
+## Độ đậm sương (như FogView của minimap).
+const FOG_ALPHA: float = 0.6
 ## D-159: rung camera (đơn vị 3D) khi tướng mình đánh trúng / chí mạng / mất hơn SHAKE_HURT_FRACTION máu
 ## một lần; giảm SHAKE_DECAY mỗi giây.
 const SHAKE_HIT: float = 0.03
@@ -24,30 +28,35 @@ const SHAKE_DECAY: float = 0.6
 
 var world: World
 var units: UnitsView
-var layer: SubViewport
+var aim: AimIndicator
+## D-180: hình phẳng trên đất — `overlay` vẽ lại mỗi khung, `marks` (bụi, shop, trụ, trại) dựng một lần.
+var overlay: GroundCanvas
+var marks: GroundCanvas
+## Phe nhìn (sương); -1 = không sương.
+var fog_team: int = -1
+var fog_alpha: float = FOG_ALPHA
 var camera: Camera3D
 var scenery: Scenery3D
 ## D-159: tướng của người chơi (rung camera khi đánh trúng / bị đánh mạnh).
 var hero_id: int = -1
 var _event_tick: int = -1
 var _shake: float = 0.0
-var _layer_cam: Camera2D
 var _ground: MeshInstance3D
-## Vùng lớp đất so với điểm nhìn (px thế giới).
+var _ground_mat: ShaderMaterial
+## Vùng đất camera thấy so với điểm nhìn (px thế giới).
 var _ground_rect: Rect2 = Rect2()
 var _actors: Dictionary[int, Actor3D] = {}
 ## D-179: bảng chẩn đoán — mặt nước, vật liệu mặt đất có ảnh nền, có vẽ nhân vật không.
 var _water: MeshInstance3D
-var _ground_textured: Material
 var _show_actors: bool = true
 
 
 ## Dựng bản 3D dưới `parent`, thanh máu vào lớp HUD `hud` (dưới mọi nút).
-static func create(parent: Node, hud: CanvasLayer, w: World, units_view: UnitsView, ground_nodes: Array[Node]) -> MatchView3D:
+static func create(parent: Node, hud: CanvasLayer, w: World, units_view: UnitsView, aim_indicator: AimIndicator) -> MatchView3D:
 	var v: MatchView3D = MatchView3D.new()
 	v.name = "View3D"
 	parent.add_child(v)
-	v.setup(w, units_view, ground_nodes)
+	v.setup(w, units_view, aim_indicator)
 	var bars: Bars3D = Bars3D.new()
 	bars.name = "Bars3D"
 	bars.view = v
@@ -57,37 +66,37 @@ static func create(parent: Node, hud: CanvasLayer, w: World, units_view: UnitsVi
 	return v
 
 
-## Đưa các lớp 2D nằm trên mặt đất vào SubViewport và dựng cảnh 3D.
-func setup(w: World, units_view: UnitsView, ground_nodes: Array[Node]) -> void:
+## Dựng cảnh 3D: mặt đất tĩnh phủ cả vùng mặt nạ map, nước, cảnh vật, hình phẳng trên đất.
+func setup(w: World, units_view: UnitsView, aim_indicator: AimIndicator) -> void:
 	world = w
 	units = units_view
-	layer = SubViewport.new()
-	layer.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-	layer.transparent_bg = true  # D-178: lớp 2D chỉ còn phủ (sương, vùng, mũi nhắm), mặt đất do Terrain3D vẽ
-	add_child(layer)
-	for n: Node in ground_nodes:
-		n.reparent(layer, false)
-	_layer_cam = Camera2D.new()
-	_layer_cam.zoom = Vector2.ONE * LAYER_SCALE
-	layer.add_child(_layer_cam)
+	aim = aim_indicator
 	_ground = MeshInstance3D.new()
 	_ground.mesh = PlaneMesh.new()
-	_ground_textured = Terrain3D.ground_material(layer.get_texture())  # D-178
-	_ground.material_override = _ground_textured
+	_ground_mat = Terrain3D.ground_material()  # D-178
+	_ground.material_override = _ground_mat
+	var r: Rect2 = Terrain3D.mask_rect()
+	(_ground.mesh as PlaneMesh).size = r.size * S
+	_ground.position = to_3d(r.get_center())
 	add_child(_ground)
 	camera = Camera3D.new()
 	camera.fov = CAM_FOV
 	camera.current = true
 	add_child(camera)
-	_fit_ground()
-	get_viewport().size_changed.connect(_fit_ground)
+	_fit_view()
+	get_viewport().size_changed.connect(_fit_view)
 	Look3D.add_lights(self)  # D-150
 	scenery = Scenery3D.new()  # D-158, D-178: cây, đá, rào, tường thành, cửa hàng, đổ nát dựng từ dữ liệu map
 	add_child(scenery)
+	marks = GroundCanvas.new()
+	overlay = GroundCanvas.new()
 	if world.map != null:
 		scenery.build(world.map)
 		_water = Terrain3D.water(world.map)  # D-178
 		add_child(_water)
+		GroundMarks.paint(marks, world.map, world.balance.shop_radius)
+	add_child(marks)
+	add_child(overlay)
 
 
 func to_3d(p: Vector2) -> Vector3:
@@ -112,8 +121,7 @@ func update(focus: Vector2) -> void:
 	_shake = move_toward(_shake, 0.0, get_process_delta_time() * SHAKE_DECAY)
 	camera.position += Vector3(randf_range(-1, 1), randf_range(-1, 1), 0) * _shake
 	scenery.update(world)
-	_layer_cam.position = focus + _ground_rect.get_center()
-	_ground.position = to_3d(focus + _ground_rect.get_center())
+	_paint_ground(focus)
 	var keep: Dictionary[int, bool] = {}
 	for e: Entity in world.entities:
 		if not e.alive or not units.seen(e) or e.kind == Entity.Kind.WARD:
@@ -135,18 +143,21 @@ func update(focus: Vector2) -> void:
 			_actors.erase(id)
 
 
-## D-179: bật / tắt một phần vẽ (bảng chẩn đoán FPS): cảnh vật, nền ảnh (tắt = màu phẳng), lớp 2D (tắt = ngừng
-## vẽ lại), nhân vật, nước.
+## D-179: bật / tắt một phần vẽ (bảng chẩn đoán FPS): cảnh vật, nền ảnh (tắt = màu phẳng), lớp phủ (hình
+## phẳng trên đất, D-180), sương, nhân vật, nước.
 func set_part(key: StringName, on: bool) -> void:
 	match key:
 		&"scenery":
 			scenery.visible = on
 		&"ground":
-			_ground.material_override = _ground_textured if on else _flat_ground()
+			_ground.material_override = _ground_mat if on else _flat_ground()
 		&"layer":
-			layer.render_target_update_mode = SubViewport.UPDATE_ALWAYS if on else SubViewport.UPDATE_DISABLED
+			overlay.visible = on
+			marks.visible = on
 		&"actors":
 			_show_actors = on
+		&"fog":
+			fog_alpha = FOG_ALPHA if on else 0.0
 		&"water":
 			if _water != null:
 				_water.visible = on
@@ -164,8 +175,29 @@ func ground_world_rect(focus: Vector2) -> Rect2:
 	return Rect2(focus + _ground_rect.position, _ground_rect.size)
 
 
-## D-151: đo vùng đất camera thấy (chiếu 4 góc màn hình xuống đất, phía xa cắt ở FAR_PX), cỡ lớp đất theo đó.
-func _fit_ground() -> void:
+## D-180: hình phẳng trên đất mỗi khung (đơn vị, vùng chiêu, hiệu ứng, mũi nhắm) + mắt sương cho shader đất.
+func _paint_ground(focus: Vector2) -> void:
+	overlay.begin()
+	units.paint(overlay)
+	if aim != null:
+		aim.paint(overlay)
+	overlay.commit()
+	var eyes: Array[Vector4] = []
+	if fog_team < 0:
+		eyes.append(Vector4(0, 0, 1e6, 0))  # không sương: một mắt phủ hết
+	else:
+		var area: Rect2 = ground_world_rect(focus)
+		for v: Vector4 in FogView.eyes(world, fog_team, units.display_position):
+			if eyes.size() < FOG_EYES and area.grow(v.z).has_point(Vector2(v.x, v.y)):
+				eyes.append(Vector4(v.x * S, v.y * S, v.z * S, 0.0))
+	_ground_mat.set_shader_parameter("eye_count", eyes.size())
+	eyes.resize(FOG_EYES)
+	_ground_mat.set_shader_parameter("eyes", eyes)
+	_ground_mat.set_shader_parameter("fog_color", Color(0.02, 0.03, 0.07, fog_alpha))
+
+
+## D-151: đo vùng đất camera thấy (chiếu 4 góc màn hình xuống đất, phía xa cắt ở FAR_PX).
+func _fit_view() -> void:
 	camera.position = CAM_OFFSET
 	camera.look_at(Vector3.ZERO, Vector3.UP)
 	var screen: Vector2 = get_viewport().get_visible_rect().size
@@ -176,8 +208,6 @@ func _fit_ground() -> void:
 		hit.y = maxf(hit.y, -FAR_PX)
 		box = Rect2(hit, Vector2.ZERO) if i == 0 else box.expand(hit)
 	_ground_rect = box.grow(GROUND_MARGIN)
-	layer.size = Vector2i(ceili(_ground_rect.size.x * LAYER_SCALE), ceili(_ground_rect.size.y * LAYER_SCALE))
-	(_ground.mesh as PlaneMesh).size = _ground_rect.size * S
 
 
 ## D-159: sự kiện của tick mới → hoạt ảnh chiêu, khựng khung / lóe khi trúng, rung camera.
@@ -207,6 +237,14 @@ func _dispatch_events() -> void:
 				var me: Entity = world.find_entity(hero_id) if ev.target_id == hero_id else null
 				if me != null and ev.amount > me.stats.get_stat(StatId.Id.MAX_HP) * SHAKE_HURT_FRACTION:
 					_shake = maxf(_shake, SHAKE_HURT)
+
+
+## D-180: vị trí màn hình của điểm `p` (px thế giới) cao `height` m; null nếu sau camera.
+func ground_screen(p: Vector2, height: float = 0.0) -> Variant:
+	var at: Vector3 = to_3d(p) + Vector3(0, height, 0)
+	if camera.is_position_behind(at):
+		return null
+	return camera.unproject_position(at)
 
 
 ## Vị trí màn hình của chân đơn vị (cho dấu trạng thái); null nếu chưa có hình hoặc sau camera.
