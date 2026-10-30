@@ -86,11 +86,13 @@ clashborn_v2/
     menu/                  HeroSelect, HeroDetail, HeroPreview (màn chọn tướng), GraphicsSetting (mức đồ họa, D-157)
     audio/                 SoundLibrary (res://assets/audio/<id>.ogg, thiếu → im lặng), AudioCues
                            (sự kiện tick → tiếng, lọc sương mù), AudioView (phát, nhạc) — D-114
-    hud/                   TouchJoystick (joystick ảo; tên VirtualJoystick trùng lớp có sẵn của Godot 4.7)
+    hud/                   TouchJoystick (joystick ảo; tên VirtualJoystick trùng lớp có sẵn của Godot 4.7),
+                           SettingsPanel (bảng Cài đặt, D-183), TestPanel / DiagPanel (công cụ thử, mở từ Cài đặt)
   app/                     scene chính, luồng màn hình, màn xem map, màn trận;
                            SimRunner: chạy World 30 tick/giây theo thời gian thật;
                            MatchInput: joystick/WASD/chạm → Command (CTL-01);
-                           Updater: tự kiểm tra / tải / cài bản Android mới (D-148)
+                           Updater: tự kiểm tra / tải / cài bản Android mới (D-148);
+                           SettingsControl: áp lựa chọn của bảng Cài đặt (âm thanh, đồ họa, FPS, công cụ thử, D-183)
   tests/                   test (framework nhỏ tự viết, xem mục 9)
   tools/                   script ngoài Godot; sim_profile.gd đo ms mỗi tick theo hệ thống (D-152)
                            map_build (D-178): from_sketch.py (sông, base, shop từ bản vẽ) → plateau_design.py --write

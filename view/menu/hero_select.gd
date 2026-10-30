@@ -6,6 +6,8 @@ extends Control
 
 signal start_pressed(hero_id: StringName, bot_id: StringName, difficulty: int)
 signal map_pressed
+## D-183: nút Cài đặt (APP mở SettingsPanel).
+signal settings_pressed
 
 const CARD: Vector2 = Vector2(192, 262)
 const CARD_GAP: float = 14.0
@@ -17,15 +19,13 @@ const BOT_SIZE: float = 84.0
 const DIFF_NAMES: Array[String] = ["Dễ", "Thường", "Khó"]
 const START: Rect2 = Rect2(1480, 934, 380, 112)
 const MAP_BUTTON: Rect2 = Rect2(1196, 954, 130, 72)
-## D-145: chọn hình 2D / 3D thử.
-const VIEW_BUTTON: Rect2 = Rect2(1336, 954, 130, 72)
+## D-183: nút Cài đặt (âm thanh, đồ họa, FPS).
+const SETTINGS_BUTTON: Rect2 = Rect2(1336, 954, 130, 72)
 
 var previews: Array[HeroPreview] = []
 var selected: int = 0
 var bot: int = 1
 var difficulty: int = 1
-## D-157: mức đồ họa (GraphicsSetting), nút xoay vòng Thấp → Vừa → Cao, lưu ngay.
-var graphics: GraphicsSetting.Level = GraphicsSetting.load_level()
 var tab: HeroDetail.Tab = HeroDetail.Tab.SKILLS
 
 
@@ -70,8 +70,8 @@ func press_at(at: Vector2) -> void:
 		start_pressed.emit(previews[selected].def.id, previews[bot].def.id, difficulty)
 	if MAP_BUTTON.has_point(at):
 		map_pressed.emit()
-	if VIEW_BUTTON.has_point(at):
-		_cycle_view()
+	if SETTINGS_BUTTON.has_point(at):
+		settings_pressed.emit()
 	queue_redraw()
 
 
@@ -134,10 +134,5 @@ func _bottom() -> void:
 		var on: bool = i == difficulty
 		UiStyle.button(self, diff_rect(i), &"gold" if on else &"ghost", DIFF_NAMES[i], "", 24)
 	UiStyle.button(self, MAP_BUTTON, &"blue", "Map", "", 24)
-	UiStyle.button(self, VIEW_BUTTON, &"ghost", "Đồ họa", GraphicsSetting.NAMES[graphics], 26)
+	UiStyle.button(self, SETTINGS_BUTTON, &"ghost", "Cài đặt", "", 26)
 	UiStyle.button(self, START, &"gold", "BẮT ĐẦU", "", 46)
-
-
-func _cycle_view() -> void:
-	graphics = ((graphics + 1) % GraphicsSetting.NAMES.size()) as GraphicsSetting.Level
-	GraphicsSetting.save_level(graphics)

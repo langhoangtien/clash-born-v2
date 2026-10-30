@@ -26,6 +26,10 @@ func _ready() -> void:
 	audio.name = "Audio"
 	add_child(audio)
 	audio.play_music(&"music_menu")
+	var settings: SettingsControl = SettingsControl.attach(self, false, audio)  # D-183
+	select.settings_pressed.connect(func() -> void:
+		settings.panel.open = true
+		settings.panel.queue_redraw())
 	var updater: Updater = Updater.new()  # D-148: tự kiểm tra bản mới (Android)
 	updater.name = "Updater"
 	add_child(updater)

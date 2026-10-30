@@ -14,7 +14,7 @@ const SEED: int = 1
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
 const SPEEDS: Array[int] = [1, 2, 4, 8]
 const MENU_SCENE: String = "res://app/main.tscn"
-const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · 4–9 dùng đồ · H về thành · B shop · Esc"
+const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · 4–9 dùng đồ · H về thành · B shop · M tiếng · Esc"
 
 @onready var map_view: MapView = $MapView
 @onready var units_view: UnitsView = $UnitsView
@@ -45,6 +45,7 @@ var _build_done: Array[StringName] = []
 var minimap: Minimap
 var shop: ShopPanel
 var view_3d: MatchView3D
+var settings: SettingsControl
 
 
 func _ready() -> void:
@@ -196,6 +197,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		cycle_speed()
 	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_B:
 		shop.toggle()  # D-81: bảng shop tạm
+	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_M:
+		settings.apply(&"sound")  # D-114, D-183
 	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and skills.handle_key(event, _world_point(get_viewport().get_mouse_position())):
 		pass
 	elif event is InputEventKey and event.pressed and (event as InputEventKey).keycode == KEY_ESCAPE:
@@ -208,7 +211,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		input.click_world_point(_world_point((event as InputEventScreenTouch).position), false)
 
 
-## D-114: âm thanh theo sự kiện trận, nhạc trận + tiếng nền map, nút chế độ tiếng (phím M).
+## D-114: âm thanh theo sự kiện trận, nhạc trận + tiếng nền map (chế độ tiếng: bảng Cài đặt hoặc phím M).
 func _setup_audio() -> void:
 	audio = AudioView.new()
 	audio.name = "Audio"
@@ -216,13 +219,6 @@ func _setup_audio() -> void:
 	audio.setup_match(hero.team, hero.id)
 	runner.stepped.connect(func() -> void: audio.on_step(world))
 	audio.play_music(&"music_match", &"amb_map")
-	var toggle: SoundToggle = SoundToggle.new()
-	toggle.name = "SoundToggle"
-	$Hud.add_child(toggle)
-	toggle.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	toggle.pressed.connect(func() -> void:
-		audio.cycle_mode()
-		toggle.queue_redraw())
 
 
 func _map_bounds() -> Rect2:
@@ -244,20 +240,26 @@ func _world_point(screen: Vector2) -> Vector2:
 	return get_canvas_transform().affine_inverse() * screen
 
 
-## D-138: nút Test — cộng vàng / lên cấp cho mình hoặc bot qua lệnh CHEAT_* (CMD-06).
+## D-138: nút Test — cộng vàng / lên cấp cho mình hoặc bot qua lệnh CHEAT_* (CMD-06); D-179 bảng Chẩn đoán.
+## D-183: cả hai ẩn, mở trong bảng Cài đặt (bánh răng góc trên phải).
 func _setup_test_panel() -> void:
 	var panel: TestPanel = TestPanel.new()
 	panel.name = "TestPanel"
 	panel.has_bot = bot_unit != null
-	$Hud.add_child(panel)
-	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	panel.action.connect(_on_test_action)
-	var diag: DiagPanel = DiagPanel.new()  # D-179
+	var diag: DiagPanel = DiagPanel.new()
 	diag.name = "DiagPanel"
 	diag.view_3d = view_3d
-	$Hud.add_child(diag)
-	diag.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	for c: Control in [panel, diag]:
+		c.visible = false
+		$Hud.add_child(c)
+		c.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	diag.read_viewport(get_viewport())
+	settings = SettingsControl.attach($Hud, true, audio)
+	settings.hud = match_hud
+	settings.tools = {&"test": panel, &"diag": diag}
+	settings.quit = func() -> void: get_tree().change_scene_to_file(MENU_SCENE)
+	settings.refresh()
 
 
 func _on_test_action(who: int, what: StringName) -> void:
