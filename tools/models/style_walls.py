@@ -1,13 +1,14 @@
 """Rào đá, tường thành dựng bằng khối đá thật (D-185, theo concept): mỗi viên đá là một khối vát mép, cỡ lệch
-nhau, màu xám ấm, mạch là khe giữa các khối — không dán ảnh vân. Dùng helper của style_kit."""
+nhau, cùng màu đá rừng (D-186), mạch là khe giữa các khối — không dán ảnh vân. Dùng helper của style_kit."""
 import bmesh
 from mathutils import Vector
 import style_kit as K
 
-STONE_LIGHT = (158, 152, 138)   # mặt đỉnh
-STONE_FACE = (132, 127, 116)    # mặt đứng
-STONE_ALT = (120, 116, 106)     # viên lệch tông
-MOSS = (110, 122, 70)
+# D-186: cùng bảng màu đá rừng (style_kit.STONE / STONE_TOP / MOSS) — mọi đá trong game một tông.
+STONE_LIGHT = K.STONE_TOP       # mặt đỉnh
+STONE_FACE = (116, 121, 126)    # mặt đứng (sáng hơn STONE một chút: tường to, đứng gần lane)
+STONE_ALT = K.STONE             # viên lệch tông
+MOSS = K.MOSS
 
 
 def block(bm, cx, cy, sx, sy, z0, z1, bevel):
