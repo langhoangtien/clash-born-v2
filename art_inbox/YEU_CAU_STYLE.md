@@ -37,7 +37,9 @@ Phiếu này **thay hướng** của `YEU_CAU_KIT_MAP.md` (bản 3): không còn
 | [x] | `wall_face` | Mặt tường thành cổ: các lớp đá khối lớn xếp hàng ngang (mỗi viên ~1 × 0,6 m), mạch vữa sẫm, rêu ở mép dưới; **lặp liền mép theo chiều ngang** (chiều dọc cũng lặp) | 4 m |
 | [x] | `riverbed` | Đáy sông nông: sỏi, đá cuội xanh lam sẫm `#2C4C58`, vài cọng rong | 6 m |
 
-## Đợt T2 — vân tán lá (thêm sau vòng 2 cảnh mẫu)
+## Đợt T2 — vân tán lá (thêm sau vòng 2 cảnh mẫu) — **ĐÃ BỎ (D-182)**
+
+Người dùng chơi thử: tán cây không vân (chỉ màu mô hình) gọn mắt hơn. Ảnh đã gỡ khỏi game, không làm lại.
 
 Tán cây là mô hình low-poly đã tô màu sẵn; ảnh này chỉ dán lên để có **nét cọ lá** (game lấy sáng tối của ảnh,
 giữ màu mô hình). Cùng yêu cầu kỹ thuật như đợt T (1024, lặp liền mép, nhìn thẳng, không bóng theo hướng).
@@ -46,6 +48,26 @@ giữ màu mô hình). Cùng yêu cầu kỹ thuật như đợt T (1024, lặp 
 |---|---|---|---|
 | [x] | `foliage_pine` | Lá kim thông vẽ tay: các cụm lá nhọn rủ xuống, xếp chồng như vảy, xanh lam đậm `#2E5454` – sáng `#5C7E60` | 2 m |
 | [x] | `foliage_leaf` | Lá cây tán tròn vẽ tay: các chùm lá tròn nhỏ chồng lớp, ô-liu `#70864A` – sáng `#9AAE66` | 2 m |
+
+## Đợt T3 — làm lại đường đất và đá tường / rào (D-182, sau chơi thử)
+
+Người dùng chơi thử: **`pave` (đá lát lane), `rock_face`, `riverbed`, `grass` đạt** — giữ nguyên. Hai ảnh dưới
+"lệch quẻ" so với `pave` và phải làm lại:
+
+- `dirt` cũ: **cam quá đậm**, vệt chéo cùng một hướng lặp lại rõ, nhìn như cát sa mạc, không cùng họ với cỏ và
+  đá lát.
+- `wall_face` cũ: **gạch xanh xám lạnh xếp đều như gạch lát hiện đại**, mặt phẳng, không cùng họ với `pave`.
+
+**Mẫu cần bám: `assets/textures/style/pave.png`** (đính kèm khi tạo, cùng `concept.webp`) — cùng nét cọ, cùng độ
+tương phản, cùng tông ấm xám ô-liu, viên đá mép bo tròn, rêu xanh nhạt trong khe. Hai ảnh mới đặt cạnh `pave`
+phải trông như cùng một bộ.
+
+| Xong | Tên | Nội dung | Ảnh 1024 phủ |
+|---|---|---|---|
+| [ ] | `dirt` | Đường đất nện trong rừng: be xám ấm `#A69676` – sẫm `#8C7C5E` (ngả về màu khe của `pave`, **không cam**), mặt đất phẳng mịn có mảng sáng tối loang **không theo hướng nào**, sỏi dẹt nhỏ li ti rải thưa, vài mảng cỏ khô nhỏ màu ô-liu nhạt. Không vệt bánh xe, không vệt chéo | 6 m |
+| [ ] | `wall_face` | Mặt tường thành / rào đá: **cùng loại đá với `pave`** (xám ấm `#8A8A80`, sáng `#A4A296`, tối `#6C6C64`) nhưng xếp thành hàng khối lớn **không đều** (cao 0,5–0,7 m, dài 0,8–1,6 m), mép bo tròn vẽ tay, mạch vữa sẫm ấm, rêu xanh nhạt ở mạch dưới. Mỗi hàng lệch nhau, không kẻ thẳng tắp như gạch. **Lặp liền mép cả ngang lẫn dọc** | 4 m |
+
+Nộp xong `dirt` và `wall_face` thì **DỪNG**, báo người dùng.
 
 ## Đợt C — thẻ so màu (sau khi đợt T được duyệt)
 
