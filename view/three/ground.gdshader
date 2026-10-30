@@ -18,6 +18,10 @@ uniform float pave_m = 5.0;
 uniform vec3 dirt_tint = vec3(0.80, 0.92, 0.98);
 uniform vec3 shadow_tint = vec3(0.50, 0.60, 0.70);
 uniform vec3 grass_warm = vec3(1.06, 1.02, 0.9);
+// D-186: đá lát lấy sáng tối của ảnh, tô màu đá chung (cùng đá rừng): pave_tint = màu trung bình mong muốn,
+// pave_luma = độ sáng trung bình của ảnh theo giá trị điểm ảnh (units_3d.json).
+uniform vec3 pave_tint : source_color = vec3(0.5);
+uniform float pave_luma = 0.5;
 uniform vec4 eyes[64];
 uniform int eye_count = 0;
 uniform vec4 fog_color : source_color = vec4(0.02, 0.03, 0.07, 0.6);
@@ -49,7 +53,8 @@ void fragment() {
 	float wobble = (dot(g, vec3(0.33)) - 0.3) * 1.5;
 	col = mix(col, texture(forest_tex, xz / grass_m).rgb, smoothstep(0.25, 0.65, m.b + wobble * 0.3));
 	col = mix(col, texture(dirt_tex, r / dirt_m).rgb * dirt_tint, smoothstep(0.35, 0.6, m.r + wobble * 0.5));
-	col = mix(col, texture(pave_tex, xz / pave_m).rgb, smoothstep(0.4, 0.6, m.g + wobble * 0.2));
+	float pl = dot(texture(pave_tex, xz / pave_m).rgb, vec3(0.2126, 0.7152, 0.0722));
+	col = mix(col, pave_tint * (pl / pave_luma), smoothstep(0.4, 0.6, m.g + wobble * 0.2));
 	col *= mix(vec3(1.0), shadow_tint, m.a);
 	ALBEDO = mix(col, fog_color.rgb, fog_color.a * (1.0 - lit(xz)));
 }
