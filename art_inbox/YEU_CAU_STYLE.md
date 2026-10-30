@@ -64,8 +64,8 @@ phải trông như cùng một bộ.
 
 | Xong | Tên | Nội dung | Ảnh 1024 phủ |
 |---|---|---|---|
-| [ ] | `dirt` | Đường đất nện trong rừng: be xám ấm `#A69676` – sẫm `#8C7C5E` (ngả về màu khe của `pave`, **không cam**), mặt đất phẳng mịn có mảng sáng tối loang **không theo hướng nào**, sỏi dẹt nhỏ li ti rải thưa, vài mảng cỏ khô nhỏ màu ô-liu nhạt. Không vệt bánh xe, không vệt chéo | 6 m |
-| [ ] | `wall_face` | Mặt tường thành / rào đá: **cùng loại đá với `pave`** (xám ấm `#8A8A80`, sáng `#A4A296`, tối `#6C6C64`) nhưng xếp thành hàng khối lớn **không đều** (cao 0,5–0,7 m, dài 0,8–1,6 m), mép bo tròn vẽ tay, mạch vữa sẫm ấm, rêu xanh nhạt ở mạch dưới. Mỗi hàng lệch nhau, không kẻ thẳng tắp như gạch. **Lặp liền mép cả ngang lẫn dọc** | 4 m |
+| [x] | `dirt` | Đường đất nện trong rừng: be xám ấm `#A69676` – sẫm `#8C7C5E` (ngả về màu khe của `pave`, **không cam**), mặt đất phẳng mịn có mảng sáng tối loang **không theo hướng nào**, sỏi dẹt nhỏ li ti rải thưa, vài mảng cỏ khô nhỏ màu ô-liu nhạt. Không vệt bánh xe, không vệt chéo. Làm lại: bỏ cam / vệt chéo, đồng bộ nét cọ với `pave`. | 6 m |
+| [x] | `wall_face` | Mặt tường thành / rào đá: **cùng loại đá với `pave`** (xám ấm `#8A8A80`, sáng `#A4A296`, tối `#6C6C64`) nhưng xếp thành hàng khối lớn **không đều** (cao 0,5–0,7 m, dài 0,8–1,6 m), mép bo tròn vẽ tay, mạch vữa sẫm ấm, rêu xanh nhạt ở mạch dưới. Mỗi hàng lệch nhau, không kẻ thẳng tắp như gạch. **Lặp liền mép cả ngang lẫn dọc**. Làm lại: bỏ lưới gạch lạnh đều, dùng đá bo tròn cùng họ `pave`. | 4 m |
 
 Nộp xong `dirt` và `wall_face` thì **DỪNG**, báo người dùng.
 
