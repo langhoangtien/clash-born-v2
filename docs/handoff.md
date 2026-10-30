@@ -1,13 +1,13 @@
 # Bàn giao — Clashborn v2 (2026-10-29)
 
 Tóm tắt để phiên làm việc mới (tài khoản Claude mới) làm tiếp. Đọc file này rồi đọc `AGENTS.md`
-(quy trình bắt buộc), `docs/DECISIONS.md` (các dòng D-167 → D-181) và `art_inbox/YEU_CAU_STYLE.md`.
+(quy trình bắt buộc), `docs/DECISIONS.md` (các dòng D-167 → D-183) và `art_inbox/YEU_CAU_STYLE.md`.
 
 ## 1. Trạng thái repo
 
 - Repo: `langhoangtien/clash-born-v2`. Game Godot **4.7.2**, MOBA 3D, máy thử: Huawei MatePad 11.5.
 - **Nhánh đang làm: `thu-asset-tu-lam`** (nhánh thử hình / map, **chưa gộp vào `main`**).
-  `main` dừng ở D-167. Mọi thay đổi D-168 → D-181 chỉ có trên nhánh này.
+  `main` dừng ở D-167. Mọi thay đổi D-168 → D-183 chỉ có trên nhánh này.
 - Test (`GODOT=... bash tools/run_tests.sh [--soak]`): xem số mới nhất trong dòng D-178 của ROADMAP / tin nhắn cuối.
 - **Không build APK / web khi người dùng chưa bảo** (người dùng thử trên PC).
 - Người dùng nói tiếng Việt; muốn **bàn trước khi làm** việc lớn. Không kiểm tra id hero / chiêu / đồ trong code.
@@ -24,6 +24,8 @@ Tóm tắt để phiên làm việc mới (tài khoản Claude mới) làm tiế
 | **D-179** | Bảng chẩn đoán FPS trong trận (`view/hud/diag_panel.gd`, phím G); đá viền nằm hẳn trong vùng chặn, chiều cao đá / cây theo khoảng trống phía bắc (không che tướng); lối rộng hơn + 5 lối cắt bục; bụi cỏ mới `style/bush_*` to hơn. APK có bảng chẩn đoán đã gửi người dùng đo. |
 | **D-180** | Bỏ lớp 2D (SubViewport) trong trận: hình trên đất vẽ bằng `GroundCanvas` (MultiMesh + shader cắt hình), sương trong shader mặt đất, shader đất 6 lần đọc ảnh. Người chơi đo D-179: độ phân giải 8–10 fps, lớp 2D 4–5, cảnh vật 1–2; giảm độ phân giải 3D không thấy mờ → chọn mặc định thấp hơn sau khi đo lại. |
 | **D-181** | Đo D-180: mid 38–40 fps, đi đường 57–62. Mức đồ họa = độ phân giải 3D: Thấp 50% (mặc định) / Vừa 75% / Cao 100%, bỏ MSAA. |
+| **D-182** | Bỏ vân tán cây; phiếu Codex đợt T3 (`art_inbox/YEU_CAU_STYLE.md`): làm lại `dirt`, `wall_face` theo mẫu `pave`. **Chờ Codex nộp** → chép vào `assets/textures/style/`, chụp cho người dùng xem. |
+| **D-183** | Bảng Cài đặt (bánh răng trong trận, nút Cài đặt ở menu), tỷ số trong khung màu đội, chân dung + dấu "i" ở ô máu. |
 
 ## 3. Đang dở / việc tiếp theo (theo thứ tự)
 

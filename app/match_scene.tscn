@@ -49,9 +49,9 @@ script = ExtResource("11_buff")
 
 [node name="Info" type="Label" parent="Hud"]
 offset_left = 700.0
-offset_top = 76.0
+offset_top = 96.0
 offset_right = 1500.0
-offset_bottom = 110.0
+offset_bottom = 130.0
 theme_override_font_sizes/font_size = 20
 
 [node name="Joystick" type="Control" parent="Hud"]

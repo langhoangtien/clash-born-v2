@@ -79,6 +79,7 @@ func _gui_input(event: InputEvent) -> void:
 func _unhandled_key_input(event: InputEvent) -> void:
 	var k: InputEventKey = event as InputEventKey
 	if k != null and k.pressed and not k.echo and k.keycode == KEY_G:
+		visible = true  # D-183: ẩn mặc định, phím tắt cũng hiện bảng
 		open = not open
 		queue_redraw()
 
