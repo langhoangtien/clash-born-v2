@@ -24,9 +24,6 @@ var show_labels: bool = false
 ## SHOP-02: bán kính vẽ quanh shop ẩn (hiển thị; khớp shop_radius trong BalanceSettings).
 var shop_radius: float = 600.0
 
-## D-178: vẽ mặt đất + vật cản 2D (màn xem map, true). Màn trận tắt: mặt đất do Terrain3D vẽ, MapView chỉ
-## còn lớp phủ (bụi, shop, đánh dấu) trên nền trong suốt.
-@export var terrain: bool = true
 var _overlay: _Layer
 var _walkability_texture: ImageTexture
 
@@ -45,10 +42,9 @@ func _ready() -> void:
 	if not errors.is_empty():
 		push_error("Dữ liệu map lỗi: " + "; ".join(errors))
 		return
-	if terrain:
-		_add_layer("Outside", func(ci: CanvasItem) -> void: MapPainter.paint_outside(ci, layout))  # D-169
-		_add_layer("Ground", func(ci: CanvasItem) -> void: MapPainter.paint_ground(ci, layout, true))
-		_add_layer("Obstacles", func(ci: CanvasItem) -> void: MapPainter.paint_obstacles(ci, layout, true))
+	_add_layer("Outside", func(ci: CanvasItem) -> void: MapPainter.paint_outside(ci, layout))  # D-169
+	_add_layer("Ground", func(ci: CanvasItem) -> void: MapPainter.paint_ground(ci, layout, true))
+	_add_layer("Obstacles", func(ci: CanvasItem) -> void: MapPainter.paint_obstacles(ci, layout, true))
 	_add_layer("Bushes", func(ci: CanvasItem) -> void: MapPainter.paint_bushes(ci, layout, true))
 	_add_layer("Shops", func(ci: CanvasItem) -> void: MapPainter.paint_shops(ci, layout, shop_radius, true))
 	_overlay = _add_layer("Overlay", _paint_overlay)

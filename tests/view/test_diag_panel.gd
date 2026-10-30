@@ -38,7 +38,7 @@ func test_D_179_set_part_hides_scenery_and_actors() -> void:
 	v.add_child(v.scenery)
 	v._ground = MeshInstance3D.new()
 	v.add_child(v._ground)
-	v._ground_textured = ShaderMaterial.new()
+	v._ground_mat = ShaderMaterial.new()
 	v.set_part(&"scenery", false)
 	assert_false(v.scenery.visible, "tắt cảnh vật")
 	v.set_part(&"actors", false)
@@ -46,7 +46,7 @@ func test_D_179_set_part_hides_scenery_and_actors() -> void:
 	v.set_part(&"ground", false)
 	assert_true(v._ground.material_override is StandardMaterial3D, "nền phẳng thay nền ảnh")
 	v.set_part(&"ground", true)
-	assert_eq(v._ground.material_override, v._ground_textured, "bật lại nền ảnh")
+	assert_eq(v._ground.material_override, v._ground_mat, "bật lại nền ảnh")
 	v.free()
 
 

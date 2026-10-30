@@ -28,15 +28,3 @@ func test_overlay_toggles() -> void:
 	view.toggle_overlay(&"walkability")
 	assert_false(view.show_walkability)
 	view.free()
-
-
-func test_D_178_match_map_view_draws_only_overlays() -> void:
-	var view: MapView = MapView.new()
-	view.layout = load("res://data/maps/clashborn.tres") as MapLayout
-	view.terrain = false
-	(Engine.get_main_loop() as SceneTree).root.add_child(view)
-	for layer: String in ["Outside", "Ground", "Obstacles"]:
-		assert_true(view.get_node_or_null(layer) == null, "mặt đất 3D vẽ thay lớp %s" % layer)
-	for layer: String in ["Bushes", "Shops", "Overlay"]:
-		assert_true(view.get_node_or_null(layer) != null, "vẫn có lớp %s" % layer)
-	view.free()

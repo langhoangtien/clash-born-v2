@@ -33,7 +33,7 @@ func test_D_178_ground_masks_cover_map() -> void:
 	var rect: Rect2 = Terrain3D.mask_rect()
 	var size: Vector2 = (load(MAP_PATH) as MapLayout).world_size()
 	assert_true(rect.encloses(Rect2(Vector2.ZERO, size)), "mặt nạ phủ cả map")
-	assert_eq(Terrain3D.mask_image().get_size(), Terrain3D.shadow_image().get_size())
+	assert_eq(Terrain3D.mask_image().get_size(), Terrain3D.depth_image().get_size(), "D-180: ảnh độ sâu nước cùng lưới mặt nạ (bóng ở kênh A mặt nạ)")
 
 
 func test_D_158_rubble_appears_where_tower_fell() -> void:

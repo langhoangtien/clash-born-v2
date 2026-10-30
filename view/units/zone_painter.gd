@@ -5,7 +5,7 @@ extends RefCounted
 
 ## ABL-06/16: vòng báo trước của vùng có độ trễ (lõi lớn dần tới lúc nổ) và vùng tồn tại
 ## (nhấp nháy), vẽ dưới đơn vị; cả hai đội đều thấy.
-static func draw(ci: CanvasItem, world: World) -> void:
+static func draw(ci: GroundCanvas, world: World) -> void:
 	for p: PendingArea in world.pending_areas:
 		if p.radius <= 0.0:
 			continue

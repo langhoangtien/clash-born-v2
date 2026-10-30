@@ -69,12 +69,14 @@ clashborn_v2/
     map/                   MapLayout, MapNavigation, MapValidator, MapShape (mang từ v1), LaneRoute (tiến độ lane)
   view/                    vẽ đơn vị, map, hiệu ứng, HUD, điều khiển cảm ứng;
                            ArtLibrary: tra hình theo id, thiếu thì hình tạm (ART.md)
-    map/                   MapView (màn trận: chỉ lớp phủ, D-178), MapPainter (vẽ phẳng cho màn xem map, minimap)
+    map/                   MapView (màn xem map; trong trận ẩn, chỉ giữ dữ liệu map — D-180), MapPainter (vẽ phẳng
+                           cho màn xem map, minimap)
     units/                 UnitsView: phần dưới đất của đơn vị (bóng, vòng đội / siêu cấp / về thành / tái
-                           sinh, mắt), nội suy giữa hai tick; UnitSprite (ảnh đứng, D-144), Vfx (hiệu ứng chiêu /
+                           sinh, mắt) vẽ vào GroundCanvas, nội suy giữa hai tick; FloatingText (chữ nổi, Bars3D vẽ); UnitSprite (ảnh đứng, D-144), Vfx (hiệu ứng chiêu /
                            đòn), ZonePainter (vùng kỹ năng), StateMarks (dấu trạng thái)
-    three/                 Trận vẽ 3D (D-145, D-157): MatchView3D (mặt đất 2D trong SubViewport dán lên mặt
-                           phẳng, camera), Actor3D (một đơn vị: nhân vật KayKit hoặc ảnh billboard), ModelLibrary
+    three/                 Trận vẽ 3D (D-145, D-157): MatchView3D (mặt đất, camera, sương trong shader đất,
+                           D-180), GroundCanvas + ground_shapes.gdshader (hình phẳng trên đất kiểu lệnh CanvasItem,
+                           mỗi hình một ô MultiMesh — D-180), GroundMarks (bụi, vòng shop, vòng trại dựng một lần), Actor3D (một đơn vị: nhân vật KayKit hoặc ảnh billboard), ModelLibrary
                            (tra assets/models/units_3d.json), Bars3D (thanh máu, dấu trạng thái, ổ khóa),
                            Look3D (ánh sáng, môi trường, bóng chân) — D-146, D-150; Terrain3D + ground / water /
                            kit / kit_tex .gdshader (mặt đất ảnh nền theo mặt nạ, nước, vật liệu cảnh vật vẽ sẵn sáng
