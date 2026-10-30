@@ -50,3 +50,31 @@ func test_D_158_rubble_appears_where_tower_fell() -> void:
 	s.free()
 
 
+
+
+## D-179 (lỗi chơi thử D-178: "đá đi xuyên được"): đá viền bục đặt tâm ngay trên mép vùng chặn nên nửa hòn đá
+## nằm ngoài, đi xuyên qua được. Đá viền (xa nước) phải nằm hẳn trong bục rừng.
+func test_D_179_plateau_rim_rocks_inside_blocked_area() -> void:
+	var layout: MapLayout = load(MAP_PATH) as MapLayout
+	var rocks: int = 0
+	for it: Array in Terrain3D.items():
+		if not [&"rock_tall", &"rock_wide", &"rock_low"].has(StringName(it[0])):
+			continue
+		var p: Vector2 = Vector2(float(it[1]), float(it[2]))
+		if _near_water(layout, p, 400.0):
+			continue  # đá bờ sông (decor_place.river) lún nửa xuống nước
+		rocks += 1
+		var inside: bool = false
+		for shape: MapShape in layout.forest_shapes:
+			inside = inside or Geometry2D.is_point_in_polygon(p, shape.outer)
+		assert_true(inside, "đá viền tại %s nằm trong bục" % p)
+	assert_true(rocks > 300, "bục có viền đá (%d)" % rocks)
+
+
+static func _near_water(layout: MapLayout, p: Vector2, r: float) -> bool:
+	for shape: MapShape in layout.water_shapes:
+		var poly: PackedVector2Array = shape.outer
+		for i: int in poly.size():
+			if Geometry2D.get_closest_point_to_segment(p, poly[i], poly[(i + 1) % poly.size()]).distance_to(p) < r:
+				return true
+	return false

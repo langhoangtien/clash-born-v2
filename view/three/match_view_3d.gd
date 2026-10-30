@@ -36,6 +36,10 @@ var _ground: MeshInstance3D
 ## Vùng lớp đất so với điểm nhìn (px thế giới).
 var _ground_rect: Rect2 = Rect2()
 var _actors: Dictionary[int, Actor3D] = {}
+## D-179: bảng chẩn đoán — mặt nước, vật liệu mặt đất có ảnh nền, có vẽ nhân vật không.
+var _water: MeshInstance3D
+var _ground_textured: Material
+var _show_actors: bool = true
 
 
 ## Dựng bản 3D dưới `parent`, thanh máu vào lớp HUD `hud` (dưới mọi nút).
@@ -68,7 +72,8 @@ func setup(w: World, units_view: UnitsView, ground_nodes: Array[Node]) -> void:
 	layer.add_child(_layer_cam)
 	_ground = MeshInstance3D.new()
 	_ground.mesh = PlaneMesh.new()
-	_ground.material_override = Terrain3D.ground_material(layer.get_texture())  # D-178
+	_ground_textured = Terrain3D.ground_material(layer.get_texture())  # D-178
+	_ground.material_override = _ground_textured
 	add_child(_ground)
 	camera = Camera3D.new()
 	camera.fov = CAM_FOV
@@ -81,7 +86,8 @@ func setup(w: World, units_view: UnitsView, ground_nodes: Array[Node]) -> void:
 	add_child(scenery)
 	if world.map != null:
 		scenery.build(world.map)
-		add_child(Terrain3D.water(world.map))  # D-178
+		_water = Terrain3D.water(world.map)  # D-178
+		add_child(_water)
 
 
 func to_3d(p: Vector2) -> Vector3:
@@ -121,11 +127,36 @@ func update(focus: Vector2) -> void:
 			add_child(a)
 			_actors[e.id] = a
 		a.sync(world, e, to_3d(units.display_position(e)), units.is_moving(e), world.tick - units.hit_tick(e), units.faded(e))
+		a.visible = _show_actors
 	_dispatch_events()
 	for id: int in _actors.keys():
 		if not keep.has(id):
 			_actors[id].queue_free()
 			_actors.erase(id)
+
+
+## D-179: bật / tắt một phần vẽ (bảng chẩn đoán FPS): cảnh vật, nền ảnh (tắt = màu phẳng), lớp 2D (tắt = ngừng
+## vẽ lại), nhân vật, nước.
+func set_part(key: StringName, on: bool) -> void:
+	match key:
+		&"scenery":
+			scenery.visible = on
+		&"ground":
+			_ground.material_override = _ground_textured if on else _flat_ground()
+		&"layer":
+			layer.render_target_update_mode = SubViewport.UPDATE_ALWAYS if on else SubViewport.UPDATE_DISABLED
+		&"actors":
+			_show_actors = on
+		&"water":
+			if _water != null:
+				_water.visible = on
+
+
+static func _flat_ground() -> StandardMaterial3D:
+	var m: StandardMaterial3D = StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.albedo_color = Color(0.42, 0.6, 0.3)  # chỉ để đo, không phải màu trận
+	return m
 
 
 ## Vùng mặt đất đang vẽ (px thế giới) khi nhìn vào `focus` — cho sương và lọc đơn vị.

@@ -200,15 +200,14 @@
    "height": 1.4
   },
   "bushes": [
-   "custom/nature/grass_a",
-   "custom/nature/grass_b",
-   "custom/nature/grass_c",
-   "custom/nature/grass_d"
+   "style/bush_a",
+   "style/bush_b",
+   "style/bush_c"
   ],
-  "bush_spacing": 55.0,
+  "bush_spacing": 75.0,
   "bush_scale": [
-   0.7,
-   0.9
+   0.85,
+   1.1
   ],
   "bush_squash": 1.0,
   "style": {
