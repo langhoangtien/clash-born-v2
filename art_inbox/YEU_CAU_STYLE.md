@@ -77,7 +77,7 @@ và tỉ lệ mong muốn, nhưng mảng màu phẳng như vector). Codex vẽ l
 
 | Xong | Tên | Nội dung | Ảnh 1024 phủ |
 |---|---|---|---|
-| [x] | `dirt_stones` | Đất nện vàng nâu `#B08E5E` (sáng `#C8A672`, tối `#8E7048`) loang mềm không theo hướng nào, vài vết mòn; trên đó **4–6 cụm phiến đá xám ấm** `#948F84` (sáng `#ABA597`, tối `#77736A`) ghép sát nhau, khe hẹp đất sẫm; phiến góc cạnh, **cỡ chênh nhiều** (vài phiến rộng ~1/5 ảnh, nhiều phiến vừa, mảnh nhỏ ven cụm); mặt đá phẳng có vệt cọ và vài vết nứt mảnh, mép trên-trái hơi sáng, mép dưới-phải hơi tối; rêu / cỏ lấm tấm trong vài khe; đá chiếm **khoảng 35–40%** ảnh, phần còn lại là đất | 7 m |
+| [x] | `dirt_stones` | Đất nện be vàng dịu loang mềm, vài vết mòn; trên đó **3–5 cụm phiến đá xám-be nhạt**, phiến lớn và vừa là chính, rất ít mảnh nhỏ; mặt đá phẳng gần như chìm ngang mặt đất, viền mảnh mềm, không bóng khối; rêu / cỏ chỉ lấm tấm trong vài khe. Đá chiếm **khoảng 25–30%**, phần còn lại là khoảng đất trống rộng. Làm lại: bám ảnh concept người dùng gửi, giảm mật độ và độ nổi của đá. | 7 m |
 
 Bắt buộc (ngoài yêu cầu chung ở trên):
 - **NHÌN THẲNG TỪ TRÊN XUỐNG** như bản đồ: phiến đá không có mặt bên, không phối cảnh, không bóng đổ dài.
