@@ -56,9 +56,9 @@ static func ground_material() -> ShaderMaterial:
 	var cfg: Dictionary = _style()["ground"]
 	var m: ShaderMaterial = _masked(GROUND_SHADER)
 	m.set_shader_parameter("mask_tex", ImageTexture.create_from_image(mask_image()))
-	for key: String in ["grass", "forest", "dirt"]:
+	for key: String in ["grass", "forest", "dirt", "stones"]:
 		m.set_shader_parameter(key + "_tex", texture(cfg[key]))
-	for key: String in ["grass_m", "dirt_m"]:
+	for key: String in ["grass_m", "dirt_m", "stones_m"]:
 		m.set_shader_parameter(key, float(cfg[key]))
 	m.set_shader_parameter("dirt_color", Color(cfg["dirt_color"]))  # D-187: đất nện tô màu đất chung
 	m.set_shader_parameter("dirt_luma", float(cfg["dirt_luma"]))

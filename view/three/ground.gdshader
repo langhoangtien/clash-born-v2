@@ -2,24 +2,24 @@ shader_type spatial;
 // D-178, D-180: mặt đất 3D: ảnh nền (cỏ, nền rừng, đất, đá lát) trộn theo mặt nạ của map (decor.py: R đất,
 // G đá lát, B nền rừng, A bóng vẽ sẵn); mép trộn bẻ theo vân cho giống nét vẽ tay; cỏ đổi tông theo vân lớn
 // để không lộ ô lặp. Sương (VIS-01) tính ngay ở đây từ các mắt phe mình (eyes = x, z, tầm nhìn theo mét).
-// D-187, D-188: đường đất rừng và nền lane / base (kênh G) đều là đất nện: ảnh dirt chỉ lấy sáng tối, tô
-// dirt_color; mép cỏ loang theo vân lớn. Phiến đá trên lane / base là khối 3D (decor, stone_flat), không vẽ ở đây.
-// 5 lần đọc ảnh mỗi điểm. Không đèn. Đơn vị: mét.
+// D-187: đường đất rừng (kênh R) là đất nện: ảnh dirt chỉ lấy sáng tối, tô dirt_color. D-190: nền lane / base
+// (kênh G) là ảnh "đất có phiến đá" vẽ sẵn (tools/textures/dirt_stones.py). Mép cỏ loang theo vân lớn.
+// 6 lần đọc ảnh mỗi điểm. Không đèn. Đơn vị: mét.
 render_mode unshaded, cull_back;
 
 uniform sampler2D mask_tex : filter_linear, repeat_disable;
 uniform sampler2D grass_tex : source_color, filter_linear_mipmap, repeat_enable;
 uniform sampler2D forest_tex : source_color, filter_linear_mipmap, repeat_enable;
 uniform sampler2D dirt_tex : source_color, filter_linear_mipmap, repeat_enable;
+uniform sampler2D stones_tex : source_color, filter_linear_mipmap, repeat_enable;
 uniform vec2 mask_origin = vec2(0.0);
 uniform vec2 mask_size = vec2(1.0);
 uniform float grass_m = 7.0;
 uniform float dirt_m = 6.0;
+uniform float stones_m = 7.0;
 // D-187: đất tô màu dirt_color theo sáng tối ảnh dirt (dirt_luma = độ sáng trung bình theo giá trị điểm ảnh).
 uniform vec3 dirt_color : source_color = vec3(0.5);
 uniform float dirt_luma = 0.5;
-// Nền lane / base sáng hơn đường đất rừng một chút (đất nện nhiều người đi).
-uniform float lane_gain = 1.08;
 uniform vec3 shadow_tint = vec3(0.50, 0.60, 0.70);
 uniform vec3 grass_warm = vec3(1.06, 1.02, 0.9);
 uniform vec4 eyes[64];
@@ -57,7 +57,8 @@ void fragment() {
 	float dl = dot(texture(dirt_tex, r / dirt_m).rgb, LUMA) / dirt_luma;
 	vec3 dirt = dirt_color * dl;
 	col = mix(col, dirt, smoothstep(0.35, 0.62, m.r + wobble * 0.6 + patch * 0.15));
-	col = mix(col, dirt * lane_gain, smoothstep(0.4, 0.75, m.g + wobble * 0.3 + patch * 0.15));
+	vec3 stones = texture(stones_tex, xz / stones_m).rgb;
+	col = mix(col, stones, smoothstep(0.4, 0.75, m.g + wobble * 0.3 + patch * 0.15));
 	col *= mix(vec3(1.0), shadow_tint, m.a);
 	ALBEDO = mix(col, fog_color.rgb, fog_color.a * (1.0 - lit(xz)));
 }

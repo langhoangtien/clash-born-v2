@@ -3,7 +3,7 @@ Basis(UP, góc) — đoạn hướng (dx, dz) có góc = −atan2(dz, dx)."""
 import math
 import numpy as np
 from PIL import Image, ImageFilter
-from shapely.geometry import LineString, Point, Polygon, box
+from shapely.geometry import LineString, Point, box
 from shapely.geometry.polygon import orient
 from shapely.ops import unary_union
 
@@ -16,7 +16,6 @@ TREE_STEP = (1.6 * M, 1.45 * M) # lưới cây trong bục (D-179: dày hơn —
 TREE_INSET = 0.95 * M            # sau hàng đá viền (bề sâu ~1,1 m), tán cây chồng lên đỉnh đá
 FENCE_STEP = 3.8 * M             # đoạn rào dài 4 m, chồng nhẹ
 WALL_STEP = 10.0 * M             # đoạn tường thành 10 m
-SLABS = ["stone_flat_a", "stone_flat_b", "stone_flat_c"]  # D-188: phiến đá dẹt ba tông
 
 
 def ragged(img, blur_m, seed, mask_px=8.0):
@@ -207,61 +206,6 @@ def _along(items, line, kind, step):
         for i in range(n):
             t = (i + 0.5) / n
             items.append([kind, a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, ang, 1.0])
-
-
-def path_stones(items, paths, solid, wet, rng):
-    """D-187 (concept 3): phiến đá dẹt rải thưa trên đường đất rừng — dọc mỗi lối, lệch ngang tới 30% bề rộng,
-    không trên bục / nước."""
-    for line, width in paths:
-        d = rng.uniform(0, 150)
-        while d < line.length:
-            p, q = line.interpolate(d), line.interpolate(min(line.length, d + 20))
-            n = math.hypot(q.x - p.x, q.y - p.y) or 1.0
-            off = rng.uniform(-0.3, 0.3) * width * 0.42
-            at = Point(p.x - (q.y - p.y) / n * off, p.y + (q.x - p.x) / n * off)
-            if rng.random() < 0.45 and not solid.contains(at) and not wet.buffer(80).contains(at):
-                items.append([rng.choice(SLABS), at.x, at.y, rng.uniform(0, 6.28), _slab_size(rng)])
-            d += rng.uniform(260, 460)
-
-
-# D-189: cỡ phiến đá (hệ số trên mô hình bán kính ~0,6 m): ít phiến rất to, nhiều phiến vừa, mảnh nhỏ ven cụm.
-SLAB_SIZES = [((1.7, 2.5), 0.15), ((0.8, 1.3), 0.45), ((0.3, 0.55), 0.40)]
-SLAB_R = 0.6 * M  # bán kính mô hình stone_flat ở cỡ 1
-
-
-def _slab_size(rng):
-    t = rng.random()
-    for (lo, hi), w in SLAB_SIZES:
-        if t < w:
-            return rng.uniform(lo, hi)
-        t -= w
-    return rng.uniform(*SLAB_SIZES[-1][0])
-
-
-def lane_slabs(items, m, rng):
-    """D-188, D-189 (ảnh mẫu người chơi): lane và base là đất nện, trên đó phiến đá dẹt xếp theo CỤM thưa — mỗi cụm
-    bán kính 1,5–3 m, phiến cỡ chênh nhiều (SLAB_SIZES), không chồng nhau. Tránh chân trụ / nhà chính."""
-    lanes = unary_union([LineString(p).buffer(m["lane_width"] / 2 - 20) for p in m["lanes"].values()])
-    area = unary_union([lanes] + [Polygon(b["polygon"]).buffer(-60) for b in m["bases"]])
-    keep_out = unary_union([Point(t["pos"]).buffer(230) for t in m["towers"]] + [Point(c).buffer(330) for c in m["cores"]])
-    area = area.difference(keep_out)
-    x0, z0, x1, z1 = area.bounds
-    placed = []
-    clusters = 0
-    while clusters < int(area.area / (4.6 * M) ** 2):
-        c = Point(rng.uniform(x0, x1), rng.uniform(z0, z1))
-        if not area.contains(c):
-            continue
-        clusters += 1
-        rad = rng.uniform(1.5, 3.0) * M
-        for _ in range(rng.randint(5, 10)):
-            sc = _slab_size(rng)
-            a, d = rng.uniform(0, 6.28), rad * math.sqrt(rng.random())
-            p = Point(c.x + math.cos(a) * d, c.y + math.sin(a) * d)
-            r = SLAB_R * sc
-            if area.contains(p) and all(p.distance(q) > (r + rq) * 0.95 for q, rq in placed if abs(q.x - p.x) < 400 and abs(q.y - p.y) < 400):
-                placed.append((p, r))
-                items.append([rng.choice(SLABS), p.x, p.y, rng.uniform(0, 6.28), sc])
 
 
 def scatter(items, m, forest, wet, rng):
