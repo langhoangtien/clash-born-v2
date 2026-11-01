@@ -87,6 +87,21 @@ Bắt buộc (ngoài yêu cầu chung ở trên):
 - Không cỏ dày, không cây, không vật nổi khối. Cỏ hai bên đường game tự trộn.
 - Nộp `art_inbox/08_style/dirt_stones.png` (1024 × 1024) rồi **DỪNG**, báo người dùng.
 
+## Đợt T5 — tường thành rìa map liền mép lane (D-195)
+
+Người dùng bỏ "rào thấp + khoảng trống + tường thành" ở rìa map (người chơi tưởng blink vào khe được): thay bằng
+**một bức tường thành cao liền sát mép lane / rìa map** (ảnh mẫu: tường đá xám khối lớn chạy dọc lane). Claude dựng
+khối tường bằng Blender (hình hộp có gờ, trụ ốp), Codex chỉ làm **ảnh vân dán lên mặt tường**.
+
+| Xong | Tên file (lưu `art_inbox/08_style/`) | Nội dung | Ảnh 1024 phủ |
+|---|---|---|---|
+| [ ] | `castle_wall_face.png` | **Mặt đứng** tường thành nhìn thẳng chính diện (không phối cảnh): các khối đá lớn xám ấm `#8E8A80` (sáng `#A6A196`, tối `#6E6B64`) xếp hàng ngang không đều (cao 0,8–1,2 m, dài 1,2–2,4 m trên 4 m ảnh), mép bo nhẹ vẽ tay, mạch sẫm ấm, ít rêu xanh nhạt ở mạch dưới. **Lặp liền mép ngang và dọc.** Không bóng đổ theo hướng, không cửa / lỗ châu mai | 4 m |
+| [ ] | `castle_wall_top.png` | **Mặt đỉnh** tường nhìn thẳng từ trên xuống: phiến đá lát lớn cùng màu, mép sáng hơn, vài vết nứt. **Lặp liền mép** | 4 m |
+
+Yêu cầu chung như các đợt trên (1024 × 1024, vẽ tay đồng bộ với `dirt_stones`, không chữ). Tông màu phải cùng họ
+đá với đá rừng và phiến đá lane (`assets/textures/style/dirt_stones.png`, `rock_face.png`) — Claude sẽ chạy
+`tools/textures/recolor.py` chỉnh lại nếu lệch, nhưng càng gần càng tốt. Nộp cả hai file rồi **DỪNG**, báo người dùng.
+
 ## Đợt C — thẻ so màu (sau khi đợt T được duyệt)
 
 | Xong | Tên | Nội dung |
