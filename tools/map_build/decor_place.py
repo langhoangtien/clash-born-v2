@@ -3,7 +3,7 @@ Basis(UP, góc) — đoạn hướng (dx, dz) có góc = −atan2(dz, dx)."""
 import math
 import numpy as np
 from PIL import Image, ImageFilter
-from shapely.geometry import LineString, Point, box
+from shapely.geometry import LineString, Point, Polygon, box
 from shapely.geometry.polygon import orient
 from shapely.ops import unary_union
 
@@ -16,6 +16,7 @@ TREE_STEP = (1.6 * M, 1.45 * M) # lưới cây trong bục (D-179: dày hơn —
 TREE_INSET = 0.95 * M            # sau hàng đá viền (bề sâu ~1,1 m), tán cây chồng lên đỉnh đá
 FENCE_STEP = 3.8 * M             # đoạn rào dài 4 m, chồng nhẹ
 WALL_STEP = 10.0 * M             # đoạn tường thành 10 m
+SLABS = ["stone_flat_a", "stone_flat_b", "stone_flat_c"]  # D-188: phiến đá dẹt ba tông
 
 
 def ragged(img, blur_m, seed, mask_px=8.0):
@@ -219,8 +220,35 @@ def path_stones(items, paths, solid, wet, rng):
             off = rng.uniform(-0.3, 0.3) * width * 0.42
             at = Point(p.x - (q.y - p.y) / n * off, p.y + (q.x - p.x) / n * off)
             if rng.random() < 0.55 and not solid.contains(at) and not wet.buffer(80).contains(at):
-                items.append(["stone_flat", at.x, at.y, rng.uniform(0, 6.28), rng.uniform(0.5, 0.9)])
+                items.append([rng.choice(SLABS), at.x, at.y, rng.uniform(0, 6.28), rng.uniform(0.5, 0.9)])
             d += rng.uniform(180, 320)
+
+
+def lane_slabs(items, m, rng):
+    """D-188 (ảnh mẫu người chơi): lane và base là đất nện, trên đó phiến đá dẹt lớn xếp theo CỤM — cụm ngẫu nhiên
+    bán kính 1,2–2,6 m, trong cụm các phiến cách nhau ~1,15 m (lưới lệch), mép cụm có mảnh nhỏ. Tránh chân trụ."""
+    lanes = unary_union([LineString(p).buffer(m["lane_width"] / 2 - 20) for p in m["lanes"].values()])
+    area = unary_union([lanes] + [Polygon(b["polygon"]).buffer(-60) for b in m["bases"]])
+    keep_out = unary_union([Point(t["pos"]).buffer(230) for t in m["towers"]] + [Point(c).buffer(330) for c in m["cores"]])
+    area = area.difference(keep_out)
+    x0, z0, x1, z1 = area.bounds
+    clusters = []
+    while len(clusters) < int(area.area / (2.7 * M) ** 2):
+        c = Point(rng.uniform(x0, x1), rng.uniform(z0, z1))
+        if area.contains(c):
+            clusters.append((c, rng.uniform(1.2, 2.6) * M))
+    step = 1.08 * M
+    z = z0
+    while z < z1:
+        x = x0 + (step * 0.5 if int((z - z0) / step) % 2 else 0.0)
+        while x < x1:
+            p = Point(x + rng.uniform(-0.18, 0.18) * M, z + rng.uniform(-0.18, 0.18) * M)
+            near = min((p.distance(c) / r for c, r in clusters if abs(c.x - p.x) < r and abs(c.y - p.y) < r), default=9.0)
+            if near < 1.0 and area.contains(p):
+                sc = rng.uniform(0.85, 1.05) if near < 0.75 else rng.uniform(0.35, 0.6)
+                items.append([rng.choice(SLABS), p.x, p.y, rng.uniform(0, 6.28), sc])
+            x += step
+        z += step * 0.87
 
 
 def scatter(items, m, forest, wet, rng):

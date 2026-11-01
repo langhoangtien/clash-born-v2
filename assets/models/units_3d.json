@@ -211,7 +211,7 @@
   ],
   "bush_squash": 1.0,
   "style": {
-   "_ghi_chu": "D-178: cảnh vật bộ asset mới (assets/models/style/, decor.py đặt sẵn vị trí) và ảnh nền (assets/textures/style/). faces: mô hình có tên bắt đầu bằng khóa dùng ảnh vân [ảnh, số mét một lần lặp, chỉ lấy sáng tối, độ mạnh]; còn lại tô màu đỉnh. ground / water: số mét một lần lặp ảnh nền; dirt_color: màu đất nện (D-187); pave_moss: lượng cỏ trong khe đá lát (0–1); pave_tint: màu đá chung tô lên đá lát, pave_luma / dirt_luma: độ sáng trung bình của ảnh pave / dirt theo giá trị điểm ảnh (sRGB — trình vẽ Compatibility đọc ảnh như vậy; D-186, tính từ ảnh gốc vì ảnh nén GPU đọc lại không đúng).",
+   "_ghi_chu": "D-178: cảnh vật bộ asset mới (assets/models/style/, decor.py đặt sẵn vị trí) và ảnh nền (assets/textures/style/). faces: mô hình có tên bắt đầu bằng khóa dùng ảnh vân [ảnh, số mét một lần lặp, chỉ lấy sáng tối, độ mạnh]; còn lại tô màu đỉnh. ground / water: số mét một lần lặp ảnh nền; dirt_color: màu đất nện (đường rừng, lane, base — D-187, D-188); dirt_luma: độ sáng trung bình của ảnh dirt theo giá trị điểm ảnh (sRGB — trình vẽ Compatibility đọc ảnh như vậy; D-186, tính từ ảnh gốc vì ảnh nén GPU đọc lại không đúng).",
    "textures": "res://assets/textures/style/",
    "faces": {
     "rock": [
@@ -231,14 +231,9 @@
     "grass": "grass",
     "forest": "grass_dark",
     "dirt": "dirt",
-    "pave": "pave",
     "grass_m": 7.0,
     "dirt_m": 6.0,
-    "pave_m": 5.0,
-    "pave_tint": "#7f8286",
-    "pave_luma": 0.475,
-    "pave_moss": 0.95,
-    "dirt_color": "#8f7d5e",
+    "dirt_color": "#ae8c5c",
     "dirt_luma": 0.545
    },
    "water": {

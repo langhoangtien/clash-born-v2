@@ -116,6 +116,7 @@ def main():
     DP.base_fences(items, m["render"].get("rock_lines", []))
     DP.scatter(items, m, forest, wet, rng)
     DP.path_stones(items, paths_world(m), unary_union(forest).buffer(40), wet, rng)
+    DP.lane_slabs(items, m, rng)
     rgb, depth, n = mask_images(m, forest, rocks, water, edge)
     mask = Image.merge("RGBA", rgb + [shadow_image(items, n, water, edge)])
     data = {"items": [[k, round(x, 1), round(z, 1), round(a, 3), round(s, 3)] + ([round(y[0], 3)] if y else []) for k, x, z, a, s, *y in items],
