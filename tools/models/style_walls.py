@@ -48,3 +48,15 @@ def fence(name, rng, length=4.0, height=1.1, thick=0.7):
     obj = K.finish(name, bm)
     _paint(obj, rng, height)
     return obj
+
+
+def parapet(name, rng, length=2.0, height=0.75, thick=0.55):
+    """D-197: lan can đá thấp mép vực (kiểu Liên Quân): thân thấp + 1 răng cưa (khối vuông nhô) mỗi đoạn 2 m,
+    đặt nối tiếp thành dải. Vân castle_wall_face dán theo mặt."""
+    bm = bmesh.new()
+    block(bm, 0, 0, length, thick + 0.1, 0, 0.2, 0.03)
+    block(bm, 0, 0, length, thick, 0.2, height, 0.04)
+    block(bm, -length * 0.25, 0, length * 0.42, thick + 0.06, height, height + 0.45, 0.06)
+    obj = K.finish(name, bm)
+    _paint(obj, rng, height + 0.45)
+    return obj

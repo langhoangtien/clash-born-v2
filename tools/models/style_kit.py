@@ -251,7 +251,7 @@ def main():
         lambda: leaf_plant("plant_orange", rng),
         lambda: slab("rock_tall", 1.3, 1.1, 2.4, rng), lambda: slab("rock_wide", 1.9, 1.2, 1.8, rng),
         lambda: slab("rock_low", 1.5, 1.1, 1.1, rng), lambda: slab("rock_small", 0.8, 0.7, 0.5, rng),
-        lambda: W.fence("fence", random.Random(51)),
+        lambda: W.fence("fence", random.Random(51)), lambda: W.parapet("parapet", random.Random(57)),
         lambda: blades("reeds", 15, 1.3, 0.45, REED, REED_TIP, rng, 0.09), lambda: blades("grass_tuft", 8, 0.45, 0.25, TUFT, REED, rng, 0.06),
         lambda: lily("lily", rng), lambda: boulder("boulder_a", rng, 1.0, 0.6), lambda: boulder("boulder_b", rng, 0.7, 0.72),
         lambda: bush("bush_a", rng, 56), lambda: bush("bush_b", rng, 46, 0.65, 0.9), lambda: bush("bush_c", rng, 64, 0.85, 1.1),

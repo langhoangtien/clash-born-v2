@@ -80,29 +80,28 @@ static func _near_water(layout: MapLayout, p: Vector2, r: float) -> bool:
 	return false
 
 
-## D-195: rìa map là MỘT khối tường thành liền phủ đúng vùng chặn (không còn rào thấp + khe trước tường thành —
-## người chơi tưởng blink vào được). Mọi điểm rìa map nằm trong một đa giác tường; không còn rào trên rìa.
-func test_D_195_edge_wall_covers_blocked_edge() -> void:
-	var walls: Array = Terrain3D.edge_walls()
-	assert_true(walls.size() >= 2, "có tường rìa hai nửa map (%d)" % walls.size())
+## D-197: rìa map (MAP-12) là vực kiểu Liên Quân — mặt đất 3D không phủ rìa (đất ở đó là vực), lan can đá
+## chạy dọc mép đi được, không còn rào thấp + khe trước tường (D-195 lỗi chơi thử: tưởng blink vào được).
+func test_D_197_edge_is_abyss_not_ground() -> void:
 	var layout: MapLayout = load(MAP_PATH) as MapLayout
 	var size: Vector2 = layout.world_size()
-	for p: Vector2 in [Vector2(150, size.y * 0.3), Vector2(size.x * 0.3, 150), Vector2(size.x - 150, size.y * 0.7), Vector2(size.x * 0.7, size.y - 150)]:
-		var inside: bool = false
-		for poly: PackedVector2Array in walls:
-			inside = inside or Geometry2D.is_point_in_polygon(p, poly)
-		assert_true(inside, "rìa map tại %s có tường" % p)
-	var fences: int = 0
+	var edge_points: Array[Vector2] = [Vector2(150, size.y * 0.3), Vector2(size.x - 150, size.y * 0.7)]
+	for p: Vector2 in edge_points:
+		assert_false(_in_tris(Terrain3D.decor()["ground"], p), "rìa map tại %s không có mặt đất" % p)
+		assert_true(_in_tris(Terrain3D.decor()["abyss"], p), "rìa map tại %s là vực" % p)
+	assert_true(_in_tris(Terrain3D.decor()["ground"], layout.tower_points[0]), "chân trụ có mặt đất")
+
+
+func test_D_197_parapet_along_edge() -> void:
+	var n: int = 0
 	for it: Array in Terrain3D.items():
-		if String(it[0]) == "fence":
-			var q: Vector2 = Vector2(float(it[1]), float(it[2]))
-			for poly: PackedVector2Array in walls:
-				fences += 1 if Geometry2D.is_point_in_polygon(q, poly) or Geometry2D.get_closest_point_to_segment(q, poly[0], poly[1]).distance_to(q) < 1.0 else 0
-	assert_eq(fences, 0, "không còn rào thấp trên rìa map")
+		n += 1 if String(it[0]) == "parapet" else 0
+	assert_true(n > 100, "lan can dọc mép vực (%d đoạn)" % n)
+	assert_true(Terrain3D.abyss_floors() >= 1, "có ảnh đáy vực")
 
 
-func test_D_195_edge_wall_mesh_low_on_south() -> void:
-	var mi: MeshInstance3D = Terrain3D.edge_wall_mesh(9216.0)
-	var box: AABB = mi.mesh.get_aabb()
-	assert_near(box.size.y, Terrain3D.WALL_TALL, 0.01, "tường bắc / tây / đông cao")
-	mi.free()
+static func _in_tris(tris: Array, p: Vector2) -> bool:
+	for t: Array in tris:
+		if Geometry2D.point_is_inside_triangle(p, Vector2(t[0], t[1]), Vector2(t[2], t[3]), Vector2(t[4], t[5])):
+			return true
+	return false

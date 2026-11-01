@@ -11,12 +11,9 @@ const GROUND_SHADER: Shader = preload("res://view/three/ground.gdshader")
 const WATER_SHADER: Shader = preload("res://view/three/water.gdshader")
 const KIT_SHADER: Shader = preload("res://view/three/kit.gdshader")
 const KIT_TEX_SHADER: Shader = preload("res://view/three/kit_tex.gdshader")
-const WALL_SHADER: Shader = preload("res://view/three/castle_wall.gdshader")
-## D-195, D-196: chiều cao tường thành rìa map (m): bắc / tây / đông cao như tường thành; sát cạnh nam (gần
-## camera) thấp cho khỏi che tướng, chuyển dần trong WALL_FADE px tính từ cạnh nam map.
-const WALL_TALL: float = 9.0
-const WALL_LOW: float = 1.2
-const WALL_FADE: Vector2 = Vector2(1500.0, 900.0)
+const ABYSS_SHADER: Shader = preload("res://view/three/abyss.gdshader")
+## D-197: độ sâu vực ngoài rìa map (m).
+const ABYSS_DEPTH: float = 18.0
 ## Mặt nước cao hơn mặt đất (m) cho khỏi chập hình.
 const WATER_Y: float = 0.03
 
@@ -71,55 +68,58 @@ static func ground_material() -> ShaderMaterial:
 	return m
 
 
-## D-195: đa giác rìa map (MAP-12) từ decor json, px thế giới.
-static func edge_walls() -> Array[PackedVector2Array]:
-	var out: Array[PackedVector2Array] = []
-	for ring: Array in decor().get("walls", []):
-		var poly: PackedVector2Array = PackedVector2Array()
-		for p: Array in ring:
-			poly.append(Vector2(float(p[0]), float(p[1])))
-		out.append(poly)
-	return out
-
-
-## D-195: khối tường thành liền dựng thẳng từ các đa giác rìa map — đúng vùng chặn, không khe. Đỉnh phẳng cao
-## WALL_TALL, hạ dần về WALL_LOW sát cạnh nam (`size` = cạnh map px).
-static func edge_wall_mesh(size: float) -> MeshInstance3D:
+## D-197: mặt đất chỉ phủ khung map trừ rìa (tam giác decor `ground`), y = 0.
+static func ground_mesh() -> ArrayMesh:
 	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for poly: PackedVector2Array in edge_walls():
-		if Geometry2D.is_polygon_clockwise(poly):
-			poly.reverse()
-		var tris: PackedInt32Array = Geometry2D.triangulate_polygon(poly)
-		for i: int in range(0, tris.size(), 3):
-			for k: int in [0, 2, 1]:
-				_wall_vertex(st, poly[tris[i + k]], size, true, Vector3.UP)
-		for i: int in poly.size():
-			var a: Vector2 = poly[i]
-			var b: Vector2 = poly[(i + 1) % poly.size()]
-			var n: Vector3 = Vector3(b.y - a.y, 0, -(b.x - a.x)).normalized()  # ngoài đa giác ngược chiều kim
-			for q: Array in [[a, false], [b, false], [b, true], [a, false], [b, true], [a, true]]:
-				_wall_vertex(st, q[0], size, q[1], n)
+	_add_tris(st, decor()["ground"], 0.0)
+	return st.commit()
+
+
+## D-197: vực ngoài rìa map — đáy (tam giác decor `abyss`) sâu ABYSS_DEPTH, vách dọc vòng mép mặt đất (`cliff`).
+## `floor` = chỉ số kiểu đáy vực trong scenery.style.abyss.floors.
+static func abyss(floor: int) -> MeshInstance3D:
+	var st: SurfaceTool = SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	_add_tris(st, decor()["abyss"], -ABYSS_DEPTH)
+	for ring: Array in decor()["cliff"]:
+		for i: int in ring.size():
+			var a: Vector3 = Vector3(float(ring[i][0]), 0, float(ring[i][1])) * MatchView3D.S
+			var j: Array = ring[(i + 1) % ring.size()]
+			var b: Vector3 = Vector3(float(j[0]), 0, float(j[1])) * MatchView3D.S
+			st.set_normal(Vector3(b.z - a.z, 0, a.x - b.x).normalized())
+			var down: Vector3 = Vector3(0, -ABYSS_DEPTH, 0)
+			for v: Vector3 in [a, b, b + down, a, b + down, a + down]:
+				st.add_vertex(v)
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.mesh = st.commit()
+	var cfg: Dictionary = _style()["abyss"]
 	var m: ShaderMaterial = ShaderMaterial.new()
-	m.shader = WALL_SHADER
-	var cfg: Dictionary = _style()["wall"]
-	m.set_shader_parameter("face_tex", texture(cfg["face"]))
-	m.set_shader_parameter("top_tex", texture(cfg["top"]))
-	m.set_shader_parameter("tint", Color(cfg["tint"]))
-	m.set_shader_parameter("face_luma", float(cfg["face_luma"]))
-	m.set_shader_parameter("top_luma", float(cfg["top_luma"]))
-	m.set_shader_parameter("meters", float(cfg["meters"]))
+	m.shader = ABYSS_SHADER
+	m.set_shader_parameter("cliff_tex", texture(cfg["cliff"]))
+	m.set_shader_parameter("mist", Color(cfg["mist"]))
+	m.set_shader_parameter("depth", ABYSS_DEPTH)
 	mi.material_override = m
+	set_abyss_floor(mi, floor)
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mi
 
 
-static func _wall_vertex(st: SurfaceTool, p: Vector2, size: float, top: bool, n: Vector3) -> void:
-	var t: float = clampf((p.y - (size - WALL_FADE.x)) / (WALL_FADE.x - WALL_FADE.y), 0.0, 1.0)
-	st.set_normal(n)
-	st.add_vertex(Vector3(p.x * MatchView3D.S, lerpf(WALL_TALL, WALL_LOW, t) if top else 0.0, p.y * MatchView3D.S))
+## Số kiểu đáy vực đang có (thử chọn, D-197).
+static func abyss_floors() -> int:
+	return (_style()["abyss"]["floors"] as Array).size()
+
+
+static func set_abyss_floor(mi: MeshInstance3D, floor: int) -> void:
+	var name: String = _style()["abyss"]["floors"][floor % abyss_floors()]
+	(mi.material_override as ShaderMaterial).set_shader_parameter("floor_tex", texture(name))
+
+
+static func _add_tris(st: SurfaceTool, tris: Array, y: float) -> void:
+	st.set_normal(Vector3.UP)
+	for t: Array in tris:
+		for k: int in [0, 4, 2]:  # đảo chiều cho mặt hướng lên (Godot: mặt trước theo chiều kim đồng hồ)
+			st.add_vertex(Vector3(float(t[k]) * MatchView3D.S, y, float(t[k + 1]) * MatchView3D.S))
 
 
 ## Mặt nước: một lưới tam giác phủ mọi vùng nước của map.

@@ -174,10 +174,10 @@ def base_fences(items, rock_lines):
     """MAP-09 / MAP-10: rào base / fountain bằng đoạn rào đá cùng kiểu rìa map."""
     for line in rock_lines:
         if line.get("kind") == "fence":
-            _along(items, LineString(line["points"]), "fence", FENCE_STEP)
+            along(items, LineString(line["points"]), "fence", FENCE_STEP)
 
 
-def _along(items, line, kind, step):
+def along(items, line, kind, step):
     coords = list(line.coords)
     for a, b in zip(coords, coords[1:]):
         length = math.hypot(b[0] - a[0], b[1] - a[1])

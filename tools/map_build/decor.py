@@ -7,7 +7,8 @@ data/maps/clashborn_decor.json:
   mask    PNG base64 RGBA: R đất nện (đường rừng, base, sân rìa map), G đất có phiến đá (lane), B nền rừng, A bóng vẽ sẵn (nắng tây
           bắc → bóng lệch đông nam) — D-180: gộp một ảnh để shader mặt đất đọc một lần
   water   PNG base64 L: độ sâu nước (shader nước)
-  walls   đa giác rìa map (MAP-12) — VIEW dựng khối tường thành liền từ đó (D-195)
+  ground / abyss  tam giác [x1,z1,x2,z2,x3,z3]: mặt đất (khung map trừ rìa MAP-12) / vực ngoài (D-197)
+  cliff   vòng mép mặt đất — VIEW dựng vách đổ xuống vực
   mask_origin, mask_px: góc trên trái (px thế giới) và số px thế giới mỗi điểm ảnh mặt nạ
 
   python3 tools/map_build/decor.py
@@ -29,6 +30,9 @@ import decor_place as DP  # noqa: E402
 DATA = os.path.join(HERE, "..", "..", "data", "maps")
 MARGIN = 1600.0   # mặt nạ phủ thêm ngoài khung map (px thế giới)
 MASK_PX = 8.0     # px thế giới mỗi điểm ảnh mặt nạ
+RIM = 60.0        # D-197: dải đất ngoài mép đi được (px) — lan can đứng trên đó, sau là vách đổ xuống vực
+PARAPET_STEP = 190.0  # đoạn lan can 2 m, chồng nhẹ
+ABYSS_REACH = 8000.0  # đáy vực phủ ra ngoài khung (px): sâu 18 m nên tia camera chạm đáy rất xa mép
 
 
 def load():
@@ -112,6 +116,22 @@ def shadow_image(items, n, water, edge):
     return img.filter(ImageFilter.GaussianBlur(45 / MASK_PX))
 
 
+def abyss_data(m, edge):
+    """D-197: vực ngoài rìa map. land = khung map trừ rìa (MAP-12) nới RIM; mặt đất 3D chỉ phủ land (tam giác),
+    vực = vùng mặt nạ còn lại; vách = mép land; lan can dọc mép đi được (giữa dải RIM)."""
+    from shapely import constrained_delaunay_triangles
+    from shapely.geometry.polygon import orient
+    size = m["world_size"][0]
+    land = box(0, 0, size, size).difference(unary_union(edge))
+    land_vis = orient(land.buffer(RIM, join_style="mitre").buffer(0), 1.0)
+    outer = box(-ABYSS_REACH, -ABYSS_REACH, size + ABYSS_REACH, size + ABYSS_REACH)
+    tris = lambda g: [[round(c, 1) for xy in list(t.exterior.coords)[:3] for c in xy] for t in constrained_delaunay_triangles(g).geoms]
+    rings = [land_vis.exterior] + list(land_vis.interiors) if land_vis.geom_type == "Polygon" else [p.exterior for p in land_vis.geoms]
+    rail = land.buffer(RIM * 0.5, join_style="mitre")
+    return {"ground": tris(land_vis), "abyss": tris(outer.difference(land_vis)),
+            "cliff": [[[round(x, 1), round(z, 1)] for x, z in r.coords[:-1]] for r in rings]}, rail
+
+
 def b64(img):
     buf = io.BytesIO()
     img.save(buf, "PNG", optimize=True)
@@ -130,11 +150,14 @@ def main():
     DP.river(items, water, bank, rng)
     DP.base_fences(items, m["render"].get("rock_lines", []))
     DP.scatter(items, m, forest, wet, rng)
+    abyss, rail = abyss_data(m, edge)
+    for r in [rail.exterior] + list(rail.interiors):
+        DP.along(items, r, "parapet", PARAPET_STEP)
     rgb, depth, n = mask_images(m, forest, rocks, water, edge)
     mask = Image.merge("RGBA", rgb + [shadow_image(items, n, water, edge)])
     data = {"items": [[k, round(x, 1), round(z, 1), round(a, 3), round(s, 3)] + ([round(y[0], 3)] if y else []) for k, x, z, a, s, *y in items],
             "mask": b64(mask), "water": b64(depth),
-            "walls": [[[round(x, 1), round(z, 1)] for x, z in g.exterior.coords[:-1]] for g in edge],
+            **abyss,
             "mask_origin": [-MARGIN, -MARGIN], "mask_px": MASK_PX}
     json.dump(data, open(os.path.join(DATA, "clashborn_decor.json"), "w"), separators=(",", ":"))
     counts = {}

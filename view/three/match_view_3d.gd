@@ -48,6 +48,8 @@ var _ground_rect: Rect2 = Rect2()
 var _actors: Dictionary[int, Actor3D] = {}
 ## D-179: bảng chẩn đoán — mặt nước, vật liệu mặt đất có ảnh nền, có vẽ nhân vật không.
 var _water: MeshInstance3D
+## D-197: vực ngoài rìa map (đổi kiểu đáy trong bảng chẩn đoán).
+var abyss: MeshInstance3D
 var _show_actors: bool = true
 
 
@@ -72,12 +74,9 @@ func setup(w: World, units_view: UnitsView, aim_indicator: AimIndicator) -> void
 	units = units_view
 	aim = aim_indicator
 	_ground = MeshInstance3D.new()
-	_ground.mesh = PlaneMesh.new()
+	_ground.mesh = Terrain3D.ground_mesh()  # D-197: chỉ phủ khung map trừ rìa — ngoài là vực
 	_ground_mat = Terrain3D.ground_material()  # D-178
 	_ground.material_override = _ground_mat
-	var r: Rect2 = Terrain3D.mask_rect()
-	(_ground.mesh as PlaneMesh).size = r.size * S
-	_ground.position = to_3d(r.get_center())
 	add_child(_ground)
 	camera = Camera3D.new()
 	camera.fov = CAM_FOV
@@ -94,7 +93,8 @@ func setup(w: World, units_view: UnitsView, aim_indicator: AimIndicator) -> void
 		scenery.build(world.map)
 		_water = Terrain3D.water(world.map)  # D-178
 		add_child(_water)
-		scenery.add_child(Terrain3D.edge_wall_mesh(world.map.world_size().x))  # D-195: tường rìa map liền khối
+		abyss = Terrain3D.abyss(0)  # D-197: vực ngoài rìa map
+		scenery.add_child(abyss)
 		GroundMarks.paint(marks, world.map, world.balance.shop_radius)
 	add_child(marks)
 	add_child(overlay)
