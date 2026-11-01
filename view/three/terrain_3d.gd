@@ -12,9 +12,9 @@ const WATER_SHADER: Shader = preload("res://view/three/water.gdshader")
 const KIT_SHADER: Shader = preload("res://view/three/kit.gdshader")
 const KIT_TEX_SHADER: Shader = preload("res://view/three/kit_tex.gdshader")
 const WALL_SHADER: Shader = preload("res://view/three/castle_wall.gdshader")
-## D-195: chiều cao khối tường rìa map (m): bắc / tây / đông cao; sát cạnh nam (gần camera) thấp cho khỏi che
-## tướng, chuyển dần trong WALL_FADE px tính từ cạnh nam map.
-const WALL_TALL: float = 3.6
+## D-195, D-196: chiều cao tường thành rìa map (m): bắc / tây / đông cao như tường thành; sát cạnh nam (gần
+## camera) thấp cho khỏi che tướng, chuyển dần trong WALL_FADE px tính từ cạnh nam map.
+const WALL_TALL: float = 9.0
 const WALL_LOW: float = 1.2
 const WALL_FADE: Vector2 = Vector2(1500.0, 900.0)
 ## Mặt nước cao hơn mặt đất (m) cho khỏi chập hình.

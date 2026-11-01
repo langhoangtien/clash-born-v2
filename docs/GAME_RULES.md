@@ -902,10 +902,9 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   bục (mép vuông vức, bỏ mảnh nhỏ hơn 150 ô guide²), mỗi nửa 14–22 bục. Đo trong vùng rừng (cách mép map 1100, cách tim lane quá
   nửa lane + 250, ngoài base): vật cản ≤ 45%; vật cản ngoài bờ sông là rừng; bề rộng lối (gấp đôi khoảng
   trống ở sống lối) trung vị ≥ 500, lối hẹp hơn 300 không quá 5%.
-- `MAP-12` (D-178, D-195) Rìa map: ngoài mép ngoài các lane (cách tim lane quá nửa lane + 4 ô guide = 208), trừ
-  base, là rìa map chặn đường. Hình: một khối tường thành liền dựng thẳng từ đúng vùng chặn (không khe giữa mép
-  đi được và tường), cao 3,6 m, hạ còn 1,2 m sát cạnh nam (camera ở phía nam); tường thành khổng lồ ngoài khung
-  map bắc / tây / đông làm phông.
+- `MAP-12` (D-178, D-195, D-196) Rìa map: ngoài mép ngoài các lane (cách tim lane quá nửa lane + 4 ô guide = 208),
+  trừ base, là rìa map chặn đường. Hình: tường thành cao 9 m dựng thẳng từ đúng vùng chặn (không rào thấp, không
+  khe giữa mép đi được và tường), hạ còn 1,2 m sát cạnh nam (camera ở phía nam).
 - `MAP-04` Cân bằng (D-49): map **đối xứng xoay 180°** quanh tâm (công cụ build giữ nửa
   Blue, sinh nửa Red). Lane an toàn của Blue là BOT, của Red là TOP: ở lane an toàn đợt
   lính đầu gặp nhau ngay ngoài tầm trụ 1 của phe mình (`tower_layout` BOT 760), lane khó

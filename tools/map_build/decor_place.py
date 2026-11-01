@@ -15,7 +15,6 @@ SHADOW_R = {"pine_l": 1.4, "pine_m": 1.2, "pine_s": 1.0, "tree_round": 1.5, "tre
 TREE_STEP = (1.6 * M, 1.45 * M) # lưới cây trong bục (D-179: dày hơn — bục nhìn kín)
 TREE_INSET = 0.95 * M            # sau hàng đá viền (bề sâu ~1,1 m), tán cây chồng lên đỉnh đá
 FENCE_STEP = 3.8 * M             # đoạn rào dài 4 m, chồng nhẹ
-WALL_STEP = 10.0 * M             # đoạn tường thành 10 m
 
 
 def ragged(img, blur_m, seed, mask_px=8.0):
@@ -169,17 +168,6 @@ def _reeds(items, p, frame, rng):
         a, o = rng.uniform(0, span), rng.uniform(50, 160)
         items.append([rng.choice(["grass_tuft", "grass_tuft", "plant_orange"]), p.x + tx * a + nx * o, p.y + tz * a + nz * o, rng.uniform(0, 6.28), rng.uniform(0.8, 1.1)])
     return span
-
-
-def border(items, size):
-    """MAP-12 (D-195): rìa map là khối tường thành liền dựng thẳng từ vùng chặn (Terrain3D.edge_wall_mesh, đa giác
-    `walls` trong decor json) — không rào riêng, không khe. Ngoài khung map: tường thành khổng lồ bắc / tây / đông
-    làm phông (sát khung, liền với khối tường rìa)."""
-    for x in np.arange(-WALL_STEP, size + 2 * WALL_STEP, WALL_STEP):
-        items.append(["great_wall", x, -350.0, 0.0, 1.0])
-    for z in np.arange(-WALL_STEP, size + 2 * WALL_STEP, WALL_STEP):
-        items.append(["great_wall", -350.0, z, math.pi / 2, 1.0])
-        items.append(["great_wall", size + 350.0, z, math.pi / 2, 1.0])
 
 
 def base_fences(items, rock_lines):

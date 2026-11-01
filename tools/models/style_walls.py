@@ -48,19 +48,3 @@ def fence(name, rng, length=4.0, height=1.1, thick=0.7):
     obj = K.finish(name, bm)
     _paint(obj, rng, height)
     return obj
-
-
-def great_wall(name, rng, length=10.0, height=14.0, thick=7.0):
-    """Tường thành khổng lồ: chân loe, thân là các hàng phiến đá lớn (mạch mờ = khe giữa phiến, lõi tối lùi sau),
-    hàng khối đá lớn làm lan can đỉnh."""
-    bm = bmesh.new()
-    block(bm, 0, 0, length, thick + 1.6, 0, 1.4, 0.15)
-    block(bm, 0, 0, length, thick - 0.3, 1.4, height - 1.6, 0.0)  # lõi tối
-    rows = 4
-    for k in range(rows):
-        z0 = 1.4 + k * (height - 3.0) / rows
-        _course(bm, rng, length, -0.15, thick + 0.2 - k * 0.2, z0 + 0.06, z0 + (height - 3.0) / rows, (2.2, 3.6), 0.2)
-    _course(bm, rng, length, 0, thick + 0.4, height - 1.6, height, (1.6, 2.4), 0.18)
-    obj = K.finish(name, bm)
-    _paint(obj, rng, height)
-    return obj

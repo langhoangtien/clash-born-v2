@@ -128,7 +128,6 @@ def main():
     items = []
     DP.plateaus(items, forest, rng)
     DP.river(items, water, bank, rng)
-    DP.border(items, size)
     DP.base_fences(items, m["render"].get("rock_lines", []))
     DP.scatter(items, m, forest, wet, rng)
     rgb, depth, n = mask_images(m, forest, rocks, water, edge)
