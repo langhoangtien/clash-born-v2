@@ -48,6 +48,18 @@ def paths_world(m):
     return out
 
 
+STONE_SHARE = 0.85  # D-194: phần lane có đá (còn lại đất trơn) — phá nhịp lặp của ảnh dirt_stones
+SECTION_M = 6.0     # cỡ đoạn có đá / đất trơn (m, độ nhòe của nhiễu)
+
+
+def stone_sections(n):
+    """D-194: mặt nạ 0/1 nhiễu tần số thấp — đoạn lane có đá (1) xen đoạn đất trơn (0), cỡ vài mét."""
+    rng = np.random.default_rng(194)
+    cells = max(4, int(n * MASK_PX / (SECTION_M * 100)))  # một ô nhiễu ~ SECTION_M mét, phóng to mềm
+    a = np.array(Image.fromarray((rng.random((cells, cells)) * 255).astype(np.uint8)).resize((n, n), Image.BICUBIC)).astype(float)
+    return (a > np.percentile(a, (1 - STONE_SHARE) * 100)).astype(float)
+
+
 def mask_images(m, forest, rocks, water, edge):
     size = m["world_size"][0]
     n = int((size + 2 * MARGIN) / MASK_PX)
@@ -63,6 +75,8 @@ def mask_images(m, forest, rocks, water, edge):
     for pts in m["lanes"].values():
         dd.line(T(pts), fill=255, width=int((m["lane_width"] + 140) / MASK_PX), joint="curve")
         dp.line(T(pts), fill=255, width=int((m["lane_width"] - 20) / MASK_PX), joint="curve")
+    pave = Image.fromarray((np.array(pave) * stone_sections(n)).astype(np.uint8))  # D-194: đoạn có đá / đất trơn
+    dp = ImageDraw.Draw(pave)
     for b in m["bases"]:  # D-192: nền base (đất cao) là đất nện trơn, không đá — kể cả đoạn lane đi qua
         dp.polygon(T(b["polygon"]), fill=0)
         dd.polygon(T(b["polygon"]), fill=255)
