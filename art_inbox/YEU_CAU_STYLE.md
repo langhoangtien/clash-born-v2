@@ -95,8 +95,8 @@ khối tường bằng Blender (hình hộp có gờ, trụ ốp), Codex chỉ l
 
 | Xong | Tên file (lưu `art_inbox/08_style/`) | Nội dung | Ảnh 1024 phủ |
 |---|---|---|---|
-| [ ] | `castle_wall_face.png` | **Mặt đứng** tường thành nhìn thẳng chính diện (không phối cảnh): các khối đá lớn xám ấm `#8E8A80` (sáng `#A6A196`, tối `#6E6B64`) xếp hàng ngang không đều (cao 0,8–1,2 m, dài 1,2–2,4 m trên 4 m ảnh), mép bo nhẹ vẽ tay, mạch sẫm ấm, ít rêu xanh nhạt ở mạch dưới. **Lặp liền mép ngang và dọc.** Không bóng đổ theo hướng, không cửa / lỗ châu mai | 4 m |
-| [ ] | `castle_wall_top.png` | **Mặt đỉnh** tường nhìn thẳng từ trên xuống: phiến đá lát lớn cùng màu, mép sáng hơn, vài vết nứt. **Lặp liền mép** | 4 m |
+| [x] | `castle_wall_face.png` | **Mặt đứng** tường thành nhìn thẳng chính diện (không phối cảnh): các khối đá lớn xếp hàng ngang, mép bo nhẹ vẽ tay, mạch sẫm. **Lặp liền mép ngang và dọc.** Bản người dùng chọn theo concept 1 có tông xám lam; có thể cần chỉnh sang xám ấm khi nhập. | 4 m |
+| [x] | `castle_wall_top.png` | **Mặt đỉnh** tường nhìn thẳng từ trên xuống: phiến đá lát lớn cùng họ với mặt đứng, mép sáng hơn, vài vết nứt. **Lặp liền mép**; khi ghép 3 × 3 vết nứt còn nhận ra nhịp lặp. | 4 m |
 
 Yêu cầu chung như các đợt trên (1024 × 1024, vẽ tay đồng bộ với `dirt_stones`, không chữ). Tông màu phải cùng họ
 đá với đá rừng và phiến đá lane (`assets/textures/style/dirt_stones.png`, `rock_face.png`) — Claude sẽ chạy
