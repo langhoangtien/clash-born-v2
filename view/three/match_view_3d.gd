@@ -94,6 +94,7 @@ func setup(w: World, units_view: UnitsView, aim_indicator: AimIndicator) -> void
 		scenery.build(world.map)
 		_water = Terrain3D.water(world.map)  # D-178
 		add_child(_water)
+		scenery.add_child(Terrain3D.edge_wall_mesh(world.map.world_size().x))  # D-195: tường rìa map liền khối
 		GroundMarks.paint(marks, world.map, world.balance.shop_radius)
 	add_child(marks)
 	add_child(overlay)

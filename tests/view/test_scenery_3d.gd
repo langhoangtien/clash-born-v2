@@ -78,3 +78,31 @@ static func _near_water(layout: MapLayout, p: Vector2, r: float) -> bool:
 			if Geometry2D.get_closest_point_to_segment(p, poly[i], poly[(i + 1) % poly.size()]).distance_to(p) < r:
 				return true
 	return false
+
+
+## D-195: rìa map là MỘT khối tường thành liền phủ đúng vùng chặn (không còn rào thấp + khe trước tường thành —
+## người chơi tưởng blink vào được). Mọi điểm rìa map nằm trong một đa giác tường; không còn rào trên rìa.
+func test_D_195_edge_wall_covers_blocked_edge() -> void:
+	var walls: Array = Terrain3D.edge_walls()
+	assert_true(walls.size() >= 2, "có tường rìa hai nửa map (%d)" % walls.size())
+	var layout: MapLayout = load(MAP_PATH) as MapLayout
+	var size: Vector2 = layout.world_size()
+	for p: Vector2 in [Vector2(150, size.y * 0.3), Vector2(size.x * 0.3, 150), Vector2(size.x - 150, size.y * 0.7), Vector2(size.x * 0.7, size.y - 150)]:
+		var inside: bool = false
+		for poly: PackedVector2Array in walls:
+			inside = inside or Geometry2D.is_point_in_polygon(p, poly)
+		assert_true(inside, "rìa map tại %s có tường" % p)
+	var fences: int = 0
+	for it: Array in Terrain3D.items():
+		if String(it[0]) == "fence":
+			var q: Vector2 = Vector2(float(it[1]), float(it[2]))
+			for poly: PackedVector2Array in walls:
+				fences += 1 if Geometry2D.is_point_in_polygon(q, poly) or Geometry2D.get_closest_point_to_segment(q, poly[0], poly[1]).distance_to(q) < 1.0 else 0
+	assert_eq(fences, 0, "không còn rào thấp trên rìa map")
+
+
+func test_D_195_edge_wall_mesh_low_on_south() -> void:
+	var mi: MeshInstance3D = Terrain3D.edge_wall_mesh(9216.0)
+	var box: AABB = mi.mesh.get_aabb()
+	assert_near(box.size.y, Terrain3D.WALL_TALL, 0.01, "tường bắc / tây / đông cao")
+	mi.free()

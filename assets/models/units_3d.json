@@ -211,7 +211,7 @@
   ],
   "bush_squash": 1.0,
   "style": {
-   "_ghi_chu": "D-178: cảnh vật bộ asset mới (assets/models/style/, decor.py đặt sẵn vị trí) và ảnh nền (assets/textures/style/). faces: mô hình có tên bắt đầu bằng khóa dùng ảnh vân [ảnh, số mét một lần lặp, chỉ lấy sáng tối, độ mạnh]; còn lại tô màu đỉnh. ground / water: số mét một lần lặp ảnh nền; dirt_color: màu đất nện đường rừng (D-187); stones: ảnh đất có phiến đá cho lane / base (D-191: Codex vẽ tay art_inbox/08_style/dirt_stones.png, chỉnh màu bằng tools/textures/recolor.py); dirt_luma: độ sáng trung bình của ảnh dirt theo giá trị điểm ảnh (sRGB — trình vẽ Compatibility đọc ảnh như vậy; D-186, tính từ ảnh gốc vì ảnh nén GPU đọc lại không đúng).",
+   "_ghi_chu": "D-178: cảnh vật bộ asset mới (assets/models/style/, decor.py đặt sẵn vị trí) và ảnh nền (assets/textures/style/). faces: mô hình có tên bắt đầu bằng khóa dùng ảnh vân [ảnh, số mét một lần lặp, chỉ lấy sáng tối, độ mạnh]; còn lại tô màu đỉnh. wall: khối tường thành rìa map D-195 (ảnh Codex chỉ lấy sáng tối, tô tint; *_luma = độ sáng trung bình ảnh); ground / water: số mét một lần lặp ảnh nền; dirt_color: màu đất nện đường rừng (D-187); stones: ảnh đất có phiến đá cho lane / base (D-191: Codex vẽ tay art_inbox/08_style/dirt_stones.png, chỉnh màu bằng tools/textures/recolor.py); dirt_luma: độ sáng trung bình của ảnh dirt theo giá trị điểm ảnh (sRGB — trình vẽ Compatibility đọc ảnh như vậy; D-186, tính từ ảnh gốc vì ảnh nén GPU đọc lại không đúng).",
    "textures": "res://assets/textures/style/",
    "faces": {
     "rock": [
@@ -237,6 +237,14 @@
     "stones_m": 8.0,
     "dirt_color": "#ae8c5c",
     "dirt_luma": 0.545
+   },
+   "wall": {
+    "face": "castle_wall_face",
+    "top": "castle_wall_top",
+    "tint": "#8f897e",
+    "face_luma": 0.369,
+    "top_luma": 0.45,
+    "meters": 4.0
    },
    "water": {
     "bed": "riverbed",

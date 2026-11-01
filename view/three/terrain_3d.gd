@@ -11,6 +11,12 @@ const GROUND_SHADER: Shader = preload("res://view/three/ground.gdshader")
 const WATER_SHADER: Shader = preload("res://view/three/water.gdshader")
 const KIT_SHADER: Shader = preload("res://view/three/kit.gdshader")
 const KIT_TEX_SHADER: Shader = preload("res://view/three/kit_tex.gdshader")
+const WALL_SHADER: Shader = preload("res://view/three/castle_wall.gdshader")
+## D-195: chiều cao khối tường rìa map (m): bắc / tây / đông cao; sát cạnh nam (gần camera) thấp cho khỏi che
+## tướng, chuyển dần trong WALL_FADE px tính từ cạnh nam map.
+const WALL_TALL: float = 3.6
+const WALL_LOW: float = 1.2
+const WALL_FADE: Vector2 = Vector2(1500.0, 900.0)
 ## Mặt nước cao hơn mặt đất (m) cho khỏi chập hình.
 const WATER_Y: float = 0.03
 
@@ -63,6 +69,57 @@ static func ground_material() -> ShaderMaterial:
 	m.set_shader_parameter("dirt_color", Color(cfg["dirt_color"]))  # D-187: đất nện tô màu đất chung
 	m.set_shader_parameter("dirt_luma", float(cfg["dirt_luma"]))
 	return m
+
+
+## D-195: đa giác rìa map (MAP-12) từ decor json, px thế giới.
+static func edge_walls() -> Array[PackedVector2Array]:
+	var out: Array[PackedVector2Array] = []
+	for ring: Array in decor().get("walls", []):
+		var poly: PackedVector2Array = PackedVector2Array()
+		for p: Array in ring:
+			poly.append(Vector2(float(p[0]), float(p[1])))
+		out.append(poly)
+	return out
+
+
+## D-195: khối tường thành liền dựng thẳng từ các đa giác rìa map — đúng vùng chặn, không khe. Đỉnh phẳng cao
+## WALL_TALL, hạ dần về WALL_LOW sát cạnh nam (`size` = cạnh map px).
+static func edge_wall_mesh(size: float) -> MeshInstance3D:
+	var st: SurfaceTool = SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for poly: PackedVector2Array in edge_walls():
+		if Geometry2D.is_polygon_clockwise(poly):
+			poly.reverse()
+		var tris: PackedInt32Array = Geometry2D.triangulate_polygon(poly)
+		for i: int in range(0, tris.size(), 3):
+			for k: int in [0, 2, 1]:
+				_wall_vertex(st, poly[tris[i + k]], size, true, Vector3.UP)
+		for i: int in poly.size():
+			var a: Vector2 = poly[i]
+			var b: Vector2 = poly[(i + 1) % poly.size()]
+			var n: Vector3 = Vector3(b.y - a.y, 0, -(b.x - a.x)).normalized()  # ngoài đa giác ngược chiều kim
+			for q: Array in [[a, false], [b, false], [b, true], [a, false], [b, true], [a, true]]:
+				_wall_vertex(st, q[0], size, q[1], n)
+	var mi: MeshInstance3D = MeshInstance3D.new()
+	mi.mesh = st.commit()
+	var m: ShaderMaterial = ShaderMaterial.new()
+	m.shader = WALL_SHADER
+	var cfg: Dictionary = _style()["wall"]
+	m.set_shader_parameter("face_tex", texture(cfg["face"]))
+	m.set_shader_parameter("top_tex", texture(cfg["top"]))
+	m.set_shader_parameter("tint", Color(cfg["tint"]))
+	m.set_shader_parameter("face_luma", float(cfg["face_luma"]))
+	m.set_shader_parameter("top_luma", float(cfg["top_luma"]))
+	m.set_shader_parameter("meters", float(cfg["meters"]))
+	mi.material_override = m
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return mi
+
+
+static func _wall_vertex(st: SurfaceTool, p: Vector2, size: float, top: bool, n: Vector3) -> void:
+	var t: float = clampf((p.y - (size - WALL_FADE.x)) / (WALL_FADE.x - WALL_FADE.y), 0.0, 1.0)
+	st.set_normal(n)
+	st.add_vertex(Vector3(p.x * MatchView3D.S, lerpf(WALL_TALL, WALL_LOW, t) if top else 0.0, p.y * MatchView3D.S))
 
 
 ## Mặt nước: một lưới tam giác phủ mọi vùng nước của map.

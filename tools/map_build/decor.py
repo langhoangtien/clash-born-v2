@@ -7,6 +7,7 @@ data/maps/clashborn_decor.json:
   mask    PNG base64 RGBA: R đất nện (đường rừng, base, sân rìa map), G đất có phiến đá (lane), B nền rừng, A bóng vẽ sẵn (nắng tây
           bắc → bóng lệch đông nam) — D-180: gộp một ảnh để shader mặt đất đọc một lần
   water   PNG base64 L: độ sâu nước (shader nước)
+  walls   đa giác rìa map (MAP-12) — VIEW dựng khối tường thành liền từ đó (D-195)
   mask_origin, mask_px: góc trên trái (px thế giới) và số px thế giới mỗi điểm ảnh mặt nạ
 
   python3 tools/map_build/decor.py
@@ -127,13 +128,14 @@ def main():
     items = []
     DP.plateaus(items, forest, rng)
     DP.river(items, water, bank, rng)
-    DP.border(items, edge, size, rng)
+    DP.border(items, size)
     DP.base_fences(items, m["render"].get("rock_lines", []))
     DP.scatter(items, m, forest, wet, rng)
     rgb, depth, n = mask_images(m, forest, rocks, water, edge)
     mask = Image.merge("RGBA", rgb + [shadow_image(items, n, water, edge)])
     data = {"items": [[k, round(x, 1), round(z, 1), round(a, 3), round(s, 3)] + ([round(y[0], 3)] if y else []) for k, x, z, a, s, *y in items],
             "mask": b64(mask), "water": b64(depth),
+            "walls": [[[round(x, 1), round(z, 1)] for x, z in g.exterior.coords[:-1]] for g in edge],
             "mask_origin": [-MARGIN, -MARGIN], "mask_px": MASK_PX}
     json.dump(data, open(os.path.join(DATA, "clashborn_decor.json"), "w"), separators=(",", ":"))
     counts = {}

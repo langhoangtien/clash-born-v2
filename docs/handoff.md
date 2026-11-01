@@ -27,6 +27,7 @@ Tóm tắt để phiên làm việc mới (tài khoản Claude mới) làm tiế
 | **D-182, D-184, D-185** | Bỏ vân tán cây; `dirt` mới của Codex không đạt (giữ ảnh cũ); rào / tường thành dựng bằng khối đá (`tools/models/style_walls.py`), bỏ vân `wall_face`. |
 | **D-183** | Bảng Cài đặt (bánh răng trong trận, nút Cài đặt ở menu), tỷ số trong khung màu đội, chân dung + dấu "i" ở ô máu. |
 | **D-186…D-188** | Màu đá chung (đá rừng làm chuẩn). Đường rừng: đất nện (`dirt_color`); lane / base: ảnh `dirt_stones` Codex vẽ tay, chỉnh màu bằng `tools/textures/recolor.py` (D-191). Thông số trong `units_3d.json` → `scenery.style.ground`. |
+| **D-195** | Rìa map = khối tường thành liền dựng từ vùng chặn (`Terrain3D.edge_wall_mesh`, vân Codex `castle_wall_*`), bỏ rào thấp + khe. |
 
 ## 3. Đang dở / việc tiếp theo (theo thứ tự)
 

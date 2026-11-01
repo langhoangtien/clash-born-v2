@@ -171,20 +171,12 @@ def _reeds(items, p, frame, rng):
     return span
 
 
-def border(items, edge, size, rng):
-    """MAP-12: rào đá đỉnh phẳng dọc mép rìa map (bỏ đoạn trùng khung), tường thành ngoài khung: bắc / tây / đông
-    cao, nam thấp (camera ở nam)."""
-    frame = box(0, 0, size, size).exterior
-    for g in edge:
-        coords = list(g.exterior.coords)
-        for a, b in zip(coords, coords[1:]):
-            seg = LineString([a, b])
-            if seg.length < 40 or frame.distance(seg.interpolate(0.5, normalized=True)) < 40:
-                continue
-            _along(items, seg, "fence", FENCE_STEP)
+def border(items, size):
+    """MAP-12 (D-195): rìa map là khối tường thành liền dựng thẳng từ vùng chặn (Terrain3D.edge_wall_mesh, đa giác
+    `walls` trong decor json) — không rào riêng, không khe. Ngoài khung map: tường thành khổng lồ bắc / tây / đông
+    làm phông (sát khung, liền với khối tường rìa)."""
     for x in np.arange(-WALL_STEP, size + 2 * WALL_STEP, WALL_STEP):
         items.append(["great_wall", x, -350.0, 0.0, 1.0])
-        items.append(["wall_low", x, size + 150.0, 0.0, 1.0])
     for z in np.arange(-WALL_STEP, size + 2 * WALL_STEP, WALL_STEP):
         items.append(["great_wall", -350.0, z, math.pi / 2, 1.0])
         items.append(["great_wall", size + 350.0, z, math.pi / 2, 1.0])

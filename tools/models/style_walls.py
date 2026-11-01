@@ -64,14 +64,3 @@ def great_wall(name, rng, length=10.0, height=14.0, thick=7.0):
     obj = K.finish(name, bm)
     _paint(obj, rng, height)
     return obj
-
-
-def wall_low(name, rng, length=10.0, height=1.8, thick=3.0):
-    """Tường thành cạnh nam (gần camera, MAP-12): thấp, chân loe, hàng khối đá lớn — không che tướng."""
-    bm = bmesh.new()
-    block(bm, 0, 0, length, thick + 0.8, 0, 0.5, 0.08)
-    block(bm, 0, 0, length, thick - 0.2, 0.5, height - 0.6, 0.0)
-    _course(bm, rng, length, 0, thick, height - 0.7, height, (1.4, 2.2), 0.12)
-    obj = K.finish(name, bm)
-    _paint(obj, rng, height)
-    return obj
