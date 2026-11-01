@@ -219,36 +219,49 @@ def path_stones(items, paths, solid, wet, rng):
             n = math.hypot(q.x - p.x, q.y - p.y) or 1.0
             off = rng.uniform(-0.3, 0.3) * width * 0.42
             at = Point(p.x - (q.y - p.y) / n * off, p.y + (q.x - p.x) / n * off)
-            if rng.random() < 0.55 and not solid.contains(at) and not wet.buffer(80).contains(at):
-                items.append([rng.choice(SLABS), at.x, at.y, rng.uniform(0, 6.28), rng.uniform(0.5, 0.9)])
-            d += rng.uniform(180, 320)
+            if rng.random() < 0.45 and not solid.contains(at) and not wet.buffer(80).contains(at):
+                items.append([rng.choice(SLABS), at.x, at.y, rng.uniform(0, 6.28), _slab_size(rng)])
+            d += rng.uniform(260, 460)
+
+
+# D-189: cỡ phiến đá (hệ số trên mô hình bán kính ~0,6 m): ít phiến rất to, nhiều phiến vừa, mảnh nhỏ ven cụm.
+SLAB_SIZES = [((1.7, 2.5), 0.15), ((0.8, 1.3), 0.45), ((0.3, 0.55), 0.40)]
+SLAB_R = 0.6 * M  # bán kính mô hình stone_flat ở cỡ 1
+
+
+def _slab_size(rng):
+    t = rng.random()
+    for (lo, hi), w in SLAB_SIZES:
+        if t < w:
+            return rng.uniform(lo, hi)
+        t -= w
+    return rng.uniform(*SLAB_SIZES[-1][0])
 
 
 def lane_slabs(items, m, rng):
-    """D-188 (ảnh mẫu người chơi): lane và base là đất nện, trên đó phiến đá dẹt lớn xếp theo CỤM — cụm ngẫu nhiên
-    bán kính 1,2–2,6 m, trong cụm các phiến cách nhau ~1,15 m (lưới lệch), mép cụm có mảnh nhỏ. Tránh chân trụ."""
+    """D-188, D-189 (ảnh mẫu người chơi): lane và base là đất nện, trên đó phiến đá dẹt xếp theo CỤM thưa — mỗi cụm
+    bán kính 1,5–3 m, phiến cỡ chênh nhiều (SLAB_SIZES), không chồng nhau. Tránh chân trụ / nhà chính."""
     lanes = unary_union([LineString(p).buffer(m["lane_width"] / 2 - 20) for p in m["lanes"].values()])
     area = unary_union([lanes] + [Polygon(b["polygon"]).buffer(-60) for b in m["bases"]])
     keep_out = unary_union([Point(t["pos"]).buffer(230) for t in m["towers"]] + [Point(c).buffer(330) for c in m["cores"]])
     area = area.difference(keep_out)
     x0, z0, x1, z1 = area.bounds
-    clusters = []
-    while len(clusters) < int(area.area / (2.7 * M) ** 2):
+    placed = []
+    clusters = 0
+    while clusters < int(area.area / (4.6 * M) ** 2):
         c = Point(rng.uniform(x0, x1), rng.uniform(z0, z1))
-        if area.contains(c):
-            clusters.append((c, rng.uniform(1.2, 2.6) * M))
-    step = 1.08 * M
-    z = z0
-    while z < z1:
-        x = x0 + (step * 0.5 if int((z - z0) / step) % 2 else 0.0)
-        while x < x1:
-            p = Point(x + rng.uniform(-0.18, 0.18) * M, z + rng.uniform(-0.18, 0.18) * M)
-            near = min((p.distance(c) / r for c, r in clusters if abs(c.x - p.x) < r and abs(c.y - p.y) < r), default=9.0)
-            if near < 1.0 and area.contains(p):
-                sc = rng.uniform(0.85, 1.05) if near < 0.75 else rng.uniform(0.35, 0.6)
+        if not area.contains(c):
+            continue
+        clusters += 1
+        rad = rng.uniform(1.5, 3.0) * M
+        for _ in range(rng.randint(5, 10)):
+            sc = _slab_size(rng)
+            a, d = rng.uniform(0, 6.28), rad * math.sqrt(rng.random())
+            p = Point(c.x + math.cos(a) * d, c.y + math.sin(a) * d)
+            r = SLAB_R * sc
+            if area.contains(p) and all(p.distance(q) > (r + rq) * 0.95 for q, rq in placed if abs(q.x - p.x) < 400 and abs(q.y - p.y) < 400):
+                placed.append((p, r))
                 items.append([rng.choice(SLABS), p.x, p.y, rng.uniform(0, 6.28), sc])
-            x += step
-        z += step * 0.87
 
 
 def scatter(items, m, forest, wet, rng):

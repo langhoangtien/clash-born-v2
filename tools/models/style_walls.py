@@ -77,14 +77,14 @@ def wall_low(name, rng, length=10.0, height=1.8, thick=3.0):
     return obj
 
 
-# D-188: tông phiến đá lát (xám ấm, lệch nhau giữa các biến thể) — mặt đá trên đất nện như ảnh mẫu.
+# D-188, D-189: tông phiến đá (xám ấm, lệch nhau giữa các biến thể); vành quanh phiến là khe đất sẫm.
 SLAB_TONES = {"stone_flat_a": (142, 138, 128), "stone_flat_b": (128, 125, 117), "stone_flat_c": (152, 147, 136)}
-SLAB_EDGE = (98, 94, 86)
+SLAB_GROOVE = (104, 86, 60)
 
 
 def stone_flat(name, rng, size=0.7):
-    """D-187, D-188: phiến đá dẹt sát mặt đất (dày 3 cm, mép vát sẫm như viền), đa giác 5–7 cạnh lệch; trên đường
-    đất rừng, lane và base."""
+    """D-189: phiến đá lún sát mặt đất — mặt đá phẳng cao 2 cm, quanh là vành khe đất sẫm nằm phẳng (không thành
+    đứng, nên nhìn chìm xuống đất chứ không nổi); đa giác 5–7 cạnh lệch."""
     import math
     bm = bmesh.new()
     n = rng.randint(5, 7)
@@ -93,13 +93,13 @@ def stone_flat(name, rng, size=0.7):
         a = 2 * math.pi * i / n + rng.uniform(-0.3, 0.3)
         r = size * rng.uniform(0.75, 1.0)
         ring.append((math.cos(a) * r, math.sin(a) * r * 0.8))
-    bottom = [bm.verts.new((x * 1.04, y * 1.04, 0.0)) for x, y in ring]
-    top = [bm.verts.new((x * 0.95, y * 0.95, 0.03)) for x, y in ring]
+    outer = [bm.verts.new((x * 1.1, y * 1.1, 0.012)) for x, y in ring]
+    top = [bm.verts.new((x, y, 0.02)) for x, y in ring]
     bm.faces.new(top)
     for i in range(n):
         j = (i + 1) % n
-        bm.faces.new([bottom[i], bottom[j], top[j], top[i]])
+        bm.faces.new([outer[i], outer[j], top[j], top[i]])
     obj = K.finish(name, bm)
     tone = SLAB_TONES.get(name, SLAB_TONES["stone_flat_a"])
-    K.paint(obj, lambda c, nm: (tone, tone) if nm.z > 0.9 else (SLAB_EDGE, SLAB_EDGE), rng)
+    K.paint(obj, lambda c, nm: (tone, tone) if math.hypot(c.x, c.y) < size * 0.2 or c.z > 0.019 else (SLAB_GROOVE, SLAB_GROOVE), rng)
     return obj

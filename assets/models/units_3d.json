@@ -220,6 +220,12 @@
      false,
      1.0
     ],
+    "stone_flat": [
+     "rock_face",
+     2.0,
+     true,
+     0.9
+    ],
     "boulder": [
      "rock_face",
      2.0,
