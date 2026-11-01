@@ -75,3 +75,23 @@ def wall_low(name, rng, length=10.0, height=1.8, thick=3.0):
     obj = K.finish(name, bm)
     _paint(obj, rng, height)
     return obj
+
+
+def stone_flat(name, rng, size=0.7):
+    """D-187: phiến đá dẹt rải trên đường đất (concept 3): đa giác 7 cạnh lệch, dày ~8 cm, mép vát, màu đá chung."""
+    import math
+    bm = bmesh.new()
+    ring = []
+    for i in range(7):
+        a = 2 * math.pi * i / 7 + rng.uniform(-0.25, 0.25)
+        r = size * rng.uniform(0.7, 1.0)
+        ring.append((math.cos(a) * r, math.sin(a) * r * 0.75))
+    bottom = [bm.verts.new((x, y, 0.0)) for x, y in ring]
+    top = [bm.verts.new((x * 0.88, y * 0.88, 0.08 + rng.uniform(-0.015, 0.015))) for x, y in ring]
+    bm.faces.new(top)
+    for i in range(7):
+        j = (i + 1) % 7
+        bm.faces.new([bottom[i], bottom[j], top[j], top[i]])
+    obj = K.finish(name, bm)
+    K.paint(obj, lambda c, n: (STONE_LIGHT, STONE_LIGHT) if n.z > 0.6 else (STONE_ALT, None), rng)
+    return obj

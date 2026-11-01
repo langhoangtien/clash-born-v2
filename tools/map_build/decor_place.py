@@ -208,6 +208,21 @@ def _along(items, line, kind, step):
             items.append([kind, a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, ang, 1.0])
 
 
+def path_stones(items, paths, solid, wet, rng):
+    """D-187 (concept 3): phiến đá dẹt rải thưa trên đường đất rừng — dọc mỗi lối, lệch ngang tới 30% bề rộng,
+    không trên bục / nước."""
+    for line, width in paths:
+        d = rng.uniform(0, 150)
+        while d < line.length:
+            p, q = line.interpolate(d), line.interpolate(min(line.length, d + 20))
+            n = math.hypot(q.x - p.x, q.y - p.y) or 1.0
+            off = rng.uniform(-0.3, 0.3) * width * 0.42
+            at = Point(p.x - (q.y - p.y) / n * off, p.y + (q.x - p.x) / n * off)
+            if rng.random() < 0.55 and not solid.contains(at) and not wet.buffer(80).contains(at):
+                items.append(["stone_flat", at.x, at.y, rng.uniform(0, 6.28), rng.uniform(0.5, 0.9)])
+            d += rng.uniform(180, 320)
+
+
 def scatter(items, m, forest, wet, rng):
     """Khóm lá cam, khóm cỏ, đá nhỏ rải sát mép bục và mép lane (không trên lane, không trong nước / bục)."""
     size = m["world_size"][0]

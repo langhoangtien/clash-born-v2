@@ -62,6 +62,9 @@ static func ground_material() -> ShaderMaterial:
 		m.set_shader_parameter(key, float(cfg[key]))
 	m.set_shader_parameter("pave_tint", Color(cfg["pave_tint"]))  # D-186: đá lát tô màu đá chung
 	m.set_shader_parameter("pave_luma", float(cfg["pave_luma"]))
+	m.set_shader_parameter("dirt_color", Color(cfg["dirt_color"]))  # D-187: đất nện tô màu đất chung
+	m.set_shader_parameter("dirt_luma", float(cfg["dirt_luma"]))
+	m.set_shader_parameter("pave_moss", float(cfg["pave_moss"]))
 	return m
 
 

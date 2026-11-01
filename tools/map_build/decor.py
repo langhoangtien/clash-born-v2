@@ -73,7 +73,7 @@ def mask_images(m, forest, rocks, water, edge):
         dw.polygon(T(g.exterior.coords), fill=255)
     depth = np.array(wet.filter(ImageFilter.GaussianBlur(160 / MASK_PX))).astype(float)
     depth = (np.clip((depth - 128) * 2, 0, 255) * (np.array(wet) > 0)).astype(np.uint8)
-    return [DP.ragged(dirt, 3, 5), DP.ragged(pave, 0.6, 2), DP.ragged(floor, 6, 7)], Image.fromarray(depth), n
+    return [DP.ragged(dirt, 3, 5), DP.ragged(pave, 1.6, 2), DP.ragged(floor, 6, 7)], Image.fromarray(depth), n
 
 
 def shadow_image(items, n, water, edge):
@@ -115,6 +115,7 @@ def main():
     DP.border(items, edge, size, rng)
     DP.base_fences(items, m["render"].get("rock_lines", []))
     DP.scatter(items, m, forest, wet, rng)
+    DP.path_stones(items, paths_world(m), unary_union(forest).buffer(40), wet, rng)
     rgb, depth, n = mask_images(m, forest, rocks, water, edge)
     mask = Image.merge("RGBA", rgb + [shadow_image(items, n, water, edge)])
     data = {"items": [[k, round(x, 1), round(z, 1), round(a, 3), round(s, 3)] + ([round(y[0], 3)] if y else []) for k, x, z, a, s, *y in items],
