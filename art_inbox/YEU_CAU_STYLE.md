@@ -119,6 +119,10 @@ Yêu cầu chung: 1024 × 1024, vẽ tay đồng bộ phong cách concept, **nh�
 đường chân trời, không phối cảnh), **lặp liền mép** cả ngang và dọc, tông lạnh xanh lam để tách khỏi lane đất vàng.
 Không chữ. Nộp đủ 4 file rồi **DỪNG**, báo người dùng.
 
+**Bản thử để xem trong game:** đã tạo đủ bốn ảnh, chưa đánh dấu duyệt. Khi ghép 3 × 3 còn thấy nhịp lặp;
+ba ảnh đáy vực vẫn hơi có cảm giác nhìn xiên, đặc biệt ở cây và đá. Kiểu A có các cụm đá rải đều hơn ảnh mẫu;
+cần xem sau khi ghép với mô hình vách và sương trước khi quyết định làm lại.
+
 ## Đợt C — thẻ so màu (sau khi đợt T được duyệt)
 
 | Xong | Tên | Nội dung |
