@@ -102,6 +102,23 @@ Yêu cầu chung như các đợt trên (1024 × 1024, vẽ tay đồng bộ v�
 đá với đá rừng và phiến đá lane (`assets/textures/style/dirt_stones.png`, `rock_face.png`) — Claude sẽ chạy
 `tools/textures/recolor.py` chỉnh lại nếu lệch, nhưng càng gần càng tốt. Nộp cả hai file rồi **DỪNG**, báo người dùng.
 
+## Đợt T6 — vực ngoài rìa map kiểu Liên Quân (D-197, thử nhiều kiểu)
+
+Người dùng gửi ảnh mẫu: lan can đá thấp dọc mép lane, phía sau là **vách núi đổ xuống vực sâu mờ sương**. Claude
+dựng lan can + khối vách + đáy vực; Codex làm ảnh dán. Camera game cố định một hướng nên **mỗi loại chỉ một ảnh**,
+không cần ảnh theo hướng. Đáy vực thử **3 kiểu** để người dùng chọn trong game.
+
+| Xong | Tên file (lưu `art_inbox/08_style/`) | Nội dung |
+|---|---|---|
+| [ ] | `cliff_face.png` | **Mặt vách núi đứng** nhìn thẳng chính diện: đá xám lam vẽ tay thành các mảng dọc lớn, gờ ngang lác đác có rêu / cỏ nhỏ, càng xuống dưới càng tối và xanh. **Lặp liền mép ngang**, dọc cũng lặp (vách sâu ~20 m, ảnh phủ 8 m) |
+| [ ] | `abyss_floor_a.png` | Kiểu A — **hẻm núi sương** (giống ảnh mẫu): nhìn từ trên xuống thấy đỉnh vách đá nhỏ xa, rừng thông li ti, sương xanh lam phủ loang |
+| [ ] | `abyss_floor_b.png` | Kiểu B — **rừng thông sâu**: tán rừng thông xanh đậm dày đặc nhìn từ trên xuống, vài mảng sương mỏng |
+| [ ] | `abyss_floor_c.png` | Kiểu C — **biển mây**: mây / sương trắng xanh cuộn, lấp ló vài đỉnh núi đá tối |
+
+Yêu cầu chung: 1024 × 1024, vẽ tay đồng bộ phong cách concept, **nhìn thẳng từ trên xuống** với ảnh đáy vực (không
+đường chân trời, không phối cảnh), **lặp liền mép** cả ngang và dọc, tông lạnh xanh lam để tách khỏi lane đất vàng.
+Không chữ. Nộp đủ 4 file rồi **DỪNG**, báo người dùng.
+
 ## Đợt C — thẻ so màu (sau khi đợt T được duyệt)
 
 | Xong | Tên | Nội dung |
