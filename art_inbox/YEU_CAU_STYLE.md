@@ -69,6 +69,24 @@ phải trông như cùng một bộ.
 
 Nộp xong `dirt` và `wall_face` thì **DỪNG**, báo người dùng.
 
+## Đợt T4 — nền lane "đất nện có phiến đá" (D-190, người dùng gửi ảnh mẫu)
+
+**Ảnh mẫu:** ảnh người dùng gửi (đường đất vàng nâu, các cụm phiến đá xám lớn, cỏ hai bên) — người dùng đính kèm
+khi giao phiếu. Trong game đang dùng bản Claude vẽ bằng code: `assets/textures/style/dirt_stones.png` (đúng bố cục
+và tỉ lệ mong muốn, nhưng mảng màu phẳng như vector). Codex vẽ lại **cùng bố cục đó nhưng chất vẽ tay như ảnh mẫu**.
+
+| Xong | Tên | Nội dung | Ảnh 1024 phủ |
+|---|---|---|---|
+| [ ] | `dirt_stones` | Đất nện vàng nâu `#B08E5E` (sáng `#C8A672`, tối `#8E7048`) loang mềm không theo hướng nào, vài vết mòn; trên đó **4–6 cụm phiến đá xám ấm** `#948F84` (sáng `#ABA597`, tối `#77736A`) ghép sát nhau, khe hẹp đất sẫm; phiến góc cạnh, **cỡ chênh nhiều** (vài phiến rộng ~1/5 ảnh, nhiều phiến vừa, mảnh nhỏ ven cụm); mặt đá phẳng có vệt cọ và vài vết nứt mảnh, mép trên-trái hơi sáng, mép dưới-phải hơi tối; rêu / cỏ lấm tấm trong vài khe; đá chiếm **khoảng 35–40%** ảnh, phần còn lại là đất | 7 m |
+
+Bắt buộc (ngoài yêu cầu chung ở trên):
+- **NHÌN THẲNG TỪ TRÊN XUỐNG** như bản đồ: phiến đá không có mặt bên, không phối cảnh, không bóng đổ dài.
+  (Ảnh mẫu vẽ góc nghiêng — chỉ lấy chất vẽ và màu, không lấy góc nhìn.)
+- **Lặp liền mép** cả ngang và dọc: cụm đá ở mép phải nối tiếp với mép trái, ghép 3 × 3 không thấy đường nối,
+  không thấy một cụm nổi bật lặp đi lặp lại.
+- Không cỏ dày, không cây, không vật nổi khối. Cỏ hai bên đường game tự trộn.
+- Nộp `art_inbox/08_style/dirt_stones.png` (1024 × 1024) rồi **DỪNG**, báo người dùng.
+
 ## Đợt C — thẻ so màu (sau khi đợt T được duyệt)
 
 | Xong | Tên | Nội dung |
