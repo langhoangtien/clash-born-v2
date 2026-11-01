@@ -4,7 +4,7 @@
 Đọc data/maps/clashborn_map.json (toạ độ thế giới, 100 px = 1 m) và mạng lối đi (plateau_design.py), ghi
 data/maps/clashborn_decor.json:
   items   [mô hình, x, z, góc, cỡ, y (m)] — mô hình trong assets/models/style/
-  mask    PNG base64 RGBA: R đường đất, G đá lát (lane, base, sân rìa map), B nền rừng, A bóng vẽ sẵn (nắng tây
+  mask    PNG base64 RGBA: R đất nện (đường rừng, base, sân rìa map), G đất có phiến đá (lane), B nền rừng, A bóng vẽ sẵn (nắng tây
           bắc → bóng lệch đông nam) — D-180: gộp một ảnh để shader mặt đất đọc một lần
   water   PNG base64 L: độ sâu nước (shader nước)
   mask_origin, mask_px: góc trên trái (px thế giới) và số px thế giới mỗi điểm ảnh mặt nạ
@@ -63,10 +63,11 @@ def mask_images(m, forest, rocks, water, edge):
     for pts in m["lanes"].values():
         dd.line(T(pts), fill=255, width=int((m["lane_width"] + 140) / MASK_PX), joint="curve")
         dp.line(T(pts), fill=255, width=int((m["lane_width"] - 20) / MASK_PX), joint="curve")
-    for b in m["bases"]:
-        dp.polygon(T(b["polygon"]), fill=255)
+    for b in m["bases"]:  # D-192: nền base (đất cao) là đất nện trơn, không đá — kể cả đoạn lane đi qua
+        dp.polygon(T(b["polygon"]), fill=0)
+        dd.polygon(T(b["polygon"]), fill=255)
     for g in edge:
-        dp.polygon(T(g.exterior.coords), fill=255)
+        dd.polygon(T(g.exterior.coords), fill=255)
     for g in forest:
         df.polygon(T(g.buffer(60).exterior.coords), fill=255)
     for g in water:

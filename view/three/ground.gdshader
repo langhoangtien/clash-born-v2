@@ -2,8 +2,9 @@ shader_type spatial;
 // D-178, D-180: mặt đất 3D: ảnh nền (cỏ, nền rừng, đất, đá lát) trộn theo mặt nạ của map (decor.py: R đất,
 // G đá lát, B nền rừng, A bóng vẽ sẵn); mép trộn bẻ theo vân cho giống nét vẽ tay; cỏ đổi tông theo vân lớn
 // để không lộ ô lặp. Sương (VIS-01) tính ngay ở đây từ các mắt phe mình (eyes = x, z, tầm nhìn theo mét).
-// D-187: đường đất rừng (kênh R) là đất nện: ảnh dirt chỉ lấy sáng tối, tô dirt_color. D-190: nền lane / base
-// (kênh G) là ảnh "đất có phiến đá" vẽ sẵn (tools/textures/dirt_stones.py). Mép cỏ loang theo vân lớn.
+// D-187: đường đất rừng (kênh R) là đất nện: ảnh dirt chỉ lấy sáng tối, tô dirt_color. D-190, D-191: nền lane /
+// base (kênh G) là ảnh "đất có phiến đá" Codex vẽ tay, đã chỉnh về bảng màu chung (tools/textures/recolor.py).
+// Mép cỏ loang theo vân lớn.
 // 6 lần đọc ảnh mỗi điểm. Không đèn. Đơn vị: mét.
 render_mode unshaded, cull_back;
 

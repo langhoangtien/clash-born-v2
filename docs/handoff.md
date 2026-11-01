@@ -26,7 +26,7 @@ Tóm tắt để phiên làm việc mới (tài khoản Claude mới) làm tiế
 | **D-181** | Đo D-180: mid 38–40 fps, đi đường 57–62. Mức đồ họa = độ phân giải 3D: Thấp 50% (mặc định) / Vừa 75% / Cao 100%, bỏ MSAA. |
 | **D-182, D-184, D-185** | Bỏ vân tán cây; `dirt` mới của Codex không đạt (giữ ảnh cũ); rào / tường thành dựng bằng khối đá (`tools/models/style_walls.py`), bỏ vân `wall_face`. |
 | **D-183** | Bảng Cài đặt (bánh răng trong trận, nút Cài đặt ở menu), tỷ số trong khung màu đội, chân dung + dấu "i" ở ô máu. |
-| **D-186…D-188** | Màu đá chung (đá rừng làm chuẩn). Đường rừng: đất nện (`dirt_color`); lane / base: ảnh `dirt_stones` vẽ bằng code (`tools/textures/dirt_stones.py`, D-190). Thông số trong `units_3d.json` → `scenery.style.ground`. |
+| **D-186…D-188** | Màu đá chung (đá rừng làm chuẩn). Đường rừng: đất nện (`dirt_color`); lane / base: ảnh `dirt_stones` Codex vẽ tay, chỉnh màu bằng `tools/textures/recolor.py` (D-191). Thông số trong `units_3d.json` → `scenery.style.ground`. |
 
 ## 3. Đang dở / việc tiếp theo (theo thứ tự)
 
