@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Đưa ảnh nền vẽ tay (Codex) về bảng màu chung của game (D-191): giữ nét và sáng tối, chỉnh màu toàn ảnh —
-giảm độ rực (đá vốn ít màu nên về xám), rồi nhân từng kênh để màu trung bình của phần đất (điểm ảnh rực nhất)
-bằng màu đất nện `DIRT` của đường rừng. Không tách vùng nên không loang mép.
+"""Đưa ảnh nền vẽ tay (Codex) về bảng màu chung của game (D-191, D-193): giữ nét và sáng tối — giảm độ rực, nhân
+từng kênh để màu trung bình phần đất (điểm ảnh rực nhất) bằng màu đất nện `DIRT` của đường rừng; rồi điểm ảnh
+càng ít màu (đá) càng kéo về xám đá `STONE` (chuyển dần theo độ rực, không cắt cứng nên không loang mép) để đá
+tách khỏi đất.
 
   python3 tools/textures/recolor.py vào.png ra.png
 """
@@ -10,10 +11,12 @@ import numpy as np
 from PIL import Image
 
 DIRT = np.array([174, 140, 92]) / 255.0    # = dirt_color #AE8C5C (units_3d.json), đất nện đường rừng
+STONE = np.array([158, 151, 137]) / 255.0  # xám đá ấm (cùng họ đá rừng / rào, D-186), không ngả lạnh cạnh đất vàng
 LUMA = np.array([0.2126, 0.7152, 0.0722])
 
 
 SATURATION = 0.7   # giữ 70% độ rực
+STONE_DARKEN = 0.97  # đá tối hơn đất chút ít cho tách nền
 
 
 def recolor(a):
@@ -22,7 +25,12 @@ def recolor(a):
     out = l + (rgb - l) * SATURATION
     sat = (rgb.max(-1) - rgb.min(-1)) / np.maximum(rgb.max(-1), 1e-4)
     dirt = out[sat > np.percentile(sat, 60)].mean(0)  # phần đất: 40% điểm ảnh rực nhất
-    return np.clip(out * (DIRT / dirt)[None, None, :], 0, 1)
+    out = out * (DIRT / dirt)[None, None, :]
+    lo, hi = np.percentile(sat, 15), np.percentile(sat, 55)
+    stone = (1 - np.clip((sat - lo) / max(hi - lo, 1e-4), 0, 1)) ** 1.5  # 1 = chắc là đá
+    l = (out @ LUMA)[..., None]
+    grey = STONE[None, None, :] * l / float(STONE @ LUMA) * STONE_DARKEN
+    return np.clip(out * (1 - stone[..., None]) + grey * stone[..., None], 0, 1)
 
 
 def main():
