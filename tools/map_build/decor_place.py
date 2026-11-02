@@ -123,9 +123,11 @@ def _north_room(poly, p):
 
 
 def river(items, water, bank, rng):
-    """Bờ sông: chỗ có đá bờ → cụm đá lệch cỡ / đá cuội (lún nửa ra phía nước); chỗ hở (lối xuống sông) →
-    lau sậy + khóm cỏ; lá súng chỗ nước nông. Bờ bắc (đất liền ở bắc, sau vật nhìn từ camera) chỉ vật thấp (D-179)."""
-    rocky = unary_union(bank).buffer(60) if bank else None
+    """Bờ sông (D-198): đá CHỈ đặt trong đúng vùng chặn bờ sông (bank_rocks); mép nước không có đá chặn (lối xuống
+    sông) → lau sậy + khóm cỏ; lá súng chỗ nước nông. Lỗi chơi thử D-197: đá rải theo mép nước nằm cả chỗ đi
+    được, còn chỗ chặn thì trống."""
+    rocky = unary_union(bank).buffer(40) if bank else Point(-1e9, -1e9).buffer(1)
+    bank_rocks(items, bank, rng)
     for g in water:
         edge = g.exterior
         d = 0.0
@@ -136,8 +138,7 @@ def river(items, water, bank, rng):
             nx, nz = -tz, tx
             if g.contains(Point(p.x + nx * 60, p.y + nz * 60)):
                 nx, nz = -nx, -nz
-            frame = (tx, tz, nx, nz, nz < -0.4)  # pháp tuyến ra đất liền chỉ về bắc → bờ bắc, vật thấp
-            d += _cluster(items, p, frame, rng) if rocky is not None and rocky.contains(p) else _reeds(items, p, frame, rng)
+            d += 120 if rocky.contains(p) else _reeds(items, p, (tx, tz, nx, nz, nz < -0.4), rng)
         for _ in range(int(edge.length / 900)):
             c = edge.interpolate(rng.uniform(0, edge.length))
             for _ in range(rng.randint(2, 4)):
@@ -146,16 +147,30 @@ def river(items, water, bank, rng):
                     items.append(["lily", pt.x, pt.y, rng.uniform(0, 6.28), rng.uniform(0.6, 1.1), 0.03])
 
 
-def _cluster(items, p, frame, rng):
-    tx, tz, nx, nz, low = frame
-    k = rng.randint(2, 4)
-    kinds = ["boulder_b", "rock_small", "rock_small"] if low else ["boulder_a", "boulder_b", "boulder_a", "rock_low", "rock_wide"]
-    for i in range(k):
-        off = rng.uniform(-0.9, 0.7) * M
-        x, z = p.x + tx * i * 110 + nx * off, p.y + tz * i * 110 + nz * off
-        sink = -rng.uniform(0.25, 0.6) if off < -30 else 0.0
-        items.append([rng.choice(kinds), x, z, -math.atan2(tz, tx) + rng.uniform(-0.4, 0.4), rng.uniform(0.55, 1.05), sink])
-    return k * 110 + rng.uniform(40, 140)
+# D-198: đá lấp vùng chặn bờ sông — lưới lệch BANK_STEP px, chỉ điểm nằm sâu trong vùng chặn; cỡ nhỏ để không
+# tràn ra chỗ đi được (bán kính mô hình × cỡ ≲ khoảng cách tới mép vùng chặn + BANK_SPILL).
+BANK_STEP = 80.0
+BANK_SPILL = 25.0
+BANK_KINDS = [("boulder_b", 70.0), ("boulder_a", 100.0), ("rock_low", 75.0), ("rock_small", 40.0)]  # (mô hình, bán kính px ở cỡ 1)
+
+
+def bank_rocks(items, bank, rng):
+    for g in bank:
+        x0, z0, x1, z1 = g.bounds
+        z, row = z0, 0
+        while z < z1:
+            x = x0 + (BANK_STEP * 0.5 if row % 2 else 0.0)
+            while x < x1:
+                p = Point(x + rng.uniform(-15, 15), z + rng.uniform(-15, 15))
+                room = g.exterior.distance(p) if g.contains(p) else -1.0
+                if room > 12:
+                    kind, r = rng.choice(BANK_KINDS)
+                    sc = min(rng.uniform(0.75, 1.1), (room + BANK_SPILL) / r)
+                    if sc > 0.3:
+                        items.append([kind, p.x, p.y, rng.uniform(0, 6.28), sc, -0.05])
+                x += BANK_STEP
+            z += BANK_STEP * 0.87
+            row += 1
 
 
 def _reeds(items, p, frame, rng):

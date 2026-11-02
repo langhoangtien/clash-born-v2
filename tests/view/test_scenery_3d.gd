@@ -105,3 +105,19 @@ static func _in_tris(tris: Array, p: Vector2) -> bool:
 		if Geometry2D.point_is_inside_triangle(p, Vector2(t[0], t[1]), Vector2(t[2], t[3]), Vector2(t[4], t[5])):
 			return true
 	return false
+
+
+## D-198 (lỗi chơi thử: đầu sông lên top nhìn chặn mà đi được): đá cuội bờ sông chỉ nằm trong vùng chặn thật.
+func test_D_198_river_boulders_inside_blocked_area() -> void:
+	var layout: MapLayout = load(MAP_PATH) as MapLayout
+	var n: int = 0
+	for it: Array in Terrain3D.items():
+		if not String(it[0]).begins_with("boulder"):
+			continue
+		n += 1
+		var p: Vector2 = Vector2(float(it[1]), float(it[2]))
+		var inside: bool = false
+		for poly: PackedVector2Array in layout.collision_polygons:
+			inside = inside or Geometry2D.is_point_in_polygon(p, poly)
+		assert_true(inside, "đá cuội tại %s nằm trong vùng chặn" % p)
+	assert_true(n > 20, "bờ sông có đá (%d)" % n)
