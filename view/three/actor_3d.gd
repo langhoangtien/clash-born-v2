@@ -70,6 +70,8 @@ func _make_model(e: Entity, cfg: Dictionary) -> void:
 	model.rotation.y = deg_to_rad(cfg.get("yaw", 0.0))
 	if _rig.get("own", false):  # D-173: mô hình tự mang xương + hoạt ảnh (quái rừng Tripo / Blender)
 		_anim = model.find_children("*", "AnimationPlayer", true, false)[0]
+		if cfg.get("baked", false):
+			ModelLibrary.bake_in(model)  # D-203
 	else:
 		_kaykit(model, e, cfg)
 	for n: Node in model.find_children("*", "GeometryInstance3D", true, false):
@@ -117,7 +119,10 @@ func _paint(root: Node, tex: String, team: int) -> void:
 func _make_structure(e: Entity, cfg: Dictionary) -> void:
 	_model = ModelLibrary.static_scene(cfg["model"], e.team).instantiate() as Node3D
 	ModelLibrary.apply_team_texture(_model, cfg["model"], e.team)  # D-167
-	ModelLibrary.use_vertex_colors_in(_model)
+	if cfg.get("baked", false):
+		ModelLibrary.bake_in(_model)  # D-203
+	else:
+		ModelLibrary.use_vertex_colors_in(_model)
 	add_child(_model)
 	height = cfg["height"]
 	var box: AABB = ModelLibrary.bounds(_model)

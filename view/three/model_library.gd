@@ -95,11 +95,14 @@ static func scenery() -> Dictionary:
 
 
 ## Cảnh mô hình tĩnh `path` (không đuôi, tính từ assets/models/); `team` 0/1 thêm _blue/_red, khác: giữ nguyên.
-## Mô hình tự làm (D-167): `path`.glb, một file cho cả hai đội (ảnh màu theo đội: team_texture).
+## Mô hình tự làm (D-167): `path`.glb, một file cho cả hai đội (ảnh màu theo đội: team_texture); D-203: hoặc
+## `path`_blue.glb / _red.glb.
 static func static_scene(path: String, team: int = -1) -> PackedScene:
+	var suffix: String = "_blue" if team == 0 else ("_red" if team == 1 else "")
 	var file: String = path + ".glb"
-	if not ResourceLoader.exists(MODELS + file):
-		file = path + ("_blue" if team == 0 else ("_red" if team == 1 else "")) + ".gltf"
+	for f: String in [path + suffix + ".glb", path + suffix + ".gltf"]:  # D-203: bản theo đội .glb (Blender)
+		if not ResourceLoader.exists(MODELS + file):
+			file = f
 	if not _scenes.has(MODELS + file):
 		_scenes[MODELS + file] = load(MODELS + file) as PackedScene
 	return _scenes[MODELS + file]
@@ -170,6 +173,17 @@ static func use_vertex_colors(mesh: Mesh) -> void:
 		if mesh is ArrayMesh and (mesh as ArrayMesh).surface_get_format(i) & Mesh.ARRAY_FORMAT_COLOR:
 			m.vertex_color_use_as_albedo = true
 			m.vertex_color_is_srgb = true
+
+
+## D-203: mô hình màu đỉnh đã vẽ sẵn sáng tối (bộ asset Blender) — vật liệu không đèn như cảnh vật.
+static func bake_in(root: Node) -> void:
+	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
+		var mesh: Mesh = (n as MeshInstance3D).mesh
+		use_vertex_colors(mesh)
+		for i: int in mesh.get_surface_count():
+			var m: BaseMaterial3D = mesh.surface_get_material(i) as BaseMaterial3D
+			if m != null:
+				m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
 
 static func use_vertex_colors_in(root: Node) -> void:

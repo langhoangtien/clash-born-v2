@@ -26,3 +26,23 @@ func test_D_146_playable_heroes_have_models() -> void:
 	var lib: ContentLibrary = ContentLibrary.load_dir()
 	for id: StringName in lib.heroes:
 		assert_false(ModelLibrary.unit(lib.heroes[id].art_id).is_empty(), "%s có mô hình 3D" % id)
+
+
+## D-203: quái Blender (rig `Creature`) tự mang đủ hoạt ảnh rig cần; trụ Blender có bản theo đội.
+func test_D_203_creature_models_have_rig_animations() -> void:
+	var rig: Dictionary = ModelLibrary.rig("Creature")
+	var n: int = 0
+	for art: String in ModelLibrary.config()["units"]:
+		var cfg: Dictionary = ModelLibrary.config()["units"][art]
+		if cfg.get("rig", "") != "Creature":
+			continue
+		n += 1
+		var m: Node = ModelLibrary.scene(cfg["model"] + ".glb").instantiate()
+		var ap: AnimationPlayer = m.find_children("*", "AnimationPlayer", true, false)[0]
+		for key: String in ["idle", "run", "dash", "hit", "death"]:
+			assert_true(ap.has_animation(rig[key]), "%s có hoạt ảnh %s" % [art, rig[key]])
+		assert_true(ap.has_animation(cfg["attack"]), "%s có hoạt ảnh đánh" % art)
+		m.free()
+	assert_true(n >= 2, "có quái Blender (%d)" % n)
+	for team: int in 2:
+		assert_true(ModelLibrary.static_scene("style/structures/tower", team) != null, "trụ đội %d" % team)

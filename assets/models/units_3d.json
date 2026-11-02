@@ -28,6 +28,15 @@
     "CombatMelee"
    ]
   },
+  "Creature": {
+   "_ghi_chu": "D-203: quái Blender tools/models/creatures.py — khớp cứng, hoạt ảnh sẵn trong mô hình, màu đỉnh vẽ sẵn sáng tối (baked)",
+   "own": true,
+   "idle": "idle",
+   "run": "run",
+   "dash": "run",
+   "hit": "hit",
+   "death": "death"
+  },
   "Boar": {
    "_ghi_chu": "D-173: hoạt ảnh nằm sẵn trong mô hình (own), cỡ gốc lấy theo hộp bao",
    "own": true,
@@ -158,20 +167,28 @@
    "attack": "Ranged_Magic_Shoot",
    "height": 1.15
   },
-  "neutral_buffalo": {
-   "model": "../custom/jungle/jungle_boar",
-   "rig": "Boar",
+  "neutral_wolf": {
+   "model": "../style/creatures/wolf",
+   "rig": "Creature",
    "attack": "attack",
-   "height": 1.15,
-   "yaw": 180.0,
-   "impact": 0.45
+   "height": 0.95,
+   "baked": true
+  },
+  "neutral_buffalo": {
+   "model": "../style/creatures/golem",
+   "rig": "Creature",
+   "attack": "attack",
+   "height": 1.7,
+   "impact": 0.55,
+   "baked": true
   }
  },
  "_ghi_chu_cong_trinh": "D-158: công trình và cảnh vật 3D từ KayKit Medieval Hexagon (CC0) trong assets/models/medieval/; bụi từ KayKit Forest Nature (CC0) trong assets/models/forest/ (D-165). Đường dẫn model tính từ assets/models/. structures: theo art_id (trụ thêm _t<bậc>), model là tên file không có _blue/_red (thêm theo đội), height: chiều cao trên sân (đơn vị 3D). scenery: bụi cỏ (bushes, spacing px thế giới, scale [nhỏ nhất, lớn nhất]), cửa hàng, đống đổ nát chỗ trụ đã đổ; style: cảnh vật + mặt đất + nước D-178.",
  "structures": {
   "tower_t1": {
-   "model": "custom/structures/tower_t1",
-   "height": 3.8
+   "model": "style/structures/tower",
+   "height": 3.4,
+   "baked": true
   },
   "tower_t2": {
    "model": "medieval/buildings/building_tower_B",
