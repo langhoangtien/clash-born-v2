@@ -175,8 +175,8 @@ Tripo dựng ít tam giác mà vẫn đẹp.
 |---|---|---|
 | [x] | `neutral_wolf` | Sói xám (trại nhỏ), giống ảnh mẫu nhưng đứng thẳng 4 chân, miệng ngậm |
 | [x] | `neutral_buffalo` | Golem đá rêu (trại vừa), giống ảnh mẫu: thân và tay là vài khối đá lớn, rêu là mảng xanh trên đỉnh khối, rune cam ở ngực. **A-pose** (xem đợt T8b) |
-| [ ] | `neutral_bear` | Gấu nâu vằn cam (trại lớn), giống ảnh mẫu, đứng 4 chân, miệng ngậm |
-| [ ] | `neutral_shaman` | Pháp sư rừng (trại lớn) — **đơn giản hơn ảnh mẫu**: áo choàng lá là **một khối liền** có vài nếp lớn (không lá rời), sừng gắn liền mũ, gậy gỗ dày có viên đá cam. A-pose, gậy cầm tay phải thẳng đứng sát người |
+| [x] | `neutral_bear` | Gấu nâu vằn cam (trại lớn), giống ảnh mẫu, đứng 4 chân, miệng ngậm |
+| [x] | `neutral_shaman` | Pháp sư rừng (trại lớn) — **đơn giản hơn ảnh mẫu**: áo choàng lá là **một khối liền** có vài nếp lớn (không lá rời), sừng gắn liền mũ, gậy gỗ dày có viên đá cam. A-pose, gậy cầm tay phải thẳng đứng sát người |
 | [x] | `creep_melee` | Lính cận chiến: dáng người thấp đậm, giáp da + mũ sắt đơn giản, khiên tròn + kiếm ngắn dày; mảng màu phe ở áo và khiên |
 | [x] | `creep_ranged` | Lính đánh xa: áo choàng ngắn có mũ trùm, **gậy phép ngắn** (không cung / nỏ); mảng màu phe ở áo và đá đầu gậy |
 | [ ] | `creep_siege` | Xe công thành nhỏ: khung gỗ khối vuông, 4 bánh tròn dày, máy bắn đá đơn giản; mảng màu phe ở cờ / tấm che |
