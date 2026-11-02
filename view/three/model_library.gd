@@ -175,6 +175,15 @@ static func use_vertex_colors(mesh: Mesh) -> void:
 			m.vertex_color_is_srgb = true
 
 
+## Mô hình tự mang xương (rig `own`): D-203 `baked` vẽ không đèn; D-209 `team_tex` dùng ảnh màu theo phe
+## (<model>_blue / _red.jpg cạnh file GLB, tạo bằng glb_slim.py --team).
+static func dress_own(model: Node, cfg: Dictionary, team: int) -> void:
+	if cfg.get("baked", false):
+		bake_in(model)
+	if cfg.get("team_tex", false):
+		apply_team_texture(model, (ROOT + cfg["model"]).simplify_path().trim_prefix(MODELS), team)
+
+
 ## D-203: mô hình màu đỉnh đã vẽ sẵn sáng tối (bộ asset Blender) — vật liệu không đèn như cảnh vật.
 static func bake_in(root: Node) -> void:
 	for n: Node in root.find_children("*", "MeshInstance3D", true, false):

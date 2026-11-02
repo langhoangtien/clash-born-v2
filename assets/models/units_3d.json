@@ -126,12 +126,11 @@
    }
   },
   "creep_melee": {
-   "model": "Knight",
-   "rig": "Rig_Medium",
-   "tex": "knight",
-   "right": "sword_1handed",
-   "left": "shield_badge_color",
-   "attack": "Melee_1H_Attack_Slice_Diagonal",
+   "model": "../style/units/creep_melee",
+   "rig": "Creature",
+   "attack": "attack",
+   "impact": 0.35,
+   "team_tex": true,
    "height": 0.85
   },
   "creep_ranged": {

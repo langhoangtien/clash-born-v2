@@ -2,6 +2,10 @@
 """Chuẩn bị GLB có xương + nhiều hoạt ảnh (afk.ai, Mesh2Motion…) cho game (D-205).
 
   python3 -I tools/models/glb_anims.py vào.glb ra.glb --keep Idle=idle,Run=run,Bite=attack,Hit=hit,Death=death
+      [--drop-bones REGEX]
+
+- `A+B=tên`: nối hoạt ảnh A rồi B thành một (D-209, vd vung + thu tay của afk.ai).
+- --drop-bones: bỏ xương có tên khớp REGEX (ngón tay…), trọng số dồn về xương cha (D-209).
 
 - Chỉ giữ các hoạt ảnh trong --keep, đổi sang tên game (rig `Creature`: idle / run / attack / hit / death);
   bỏ accessor / dữ liệu của hoạt ảnh bị bỏ.
@@ -9,8 +13,11 @@
 - Nâng mô hình cho điểm thấp nhất ở tư thế gốc chạm đất (y = 0).
 Sau đó chạy glb_slim.py để thu ảnh màu.
 """
-import argparse, json, struct
+import argparse, json, os, struct, sys
 import numpy as np
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import glb_rig_ops as R  # noqa: E402
 
 COMP = {5126: np.float32, 5125: np.uint32, 5123: np.uint16, 5121: np.uint8}
 SIZE = {"SCALAR": 1, "VEC2": 2, "VEC3": 3, "VEC4": 4, "MAT4": 16}
@@ -125,14 +132,18 @@ def write(path, g, blob):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("src"); ap.add_argument("dst")
-    ap.add_argument("--keep", required=True, help="Tên_gốc=tên_game,…")
+    ap.add_argument("--keep", required=True, help="Tên_gốc=tên_game,… (A+B=tên: nối)")
+    ap.add_argument("--drop-bones", default="")
     a = ap.parse_args()
     keep = dict(kv.split("=") for kv in a.keep.split(","))
     g, binc = read(a.src)
     have = {an.get("name") for an in g.get("animations", [])}
-    missing = set(keep) - have
+    missing = {n for src in keep for n in src.split("+")} - have
     assert not missing, f"không có hoạt ảnh: {missing}; có: {sorted(have)}"
-    g["animations"] = [dict(an, name=keep[an["name"]]) for an in g["animations"] if an.get("name") in keep]
+    joined = [R.concat(g, binc, array, src.split("+"), name) for src, name in keep.items() if "+" in src]
+    g["animations"] = [dict(an, name=keep[an["name"]]) for an in g["animations"] if an.get("name") in keep] + joined
+    if a.drop_bones:
+        print("xương: %d → %d" % R.drop_bones(g, binc, array, a.drop_bones))
     weld(g, binc)
     up = lift(g, binc)
     blob = prune(g, binc)

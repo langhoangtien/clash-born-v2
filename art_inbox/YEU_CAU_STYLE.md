@@ -225,3 +225,20 @@ bộ phận khác. Vì vậy:
 
 Làm **từng cặp** (1 + 2 trước), commit và push lên nhánh `thu-asset-tu-lam`, đánh dấu `[x]` trong bảng T8, rồi
 **DỪNG** báo người dùng duyệt trước khi làm cặp tiếp theo.
+
+## Đợt T8c — vẽ lại golem `neutral_buffalo` theo ảnh mẫu (2026-11-02)
+
+Bản T8b **không đạt**: thành người máy đá thon, tay nhỏ, màu hồng be — không giống golem người dùng gửi. Lỗi do phiếu
+T8b ghi "dáng người, A-pose tay dang 45°". **Bám sát ảnh mẫu `art_inbox/08_style/ref/golem_ref.png`** (cắt từ
+`jungle_concept.webp`), chỉ đổi tư thế cho đủ đứng thẳng để gắn xương:
+
+- **Tỉ lệ khỉ đột**: hai **cẳng tay + nắm đấm là khối đá to nhất** (mỗi nắm đấm to gấp đôi đầu), tay dài buông tới
+  ngang gối; **vai là hai tảng đá khổng lồ** nhô cao hơn đầu; **đầu nhỏ thụt giữa hai vai, không cổ**, mắt cam,
+  hàm khối vuông; ngực một khối lớn có rune cam xoắn; **chân ngắn, mập**, đứng rộng.
+- **Màu**: đá **xám** (xám trung tính hơi lạnh như ảnh mẫu), **không** hồng / be; rêu vàng xanh phủ đỉnh các tảng
+  (vai, đầu, cẳng tay).
+- **Tư thế để gắn xương**: đứng thẳng (hơi gù được), **hai tay buông dang ra ngoài ~20–30°**, có **khe hở rõ** giữa
+  tay với thân và với chân; nắm đấm **ngang gối, không chạm đất**; miệng ngậm. Không nghiêng người, không vung tay.
+- Ba ảnh `_front`, `_side`, `_back` cùng tư thế (quy tắc T8b), nền xám nhạt trơn, không đĩa đất.
+
+Làm xong golem thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng duyệt.

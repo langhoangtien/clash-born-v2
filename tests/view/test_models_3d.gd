@@ -46,3 +46,21 @@ func test_D_203_creature_models_have_rig_animations() -> void:
 	assert_true(n >= 2, "có quái Blender (%d)" % n)
 	for team: int in 2:
 		assert_true(ModelLibrary.static_scene("style/structures/tower", team) != null, "trụ đội %d" % team)
+
+
+## D-209: mô hình tự mang xương có `team_tex` dùng ảnh màu theo phe (lính Tripo + afk.ai).
+func test_D_209_own_rig_team_texture() -> void:
+	var w: World = World.new(1, preload("res://tests/sim/core/balance_fixture.gd").make())
+	for team: int in [0, 1]:
+		var e: Entity = Entity.new()
+		e.kind = Entity.Kind.LANE_CREEP
+		e.team = team
+		e.art_id = &"creep_melee"
+		e.stats = StatBlock.new(w.balance)
+		w.add_entity(e)
+		var a: Actor3D = Actor3D.make(e)
+		var mi: MeshInstance3D = a.find_children("*", "MeshInstance3D", true, false).filter(
+				func(n: Node) -> bool: return not ((n as MeshInstance3D).mesh is QuadMesh))[0]
+		var tex: Texture2D = (mi.get_active_material(0) as StandardMaterial3D).albedo_texture
+		assert_true(tex.resource_path.ends_with(("_blue" if team == 0 else "_red") + ".jpg"), "phe %d: %s" % [team, tex.resource_path])
+		a.free()
