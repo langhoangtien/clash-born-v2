@@ -134,11 +134,11 @@
    "height": 0.85
   },
   "creep_ranged": {
-   "model": "Ranger",
-   "rig": "Rig_Medium",
-   "tex": "ranger",
-   "right": "crossbow_1handed",
-   "attack": "Ranged_1H_Shoot",
+   "model": "../style/units/creep_ranged",
+   "rig": "Creature",
+   "attack": "attack",
+   "impact": 0.34,
+   "team_tex": true,
    "height": 0.85
   },
   "creep_siege": {
