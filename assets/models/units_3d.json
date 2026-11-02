@@ -162,7 +162,7 @@
    "model": "../style/creatures/wolf",
    "rig": "Creature",
    "attack": "attack",
-   "impact": 0.45,
+   "impact": 0.36,
    "height": 0.95
   },
   "neutral_buffalo": {
