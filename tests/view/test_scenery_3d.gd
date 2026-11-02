@@ -97,7 +97,7 @@ func test_D_197_parapet_along_edge() -> void:
 	for it: Array in Terrain3D.items():
 		n += 1 if String(it[0]) == "parapet" else 0
 	assert_true(n > 100, "lan can dọc mép vực (%d đoạn)" % n)
-	assert_true(Terrain3D.abyss_floors() >= 1, "có ảnh đáy vực")
+	assert_true(ResourceLoader.exists(Terrain3D.texture(String(ModelLibrary.scenery()["style"]["abyss"]["floor"])).resource_path), "có ảnh đáy vực")
 
 
 static func _in_tris(tris: Array, p: Vector2) -> bool:

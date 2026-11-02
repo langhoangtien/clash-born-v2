@@ -77,8 +77,7 @@ static func ground_mesh() -> ArrayMesh:
 
 
 ## D-197: vực ngoài rìa map — đáy (tam giác decor `abyss`) sâu ABYSS_DEPTH, vách dọc vòng mép mặt đất (`cliff`).
-## `floor` = chỉ số kiểu đáy vực trong scenery.style.abyss.floors.
-static func abyss(floor: int) -> MeshInstance3D:
+static func abyss() -> MeshInstance3D:
 	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	_add_tris(st, decor()["abyss"], -ABYSS_DEPTH)
@@ -100,19 +99,9 @@ static func abyss(floor: int) -> MeshInstance3D:
 	m.set_shader_parameter("mist", Color(cfg["mist"]))
 	m.set_shader_parameter("depth", ABYSS_DEPTH)
 	mi.material_override = m
-	set_abyss_floor(mi, floor)
+	m.set_shader_parameter("floor_tex", texture(cfg["floor"]))  # D-202: chốt kiểu A
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mi
-
-
-## Số kiểu đáy vực đang có (thử chọn, D-197).
-static func abyss_floors() -> int:
-	return (_style()["abyss"]["floors"] as Array).size()
-
-
-static func set_abyss_floor(mi: MeshInstance3D, floor: int) -> void:
-	var name: String = _style()["abyss"]["floors"][floor % abyss_floors()]
-	(mi.material_override as ShaderMaterial).set_shader_parameter("floor_tex", texture(name))
 
 
 static func _add_tris(st: SurfaceTool, tris: Array, y: float) -> void:

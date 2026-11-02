@@ -48,7 +48,7 @@ var _ground_rect: Rect2 = Rect2()
 var _actors: Dictionary[int, Actor3D] = {}
 ## D-179: bảng chẩn đoán — mặt nước, vật liệu mặt đất có ảnh nền, có vẽ nhân vật không.
 var _water: MeshInstance3D
-## D-197: vực ngoài rìa map (đổi kiểu đáy trong bảng chẩn đoán).
+## D-197: vực ngoài rìa map.
 var abyss: MeshInstance3D
 var _show_actors: bool = true
 
@@ -93,7 +93,7 @@ func setup(w: World, units_view: UnitsView, aim_indicator: AimIndicator) -> void
 		scenery.build(world.map)
 		_water = Terrain3D.water(world.map)  # D-178
 		add_child(_water)
-		abyss = Terrain3D.abyss(0)  # D-197: vực ngoài rìa map
+		abyss = Terrain3D.abyss()  # D-197: vực ngoài rìa map
 		scenery.add_child(abyss)
 		GroundMarks.paint(marks, world.map, world.balance.shop_radius)
 	add_child(marks)

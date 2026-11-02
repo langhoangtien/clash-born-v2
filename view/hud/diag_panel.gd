@@ -7,19 +7,17 @@ extends Control
 signal changed(key: StringName, value: int)
 
 const BUTTON: Rect2 = Rect2(584, 214, 170, 44)
-const PANEL: Rect2 = Rect2(864, 266, 470, 400)
+const PANEL: Rect2 = Rect2(864, 266, 470, 340)
 const CELL: Vector2 = Vector2(215, 56)
-const KEYS: Array[StringName] = [&"scenery", &"ground", &"layer", &"fog", &"actors", &"water", &"scale", &"msaa", &"abyss"]
-const LABELS: Array[String] = ["Cảnh vật", "Nền ảnh", "Lớp phủ", "Sương", "Nhân vật", "Nước", "Độ phân giải", "MSAA", "Đáy vực"]
-## D-197: tên kiểu đáy vực đang thử (scenery.style.abyss.floors).
-const ABYSS_NAMES: Array[String] = ["A", "B", "C", "D", "E"]
+const KEYS: Array[StringName] = [&"scenery", &"ground", &"layer", &"fog", &"actors", &"water", &"scale", &"msaa"]
+const LABELS: Array[String] = ["Cảnh vật", "Nền ảnh", "Lớp phủ", "Sương", "Nhân vật", "Nước", "Độ phân giải", "MSAA"]
 ## Giá trị mỗi ô: bật / tắt, riêng độ phân giải (%) và MSAA (×) quay vòng.
 const SCALES: Array[int] = [100, 75, 60, 50]
 const MSAAS: Array[int] = [0, 2, 4]
 
 var open: bool = false
 ## Giá trị hiện tại theo KEYS: 1 bật / 0 tắt; `scale` là chỉ số trong SCALES, `msaa` trong MSAAS.
-var values: Dictionary[StringName, int] = {&"scenery": 1, &"ground": 1, &"layer": 1, &"fog": 1, &"actors": 1, &"water": 1, &"scale": 1, &"msaa": 0, &"abyss": 0}
+var values: Dictionary[StringName, int] = {&"scenery": 1, &"ground": 1, &"layer": 1, &"fog": 1, &"actors": 1, &"water": 1, &"scale": 1, &"msaa": 0}
 ## Nơi áp (APP đặt); null thì chỉ báo `changed`.
 var view_3d: MatchView3D
 
@@ -45,7 +43,7 @@ func press_at(at: Vector2) -> void:
 		for i: int in KEYS.size():
 			if cell_rect(i).has_point(at):
 				var key: StringName = KEYS[i]
-				var count: int = {&"scale": SCALES.size(), &"msaa": MSAAS.size(), &"abyss": ABYSS_NAMES.size()}.get(key, 2)
+				var count: int = {&"scale": SCALES.size(), &"msaa": MSAAS.size()}.get(key, 2)
 				values[key] = (values[key] + 1) % count
 				_apply(key)
 				changed.emit(key, value_of(key))
@@ -58,9 +56,6 @@ func _apply(key: StringName) -> void:
 		get_viewport().scaling_3d_scale = value_of(key) / 100.0
 	elif key == &"msaa":
 		get_viewport().msaa_3d = [Viewport.MSAA_DISABLED, Viewport.MSAA_2X, Viewport.MSAA_4X][values[key]]
-	elif key == &"abyss":
-		if view_3d != null and view_3d.abyss != null:
-			Terrain3D.set_abyss_floor(view_3d.abyss, values[key])
 	elif view_3d != null:
 		view_3d.set_part(key, on)
 
@@ -107,7 +102,7 @@ func _draw() -> void:
 	for i: int in KEYS.size():
 		var key: StringName = KEYS[i]
 		var text: String = LABELS[i] + ": " + _value_text(key)
-		UiStyle.button(self, cell_rect(i), &"blue" if values[key] != 0 or key == &"scale" or key == &"abyss" else &"ghost", text, "", 18)
+		UiStyle.button(self, cell_rect(i), &"blue" if values[key] != 0 or key == &"scale" else &"ghost", text, "", 18)
 
 
 func _value_text(key: StringName) -> String:
@@ -115,6 +110,4 @@ func _value_text(key: StringName) -> String:
 		return "%d%%" % value_of(key)
 	if key == &"msaa":
 		return "tắt" if value_of(key) == 0 else "%d×" % value_of(key)
-	if key == &"abyss":
-		return ABYSS_NAMES[values[key]]
 	return "bật" if values[key] != 0 else "tắt"
