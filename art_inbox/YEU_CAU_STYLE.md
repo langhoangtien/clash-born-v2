@@ -123,6 +123,21 @@ Không chữ. Nộp đủ 4 file rồi **DỪNG**, báo người dùng.
 ba ảnh đáy vực vẫn hơi có cảm giác nhìn xiên, đặc biệt ở cây và đá. Kiểu A có các cụm đá rải đều hơn ảnh mẫu;
 cần xem sau khi ghép với mô hình vách và sương trước khi quyết định làm lại.
 
+## Đợt T7 — thêm 2 kiểu đáy vực (D-201)
+
+Người dùng chọn kiểu A (`abyss_floor_a`, hẻm núi sương) là đẹp nhất nhưng **hơi lệch so với đồ họa trong game**
+(game: mảng màu vẽ tay mềm, ít chi tiết nhỏ, tông xanh lam xám dịu như mặt nước sông và vách `cliff_face`).
+Làm thêm 2 biến thể **dựa trên A** để so trong game. Cùng yêu cầu kỹ thuật đợt T6 (1024 × 1024, nhìn thẳng từ
+trên xuống, lặp liền mép ngang + dọc, không chữ, không đường chân trời).
+
+| Xong | Tên file (lưu `art_inbox/08_style/`) | Nội dung |
+|---|---|---|
+| [ ] | `abyss_floor_d.png` | Kiểu A **giản lược**: cùng bố cục hẻm núi sương nhưng ít chi tiết hơn — đỉnh vách đá thành mảng lớn bo tròn (ít, to), cụm thông gom thành vài mảng xanh đậm, sương loang rộng; tông xanh lam xám dịu `#3E5F7A` – `#5E7F96`, đá đỉnh vách `#8A949C`. Nét vẽ mềm như `dirt_stones` / `cliff_face`, không nét mảnh li ti |
+| [ ] | `abyss_floor_e.png` | Kiểu A **có chiều sâu**: các bậc vách đá xếp tầng (gần sáng hơn, xa chìm sương đậm hơn), dòng nước / thác nhỏ mờ chảy giữa các bậc, vài cụm thông; tông như D nhưng tương phản sáng tối rõ hơn giữa đỉnh vách và đáy sương |
+
+Nộp đủ 2 file, **commit và push lên nhánh `thu-asset-tu-lam`** (repo `langhoangtien/clash-born-v2`), đánh dấu
+`[x]` trong bảng, rồi **DỪNG** báo người dùng.
+
 ## Đợt C — thẻ so màu (sau khi đợt T được duyệt)
 
 | Xong | Tên | Nội dung |
