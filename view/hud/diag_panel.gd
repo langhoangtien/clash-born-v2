@@ -12,7 +12,7 @@ const CELL: Vector2 = Vector2(215, 56)
 const KEYS: Array[StringName] = [&"scenery", &"ground", &"layer", &"fog", &"actors", &"water", &"scale", &"msaa", &"abyss"]
 const LABELS: Array[String] = ["Cảnh vật", "Nền ảnh", "Lớp phủ", "Sương", "Nhân vật", "Nước", "Độ phân giải", "MSAA", "Đáy vực"]
 ## D-197: tên kiểu đáy vực đang thử (scenery.style.abyss.floors).
-const ABYSS_NAMES: Array[String] = ["A", "B", "C"]
+const ABYSS_NAMES: Array[String] = ["A", "B", "C", "D", "E"]
 ## Giá trị mỗi ô: bật / tắt, riêng độ phân giải (%) và MSAA (×) quay vòng.
 const SCALES: Array[int] = [100, 75, 60, 50]
 const MSAAS: Array[int] = [0, 2, 4]

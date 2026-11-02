@@ -246,7 +246,7 @@
    },
    "abyss": {
     "cliff": "cliff_face",
-    "floors": ["abyss_floor_a", "abyss_floor_b", "abyss_floor_c"],
+    "floors": ["abyss_floor_a", "abyss_floor_b", "abyss_floor_c", "abyss_floor_d", "abyss_floor_e"],
     "mist": "#3e5f7a"
    },
    "water": {
