@@ -34,8 +34,8 @@ P = {
     "c1": CAMPS["camp_blue_01"], "c2": CAMPS["camp_blue_02"], "c3": CAMPS["camp_blue_03"],
     "c4": CAMPS["camp_blue_04"], "c5": CAMPS["camp_blue_05"], "c6": CAMPS["camp_blue_06"],
     "c7": CAMPS["camp_blue_07"], "c8": CAMPS["camp_blue_08"],
-    "top_hi": (92, 196), "top_a": (92, 262), "top_c1": (92, 384),
-    "j1": (186, 368), "mid_a": (252, 396), "mid_c3": (200, 448), "riv_head": (138, 214), "riv_c2": (256, 300),
+    "top_a": (92, 262), "top_c1": (92, 384),
+    "j1": (186, 368), "mid_a": (252, 396), "mid_c3": (200, 448), "riv_c2": (256, 300),
     "m1": (270, 378), "j2": (322, 476), "j3": (432, 486), "bot_main": (436, 562),
     "riv_c7": (350, 372), "riv_c8": (468, 446), "bot_c5": (262, 562), "bot_c4": (396, 562), "bot_c6": (540, 556),
     "mid_back": (196, 452), "bot_back": (222, 562),
@@ -47,7 +47,6 @@ PATHS = [
     (["j1", "c1"], SIDE), (["c1", "top_c1"], GAP),      # trại 1: cửa từ lối chính + khe ra lane trên
     (["j1", "c2"], SIDE), (["c2", "riv_c2"], GAP),      # trại 2 (ven sông): cửa từ lối chính + khe xuống sông
     (["j1", "c3"], SIDE), (["c3", "mid_c3"], GAP),      # trại 3: cửa từ lối chính + khe ra mid
-    (["top_hi", "riv_head"], SIDE),             # lane trên → đầu sông
     # rừng dưới — rừng carry, 5 trại hai hàng: ven sông (7, 8), ven lane (5, 4, 6); lối chính chạy giữa hai hàng
     (["m1", "j2", "j3", "bot_main"], MAIN),     # mid → giữa rừng → lane dưới
     (["j2", "c7"], SIDE), (["c7", "riv_c7"], GAP),      # trại 7: cửa từ lối chính + khe xuống sông
@@ -113,13 +112,31 @@ def kinds():
     return out
 
 
+def river_mouths(rivers, lanes):
+    """D-199: hai đầu sông mở thẳng ra lane bên (không bọc đá bờ, không phải vòng qua trụ): mỗi đầu sông (điểm xa
+    nhất dọc chiều sông) nối tới điểm gần nhất trên lane bằng lối rộng SIDE."""
+    from shapely.ops import nearest_points
+    water = unary_union(rivers)
+    pts = list(water.exterior.coords) if water.geom_type == "Polygon" else [c for g in water.geoms for c in g.exterior.coords]
+    d = lambda p: (p[0] - C) - (p[1] - C)  # dọc chiều sông (chéo trên-trái → dưới-phải)
+    out = []
+    for tip in (min(pts, key=d), max(pts, key=d)):
+        lane = min(lanes, key=lambda l: l.distance(Point(tip)))
+        a, b = nearest_points(Point(tip), lane)
+        inward = water.centroid
+        start = (tip[0] + (inward.x - tip[0]) * 0.04, tip[1] + (inward.y - tip[1]) * 0.04)
+        out.append(LineString([start, (b.x, b.y)]).buffer(SIDE / 2, cap_style="round"))
+    return unary_union(out)
+
+
 def design():
     lanes = lanes_all()
     rivers = [Polygon(r).buffer(0) for r in SRC["river"]]
     water = unary_union(rivers)
     towers = json.load(open(os.path.join(HERE, "..", "..", "data", "maps", "clashborn_map.json")))["towers"]
     tpts = [Point(t["pos"][0] / SRC["scale"] + FX0, t["pos"][1] / SRC["scale"] + FY0) for t in towers]
-    corridors = unary_union([LineString([P[n] for n in names]).buffer(w / 2, cap_style="round", join_style="round") for names, w in PATHS])
+    corridors = unary_union([LineString([P[n] for n in names]).buffer(w / 2, cap_style="round", join_style="round") for names, w in PATHS]
+                            + [river_mouths(rivers, lanes)])
     camps = unary_union([Point(CAMPS[cid]).buffer(CAMP_R[k]) for cid, k in kinds().items()])
     clear = unary_union([corridors, camps] + [l.buffer(SRC["lane_half_width"] + 6) for l in lanes]
                         + [t.buffer(SRC["tower_clear_radius"] + 2) for t in tpts] + [water.buffer(3)]

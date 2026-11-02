@@ -69,3 +69,23 @@ func _to_line(p: Vector2, line: PackedVector2Array) -> float:
 	for i: int in line.size() - 1:
 		best = minf(best, p.distance_to(Geometry2D.get_closest_point_to_segment(p, line[i], line[i + 1])))
 	return best
+
+
+## MAP-07 (D-199, người chơi: mid gank lane bên khó vì đầu sông bị đá bọc, phải vòng qua trụ): hai đầu sông mở
+## thẳng ra lane bên — từ chỗ mép nước gần lane bên nhất đi thẳng tới lane không gặp vật cản.
+func test_MAP_07_river_ends_open_to_side_lanes() -> void:
+	assert_eq(map.water_shapes.size(), 2, "hai khúc sông")
+	for shape: MapShape in map.water_shapes:
+		var from: Vector2 = Vector2.INF
+		var to: Vector2 = Vector2.INF
+		for lane: String in ["TOP", "BOT"]:
+			var line: PackedVector2Array = map.lanes[lane]
+			for p: Vector2 in shape.outer:
+				for i: int in line.size() - 1:
+					var q: Vector2 = Geometry2D.get_closest_point_to_segment(p, line[i], line[i + 1])
+					if not from.is_finite() or p.distance_to(q) < from.distance_to(to):
+						from = p
+						to = q
+		for k: int in range(1, 11):
+			var p: Vector2 = from.lerp(to, k / 10.0)
+			assert_true(map.clearance_at(p) > 0.0, "đầu sông %s → lane: điểm %s đi được" % [from, p])
