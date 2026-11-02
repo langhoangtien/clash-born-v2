@@ -65,6 +65,9 @@ PATHS = [
 CAMP_R = {"large": 17.0, "medium": 16.0, "small": 15.0}  # bãi trại (MAP-08 dò ở 330 = 20,6 ô)
 HOOK_W = 12.0       # bề dày vách quanh bãi trại (ô)
 BANK = 5.0          # tường đá bờ sông dày (ô), hở ở chỗ lối chạm sông
+MOUTH = MAIN        # D-200: lối đầu sông ra lane rộng như lối chính (704)
+MOUTH_FLARE = 0.75  # loe ở hai đầu lối (bán kính = MOUTH × hệ số)
+BANK_MIN = 60.0     # mảnh đá bờ sông nhỏ hơn (ô²) bỏ — mẩu sót hình chữ L ở mép lối
 MIN_BLOCK = 150.0   # mảnh bục nhỏ hơn (ô²) thì bỏ — thành đất trống
 MIN_THICK = 10.0    # D-179: bục mảnh hơn (bề dày trung bình 2·diện tích / chu vi, ô) thì bỏ — nhìn như vách đá che
                     # tướng; trừ vách hốc trại (MAP-08)
@@ -113,8 +116,9 @@ def kinds():
 
 
 def river_mouths(rivers, lanes):
-    """D-199: hai đầu sông mở thẳng ra lane bên (không bọc đá bờ, không phải vòng qua trụ): mỗi đầu sông (điểm xa
-    nhất dọc chiều sông) nối tới điểm gần nhất trên lane bằng lối rộng SIDE."""
+    """D-199, D-200: hai đầu sông mở thẳng ra lane bên (không bọc đá bờ, không phải vòng qua trụ): mỗi đầu sông
+    (điểm xa nhất dọc chiều sông) nối tới điểm gần nhất trên lane bằng lối rộng MOUTH, loe tròn ở hai đầu
+    (MOUTH_FLARE) cho khỏi góc chữ L mắc người."""
     from shapely.ops import nearest_points
     water = unary_union(rivers)
     pts = list(water.exterior.coords) if water.geom_type == "Polygon" else [c for g in water.geoms for c in g.exterior.coords]
@@ -125,7 +129,8 @@ def river_mouths(rivers, lanes):
         a, b = nearest_points(Point(tip), lane)
         inward = water.centroid
         start = (tip[0] + (inward.x - tip[0]) * 0.04, tip[1] + (inward.y - tip[1]) * 0.04)
-        out.append(LineString([start, (b.x, b.y)]).buffer(SIDE / 2, cap_style="round"))
+        out += [LineString([start, (b.x, b.y)]).buffer(MOUTH / 2, cap_style="round"),
+                Point(start).buffer(MOUTH * MOUTH_FLARE), Point(b.x, b.y).buffer(MOUTH * MOUTH_FLARE)]
     return unary_union(out)
 
 
@@ -153,7 +158,7 @@ def design():
                 blocks.append(q)
     keep_open = unary_union([corridors] + [l.buffer(SRC["lane_half_width"] + 6) for l in lanes] + [Point(C, C).buffer(SRC["mid_clear_world"] / SRC["scale"])])
     bank = water.buffer(BANK).difference(water.buffer(0.5)).intersection(half_region()).difference(keep_open)
-    rocks = [q for q in getattr(bank, "geoms", [bank]) if q.geom_type == "Polygon" and q.area > 20]
+    rocks = [q for q in getattr(bank, "geoms", [bank]) if q.geom_type == "Polygon" and q.area > BANK_MIN]
     return blocks, rocks, lanes, rivers, tpts, playable(lanes)
 
 

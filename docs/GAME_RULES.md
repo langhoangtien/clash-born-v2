@@ -889,8 +889,8 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   T1 đặt theo MAP-04; T2/T3 giữ khoảng cách dọc lane.
 - `MAP-07` (D-171, D-178, D-199) Bờ sông là đá: dải đá dày 5 ô guide (80) dọc mép nước, hở ở chỗ lối rừng
   chạm sông; phần lớn mép sông (ngoài lane và khu mid) bị đá chặn; chỉ xuống sông ở chỗ lối rừng chạm sông (mỗi nửa ít nhất 2 lối), ở lane và khu mid
-  cắt sông (MAP-05), và ở **hai đầu sông**: mỗi đầu sông mở thẳng ra lane bên bằng lối rộng 512 (đi từ sông lên
-  lane không phải vòng qua trụ). Không có bậc thang. Sông vẫn đi được.
+  cắt sông (MAP-05), và ở **hai đầu sông**: mỗi đầu sông mở thẳng ra lane bên bằng lối rộng 704, loe tròn ở hai đầu (đi từ sông lên
+  lane không phải vòng qua trụ, D-200). Không có bậc thang. Sông vẫn đi được.
 - `MAP-08` (D-171, D-178) Mỗi trại nằm trong hốc của bục rừng (hoặc đá): vách bao quanh bãi trại, lối đi
   khoét ra cửa (thường 2: một từ lối chính, một khe ra lane / sông / trại bên). Quanh trại, ở bán kính
   330, ít nhất 10/24 hướng bị chặn và còn ít nhất một hướng mở làm cửa.
