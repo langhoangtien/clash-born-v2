@@ -186,3 +186,6 @@ Tripo dựng ít tam giác mà vẫn đẹp.
 Làm **trước 2 mẫu thử**: `neutral_wolf` và `creep_melee` (đủ 3 hướng), **commit và push lên nhánh
 `thu-asset-tu-lam`** (repo `langhoangtien/clash-born-v2`), đánh dấu `[x]`, rồi **DỪNG** báo người dùng. Người dùng
 duyệt hai mẫu này xong mới làm các mục còn lại.
+
+Làm lại `creep_melee` (3 hướng): dang hai tay A-pose ~45°, cầm khiên và kiếm ra xa thân để không che ngực,
+giữ nguyên thiết kế cũ.
