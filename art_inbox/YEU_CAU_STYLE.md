@@ -181,7 +181,7 @@ Tripo dựng ít tam giác mà vẫn đẹp.
 | [x] | `creep_ranged` | Lính đánh xa: áo choàng ngắn có mũ trùm, **gậy phép ngắn** (không cung / nỏ); mảng màu phe ở áo và đá đầu gậy |
 | [x] | `creep_siege` | Xe công thành nhỏ: khung gỗ khối vuông, 4 bánh tròn dày, máy bắn đá đơn giản; mảng màu phe ở cờ / tấm che |
 | [x] | `tower` | Trụ phòng thủ: **đế đá lớn + thân trụ đá thon + đỉnh có viên tinh thể / ngọn lửa phe**, ít chi tiết, cao gấp ~3 lần lính. Chỉ cần một mẫu (bậc 1–4 game đổi cỡ / phụ kiện sau). Không cần ảnh `_back` |
-| [ ] | `core` | Nhà chính: khối đá tròn rộng có tinh thể lớn ở giữa, màu phe ở tinh thể và cờ. Không cần ảnh `_back` |
+| [x] | `core` | Nhà chính: khối đá tròn rộng có tinh thể lớn ở giữa, màu phe ở tinh thể và cờ. Không cần ảnh `_back` |
 
 Làm **trước 2 mẫu thử**: `neutral_wolf` và `creep_melee` (đủ 3 hướng), **commit và push lên nhánh
 `thu-asset-tu-lam`** (repo `langhoangtien/clash-born-v2`), đánh dấu `[x]`, rồi **DỪNG** báo người dùng. Người dùng
