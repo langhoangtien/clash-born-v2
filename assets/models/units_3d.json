@@ -129,7 +129,7 @@
    "model": "../style/units/creep_melee",
    "rig": "Creature",
    "attack": "attack",
-   "impact": 0.39,
+   "impact": 0.4,
    "team_tex": true,
    "height": 0.85
   },
