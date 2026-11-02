@@ -80,8 +80,8 @@ func _make_model(e: Entity, cfg: Dictionary) -> void:
 			for k: int in (n as MeshInstance3D).mesh.get_surface_count():
 				mats.append((n as MeshInstance3D).get_active_material(k))
 		_solid.append(mats)
-	for key: String in ["idle", "run"]:
-		_anim.get_animation(_rig[key]).loop_mode = Animation.LOOP_LINEAR
+	for anim: String in [_rig["idle"], _rig["run"], _rig.get("stun", "")].filter(_anim.has_animation):
+		_anim.get_animation(anim).loop_mode = Animation.LOOP_LINEAR
 
 
 ## Nhân vật KayKit: vũ khí gắn tay, bảng màu theo đội, hoạt ảnh dùng chung của rig.
@@ -176,13 +176,14 @@ func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int, faded: b
 	elif _playing == _rig["hit"] and _anim.is_playing():
 		pass
 	else:
-		_play(_rig["run"] if moving else _rig["idle"], 1.0)
+		var stun: String = _rig.get("stun", "") if not Rules.can_move(e) and not Rules.can_attack(e) else ""  # ST-01
+		_play(_rig["run"] if moving else (stun if _anim.has_animation(stun) else _rig["idle"]), 1.0)
 	_attack_phase = e.attack_phase
 
 
-## CMB-06, D-208: thu tay bị di chuyển hủy — đang đi (đuổi tiếp) thì chạy, không phát tiếp đòn đánh.
+## CMB-06, D-208: thu tay bị di chuyển hủy — đang đi thì chạy; D-216: không đánh được (choáng…) thì thôi đòn.
 func _attack_shown(e: Entity, moving: bool) -> bool:
-	var still: bool = e.attack_phase == Entity.AttackPhase.RECOVERY and not moving
+	var still: bool = Rules.can_attack(e) and e.attack_phase == Entity.AttackPhase.RECOVERY and not moving  # D-216
 	return e.attack_phase == Entity.AttackPhase.WINDUP or (still and (_playing == _cfg["attack"] or _attack_phase != e.attack_phase))
 
 

@@ -57,3 +57,28 @@ func test_CMB_06_recovery_while_moving_plays_run() -> void:
 	a.sync(w, e, Vector3.ZERO, false, -100, false)
 	assert_eq(a._playing, "idle", "đã thôi đòn thì không quay lại hoạt ảnh đánh")
 	a.free()
+
+
+func _unit(w: World, art: StringName, kind: Entity.Kind) -> Entity:
+	var e: Entity = Entity.new()
+	e.kind = kind
+	e.team = 1
+	e.art_id = art
+	e.stats = StatBlock.new(w.balance)
+	return w.add_entity(e)
+
+
+## Lỗi người chơi báo (D-216): đánh choáng lính mà hình vẫn đánh tiếp — đang thu tay thì VIEW cứ phát hoạt ảnh
+## đánh. ST-01: choáng không đánh, không đi → hoạt ảnh choáng (nếu mô hình có, vd lính), không thì đứng yên (sói).
+func test_ST_01_stunned_unit_does_not_play_attack() -> void:
+	var w: World = World.new(1, Fixture.make())
+	for pair: Array in [[&"creep_melee", Entity.Kind.LANE_CREEP, "stun"], [&"neutral_wolf", Entity.Kind.NEUTRAL, "idle"]]:
+		var e: Entity = _unit(w, pair[0], pair[1])
+		var a: Actor3D = Actor3D.make(e)
+		e.attack_phase = Entity.AttackPhase.RECOVERY
+		a.sync(w, e, Vector3.ZERO, false, -100, false)
+		assert_eq(a._playing, "attack", "%s: đang thu tay" % pair[0])
+		e.states |= 1 << UnitState.Id.STUNNED
+		a.sync(w, e, Vector3.ZERO, false, -100, false)
+		assert_eq(a._playing, pair[2], "%s: bị choáng thì thôi đánh" % pair[0])
+		a.free()

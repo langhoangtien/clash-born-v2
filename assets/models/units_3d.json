@@ -35,7 +35,8 @@
    "run": "run",
    "dash": "run",
    "hit": "hit",
-   "death": "death"
+   "death": "death",
+   "stun": "stun"
   }
  },
  "units": {
