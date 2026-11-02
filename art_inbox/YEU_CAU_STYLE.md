@@ -242,3 +242,5 @@ T8b ghi "dáng người, A-pose tay dang 45°". **Bám sát ảnh mẫu `art_inb
 - Ba ảnh `_front`, `_side`, `_back` cùng tư thế (quy tắc T8b), nền xám nhạt trơn, không đĩa đất.
 
 Làm xong golem thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng duyệt.
+
+Đã làm lại đủ 3 hướng: thay dáng người máy đá thon, màu be bằng tỉ lệ khỉ đột và đá xám theo `golem_ref.png`.
