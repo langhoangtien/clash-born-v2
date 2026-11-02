@@ -244,3 +244,20 @@ T8b ghi "dáng người, A-pose tay dang 45°". **Bám sát ảnh mẫu `art_inb
 Làm xong golem thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng duyệt.
 
 Đã làm lại đủ 3 hướng: thay dáng người máy đá thon, màu be bằng tỉ lệ khỉ đột và đá xám theo `golem_ref.png`.
+
+## Đợt T8d — gấu + pháp sư rừng (golem T8c đã duyệt, 2026-11-02)
+
+Golem T8c, lính xa T8b đã dựng 3D và vào game (D-211, D-213). Quy trình bên mình giờ là: ảnh của bạn → Tripo (chỉ dùng
+ảnh **trước + sau**, ảnh nghiêng chỉ để tham khảo) → afk.ai tự gắn xương + hoạt ảnh. Vì vậy **ảnh `_front` và `_back`
+quan trọng nhất**: phải đúng cùng một tư thế, mặt sau đúng là mặt sau của mặt trước.
+
+Ảnh mẫu đã cắt sẵn từ concept người dùng: `art_inbox/08_style/ref/bear_ref.png`, `shaman_ref.png`.
+**Bám sát dáng và màu ảnh mẫu** (đừng "người hóa" hay làm gọn đi — lỗi golem T8b), chỉ đổi tư thế cho trung tính:
+
+| Thứ tự | Tên file | Ghi chú |
+|---|---|---|
+| 1 | `neutral_bear` | Gấu nâu vằn cam như ảnh mẫu: thân khối to tròn, vai gù, mảng ngực be, vằn cam lớn trên lưng và chân trước, móng be to. **Đứng 4 chân** (afk.ai dùng bộ xương thú 4 chân): 4 chân thẳng, tách rõ, nhìn từ trước và sau thấy đủ khe giữa các chân; **miệng ngậm** (không gầm), mắt cam; tai tròn nhỏ. Không nhổm, không giơ chân |
+| 2 | `neutral_shaman` | Pháp sư rừng như ảnh mẫu: áo choàng lá xanh trùm đầu, mặt tối mắt cam, hai sừng ngà, yếm be có hình thoi cam, gậy gỗ có tinh thể cam. Để gắn xương người: **A-pose** (tay dang ~45°, có khe với thân), **áo choàng dài tới gối** để thấy **hai chân tách nhau** (afk.ai cần chân); sừng gắn liền mũ trùm; gậy nắm chặt tay phải, dựng xiên ra ngoài, không chạm người và không chạm đất; lá áo là vài mảng lớn liền khối, không lá rời |
+
+Làm xong cả hai thì commit + push nhánh `thu-asset-tu-lam`, đánh dấu `[x]` trong bảng T8, rồi **DỪNG** báo người dùng.
+Sau đó (đợt sau, chờ phiếu): `creep_siege`, `tower`, `core`.

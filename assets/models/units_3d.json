@@ -29,7 +29,7 @@
    ]
   },
   "Creature": {
-   "_ghi_chu": "D-203: quái Blender tools/models/creatures.py — khớp cứng, hoạt ảnh sẵn trong mô hình, màu đỉnh vẽ sẵn sáng tối (baked). D-205: cùng tên hoạt ảnh cho thú gắn xương bằng afk.ai (tools/models/glb_anims.py chọn + đổi tên)",
+   "_ghi_chu": "D-205, D-213: mô hình Tripo gắn xương + hoạt ảnh bằng afk.ai, tools/models/glb_anims.py chọn 5 hoạt ảnh và đổi tên theo rig này; team_tex: ảnh màu theo phe (D-209)",
    "own": true,
    "idle": "idle",
    "run": "run",
@@ -169,8 +169,7 @@
    "rig": "Creature",
    "attack": "attack",
    "height": 1.7,
-   "impact": 0.55,
-   "baked": true
+   "impact": 0.28
   }
  },
  "_ghi_chu_cong_trinh": "D-158: công trình và cảnh vật 3D từ KayKit Medieval Hexagon (CC0) trong assets/models/medieval/. Đường dẫn model tính từ assets/models/. structures: theo art_id (trụ thêm _t<bậc>), model là tên file không có _blue/_red (thêm theo đội), height: chiều cao trên sân (đơn vị 3D). scenery: bụi cỏ (bushes, spacing px thế giới, scale [nhỏ nhất, lớn nhất]), cửa hàng, đống đổ nát chỗ trụ đã đổ; style: cảnh vật + mặt đất + nước D-178.",
