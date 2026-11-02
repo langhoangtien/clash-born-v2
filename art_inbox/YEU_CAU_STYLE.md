@@ -173,11 +173,11 @@ Tripo dựng ít tam giác mà vẫn đẹp.
 
 | Xong | Tên file (thêm `_front/_side/_back`) | Nội dung |
 |---|---|---|
-| [ ] | `neutral_wolf` | Sói xám (trại nhỏ), giống ảnh mẫu nhưng đứng thẳng 4 chân, miệng ngậm |
+| [x] | `neutral_wolf` | Sói xám (trại nhỏ), giống ảnh mẫu nhưng đứng thẳng 4 chân, miệng ngậm |
 | [ ] | `neutral_buffalo` | Golem đá rêu (trại vừa), giống ảnh mẫu: thân và tay là vài khối đá lớn, rêu là mảng xanh trên đỉnh khối, rune cam ở ngực. Tay buông xuôi |
 | [ ] | `neutral_bear` | Gấu nâu vằn cam (trại lớn), giống ảnh mẫu, đứng 4 chân, miệng ngậm |
 | [ ] | `neutral_shaman` | Pháp sư rừng (trại lớn) — **đơn giản hơn ảnh mẫu**: áo choàng lá là **một khối liền** có vài nếp lớn (không lá rời), sừng gắn liền mũ, gậy gỗ dày có viên đá cam. A-pose, gậy cầm tay phải thẳng đứng sát người |
-| [ ] | `creep_melee` | Lính cận chiến: dáng người thấp đậm, giáp da + mũ sắt đơn giản, khiên tròn + kiếm ngắn dày; mảng màu phe ở áo và khiên |
+| [x] | `creep_melee` | Lính cận chiến: dáng người thấp đậm, giáp da + mũ sắt đơn giản, khiên tròn + kiếm ngắn dày; mảng màu phe ở áo và khiên |
 | [ ] | `creep_ranged` | Lính đánh xa: áo choàng ngắn có mũ trùm, gậy phép ngắn / nỏ dày; mảng màu phe ở áo |
 | [ ] | `creep_siege` | Xe công thành nhỏ: khung gỗ khối vuông, 4 bánh tròn dày, máy bắn đá đơn giản; mảng màu phe ở cờ / tấm che |
 | [ ] | `tower` | Trụ phòng thủ: **đế đá lớn + thân trụ đá thon + đỉnh có viên tinh thể / ngọn lửa phe**, ít chi tiết, cao gấp ~3 lần lính. Chỉ cần một mẫu (bậc 1–4 game đổi cỡ / phụ kiện sau). Không cần ảnh `_back` |
