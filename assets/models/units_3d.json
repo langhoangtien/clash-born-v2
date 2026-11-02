@@ -29,7 +29,7 @@
    ]
   },
   "Creature": {
-   "_ghi_chu": "D-203: quái Blender tools/models/creatures.py — khớp cứng, hoạt ảnh sẵn trong mô hình, màu đỉnh vẽ sẵn sáng tối (baked)",
+   "_ghi_chu": "D-203: quái Blender tools/models/creatures.py — khớp cứng, hoạt ảnh sẵn trong mô hình, màu đỉnh vẽ sẵn sáng tối (baked). D-205: cùng tên hoạt ảnh cho thú Tripo gắn xương (tools/models/rig_quadruped.py)",
    "own": true,
    "idle": "idle",
    "run": "run",
@@ -162,8 +162,8 @@
    "model": "../style/creatures/wolf",
    "rig": "Creature",
    "attack": "attack",
-   "height": 0.95,
-   "baked": true
+   "impact": 0.45,
+   "height": 0.95
   },
   "neutral_buffalo": {
    "model": "../style/creatures/golem",

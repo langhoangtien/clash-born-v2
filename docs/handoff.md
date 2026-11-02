@@ -39,7 +39,7 @@ Tóm tắt để phiên làm việc mới (tài khoản Claude mới) làm tiế
 2. Tướng / lính / trụ / nhà chính vẫn là KayKit (bản tạm) — lệch phong cách concept; người dùng sẽ làm asset động
    sau (tướng, quái rừng, creep, hoạt ảnh). Trụ, nhà chính, chợ nên làm lại theo concept.
 3. Minimap / màn xem map còn vẽ phẳng kiểu cũ (MapPainter) — đổi màu theo bảng mới nếu người dùng muốn.
-4. Quái rừng khác: Mixamo (hình người) / Tripo rig quadruped (4 chân), sửa da bằng `reweight_skin.py` nếu hỏng.
+4. Quái rừng khác: Mixamo (hình người); 4 chân: Tripo dựng lưới rồi tự gắn xương `tools/models/rig_quadruped.py` (D-205 — Tripo rig 4 chân hỏng với sói).
 5. Khi người dùng chơi thử ổn: chạy soak, cập nhật ROADMAP (thêm D-168 → D-178), gộp `thu-asset-tu-lam` vào `main`.
 
 - Trang chủ game trên VPS của người dùng (giới thiệu, changelog, tải APK): **để sau**, người dùng sẽ cho truy cập

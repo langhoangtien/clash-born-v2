@@ -49,6 +49,18 @@ def request(png, faces, multiview):
     return {"type": "multiview_to_model", "files": files}
 
 
+def wait(task):
+    """Chờ task Tripo xong, trả dữ liệu task; lỗi nếu không thành công."""
+    while True:
+        d = call(f"/task/{task}")
+        if d["status"] in ("success", "failed", "cancelled", "banned", "expired"):
+            break
+        time.sleep(5)
+    if d["status"] != "success":
+        raise RuntimeError(f"task {task}: {d['status']}")
+    return d
+
+
 def generate(png, faces, out_dir, multiview=False):
     name = os.path.splitext(os.path.basename(png))[0]
     note = os.path.join(out_dir, name + ".task")
@@ -59,14 +71,7 @@ def generate(png, faces, out_dir, multiview=False):
         task = call("/task", body)["task_id"]
         open(note, "w").write(task)
     print(name, "task", task, flush=True)
-    while True:
-        d = call(f"/task/{task}")
-        if d["status"] in ("success", "failed", "cancelled", "banned", "expired"):
-            break
-        time.sleep(5)
-    if d["status"] != "success":
-        raise RuntimeError(f"{png}: {d['status']}")
-    o = d["output"]
+    o = wait(task)["output"]
     url = o.get("model") or o.get("pbr_model") or o.get("base_model")
     print(name, "url", url, flush=True)
     dst = os.path.join(out_dir, name + ".glb")
