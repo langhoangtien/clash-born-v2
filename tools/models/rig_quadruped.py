@@ -6,7 +6,8 @@ nên dựng xương ở đây: khớp đặt theo bảng MODELS (tọa độ glT
 đo bằng tools/models/rig_quadruped.py --probe), trọng số da tự tính (bone heat của Blender), rồi làm hoạt ảnh
 idle / run / attack / hit / death (rig `Creature` trong units_3d.json). Mặt quay về -Y Blender (= +Z Godot).
 
-  <venv có bpy>/bin/python tools/models/rig_quadruped.py <tên> vào.glb ra.glb
+  <venv có bpy>/bin/python tools/models/rig_quadruped.py <tên> vào.glb ra.glb [ra.blend]
+ra.blend (tùy chọn): file Blender để sửa hoạt ảnh bằng tay (mỗi hoạt ảnh một action + rãnh NLA cùng tên).
 """
 import math, os, sys
 import bpy
@@ -144,6 +145,11 @@ def main():
     skin(mesh, arm)
     A.animate(arm)
     export(arm, out)
+    if len(argv) > 3:
+        for act in bpy.data.actions:
+            act.use_fake_user = True
+        bpy.ops.file.pack_all()
+        bpy.ops.wm.save_as_mainfile(filepath=os.path.abspath(argv[3]))
 
 
 if __name__ == "__main__":
