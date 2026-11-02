@@ -132,11 +132,14 @@ trên xuống, lặp liền mép ngang + dọc, không chữ, không đường c
 
 | Xong | Tên file (lưu `art_inbox/08_style/`) | Nội dung |
 |---|---|---|
-| [ ] | `abyss_floor_d.png` | Kiểu A **giản lược**: cùng bố cục hẻm núi sương nhưng ít chi tiết hơn — đỉnh vách đá thành mảng lớn bo tròn (ít, to), cụm thông gom thành vài mảng xanh đậm, sương loang rộng; tông xanh lam xám dịu `#3E5F7A` – `#5E7F96`, đá đỉnh vách `#8A949C`. Nét vẽ mềm như `dirt_stones` / `cliff_face`, không nét mảnh li ti |
-| [ ] | `abyss_floor_e.png` | Kiểu A **có chiều sâu**: các bậc vách đá xếp tầng (gần sáng hơn, xa chìm sương đậm hơn), dòng nước / thác nhỏ mờ chảy giữa các bậc, vài cụm thông; tông như D nhưng tương phản sáng tối rõ hơn giữa đỉnh vách và đáy sương |
+| [x] | `abyss_floor_d.png` | Kiểu A **giản lược**: cùng bố cục hẻm núi sương nhưng ít chi tiết hơn — đỉnh vách đá thành mảng lớn bo tròn (ít, to), cụm thông gom thành vài mảng xanh đậm, sương loang rộng; tông xanh lam xám dịu `#3E5F7A` – `#5E7F96`, đá đỉnh vách `#8A949C`. Nét vẽ mềm như `dirt_stones` / `cliff_face`, không nét mảnh li ti |
+| [x] | `abyss_floor_e.png` | Kiểu A **có chiều sâu**: các bậc vách đá xếp tầng (gần sáng hơn, xa chìm sương đậm hơn), dòng nước / thác nhỏ mờ chảy giữa các bậc, vài cụm thông; tông như D nhưng tương phản sáng tối rõ hơn giữa đỉnh vách và đáy sương |
 
 Nộp đủ 2 file, **commit và push lên nhánh `thu-asset-tu-lam`** (repo `langhoangtien/clash-born-v2`), đánh dấu
 `[x]` trong bảng, rồi **DỪNG** báo người dùng.
+
+Đã nộp hai bản để thử trong game: khi ghép 3 × 3 vẫn nhận ra nhịp lặp các cụm, một số mặt đá / cây còn hơi
+nhìn xiên; cần đánh giá ở góc camera game trước khi duyệt kỹ thuật.
 
 ## Đợt C — thẻ so màu (sau khi đợt T được duyệt)
 
