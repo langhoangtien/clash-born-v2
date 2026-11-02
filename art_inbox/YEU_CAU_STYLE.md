@@ -174,11 +174,11 @@ Tripo dựng ít tam giác mà vẫn đẹp.
 | Xong | Tên file (thêm `_front/_side/_back`) | Nội dung |
 |---|---|---|
 | [x] | `neutral_wolf` | Sói xám (trại nhỏ), giống ảnh mẫu nhưng đứng thẳng 4 chân, miệng ngậm |
-| [ ] | `neutral_buffalo` | Golem đá rêu (trại vừa), giống ảnh mẫu: thân và tay là vài khối đá lớn, rêu là mảng xanh trên đỉnh khối, rune cam ở ngực. Tay buông xuôi |
+| [ ] | `neutral_buffalo` | Golem đá rêu (trại vừa), giống ảnh mẫu: thân và tay là vài khối đá lớn, rêu là mảng xanh trên đỉnh khối, rune cam ở ngực. **A-pose** (xem đợt T8b) |
 | [ ] | `neutral_bear` | Gấu nâu vằn cam (trại lớn), giống ảnh mẫu, đứng 4 chân, miệng ngậm |
 | [ ] | `neutral_shaman` | Pháp sư rừng (trại lớn) — **đơn giản hơn ảnh mẫu**: áo choàng lá là **một khối liền** có vài nếp lớn (không lá rời), sừng gắn liền mũ, gậy gỗ dày có viên đá cam. A-pose, gậy cầm tay phải thẳng đứng sát người |
 | [x] | `creep_melee` | Lính cận chiến: dáng người thấp đậm, giáp da + mũ sắt đơn giản, khiên tròn + kiếm ngắn dày; mảng màu phe ở áo và khiên |
-| [ ] | `creep_ranged` | Lính đánh xa: áo choàng ngắn có mũ trùm, gậy phép ngắn / nỏ dày; mảng màu phe ở áo |
+| [ ] | `creep_ranged` | Lính đánh xa: áo choàng ngắn có mũ trùm, **gậy phép ngắn** (không cung / nỏ); mảng màu phe ở áo và đá đầu gậy |
 | [ ] | `creep_siege` | Xe công thành nhỏ: khung gỗ khối vuông, 4 bánh tròn dày, máy bắn đá đơn giản; mảng màu phe ở cờ / tấm che |
 | [ ] | `tower` | Trụ phòng thủ: **đế đá lớn + thân trụ đá thon + đỉnh có viên tinh thể / ngọn lửa phe**, ít chi tiết, cao gấp ~3 lần lính. Chỉ cần một mẫu (bậc 1–4 game đổi cỡ / phụ kiện sau). Không cần ảnh `_back` |
 | [ ] | `core` | Nhà chính: khối đá tròn rộng có tinh thể lớn ở giữa, màu phe ở tinh thể và cờ. Không cần ảnh `_back` |
@@ -189,3 +189,39 @@ duyệt hai mẫu này xong mới làm các mục còn lại.
 
 Làm lại `creep_melee` (3 hướng): dang hai tay A-pose ~45°, cầm khiên và kiếm ra xa thân để không che ngực,
 giữ nguyên thiết kế cũ.
+
+## Đợt T8b — làm tiếp các mục còn lại (2 mẫu thử đã duyệt, 2026-11-02)
+
+Người dùng đã duyệt `neutral_wolf` và `creep_melee`; cả hai đã dựng Tripo và đưa vào game (D-205, D-207). Làm tiếp
+các mục `[ ]` trong danh sách T8, giữ nguyên quy tắc vẽ ở trên, **thêm các quy tắc sau** rút ra từ 2 mẫu thử:
+
+### Quy tắc thêm (Tripo dựng thừa bộ phận khi các hướng vẽ không khớp nhau)
+
+Sói: chân trước phải trong ảnh `_side` bị Tripo dựng thành một **khối thừa như bàn chân co lên**. Lính: Tripo dựng
+**thêm một thanh kiếm thứ hai** lơ lửng. Nguyên nhân: các hướng vẽ không khớp, hoặc một bộ phận bị che hay chồng lên
+bộ phận khác. Vì vậy:
+
+1. **Ba ảnh phải là cùng một tư thế**, chỉ xoay camera. Vị trí tay, chân, vũ khí, khiên **y hệt nhau** giữa
+   `_front`, `_side`, `_back` (ảnh `_back` là đúng mặt sau của `_front`: kiếm ở tay phải thì trong ảnh sau lưng kiếm
+   nằm bên trái ảnh).
+2. **Không bộ phận nào che hay chạm bộ phận khác** trong bất kỳ hướng nào: bốn chân thú tách rõ, nhìn ngang thấy
+   đủ 4 chân (chân xa hơi lệch ra sau / trước, không trùng khít chân gần); vũ khí / khiên cách thân và cách chân
+   một khoảng trống.
+3. Vũ khí, gậy **dính liền bàn tay** (nắm chặt), không thả lơ lửng.
+4. Dáng người phải là **A-pose thật** (để gắn xương Mixamo tự động): tay dang ~45°, khuỷu thẳng, chân tách bằng vai,
+   bàn tay không chạm hông.
+
+### Thứ tự làm và ghi chú từng mục
+
+| Thứ tự | Tên file | Ghi chú thêm |
+|---|---|---|
+| 1 | `creep_ranged` | **Gậy phép + mũ trùm, không cung** (dây cung mảnh Tripo không dựng được). Gậy ngắn dày, đầu gậy là viên đá **màu phe** (mảng xanh lớn). Áo choàng ngắn liền thân, mũ trùm liền áo. Dáng thấp đậm như `creep_melee` để cùng bộ. A-pose, gậy cầm tay phải dựng xiên ra ngoài, không chạm người |
+| 2 | `neutral_buffalo` | Golem đá **2 chân dáng người** (gắn xương Mixamo): thân, đầu, tay, chân là các khối đá to rõ khớp vai / khuỷu / hông / gối; **A-pose**, tay dang 45°, không buông xuôi sát thân (sửa lại ghi chú T8 cũ). Rêu xanh trên đỉnh khối, rune cam ở ngực |
+| 3 | `creep_siege` | Như T8 (không cần A-pose, không gắn xương người) |
+| 4 | `tower` | Như T8 |
+| 5 | `core` | Như T8 |
+| 6 | `neutral_bear` | Như T8 + quy tắc thêm 2 (4 chân tách rõ) |
+| 7 | `neutral_shaman` | Như T8 + A-pose thật, gậy nắm chặt tay phải, xiên ra ngoài |
+
+Làm **từng cặp** (1 + 2 trước), commit và push lên nhánh `thu-asset-tu-lam`, đánh dấu `[x]` trong bảng T8, rồi
+**DỪNG** báo người dùng duyệt trước khi làm cặp tiếp theo.

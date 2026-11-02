@@ -170,7 +170,7 @@ func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int, faded: b
 		_play(_rig["dash"], 1.4)
 	elif e.cast != null:
 		_play(_cfg.get("cast", _cfg["attack"]), 1.5)
-	elif e.attack_phase != Entity.AttackPhase.NONE:
+	elif _attack_shown(e, moving):
 		_play_attack(w, e)
 	elif hit_age == 0 and not moving and _playing == _rig["idle"]:
 		_play(_rig["hit"], 1.0, true)
@@ -179,6 +179,12 @@ func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int, faded: b
 	else:
 		_play(_rig["run"] if moving else _rig["idle"], 1.0)
 	_attack_phase = e.attack_phase
+
+
+## CMB-06, D-208: thu tay bị di chuyển hủy — đang đi (đuổi tiếp) thì chạy, không phát tiếp đòn đánh.
+func _attack_shown(e: Entity, moving: bool) -> bool:
+	var still: bool = e.attack_phase == Entity.AttackPhase.RECOVERY and not moving
+	return e.attack_phase == Entity.AttackPhase.WINDUP or (still and (_playing == _cfg["attack"] or _attack_phase != e.attack_phase))
 
 
 ## D-159: tung chiêu `slot` — phát hoạt ảnh riêng của chiêu (nếu có) đến hết, tối đa SKILL_LOCK_MAX.
