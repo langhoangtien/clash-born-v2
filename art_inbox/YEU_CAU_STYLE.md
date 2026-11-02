@@ -261,3 +261,21 @@ quan trọng nhất**: phải đúng cùng một tư thế, mặt sau đúng là
 
 Làm xong cả hai thì commit + push nhánh `thu-asset-tu-lam`, đánh dấu `[x]` trong bảng T8, rồi **DỪNG** báo người dùng.
 Sau đó (đợt sau, chờ phiếu): `creep_siege`, `tower`, `core`.
+
+## Đợt T8e — xe công thành, trụ, nhà chính (gấu + pháp sư T8d đã duyệt, 2026-11-02)
+
+Gấu, pháp sư đã dựng 3D và vào game (D-215) — cả bộ quái rừng và 2 loại lính đã xong. Còn 3 mục cuối của T8.
+Giữ mọi quy tắc T8 / T8b. Nhắc lại điều quan trọng nhất: **ảnh `_front` và `_back` phải đúng cùng một vật**, mặt sau
+đúng là mặt sau của mặt trước; ảnh `_side` cũng phải khớp hai ảnh kia (Tripo dùng ảnh nghiêng để lấy bề dày — vẽ lệch
+là Tripo dựng thừa bộ phận).
+
+Màu phe: chỉ vẽ bản **xanh** (`#3D8BFF` hoặc xanh dương đậm như `creep_melee`), màu phe là **mảng lớn liền**, các phần
+khác **không dùng màu xanh dương / xanh ngọc** (game đổi mọi điểm ảnh xanh dương sang đỏ cho phe kia).
+
+| Thứ tự | Tên file | Ghi chú |
+|---|---|---|
+| 1 | `creep_siege` | Xe công thành nhỏ cùng bộ với hai lính (gỗ nâu khối to, viền sắt xám): khung gỗ vuông thấp, **4 bánh tròn dày tách rõ khỏi thân** (nhìn trước / sau / nghiêng đều thấy khe), cần máy bắn đá **dày, ngắn** dựng nghiêng ra sau, gầu đá ở đầu cần; tấm chắn trước và một lá cờ **màu phe** (cờ là tấm dày, không phấp phới mảnh). Không dây thừng, không bánh răng nhỏ. Chiều cao ~1,3 lần lính |
+| 2 | `tower` | Trụ phòng thủ như T8: **đế đá lớn + thân trụ đá thon + đỉnh có viên tinh thể màu phe** (tinh thể to, mảng màu phe lớn), ít chi tiết, cao ~3 lần lính, đá xám ấm như golem. Không cần ảnh `_back` (trụ gần đối xứng); `_side` vẫn cần |
+| 3 | `core` | Nhà chính như T8: khối đá tròn rộng, tinh thể lớn màu phe ở giữa, vài cờ / mái màu phe; to hơn trụ, thấp và rộng. Không cần ảnh `_back` |
+
+Làm từng mục, commit + push nhánh `thu-asset-tu-lam`, đánh dấu `[x]` trong bảng T8; xong cả ba thì **DỪNG** báo người dùng.
