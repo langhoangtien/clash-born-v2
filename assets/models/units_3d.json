@@ -36,15 +36,6 @@
    "dash": "run",
    "hit": "hit",
    "death": "death"
-  },
-  "Boar": {
-   "_ghi_chu": "D-173: hoạt ảnh nằm sẵn trong mô hình (own), cỡ gốc lấy theo hộp bao",
-   "own": true,
-   "idle": "idle",
-   "run": "run",
-   "dash": "run",
-   "hit": "hit",
-   "death": "death"
   }
  },
  "units": {
@@ -183,7 +174,7 @@
    "baked": true
   }
  },
- "_ghi_chu_cong_trinh": "D-158: công trình và cảnh vật 3D từ KayKit Medieval Hexagon (CC0) trong assets/models/medieval/; bụi từ KayKit Forest Nature (CC0) trong assets/models/forest/ (D-165). Đường dẫn model tính từ assets/models/. structures: theo art_id (trụ thêm _t<bậc>), model là tên file không có _blue/_red (thêm theo đội), height: chiều cao trên sân (đơn vị 3D). scenery: bụi cỏ (bushes, spacing px thế giới, scale [nhỏ nhất, lớn nhất]), cửa hàng, đống đổ nát chỗ trụ đã đổ; style: cảnh vật + mặt đất + nước D-178.",
+ "_ghi_chu_cong_trinh": "D-158: công trình và cảnh vật 3D từ KayKit Medieval Hexagon (CC0) trong assets/models/medieval/. Đường dẫn model tính từ assets/models/. structures: theo art_id (trụ thêm _t<bậc>), model là tên file không có _blue/_red (thêm theo đội), height: chiều cao trên sân (đơn vị 3D). scenery: bụi cỏ (bushes, spacing px thế giới, scale [nhỏ nhất, lớn nhất]), cửa hàng, đống đổ nát chỗ trụ đã đổ; style: cảnh vật + mặt đất + nước D-178.",
  "structures": {
   "tower_t1": {
    "model": "style/structures/tower",

@@ -146,3 +146,43 @@ nhìn xiên; cần đánh giá ở góc camera game trước khi duyệt kỹ th
 | Xong | Tên | Nội dung |
 |---|---|---|
 | [ ] | `palette` | Một ảnh 1024 × 256: 12 ô màu chuẩn lấy từ concept (cỏ sáng / đậm, đất, đá lát, đá sáng / vừa / tối, thông sáng / tối, cây tròn, lá cam, nước nông / sâu) kèm mã hex dưới mỗi ô |
+
+## Đợt T8 — concept trụ, lính, quái rừng để dựng bằng Tripo (D-204)
+
+Mục tiêu: **concept để người dùng duyệt**, sau đó đưa vào Tripo (ảnh → 3D) rồi gắn xương (Mixamo cho dáng người,
+Tripo rig cho 4 chân). Phong cách giống ảnh mẫu quái rừng người dùng đã gửi (`art_inbox/08_style/ref/jungle_concept.webp`):
+**low-poly mặt phẳng, khối to gọn, mảng màu phẳng**, tông ấm như map. Thiết kế **đơn giản** — ít chi tiết nhỏ thì
+Tripo dựng ít tam giác mà vẫn đẹp.
+
+### Quy tắc vẽ để Tripo dựng tốt (bắt buộc)
+
+1. **Một nhân vật một ảnh**, toàn thân, ở giữa khung, **nền xám nhạt trơn**. KHÔNG đĩa đất / cỏ / đá dưới chân,
+   KHÔNG bóng đổ, KHÔNG sương, KHÔNG chữ.
+2. **Tư thế trung tính**: dáng người đứng **A-pose** (tay dang chéo ~45°, chân hơi tách, nhìn thẳng). Thú 4 chân
+   đứng thẳng cả 4 chân, đầu nhìn trước, miệng **ngậm hoặc hé**, đuôi duỗi ra sau. Không gầm, không chồm, không vũ
+   khí vung lên (hoạt ảnh sẽ làm sau).
+3. **Khối to, ít phần mảnh**: không ngón tay rời, không lông / tua / dây mảnh, không áo choàng nhiều lá rời, không
+   bộ phận bay lơ lửng. Vũ khí / gậy dày, cầm sát người.
+4. **Không hiệu ứng phát sáng tỏa ra** (quầng sáng, hạt, lửa). Mắt / rune sáng chỉ là **mảng màu cam phẳng**.
+5. Mỗi nhân vật nộp **3 ảnh cùng kiểu**: chính diện (`_front`), nghiêng phải (`_side`), sau lưng (`_back`).
+6. Lính và trụ có **phe xanh / đỏ**: màu phe là **mảng lớn rõ** (vải, cờ, mũ, mái…) để đổi màu dễ; chỉ vẽ bản
+   **xanh**, bản đỏ game tự đổi màu.
+7. Ảnh 1024 × 1024, PNG.
+
+### Danh sách (lưu `art_inbox/09_units/`)
+
+| Xong | Tên file (thêm `_front/_side/_back`) | Nội dung |
+|---|---|---|
+| [ ] | `neutral_wolf` | Sói xám (trại nhỏ), giống ảnh mẫu nhưng đứng thẳng 4 chân, miệng ngậm |
+| [ ] | `neutral_buffalo` | Golem đá rêu (trại vừa), giống ảnh mẫu: thân và tay là vài khối đá lớn, rêu là mảng xanh trên đỉnh khối, rune cam ở ngực. Tay buông xuôi |
+| [ ] | `neutral_bear` | Gấu nâu vằn cam (trại lớn), giống ảnh mẫu, đứng 4 chân, miệng ngậm |
+| [ ] | `neutral_shaman` | Pháp sư rừng (trại lớn) — **đơn giản hơn ảnh mẫu**: áo choàng lá là **một khối liền** có vài nếp lớn (không lá rời), sừng gắn liền mũ, gậy gỗ dày có viên đá cam. A-pose, gậy cầm tay phải thẳng đứng sát người |
+| [ ] | `creep_melee` | Lính cận chiến: dáng người thấp đậm, giáp da + mũ sắt đơn giản, khiên tròn + kiếm ngắn dày; mảng màu phe ở áo và khiên |
+| [ ] | `creep_ranged` | Lính đánh xa: áo choàng ngắn có mũ trùm, gậy phép ngắn / nỏ dày; mảng màu phe ở áo |
+| [ ] | `creep_siege` | Xe công thành nhỏ: khung gỗ khối vuông, 4 bánh tròn dày, máy bắn đá đơn giản; mảng màu phe ở cờ / tấm che |
+| [ ] | `tower` | Trụ phòng thủ: **đế đá lớn + thân trụ đá thon + đỉnh có viên tinh thể / ngọn lửa phe**, ít chi tiết, cao gấp ~3 lần lính. Chỉ cần một mẫu (bậc 1–4 game đổi cỡ / phụ kiện sau). Không cần ảnh `_back` |
+| [ ] | `core` | Nhà chính: khối đá tròn rộng có tinh thể lớn ở giữa, màu phe ở tinh thể và cờ. Không cần ảnh `_back` |
+
+Làm **trước 2 mẫu thử**: `neutral_wolf` và `creep_melee` (đủ 3 hướng), **commit và push lên nhánh
+`thu-asset-tu-lam`** (repo `langhoangtien/clash-born-v2`), đánh dấu `[x]`, rồi **DỪNG** báo người dùng. Người dùng
+duyệt hai mẫu này xong mới làm các mục còn lại.

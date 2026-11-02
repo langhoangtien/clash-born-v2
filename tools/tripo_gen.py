@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Tạo mô hình 3D từ ảnh qua Tripo API (kit map, art_inbox/YEU_CAU_KIT_MAP.md).
 
-Chạy: python3 tools/tripo_gen.py <ảnh.png> [<ảnh.png> ...] --faces 900 [--out art_inbox/3d/kit]
+Chạy: python3 tools/tripo_gen.py <ảnh.png> [<ảnh.png> ...] --faces 900 [--out art_inbox/3d]
 Key đọc từ biến môi trường TRIPO_API_KEY hoặc file ~/.secrets/tripo_key (không commit key vào repo).
 Mỗi ảnh → <out>/<tên>.glb; in số credit trước và sau.
 """
@@ -67,7 +67,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("images", nargs="+")
     ap.add_argument("--faces", type=int, default=1000)
-    ap.add_argument("--out", default="art_inbox/3d/kit")
+    ap.add_argument("--out", default="art_inbox/3d")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     print("credit trước:", call("/user/balance")["balance"])
