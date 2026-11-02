@@ -27,9 +27,13 @@ def _rest(node, path):
         else node[path]
 
 
-def concat(g, binc, array, names, new_name):
-    anims = [next(a for a in g["animations"] if a.get("name") == n) for n in names]
-    length = [max(g["accessors"][s["input"]]["max"][0] for s in a["samplers"]) for a in anims]
+def concat(g, binc, array, names, new_name, gap=FRAME):
+    """gap: giây giữa hai đoạn — khớp được nội suy thành chuyển động (vd vung kiếm xuống giữa giơ và thu tay)."""
+    """`tên@giây`: chỉ lấy tới giây đó (bỏ khung cuối afk.ai hay giật về tư thế đứng)."""
+    cut = [float(n.split("@")[1]) if "@" in n else None for n in names]
+    anims = [next(a for a in g["animations"] if a.get("name") == n.split("@")[0]) for n in names]
+    length = [c if c is not None else max(g["accessors"][s["input"]]["max"][0] for s in a["samplers"])
+              for a, c in zip(anims, cut)]
     keys = []
     for a in anims:
         for c in a["channels"]:
@@ -48,9 +52,11 @@ def concat(g, binc, array, names, new_name):
             else:
                 s = a["samplers"][ch["sampler"]]
                 assert s.get("interpolation", "LINEAR") != "CUBICSPLINE", "chưa hỗ trợ CUBICSPLINE"
-                times.append(array(g, binc, s["input"])[:, 0].copy() + off)
-                values.append(array(g, binc, s["output"]).copy())
-            off += ln + FRAME
+                t = array(g, binc, s["input"])[:, 0].copy()
+                inside = t <= ln + 1e-4
+                times.append(t[inside] + off)
+                values.append(array(g, binc, s["output"])[inside].copy())
+            off += ln + gap
         t = np.concatenate(times)[:, None]
         v = np.concatenate(values)
         kind = "VEC4" if v.shape[1] == 4 else "VEC3"

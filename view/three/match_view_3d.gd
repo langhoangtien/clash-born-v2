@@ -46,6 +46,7 @@ var _ground_mat: ShaderMaterial
 ## Vùng đất camera thấy so với điểm nhìn (px thế giới).
 var _ground_rect: Rect2 = Rect2()
 var _actors: Dictionary[int, Actor3D] = {}
+var _corpses: Corpses = Corpses.new()  # D-210
 ## D-179: bảng chẩn đoán — mặt nước, vật liệu mặt đất có ảnh nền, có vẽ nhân vật không.
 var _water: MeshInstance3D
 ## D-197: vực ngoài rìa map.
@@ -140,8 +141,11 @@ func update(focus: Vector2) -> void:
 	_dispatch_events()
 	for id: int in _actors.keys():
 		if not keep.has(id):
-			_actors[id].queue_free()
+			var gone: bool = world.find_entity(id) == null  # D-210: bị gỡ = vừa chết (lính / quái)
+			if not (gone and _actors[id].visible and _corpses.add(_actors[id], Actor3D._now())):
+				_actors[id].queue_free()
 			_actors.erase(id)
+	_corpses.update(Actor3D._now(), get_process_delta_time())
 
 
 ## D-179: bật / tắt một phần vẽ (bảng chẩn đoán FPS): cảnh vật, nền ảnh (tắt = màu phẳng), lớp phủ (hình

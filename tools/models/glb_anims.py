@@ -4,7 +4,7 @@
   python3 -I tools/models/glb_anims.py vào.glb ra.glb --keep Idle=idle,Run=run,Bite=attack,Hit=hit,Death=death
       [--drop-bones REGEX]
 
-- `A+B=tên`: nối hoạt ảnh A rồi B thành một (D-209, vd vung + thu tay của afk.ai).
+- `A+B=tên`: nối hoạt ảnh A rồi B thành một (D-209, vd vung + thu tay của afk.ai); --join-gap: giây nội suy ở chỗ nối; `A@0.5`: chỉ lấy A tới 0,5 s.
 - --drop-bones: bỏ xương có tên khớp REGEX (ngón tay…), trọng số dồn về xương cha (D-209).
 
 - Chỉ giữ các hoạt ảnh trong --keep, đổi sang tên game (rig `Creature`: idle / run / attack / hit / death);
@@ -134,13 +134,14 @@ def main():
     ap.add_argument("src"); ap.add_argument("dst")
     ap.add_argument("--keep", required=True, help="Tên_gốc=tên_game,… (A+B=tên: nối)")
     ap.add_argument("--drop-bones", default="")
+    ap.add_argument("--join-gap", type=float, default=R.FRAME, help="giây nội suy ở chỗ nối A+B")
     a = ap.parse_args()
     keep = dict(kv.split("=") for kv in a.keep.split(","))
     g, binc = read(a.src)
     have = {an.get("name") for an in g.get("animations", [])}
-    missing = {n for src in keep for n in src.split("+")} - have
+    missing = {n.split("@")[0] for src in keep for n in src.split("+")} - have
     assert not missing, f"không có hoạt ảnh: {missing}; có: {sorted(have)}"
-    joined = [R.concat(g, binc, array, src.split("+"), name) for src, name in keep.items() if "+" in src]
+    joined = [R.concat(g, binc, array, src.split("+"), name, a.join_gap) for src, name in keep.items() if "+" in src]
     g["animations"] = [dict(an, name=keep[an["name"]]) for an in g["animations"] if an.get("name") in keep] + joined
     if a.drop_bones:
         print("xương: %d → %d" % R.drop_bones(g, binc, array, a.drop_bones))
