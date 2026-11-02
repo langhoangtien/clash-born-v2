@@ -2,7 +2,7 @@ class_name AttackSystem
 extends SimSystem
 ## Pha 8: đánh thường (CMB-01, CMB-06). Vung tay `attack_point / tốc đánh`, cuối lúc vung
 ## ra đòn: cận chiến tạo DamageRequest ngay, đánh xa bắn đạn bay theo mục tiêu. Hai đòn
-## cách nhau `1 / số đòn mỗi giây`. Đổi lệnh hoặc mục tiêu ra khỏi tầm khi đang vung → hủy,
+## cách nhau `1 / số đòn mỗi giây`. Đổi lệnh hoặc mục tiêu ra quá tầm + tầm đệm (CMB-17) khi đang vung → hủy,
 ## không tính hồi đòn. Lệnh SWING: đánh gió tại chỗ, không sát thương (D-46). Chỉ hệ thống
 ## này ghi trạng thái đánh và danh sách đạn.
 
@@ -37,8 +37,8 @@ func _update_attacker(world: World, e: Entity) -> void:
 		e.attack_phase = Entity.AttackPhase.NONE if e.attack_phase == Entity.AttackPhase.WINDUP else e.attack_phase
 		return
 	if e.attack_phase == Entity.AttackPhase.WINDUP:
-		if not Rules.in_attack_range(e, target):
-			e.attack_phase = Entity.AttackPhase.NONE
+		if not Rules.in_attack_range(e, target, world.balance.attack_range_buffer):
+			e.attack_phase = Entity.AttackPhase.NONE  # CMB-17: ra quá tầm + đệm thì hủy
 		elif world.tick >= e.attack_release_tick:
 			_release(world, e, target)
 		return

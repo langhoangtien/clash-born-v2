@@ -254,8 +254,12 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   phản (CMB-09), không từ chiêu / đồ / hiệu ứng. Lính, quái, hero đều hút được.
 - `CMB-06` Nhịp đánh (kiểu Dota): mỗi đòn có **vung tay** (`attack_point`, giây, theo
   hero) và **thu tay**. Sát thương/đạn xuất hiện ở cuối vung tay. Di chuyển hoặc dừng
-  trong lúc vung tay hủy đòn, không tính hồi đòn. Thu tay có thể hủy bằng di chuyển.
+  trong lúc vung tay hủy đòn, không tính hồi đòn. Mục tiêu ra quá tầm đánh + tầm đệm trong
+  lúc vung tay cũng hủy đòn (CMB-17). Thu tay có thể hủy bằng di chuyển.
   Hoạt ảnh của view **theo** mốc thời gian này, không bao giờ ngược lại.
+- `CMB-17` (D-206) Tầm đệm khi vung: bắt đầu vung tay cần mục tiêu trong tầm đánh (CMB-01); đã vung
+  thì chỉ hủy khi khoảng cách mép > tầm đánh + `attack_range_buffer` (150). Mục tiêu vừa chạy ra khỏi
+  tầm vẫn ăn đòn đang vung. Áp cho mọi đơn vị (hero, lính, quái, trụ).
 - `CMB-07` Chí mạng là **thay đổi đòn đánh**, không phải sát thương thêm: tung xúc xắc
   khi bắt đầu vung tay (để hoạt ảnh biết trước); nếu nhiều nguồn cùng trúng, lấy hệ
   số cao nhất; chỉ nhân sát thương vật lý của chính đòn đánh, không nhân sát thương

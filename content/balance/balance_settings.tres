@@ -82,6 +82,7 @@ ward_other_hit = 1.0
 shop_radius = 600.0
 sell_ratio = 0.5
 sell_full_refund_time = 10.0
+attack_range_buffer = 150.0
 jungle_first_spawn = 30.0
 jungle_respawn_check = 60.0
 camp_spawn_box = 300.0

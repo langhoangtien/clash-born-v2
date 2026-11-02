@@ -36,6 +36,8 @@ extends Resource
 @export var hero_structure_damage: float
 ## CMB-04b (D-125): trụ gây × sát thương lên lính đường (lính sống lâu hơn dưới trụ, đẩy trụ nhanh hơn).
 @export var tower_creep_damage: float = 1.0
+## CMB-17 (D-206): đang vung tay chỉ hủy khi mục tiêu xa hơn tầm đánh + khoảng này (đơn vị thế giới).
+@export var attack_range_buffer: float = 0.0
 @export var creep_structure_damage: float
 @export var siege_structure_damage: float
 ## STR-01: trụ nhớ hero gây giao tranh hero trong chừng này giây.

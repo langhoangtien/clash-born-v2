@@ -10,8 +10,9 @@ static func edge_distance(a: Entity, b: Entity) -> float:
 
 
 ## DEF-02: b trong tầm đánh của a.
-static func in_attack_range(a: Entity, b: Entity) -> bool:
-	return edge_distance(a, b) <= a.stats.get_stat(StatId.Id.ATTACK_RANGE)
+## `extra`: tầm đệm cộng thêm (CMB-17: đòn đang vung).
+static func in_attack_range(a: Entity, b: Entity, extra: float = 0.0) -> bool:
+	return edge_distance(a, b) <= a.stats.get_stat(StatId.Id.ATTACK_RANGE) + extra
 
 
 static func is_structure(e: Entity) -> bool:

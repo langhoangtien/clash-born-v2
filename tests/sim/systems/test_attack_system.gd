@@ -191,3 +191,58 @@ func test_D_30_combat_replays_identically() -> void:
 			elif w.state_hash() != hashes[t]:
 				fail("lệch ở tick %d" % w.tick)
 				return
+
+
+## CMB-17 (D-206): mục tiêu vừa ra khỏi tầm khi đang vung (trong tầm đệm) vẫn ăn đòn.
+func test_CMB_17_target_leaving_range_within_buffer_still_hit() -> void:
+	var w: World = _world()
+	w.balance.attack_range_buffer = 150.0
+	var a: Entity = _fighter(w, 0, _origin())
+	var b: Entity = _fighter(w, 1, _origin() + Vector2(100, 0))
+	w.submit(Command.attack(a.id, b.id))
+	for t: int in range(3):
+		w.step()
+	assert_eq(a.attack_phase, Entity.AttackPhase.WINDUP)
+	b.position += Vector2(200, 0)  # cách mép 252: ngoài tầm 150, trong tầm + đệm 300
+	var hits: Array[int] = _hits(w, 10, b)
+	assert_eq(hits.size(), 1, "đòn đang vung vẫn ra")
+	assert_eq(hits[0], 1 + 9, "đúng tick ra đòn")
+
+
+func test_CMB_17_target_beyond_buffer_cancels() -> void:
+	var w: World = _world()
+	w.balance.attack_range_buffer = 150.0
+	var a: Entity = _fighter(w, 0, _origin())
+	var b: Entity = _fighter(w, 1, _origin() + Vector2(100, 0))
+	w.submit(Command.attack(a.id, b.id))
+	for t: int in range(3):
+		w.step()
+	b.position += Vector2(300, 0)  # cách mép 352 > 300
+	w.step()
+	assert_ne(a.attack_phase, Entity.AttackPhase.WINDUP, "ra quá tầm + đệm: hủy vung tay")
+	assert_eq(b.health, 1000.0)
+
+
+## Lỗi người chơi báo: kẻ đuổi vào tới mép tầm thì vung, mục tiêu chạy ra → hủy → vung lặp lại, không bao
+## giờ trúng (hoạt ảnh khựng). Kẻ đuổi nhanh hơn chút (như sói 320 đuổi hero 255).
+func test_CMB_17_chaser_hits_fleeing_target() -> void:
+	var w: World = _world()
+	w.balance.attack_range_buffer = 150.0
+	var a: Entity = _fighter(w, 0, _origin())
+	var b: Entity = _fighter(w, 1, _origin() + Vector2(260, 0))
+	b.stats.set_base(StatId.Id.MOVEMENT_SPEED, 255)
+	w.submit(Command.attack(a.id, b.id))
+	w.submit(Command.move_dir(b.id, Vector2.RIGHT))
+	var starts: int = 0
+	var hits: int = 0
+	var hp: float = b.health
+	for t: int in range(90):
+		w.step()
+		for ev: GameEvent in w.events:
+			if ev.type == &"attack_started" and ev.source_id == a.id:
+				starts += 1
+		if b.health < hp:
+			hits += 1
+			hp = b.health
+	assert_true(hits >= 1, "đuổi kịp mép tầm là đánh trúng")
+	assert_eq(starts, hits, "không có đòn vung bị hủy")
