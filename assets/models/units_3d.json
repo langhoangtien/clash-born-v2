@@ -129,7 +129,7 @@
    "model": "../style/units/creep_melee",
    "rig": "Creature",
    "attack": "attack",
-   "impact": 0.4,
+   "impact": 0.32,
    "team_tex": true,
    "height": 0.85
   },
@@ -169,7 +169,7 @@
    "rig": "Creature",
    "attack": "attack",
    "height": 1.7,
-   "impact": 0.28
+   "impact": 0.46
   }
  },
  "_ghi_chu_cong_trinh": "D-158: công trình và cảnh vật 3D từ KayKit Medieval Hexagon (CC0) trong assets/models/medieval/. Đường dẫn model tính từ assets/models/. structures: theo art_id (trụ thêm _t<bậc>), model là tên file không có _blue/_red (thêm theo đội), height: chiều cao trên sân (đơn vị 3D). scenery: bụi cỏ (bushes, spacing px thế giới, scale [nhỏ nhất, lớn nhất]), cửa hàng, đống đổ nát chỗ trụ đã đổ; style: cảnh vật + mặt đất + nước D-178.",

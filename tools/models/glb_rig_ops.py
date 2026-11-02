@@ -27,13 +27,20 @@ def _rest(node, path):
         else node[path]
 
 
+def _span(name, full):
+    if "@" not in name:
+        return 0.0, full
+    rng = name.split("@")[1]
+    return (float(rng.split("-")[0]), float(rng.split("-")[1])) if "-" in rng else (0.0, float(rng))
+
+
 def concat(g, binc, array, names, new_name, gap=FRAME):
-    """gap: giây giữa hai đoạn — khớp được nội suy thành chuyển động (vd vung kiếm xuống giữa giơ và thu tay)."""
-    """`tên@giây`: chỉ lấy tới giây đó (bỏ khung cuối afk.ai hay giật về tư thế đứng)."""
-    cut = [float(n.split("@")[1]) if "@" in n else None for n in names]
+    """gap: giây giữa hai đoạn — khớp được nội suy thành chuyển động (vd vung kiếm xuống giữa giơ và thu tay).
+    `tên@cuối` / `tên@đầu-cuối` (giây): chỉ lấy đoạn đó (bỏ khung cuối afk.ai hay giật về tư thế đứng, bỏ phần lấy đà
+    dài để đòn khớp nhịp đánh — D-214)."""
     anims = [next(a for a in g["animations"] if a.get("name") == n.split("@")[0]) for n in names]
-    length = [c if c is not None else max(g["accessors"][s["input"]]["max"][0] for s in a["samplers"])
-              for a, c in zip(anims, cut)]
+    span = [_span(n, max(g["accessors"][s["input"]]["max"][0] for s in a["samplers"])) for n, a in zip(names, anims)]
+    length = [b - a for a, b in span]
     keys = []
     for a in anims:
         for c in a["channels"]:
@@ -43,7 +50,7 @@ def concat(g, binc, array, names, new_name, gap=FRAME):
     out = {"name": new_name, "channels": [], "samplers": []}
     for node, path in keys:
         times, values, off = [], [], 0.0
-        for a, ln in zip(anims, length):
+        for a, ln, (start, _end) in zip(anims, length, span):
             ch = next((c for c in a["channels"] if (c["target"]["node"], c["target"]["path"]) == (node, path)), None)
             if ch is None:  # phần này không động tới xương: giữ tư thế gốc
                 rest = np.array([_rest(g["nodes"][node], path)] * 2, np.float32)
@@ -53,9 +60,14 @@ def concat(g, binc, array, names, new_name, gap=FRAME):
                 s = a["samplers"][ch["sampler"]]
                 assert s.get("interpolation", "LINEAR") != "CUBICSPLINE", "chưa hỗ trợ CUBICSPLINE"
                 t = array(g, binc, s["input"])[:, 0].copy()
-                inside = t <= ln + 1e-4
-                times.append(t[inside] + off)
-                values.append(array(g, binc, s["output"])[inside].copy())
+                v = array(g, binc, s["output"]).copy()
+                inside = (t >= start - 1e-4) & (t <= start + ln + 1e-4)
+                before = max(0, int(np.searchsorted(t, start, "right")) - 1)
+                if not inside.any() or t[inside][0] > start + 1e-4:  # giữ khóa gần nhất trước điểm cắt
+                    times.append(np.array([0.0]) + off)
+                    values.append(v[before:before + 1])
+                times.append(t[inside] - start + off)
+                values.append(v[inside])
             off += ln + gap
         t = np.concatenate(times)[:, None]
         v = np.concatenate(values)
