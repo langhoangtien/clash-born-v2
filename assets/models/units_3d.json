@@ -29,7 +29,7 @@
    ]
   },
   "Creature": {
-   "_ghi_chu": "D-203: quái Blender tools/models/creatures.py — khớp cứng, hoạt ảnh sẵn trong mô hình, màu đỉnh vẽ sẵn sáng tối (baked). D-205: cùng tên hoạt ảnh cho thú Tripo gắn xương (tools/models/rig_quadruped.py)",
+   "_ghi_chu": "D-203: quái Blender tools/models/creatures.py — khớp cứng, hoạt ảnh sẵn trong mô hình, màu đỉnh vẽ sẵn sáng tối (baked). D-205: cùng tên hoạt ảnh cho thú gắn xương bằng afk.ai (tools/models/glb_anims.py chọn + đổi tên)",
    "own": true,
    "idle": "idle",
    "run": "run",

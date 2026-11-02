@@ -2,7 +2,7 @@
 """Quái rừng low-poly mặt phẳng (D-203, theo concept người dùng gửi): dựng bằng Blender (bpy), mỗi bộ phận là một
 khối cứng gắn vào một khớp (empty); hoạt ảnh xoay / dời khớp, xuất glTF mỗi hoạt ảnh một rãnh NLA cùng tên
 (idle, run, attack, hit, death — rig `Creature` trong units_3d.json). Sói đã thay bằng mô hình Tripo gắn xương
-(D-205, tools/models/rig_quadruped.py). Màu + sáng tối vẽ sẵn vào màu đỉnh như
+(D-205, gắn xương + hoạt ảnh bằng afk.ai). Màu + sáng tối vẽ sẵn vào màu đỉnh như
 style_kit (game vẽ không đèn). Hướng mặt: -Y Blender (= +Z Godot).
 
   <venv có bpy>/bin/python tools/models/creatures.py
