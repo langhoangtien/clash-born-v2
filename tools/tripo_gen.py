@@ -4,6 +4,8 @@
 Chạy: python3 tools/tripo_gen.py <ảnh.png> [<ảnh.png> ...] --faces 900 [--out art_inbox/3d]
 Key đọc từ biến môi trường TRIPO_API_KEY hoặc file ~/.secrets/tripo_key (không commit key vào repo).
 Mỗi ảnh → <out>/<tên>.glb; in số credit trước và sau.
+--multiview: mỗi tham số là tên chung của bộ ảnh 3 hướng (phiếu T8, <tên>_front/_side/_back.png; _side là
+nghiêng phải) → một mô hình <out>/<tên>.glb dựng từ cả ba ảnh.
 """
 import argparse, json, os, sys, time, urllib.request
 
@@ -38,14 +40,23 @@ def upload(png):
     return call("/upload", headers={"Content-Type": f"multipart/form-data; boundary={boundary}"}, raw=raw)["image_token"]
 
 
-def generate(png, faces, out_dir):
+def request(png, faces, multiview):
+    if not multiview:
+        return {"type": "image_to_model", "file": {"type": "png", "file_token": upload(png)}}
+    # thứ tự Tripo: trước, trái, sau, phải; thiếu hướng nào để trống
+    views = [png + "_front.png", None, png + "_back.png", png + "_side.png"]
+    files = [{"type": "png", "file_token": upload(v)} if v else {} for v in views]
+    return {"type": "multiview_to_model", "files": files}
+
+
+def generate(png, faces, out_dir, multiview=False):
     name = os.path.splitext(os.path.basename(png))[0]
     note = os.path.join(out_dir, name + ".task")
     if os.path.exists(note):  # đã gửi trước đó: chỉ chờ / tải lại, không tốn credit
         task = open(note).read().strip()
     else:
-        task = call("/task", {"type": "image_to_model", "file": {"type": "png", "file_token": upload(png)},
-                              "face_limit": faces, "texture": True, "pbr": False})["task_id"]
+        body = request(png, faces, multiview) | {"face_limit": faces, "texture": True, "pbr": False}
+        task = call("/task", body)["task_id"]
         open(note, "w").write(task)
     print(name, "task", task, flush=True)
     while True:
@@ -68,11 +79,12 @@ def main():
     ap.add_argument("images", nargs="+")
     ap.add_argument("--faces", type=int, default=1000)
     ap.add_argument("--out", default="art_inbox/3d")
+    ap.add_argument("--multiview", action="store_true")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     print("credit trước:", call("/user/balance")["balance"])
     for png in a.images:
-        print("→", generate(png, a.faces, a.out), flush=True)
+        print("→", generate(png, a.faces, a.out, a.multiview), flush=True)
     print("credit sau:", call("/user/balance")["balance"])
 
 
