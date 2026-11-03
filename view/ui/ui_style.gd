@@ -156,7 +156,7 @@ static func orb(c: CanvasItem, at: Vector2, r: float, fill: Color, lit: bool = t
 static func soft_frame(c: CanvasItem, r: Rect2, radius: int = 18, fill: Color = Color(0.04, 0.06, 0.1, 0.82)) -> void:
 	c.draw_style_box(box(fill, Color(GOLD_DEEP, 0.95), 2, radius, Color(0, 0, 0, 0.4), 10), r)
 	c.draw_style_box(box(Color(0, 0, 0, 0), Color(GOLD, 0.3), 1, maxi(2, radius - 3)), r.grow(-3))
-	var top: Rect2 = Rect2(r.position + Vector2(4, 4), Vector2(r.size.x - 8, r.size.y * 0.42))
+	var top: Rect2 = Rect2(r.position + Vector2(4, 4), Vector2(r.size.x - 8, minf(r.size.y * 0.42, 40.0)))
 	c.draw_style_box(box(Color(1, 1, 1, 0.045), Color(0, 0, 0, 0), 0, maxi(2, radius - 4)), top)
 
 

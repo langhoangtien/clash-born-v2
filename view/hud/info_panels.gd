@@ -80,8 +80,10 @@ func _draw() -> void:
 		return
 	var font: Font = UiStyle.sans()  # D-130
 	var p: Rect2 = panel_rect()
+	if open == Open.SCORE:  # D-223: bảng tỷ số cao vừa số hero
+		p.size.y = ScorePainter.height(score_rows(world))
 	draw_rect(Rect2(Vector2.ZERO, size), Color(0, 0, 0, 0.5))
-	UiStyle.panel(self, p)
+	UiStyle.soft_frame(self, p, 22, Color(0.04, 0.06, 0.1, 0.95))  # D-223
 	UiStyle.glyph(self, &"close", close_rect().get_center(), 16.0, UiStyle.TEXT)
 	if open == Open.STATS:
 		_draw_stats(font, p)
@@ -197,7 +199,7 @@ func _draw_stats(font: Font, p: Rect2) -> void:
 		y += 12.0
 
 
-## Dòng tỷ số: mỗi hero [đội, tên, cấp, K/D/A, LH, giá trị đồ, tên tắt 6 ô, art_id 6 ô (D-115)].
+## Dòng tỷ số: mỗi hero [đội, tên, cấp, K/D/A, LH, giá trị đồ, tên tắt 6 ô, art_id 6 ô (D-115), id ảnh chân dung (D-223)].
 static func score_rows(w: World) -> Array:
 	var out: Array = []
 	for team: int in range(2):
@@ -212,34 +214,13 @@ static func score_rows(w: World) -> Array:
 				slots.append(ItemButtons.short_name(it.def.display_name) if it != null else "")
 				arts.append(it.def.art_id if it != null else &"")
 			out.append([team, e.hero_def.display_name if e.hero_def != null else "Hero", e.stats.level(),
-				"%d/%d/%d" % [e.kills, e.deaths, e.assists], e.last_hits, worth, slots, arts])
+				"%d/%d/%d" % [e.kills, e.deaths, e.assists], e.last_hits, worth, slots, arts,
+				StringName(String(e.hero_def.id) + "_portrait") if e.hero_def != null else &""])
 	return out
 
 
-func _draw_score(font: Font, p: Rect2) -> void:
-	_text(UiStyle.serif(true), p.position + Vector2(28, 56), "Tỷ số  %d — %d" % [MatchScore.team_kills(world, 0), MatchScore.team_kills(world, 1)], 34, UiStyle.TEXT)
-	var heads: Array = ["Hero", "Cấp", "K/D/A", "LH", "Giá trị đồ", "Đồ"]
-	var cols: Array[float] = [28.0, 330.0, 430.0, 590.0, 690.0, 860.0]
-	for i: int in range(heads.size()):
-		_text(font, p.position + Vector2(cols[i], 110), heads[i], 20, Color(1, 1, 1, 0.6))
-	var y: float = 170.0
-	for row: Array in score_rows(world):
-		var col: Color = Color(0.45, 0.7, 1.0) if row[0] == 0 else Color(1.0, 0.45, 0.4)
-		draw_style_box(UiStyle.box(Color(col, 0.12), Color(col, 0.35), 1, 10), Rect2(p.position + Vector2(16, y - 40), Vector2(p.size.x - 32, 64)))
-		_text(font, p.position + Vector2(cols[0], y), row[1], 24, col)
-		_text(font, p.position + Vector2(cols[1], y), str(row[2]), 24, Color.WHITE)
-		_text(font, p.position + Vector2(cols[2], y), row[3], 24, Color.WHITE)
-		_text(font, p.position + Vector2(cols[3], y), str(row[4]), 24, Color.WHITE)
-		_text(font, p.position + Vector2(cols[4], y), str(row[5]), 24, Color(1, 0.85, 0.3))
-		for k: int in range(row[6].size()):
-			var box: Rect2 = Rect2(p.position + Vector2(cols[5] + k * 72, y - 36), Vector2(60, 60))
-			draw_rect(box, Color(0.15, 0.17, 0.22, 0.95))
-			var tex: Texture2D = ArtLibrary.texture(row[7][k])
-			if tex != null:
-				draw_texture_rect(tex, box.grow(-2), false)
-			elif row[6][k] != "":
-				_text(font, box.get_center() + Vector2(-14, 8), row[6][k], 20, Color.WHITE)
-		y += 84.0
+func _draw_score(_font: Font, p: Rect2) -> void:
+	ScorePainter.draw(self, p, world, score_rows(world))  # D-223
 
 
 func _text(font: Font, at: Vector2, text: String, font_size: int, color: Color) -> void:

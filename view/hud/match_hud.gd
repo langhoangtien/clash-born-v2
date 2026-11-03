@@ -102,7 +102,7 @@ func _score(font: Font) -> void:
 		draw_line(Vector2(c.x - 9, y), Vector2(c.x + 9, y), Color(1, 1, 1, 0.5), 1.5)
 
 
-## D-183: chân dung tướng (chạm xem thông số, dấu "i"). D-222: tròn, viền vàng, huy hiệu cấp ở góc dưới.
+## D-183: chân dung tướng (chạm xem thông số). D-222: tròn, viền vàng, huy hiệu cấp ở góc dưới; bỏ dấu "i" (giống cảnh báo).
 func _portrait(font: Font) -> void:
 	var r: float = PORTRAIT.x * 0.5
 	var c: Vector2 = PANEL.position + Vector2(12 + r, PANEL.size.y * 0.5)
@@ -120,6 +120,3 @@ func _portrait(font: Font) -> void:
 	var badge: Vector2 = c + Vector2(-r * 0.72, r * 0.72)
 	UiStyle.orb(self, badge, 17.0, Color(0.12, 0.2, 0.36))
 	_text(font, badge + Vector2(0, 7), str(hero.stats.level()), 20, Color.WHITE, true)
-	var info: Vector2 = c + Vector2(r * 0.74, -r * 0.7)
-	draw_circle(info, 11, UiStyle.GOLD, true, -1.0, true)
-	_text(font, info + Vector2(0, 6), "i", 16, Color(0.1, 0.1, 0.15), true)
