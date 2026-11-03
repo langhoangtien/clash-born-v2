@@ -43,10 +43,11 @@ func test_D_219_shape_per_source_and_siege_arcs() -> void:
 	assert_true(heights[&"creep_siege"] > heights[&"creep_ranged"] + 1.0, "giữa đường đạn xe công thành bay cao (vòng cung)")
 
 
-func test_D_219_tower_bolt() -> void:
+## D-221: trụ là trụ đá — bắn viên đá như xe công thành (trước D-219 là mảnh tinh thể).
+func test_D_221_tower_shoots_rock() -> void:
 	var r: Array = _setup(&"tower", Entity.Kind.TOWER)
 	(r[0] as World).find_entity((r[1] as Projectile).source_id).tier = 1
 	var pj: Projectiles3D = Projectiles3D.new()
 	pj.sync(r[0])
-	assert_eq(pj.shape_of(r[1]), "bolt", "trụ bắn mảnh tinh thể")
+	assert_eq(pj.shape_of(r[1]), "rock", "trụ bắn viên đá")
 	pj.free()

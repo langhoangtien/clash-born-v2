@@ -31,6 +31,17 @@ func build(layout: MapLayout) -> void:
 	_place(cfg["bushes"], bushes)
 	for i: int in layout.shop_points.size():
 		_add_static(cfg["shop"], layout.shop_points[i], 0.0)
+	add_fountains(layout)
+
+
+## D-221: fountain mỗi phe ở fountain_point, ảnh màu theo phe, mặt trước (bậc thềm, +Z) quay về nhà chính.
+func add_fountains(layout: MapLayout) -> void:
+	if not ModelLibrary.scenery().has("fountain") or layout.fountain_points.is_empty():
+		return
+	for team: int in [0, 1]:
+		var at: Vector2 = layout.fountain_point(team)
+		var dir: Vector2 = layout.core_point(team) - at
+		_add_static(ModelLibrary.scenery()["fountain"], at, atan2(dir.x, dir.y), team)
 
 
 ## Mỗi khung: thêm đống đổ nát chỗ trụ vừa đổ (DEF-06).
@@ -139,8 +150,9 @@ func _multimesh(model: String, items: Array, material: Material) -> void:
 	add_child(node)
 
 
-func _add_static(cfg: Dictionary, at: Vector2, angle: float) -> void:
-	var n: Node3D = ModelLibrary.static_scene(cfg["model"]).instantiate() as Node3D
+func _add_static(cfg: Dictionary, at: Vector2, angle: float, team: int = -1) -> void:
+	var n: Node3D = ModelLibrary.static_scene(cfg["model"], team).instantiate() as Node3D
+	ModelLibrary.apply_team_texture(n, cfg["model"], team)
 	ModelLibrary.use_vertex_colors_in(n)
 	add_child(n)
 	var box: AABB = ModelLibrary.bounds(n)

@@ -209,43 +209,47 @@
  "structures": {
   "tower_t1": {
    "model": "style/structures/tower",
-   "height": 2.9,
+   "height": 2.55,
    "projectile": {
-    "shape": "bolt",
-    "color": "team",
-    "size": 0.42
+    "shape": "rock",
+    "model": "style/fx/siege_rock",
+    "size": 0.26,
+    "arc": 0.08
    }
   },
   "tower_t2": {
    "model": "style/structures/tower",
-   "height": 3.15,
+   "height": 2.75,
    "projectile": {
-    "shape": "bolt",
-    "color": "team",
-    "size": 0.42
+    "shape": "rock",
+    "model": "style/fx/siege_rock",
+    "size": 0.26,
+    "arc": 0.08
    }
   },
   "tower_t3": {
    "model": "style/structures/tower",
-   "height": 3.4,
+   "height": 2.95,
    "projectile": {
-    "shape": "bolt",
-    "color": "team",
-    "size": 0.42
+    "shape": "rock",
+    "model": "style/fx/siege_rock",
+    "size": 0.26,
+    "arc": 0.08
    }
   },
   "tower_t4": {
    "model": "style/structures/tower_core",
-   "height": 3.75,
+   "height": 3.3,
    "projectile": {
-    "shape": "bolt",
-    "color": "team",
-    "size": 0.42
+    "shape": "rock",
+    "model": "style/fx/siege_rock",
+    "size": 0.26,
+    "arc": 0.08
    }
   },
   "core": {
-   "model": "medieval/buildings/building_castle",
-   "height": 5.8
+   "model": "style/structures/core",
+   "height": 3.6
   }
  },
  "scenery": {
@@ -311,6 +315,10 @@
     "bed": "riverbed",
     "bed_m": 6.0
    }
+  },
+  "fountain": {
+   "model": "style/structures/fountain",
+   "height": 1.5
   }
  },
  "sprite_scale": 0.75,

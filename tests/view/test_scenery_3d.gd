@@ -121,3 +121,22 @@ func test_D_198_river_boulders_inside_blocked_area() -> void:
 			inside = inside or Geometry2D.is_point_in_polygon(p, poly)
 		assert_true(inside, "đá cuội tại %s nằm trong vùng chặn" % p)
 	assert_true(n > 20, "bờ sông có đá (%d)" % n)
+
+
+## D-221: fountain 3D ở fountain_point mỗi phe, ảnh màu theo phe, bậc thềm (mặt +Z) quay về nhà chính.
+func test_D_221_fountain_per_team_faces_core() -> void:
+	var layout: MapLayout = load(MAP_PATH) as MapLayout
+	var s: Scenery3D = Scenery3D.new()
+	s.add_fountains(layout)
+	assert_eq(s.get_child_count(), 2, "mỗi phe một fountain")
+	for team: int in [0, 1]:
+		var n: Node3D = s.get_child(team) as Node3D
+		var at: Vector2 = layout.fountain_point(team)
+		assert_true(Vector2(n.position.x, n.position.z).distance_to(at * MatchView3D.S) < 3.0, "đặt ở fountain_point")
+		var to_core: Vector2 = (layout.core_point(team) - at).normalized()
+		var front: Vector3 = n.basis * Vector3(0, 0, 1)
+		assert_true(Vector2(front.x, front.z).normalized().dot(to_core) > 0.99, "mặt trước quay về nhà chính")
+		var mi: MeshInstance3D = n.find_children("*", "MeshInstance3D", true, false)[0]
+		var tex: Texture2D = (mi.get_active_material(0) as StandardMaterial3D).albedo_texture
+		assert_true(tex.resource_path.ends_with(("_blue" if team == 0 else "_red") + ".jpg"), "ảnh màu phe %d" % team)
+	s.free()
