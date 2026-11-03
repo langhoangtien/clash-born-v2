@@ -326,3 +326,6 @@ sáng / hạt / nước chảy; xanh dương chỉ ở phần màu phe; chi ti�
 | 2 | `fountain` | Fountain hồi máu: **bỏ tượng thiên thần**. **Bồn đá tròn 2 tầng** viền vàng; giữa bồn một **trụ tinh thể thấp màu phe** (khối liền, không tia nước); **mặt nước là một mảng xanh nhạt phẳng** trong lòng bồn; hai bên có **2 cột băng rôn màu phe**. Bậc thềm đá thấp một phía (phía nhà chính). Ảnh `_front` + `_side` + `_back` |
 
 Xong cả hai thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng.
+
+Đã nộp T8g: vẽ lại `core` bản giản lược (`_front`, `_side`) và thêm `fountain`
+(`_front`, `_side`, `_back`) theo hai ảnh mẫu.
