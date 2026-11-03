@@ -84,8 +84,6 @@ func paint(ci: GroundCanvas) -> void:
 		ci.draw_line(tail, s.position, Color(col, 0.35), s.half_width * 1.2, true)
 		ci.draw_line(tail, s.position, Color(col, 0.9), s.half_width * 0.4, true)
 		ci.draw_circle(s.position, s.half_width * 0.45, Color(1, 1, 1, 0.9))
-	for p: Projectile in world.projectiles:
-		ci.draw_circle(p.position, 7.0, Color(1, 0.95, 0.6))
 
 
 ## D-145, D-157: bóng (đơn vị ảnh đứng — nhân vật 3D tự có bóng mờ), vòng màu đội, CRP-12 vòng lính siêu

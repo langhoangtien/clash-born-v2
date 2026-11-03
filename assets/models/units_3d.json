@@ -94,6 +94,11 @@
     "1": "Ranged_Magic_Shoot",
     "2": "Ranged_Magic_Spellcasting",
     "3": "Ranged_Magic_Raise"
+   },
+   "projectile": {
+    "shape": "arrow",
+    "color": "#f2e2b8",
+    "size": 0.5
    }
   },
   "vexa": {
@@ -109,6 +114,11 @@
     "1": "Ranged_Magic_Shoot",
     "2": "Ranged_Magic_Spellcasting",
     "3": "Ranged_Magic_Raise"
+   },
+   "projectile": {
+    "shape": "orb",
+    "color": "#b277ff",
+    "size": 0.24
    }
   },
   "noctis": {
@@ -140,7 +150,12 @@
    "attack": "attack",
    "impact": 0.34,
    "team_tex": true,
-   "height": 0.85
+   "height": 0.85,
+   "projectile": {
+    "shape": "orb",
+    "color": "team",
+    "size": 0.16
+   }
   },
   "creep_siege": {
    "model": "../style/units/creep_siege",
@@ -148,14 +163,25 @@
    "attack": "attack",
    "impact": 0.4,
    "team_tex": true,
-   "height": 1.0
+   "height": 1.0,
+   "projectile": {
+    "shape": "rock",
+    "model": "style/fx/siege_rock",
+    "size": 0.32,
+    "arc": 0.3
+   }
   },
   "neutral_shaman": {
    "model": "../style/creatures/shaman",
    "rig": "Creature",
    "attack": "attack",
    "impact": 0.34,
-   "height": 1.15
+   "height": 1.15,
+   "projectile": {
+    "shape": "orb",
+    "color": "#ff9a30",
+    "size": 0.2
+   }
   },
   "neutral_bear": {
    "model": "../style/creatures/bear",
@@ -183,19 +209,39 @@
  "structures": {
   "tower_t1": {
    "model": "style/structures/tower",
-   "height": 3.4
+   "height": 2.9,
+   "projectile": {
+    "shape": "bolt",
+    "color": "team",
+    "size": 0.42
+   }
   },
   "tower_t2": {
    "model": "style/structures/tower",
-   "height": 3.7
+   "height": 3.15,
+   "projectile": {
+    "shape": "bolt",
+    "color": "team",
+    "size": 0.42
+   }
   },
   "tower_t3": {
    "model": "style/structures/tower",
-   "height": 4.0
+   "height": 3.4,
+   "projectile": {
+    "shape": "bolt",
+    "color": "team",
+    "size": 0.42
+   }
   },
   "tower_t4": {
    "model": "style/structures/tower_core",
-   "height": 4.4
+   "height": 3.75,
+   "projectile": {
+    "shape": "bolt",
+    "color": "team",
+    "size": 0.42
+   }
   },
   "core": {
    "model": "medieval/buildings/building_castle",
@@ -267,5 +313,17 @@
    }
   }
  },
- "sprite_scale": 0.75
+ "sprite_scale": 0.75,
+ "projectiles": {
+  "_ghi_chu": "D-219: đạn đánh thường 3D (view/three/projectiles_3d.gd). Mỗi đơn vị / công trình có `projectile`: shape orb | bolt | arrow (hoặc model = GLB trong assets/models/, đổi ảnh màu theo phe), color mã màu hoặc team, size (đơn vị 3D), arc (độ cao vòng cung / quãng bay, chỉ là hình).",
+  "team_colors": [
+   "#5aa8ff",
+   "#ff5c50"
+  ],
+  "default": {
+   "shape": "orb",
+   "color": "#fff2a0",
+   "size": 0.15
+  }
+ }
 }

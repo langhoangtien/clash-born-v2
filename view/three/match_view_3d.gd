@@ -37,6 +37,7 @@ var fog_team: int = -1
 var fog_alpha: float = FOG_ALPHA
 var camera: Camera3D
 var scenery: Scenery3D
+var projectiles: Projectiles3D = Projectiles3D.new()  # D-219: đạn đánh thường 3D
 ## D-159: tướng của người chơi (rung camera khi đánh trúng / bị đánh mạnh).
 var hero_id: int = -1
 var _event_tick: int = -1
@@ -99,6 +100,7 @@ func setup(w: World, units_view: UnitsView, aim_indicator: AimIndicator) -> void
 		GroundMarks.paint(marks, world.map, world.balance.shop_radius)
 	add_child(marks)
 	add_child(overlay)
+	add_child(projectiles)
 
 
 func to_3d(p: Vector2) -> Vector3:
@@ -138,6 +140,7 @@ func update(focus: Vector2) -> void:
 			_actors[e.id] = a
 		a.sync(world, e, to_3d(units.display_position(e)), units.is_moving(e), world.tick - units.hit_tick(e), units.faded(e))
 		a.visible = _show_actors
+	projectiles.sync(world)
 	_dispatch_events()
 	for id: int in _actors.keys():
 		if not keep.has(id):
