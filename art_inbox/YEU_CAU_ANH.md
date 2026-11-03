@@ -802,9 +802,9 @@ Chuẩn 7s (icon đồ vuông, nền trong suốt, vật to 80–85% ô, mỗi m
 
 | Xong | File | Món | Vẽ gì |
 |---|---|---|---|
-| [ ] | `item_divine_blade.png` | Đại Đao Thần (sửa) | **Đại đao** (quan đao): cán dài, lưỡi đao to bản cong một bên ở đầu cán, chuôi có tua đỏ khối liền; vàng kim + thép trắng — **không** phải kiếm |
-| [ ] | `item_diffusal_blade.png` | Đao Tán Ma (sửa — ĐỔI 2026-11-03) | **Đại đao cán dài** (không phải kiếm / đao ngắn): lưỡi đao bản to cong ở đầu cán, **năng lượng mana xanh lam chảy dọc lưỡi** như Diffusal Blade của Dota (vệt mana vẽ trên bề mặt lưỡi, nhỏ giọt ở mũi — không quầng sáng quanh). Cán bạc đen. Phải khác rõ Đại Đao Thần (vàng kim + tua đỏ) và Song Đao |
-| [ ] | `item_frost_blade.png` | Kiếm Băng (mới — hiện game dùng tạm icon món khác đổi màu, cần vẽ thật) | Kiếm thẳng lưỡi băng xanh lơ trong suốt, chắn kiếm bạc hình bông tuyết, vài tinh thể băng đóng trên lưỡi |
-| [ ] | `item_blink_boots.png` | Giày Tốc Biến (mới) | Đôi giày da tím có cánh nhỏ ở gót, mũi giày có viên ngọc tím; vệt dịch chuyển **vẽ trên giày** (không tia quanh) |
-| [ ] | `item_breaker_crossbow.png` | **Nỏ Phá Quân** (mới) | **Nỏ lớn** (không phải kiếm): thân gỗ sẫm bọc thép, cánh nỏ cong to, mũi tên nặng đầu thép đỏ đã lên dây; trông uy lực |
-| [ ] | `item_frost_orb_ii.png` | Ngọc Băng Sương 2 (làm lại) | Viên ngọc băng lớn hơn bản 1, có lớp vỏ băng nứt bao quanh, một mảnh tuyết xoáy **trong** ngọc; xanh lơ + trắng, khác rõ bản 1 |
+| [x] | `item_divine_blade.png` | Đại Đao Thần (sửa) | **Đại đao** (quan đao): cán dài, lưỡi đao to bản cong một bên ở đầu cán, chuôi có tua đỏ khối liền; vàng kim + thép trắng — **không** phải kiếm |
+| [x] | `item_diffusal_blade.png` | Đao Tán Ma (sửa — ĐỔI 2026-11-03) | **Đại đao cán dài** (không phải kiếm / đao ngắn): lưỡi đao bản to cong ở đầu cán, **năng lượng mana xanh lam chảy dọc lưỡi** như Diffusal Blade của Dota (vệt mana vẽ trên bề mặt lưỡi, nhỏ giọt ở mũi — không quầng sáng quanh). Cán bạc đen. Phải khác rõ Đại Đao Thần (vàng kim + tua đỏ) và Song Đao |
+| [x] | `item_frost_blade.png` | Kiếm Băng (mới — hiện game dùng tạm icon món khác đổi màu, cần vẽ thật) | Kiếm thẳng lưỡi băng xanh lơ trong suốt, chắn kiếm bạc hình bông tuyết, vài tinh thể băng đóng trên lưỡi |
+| [x] | `item_blink_boots.png` | Giày Tốc Biến (mới) | Đôi giày da tím có cánh nhỏ ở gót, mũi giày có viên ngọc tím; vệt dịch chuyển **vẽ trên giày** (không tia quanh) |
+| [x] | `item_breaker_crossbow.png` | **Nỏ Phá Quân** (mới) | **Nỏ lớn** (không phải kiếm): thân gỗ sẫm bọc thép, cánh nỏ cong to, mũi tên nặng đầu thép đỏ đã lên dây; trông uy lực |
+| [x] | `item_frost_orb_ii.png` | Ngọc Băng Sương 2 (làm lại) | Viên ngọc băng lớn hơn bản 1, có lớp vỏ băng nứt bao quanh, một mảnh tuyết xoáy **trong** ngọc; xanh lơ + trắng, khác rõ bản 1 |
