@@ -406,3 +406,5 @@ trơn, một vật một ảnh, không quầng sáng / khói / hạt, chi tiết
 | 2 | `tower_rubble` (`_front`, `_side`) | Đống đổ nát của trụ đã bị phá: **bệ trụ** (giống chân `tower`: đá xám vát, viền vàng) còn nguyên, thân trụ gãy cụt ngang thấp, vài khối đá và mảnh viền vàng vỡ đổ quanh chân, **tinh thể tắt** màu xám tro nằm nghiêng trên đống đá. Không màu phe |
 
 Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng.
+
+Đã nộp T10: `[x] secret_shop` và `[x] tower_rubble`, mỗi mẫu đủ `_front`, `_side`.
