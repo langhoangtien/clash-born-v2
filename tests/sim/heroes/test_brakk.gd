@@ -145,7 +145,7 @@ func test_brakk_q_hits_enemies_in_300_not_towers_stun_by_rank() -> void:
 		e.stats.set_base(StatId.Id.ATTACK_RANGE, 0)
 		e.stats.recompute()
 	w.submit(Command.cast(b.id, Slot.Q))
-	_steps(w, 11)
+	_steps(w, 17)  # D-230: thời gian vung 0.5 s
 	assert_true(edge.health < 100000.0, "mép thân trong 300 thì trúng")
 	assert_near(out.health, 100000.0, EPS)
 	assert_true(creep.health < 100000.0, "trúng cả lính")

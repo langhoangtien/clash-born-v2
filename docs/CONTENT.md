@@ -100,7 +100,7 @@ thêm sát thương. Không có thời gian chờ (bash của Brakk; mỗi ngu�
 | Mana | 90 | 95 | 100 | 105 | 110 |
 
 Bán kính 300 quanh Brakk, trúng mọi kẻ địch (không trúng công trình). Thời gian
-tung 0.3 s.
+tung 0.5 s (D-230, như Hoof Stomp của Centaur; bị choáng lúc vung thì mất chiêu — ABL-03).
 Hành động: `AreaAt(self, 300) → Damage(PHYSICAL, damage) + ApplyEffect(stun, stun_duration)`.
 
 ### W — Giáp Sắt (không chọn mục tiêu, bản thân)

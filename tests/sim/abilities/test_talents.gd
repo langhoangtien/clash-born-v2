@@ -88,7 +88,7 @@ func test_TAL_02a_brakk_q_ii_values() -> void:
 	assert_near(Abilities.value(b, q, &"radius"), 400.0, EPS, "Động Đất: bán kính +100")
 	assert_near(Abilities.value(b, q, &"stun_duration"), 1.6 + 0.6, EPS, "choáng +0.6 s")
 	var foe: Entity = _dummy(w, b.position + Vector2(1, -1).normalized() * 370.0)
-	_cast(w, b, Slot.Q, 12)
+	_cast(w, b, Slot.Q, 18)  # D-230: thời gian vung 0.5 s
 	assert_true(foe.health < 5000.0, "trúng ở 370 nhờ bán kính mới")
 	assert_eq(_stun_ticks(foe), roundi(2.2 * 30))
 

@@ -195,3 +195,12 @@ static func run_anim(cfg: Dictionary, rig_cfg: Dictionary, anim: AnimationPlayer
 	if not sprint.is_empty() and anim.has_animation(sprint) and e.stats.multiplier(StatId.Id.MOVEMENT_SPEED) >= above:
 		return sprint
 	return rig_cfg["run"]
+
+
+## D-230: tốc độ phát hoạt ảnh chiêu ô `slot`: có thời gian vung và `skill_impact` (phần độ dài tới điểm trúng) thì
+## chạy để điểm trúng rơi đúng lúc chiêu nổ; không thì tốc độ mặc định.
+static func skill_speed(cfg: Dictionary, slot: int, length: float, windup: float, fallback: float) -> float:
+	var impact: float = float(cfg.get("skill_impact", {}).get(str(slot), -1.0))
+	if windup <= 0.0 or impact <= 0.0:
+		return fallback
+	return clampf(length * impact / windup, 0.5, 3.0)

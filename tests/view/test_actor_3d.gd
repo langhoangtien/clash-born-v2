@@ -100,3 +100,20 @@ func test_D_229_sprint_when_hasted_and_dash_animation() -> void:
 	a.sync(w, e, Vector3.ZERO, true, -100, false)
 	assert_eq(a._playing, "dash", "đang lao tới: hoạt ảnh lao, không bị hoạt ảnh chiêu giữ lại")
 	a.free()
+
+
+## D-230 (người chơi: chiêu Brakk trông như phát ngay, bị choáng giữa lúc vung vẫn thấy động tác): hoạt ảnh chiêu
+## có thời gian vung chạy để điểm trúng rơi đúng lúc nổ; bị choáng thì thôi hoạt ảnh chiêu.
+func test_D_230_skill_animation_timed_to_windup_and_cancelled_by_stun() -> void:
+	var w: World = World.new(1, Fixture.make())
+	var e: Entity = _unit(w, &"brakk", Entity.Kind.HERO)
+	var a: Actor3D = Actor3D.make(e)
+	a.sync(w, e, Vector3.ZERO, false, -100, false)
+	a.on_cast(1, 0.5)
+	var length: float = a._anim.get_animation("skill_1").length
+	assert_near(a._speed, length * 0.6 / 0.5, 0.01, "điểm trúng (0,6 độ dài) rơi sau 0,5 s")
+	assert_eq(a._playing, "skill_1")
+	e.states |= 1 << UnitState.Id.STUNNED
+	a.sync(w, e, Vector3.ZERO, false, -100, false)
+	assert_ne(a._playing, "skill_1", "bị choáng: thôi hoạt ảnh chiêu")
+	a.free()

@@ -1,8 +1,7 @@
 class_name Actor3D
 extends Node3D
-## Một đơn vị trong trận 3D (D-145, D-146). Đơn vị có mô hình trong units_3d.json: nhân vật KayKit
-## với vũ khí gắn tay, bảng màu theo đội và hoạt ảnh theo trạng thái SIM (đứng, chạy, đánh, tung chiêu,
-## lướt, trúng đòn). Công trình: mô hình tĩnh (D-158). Đơn vị khác: ảnh đứng quay về camera. Chỉ đọc World.
+## Một đơn vị trong trận 3D (D-145, D-146): mô hình tự mang xương / KayKit, hoạt ảnh theo trạng thái SIM.
+## Công trình: mô hình tĩnh (D-158). Đơn vị khác: ảnh đứng quay về camera. Chỉ đọc World.
 ## D-159 cảm giác đòn: điểm chém của hoạt ảnh khớp tick ra đòn của SIM, khựng khung khi trúng, lóe trắng
 ## và giật lùi khi bị đánh, mỗi chiêu một hoạt ảnh (`skills` trong units_3d.json) phát trọn.
 
@@ -43,6 +42,7 @@ var _flash_until: float = -1.0
 var _lean: float = 0.0
 var _overlay: StandardMaterial3D
 var _speed: float = 1.0
+var _stunned: bool = false  # D-230
 
 
 static func make(e: Entity) -> Actor3D:
@@ -157,6 +157,7 @@ func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int, faded: b
 	if e.facing != Vector2.ZERO:
 		rotation.y = atan2(e.facing.x, e.facing.y)
 	_feel()
+	_stunned = e.cast == null and not Rules.can_move(e) and not Rules.can_attack(e)
 	if e.reincarnate_tick >= 0:  # DTH-02: nằm chờ tái sinh — ngã rồi nằm yên ở khung cuối
 		if _playing != _rig["death"]:
 			_play(_rig["death"], 1.0)
@@ -184,14 +185,16 @@ func _attack_shown(e: Entity, moving: bool) -> bool:
 	return e.attack_phase == Entity.AttackPhase.WINDUP or (still and (_playing == _cfg["attack"] or _attack_phase != e.attack_phase))
 
 
-## D-159: tung chiêu `slot` — phát hoạt ảnh riêng của chiêu (nếu có) đến hết, tối đa SKILL_LOCK_MAX.
-func on_cast(slot: int) -> void:
+## D-159: phát hoạt ảnh riêng của chiêu `slot`; D-230: có thời gian vung (ABL-03) thì điểm trúng rơi đúng lúc nổ.
+func on_cast(slot: int, windup: float = 0.0) -> void:
 	var name: String = _cfg.get("skills", {}).get(str(slot), "") if _anim != null else ""
 	if name.is_empty() or not _anim.has_animation(name):
 		return
-	_play(name, SKILL_SPEED, true)
+	var length: float = _anim.get_animation(name).length
+	var speed: float = ModelLibrary.skill_speed(_cfg, slot, length, windup, SKILL_SPEED)
+	_play(name, speed, true)
 	_skill_from = _now()
-	_skill_until = _skill_from + minf(_anim.get_animation(name).length / SKILL_SPEED, SKILL_LOCK_MAX)
+	_skill_until = _skill_from + minf(length / speed, maxf(SKILL_LOCK_MAX, windup + 0.4))
 
 
 ## D-159: đòn đánh gần của mình vừa trúng — khựng khung.
@@ -210,7 +213,8 @@ func on_hit_taken(melee: bool) -> void:
 
 func _skill_locked(moving: bool) -> bool:
 	var t: float = _now()
-	if t >= _skill_until:
+	if t >= _skill_until or _stunned:  # D-230: bị choáng giữa lúc vung chiêu → chiêu mất (ABL-03), thôi hoạt ảnh
+		_skill_until = -1.0
 		return false
 	if moving and t - _skill_from > SKILL_MOVE_CANCEL:
 		_skill_until = -1.0  # đi tiếp thì thôi hoạt ảnh chiêu

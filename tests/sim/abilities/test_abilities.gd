@@ -136,10 +136,10 @@ func test_ABL_02_brakk_q_mana_cooldown_at_start_effect_after_cast_time() -> void
 	assert_true(b.cast != null, "đang tung")
 	assert_near(b.mana, mana - 90.0, EPS, "trừ mana lúc bắt đầu (mana đang đầy nên hồi không cộng thêm)")
 	assert_eq(a.ready_tick, start + 14 * 30, "hồi chiêu tính từ lúc bắt đầu")
-	_steps(w, 8)
-	assert_near(foe.health, 2000.0, EPS, "chưa hết 0.3 s")
+	_steps(w, 14)  # D-230: thời gian vung 0.5 s
+	assert_near(foe.health, 2000.0, EPS, "chưa hết 0.5 s")
 	w.step()
-	assert_true(foe.health < 2000.0, "hết 0.3 s thì nổ")
+	assert_true(foe.health < 2000.0, "hết 0.5 s thì nổ")
 	assert_true(Rules.has_state(foe, UnitState.Id.STUNNED))
 	assert_near(far.health, 2000.0, EPS)
 	assert_near(ally.health, 2000.0, EPS, "không trúng đồng minh (ABL-07)")

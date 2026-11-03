@@ -16,7 +16,7 @@ TEAM = ["--team", "--hue", "195-245"]  # màu phe xanh → đỏ (D-209)
 # tên: (nguồn, đích trong assets/models/style/, hoạt ảnh, bỏ xương, màu phe)
 UNITS = {
     "creep_melee": ("creep_melee", "units/creep_melee",
-                    "Idle_Sword=idle,Jog=run,OverhandThrow=attack,Hit_Chest=hit,Death_B=death,Dizzy=stun", True, True),
+                    "Idle_A=idle,Jog=run,OverhandThrow=attack,Hit_Chest=hit,Death_B=death,Dizzy=stun", True, True),
     "creep_ranged": ("creep_ranged", "units/creep_ranged",
                      "Idle_A=idle,Jog=run,OverhandThrow=attack,Hit_Chest=hit,Death_B=death,Dizzy=stun", True, True),
     "neutral_wolf": ("neutral_wolf", "creatures/wolf", "Idle=idle,Run=run,Attack=attack,Hit=hit,Death=death", False, False),
@@ -32,8 +32,9 @@ UNITS = {
                 "Idle Hurt=stun,Sword_Regular_B@0.5+Sword_Regular_B_Rec=cast,Shield_OneShot=skill_1,"
                 "Sword_Attack@0.5-1.92=skill_2,Sprint=sprint,Sword_Dash_RM~@0.2-0.9=dash", True, False),
     "brakk": ("brakk", "heroes/brakk",
-              "Fighting Idle=idle,Jog=run,Fighting Right Jab=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
-              "Punch_Cross=cast,Attack_Ground_Pound@1.05-2.4=skill_1,Defend=skill_2,Power Up=skill_3,Sprint=sprint",
+              "Fighting Idle=idle,Jog=run,Melee_Hook+Melee_Hook_Rec=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
+              "Punch_Cross=cast,NinjaJump_Start@0.2-0.96+NinjaJump_Land@0-0.7=skill_1,Defend=skill_2,Power Up=skill_3,"
+              "Sprint=sprint",
               True, False),
 }
 

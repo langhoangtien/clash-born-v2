@@ -228,8 +228,9 @@ func _dispatch_events() -> void:
 		var dst: Actor3D = _actors.get(ev.target_id)
 		match ev.type:
 			&"ability_cast":
-				if src != null:
-					src.on_cast(int(ev.amount))
+				var caster: Entity = world.find_entity(ev.source_id)
+				if src != null and caster != null:  # D-230: thời gian vung còn lại → hoạt ảnh trúng đúng lúc nổ
+					src.on_cast(int(ev.amount), maxi(0, caster.cast.release_tick - world.tick) * SimClock.TICK_SECONDS if caster.cast != null else 0.0)
 			&"attack_landed":
 				var e: Entity = world.find_entity(ev.source_id)
 				var melee: bool = e != null and e.projectile_speed <= 0.0

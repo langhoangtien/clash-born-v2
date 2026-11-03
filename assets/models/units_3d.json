@@ -59,12 +59,15 @@
    "rig": "Creature",
    "attack": "attack",
    "cast": "cast",
-   "impact": 0.33,
+   "impact": 0.39,
    "height": 1.25,
    "skills": {
     "1": "skill_1",
     "2": "skill_2",
     "3": "skill_3"
+   },
+   "skill_impact": {
+    "1": 0.6
    }
   },
   "gorran": {

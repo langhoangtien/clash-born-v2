@@ -52,7 +52,7 @@ values = Dictionary[StringName, PackedFloat32Array]({
 &"radius": PackedFloat32Array(300, 300, 300, 300, 300),
 &"stun_duration": PackedFloat32Array(0.8, 1, 1.2, 1.4, 1.6)
 })
-cast_time = "0.3"
+cast_time = "0.5"
 on_cast = Array[ExtResource("1_qyreb")]([SubResource("Resource_oiur7")])
 talent = SubResource("Resource_yront")
 bot_usages = Array[int]([0])
