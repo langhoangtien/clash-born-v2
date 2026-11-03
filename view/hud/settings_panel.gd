@@ -92,11 +92,11 @@ func _draw() -> void:
 
 ## Nút bánh răng: vành răng + lỗ giữa.
 func _gear(r: Rect2) -> void:
-	UiStyle.button(self, r, &"ghost", "", "", 18)
+	UiStyle.soft_frame(self, r, 14, Color(0.05, 0.07, 0.11, 0.88))  # D-222
 	var c: Vector2 = r.get_center()
 	var s: float = r.size.x * 0.3
 	for k: int in 8:
 		var d: Vector2 = Vector2.from_angle(TAU * k / 8.0)
 		draw_line(c + d * s * 0.7, c + d * s * 1.15, UiStyle.TEXT, s * 0.32)
 	draw_circle(c, s * 0.8, UiStyle.TEXT)
-	draw_circle(c, s * 0.35, UiStyle.CARD)
+	draw_circle(c, s * 0.35, Color(0.05, 0.07, 0.11))

@@ -167,7 +167,7 @@ func _draw_skill(font: Font, i: int) -> void:
 	var view: Array = skill_view[i]
 	var learned: bool = view[0] > 0
 	var ready: bool = learned and view[2]
-	draw_circle(c, SKILL_RADIUS, Color(0.2, 0.35, 0.6, 0.7) if ready else Color(0.15, 0.15, 0.2, 0.45))
+	UiStyle.orb(self, c, SKILL_RADIUS, Color(0.14, 0.24, 0.42), ready)  # D-222
 	var tex: Texture2D = ArtLibrary.texture(skill_art[i])
 	if tex != null:
 		var side: float = SKILL_RADIUS * 2.0 - 8.0

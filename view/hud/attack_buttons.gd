@@ -89,8 +89,7 @@ func _draw() -> void:
 		var big: int = 34 if mode == Rules.AttackMode.ALL else 22
 		var tex: Texture2D = ArtLibrary.texture(ART_IDS[mode])
 		if tex != null:  # D-131: nền + viền vẽ bằng code (mịn, đúng tâm); ảnh chỉ là hình trắng
-			draw_circle(c, r, Color(UiStyle.CARD, 0.88 if held else 0.78), true, -1.0, true)
-			draw_arc(c, r - 2.0, 0, TAU, 96, Color(UiStyle.BLUE_EDGE, 1.0 if held else 0.85), 4.0 if held else 3.0, true)
+			UiStyle.orb(self, c, r, Color(0.12, 0.2, 0.36).lightened(0.15 if held else 0.0))  # D-222
 			var side: float = r * GLYPH_SCALE
 			draw_texture_rect(tex, Rect2(c - Vector2(side, side) * 0.5, Vector2(side, side)), false, Color.WHITE if held else Color(0.9, 0.9, 0.9, 0.95))
 			_label(font, c + Vector2(r * 0.7, r * 0.7), KEYS[mode], int(big * 0.55), Color(1, 1, 1, 0.6))

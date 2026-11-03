@@ -139,3 +139,43 @@ static func glyph(c: CanvasItem, name: StringName, at: Vector2, s: float, col: C
 		c.draw_texture_rect(tex, Rect2(at - Vector2(s, s), Vector2(s, s) * 2.0), false)
 		return
 	UiGlyphs.draw(c, name, at, s, col)
+
+
+## D-222: HUD mềm kiểu Liên Quân — nút tròn: bóng mềm, nền chuyển sáng vào tâm, viền vàng hai lớp, vệt bóng trên.
+static func orb(c: CanvasItem, at: Vector2, r: float, fill: Color, lit: bool = true) -> void:
+	c.draw_circle(at + Vector2(0, r * 0.07), r + 3.0, Color(0, 0, 0, 0.32), true, -1.0, true)
+	var base: Color = fill if lit else fill.darkened(0.45)
+	for k: int in 5:
+		c.draw_circle(at, r * (1.0 - k * 0.14), base.lightened(k * 0.06), true, -1.0, true)
+	c.draw_arc(at, r - 2.0, 0, TAU, 64, Color(GOLD_DEEP, 1.0 if lit else 0.6), 4.0, true)
+	c.draw_arc(at, r - 4.5, 0, TAU, 64, Color(GOLD, 0.85 if lit else 0.35), 1.5, true)
+	c.draw_arc(at, r * 0.72, PI * 1.18, PI * 1.82, 24, Color(1, 1, 1, 0.16 if lit else 0.06), r * 0.13, true)
+
+
+## D-222: khung bảng mềm: bóng, nền tối trong, viền vàng đậm + viền sáng mảnh bên trong, vệt sáng phía trên.
+static func soft_frame(c: CanvasItem, r: Rect2, radius: int = 18, fill: Color = Color(0.04, 0.06, 0.1, 0.82)) -> void:
+	c.draw_style_box(box(fill, Color(GOLD_DEEP, 0.95), 2, radius, Color(0, 0, 0, 0.4), 10), r)
+	c.draw_style_box(box(Color(0, 0, 0, 0), Color(GOLD, 0.3), 1, maxi(2, radius - 3)), r.grow(-3))
+	var top: Rect2 = Rect2(r.position + Vector2(4, 4), Vector2(r.size.x - 8, r.size.y * 0.42))
+	c.draw_style_box(box(Color(1, 1, 1, 0.045), Color(0, 0, 0, 0), 0, maxi(2, radius - 4)), top)
+
+
+## D-222: thanh máu / mana bo tròn: rãnh tối, phần đầy có viền đậm + vệt sáng phía trên.
+static func soft_bar(c: CanvasItem, r: Rect2, ratio: float, col: Color) -> void:
+	var rad: int = int(r.size.y * 0.5)
+	c.draw_style_box(box(Color(0, 0, 0, 0.62), Color(0, 0, 0, 0.55), 1, rad), r)
+	var w: float = r.size.x * clampf(ratio, 0.0, 1.0)
+	if w < 2.0:
+		return
+	var f: Rect2 = Rect2(r.position, Vector2(maxf(w, r.size.y), r.size.y))
+	c.draw_style_box(box(col, col.darkened(0.35), 1, rad), f)
+	c.draw_style_box(box(Color(1, 1, 1, 0.24), Color(0, 0, 0, 0), 0, rad), Rect2(f.position + Vector2(3, 2), Vector2(f.size.x - 6, f.size.y * 0.38)))
+
+
+## D-222: nút viên thuốc (Shop…): nền tối, viền vàng, icon trái + chữ.
+static func pill_button(c: CanvasItem, r: Rect2, glyph_name: StringName, text: String, size: int = 24) -> void:
+	soft_frame(c, r, int(r.size.y * 0.5), Color(0.05, 0.07, 0.11, 0.88))
+	var gx: float = r.position.x + r.size.y * 0.62
+	glyph(c, glyph_name, Vector2(gx, r.get_center().y), r.size.y * 0.26, GOLD)
+	c.draw_string(serif(true), Vector2(gx + r.size.y * 0.5, r.get_center().y + size * 0.36), text, HORIZONTAL_ALIGNMENT_LEFT, -1, size, Color(1, 0.93, 0.78))
+

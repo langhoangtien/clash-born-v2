@@ -7,6 +7,7 @@ extends Control
 
 const MapPainter = preload("res://view/map/map_painter.gd")
 const SIDE: float = 260.0
+const CORNER: float = 12.0  ## D-222: bo góc khung minimap
 const MARGIN: Vector2 = Vector2(16, 16)
 const BLUE: Color = Color(0.35, 0.65, 1.0)
 const RED: Color = Color(1.0, 0.35, 0.3)
@@ -57,6 +58,9 @@ func setup(w: World, h: Entity) -> void:
 	_dots = _Layer.new()
 	_dots.painter = _paint_dots
 	_content.add_child(_dots)
+	var frame: _Layer = _Layer.new()
+	frame.painter = _paint_frame
+	add_child(frame)
 
 
 ## D-147: địa hình vẽ một lần vào SubViewport (UPDATE_ONCE) rồi hiện như một ảnh, thay vì vẽ lại
@@ -96,6 +100,13 @@ func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color(0, 0, 0, 0.35))
 	if _terrain != null:
 		draw_texture_rect(_terrain, Rect2(Vector2.ZERO, Vector2(SIDE, SIDE)), false)
+
+
+## D-222: viền vàng bo góc, lớp trên cùng (trên sương mù); viền dày che góc vuông của ảnh.
+func _paint_frame(ci: CanvasItem) -> void:
+	var r: Rect2 = Rect2(Vector2.ZERO, size)
+	ci.draw_style_box(UiStyle.box(Color(0, 0, 0, 0), Color(UiStyle.GOLD_DEEP, 0.98), 6, int(CORNER)), r.grow(3))
+	ci.draw_style_box(UiStyle.box(Color(0, 0, 0, 0), Color(UiStyle.GOLD, 0.55), 1, int(CORNER) - 4), r.grow(-3))
 
 
 ## Vẽ ở tọa độ map (layer đã thu nhỏ): bán kính chấm tính theo px minimap.

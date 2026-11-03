@@ -150,14 +150,8 @@ func _gui_input(event: InputEvent) -> void:
 
 func _draw() -> void:
 	var rc: Vector2 = recall_center()
-	draw_circle(rc, RECALL_RADIUS, Color(0.15, 0.3, 0.55, 0.75))
-	draw_arc(rc, RECALL_RADIUS, 0, TAU, 32, Color(0.6, 0.85, 1.0, 0.9), 3.0, true)
-	var recall_tex: Texture2D = ArtLibrary.texture(&"recall")
-	if recall_tex != null:
-		var side: float = RECALL_RADIUS * 2.0 - 6.0
-		draw_texture_rect(recall_tex, Rect2(rc - Vector2(side, side) * 0.5, Vector2(side, side)), false)
-	else:
-		_label(ThemeDB.fallback_font, rc, "Về", 20, Color.WHITE)
+	UiStyle.orb(self, rc, RECALL_RADIUS, Color(0.16, 0.36, 0.72))  # D-222: nút tròn xanh viền vàng, nhà trắng
+	UiGlyphs.draw(self, &"home", rc + Vector2(0, 1), RECALL_RADIUS * 0.46, Color(1, 1, 1, 0.96))
 	if recall_progress >= 0.0:
 		draw_arc(rc, RECALL_RADIUS - 6, -PI * 0.5, -PI * 0.5 + TAU * recall_progress, 32, Color(1, 1, 1, 0.95), 6.0, true)
 	_label(ThemeDB.fallback_font, rc + Vector2(-RECALL_RADIUS * 0.7, -RECALL_RADIUS * 0.7), "H", 13, Color(1, 1, 1, 0.45))
@@ -167,7 +161,7 @@ func _draw() -> void:
 		var view: Array = item_view[k]
 		var ready: bool = view[4]
 		var half: float = RADIUS * 0.9  # ô vuông bo góc (D-131)
-		UiStyle.tile(self, Rect2(c - Vector2(half, half), Vector2(half, half) * 2.0), Color(1, 0.85, 0.4, 0.9 if ready else 0.35), 3, Color(UiStyle.CARD, 0.85))
+		UiStyle.soft_frame(self, Rect2(c - Vector2(half, half), Vector2(half, half) * 2.0), int(half * 0.4), Color(UiStyle.CARD, 0.9 if ready else 0.6))  # D-222
 		var tex: Texture2D = ArtLibrary.texture(view[5]) if view.size() > 5 else null
 		if tex != null:
 			var side: float = half * 2.0 - 8.0

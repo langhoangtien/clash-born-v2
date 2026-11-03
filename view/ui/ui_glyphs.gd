@@ -11,6 +11,10 @@ static func draw(c: CanvasItem, name: StringName, at: Vector2, s: float, col: Co
 			c.draw_polyline(_p(at, s, [[-1, -0.7], [-0.7, -0.7], [-0.45, 0.35], [0.75, 0.35], [0.95, -0.4], [-0.6, -0.4]]), col, w, true)
 			c.draw_circle(at + Vector2(-0.3, 0.75) * s, s * 0.14, col)
 			c.draw_circle(at + Vector2(0.6, 0.75) * s, s * 0.14, col)
+		&"home":  # D-222: nhà khối đặc (nút về thành), cửa tối
+			c.draw_colored_polygon(_p(at, s, [[0.42, -0.78], [0.7, -0.78], [0.7, -0.28], [0.42, -0.5]]), col)
+			c.draw_colored_polygon(_p(at, s, [[0, -1.0], [1.05, -0.02], [0.76, -0.02], [0.76, 0.95], [-0.76, 0.95], [-0.76, -0.02], [-1.05, -0.02]]), col)
+			c.draw_colored_polygon(_p(at, s, [[-0.24, 0.95], [-0.24, 0.32], [0.24, 0.32], [0.24, 0.95]]), Color(0.08, 0.18, 0.38, 0.95))
 		&"close":
 			c.draw_line(at + Vector2(-0.7, -0.7) * s, at + Vector2(0.7, 0.7) * s, col, w * 1.3, true)
 			c.draw_line(at + Vector2(0.7, -0.7) * s, at + Vector2(-0.7, 0.7) * s, col, w * 1.3, true)

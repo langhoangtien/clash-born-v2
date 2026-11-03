@@ -52,18 +52,18 @@ func _draw() -> void:
 	_text(font, Vector2(size.x * 0.5, 50), top, 30, Color.WHITE, true)
 	if show_fps:
 		_text(font, Vector2(size.x - 230, 112), "FPS %d · SIM %.1f ms" % [Engine.get_frames_per_second(), sim_ms], 18, Color(1, 1, 1, 0.6), false)
-	draw_style_box(UiStyle.box(Color(0.035, 0.05, 0.085, 0.82), UiStyle.LINE, 1, 12), PANEL)
-	_portrait(font)
+	UiStyle.soft_frame(self, Rect2(PANEL.position + Vector2(PORTRAIT.x * 0.5, 8), PANEL.size - Vector2(PORTRAIT.x * 0.5, 16)), 20)  # D-222
 	var x: float = PANEL.position.x + PORTRAIT.x + 24
 	var max_hp: float = maxf(1.0, hero.stats.get_stat(StatId.Id.MAX_HP))
 	var max_mana: float = maxf(1.0, hero.stats.get_stat(StatId.Id.MAX_MANA))
 	_bar(font, Vector2(x, 30), hero.health, max_hp, HP_COLOR)
 	_bar(font, Vector2(x, 60), hero.mana, max_mana, MANA_COLOR)
-	_text(font, Vector2(x, 120), "Cấp %d  Vàng %d  LH %d  %d/%d/%d" % [hero.stats.level(), hero.gold, hero.last_hits, hero.kills, hero.deaths, hero.assists], 22, Color(1, 0.85, 0.3), false)
+	UiStyle.coin(self, Vector2(x + 10, 113), 10.0)
+	_text(font, Vector2(x + 26, 120), "%d    LH %d    %d/%d/%d" % [hero.gold, hero.last_hits, hero.kills, hero.deaths, hero.assists], 21, Color(1, 0.88, 0.5), false)
 	if hero.stats.level() < world.balance.hero_max_level:
 		var need: float = float(Progression.xp_to_next(world, hero.stats.level()))
-		draw_rect(Rect2(Vector2(x, 88), Vector2(BAR.x, 6)), Color(0, 0, 0, 0.7))
-		draw_rect(Rect2(Vector2(x, 88), Vector2(BAR.x * clampf(hero.xp / need, 0, 1), 6)), Color(0.75, 0.5, 1.0))
+		UiStyle.soft_bar(self, Rect2(Vector2(x + 6, 88), Vector2(BAR.x - 12, 7)), hero.xp / need, Color(0.75, 0.5, 1.0))
+	_portrait(font)
 	if hero.talent_slot >= 0:
 		var a: AbilityInstance = Abilities.of(hero, hero.talent_slot)
 		_text(font, Vector2(x, PANEL.end.y + 30), "Talent: " + a.def.talent.display_name, 22, Color(0.8, 0.6, 1.0), false)
@@ -73,10 +73,7 @@ func _draw() -> void:
 
 
 func _bar(font: Font, at: Vector2, value: float, maximum: float, color: Color) -> void:
-	draw_style_box(UiStyle.box(Color(0, 0, 0, 0.7), Color(1, 1, 1, 0.12), 1, 5), Rect2(at, BAR))
-	var fill: float = BAR.x * clampf(value / maximum, 0, 1)
-	if fill >= 2.0:
-		draw_style_box(UiStyle.box(color, Color(0, 0, 0, 0), 0, 5), Rect2(at, Vector2(fill, BAR.y)))
+	UiStyle.soft_bar(self, Rect2(at, BAR), value / maximum, color)  # D-222
 	_text(font, at + Vector2(BAR.x * 0.5, BAR.y - 4), "%d / %d" % [roundi(value), roundi(maximum)], 18, Color.WHITE, true)
 
 
@@ -86,27 +83,43 @@ func _text(font: Font, at: Vector2, text: String, font_size: int, color: Color, 
 	draw_string(font, at - Vector2(w * 0.5, 0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
 
 
-## Tỷ số hai đội hai bên đồng hồ (ECO-09), trong khung có nền màu đội; dấu ≡ cho biết chạm được (D-183).
+## Tỷ số hai đội hai bên đồng hồ (ECO-09); dấu ≡ cho biết chạm được (D-183). D-222: băng rôn mềm — giữa tối viền
+## vàng, hai cánh xanh / đỏ bo tròn đầu, mũi nhọn nhỏ ở dưới giữa.
 func _score(font: Font) -> void:
 	var r: Rect2 = Rect2(Vector2(size.x * 0.5 - SCORE_BOX.x * 0.5, 4), SCORE_BOX)
-	var side: float = r.size.x * 0.3
-	draw_style_box(UiStyle.box(Color(0.035, 0.05, 0.085, 0.85), UiStyle.LINE, 1, 12), r)
-	draw_style_box(UiStyle.box(Color(0.2, 0.45, 0.95, 0.55), Color(0, 0, 0, 0), 0, 10), Rect2(r.position + Vector2(4, 4), Vector2(side, r.size.y - 8)))
-	draw_style_box(UiStyle.box(Color(0.95, 0.3, 0.25, 0.55), Color(0, 0, 0, 0), 0, 10), Rect2(Vector2(r.end.x - 4 - side, r.position.y + 4), Vector2(side, r.size.y - 8)))
-	_text(font, Vector2(r.position.x + 4 + side * 0.5, 50), str(MatchScore.team_kills(world, 0)), 36, Color.WHITE, true)
-	_text(font, Vector2(r.end.x - 4 - side * 0.5, 50), str(MatchScore.team_kills(world, 1)), 36, Color.WHITE, true)
+	var side: float = r.size.x * 0.32
+	var wing: int = int(r.size.y * 0.5)
+	draw_style_box(UiStyle.box(Color(0.16, 0.38, 0.86, 0.92), Color(UiStyle.GOLD_DEEP, 0.9), 2, wing, Color(0, 0, 0, 0.35), 8), Rect2(r.position, Vector2(side + 20, r.size.y)))
+	draw_style_box(UiStyle.box(Color(0.86, 0.24, 0.22, 0.92), Color(UiStyle.GOLD_DEEP, 0.9), 2, wing, Color(0, 0, 0, 0.35), 8), Rect2(Vector2(r.end.x - side - 20, r.position.y), Vector2(side + 20, r.size.y)))
+	var mid: Rect2 = Rect2(r.position + Vector2(side, 0), Vector2(r.size.x - side * 2.0, r.size.y))
+	var c: Vector2 = mid.get_center()
+	draw_colored_polygon(PackedVector2Array([Vector2(c.x - 18, mid.end.y - 2), Vector2(c.x + 18, mid.end.y - 2), Vector2(c.x, mid.end.y + 12)]), Color(UiStyle.GOLD_DEEP, 0.95))
+	UiStyle.soft_frame(self, mid, 12, Color(0.04, 0.06, 0.1, 0.95))
+	_text(font, Vector2(r.position.x + side * 0.5 + 6, 50), str(MatchScore.team_kills(world, 0)), 36, Color.WHITE, true)
+	_text(font, Vector2(r.end.x - side * 0.5 - 6, 50), str(MatchScore.team_kills(world, 1)), 36, Color.WHITE, true)
 	for i: int in 3:  # dấu bảng tỷ số
-		var y: float = r.end.y - 16 + i * 5
-		draw_line(Vector2(r.get_center().x - 10, y), Vector2(r.get_center().x + 10, y), Color(1, 1, 1, 0.55), 2.0)
+		var y: float = r.end.y - 14 + i * 4
+		draw_line(Vector2(c.x - 9, y), Vector2(c.x + 9, y), Color(1, 1, 1, 0.5), 1.5)
 
 
-## D-183: chân dung tướng trong ô máu / mana + dấu "i" (chạm xem thông số).
+## D-183: chân dung tướng (chạm xem thông số, dấu "i"). D-222: tròn, viền vàng, huy hiệu cấp ở góc dưới.
 func _portrait(font: Font) -> void:
-	var box: Rect2 = Rect2(PANEL.position + Vector2(12, (PANEL.size.y - PORTRAIT.y) * 0.5), PORTRAIT)
-	draw_style_box(UiStyle.box(UiStyle.CARD, UiStyle.GOLD, 2, 10), box)
+	var r: float = PORTRAIT.x * 0.5
+	var c: Vector2 = PANEL.position + Vector2(12 + r, PANEL.size.y * 0.5)
+	UiStyle.orb(self, c, r + 6.0, Color(0.1, 0.16, 0.26))
 	var tex: Texture2D = ArtLibrary.texture(StringName(String(hero.hero_def.id) + "_portrait")) if hero.hero_def != null else null
 	if tex != null:
-		draw_texture_rect(tex, box.grow(-4), false)
-	var c: Vector2 = box.end - Vector2(12, 12)
-	draw_circle(c, 15, UiStyle.GOLD)
-	_text(font, c + Vector2(0, 7), "i", 20, Color(0.1, 0.1, 0.15), true)
+		var pts: PackedVector2Array = PackedVector2Array()
+		var uvs: PackedVector2Array = PackedVector2Array()
+		for k: int in 40:
+			var d: Vector2 = Vector2.from_angle(TAU * k / 40.0)
+			pts.append(c + d * (r - 2.0))
+			uvs.append(Vector2(0.5, 0.5) + d * 0.5)
+		draw_polygon(pts, PackedColorArray([Color.WHITE]), uvs, tex)
+	draw_arc(c, r - 1.0, 0, TAU, 64, UiStyle.GOLD, 2.5, true)
+	var badge: Vector2 = c + Vector2(-r * 0.72, r * 0.72)
+	UiStyle.orb(self, badge, 17.0, Color(0.12, 0.2, 0.36))
+	_text(font, badge + Vector2(0, 7), str(hero.stats.level()), 20, Color.WHITE, true)
+	var info: Vector2 = c + Vector2(r * 0.74, -r * 0.7)
+	draw_circle(info, 11, UiStyle.GOLD, true, -1.0, true)
+	_text(font, info + Vector2(0, 6), "i", 16, Color(0.1, 0.1, 0.15), true)

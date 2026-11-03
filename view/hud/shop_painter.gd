@@ -9,7 +9,7 @@ const TAB_GLYPHS: Array[StringName] = [&"cat_all", &"cat_basic", &"cat_attack", 
 
 static func draw(s: ShopPanel) -> void:
 	if not s.open or s.world == null or s.hero == null:
-		UiStyle.button(s, ShopPanel.BUTTON, &"gold", "Shop (B)", "", 20)
+		UiStyle.pill_button(s, ShopPanel.BUTTON, &"cart", "Shop", 22)  # D-222
 		return
 	var p: Rect2 = s.panel_rect()
 	s.draw_rect(Rect2(Vector2.ZERO, s.size), Color(0, 0, 0, 0.6))  # làm tối trận phía sau
