@@ -134,6 +134,7 @@ def main():
     ap.add_argument("src"); ap.add_argument("dst")
     ap.add_argument("--keep", required=True, help="Tên_gốc=tên_game,… (A+B=tên: nối)")
     ap.add_argument("--drop-bones", default="")
+    ap.add_argument("--attach", action="append", default=[], help="vũ khí.glb:xương (D-231, gắn cứng vào xương)")
     ap.add_argument("--join-gap", type=float, default=R.FRAME, help="giây nội suy ở chỗ nối A+B")
     a = ap.parse_args()
     keep = dict(kv.split("=") for kv in a.keep.split(","))
@@ -149,6 +150,9 @@ def main():
     g["animations"] = [dict(an, name=keep[an["name"]]) for an in g["animations"] if an.get("name") in keep] + joined
     if a.drop_bones:
         print("xương: %d → %d" % R.drop_bones(g, binc, array, a.drop_bones))
+    for spec in a.attach:
+        path, bone = spec.rsplit(":", 1)
+        print(f"gắn {os.path.basename(path)} vào {bone}: {R.attach_rigid(g, binc, array, path, bone, read)} đỉnh")
     weld(g, binc)
     up = lift(g, binc)
     blob = prune(g, binc)

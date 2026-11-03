@@ -154,3 +154,46 @@ def in_place(g, binc, array, anim, root_names=("root",)):
         v = array(g, binc, s["output"]).copy()
         v[:] = v[0]
         s["output"] = add_accessor(g, binc, v, "VEC3")
+
+
+def attach_rigid(g, binc, array, src_path, joint_name, read):
+    """`--attach tệp.glb:xương` (D-231): thêm lưới vật cứng (vũ khí tách bằng split_weapons.py, cùng hệ tọa độ và
+    ảnh màu với thân) thành primitive mới của lưới có da, dính 100% vào xương `joint_name`."""
+    wg, wb = read(src_path)
+    wp = wg["meshes"][0]["primitives"][0]
+    skin = g["skins"][0]
+    names = [g["nodes"][j].get("name", "") for j in skin["joints"]]
+    assert joint_name in names, f"không có xương {joint_name}: {names}"
+    joint = names.index(joint_name)
+    attrs = {}
+    for key in ("POSITION", "NORMAL", "TEXCOORD_0"):
+        if key in wp["attributes"]:
+            arr = array(wg, wb, wp["attributes"][key]).astype(np.float32)
+            attrs[key] = add_accessor(g, binc, arr, {2: "VEC2", 3: "VEC3"}[arr.shape[1]], key == "POSITION")
+            if key == "POSITION":
+                acc = g["accessors"][attrs[key]]
+                acc["min"], acc["max"] = arr.min(0).tolist(), arr.max(0).tolist()
+                count = len(arr)
+    joints = np.zeros((count, 4), np.uint16)
+    joints[:, 0] = joint
+    weights = np.zeros((count, 4), np.float32)
+    weights[:, 0] = 1.0
+    attrs["JOINTS_0"] = _add_raw(g, binc, joints, 5123, "VEC4")
+    attrs["WEIGHTS_0"] = add_accessor(g, binc, weights, "VEC4")
+    idx = array(wg, wb, wp["indices"]).astype(np.uint32).ravel()
+    prim = {"attributes": attrs, "indices": _add_raw(g, binc, idx, 5125, "SCALAR")}
+    body = g["meshes"][0]["primitives"][0]
+    if "material" in body:
+        prim["material"] = body["material"]
+    g["meshes"][0]["primitives"].append(prim)
+    return count
+
+
+def _add_raw(g, binc, arr, comp, kind):
+    arr = np.ascontiguousarray(arr)
+    binc += b"\0" * (-len(binc) % 4)
+    g["bufferViews"].append({"buffer": 0, "byteOffset": len(binc), "byteLength": arr.nbytes})
+    binc += arr.tobytes()
+    g["accessors"].append({"bufferView": len(g["bufferViews"]) - 1, "componentType": comp,
+                           "count": len(arr), "type": kind})
+    return len(g["accessors"]) - 1
