@@ -182,17 +182,6 @@ static func dress_own(model: Node, cfg: Dictionary, team: int) -> void:
 		apply_team_texture(model, (ROOT + cfg["model"]).simplify_path().trim_prefix(MODELS), team)
 
 
-## D-203: mô hình màu đỉnh đã vẽ sẵn sáng tối (bộ asset Blender) — vật liệu không đèn như cảnh vật.
-static func bake_in(root: Node) -> void:
-	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
-		var mesh: Mesh = (n as MeshInstance3D).mesh
-		use_vertex_colors(mesh)
-		for i: int in mesh.get_surface_count():
-			var m: BaseMaterial3D = mesh.surface_get_material(i) as BaseMaterial3D
-			if m != null:
-				m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-
-
 static func use_vertex_colors_in(root: Node) -> void:
 	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
 		use_vertex_colors((n as MeshInstance3D).mesh)

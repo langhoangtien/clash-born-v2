@@ -143,11 +143,11 @@
    "height": 0.85
   },
   "creep_siege": {
-   "model": "Engineer",
-   "rig": "Rig_Medium",
-   "tex": "engineer",
-   "right": "crossbow_1handed",
-   "attack": "Ranged_1H_Shoot",
+   "model": "../style/units/creep_siege",
+   "rig": "Creature",
+   "attack": "attack",
+   "impact": 0.4,
+   "team_tex": true,
    "height": 1.0
   },
   "neutral_shaman": {
@@ -183,20 +183,19 @@
  "structures": {
   "tower_t1": {
    "model": "style/structures/tower",
-   "height": 3.4,
-   "baked": true
+   "height": 3.4
   },
   "tower_t2": {
-   "model": "medieval/buildings/building_tower_B",
-   "height": 4.2
-  },
-  "tower_t3": {
-   "model": "medieval/buildings/building_tower_catapult",
+   "model": "style/structures/tower",
    "height": 3.7
   },
+  "tower_t3": {
+   "model": "style/structures/tower",
+   "height": 4.0
+  },
   "tower_t4": {
-   "model": "medieval/buildings/building_tower_base",
-   "height": 3.2
+   "model": "style/structures/tower_core",
+   "height": 4.4
   },
   "core": {
    "model": "medieval/buildings/building_castle",

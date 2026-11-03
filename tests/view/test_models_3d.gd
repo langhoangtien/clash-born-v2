@@ -28,7 +28,7 @@ func test_D_146_playable_heroes_have_models() -> void:
 		assert_false(ModelLibrary.unit(lib.heroes[id].art_id).is_empty(), "%s có mô hình 3D" % id)
 
 
-## D-203, D-213: quái tự mang xương (rig `Creature`, afk.ai) có đủ hoạt ảnh rig cần; trụ Blender có bản theo đội.
+## D-203, D-213: quái tự mang xương (rig `Creature`) có đủ hoạt ảnh rig cần; D-218: trụ có ảnh màu theo đội.
 func test_D_203_creature_models_have_rig_animations() -> void:
 	var rig: Dictionary = ModelLibrary.rig("Creature")
 	var n: int = 0
