@@ -7,7 +7,7 @@ extends Control
 
 signal action(what: StringName)
 
-const GEAR_SIZE: float = 76.0
+const GEAR_SIZE: float = 60.0  ## D-225: nhỏ hơn (76 → 60)
 const ROW: Vector2 = Vector2(600, 72)
 const ROW_GAP: float = 14.0
 const LABELS: Dictionary[StringName, String] = {

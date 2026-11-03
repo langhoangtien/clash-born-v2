@@ -157,3 +157,13 @@ func _area(poly: PackedVector2Array) -> float:
 	for i: int in poly.size():
 		s += poly[i].cross(poly[(i + 1) % poly.size()])
 	return s * 0.5
+
+
+## MAP-13 (D-225, người chơi báo: đá rừng che hết shop ẩn): quanh tâm shop ẩn bán kính 256 không có vật cản.
+func test_MAP_13_secret_shops_in_open_clearing() -> void:
+	assert_eq(map.shop_points.size(), 2, "hai shop ẩn")
+	for c: Vector2 in map.shop_points:
+		for k: int in 16:
+			for r: float in [0.0, 120.0, 240.0]:
+				var p: Vector2 = c + Vector2.from_angle(TAU * k / 16.0) * r
+				assert_true(map.clearance_at(p) > 0.0, "shop %s: điểm %s bị chặn" % [c, p])

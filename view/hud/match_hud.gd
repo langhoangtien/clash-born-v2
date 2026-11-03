@@ -49,7 +49,7 @@ func _draw() -> void:
 	var font: Font = UiStyle.sans(true)  # D-130
 	var top: String = clock_text(world.tick) + ("   ×%d" % speed if speed > 1 else "")
 	_score(font)
-	_text(font, Vector2(size.x * 0.5, 50), top, 30, Color.WHITE, true)
+	_text(font, Vector2(size.x * 0.5, 44), top, 28, Color.WHITE, true)
 	if show_fps:
 		_text(font, Vector2(size.x - 230, 112), "FPS %d · SIM %.1f ms" % [Engine.get_frames_per_second(), sim_ms], 18, Color(1, 1, 1, 0.6), false)
 	UiStyle.soft_frame(self, Rect2(PANEL.position + Vector2(PORTRAIT.x * 0.5, 8), PANEL.size - Vector2(PORTRAIT.x * 0.5, 16)), 20)  # D-222
@@ -83,23 +83,36 @@ func _text(font: Font, at: Vector2, text: String, font_size: int, color: Color, 
 	draw_string(font, at - Vector2(w * 0.5, 0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
 
 
-## Tỷ số hai đội hai bên đồng hồ (ECO-09); dấu ≡ cho biết chạm được (D-183). D-222: băng rôn mềm — giữa tối viền
-## vàng, hai cánh xanh / đỏ bo tròn đầu, mũi nhọn nhỏ ở dưới giữa.
+## Tỷ số hai đội hai bên đồng hồ (ECO-09); chạm mở bảng tỷ số (D-183). D-225: hai cánh xanh / đỏ hình thang (mép
+## trong vát, đầu ngoài bo), ô đồng hồ giữa tối viền vàng, mũi nhọn vàng dưới giữa, dấu ≡ nhỏ.
 func _score(font: Font) -> void:
 	var r: Rect2 = Rect2(Vector2(size.x * 0.5 - SCORE_BOX.x * 0.5, 4), SCORE_BOX)
-	var side: float = r.size.x * 0.32
-	var wing: int = int(r.size.y * 0.5)
-	draw_style_box(UiStyle.box(Color(0.16, 0.38, 0.86, 0.92), Color(UiStyle.GOLD_DEEP, 0.9), 2, wing, Color(0, 0, 0, 0.35), 8), Rect2(r.position, Vector2(side + 20, r.size.y)))
-	draw_style_box(UiStyle.box(Color(0.86, 0.24, 0.22, 0.92), Color(UiStyle.GOLD_DEEP, 0.9), 2, wing, Color(0, 0, 0, 0.35), 8), Rect2(Vector2(r.end.x - side - 20, r.position.y), Vector2(side + 20, r.size.y)))
-	var mid: Rect2 = Rect2(r.position + Vector2(side, 0), Vector2(r.size.x - side * 2.0, r.size.y))
-	var c: Vector2 = mid.get_center()
-	draw_colored_polygon(PackedVector2Array([Vector2(c.x - 18, mid.end.y - 2), Vector2(c.x + 18, mid.end.y - 2), Vector2(c.x, mid.end.y + 12)]), Color(UiStyle.GOLD_DEEP, 0.95))
-	UiStyle.soft_frame(self, mid, 12, Color(0.04, 0.06, 0.1, 0.95))
-	_text(font, Vector2(r.position.x + side * 0.5 + 6, 50), str(MatchScore.team_kills(world, 0)), 36, Color.WHITE, true)
-	_text(font, Vector2(r.end.x - side * 0.5 - 6, 50), str(MatchScore.team_kills(world, 1)), 36, Color.WHITE, true)
+	var c: Vector2 = r.get_center()
+	var mid_w: float = 120.0
+	var slant: float = 16.0
+	for team: int in 2:
+		var sx: float = -1.0 if team == 0 else 1.0
+		var inner: float = c.x + sx * (mid_w * 0.5 - 6.0)
+		var outer: float = c.x + sx * (r.size.x * 0.5)
+		var pts: PackedVector2Array = PackedVector2Array([Vector2(inner, r.position.y + 6), Vector2(inner - sx * slant, r.end.y - 6)])
+		for k: int in range(9):  # đầu ngoài bo tròn
+			var a: float = PI * 0.5 - PI * k / 8.0
+			pts.append(Vector2(outer - sx * 26.0 + sx * cos(a) * 26.0, c.y + sin(a) * (r.size.y * 0.5 - 6)))
+		var col: Color = Color(0.2, 0.46, 0.95) if team == 0 else Color(0.9, 0.27, 0.24)
+		var shadow: PackedVector2Array = PackedVector2Array()
+		for p: Vector2 in pts:
+			shadow.append(p + Vector2(0, 3))
+		draw_colored_polygon(shadow, Color(0, 0, 0, 0.3))
+		draw_colored_polygon(pts, col)
+		var edge: PackedVector2Array = pts.duplicate()
+		edge.append(pts[0])
+		draw_polyline(edge, Color(UiStyle.GOLD_DEEP, 0.95), 2.0, true)
+		_text(font, Vector2((inner + outer) * 0.5 + sx * 4.0, c.y + 12), str(MatchScore.team_kills(world, team)), 34, Color.WHITE, true)
+	draw_colored_polygon(PackedVector2Array([Vector2(c.x - 14, r.end.y - 4), Vector2(c.x + 14, r.end.y - 4), Vector2(c.x, r.end.y + 9)]), UiStyle.GOLD)
+	UiStyle.soft_frame(self, Rect2(c.x - mid_w * 0.5, r.position.y, mid_w, r.size.y), 12, Color(0.04, 0.06, 0.1, 0.97))
 	for i: int in 3:  # dấu bảng tỷ số
-		var y: float = r.end.y - 14 + i * 4
-		draw_line(Vector2(c.x - 9, y), Vector2(c.x + 9, y), Color(1, 1, 1, 0.5), 1.5)
+		var y: float = r.end.y - 13 + i * 3.5
+		draw_line(Vector2(c.x - 8, y), Vector2(c.x + 8, y), Color(UiStyle.GOLD, 0.7), 1.5)
 
 
 ## D-183: chân dung tướng (chạm xem thông số). D-222: tròn, viền vàng, huy hiệu cấp ở góc dưới; bỏ dấu "i" (giống cảnh báo).

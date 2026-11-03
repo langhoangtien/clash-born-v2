@@ -911,6 +911,8 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   trừ base, là rìa map chặn đường. Hình (D-197): vực kiểu Liên Quân — lan can đá thấp có răng cưa dọc mép đi
   được, sau đó vách đá đổ xuống đáy vực sâu 18 m mờ sương; mặt đất không phủ rìa nên không có khe trông như đi
   được.
+- `MAP-13` (D-225) Quanh tâm mỗi shop ẩn có bãi trống bán kính 256 (không bục rừng / đá), để shop luôn thấy được và
+  đi tới được.
 - `MAP-04` Cân bằng (D-49): map **đối xứng xoay 180°** quanh tâm (công cụ build giữ nửa
   Blue, sinh nửa Red). Lane an toàn của Blue là BOT, của Red là TOP: ở lane an toàn đợt
   lính đầu gặp nhau ngay ngoài tầm trụ 1 của phe mình (`tower_layout` BOT 760), lane khó

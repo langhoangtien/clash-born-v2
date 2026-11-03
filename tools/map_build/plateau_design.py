@@ -22,6 +22,7 @@ FX0, FY0, FX1, FY1 = SRC["frame"]
 C = (FX0 + FX1) / 2
 SLOPE = 0.747  # đường chia hai nửa dọc theo sông (from_sketch.RIVER_SLOPE)
 
+SHOP_CLEAR = 16.0  # MAP-13 (D-225): bán kính bãi trống quanh shop ẩn (ô guide, 256 đơn vị) — shop không bị đá / cây che
 MAIN, SIDE, GAP = 44.0, 32.0, 22.0  # bề rộng lối (ô guide): chính 704, phụ 512, khe luồn 352
 # Trại nửa Blue (id → vị trí): 3 trại rừng trái (giữa lane trên, sông, mid), 3 trại rừng dưới; trại 6 sát lane
 # dưới (kéo quái, D-76). Mỗi trại là hốc có 2 cửa, nằm cạnh (không nằm trên) lối chính.
@@ -145,7 +146,8 @@ def design():
     camps = unary_union([Point(CAMPS[cid]).buffer(CAMP_R[k]) for cid, k in kinds().items()])
     clear = unary_union([corridors, camps] + [l.buffer(SRC["lane_half_width"] + 6) for l in lanes]
                         + [t.buffer(SRC["tower_clear_radius"] + 2) for t in tpts] + [water.buffer(3)]
-                        + [Polygon(SRC["bases"][0]["polygon"]).buffer(4), Point(C, C).buffer(SRC["mid_clear_world"] / SRC["scale"])])
+                        + [Polygon(SRC["bases"][0]["polygon"]).buffer(4), Point(C, C).buffer(SRC["mid_clear_world"] / SRC["scale"])]
+                        + [Point(s["pos"]).buffer(SHOP_CLEAR) for s in SRC["shops"]])
     region = half_region().intersection(playable(lanes))
     raw = region.difference(clear).buffer(-INSET, join_style="mitre")
     rings = unary_union([Point(CAMPS[cid]).buffer(CAMP_R[k] + HOOK_W).difference(Point(CAMPS[cid]).buffer(CAMP_R[k])) for cid, k in kinds().items()])
