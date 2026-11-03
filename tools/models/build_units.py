@@ -26,6 +26,14 @@ UNITS = {
                         True, False),
     "neutral_shaman": ("neutral_shaman", "creatures/shaman",
                        "Idle_A=idle,Jog=run,OverhandThrow=attack,Hit_Chest=hit,Death_B=death,Dizzy=stun", True, False),
+    # D-228: hero Tripo + afk.ai (skill_1/2/3 = chiêu Q/W/R, cast = tung chiêu chung; RM = có dời gốc → không dùng)
+    "duy_anh": ("duy_anh", "heroes/duy_anh",
+                "Idle_Sword=idle,Jog=run,Sword_Regular_A+Sword_Regular_A_Rec@0.6=attack,Hit_Chest=hit,Death_B=death,"
+                "Idle Hurt=stun,Sword_Regular_B@0.5+Sword_Regular_B_Rec=cast,Shield_OneShot=skill_1,"
+                "Sword_Attack@0.5-1.92=skill_2,Power Up=skill_3", True, False),
+    "brakk": ("brakk", "heroes/brakk",
+              "Fighting Idle=idle,Jog=run,Fighting Right Jab=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
+              "Punch_Cross=cast,Attack_Ground_Pound@1.05-2.4=skill_1,Defend=skill_2,Power Up=skill_3", True, False),
 }
 
 

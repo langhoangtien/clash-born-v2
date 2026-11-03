@@ -14,10 +14,10 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 SRC = os.path.join(ROOT, "art_inbox", "05_3d")
 EXTRA = os.path.join(SRC, "adventurers_extra")
 DST = os.path.join(ROOT, "assets", "models", "kaykit")
-CHARACTERS = ["Knight", "Barbarian", "Barbarian_Large", "Mage", "Druid", "Rogue_Hooded", "Ranger", "Engineer"]
-TEXTURES = ["knight", "barbarian", "mage", "druid", "rogue", "ranger", "engineer"]
-WEAPONS = ["sword_1handed", "shield_badge_color", "axe_1handed", "axe_2handed_Large", "staff", "druid_staff",
-           "dagger", "crossbow_1handed", "spellbook_open", "wand"]
+# D-228: chỉ còn 4 hero chưa có mô hình Tripo dùng KayKit (lính, quái, Duy Anh, Brakk đã thay).
+CHARACTERS = ["Barbarian_Large", "Mage", "Druid", "Rogue_Hooded"]
+TEXTURES = ["barbarian", "mage", "druid", "rogue"]
+WEAPONS = ["axe_2handed_Large", "staff", "druid_staff", "dagger", "spellbook_open"]
 ANIMS = {"Rig_Medium": ["General", "MovementBasic", "CombatMelee", "CombatRanged"],
          "Rig_Large": ["General", "MovementBasic", "CombatMelee"]}
 # Sắc (0..1) của màu đội.
