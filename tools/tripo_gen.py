@@ -5,7 +5,7 @@ Chạy: python3 tools/tripo_gen.py <ảnh.png> [<ảnh.png> ...] --faces 900 [--
 Key đọc từ biến môi trường TRIPO_API_KEY hoặc file ~/.secrets/tripo_key (không commit key vào repo).
 Mỗi ảnh → <out>/<tên>.glb; in số credit trước và sau.
 --multiview: mỗi tham số là tên chung của bộ ảnh 3 hướng (phiếu T8, <tên>_front/_side/_back.png; _side là
-nghiêng phải) → một mô hình <out>/<tên>.glb dựng từ cả ba ảnh; --views front,back: bỏ hướng có ảnh lệch tư thế.
+nghiêng phải) → một mô hình <out>/<tên>.glb dựng từ cả ba ảnh; --views front,back: bỏ hướng có ảnh lệch tư thế; side_left: ảnh _side là nhìn từ bên trái (mũi vật quay sang trái ảnh — D-224).
 """
 import argparse, json, os, sys, time, urllib.request
 
@@ -44,8 +44,9 @@ def request(png, faces, multiview, use=("front", "side", "back")):
     if not multiview:
         return {"type": "image_to_model", "file": {"type": "png", "file_token": upload(png)}}
     # thứ tự Tripo: trước, trái, sau, phải; thiếu hướng nào để trống (D-211: bỏ ảnh nghiêng lệch tư thế)
-    views = [png + "_front.png" if "front" in use else None, None,
-             png + "_back.png" if "back" in use else None, png + "_side.png" if "side" in use else None]
+    side = png + "_side.png"
+    views = [png + "_front.png" if "front" in use else None, side if "side_left" in use else None,
+             png + "_back.png" if "back" in use else None, side if "side" in use else None]
     files = [{"type": "png", "file_token": upload(v)} if v else {} for v in views]
     return {"type": "multiview_to_model", "files": files}
 

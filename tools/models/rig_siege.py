@@ -1,26 +1,26 @@
 #!/usr/bin/env python3
-"""Gắn xương + hoạt ảnh cho xe công thành Tripo (D-218): afk.ai không có bộ xương cho máy bắn đá (`object` chỉ
-nhún / lắc), nên dựng ở đây — thân xe, cần bắn (quay quanh trục trên khung đá), 4 bánh. Mỗi đỉnh thuộc hẳn một
-xương (vật cứng), chia theo vùng hình học trong bảng dưới (tọa độ glTF của mô hình Tripo gốc: x ngang, y lên,
-z trước; đất y = −0,5). Hoạt ảnh theo rig `Creature`: idle / run (bánh lăn) / attack (cần vung qua đầu ra trước)
-/ hit / death. Mặt xe quay +Z glTF (= −Y Blender) — đúng hướng game.
+"""Gắn xương + hoạt ảnh cho xe pháo Tripo (D-224; thay máy bắn đá D-218): afk.ai không có bộ xương cho xe (`object`
+chỉ nhún / lắc), nên dựng ở đây — thân xe, nòng pháo (giật lùi khi bắn, quay quanh trục hai má đá), 4 bánh. Mỗi đỉnh
+thuộc hẳn một xương (vật cứng), chia theo vùng hình học trong bảng dưới (tọa độ glTF sau khi xoay mặt về +Z bằng
+glb_yaw.py: x ngang, y lên, z trước; lưới Tripo nằm giữa gốc, y −0,44…0,44). Hoạt ảnh theo rig `Creature`: idle / run
+(bánh lăn) / attack (ngóc nòng ngắm, bắn ở 0,35: nòng giật lùi + xe khựng, trượt về) / hit / death.
 
-  <venv có bpy>/bin/python tools/models/rig_siege.py vào.glb ra.glb
+  <venv có bpy>/bin/python tools/models/rig_siege.py vào_đã_xoay.glb ra.glb
 """
 import math, sys
 import bpy
 import numpy as np
 from mathutils import Quaternion, Vector
 
-PIVOT = (0.0, 0.22, -0.02)  # trục cần bắn
-ARM = ((0.0, 0.04, 0.32), (0.0, 0.42, -0.30))  # đầu thấp phía trước → gầu đá phía sau
-ARM_RADIUS, ARM_HALF_WIDTH = 0.075, 0.08
-BUCKET, BUCKET_RADIUS = (0.0, 0.40, -0.32), 0.21
-WHEELS = {"wheel_fl": (0.42, -0.33, 0.25), "wheel_fr": (-0.42, -0.33, 0.25),
-          "wheel_bl": (0.42, -0.33, -0.28), "wheel_br": (-0.42, -0.33, -0.28)}
-WHEEL_RADIUS, WHEEL_INNER = 0.19, 0.34  # bánh: |x| > WHEEL_INNER và gần tâm bánh
+PIVOT = (0.0, 0.1, 0.02)  # trục nòng (giữa hai má đá)
+BARREL = ((0.0, 0.08, -0.1), (0.0, 0.2, 0.52))  # đuôi nòng → miệng nòng
+BARREL_RADIUS, BARREL_HALF_WIDTH, BARREL_MIN_Z = 0.16, 0.17, -0.14
+WHEELS = {"wheel_fl": (0.37, -0.26, 0.26), "wheel_fr": (-0.37, -0.26, 0.26),
+          "wheel_bl": (0.37, -0.26, -0.265), "wheel_br": (-0.37, -0.26, -0.265)}
+WHEEL_RADIUS, WHEEL_INNER = 0.2, 0.29  # bánh: |x| > WHEEL_INNER và gần tâm bánh
 FPS = 30
-ANIMS = {"idle": 60, "run": 20, "attack": 36, "hit": 10, "death": 36}
+ANIMS = {"idle": 60, "run": 20, "attack": 30, "hit": 10, "death": 36}
+RECOIL = 0.09  # m nòng giật lùi
 
 
 def bl(p):
@@ -35,12 +35,11 @@ def part_of(p):
         for name, c in WHEELS.items():
             if np.sign(x) == np.sign(c[0]) and math.hypot(y - c[1], z - c[2]) < WHEEL_RADIUS:
                 return name
-    a, b = np.array(ARM[0]), np.array(ARM[1])
+    a, b = np.array(BARREL[0]), np.array(BARREL[1])
     t = np.clip(np.dot(np.array(p) - a, b - a) / np.dot(b - a, b - a), 0, 1)
-    if abs(x) < ARM_HALF_WIDTH and np.linalg.norm(np.array(p) - (a + t * (b - a))) < ARM_RADIUS:
-        return "arm"
-    if np.linalg.norm(np.array(p) - np.array(BUCKET)) < BUCKET_RADIUS and y > 0.22:
-        return "arm"
+    near = np.linalg.norm(np.array(p) - (a + t * (b - a))) < BARREL_RADIUS
+    if abs(x) < BARREL_HALF_WIDTH and z > BARREL_MIN_Z and near:
+        return "barrel"
     return "body"
 
 
@@ -56,12 +55,12 @@ def build(src):
     bpy.ops.object.mode_set(mode="EDIT")
     root = data.edit_bones.new("body")
     root.head, root.tail = Vector((0, 0, 0)), Vector((0, 0, 0.3))
-    bones = {"arm": (bl(PIVOT), bl(ARM[1]))} | {n: (bl(c), bl(c) + Vector((0, 0, 0.12))) for n, c in WHEELS.items()}
+    bones = {"barrel": (bl(PIVOT), bl(BARREL[1]))} | {n: (bl(c), bl(c) + Vector((0, 0, 0.12))) for n, c in WHEELS.items()}
     for name, (h, t) in bones.items():
         e = data.edit_bones.new(name)
         e.head, e.tail, e.parent = h, t, root
     bpy.ops.object.mode_set(mode="OBJECT")
-    groups = {n: mesh.vertex_groups.new(name=n) for n in ["body", "arm"] + list(WHEELS)}
+    groups = {n: mesh.vertex_groups.new(name=n) for n in ["body", "barrel"] + list(WHEELS)}
     count = {}
     for v in mesh.data.vertices:
         w = mesh.matrix_world @ v.co
@@ -85,26 +84,34 @@ def ease(t):
 
 
 # Mỗi hoạt ảnh: t 0..1 → {xương: (độ quay quanh trục X thế giới, (dời x, y, z) Blender)}.
-# Góc dương quanh +X Blender: gầu (phía sau, +Y) vung lên rồi ra trước (−Y); bánh lăn tới trước.
+# Quanh +X Blender: góc âm = nòng (mũi −Y) ngóc lên; góc dương = bánh lăn tới trước. +Y Blender = lùi về sau.
+def recoil(k):
+    ax = Vector(BARREL[1]) - Vector(BARREL[0])
+    back = -bl(tuple(ax.normalized()))
+    return tuple(back * RECOIL * k)
+
+
 def pose(name, t):
     p = {}
     if name == "idle":
-        p["body"] = (0.6 * math.sin(t * 2 * math.pi), (0, 0, 0.004 * math.sin(t * 4 * math.pi)))
+        p["body"] = (0.5 * math.sin(t * 2 * math.pi), (0, 0, 0.003 * math.sin(t * 4 * math.pi)))
+        p["barrel"] = (-1.5 * math.sin(t * 2 * math.pi), (0, 0, 0))
     elif name == "run":
         for w in WHEELS:
             p[w] = (360.0 * t, (0, 0, 0))
-        p["body"] = (1.2 * math.sin(t * 4 * math.pi), (0, 0, 0.01 * abs(math.sin(t * 2 * math.pi))))
-    elif name == "attack":  # lùi cần lấy đà, vung mạnh qua đầu (tới 0,4), giữ, hạ chậm về
-        swing = ease((t - 0.28) / 0.12) if t < 0.55 else 1.0 - ease((t - 0.55) / 0.4)
-        p["arm"] = (-12 * bump(t, 0.18, 0.18) + 105 * swing, (0, 0, 0))
-        p["body"] = (-4 * bump(t, 0.42, 0.12), (0, 0.02 * bump(t, 0.42, 0.12), 0))
+        p["body"] = (1.0 * math.sin(t * 4 * math.pi), (0, 0, 0.008 * abs(math.sin(t * 2 * math.pi))))
+    elif name == "attack":  # ngóc nòng ngắm, bắn ở 0,35: giật lùi mạnh, xe khựng, nòng trượt về chậm
+        aim = ease(t / 0.3) if t < 0.35 else 1.0 - ease((t - 0.6) / 0.4)
+        kick = ease((t - 0.33) / 0.04) if t < 0.4 else 1.0 - ease((t - 0.4) / 0.45)
+        p["barrel"] = (-8 * aim - 6 * kick, recoil(kick))
+        p["body"] = (-2.5 * kick, (0, 0.025 * kick, 0))
     elif name == "hit":
-        p["body"] = (5 * bump(t, 0.3, 0.6), (0, 0.03 * bump(t, 0.3, 0.6), 0))
-    elif name == "death":  # nghiêng đổ sang bên, lún xuống, cần đổ về trước
+        p["body"] = (4 * bump(t, 0.3, 0.6), (0, 0.03 * bump(t, 0.3, 0.6), 0))
+    elif name == "death":  # nghiêng đổ sang bên, lún xuống, nòng gục
         k = ease(t * 1.4)
-        p["body"] = (0, (0, 0, -0.12 * k))
-        p["body_roll"] = 28 * k
-        p["arm"] = (60 * k, (0, 0, 0))
+        p["body"] = (0, (0, 0, -0.1 * k))
+        p["body_roll"] = 26 * k
+        p["barrel"] = (14 * k, (0, 0, 0))
         p["wheel_fr"] = (0, (-0.06 * k, 0, 0.05 * k))
     return p
 

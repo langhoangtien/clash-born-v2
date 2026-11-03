@@ -161,14 +161,14 @@
    "model": "../style/units/creep_siege",
    "rig": "Creature",
    "attack": "attack",
-   "impact": 0.4,
+   "impact": 0.35,
    "team_tex": true,
    "height": 1.0,
    "projectile": {
-    "shape": "rock",
-    "model": "style/fx/siege_rock",
-    "size": 0.32,
-    "arc": 0.3
+    "shape": "bolt",
+    "model": "style/fx/siege_bolt",
+    "size": 0.42,
+    "arc": 0.06
    }
   },
   "neutral_shaman": {

@@ -358,3 +358,34 @@ Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo ngườ
 
 Đã nộp T8h: thay ba hướng `creep_siege` bằng xe pháo tư thế nghỉ và thay
 `creep_siege_projectile.png` bằng mảnh tinh thể xanh liền khối.
+
+## Đợt T9 — concept 3D cho 6 hero (xe pháo T8h đã vào game, 2026-11-03)
+
+Xe pháo T8h đã dựng 3D và vào game (D-224). Trụ, lính, quái rừng, công trình **đã xong cả bộ**; chỉ còn **6 hero** vẫn
+là mẫu tạm KayKit. Đợt này vẽ concept 3D cho hero để dựng Tripo + afk.ai (bộ xương người, có sẵn ~200 hoạt ảnh).
+
+**Nguồn thiết kế: ảnh chân dung hiện có của từng hero** (`assets/art/<id>_portrait.png`) — giữ nguyên gương mặt,
+tóc, màu, trang phục, vũ khí của chân dung; chỉ vẽ ra **toàn thân** theo tỉ lệ **chibi như lính** (đầu to ~1/3 thân,
+người thấp đậm — để cùng bộ với `creep_melee`, `creep_ranged`), phong cách low-poly mặt vát như các đợt T8.
+
+Quy tắc (bắt buộc, giống T8 / T8b — để Tripo dựng sạch và afk.ai gắn xương tự động):
+1. Một hero một bộ ảnh `_front`, `_side`, `_back`, nền xám nhạt trơn, không bóng / đĩa đất / chữ / hiệu ứng phép.
+2. **A-pose thật**: tay dang ~45°, khuỷu thẳng, có khe hở giữa tay và thân; chân tách bằng vai; nhìn thẳng.
+3. Ba ảnh **cùng một tư thế**, chỉ xoay camera. Ảnh `_side` nhìn từ **bên phải** của hero (mặt hero quay về **phía
+   phải ảnh**) — bản xe pháo vẽ nhìn từ bên trái nên phải dựng lại.
+4. Vũ khí / sách / găng **nắm chặt trong tay**, dày, ra xa thân; không lơ lửng, không chạm đất.
+5. Không mảnh rời mảnh: tóc là khối liền (vài lọn lớn), áo choàng / khăn là khối liền dài tới gối, không tua rua,
+   không dây mảnh, không lửa / khói / hào quang (tinh thể, ngọn lửa xanh của Vexa vẽ thành khối màu phẳng).
+6. Màu phe **không** áp cho hero (hero giữ màu riêng) — được dùng xanh dương thoải mái.
+
+| Thứ tự | `id` | Ghi chú (theo chân dung) |
+|---|---|---|
+| 1 | `brakk` | Chiến binh râu nâu, giáp thép xám cam lớn (vai tròn to), tay **găng sắt to** (đấm bằng tay, không vũ khí) |
+| 2 | `myra` | Pháp sư tóc trắng dài (khối liền), áo choàng trắng xanh, tinh thể xanh trên tóc; cầm **gậy phép tinh thể xanh** tay phải (đánh xa) |
+| 3 | `duy_anh` | Hiệp sĩ trẻ tóc đen ngắn, giáp bạc viền vàng xanh; **kiếm một tay** tay phải, **khiên** tay trái |
+| 4 | `gorran` | Orc xanh to béo, quần yếm da có quai, **yêu tinh nhỏ đội mũ phi công** ngồi trên vai (gắn liền vai, không lơ lửng); hai tay không |
+| 5 | `noctis` | Sát thủ mũ trùm tím đen, khăn che mặt, mắt xanh ngọc; **hai dao găm ngắn** mỗi tay một |
+| 6 | `vexa` | Phù thủy mũ chóp tím có trăng vàng, tóc tím đen, tai nhọn; **sách phép** tay trái, tay phải xòe (lửa xanh lá vẽ thành khối nhỏ trên lòng bàn tay hoặc bỏ) |
+
+Làm **trước 2 hero** `brakk` và `myra`, commit + push nhánh `thu-asset-tu-lam`, đánh dấu, rồi **DỪNG** báo người dùng
+duyệt. Duyệt xong mới làm 4 hero còn lại.

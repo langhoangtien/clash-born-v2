@@ -1,6 +1,6 @@
 extends TestCase
-## D-219: đạn đánh thường vẽ 3D trên không, hình theo đơn vị bắn (units_3d.json `projectile`); xe công thành
-## bay vòng cung (chỉ là hình — sim vẫn bay thẳng theo mục tiêu, CMB-06).
+## D-219: đạn đánh thường vẽ 3D trên không, hình theo đơn vị bắn (units_3d.json `projectile`); `arc` nâng độ cao
+## giữa đường (chỉ là hình — sim vẫn bay thẳng theo mục tiêu, CMB-06). D-224: xe pháo bắn mảnh tinh thể.
 
 const Fixture = preload("res://tests/sim/core/balance_fixture.gd")
 
@@ -26,10 +26,12 @@ func _setup(art: StringName, kind: Entity.Kind) -> Array:
 	return [w, p]
 
 
-func test_D_219_shape_per_source_and_siege_arcs() -> void:
+func test_D_219_shape_per_source_and_arc() -> void:
 	var heights: Dictionary = {}
-	for pair: Array in [[&"creep_siege", "rock"], [&"creep_ranged", "orb"]]:
-		var r: Array = _setup(pair[0], Entity.Kind.LANE_CREEP)
+	for pair: Array in [[&"creep_siege", "bolt", Entity.Kind.LANE_CREEP], [&"creep_ranged", "orb", Entity.Kind.LANE_CREEP],
+			[&"tower", "rock", Entity.Kind.TOWER]]:
+		var r: Array = _setup(pair[0], pair[2])
+		(r[0] as World).find_entity((r[1] as Projectile).source_id).tier = 1
 		var pj: Projectiles3D = Projectiles3D.new()
 		pj.sync(r[0])
 		assert_eq(pj.shape_of(r[1]), pair[1], "%s: hình đạn" % pair[0])
@@ -40,7 +42,7 @@ func test_D_219_shape_per_source_and_siege_arcs() -> void:
 		pj.sync(r[0])
 		assert_eq(pj.count(), 0, "đạn trúng / biến mất thì gỡ hình")
 		pj.free()
-	assert_true(heights[&"creep_siege"] > heights[&"creep_ranged"] + 1.0, "giữa đường đạn xe công thành bay cao (vòng cung)")
+	assert_true(heights[&"tower"] > heights[&"creep_ranged"] + 0.3, "giữa đường đạn có arc (đá của trụ) bay cao hơn đạn thẳng")
 
 
 ## D-221: trụ là trụ đá — bắn viên đá như xe công thành (trước D-219 là mảnh tinh thể).
