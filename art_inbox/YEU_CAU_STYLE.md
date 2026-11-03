@@ -279,3 +279,32 @@ khác **không dùng màu xanh dương / xanh ngọc** (game đổi mọi điể
 | 3 | `core` | Nhà chính như T8: khối đá tròn rộng, tinh thể lớn màu phe ở giữa, vài cờ / mái màu phe; to hơn trụ, thấp và rộng. Không cần ảnh `_back` |
 
 Làm từng mục, commit + push nhánh `thu-asset-tu-lam`, đánh dấu `[x]` trong bảng T8; xong cả ba thì **DỪNG** báo người dùng.
+
+## Đợt T8f — vẽ lại trụ + xe công thành theo concept người dùng (2026-11-03)
+
+Bản T8e (`creep_siege`, `tower`, `core`) **không đạt**: quá đơn giản, thiếu chất (trụ như quân cờ, nhà chính là đống
+đá, xe trơn). Người dùng đã có concept — **bám sát ảnh mẫu**, chỉ chuyển sang dạng ảnh dựng 3D (một vật một ảnh, nền
+xám nhạt trơn, không cỏ / đá / bóng / chữ / khung):
+
+- `art_inbox/08_style/ref/tower_ref.png` — trụ 4 cấp.
+- `art_inbox/08_style/ref/siege_ref.png` — xe công thành (có sẵn các hướng trước / sau / nghiêng — vẽ lại đúng các hướng đó).
+
+Phong cách chung của hai ảnh mẫu: đá xám ấm khối vát, **viền vàng đồng**, mảng **xanh dương phe** lớn (băng rôn, tấm
+chắn), tinh thể xanh. Giữ đúng như vậy, chỉ sửa cho Tripo dựng được:
+
+1. **Không quầng sáng / tia / vòng phát sáng / hạt** quanh tinh thể (ảnh mẫu có — bỏ đi). Tinh thể là khối xanh phẳng,
+   có thể sáng hơn mảng xanh khác một chút.
+2. Màu xanh dương **chỉ** ở phần màu phe (băng rôn, tấm chắn, tinh thể); viền vàng, đá xám, gỗ nâu giữ nguyên (game
+   đổi xanh dương → đỏ cho phe kia, mọi chỗ xanh khác cũng sẽ bị đổi).
+3. Chi tiết nhỏ (hình tháp trắng trên cờ, đinh, vân gỗ) vẽ phẳng lên mặt, **không** làm khối nổi riêng.
+4. Ba hướng cùng một vật, khớp nhau tuyệt đối (quy tắc T8b).
+
+| Thứ tự | Tên file | Ghi chú |
+|---|---|---|
+| 1 | `tower_t1` … `tower_t4` | 4 trụ theo đúng 4 cấp trong ảnh mẫu (cấp cao hơn: to hơn, nhiều tầng / gai vàng hơn, tinh thể lớn hơn). Mỗi cấp `_front` + `_side` (trụ gần đối xứng, không cần `_back`). Đế trụ là bệ đá tròn, không kèm sàn lát / bậc thềm rộng xung quanh. Không vòng sáng xanh quanh thân cấp 4 |
+| 2 | `creep_siege` | Xe máy bắn đá như ảnh mẫu: thân gỗ, khung đá xám viền vàng, 4 bánh đá xám có đĩa vàng-xanh giữa bánh, cần gỗ dài với gầu đá chứa viên đá tinh thể, tấm chắn trước + băng rôn bên **màu phe**. `_front`, `_side`, `_back` **đúng tư thế nghỉ** (cần hạ, như các hướng trong ảnh mẫu — không vẽ cảnh đang bắn). Dây buộc cần vẽ thành **đai dày** liền khối. Thêm một ảnh `creep_siege_projectile.png`: viên đá tinh thể (như ô Projectile của ảnh mẫu) |
+
+Nhà chính (`core`) và fountain **chưa làm**: concept người dùng (`base_ref.png`, `fountain_ref.png`) nhiều chi tiết rời
+quá cho Tripo, chờ người dùng chốt bản giản lược.
+
+Xong cả hai mục thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng.
