@@ -808,3 +808,5 @@ Chuẩn 7s (icon đồ vuông, nền trong suốt, vật to 80–85% ô, mỗi m
 | [x] | `item_blink_boots.png` | Giày Tốc Biến (mới) | Đôi giày da tím có cánh nhỏ ở gót, mũi giày có viên ngọc tím; vệt dịch chuyển **vẽ trên giày** (không tia quanh) |
 | [x] | `item_breaker_crossbow.png` | **Nỏ Phá Quân** (mới) | **Nỏ lớn** (không phải kiếm): thân gỗ sẫm bọc thép, cánh nỏ cong to, mũi tên nặng đầu thép đỏ đã lên dây; trông uy lực |
 | [x] | `item_frost_orb_ii.png` | Ngọc Băng Sương 2 (làm lại) | Viên ngọc băng lớn hơn bản 1, có lớp vỏ băng nứt bao quanh, một mảnh tuyết xoáy **trong** ngọc; xanh lơ + trắng, khác rõ bản 1 |
+
+Điều chỉnh sau duyệt Đợt 14: icon Đại Đao Thần và Đao Tán Ma chỉ lấy cận cảnh **đầu đao + một đoạn cán ngắn** để lưỡi đọc rõ ở 48 px; Đại Đao Thần tăng khối lưỡi, vàng kim và cảm giác trang bị chủ lực.
