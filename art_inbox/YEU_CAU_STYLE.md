@@ -364,9 +364,11 @@ Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo ngườ
 Xe pháo T8h đã dựng 3D và vào game (D-224). Trụ, lính, quái rừng, công trình **đã xong cả bộ**; chỉ còn **6 hero** vẫn
 là mẫu tạm KayKit. Đợt này vẽ concept 3D cho hero để dựng Tripo + afk.ai (bộ xương người, có sẵn ~200 hoạt ảnh).
 
-**Nguồn thiết kế: ảnh chân dung hiện có của từng hero** (`assets/art/<id>_portrait.png`) — giữ nguyên gương mặt,
-tóc, màu, trang phục, vũ khí của chân dung; chỉ vẽ ra **toàn thân** theo tỉ lệ **chibi như lính** (đầu to ~1/3 thân,
-người thấp đậm — để cùng bộ với `creep_melee`, `creep_ranged`), phong cách low-poly mặt vát như các đợt T8.
+**Phong cách (ĐỔI 2026-11-03 theo người dùng): bám ảnh mẫu `art_inbox/08_style/ref/hero_ref.png`** — tỉ lệ anh hùng
+chắc nịch (đầu ~1/4 thân, vai và tay to, chân ngắn chắc), giáp khối vát có **viền vàng**, mảng màu chủ đạo lớn, tinh thể
+ma lực xanh, chất liệu rõ (kim loại mờ, vải, da) như bảng màu & vật liệu trong ảnh mẫu. Ảnh mẫu chính là thiết kế
+**Duy Anh** (kiếm một tay + khiên). Các hero khác giữ gương mặt, tóc, màu, vũ khí theo **ảnh chân dung**
+(`assets/art/<id>_portrait.png`) nhưng vẽ theo phong cách ảnh mẫu. Bỏ phần "chibi như lính" của bản đầu.
 
 Quy tắc (bắt buộc, giống T8 / T8b — để Tripo dựng sạch và afk.ai gắn xương tự động):
 1. Một hero một bộ ảnh `_front`, `_side`, `_back`, nền xám nhạt trơn, không bóng / đĩa đất / chữ / hiệu ứng phép.
@@ -387,5 +389,17 @@ Quy tắc (bắt buộc, giống T8 / T8b — để Tripo dựng sạch và afk.
 | 5 | `noctis` | Sát thủ mũ trùm tím đen, khăn che mặt, mắt xanh ngọc; **hai dao găm ngắn** mỗi tay một |
 | 6 | `vexa` | Phù thủy mũ chóp tím có trăng vàng, tóc tím đen, tai nhọn; **sách phép** tay trái, tay phải xòe (lửa xanh lá vẽ thành khối nhỏ trên lòng bàn tay hoặc bỏ) |
 
-Làm **trước 2 hero** `brakk` và `myra`, commit + push nhánh `thu-asset-tu-lam`, đánh dấu, rồi **DỪNG** báo người dùng
+Làm **trước 2 hero** `duy_anh` (theo đúng ảnh mẫu) và `brakk`, commit + push nhánh `thu-asset-tu-lam`, đánh dấu, rồi **DỪNG** báo người dùng
 duyệt. Duyệt xong mới làm 4 hero còn lại.
+
+## Đợt T10 — shop ẩn + đống đổ nát trụ (2026-11-03)
+
+Cùng phong cách bộ công trình đã duyệt (đá xám ấm khối vát, viền vàng đồng, gỗ nâu; quy tắc T8b / T8f: nền xám nhạt
+trơn, một vật một ảnh, không quầng sáng / khói / hạt, chi tiết nhỏ vẽ phẳng, các hướng khớp nhau).
+
+| Thứ tự | Tên file | Nội dung |
+|---|---|---|
+| 1 | `secret_shop` (`_front`, `_side`) | Shop ẩn trong rừng (không thuộc phe nào — **không** dùng xanh dương phe): quầy hàng nhỏ dưới mái lều vải **tím sẫm** liền khối, hai cột gỗ, trên quầy vài rương / bình / cuộn giấy khối to, một chiếc đèn lồng vàng treo ở mái (khối, không phát sáng). Thấp, rộng, cao ~1,5 lần lính |
+| 2 | `tower_rubble` (`_front`, `_side`) | Đống đổ nát của trụ đã bị phá: **bệ trụ** (giống chân `tower`: đá xám vát, viền vàng) còn nguyên, thân trụ gãy cụt ngang thấp, vài khối đá và mảnh viền vàng vỡ đổ quanh chân, **tinh thể tắt** màu xám tro nằm nghiêng trên đống đá. Không màu phe |
+
+Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng.

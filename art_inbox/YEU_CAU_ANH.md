@@ -792,3 +792,17 @@ một nhụy trắng hình dấu gạch chéo (ý "câm"). Tím khác hẳn Lư�
 - [x] `04_icons/item_orchid.png` — hoa lan tím chàm đậm trên cán trượng bạc, nhụy trắng hình gạch chéo; theo chuẩn 7s, không khung / đĩa / hào quang, nền alpha.
 - [x] PNG 256 × 256, lề an toàn; đã chạy `tools/icon_preview.py` và mở `04_icons/_preview.png` xem 48 / 64 / 84 px và bản làm tối. Preview kèm 3 mẫu 7s và Ngọc Ảo Ảnh để đối chiếu màu tím.
 - Chỉ thay đổi `art_inbox/`, chưa nhập vào `assets/`.
+
+## Đợt 14 — sửa 2 icon đồ + icon 4 món mới (D-226) — 2026-11-03
+
+Chuẩn 7s (icon đồ vuông, nền trong suốt, vật to 80–85% ô, mỗi món một màu chủ đạo + hình dáng riêng). Ghi vào
+`04_icons/`, chạy `tools/icon_preview.py`, kiểm tra 48 px và bản làm tối, commit + push nhánh `thu-asset-tu-lam`.
+
+| Xong | File | Món | Vẽ gì |
+|---|---|---|---|
+| [ ] | `item_divine_blade.png` | Đại Đao Thần (sửa) | **Đại đao** (quan đao): cán dài, lưỡi đao to bản cong một bên ở đầu cán, chuôi có tua đỏ khối liền; vàng kim + thép trắng — **không** phải kiếm |
+| [ ] | `item_diffusal_blade.png` | Đao Tán Ma (sửa) | Đang trùng hình Song Đao (chỉ khác màu) → vẽ **mới hoàn toàn**: một thanh đao cong lưỡi tím mờ có vết nứt phát tím **vẽ trên bề mặt**, cán quấn vải xám; khác hẳn hai thanh của Song Đao |
+| [ ] | `item_frost_blade.png` | Kiếm Băng (mới) | Kiếm thẳng lưỡi băng xanh lơ trong suốt, chắn kiếm bạc hình bông tuyết, vài tinh thể băng đóng trên lưỡi |
+| [ ] | `item_blink_boots.png` | Giày Tốc Biến (mới) | Đôi giày da tím có cánh nhỏ ở gót, mũi giày có viên ngọc tím; vệt dịch chuyển **vẽ trên giày** (không tia quanh) |
+| [ ] | `item_war_greatsword.png` | Kiếm thuần sát thương (mới, tên chờ chốt) | Đại kiếm hai tay to bản, lưỡi thép đỏ sẫm, chuôi đen bọc vàng — trông nặng, chỉ thuần sức mạnh |
+| [ ] | `item_frost_orb_ii.png` | Ngọc Băng Sương 2 (làm lại) | Viên ngọc băng lớn hơn bản 1, có lớp vỏ băng nứt bao quanh, một mảnh tuyết xoáy **trong** ngọc; xanh lơ + trắng, khác rõ bản 1 |
