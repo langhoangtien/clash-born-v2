@@ -143,6 +143,8 @@ def main():
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else sys.argv[1:]
     arm = build(argv[0])
     animate(arm)
+    mesh = next(o for o in arm.children if o.type == "MESH")
+    arm.location.z -= min((mesh.matrix_world @ v.co).z for v in mesh.data.vertices)  # D-219: gốc dưới bánh, khỏi chìm
     bpy.ops.object.select_all(action="SELECT")
     bpy.ops.export_scene.gltf(filepath=argv[1], use_selection=True, export_yup=True, export_animations=True,
                               export_animation_mode="NLA_TRACKS", export_anim_slide_to_zero=True,

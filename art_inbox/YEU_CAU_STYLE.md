@@ -311,3 +311,18 @@ Xong cả hai mục thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG
 
 Đã nộp T8f: thay ảnh `tower` và `creep_siege` theo concept, thêm `tower_core` và
 `creep_siege_projectile`; `core` và fountain giữ nguyên, chờ phiếu giản lược.
+
+## Đợt T8g — nhà chính + fountain bản giản lược (trụ, xe T8f đã duyệt và vào game, 2026-11-03)
+
+Trụ, xe công thành T8f đã dựng 3D và vào game (D-218) — rất tốt vì bám sát ảnh mẫu. Đợt này làm nốt **nhà chính** và
+**fountain**, cùng phong cách (đá xám ấm khối vát, viền vàng đồng, mảng xanh phe lớn, tinh thể xanh). Ảnh mẫu của người
+dùng: `art_inbox/08_style/ref/base_ref.png`, `fountain_ref.png` — **giữ phong cách và tinh thần**, nhưng **giản lược
+mạnh** vì ảnh mẫu có quá nhiều mảnh rời nhỏ (Tripo sẽ dính hoặc dựng thừa). Quy tắc T8b / T8f vẫn áp dụng (không quầng
+sáng / hạt / nước chảy; xanh dương chỉ ở phần màu phe; chi tiết nhỏ vẽ phẳng lên mặt; các hướng khớp nhau).
+
+| Thứ tự | Tên file | Nội dung |
+|---|---|---|
+| 1 | `core` | Nhà chính: **tinh thể lớn màu phe** dựng giữa trên **bệ đá tròn 2–3 bậc** viền vàng; quanh bệ **4 cột đá thấp**, mỗi cột treo **một băng rôn màu phe** (tấm dày, liền cột). **Bỏ** các gai cong lớn, vòng gai, các mảnh rời quanh tinh thể. Thấp, rộng, to hơn trụ cấp 4 rõ rệt (bề ngang ~2 lần trụ). Ảnh `_front` + `_side` (gần đối xứng) |
+| 2 | `fountain` | Fountain hồi máu: **bỏ tượng thiên thần**. **Bồn đá tròn 2 tầng** viền vàng; giữa bồn một **trụ tinh thể thấp màu phe** (khối liền, không tia nước); **mặt nước là một mảng xanh nhạt phẳng** trong lòng bồn; hai bên có **2 cột băng rôn màu phe**. Bậc thềm đá thấp một phía (phía nhà chính). Ảnh `_front` + `_side` + `_back` |
+
+Xong cả hai thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng.
