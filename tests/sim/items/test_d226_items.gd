@@ -85,9 +85,9 @@ func test_EFF_08_frost_blade_slow_depends_on_target_melee() -> void:
 	assert_near(ranged.stats.get_stat(StatId.Id.MOVEMENT_SPEED), base_ms2 * 0.5, 1.0, "mục tiêu đánh xa: chậm 50%")
 
 
-func test_D_226_frost_blade_and_greatsword_stats_buy_direct() -> void:
+func test_D_226_frost_blade_and_crossbow_stats_buy_direct() -> void:
 	_world()
-	for pair: Array in [[&"frost_blade", 4800, 70.0], [&"war_greatsword", 5100, 175.0]]:
+	for pair: Array in [[&"frost_blade", 4800, 70.0], [&"breaker_crossbow", 5100, 175.0]]:
 		var d: ItemDef = _lib.items[pair[0]]
 		assert_eq(d.cost, pair[1], "%s: giá" % pair[0])
 		assert_true(d.components.is_empty(), "%s: mua thẳng" % pair[0])
@@ -160,3 +160,22 @@ func test_ABL_23_frost_orb_ii_frostbite_then_active_75() -> void:
 	_first_hit(w, me, foe)
 	w.step()
 	assert_near(foe.stats.get_stat(StatId.Id.HEAL_REDUCTION), 0.75, 0.0001, "kích hoạt: đòn đánh giảm 75% hồi máu")
+
+
+## D-227: Giày Tốc Biến ghép từ giày thường + phí; bị trói không tốc biến được.
+func test_ABL_24_blink_blocked_when_rooted_and_recipe() -> void:
+	var w: World = _world()
+	assert_eq(_lib.items[&"blink_boots"].components, [&"boots"] as Array[StringName], "giày thường + phí")
+	var me: Entity = _hero(w, 0, Vector2.ZERO)
+	Items.give(w, me, _lib.items[&"blink_boots"])
+	w.step()
+	var root: EffectDef = EffectDef.new()
+	root.id = &"test_root"
+	root.states = [UnitState.Id.ROOTED] as Array[UnitState.Id]
+	Effects.apply(w, me, root, me, {}, "3")
+	w.step()
+	var start: Vector2 = me.position
+	w.submit(Command.cast(me.id, Items.SLOT_BASE, -1, Vector2.INF, Vector2.LEFT))
+	for i: int in 3:
+		w.step()
+	assert_near(me.position.distance_to(start), 0.0, 1.0, "bị trói: không tốc biến")

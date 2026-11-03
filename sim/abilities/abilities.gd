@@ -93,6 +93,8 @@ static func problem(world: World, e: Entity, a: AbilityInstance) -> Problem:
 		return Problem.NOT_LEARNED
 	if a.def.targeting == AbilityDef.Targeting.PASSIVE or not (Rules.can_use_item(e) if a.item_index >= 0 else Rules.can_cast(e)):
 		return Problem.CANNOT_CAST
+	if Rules.has_state(e, UnitState.Id.ROOTED) and a.def.on_cast.any(func(x: ActionDef) -> bool: return x is TeleportAction):
+		return Problem.CANNOT_CAST  # ABL-24: bị trói không tốc biến
 	if world.tick < a.ready_tick:
 		return Problem.ON_COOLDOWN
 	if e.mana < value(e, a, &"mana"):

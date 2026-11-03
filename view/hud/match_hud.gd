@@ -83,36 +83,50 @@ func _text(font: Font, at: Vector2, text: String, font_size: int, color: Color, 
 	draw_string(font, at - Vector2(w * 0.5, 0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
 
 
-## Tỷ số hai đội hai bên đồng hồ (ECO-09); chạm mở bảng tỷ số (D-183). D-225: hai cánh xanh / đỏ hình thang (mép
-## trong vát, đầu ngoài bo), ô đồng hồ giữa tối viền vàng, mũi nhọn vàng dưới giữa, dấu ≡ nhỏ.
+## Tỷ số hai đội hai bên đồng hồ (ECO-09); chạm mở bảng tỷ số (D-183). D-227 (theo ảnh mẫu người chơi): một băng
+## rôn liền — nền chuyển xanh → xanh than → đỏ, hai bên vát vào, mép dưới cong xuống mũi nhọn ở giữa, viền vàng.
 func _score(font: Font) -> void:
-	var r: Rect2 = Rect2(Vector2(size.x * 0.5 - SCORE_BOX.x * 0.5, 4), SCORE_BOX)
-	var c: Vector2 = r.get_center()
-	var mid_w: float = 120.0
-	var slant: float = 16.0
-	for team: int in 2:
-		var sx: float = -1.0 if team == 0 else 1.0
-		var inner: float = c.x + sx * (mid_w * 0.5 - 6.0)
-		var outer: float = c.x + sx * (r.size.x * 0.5)
-		var pts: PackedVector2Array = PackedVector2Array([Vector2(inner, r.position.y + 6), Vector2(inner - sx * slant, r.end.y - 6)])
-		for k: int in range(9):  # đầu ngoài bo tròn
-			var a: float = PI * 0.5 - PI * k / 8.0
-			pts.append(Vector2(outer - sx * 26.0 + sx * cos(a) * 26.0, c.y + sin(a) * (r.size.y * 0.5 - 6)))
-		var col: Color = Color(0.2, 0.46, 0.95) if team == 0 else Color(0.9, 0.27, 0.24)
-		var shadow: PackedVector2Array = PackedVector2Array()
-		for p: Vector2 in pts:
-			shadow.append(p + Vector2(0, 3))
-		draw_colored_polygon(shadow, Color(0, 0, 0, 0.3))
-		draw_colored_polygon(pts, col)
-		var edge: PackedVector2Array = pts.duplicate()
-		edge.append(pts[0])
-		draw_polyline(edge, Color(UiStyle.GOLD_DEEP, 0.95), 2.0, true)
-		_text(font, Vector2((inner + outer) * 0.5 + sx * 4.0, c.y + 12), str(MatchScore.team_kills(world, team)), 34, Color.WHITE, true)
-	draw_colored_polygon(PackedVector2Array([Vector2(c.x - 14, r.end.y - 4), Vector2(c.x + 14, r.end.y - 4), Vector2(c.x, r.end.y + 9)]), UiStyle.GOLD)
-	UiStyle.soft_frame(self, Rect2(c.x - mid_w * 0.5, r.position.y, mid_w, r.size.y), 12, Color(0.04, 0.06, 0.1, 0.97))
-	for i: int in 3:  # dấu bảng tỷ số
-		var y: float = r.end.y - 13 + i * 3.5
-		draw_line(Vector2(c.x - 8, y), Vector2(c.x + 8, y), Color(UiStyle.GOLD, 0.7), 1.5)
+	var r: Rect2 = Rect2(Vector2(size.x * 0.5 - SCORE_BOX.x * 0.5, 0), SCORE_BOX - Vector2(0, 8))
+	var n: int = 60
+	var rim: PackedVector2Array = PackedVector2Array()
+	for k: int in n + 1:
+		var x: float = r.size.x * k / n
+		rim.append(r.position + Vector2(x, _banner_bottom(x, r.size)))
+	for k: int in n:  # dải dọc: màu chuyển mịn theo x
+		var a: Vector2 = rim[k]
+		var b: Vector2 = rim[k + 1]
+		var quad: PackedVector2Array = PackedVector2Array([Vector2(a.x, r.position.y), Vector2(b.x, r.position.y), b, a])
+		var ca: Color = _banner_color(float(k) / n)
+		var cb: Color = _banner_color(float(k + 1) / n)
+		draw_polygon(quad, PackedColorArray([ca.lightened(0.12), cb.lightened(0.12), cb, ca]))
+	draw_polyline(rim, Color(0, 0, 0, 0.35), 5.0, true)
+	draw_polyline(rim, Color(UiStyle.GOLD_DEEP, 0.95), 3.0, true)
+	draw_polyline(rim, Color(UiStyle.GOLD, 0.85), 1.2, true)
+	_text(font, Vector2(r.position.x + r.size.x * 0.18, r.position.y + 40), str(MatchScore.team_kills(world, 0)), 34, Color.WHITE, true)
+	_text(font, Vector2(r.end.x - r.size.x * 0.18, r.position.y + 40), str(MatchScore.team_kills(world, 1)), 34, Color.WHITE, true)
+
+
+## Mép dưới băng rôn tại hoành độ x: hai đầu vát lên góc trên, giữa cong xuống, mũi nhọn ở tâm.
+func _banner_bottom(x: float, s: Vector2) -> float:
+	var d: float = absf(x - s.x * 0.5)
+	var half: float = s.x * 0.5
+	var side_y: float = s.y * 0.7
+	var mid_y: float = s.y * 0.86
+	if d > half - 14.0:  # đầu ngoài vát lên
+		return side_y * (half - d) / 14.0
+	if d < 20.0:  # mũi nhọn
+		return lerpf(s.y + 8.0, mid_y, d / 20.0)
+	var t: float = (half - 14.0 - d) / (half - 34.0)
+	return side_y + (mid_y - side_y) * t * t
+
+
+func _banner_color(t: float) -> Color:
+	var blue: Color = Color(0.17, 0.38, 0.88)
+	var navy: Color = Color(0.05, 0.08, 0.17)
+	var red: Color = Color(0.84, 0.21, 0.23)
+	if t < 0.5:
+		return blue.lerp(navy, clampf((t - 0.2) / 0.14, 0.0, 1.0))
+	return navy.lerp(red, clampf((t - 0.66) / 0.14, 0.0, 1.0))
 
 
 ## D-183: chân dung tướng (chạm xem thông số). D-222: tròn, viền vàng, huy hiệu cấp ở góc dưới; bỏ dấu "i" (giống cảnh báo).

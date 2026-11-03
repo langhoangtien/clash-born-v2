@@ -391,8 +391,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `ABL-24` (D-226) Tốc biến (TeleportAction): chủ kỹ năng dịch chuyển **tức thời** một quãng cố định
   `distance` theo hướng nhắm (kiểu Liên Quân: nhắm gần hơn vẫn đi đủ quãng). Điểm đến bị chặn thì lùi dần về
   phía điểm đi tới chỗ đứng được đầu tiên. Hủy vung tay (CMB-06) và lệnh đang làm (đứng yên tại chỗ mới);
-  không phải lướt (ABL-08): không có thời gian bay, không chặn bởi ROOTED; vẫn theo ITM-08 / ST (choáng, ếch
-  không dùng được). Phát sự kiện `teleported` (kẻ gây = chủ).
+  không phải lướt (ABL-08): không có thời gian bay. Bị trói (ROOTED) thì **không dùng được** (CANNOT_CAST, D-227);
+  vẫn theo ITM-08 / ST (choáng, ếch không dùng được). Phát sự kiện `teleported` (kẻ gây = chủ).
 - `ABL-17` Vùng tồn tại (ZoneAction, D-68): tâm, bán kính chốt lúc tung; bắt đầu sau
   `delay`, tồn tại `duration`; từ lúc bắt đầu cứ mỗi `interval` chạy `actions` lên mọi
   đơn vị hợp lệ có thân chạm vùng lúc đó (lọc như ABL-07). Lần đầu ngay lúc bắt đầu, lần

@@ -33,8 +33,9 @@ unique_group = &"move_speed_boots"
 [resource]
 script = ExtResource("5_itm")
 category = 3
-description = "Chủ động (hồi 25 s): tốc biến 500 theo hướng nhắm. Tốc chạy giày không cộng dồn với giày khác."
+description = "Chủ động (hồi 25 s): tốc biến 500 theo hướng nhắm; bị trói thì không dùng được. Tốc chạy giày không cộng dồn với giày khác."
 cost = 2400
+components = Array[StringName]([&"boots"])
 modifiers = Array[ExtResource("4_mod")]([SubResource("M0")])
 ability = SubResource("AB")
 id = &"blink_boots"

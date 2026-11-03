@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c5ns0as3hc028"
-path="res://.godot/imported/war_greatsword.png-0ef06d73cd24c6f481738fdf878784a7.ctex"
+uid="uid://dkugklj8mina1"
+path="res://.godot/imported/breaker_crossbow.png-3c7248bdcfabeaf209d68789c7a7248f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/war_greatsword.png"
-dest_files=["res://.godot/imported/war_greatsword.png-0ef06d73cd24c6f481738fdf878784a7.ctex"]
+source_file="res://assets/art/breaker_crossbow.png"
+dest_files=["res://.godot/imported/breaker_crossbow.png-3c7248bdcfabeaf209d68789c7a7248f.ctex"]
 
 [params]
 

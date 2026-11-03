@@ -11,9 +11,9 @@ value = "175"
 [resource]
 script = ExtResource("2_itm")
 category = 0
-description = "Thuần sát thương: +175 sát thương vật lý."
+description = "+175 sát thương vật lý."
 cost = 5100
 modifiers = Array[ExtResource("1_mod")]([SubResource("M0")])
-id = &"war_greatsword"
-display_name = "Cự Kiếm"
-art_id = &"war_greatsword"
+id = &"breaker_crossbow"
+display_name = "Nỏ Phá Quân"
+art_id = &"breaker_crossbow"
