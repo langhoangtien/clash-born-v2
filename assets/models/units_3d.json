@@ -36,7 +36,8 @@
    "dash": "run",
    "hit": "hit",
    "death": "death",
-   "stun": "stun"
+   "stun": "stun",
+   "sprint": "sprint"
   }
  },
  "units": {
@@ -49,10 +50,9 @@
    "height": 1.2,
    "skills": {
     "1": "skill_1",
-    "2": "skill_2",
-    "3": "skill_3"
+    "2": "skill_2"
    },
-   "yaw": 180
+   "dash": "dash"
   },
   "brakk": {
    "model": "../style/heroes/brakk",
@@ -332,5 +332,6 @@
    "color": "#fff2a0",
    "size": 0.15
   }
- }
+ },
+ "sprint_above": 1.15
 }

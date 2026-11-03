@@ -80,7 +80,7 @@ func _make_model(e: Entity, cfg: Dictionary) -> void:
 			for k: int in (n as MeshInstance3D).mesh.get_surface_count():
 				mats.append((n as MeshInstance3D).get_active_material(k))
 		_solid.append(mats)
-	for anim: String in [_rig["idle"], _rig["run"], _rig.get("stun", "")].filter(_anim.has_animation):
+	for anim: String in [_rig["idle"], _rig["run"], _rig.get("stun", ""), _cfg.get("sprint", _rig.get("sprint", ""))].filter(_anim.has_animation):
 		_anim.get_animation(anim).loop_mode = Animation.LOOP_LINEAR
 
 
@@ -160,10 +160,10 @@ func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int, faded: b
 	if e.reincarnate_tick >= 0:  # DTH-02: nằm chờ tái sinh — ngã rồi nằm yên ở khung cuối
 		if _playing != _rig["death"]:
 			_play(_rig["death"], 1.0)
+	elif e.dash != null:  # D-229: lao tới trước cả hoạt ảnh chiêu (không trôi người khi chiêu có lướt)
+		_play(_cfg.get("dash", _rig["dash"]), 1.4)
 	elif _skill_locked(moving):
 		pass
-	elif e.dash != null:
-		_play(_rig["dash"], 1.4)
 	elif e.cast != null:
 		_play(_cfg.get("cast", _cfg["attack"]), 1.5)
 	elif _attack_shown(e, moving):
@@ -174,7 +174,7 @@ func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int, faded: b
 		pass
 	else:
 		var stun: String = _rig.get("stun", "") if not Rules.can_move(e) and not Rules.can_attack(e) else ""  # ST-01
-		_play(_rig["run"] if moving else (stun if _anim.has_animation(stun) else _rig["idle"]), 1.0)
+		_play(ModelLibrary.run_anim(_cfg, _rig, _anim, e) if moving else (stun if _anim.has_animation(stun) else _rig["idle"]), 1.0)
 	_attack_phase = e.attack_phase
 
 

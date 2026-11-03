@@ -82,3 +82,21 @@ func test_ST_01_stunned_unit_does_not_play_attack() -> void:
 		a.sync(w, e, Vector3.ZERO, false, -100, false)
 		assert_eq(a._playing, pair[2], "%s: bị choáng thì thôi đánh" % pair[0])
 		a.free()
+
+
+## D-229: đang được tăng tốc (hệ số tốc chạy ≥ sprint_above) thì chạy dáng nước rút; lao tới phát hoạt ảnh lao
+## riêng của đơn vị, kể cả ngay sau khi tung chiêu (không trôi người).
+func test_D_229_sprint_when_hasted_and_dash_animation() -> void:
+	var w: World = World.new(1, Fixture.make())
+	var e: Entity = _unit(w, &"duy_anh", Entity.Kind.HERO)
+	var a: Actor3D = Actor3D.make(e)
+	a.sync(w, e, Vector3.ZERO, true, -100, false)
+	assert_eq(a._playing, "run", "chạy thường")
+	e.stats.add_modifier(StatModifier.make(StatId.Id.MOVEMENT_SPEED, ModifierDef.Op.MULTIPLY, 1.4, 99))
+	a.sync(w, e, Vector3.ZERO, true, -100, false)
+	assert_eq(a._playing, "sprint", "tăng tốc 40%: chạy nước rút")
+	a.on_cast(2)
+	e.dash = DashState.new()
+	a.sync(w, e, Vector3.ZERO, true, -100, false)
+	assert_eq(a._playing, "dash", "đang lao tới: hoạt ảnh lao, không bị hoạt ảnh chiêu giữ lại")
+	a.free()

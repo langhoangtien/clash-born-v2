@@ -185,3 +185,13 @@ static func dress_own(model: Node, cfg: Dictionary, team: int) -> void:
 static func use_vertex_colors_in(root: Node) -> void:
 	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
 		use_vertex_colors((n as MeshInstance3D).mesh)
+
+
+## D-229: đang được tăng tốc chạy (hệ số MULTIPLY tốc chạy ≥ `sprint_above`, vd Xung Phong) và mô hình có hoạt ảnh
+## `sprint` thì chạy dáng nước rút (như Triệu Vân Liên Quân); không thì chạy thường.
+static func run_anim(cfg: Dictionary, rig_cfg: Dictionary, anim: AnimationPlayer, e: Entity) -> String:
+	var sprint: String = cfg.get("sprint", rig_cfg.get("sprint", ""))
+	var above: float = float(config().get("sprint_above", 1.15))
+	if not sprint.is_empty() and anim.has_animation(sprint) and e.stats.multiplier(StatId.Id.MOVEMENT_SPEED) >= above:
+		return sprint
+	return rig_cfg["run"]

@@ -142,3 +142,15 @@ def _remove_nodes(g, dropped, kept):
         a["samplers"] = [a["samplers"][c["sampler"]] for c in chans]  # bỏ sampler của xương đã bỏ
         a["channels"] = [dict(c, sampler=k, target=dict(c["target"], node=idx[c["target"]["node"]]))
                          for k, c in enumerate(chans)]
+
+
+def in_place(g, binc, array, anim, root_names=("root",)):
+    """`tên~` (D-229): bỏ dời chỗ của xương gốc (hoạt ảnh 'RM' có tiến tới) — sim đã tự di chuyển đơn vị."""
+    for c in anim["channels"]:
+        node = g["nodes"][c["target"]["node"]].get("name", "")
+        if c["target"]["path"] != "translation" or node not in root_names:
+            continue
+        s = anim["samplers"][c["sampler"]]
+        v = array(g, binc, s["output"]).copy()
+        v[:] = v[0]
+        s["output"] = add_accessor(g, binc, v, "VEC3")

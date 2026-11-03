@@ -92,6 +92,16 @@ func natural(stat: S) -> float:
 	return _base[stat]
 
 
+## Hệ số MULTIPLY gộp của một chỉ số (STAT-02: 1 + Σ(mᵢ − 1)) — chỉ đọc; VIEW dùng để biết đang được tăng tốc
+## (D-229: dáng chạy nhanh), không đổi gì trong trận.
+func multiplier(stat: S) -> float:
+	var factor: float = 1.0
+	for m: StatModifier in _modifiers:
+		if m.stat == stat and m.op == ModifierDef.Op.MULTIPLY:
+			factor += m.value - 1.0
+	return factor
+
+
 func values() -> PackedFloat64Array:
 	return _final
 
