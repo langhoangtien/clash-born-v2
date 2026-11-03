@@ -392,6 +392,9 @@ Quy tắc (bắt buộc, giống T8 / T8b — để Tripo dựng sạch và afk.
 Làm **trước 2 hero** `duy_anh` (theo đúng ảnh mẫu) và `brakk`, commit + push nhánh `thu-asset-tu-lam`, đánh dấu, rồi **DỪNG** báo người dùng
 duyệt. Duyệt xong mới làm 4 hero còn lại.
 
+Đã nộp T9 (mẫu thử): `[x] duy_anh`, `[x] brakk` đủ `_front`, `_side`, `_back`.
+Bốn hero còn lại chờ duyệt; chưa làm.
+
 ## Đợt T10 — shop ẩn + đống đổ nát trụ (2026-11-03)
 
 Cùng phong cách bộ công trình đã duyệt (đá xám ấm khối vát, viền vàng đồng, gỗ nâu; quy tắc T8b / T8f: nền xám nhạt
