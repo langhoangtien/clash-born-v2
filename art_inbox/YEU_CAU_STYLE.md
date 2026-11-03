@@ -355,3 +355,6 @@ có viên kim cương), nhưng **giản lược** để Tripo dựng sạch và 
 | 2 | `creep_siege_projectile.png` | Đạn pháo: **mảnh tinh thể xanh dài** như ảnh mẫu (khối liền, không vệt sáng / đuôi) — vẽ đè lên viên đá cũ |
 
 Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng.
+
+Đã nộp T8h: thay ba hướng `creep_siege` bằng xe pháo tư thế nghỉ và thay
+`creep_siege_projectile.png` bằng mảnh tinh thể xanh liền khối.
