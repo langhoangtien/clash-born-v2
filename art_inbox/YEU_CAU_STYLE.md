@@ -329,3 +329,29 @@ Xong cả hai thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** bá
 
 Đã nộp T8g: vẽ lại `core` bản giản lược (`_front`, `_side`) và thêm `fountain`
 (`_front`, `_side`, `_back`) theo hai ảnh mẫu.
+
+## Đợt T8h — xe pháo thay máy bắn đá (nhà chính + fountain T8g đã duyệt, 2026-11-03)
+
+Nhà chính, fountain T8g đã vào game (D-221). Người dùng đổi xe công thành từ **máy bắn đá** sang **xe pháo** (kiểu
+Liên Quân) theo concept `art_inbox/08_style/ref/cannon_ref.png`. Bám phong cách và bố cục ảnh mẫu (thân gỗ, khung đá
+viền vàng, nòng pháo đá xám vành vàng, khối tinh thể năng lượng phía sau nòng, tấm chắn màu phe phía trước, 4 bánh đá
+có viên kim cương), nhưng **giản lược** để Tripo dựng sạch và bên mình gắn xương làm hoạt ảnh được:
+
+1. **Nòng pháo là một khối riêng, rõ ràng**: ống tròn dày, ngắn, thẳng, chĩa **ra trước, hơi ngóc lên ~15°**, gắn trên
+   một **trục ngang** kẹp giữa hai má đá ở hai bên. Giữa nòng và thân xe có **khe hở nhìn thấy được** từ hướng nghiêng
+   (để nòng giật lùi khi bắn). Miệng nòng vẽ **đĩa tối phẳng** ở đầu nòng — **không** khoét lỗ sâu.
+2. **Khối tinh thể sau nòng** là khối đặc **gắn liền thân xe** (bệ vàng ôm tinh thể), không lơ lửng, không lồng vào nòng.
+3. **Bốn bánh tách rõ khỏi thân**: đĩa đá dày, có khe giữa bánh và thùng xe nhìn từ trước / sau / nghiêng; viên kim
+   cương giữa bánh **vẽ phẳng** lên mặt bánh (không nổi khối).
+4. **Tấm chắn màu phe** phía trước là **tấm dày liền thân** (bản trước Tripo làm mất tấm mỏng); hình đinh ba trắng vẽ
+   phẳng. Bỏ các dải băng rôn mỏng hai bên (hoặc vẽ thành mảng màu trên thành xe).
+5. Không khói, lửa, quầng sáng, hạt, tia; không khung / chữ / nền tối — **nền xám nhạt trơn**, một vật một ảnh.
+6. Màu xanh dương **chỉ** ở tấm chắn, tinh thể, kim cương bánh (game đổi sang đỏ cho phe kia).
+7. Ba hướng **cùng tư thế nghỉ**, khớp nhau tuyệt đối (quy tắc T8b): xe quay mặt (miệng nòng) về phía trước.
+
+| Thứ tự | Tên file | Ghi chú |
+|---|---|---|
+| 1 | `creep_siege` (`_front`, `_side`, `_back`) | Vẽ đè lên bản máy bắn đá cũ (bản cũ còn trong lịch sử git). Thấp, chắc, cao ~1,3 lần lính; nòng chiếm ~nửa chiều dài xe |
+| 2 | `creep_siege_projectile.png` | Đạn pháo: **mảnh tinh thể xanh dài** như ảnh mẫu (khối liền, không vệt sáng / đuôi) — vẽ đè lên viên đá cũ |
+
+Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng.
