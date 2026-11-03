@@ -55,7 +55,8 @@ physical_damage, magic_damage, pure_damage, physical_armor, magic_armor,
 attack_range, cast_range, base_attack_time, attack_speed, movement_speed,
 vision_range, evasion, accuracy, critical_chance, critical_multiplier,
 status_resistance, armor_reduction, physical_armor_penetration, lifesteal,
-damage_taken_multiplier, spell_amplification, magic_armor_reduction, cooldown_reduction, physical_damage_reduction, debuff_amplification`.
+damage_taken_multiplier, spell_amplification, magic_armor_reduction, cooldown_reduction, physical_damage_reduction, debuff_amplification,
+heal_reduction` (D-226, ABL-23).
 
 `physical_damage` cuối cùng tối thiểu 0 (D-135).
 
@@ -382,7 +383,16 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   của kỹ năng lọc đối tượng theo `target_team` và các cờ `hits_*` (ABL-07). Nội tại học
   sẵn cấp 1; bị động lên cấp thì gỡ hiệu ứng cũ, áp lại với giá trị cấp mới.
 - `ABL-16` Hồi máu / mana: mỗi tick cộng `hp_regen` / `mana_regen` (mỗi giây) × thời gian
-  tick, không quá tối đa; đơn vị chết không hồi.
+  tick, không quá tối đa; đơn vị chết không hồi. Phần hồi máu dương chịu giảm hồi máu (ABL-23).
+- `ABL-23` (D-226) Giảm hồi máu: chỉ số `heal_reduction` (0…1). Nhiều nguồn **không cộng**: lấy nguồn **lớn
+  nhất** (30% và 75% → 75%). Mọi lượng máu được hồi nhân (1 − `heal_reduction`): hành động Heal, hút máu
+  (CMB-05b), hồi máu của Quyết Đấu (DUL-04b), hồi máu theo giây (ABL-16, chỉ phần dương). Không áp cho hồi
+  máu fountain (BASE) và phần máu tăng khi lên cấp (máu tối đa tăng).
+- `ABL-24` (D-226) Tốc biến (TeleportAction): chủ kỹ năng dịch chuyển **tức thời** một quãng cố định
+  `distance` theo hướng nhắm (kiểu Liên Quân: nhắm gần hơn vẫn đi đủ quãng). Điểm đến bị chặn thì lùi dần về
+  phía điểm đi tới chỗ đứng được đầu tiên. Hủy vung tay (CMB-06) và lệnh đang làm (đứng yên tại chỗ mới);
+  không phải lướt (ABL-08): không có thời gian bay, không chặn bởi ROOTED; vẫn theo ITM-08 / ST (choáng, ếch
+  không dùng được). Phát sự kiện `teleported` (kẻ gây = chủ).
 - `ABL-17` Vùng tồn tại (ZoneAction, D-68): tâm, bán kính chốt lúc tung; bắt đầu sau
   `delay`, tồn tại `duration`; từ lúc bắt đầu cứ mỗi `interval` chạy `actions` lên mọi
   đơn vị hợp lệ có thân chạm vùng lúc đó (lọc như ABL-07). Lần đầu ngay lúc bắt đầu, lần
@@ -536,6 +546,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   Cùng sự kiện `attack_landed` có thể kích hoạt nội tại của kẻ đánh và kẻ bị đánh.
   Điều kiện (`condition`) cho phép: `target_not_structure`, `target_is_hero`, `self_is_melee`
   (chủ hiệu ứng đánh cận chiến, cùng cách phân như ITM-05; D-167),
+  `target_is_melee` / `target_is_ranged` (đối tượng kia — vd kẻ bị đánh trúng — đánh cận chiến / đánh xa, cùng
+  cách phân như ITM-05; D-226),
   `this_effect_depleted` (sự kiện `effect_removed` của chính hiệu ứng này, lý do
   `depleted`), `this_effect_ended` (`effect_removed` của chính hiệu ứng này, lý do bất kỳ
   trừ `owner_died`); thêm điều kiện = thay đổi luật.
@@ -607,7 +619,7 @@ kill_credited, structure_destroyed, unit_spawned, gold_changed, level_up,
 skill_leveled, talent_chosen, dash_finished, projectile_hit, item_used,
 knockback_finished, dispelled, attack_target_changed, innate_ranked, mana_burned,
 lethal_damage, reincarnated, recall_started, recall_cancelled, recall_finished, duel_started,
-duel_ended, attack_deflected`. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
+duel_ended, attack_deflected, teleported`. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
 `effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `removed` (hành động RemoveEffect), `dispelled`, `owner_died`.
 Thêm sự kiện = thay đổi luật.
 

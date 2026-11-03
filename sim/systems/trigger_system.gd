@@ -116,6 +116,8 @@ func _condition_ok(condition: StringName, ev: GameEvent, inst: EffectInstance, o
 			return not removed_self and other != null and other.kind == Entity.Kind.HERO
 		&"self_is_melee":  # D-167: chủ hiệu ứng đánh cận chiến (như ITM-05)
 			return not removed_self and owner.projectile_speed <= 0.0
+		&"target_is_melee", &"target_is_ranged":  # D-226: đối tượng kia đánh cận chiến / đánh xa
+			return not removed_self and other != null and (other.projectile_speed <= 0.0) == (condition == &"target_is_melee")
 		&"this_effect_depleted":
 			return removed_self and ev.effect == inst and ev.reason == &"depleted"
 		&"this_effect_ended":

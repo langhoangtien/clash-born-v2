@@ -145,7 +145,9 @@ func _combine(stat: int, base: float, active: Array[StatModifier]) -> float:
 			ModifierDef.Op.OVERRIDE:
 				override_value = m.value
 	var value: float = base
-	if INDEPENDENT.has(stat):
+	if stat == S.HEAL_REDUCTION:  # ABL-23: nhiều nguồn lấy nguồn lớn nhất
+		value = maxf(base, adds.max() if not adds.is_empty() else base)
+	elif INDEPENDENT.has(stat):
 		adds.append(base)
 		value = HitFormulas.combine_independent(adds)  # CMB-11, ABL-19
 	else:
@@ -183,4 +185,5 @@ func _apply_limits() -> void:
 	_final[S.PHYSICAL_DAMAGE] = maxf(0.0, _final[S.PHYSICAL_DAMAGE])  # DUL-07
 	_final[S.COOLDOWN_REDUCTION] = clampf(_final[S.COOLDOWN_REDUCTION], 0.0, 1.0)  # ABL-19
 	_final[S.PHYSICAL_DAMAGE_REDUCTION] = clampf(_final[S.PHYSICAL_DAMAGE_REDUCTION], 0.0, 1.0)  # CMB-16
+	_final[S.HEAL_REDUCTION] = clampf(_final[S.HEAL_REDUCTION], 0.0, 1.0)  # ABL-23
 	_final[S.DAMAGE_TAKEN_MULTIPLIER] = maxf(0.0, _final[S.DAMAGE_TAKEN_MULTIPLIER])

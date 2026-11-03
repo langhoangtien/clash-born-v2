@@ -66,7 +66,7 @@ func test_ST_09b_fate_staff_extends_debuffs_it_applies() -> void:
 func test_D_141_recipes_and_stats() -> void:
 	var w: World = _world()[0]
 	var c: Dictionary = w.item_catalog
-	assert_eq(c[&"frost_orb_ii"].components, [&"frost_orb", &"vitality_booster", &"circlet"] as Array[StringName])
+	assert_eq(c[&"frost_orb_ii"].components, [&"frost_orb", &"frost_orb"] as Array[StringName])  # D-226
 	assert_true(c[&"butterfly"].components.has(&"evasion_charm"), "Cánh Bướm ghép từ Bùa Né Tránh")
 	assert_false(c[&"butterfly"].components.has(&"blade_alacrity"))
 	assert_eq(c[&"perseverance"].components, [&"ring_health", &"void_stone"] as Array[StringName])

@@ -118,19 +118,21 @@ func test_ITEM_shadow_blade_invisible_after_fade_with_ambush() -> void:
 	assert_false(Rules.is_visible(1, p[1]), "địch không thấy")
 
 
-func test_ITEM_frost_orb_attack_slows_target() -> void:
-	var p: Array = _pair(&"frost_orb")
+## D-226: làm chậm khi đánh chuyển từ Ngọc Băng Sương sang Kiếm Băng (mục tiêu cận chiến: 25%).
+func test_ITEM_frost_blade_attack_slows_target() -> void:
+	var p: Array = _pair(&"frost_blade")
 	var w: World = p[0]
 	p[2].position = p[1].position + Vector2(120, 0)
 	var speed: float = p[2].stats.get_stat(StatId.Id.MOVEMENT_SPEED)
 	w.submit(Command.attack(p[1].id, p[2].id))
 	for i: int in range(60):
 		w.step()
-		if _has(p[2], &"frost_orb_slow"):
+		if _has(p[2], &"frost_blade_slow_melee") or _has(p[2], &"frost_blade_slow_ranged"):
 			break
-	assert_true(_has(p[2], &"frost_orb_slow"), "đòn đánh làm chậm")
+	var melee: bool = p[2].projectile_speed <= 0.0
+	assert_true(_has(p[2], &"frost_blade_slow_melee" if melee else &"frost_blade_slow_ranged"), "đòn đánh làm chậm")
 	w.step()
-	assert_near(p[2].stats.get_stat(StatId.Id.MOVEMENT_SPEED), speed * 0.8, 1.0, "chậm 20% tốc chạy")
+	assert_near(p[2].stats.get_stat(StatId.Id.MOVEMENT_SPEED), speed * (0.75 if melee else 0.5), 1.0, "chậm theo mục tiêu")
 
 
 func test_ITEM_stun_hammer_bashes_sometimes() -> void:

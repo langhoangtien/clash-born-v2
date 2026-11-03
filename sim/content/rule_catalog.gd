@@ -11,7 +11,7 @@ const STATS: PackedStringArray = [
 	"vision_range", "evasion", "accuracy", "critical_chance", "critical_multiplier",
 	"status_resistance", "armor_reduction", "physical_armor_penetration", "lifesteal",
 	"damage_taken_multiplier", "spell_amplification", "magic_armor_reduction", "cooldown_reduction",
-	"physical_damage_reduction", "debuff_amplification",
+	"physical_damage_reduction", "debuff_amplification", "heal_reduction",
 ]
 
 ## EVT
@@ -22,7 +22,7 @@ const EVENTS: PackedStringArray = [
 	"skill_leveled", "talent_chosen", "dash_finished", "projectile_hit", "item_used",
 	"knockback_finished", "dispelled", "attack_target_changed", "innate_ranked", "mana_burned",
 	"lethal_damage", "reincarnated", "recall_started", "recall_cancelled", "recall_finished",
-	"duel_started", "duel_ended", "attack_deflected",
+	"duel_started", "duel_ended", "attack_deflected", "teleported",
 ]
 
 ## EFF-09: dữ liệu sự kiện dùng được trong biểu thức (`event.damage`…).
@@ -36,7 +36,8 @@ const FUNCTIONS: PackedStringArray = ["min", "max", "floor"]
 
 ## Điều kiện của trigger (EFF-08). Thêm điều kiện = thay đổi luật.
 const TRIGGER_CONDITIONS: PackedStringArray = [
-	"", "target_not_structure", "target_is_hero", "self_is_melee", "this_effect_depleted", "this_effect_ended",
+	"", "target_not_structure", "target_is_hero", "self_is_melee", "target_is_melee", "target_is_ranged",
+	"this_effect_depleted", "this_effect_ended",
 ]
 
 ## BOT-13: điều kiện dữ liệu của chiêu / đồ cho bot (BotSkills.check). Thêm điều kiện = thay đổi luật.

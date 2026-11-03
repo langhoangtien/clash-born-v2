@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Script" path="res://sim/actions/teleport_action.gd" id="2_tp"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="3_abl"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="4_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="5_itm"]
+
+[sub_resource type="Resource" id="TP"]
+script = ExtResource("2_tp")
+distance = "distance"
+target = 0
+
+[sub_resource type="Resource" id="AB"]
+script = ExtResource("3_abl")
+slot = 4
+targeting = 4
+target_team = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cooldown": PackedFloat32Array(25),
+&"distance": PackedFloat32Array(500)
+})
+on_cast = Array[ExtResource("1_act")]([SubResource("TP")])
+id = &"blink_boots_active"
+art_id = &"blink_boots"
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("4_mod")
+stat = &"movement_speed"
+value = "100"
+unique_group = &"move_speed_boots"
+
+[resource]
+script = ExtResource("5_itm")
+category = 3
+description = "Chủ động (hồi 25 s): tốc biến 500 theo hướng nhắm. Tốc chạy giày không cộng dồn với giày khác."
+cost = 2400
+modifiers = Array[ExtResource("4_mod")]([SubResource("M0")])
+ability = SubResource("AB")
+id = &"blink_boots"
+display_name = "Giày Tốc Biến"
+art_id = &"blink_boots"

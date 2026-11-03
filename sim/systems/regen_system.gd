@@ -9,6 +9,8 @@ func run(world: World) -> void:
 		if not e.alive or e.stats == null:
 			continue
 		var hp_regen: float = e.stats.get_stat(StatId.Id.HP_REGEN)
+		if hp_regen > 0.0:
+			hp_regen *= 1.0 - e.stats.get_stat(StatId.Id.HEAL_REDUCTION)  # ABL-23
 		if hp_regen != 0.0:
 			e.health = clampf(e.health + hp_regen * SimClock.TICK_SECONDS, 0.0, e.stats.get_stat(StatId.Id.MAX_HP))
 		var mana_regen: float = e.stats.get_stat(StatId.Id.MANA_REGEN)

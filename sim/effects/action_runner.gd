@@ -22,8 +22,8 @@ static func run(world: World, actions: Array[ActionDef], ctx: ExprContext, sourc
 		if action is DuelAction:
 			_duel(world, action, ctx, source_id)
 			continue
-		if action is PlaceWardAction:
-			place_ward(world, (action as PlaceWardAction).ward, ctx.owner, ctx.point)
+		if action is PlaceWardAction or action is TeleportAction:
+			place_ward(world, action.ward, ctx.owner, ctx.point) if action is PlaceWardAction else TeleportAction.run(world, action, ctx)
 			continue
 		var receiver: Entity = receiver_of(action.target, ctx)
 		if receiver == null or not receiver.alive:
@@ -87,7 +87,8 @@ static func receiver_of(target: ActionDef.Target, ctx: ExprContext) -> Entity:
 
 ## Hồi máu, không quá máu tối đa.
 static func heal(_world: World, e: Entity, amount: float, _source_id: int) -> void:
-	e.health = minf(e.stats.get_stat(StatId.Id.MAX_HP), e.health + maxf(0.0, amount))
+	var kept: float = 1.0 - e.stats.get_stat(StatId.Id.HEAL_REDUCTION)  # ABL-23
+	e.health = minf(e.stats.get_stat(StatId.Id.MAX_HP), e.health + maxf(0.0, amount) * kept)
 
 
 static func _damage(world: World, d: DamageAction, ctx: ExprContext, receiver: Entity, source_id: int) -> void:

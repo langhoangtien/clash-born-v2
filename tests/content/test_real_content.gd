@@ -145,7 +145,7 @@ func test_STAT_04_intelligence_gives_magic_armor_like_agility_gives_armor() -> v
 
 
 func test_EFF_03_slows_from_different_sources_stack() -> void:
-	for id: StringName in [&"myra_frost_slow", &"vexa_purge_slow", &"frost_orb_slow"]:
+	for id: StringName in [&"myra_frost_slow", &"vexa_purge_slow", &"frost_blade_slow_ranged"]:
 		var e: EffectDef = _lib.effects[id]
 		assert_true(e.modifiers[0].unique_group.is_empty(), "%s không thuộc nhóm duy nhất" % id)
 

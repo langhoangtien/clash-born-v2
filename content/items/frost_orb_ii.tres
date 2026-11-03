@@ -1,58 +1,64 @@
 [gd_resource type="Resource" script_class="ItemDef" format=3]
 
-[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_ddpqr"]
-[ext_resource type="Resource" path="res://content/effects/frost_orb_passive.tres" id="2_kti66"]
-[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_37686"]
-[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_1slvr"]
-[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="5_ybash"]
-[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="6_id8wa"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Resource" path="res://content/effects/frost_orb_ii_passive.tres" id="2_pas"]
+[ext_resource type="Resource" path="res://content/effects/frost_orb_ii_burst.tres" id="3_bur"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="4_app"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="5_abl"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="6_mod"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="7_itm"]
 
-[sub_resource type="Resource" id="Resource_ij2sm"]
-script = ExtResource("3_37686")
-effect = ExtResource("2_kti66")
+[sub_resource type="Resource" id="L0"]
+script = ExtResource("4_app")
+effect = ExtResource("2_pas")
 target = 0
 
-[sub_resource type="Resource" id="Resource_0giwr"]
-script = ExtResource("4_1slvr")
+[sub_resource type="Resource" id="C0"]
+script = ExtResource("4_app")
+effect = ExtResource("3_bur")
+duration = "burst_duration"
+target = 0
+
+[sub_resource type="Resource" id="AB"]
+script = ExtResource("5_abl")
 slot = 4
-targeting = 0
+target_team = 2
 values = Dictionary[StringName, PackedFloat32Array]({
-&"duration_melee": PackedFloat32Array(3),
-&"duration_ranged": PackedFloat32Array(2),
-&"slow": PackedFloat32Array(0.3)
+&"burst_duration": PackedFloat32Array(5),
+&"burst_heal_cut": PackedFloat32Array(0.75),
+&"cooldown": PackedFloat32Array(25),
+&"frostbite_damage_cut": PackedFloat32Array(0.1),
+&"frostbite_duration": PackedFloat32Array(3),
+&"frostbite_heal_cut": PackedFloat32Array(0.3)
 })
-on_learn = Array[ExtResource("1_ddpqr")]([SubResource("Resource_ij2sm")])
-id = &"frost_orb_ii_passive_ability"
-art_id = &"frost_orb_ii_passive_ability"
+on_cast = Array[ExtResource("1_act")]([SubResource("C0")])
+on_learn = Array[ExtResource("1_act")]([SubResource("L0")])
+id = &"frost_orb_ii_active"
+art_id = &"frost_orb_ii"
 
-[sub_resource type="Resource" id="Resource_gyj23"]
-script = ExtResource("5_ybash")
-stat = &"max_hp"
-value = "470"
-
-[sub_resource type="Resource" id="Resource_fal02"]
-script = ExtResource("5_ybash")
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("6_mod")
 stat = &"strength"
-value = "13"
+value = "35"
 
-[sub_resource type="Resource" id="Resource_0n4uc"]
-script = ExtResource("5_ybash")
+[sub_resource type="Resource" id="M1"]
+script = ExtResource("6_mod")
 stat = &"agility"
-value = "13"
+value = "35"
 
-[sub_resource type="Resource" id="Resource_b1dkt"]
-script = ExtResource("5_ybash")
+[sub_resource type="Resource" id="M2"]
+script = ExtResource("6_mod")
 stat = &"intelligence"
-value = "13"
+value = "35"
 
 [resource]
-script = ExtResource("6_id8wa")
+script = ExtResource("7_itm")
 category = 2
-description = "Bị động: đòn đánh làm chậm mục tiêu 30% tốc chạy và 30% tốc đánh trong 3 s (cận chiến) / 2 s (đánh xa)."
-cost = 3400
-components = Array[StringName]([&"frost_orb", &"vitality_booster", &"circlet"])
-modifiers = Array[ExtResource("5_ybash")]([SubResource("Resource_gyj23"), SubResource("Resource_fal02"), SubResource("Resource_0n4uc"), SubResource("Resource_b1dkt")])
-ability = SubResource("Resource_0giwr")
+description = "+35 mọi thuộc tính. Bị động: đòn đánh gây Tê Cóng 3 s — giảm 10% sát thương vật lý và 30% hồi máu của mục tiêu. Chủ động (hồi 25 s): 5 s, đòn đánh giảm 75% hồi máu."
+cost = 5300
+components = Array[StringName]([&"frost_orb", &"frost_orb"])
+modifiers = Array[ExtResource("6_mod")]([SubResource("M0"), SubResource("M1"), SubResource("M2")])
+ability = SubResource("AB")
 id = &"frost_orb_ii"
-display_name = "Ngọc Băng Sương II"
+display_name = "Ngọc Băng Sương 2"
 art_id = &"frost_orb_ii"

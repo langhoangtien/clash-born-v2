@@ -49,7 +49,7 @@ func test_ITM_01_six_slots_and_stats_as_modifiers() -> void:
 	var hp: float = h.stats.get_stat(StatId.Id.MAX_HP)
 	assert_eq(Items.give(w, h, _item(&"frost_orb")), 0, "vào ô trống đầu tiên")
 	h.stats.recompute()
-	assert_true(h.stats.get_stat(StatId.Id.MAX_HP) > hp + 250.0, "+250 máu và +10 sức mạnh")
+	assert_true(h.stats.get_stat(StatId.Id.MAX_HP) > hp + 200.0, "+12 sức mạnh → thêm máu (D-226)")
 	for i: int in range(5):
 		assert_eq(Items.give(w, h, _item(&"reveal_dust")), i + 1)
 	assert_eq(Items.give(w, h, _item(&"reveal_dust")), -1, "6 ô đầy thì không nhận thêm")
