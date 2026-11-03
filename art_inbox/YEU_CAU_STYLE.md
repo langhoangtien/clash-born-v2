@@ -308,3 +308,6 @@ Nhà chính (`core`) và fountain **chưa làm**: concept người dùng (`base_
 quá cho Tripo, chờ người dùng chốt bản giản lược.
 
 Xong cả hai mục thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng.
+
+Đã nộp T8f: thay ảnh `tower` và `creep_siege` theo concept, thêm `tower_core` và
+`creep_siege_projectile`; `core` và fountain giữ nguyên, chờ phiếu giản lược.
