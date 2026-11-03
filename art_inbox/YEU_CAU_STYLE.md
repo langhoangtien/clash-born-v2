@@ -301,7 +301,7 @@ chắn), tinh thể xanh. Giữ đúng như vậy, chỉ sửa cho Tripo dựng 
 
 | Thứ tự | Tên file | Ghi chú |
 |---|---|---|
-| 1 | `tower_t1` … `tower_t4` | 4 trụ theo đúng 4 cấp trong ảnh mẫu (cấp cao hơn: to hơn, nhiều tầng / gai vàng hơn, tinh thể lớn hơn). Mỗi cấp `_front` + `_side` (trụ gần đối xứng, không cần `_back`). Đế trụ là bệ đá tròn, không kèm sàn lát / bậc thềm rộng xung quanh. Không vòng sáng xanh quanh thân cấp 4 |
+| 1 | `tower_t1` … `tower_t4` | 4 trụ cùng họ (đá, viền vàng, tinh thể như ảnh mẫu) nhưng **mỗi cấp khác nhau rõ ở hình dáng, không chỉ to hơn** (ảnh mẫu 4 cấp gần giống nhau — người chơi nhìn từ trên cao phải nhận ra cấp): **cấp 1** thân đá trơn, một tinh thể nhỏ trên đỉnh, không băng rôn, một vòng viền vàng ở đỉnh; **cấp 2** thêm 2 băng rôn màu phe hai bên thân, đỉnh có vương miện 4 gai vàng ôm tinh thể; **cấp 3** thân hai tầng (gờ đá giữa thân), 2 tinh thể nhỏ gắn hai bên vai, 4 băng rôn; **cấp 4** to nhất, đế bệ rộng có 4 cột đá nhỏ quanh chân, tinh thể lớn nhất, vòng vàng lớn quanh đỉnh (khối thật, không phải vòng sáng). Mỗi cấp `_front` + `_side` (gần đối xứng, không cần `_back`). Đế là bệ đá tròn, không kèm sàn lát / bậc thềm rộng xung quanh |
 | 2 | `creep_siege` | Xe máy bắn đá như ảnh mẫu: thân gỗ, khung đá xám viền vàng, 4 bánh đá xám có đĩa vàng-xanh giữa bánh, cần gỗ dài với gầu đá chứa viên đá tinh thể, tấm chắn trước + băng rôn bên **màu phe**. `_front`, `_side`, `_back` **đúng tư thế nghỉ** (cần hạ, như các hướng trong ảnh mẫu — không vẽ cảnh đang bắn). Dây buộc cần vẽ thành **đai dày** liền khối. Thêm một ảnh `creep_siege_projectile.png`: viên đá tinh thể (như ô Projectile của ảnh mẫu) |
 
 Nhà chính (`core`) và fountain **chưa làm**: concept người dùng (`base_ref.png`, `fountain_ref.png`) nhiều chi tiết rời
