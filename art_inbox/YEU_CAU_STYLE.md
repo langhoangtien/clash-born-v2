@@ -433,3 +433,20 @@ bằng cách cắt vũ khí, không cần vẽ lại.
 - [x] `noctis_dagger_front/side.png` — một dao mẫu dùng cho cả đôi, chấm vị trí cầm ở chuôi.
 - [x] `vexa_front/side/back.png` — hai tay nắm rỗng, sách nhỏ đeo hông.
 - [x] `vexa_book_front/side.png` — sách phép tách riêng cùng tỉ lệ với thân.
+
+
+### T9b — Duy Anh vẽ lại tay không + kiếm, khiên riêng (2026-11-04)
+
+Duy Anh bản cầm kiếm / khiên: Tripo dựng khiên **dính liền bàn tay** (chung đỉnh với ngón) → gắn xương xong khiên cong
+như tấm vải khi làm hoạt ảnh, sửa trọng số không hết. Vẽ lại theo quy tắc T9 mới, **giữ nguyên thiết kế** ảnh mẫu
+`art_inbox/08_style/ref/hero_ref.png` và bản `duy_anh_front.png` hiện tại (mặt, tóc, giáp, khăn xanh, màu):
+
+1. `duy_anh_front/_side/_back.png` — **tay không**: A-pose, tay dang ~45°, **hai nắm tay khép rỗng** (không cầm gì),
+   có khe rõ giữa tay với thân. Ảnh nghiêng nhìn từ bên phải (mặt quay về phía phải ảnh). Vẽ đè lên bản cũ.
+2. `duy_anh_sword_front.png` + `duy_anh_sword_side.png` — chỉ thanh kiếm như ảnh mẫu, **dựng thẳng đứng, mũi lên, chuôi
+   dưới**, chấm nhỏ đánh dấu chỗ nắm, cùng tỉ lệ với thân.
+3. `duy_anh_shield_front.png` + `duy_anh_shield_side.png` — chỉ tấm khiên như ảnh mẫu (mặt trước + nhìn nghiêng thấy
+   bề dày và **quai cầm** phía sau), đứng thẳng, chấm đánh dấu chỗ nắm quai. Khiên là **một khối dày cứng**, viền vàng
+   liền khối.
+
+Nền xám nhạt trơn, không bóng / chữ. Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng.
