@@ -70,3 +70,26 @@ func test_D_180_no_subviewport_in_match_scene() -> void:
 	assert_false((scene.get_node("MapView") as MapView).visible, "MapView chỉ giữ dữ liệu map trong trận")
 	assert_true(scene.view_3d.marks.shape_count() > 0, "dấu cố định (bụi, shop, trại) dựng sẵn")
 	scene.free()
+
+
+## D-234 (người chơi: hero chết biến mất luôn, lính thì còn nằm xuống): hero chết (còn trong World, chờ hồi sinh)
+## cũng giữ hình phát hoạt ảnh chết như lính (Corpses).
+func test_D_234_dead_hero_plays_death_like_creeps() -> void:
+	var w: World = World.new(1, Fixture.make())
+	var e: Entity = Entity.new()
+	e.kind = Entity.Kind.HERO
+	e.team = 0
+	e.art_id = &"brakk"
+	e.radius = 40.0
+	e.stats = StatBlock.new(w.balance)
+	w.add_entity(e)
+	var v: MatchView3D = _view(w)
+	var root: Window = (Engine.get_main_loop() as SceneTree).root
+	root.add_child(v)
+	v.update(Vector2.ZERO)
+	assert_true(v._actors.has(e.id), "hero sống có hình")
+	e.alive = false
+	v.update(Vector2.ZERO)
+	assert_eq(v._corpses.count(), 1, "hero chết: hình chuyển sang nằm chết, không biến mất")
+	root.remove_child(v)
+	v.free()

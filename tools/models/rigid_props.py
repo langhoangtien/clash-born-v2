@@ -4,6 +4,7 @@ bàn tay, ngón…) nên khi tay gập khiên bị uốn cong. Mảnh rời (n�
 đỉnh của mảnh đó chỉ thuộc xương ấy, trọng số 1. Giữ nguyên bộ xương (vd mixamorig) để nạp lại Mixamo.
 
   <venv có bpy>/bin/python tools/models/rigid_props.py vào.fbx ra.fbx --prop mixamorig:LeftHand --prop mixamorig:RightHand
+        [--zone mixamorig:LeftHand:x:0.26 --zone mixamorig:RightHand:x:-0.31]
         [--min 20 --max 300 --touch 0.1 --center 0.2] [ra.glb]
 Mảnh được chọn: số đỉnh trong [min, max] và (đỉnh gần nhất cách đầu xương ≤ touch hoặc tâm mảnh ≤ center); in danh
 sách mảnh đã gán — kiểm tra kỹ, chỉnh ngưỡng nếu gán nhầm (vd miếng vai gần tay).
@@ -39,7 +40,10 @@ def main():
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else sys.argv[1:]
     ap = argparse.ArgumentParser()
     ap.add_argument("src"); ap.add_argument("dst"); ap.add_argument("glb", nargs="?")
-    ap.add_argument("--prop", action="append", required=True)
+    ap.add_argument("--prop", action="append", default=[])
+    ap.add_argument("--zone", action="append", default=[],
+                    help="xương:trục:ngưỡng — mọi đỉnh có tọa độ (Blender, z lên) trục x|y|z vượt ngưỡng (dấu theo ngưỡng"
+                         " so với 0: dương thì >, âm thì <) thuộc hẳn xương đó (D-233: bàn tay + khiên dính liền tay)")
     ap.add_argument("--min", type=int, default=20)
     ap.add_argument("--max", type=int, default=300)
     ap.add_argument("--touch", type=float, default=0.1, help="đỉnh gần nhất cách đầu xương ≤ (m)")
@@ -53,7 +57,9 @@ def main():
     mw = mesh.matrix_world
     pos = [mw @ v.co for v in mesh.data.vertices]
     heads = {b: arm.matrix_world @ arm.data.bones[b].head_local for b in a.prop}
-    for isle in islands(mesh):
+    for b in [z.rsplit(":", 2)[0] for z in a.zone]:
+        print(b, "đầu xương", [round(c, 3) for c in arm.matrix_world @ arm.data.bones[b].head_local])
+    for isle in islands(mesh) if heads else []:
         if not a.min <= len(isle) <= a.max:
             continue
         near = {b: min((pos[i] - h).length for i in isle) for b, h in heads.items()}
@@ -66,6 +72,15 @@ def main():
         grp = mesh.vertex_groups.get(bone) or mesh.vertex_groups.new(name=bone)
         grp.add(isle, 1.0, "REPLACE")
         print(f"mảnh {len(isle)} đỉnh → {bone} (cách {near[bone]:.2f} m)")
+    for spec in a.zone:
+        bone, axis, cut = spec.rsplit(":", 2)
+        k, cut = "xyz".index(axis), float(cut)
+        ids = [i for i, p in enumerate(pos) if (p[k] > cut if cut > 0 else p[k] < cut)]
+        for g in mesh.vertex_groups:
+            g.remove(ids)
+        grp = mesh.vertex_groups.get(bone) or mesh.vertex_groups.new(name=bone)
+        grp.add(ids, 1.0, "REPLACE")
+        print(f"vùng {axis} {'>' if cut > 0 else '<'} {cut}: {len(ids)} đỉnh → {bone}")
     bpy.ops.object.select_all(action="SELECT")
     bpy.ops.export_scene.fbx(filepath=a.dst, path_mode="COPY", embed_textures=True, add_leaf_bones=False,
                              bake_anim=False)

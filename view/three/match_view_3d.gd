@@ -144,7 +144,8 @@ func update(focus: Vector2) -> void:
 	_dispatch_events()
 	for id: int in _actors.keys():
 		if not keep.has(id):
-			var gone: bool = world.find_entity(id) == null  # D-210: bị gỡ = vừa chết (lính / quái)
+			var dead: Entity = world.find_entity(id)  # D-210 lính / quái bị gỡ; D-234 hero chết chờ hồi sinh
+			var gone: bool = dead == null or not dead.alive
 			if not (gone and _actors[id].visible and _corpses.add(_actors[id], Actor3D._now())):
 				_actors[id].queue_free()
 			_actors.erase(id)
