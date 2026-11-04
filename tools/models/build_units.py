@@ -31,10 +31,10 @@ UNITS = {
                        "Idle_A=idle,Jog=run,OverhandThrow=attack,Hit_Chest=hit,Death_B=death,Dizzy=stun", True, False),
     # D-228: hero Tripo + afk.ai (skill_1/2/3 = chiêu Q/W/R, cast = tung chiêu chung; RM = có dời gốc → không dùng)
     "duy_anh": ("duy_anh_mixamo.glb", "heroes/duy_anh",  # D-238: hoạt ảnh Mixamo (gói Pro Sword and Shield)
-                "sword and shield idle (4)=idle,Sword And Shield Run~=run,sword and shield attack (4)=attack,"
+                "sword and shield idle (4)=idle,sword and shield run (2)~=run,sword and shield attack (4)=attack,"
                 "sword and shield impact=hit,sword and shield death=death,Dizzy Idle=stun,"
                 "sword and shield attack (4)@0-1=cast,sword and shield power up@0-1.8=skill_1,"
-                "sword and shield slash=skill_2,Sword And Shield Run~@0-0.73=sprint,"
+                "sword and shield slash=skill_2,Sword And Shield Run~=sprint,"
                 "Standing Melee Run Jump Attack~@0.85-2.2=dash", MIXAMO_FINGERS, False,
                 ["duy_anh_sword_mx:mixamorig:RightHand", "duy_anh_shield_mx:mixamorig:LeftHand"]),
     "brakk": ("brakk", "heroes/brakk",

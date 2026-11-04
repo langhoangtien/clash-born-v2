@@ -156,8 +156,9 @@ def in_place(g, binc, array, anim, root_names=("root",), hip_names=("mixamorig:H
         s = anim["samplers"][c["sampler"]]
         v = array(g, binc, s["output"]).copy()
         if name in hip_names:
-            up = int(np.argmax(np.abs(node.get("translation", v[0]))))
-            v[:, [k for k in range(3) if k != up]] = v[0, [k for k in range(3) if k != up]]
+            rest = np.array(node.get("translation", v[0]))
+            flat = [k for k in range(3) if k != int(np.argmax(np.abs(rest)))]
+            v[:, flat] = rest[flat]  # về chỗ đứng gốc (đoạn cắt giữa chừng đã chạy đà xa)
         else:
             v[:] = v[0]
         s["output"] = add_accessor(g, binc, v, "VEC3")
