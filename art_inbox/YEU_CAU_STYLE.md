@@ -393,7 +393,7 @@ Làm **trước 2 hero** `duy_anh` (theo đúng ảnh mẫu) và `brakk`, commit
 duyệt. Duyệt xong mới làm 4 hero còn lại.
 
 Đã nộp T9 (mẫu thử): `[x] duy_anh`, `[x] brakk` đủ `_front`, `_side`, `_back`.
-Bốn hero còn lại chờ duyệt; chưa làm.
+Bốn hero còn lại đã nộp theo phần **T9 — ĐỔI 2026-11-04** bên dưới; chờ duyệt trước khi dựng 3D.
 
 ## Đợt T10 — shop ẩn + đống đổ nát trụ (2026-11-03)
 
@@ -423,3 +423,13 @@ khiên ra sau). Từ nay mỗi hero nộp **hai nhóm ảnh**:
 
 Game tự gắn vũ khí vào bàn tay. Brakk (găng liền tay) và Gorran (tay không) không cần ảnh vũ khí. Duy Anh đã chạy được
 bằng cách cắt vũ khí, không cần vẽ lại.
+
+Đã nộp T9 bản tay không, xem tổng hợp `09_units/_preview_t9.png`:
+
+- [x] `myra_front/side/back.png` — thân A-pose hai tay nắm rỗng.
+- [x] `myra_staff_front/side.png` — gậy tinh thể xanh riêng, chấm vị trí cầm ở chuôi.
+- [x] `gorran_front/side/back.png` — tay không, yêu tinh gắn trên vai phải.
+- [x] `noctis_front/side/back.png` — thân A-pose không cầm dao.
+- [x] `noctis_dagger_front/side.png` — một dao mẫu dùng cho cả đôi, chấm vị trí cầm ở chuôi.
+- [x] `vexa_front/side/back.png` — hai tay nắm rỗng, sách nhỏ đeo hông.
+- [x] `vexa_book_front/side.png` — sách phép tách riêng cùng tỉ lệ với thân.
