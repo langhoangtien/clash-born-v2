@@ -421,8 +421,8 @@ khiên ra sau). Từ nay mỗi hero nộp **hai nhóm ảnh**:
    `vexa_book`): chỉ vũ khí, đặt **thẳng đứng, chuôi / tay cầm ở dưới**, nền xám nhạt trơn, cùng phong cách và **cùng tỉ lệ
    với thân** (vẽ kèm một chấm nhỏ đánh dấu chỗ bàn tay nắm). Dao đôi chỉ cần vẽ một cây.
 
-Game tự gắn vũ khí vào bàn tay. Brakk (găng liền tay) và Gorran (tay không) không cần ảnh vũ khí. Duy Anh đã chạy được
-bằng cách cắt vũ khí, không cần vẽ lại.
+Game tự gắn vũ khí vào bàn tay. Brakk (găng liền tay) và Gorran (tay không) không cần ảnh vũ khí. Duy Anh trước đó
+chạy tạm bằng cách cắt vũ khí; T9b bên dưới thay bằng bộ ảnh tay không và đạo cụ riêng.
 
 Đã nộp T9 bản tay không, xem tổng hợp `09_units/_preview_t9.png`:
 
@@ -450,3 +450,9 @@ như tấm vải khi làm hoạt ảnh, sửa trọng số không hết. Vẽ l�
    liền khối.
 
 Nền xám nhạt trơn, không bóng / chữ. Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng.
+
+Đã nộp T9b, xem tổng hợp `09_units/_preview_t9b.png`:
+
+- [x] `duy_anh_front/side/back.png` — vẽ đè bản cũ; A-pose, hai tay nắm rỗng, không còn kiếm / khiên dính vào tay.
+- [x] `duy_anh_sword_front/side.png` — kiếm đứng riêng, có chấm vị trí cầm trên chuôi.
+- [x] `duy_anh_shield_front/side.png` — khiên khối dày, viền vàng liền, mặt nghiêng thấy quai cầm sau lưng khiên.
