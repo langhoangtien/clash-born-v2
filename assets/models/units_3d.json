@@ -46,7 +46,7 @@
    "rig": "Creature",
    "attack": "attack",
    "cast": "cast",
-   "impact": 0.4,
+   "impact": 0.24,
    "height": 1.2,
    "skills": {
     "1": "skill_1",
