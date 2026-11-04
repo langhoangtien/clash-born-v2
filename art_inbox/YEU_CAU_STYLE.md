@@ -408,3 +408,18 @@ trơn, một vật một ảnh, không quầng sáng / khói / hạt, chi tiết
 Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng.
 
 Đã nộp T10: `[x] secret_shop` và `[x] tower_rubble`, mỗi mẫu đủ `_front`, `_side`.
+
+
+### T9 — ĐỔI 2026-11-04: hero vẽ **tay không**, vũ khí vẽ riêng
+
+Gắn xương tự động (afk.ai) đặt sai xương tay khi hero cầm vũ khí to dang ra (Duy Anh bị "4 cái tay", phải cắt kiếm /
+khiên ra sau). Từ nay mỗi hero nộp **hai nhóm ảnh**:
+
+1. **Thân tay không** `<id>_front/_side/_back.png`: A-pose như cũ nhưng **hai bàn tay nắm rỗng** (nắm đấm khép, không cầm
+   gì), ngón khép thành khối; đai / bao kiếm / sách đeo người thì vẽ liền thân, gọn sát người.
+2. **Mỗi vũ khí một bộ ảnh riêng** `<id>_<vũ khí>_front.png` + `<id>_<vũ khí>_side.png` (vd `myra_staff`, `noctis_dagger`,
+   `vexa_book`): chỉ vũ khí, đặt **thẳng đứng, chuôi / tay cầm ở dưới**, nền xám nhạt trơn, cùng phong cách và **cùng tỉ lệ
+   với thân** (vẽ kèm một chấm nhỏ đánh dấu chỗ bàn tay nắm). Dao đôi chỉ cần vẽ một cây.
+
+Game tự gắn vũ khí vào bàn tay. Brakk (găng liền tay) và Gorran (tay không) không cần ảnh vũ khí. Duy Anh đã chạy được
+bằng cách cắt vũ khí, không cần vẽ lại.
