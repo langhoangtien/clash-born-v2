@@ -57,8 +57,8 @@ static func _apply(world: World, r: DamageRequest, target: Entity, queue: Array[
 	if source != null and source.kind == Entity.Kind.HERO and target.kind == Entity.Kind.HERO and source.team != target.team:
 		target.damaged_by[source.id] = world.tick  # ECO-09
 	target.health -= amount
-	if amount > 0.0 and (target.kind == Entity.Kind.HERO or (source != null and source.kind == Entity.Kind.HERO)):
-		world.note(&"crit" if r.crit else &"damage", target.position, amount)
+	if amount > 0.0 and (r.crit or not r.is_attack) and (target.kind == Entity.Kind.HERO or (source != null and source.kind == Entity.Kind.HERO)):
+		world.note(&"crit" if r.crit else &"damage", target.position, amount)  # D-240: đòn thường không chí mạng thì không hiện số
 	world.emit(&"damage_taken", r.source_id, r.target_id, amount, &"reflected" if r.reflected else &"")
 	if target.health <= 0.0 and Reincarnation.try_prevent(world, target, r.source_id):
 		return true  # DTH-01

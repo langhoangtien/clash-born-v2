@@ -1,16 +1,17 @@
 class_name FloatingText
 extends RefCounted
-## Chữ nổi (VIEW): số sát thương (chí mạng to, vàng), "Trượt", "CHOÁNG". Đọc World.recent_notes. D-180: vẽ
+## Chữ nổi (VIEW): số sát thương (chí mạng to, vàng), "Trượt", "CHOÁNG", "+vàng" khi last hit (D-240: chỉ
+## ghi chú của hero `me`). Đọc World.recent_notes. D-180: vẽ
 ## trên màn hình (Bars3D) tại điểm `to_screen(vị trí)` (trên đầu đơn vị; null = sau camera), bay lên dần.
 
 const LIFE_TICKS: float = 24.0
 
 
-static func draw(ci: CanvasItem, world: World, to_screen: Callable) -> void:
+static func draw(ci: CanvasItem, world: World, to_screen: Callable, me: int = -1) -> void:
 	var font: Font = ThemeDB.fallback_font
 	for n: Array in world.recent_notes:
 		var age: float = (world.tick - n[3]) / LIFE_TICKS
-		if age >= 1.0:
+		if age >= 1.0 or (n[4] >= 0 and n[4] != me):
 			continue
 		var text: String
 		var size: int = 22
@@ -30,6 +31,10 @@ static func draw(ci: CanvasItem, world: World, to_screen: Callable) -> void:
 				text = "CHOÁNG"
 				color = Color(1.0, 0.9, 0.3)
 				size = 26
+			&"gold":
+				text = "+%d" % roundi(n[2])
+				color = Color(1.0, 0.82, 0.25)
+				size = 24
 			&"crit":
 				text = "%d!" % roundi(n[2])
 				color = Color(1.0, 0.8, 0.2)

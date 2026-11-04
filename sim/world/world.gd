@@ -183,10 +183,11 @@ func emit(type: StringName, source_id: int, target_id: int, amount: float = 0.0,
 
 
 ## Ghi chữ nổi cho VIEW (không ảnh hưởng trận).
-func note(kind: StringName, at: Vector2, value: float = 0.0) -> void:
+## `owner` (D-240): chỉ hero này thấy (vd "+vàng" khi last hit); -1 = ai cũng thấy.
+func note(kind: StringName, at: Vector2, value: float = 0.0, owner: int = -1) -> void:
 	if recent_notes.size() > 60:
 		recent_notes = recent_notes.filter(func(n: Array) -> bool: return tick - n[3] < 30)
-	recent_notes.append([kind, at, value, tick])
+	recent_notes.append([kind, at, value, tick, owner])
 
 
 ## Số thứ tự toàn trận cho bản hiệu ứng (EffectInstance.serial), tăng dần.

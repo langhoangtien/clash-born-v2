@@ -319,9 +319,11 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   skill thường. Bị động không tốn mana, không hồi chiêu trừ khi khai báo (ví dụ bash
   có thời gian chờ).
 - `ABL-02` Dùng chiêu: đủ mana, hết hồi chiêu, không SILENCED/STUNNED, mục tiêu hợp lệ
-  theo `target_filter`, trong `cast_range`. Trừ mana và bắt đầu hồi chiêu **khi bắt
-  đầu tung**, không phải khi kết thúc.
-- `ABL-03` Đang tung chiêu (`cast_time` > 0) mà bị STUNNED/SILENCED: hủy, không hoàn mana.
+  theo `target_filter`, trong `cast_range`. Trừ mana và bắt đầu hồi chiêu **khi chiêu ra**
+  (hết `cast_time`; chiêu không có `cast_time` thì ngay lúc tung) — D-240, như Dota.
+- `ABL-03` Đang tung chiêu (`cast_time` > 0) mà bị STUNNED/SILENCED (hoặc mục tiêu biến mất
+  trước khi chiêu ra): hủy, **không mất mana, không tính hồi chiêu** (D-240). Chiêu đã ra rồi
+  mới bị ngắt (vd đang lướt, ABL-08) thì mana / hồi chiêu đã tính.
 - `ABL-04` Lên cấp hero nhận 1 điểm. Điểm dùng để: nâng Q/W lên cấp n khi hero
   đạt cấp `2n − 1`; nâng R lên cấp 1/2/3 khi hero đạt cấp 6/11/16; hoặc đổi lấy
   `attribute_bonus` mọi thuộc tính (tối đa `attribute_bonus_max` lần). Điểm chưa
@@ -619,7 +621,7 @@ kill_credited, structure_destroyed, unit_spawned, gold_changed, level_up,
 skill_leveled, talent_chosen, dash_finished, projectile_hit, item_used,
 knockback_finished, dispelled, attack_target_changed, innate_ranked, mana_burned,
 lethal_damage, reincarnated, recall_started, recall_cancelled, recall_finished, duel_started,
-duel_ended, attack_deflected, teleported`. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
+duel_ended, attack_deflected, teleported`. `gold_changed` (D-240): hero last hit lính / quái (ECO-01), kẻ gây = hero, đối tượng = con bị hạ, lượng = vàng. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
 `effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `removed` (hành động RemoveEffect), `dispelled`, `owner_died`.
 Thêm sự kiện = thay đổi luật.
 

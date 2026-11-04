@@ -41,7 +41,7 @@ func _draw() -> void:
 			StateMarks.draw(self, e, foot, (foot as Vector2).y - (at as Vector2).y, view.world.tick)
 		if e.locked:
 			_draw_lock((at as Vector2) + Vector2(0, 30))
-	FloatingText.draw(self, view.world, func(p: Vector2) -> Variant: return view.ground_screen(p, TEXT_HEIGHT))
+	FloatingText.draw(self, view.world, func(p: Vector2) -> Variant: return view.ground_screen(p, TEXT_HEIGHT), view.hero_id)
 	for d: Array in Vfx.duel_icons(view.world):
 		var c: Variant = view.ground_screen(d[0], ICON_HEIGHT)
 		if c != null:

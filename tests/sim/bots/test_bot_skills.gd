@@ -78,8 +78,9 @@ func test_BOT_13_disable_brakk_q_when_enemy_in_radius() -> void:
 	var w: World = _world()
 	var e: Entity = _bot(w, &"brakk", _mid())
 	_foe(w, _mid() - _dir() * 200.0)
-	_cast_slots(w, e, 20)
+	var casts: Array[int] = _cast_slots(w, e, 40)  # D-240: hồi chiêu tính lúc chiêu ra (sau 0,5 s vung)
 	assert_true(_on_cooldown(w, e, S.Q), "DISABLE: hero địch trong bán kính → Q")
+	assert_eq(casts.count(S.Q), 1, "D-240: đang vung không tung lại (chưa vào hồi chiêu)")
 
 
 func test_BOT_13_poke_myra_q_with_mana_only() -> void:

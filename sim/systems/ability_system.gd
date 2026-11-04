@@ -1,9 +1,9 @@
 class_name AbilitySystem
 extends SimSystem
 ## Pha 7: dùng chiêu (ABL-02, ABL-03, D-59). Lệnh CAST: kiểm tra lại điều kiện; chiêu nhắm
-## đơn vị ngoài tầm thì chờ MovementSystem đưa tới. Bắt đầu tung: trừ mana, tính hồi chiêu,
-## phát `ability_cast`; hết `cast_time` thì chạy on_cast, phát `ability_finished`. Bị
-## STUNNED/SILENCED khi đang tung → hủy, không hoàn mana. Tung xong (hoặc hủy) thì áp lệnh chờ.
+## đơn vị ngoài tầm thì chờ MovementSystem đưa tới. Bắt đầu tung: phát `ability_cast`; hết
+## `cast_time` thì trừ mana, tính hồi chiêu, chạy on_cast, phát `ability_finished` (D-240). Bị
+## STUNNED/SILENCED khi đang tung → hủy, không mất gì. Tung xong (hoặc hủy) thì áp lệnh chờ.
 
 
 func run(world: World) -> void:
@@ -31,10 +31,6 @@ func _try_start(world: World, e: Entity) -> void:
 			return
 		if not in_cast_range(e, a, target):
 			return  # MovementSystem đưa tới tầm
-	e.mana -= Abilities.value(e, a, &"mana")
-	a.ready_tick = world.tick + Abilities.cooldown_ticks(e, a)  # ABL-19
-	if a.item_index >= 0:
-		Items.after_use(e, a)  # ITM-04/07
 	var c: CastState = CastState.new()
 	c.ability = a
 	c.target_id = target.id if target != null else -1
@@ -53,7 +49,7 @@ func _try_start(world: World, e: Entity) -> void:
 func _continue(world: World, e: Entity) -> void:
 	var allowed: bool = Rules.can_use_item(e) if e.cast.ability.item_index >= 0 else Rules.can_cast(e)  # ITM-08
 	if not allowed:
-		_end(e, true)  # ABL-03: hủy, không hoàn mana
+		_end(e, true)  # ABL-03, D-240: hủy, chưa trừ mana / hồi chiêu
 	elif world.tick >= e.cast.release_tick:
 		_release(world, e)
 
@@ -64,7 +60,12 @@ func _release(world: World, e: Entity) -> void:
 	if c.target_id >= 0 and (target == null or not target.alive):
 		_end(e, true)  # mục tiêu biến mất trước khi chiêu ra
 		return
-	var ctx: ExprContext = Abilities.context(e, c.ability, target)
+	var a: AbilityInstance = c.ability
+	e.mana = maxf(0.0, e.mana - Abilities.value(e, a, &"mana"))  # ABL-02, D-240: trả giá lúc chiêu ra
+	a.ready_tick = world.tick + Abilities.cooldown_ticks(e, a)  # ABL-19
+	if a.item_index >= 0:
+		Items.after_use(e, a)  # ITM-04/07
+	var ctx: ExprContext = Abilities.context(e, a, target)
 	ctx.point = c.point
 	ctx.direction = c.direction if c.direction != Vector2.ZERO else e.facing
 	ActionRunner.run(world, Abilities.cast_actions(c.ability), ctx, e.id)

@@ -202,3 +202,16 @@ func test_D_63_bash_cooldown_is_per_source_data() -> void:
 	Effects.apply(w, a, bash, a)
 	var hits: Array[float] = _hits(w, a, b, 30 * 5)
 	assert_near(b.health, 100000.0 - hits.size() * 110.0, EPS, "bash không khai báo chờ thì đòn nào cũng tung")
+
+
+func test_CMB_07_plain_attack_has_no_number_crit_does() -> void:
+	var w: World = _world()
+	var a: Entity = _unit(w, 0, _origin())
+	var b: Entity = _unit(w, 1, _origin() + Vector2(100, 0))
+	assert_eq(_hits(w, a, b, 12).size(), 1)
+	var kinds: Array = w.recent_notes.map(func(n: Array) -> StringName: return n[0])
+	assert_false(kinds.has(&"damage"), "D-240: đòn đánh thường không hiện số")
+	Effects.apply(w, a, _crit(&"c1", "1", "2"), a)
+	assert_eq(_hits(w, a, b, 40).size(), 1)
+	kinds = w.recent_notes.map(func(n: Array) -> StringName: return n[0])
+	assert_true(kinds.has(&"crit"), "chí mạng vẫn hiện số")

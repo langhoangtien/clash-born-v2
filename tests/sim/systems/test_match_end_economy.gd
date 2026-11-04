@@ -82,6 +82,12 @@ func test_ECO_01_last_hit_gives_bounty_to_killer_only() -> void:
 	assert_eq(me.gold, 54)  # D-125: lính +20%
 	assert_eq(me.last_hits, 1)
 	assert_eq(ally.gold, 0)
+	var got: Array[GameEvent] = w.events.filter(func(ev: GameEvent) -> bool: return ev.type == &"gold_changed")
+	assert_eq(got.size(), 1, "D-240: last hit phát gold_changed (VIEW hiện +vàng)")
+	assert_eq([got[0].source_id, got[0].target_id, int(got[0].amount)], [me.id, creep.id, 54])
+	var gold: Array = w.recent_notes.filter(func(n: Array) -> bool: return n[0] == &"gold")
+	assert_eq(gold.size(), 1, "chữ nổi +vàng")
+	assert_eq([int(gold[0][2]), gold[0][4]], [54, me.id], "chỉ hero last hit thấy")
 
 
 func test_ECO_01_creep_or_tower_kill_gives_no_gold() -> void:

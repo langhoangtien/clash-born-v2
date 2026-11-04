@@ -121,7 +121,7 @@ func test_ABL_02_rejections() -> void:
 	assert_eq(_rejected(w, Command.cast(b.id, Slot.Q)), Command.Reject.ON_COOLDOWN)
 
 
-func test_ABL_02_brakk_q_mana_cooldown_at_start_effect_after_cast_time() -> void:
+func test_ABL_02_brakk_q_mana_cooldown_at_release_effect_after_cast_time() -> void:
 	var w: World = _world()
 	var b: Entity = _brakk(w, 0, _center())
 	var foe: Entity = _dummy(w, 1, _center() + Vector2(200, 0))
@@ -132,29 +132,30 @@ func test_ABL_02_brakk_q_mana_cooldown_at_start_effect_after_cast_time() -> void
 	var mana: float = b.mana
 	w.submit(Command.cast(b.id, Slot.Q))
 	w.step()
-	var start: int = w.tick
 	assert_true(b.cast != null, "đang tung")
-	assert_near(b.mana, mana - 90.0, EPS, "trừ mana lúc bắt đầu (mana đang đầy nên hồi không cộng thêm)")
-	assert_eq(a.ready_tick, start + 14 * 30, "hồi chiêu tính từ lúc bắt đầu")
+	assert_near(b.mana, mana, EPS, "D-240: đang vung chưa trừ mana")
+	assert_true(a.ready_tick <= w.tick, "D-240: đang vung chưa tính hồi chiêu")
 	_steps(w, 14)  # D-230: thời gian vung 0.5 s
 	assert_near(foe.health, 2000.0, EPS, "chưa hết 0.5 s")
 	w.step()
 	assert_true(foe.health < 2000.0, "hết 0.5 s thì nổ")
+	assert_near(b.mana, mana - 90.0, 0.5, "trừ mana lúc chiêu ra (cùng tick còn hồi mana chút ít)")
+	assert_eq(a.ready_tick, w.tick + 14 * 30, "hồi chiêu tính từ lúc chiêu ra")
 	assert_true(Rules.has_state(foe, UnitState.Id.STUNNED))
 	assert_near(far.health, 2000.0, EPS)
 	assert_near(ally.health, 2000.0, EPS, "không trúng đồng minh (ABL-07)")
 	assert_true(b.cast == null and b.order.finished)
 
 
-func test_ABL_03_stun_during_cast_cancels_without_refund() -> void:
+func test_ABL_03_stun_during_cast_cancels_nothing_spent() -> void:
 	var w: World = _world()
 	var b: Entity = _brakk(w, 0, _center())
 	var foe: Entity = _dummy(w, 1, _center() + Vector2(200, 0))
 	var a: AbilityInstance = Abilities.of(b, Slot.Q)
 	Abilities.set_rank(w, b, a, 1)
+	var mana: float = b.mana
 	w.submit(Command.cast(b.id, Slot.Q))
 	_steps(w, 3)
-	var mana: float = b.mana
 	var stun: EffectDef = EffectDef.new()
 	stun.id = &"stun"
 	stun.duration = "0.5"
@@ -163,8 +164,8 @@ func test_ABL_03_stun_during_cast_cancels_without_refund() -> void:
 	_steps(w, 20)
 	assert_true(b.cast == null)
 	assert_near(foe.health, 2000.0, EPS, "chiêu bị hủy")
-	assert_true(b.mana < mana + 5.0, "không hoàn mana")
-	assert_true(w.tick < a.ready_tick, "vẫn hồi chiêu")
+	assert_true(b.mana >= mana - EPS, "D-240: bị ngắt thì không mất mana")
+	assert_true(w.tick >= a.ready_tick, "D-240: bị ngắt thì không tính hồi chiêu, dùng lại được ngay")
 
 
 func test_D_59_unit_target_out_of_range_walks_in_then_casts() -> void:

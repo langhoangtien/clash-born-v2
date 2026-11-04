@@ -80,6 +80,8 @@ func _reward(world: World, e: Entity) -> void:
 	if killer != null and killer.kind == Entity.Kind.HERO and killer.team != e.team:
 		killer.gold += e.bounty_gold
 		killer.last_hits += 1
+		world.emit(&"gold_changed", killer.id, e.id, e.bounty_gold)  # D-240
+		world.note(&"gold", e.position, e.bounty_gold, killer.id)  # D-240: chữ nổi "+vàng" cho hero này
 	if e.kind == Entity.Kind.NEUTRAL:
 		_share_neutral_xp(world, e, killer)  # JGL-07
 		return
