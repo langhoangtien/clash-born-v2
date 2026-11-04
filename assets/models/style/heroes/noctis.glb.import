@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bd765n3pq01t0"
-path="res://.godot/imported/dagger.gltf-f444d6a2e61ba589c83db40a72672574.scn"
+uid="uid://b0b2riwltrsxj"
+path="res://.godot/imported/noctis.glb-58897e83a3f29c13a7c89ef3aac37508.scn"
 
 [deps]
 
-source_file="res://assets/models/kaykit/dagger.gltf"
-dest_files=["res://.godot/imported/dagger.gltf-f444d6a2e61ba589c83db40a72672574.scn"]
+source_file="res://assets/models/style/heroes/noctis.glb"
+dest_files=["res://.godot/imported/noctis.glb-58897e83a3f29c13a7c89ef3aac37508.scn"]
 
 [params]
 

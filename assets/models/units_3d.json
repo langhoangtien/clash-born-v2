@@ -128,19 +128,17 @@
    }
   },
   "noctis": {
-   "model": "Rogue_Hooded",
-   "rig": "Rig_Medium",
-   "tex": "rogue",
-   "right": "dagger",
-   "left": "dagger",
-   "attack": "Melee_Dualwield_Attack_Stab",
-   "cast": "Melee_Dualwield_Attack_Slice",
+   "model": "../style/heroes/noctis",
+   "rig": "Creature",
+   "attack": "attack",
+   "cast": "cast",
+   "impact": 0.27,
    "height": 1.2,
    "skills": {
-    "1": "Melee_Dualwield_Attack_Chop",
-    "2": "Melee_Dualwield_Attack_Slice",
-    "3": "Melee_Dualwield_Attack_Stab"
-   }
+    "2": "skill_2",
+    "3": "skill_3"
+   },
+   "dash": "dash"
   },
   "creep_melee": {
    "model": "../style/units/creep_melee",

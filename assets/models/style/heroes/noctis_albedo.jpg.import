@@ -2,16 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://fvaekoso0e43"
-path="res://.godot/imported/rogue_texture.png-e503992817247061c9e7500aed90a347.ctex"
+uid="uid://bqyk8icvdtx1u"
+path="res://.godot/imported/noctis_albedo.jpg-225575270659af07efb968dbb06e0b03.ctex"
 metadata={
 "vram_texture": false
+}
+generator_parameters={
+"md5": "e462c64a5166a0b833668494caddb1b6"
 }
 
 [deps]
 
-source_file="res://assets/models/kaykit/rogue_texture.png"
-dest_files=["res://.godot/imported/rogue_texture.png-e503992817247061c9e7500aed90a347.ctex"]
+source_file="res://assets/models/style/heroes/noctis_albedo.jpg"
+dest_files=["res://.godot/imported/noctis_albedo.jpg-225575270659af07efb968dbb06e0b03.ctex"]
 
 [params]
 

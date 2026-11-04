@@ -38,3 +38,9 @@ Thân afk.ai và thân Mixamo phải là **cùng một lưới** (cùng `<tên>_
 biến dạng lưới y như xương Mixamo tương ứng (ngón tay giữ nguyên), thêm hoạt ảnh `MX <tên>` vào bản sao file afk:
 `python3 -I tools/models/retarget.py <tên>_afk.glb <tên>_mixamo.glb <tên>_afk_mx.glb "sword and shield slash" …`
 build_units: nguồn `"<tên>_afk_mx.glb"`, dùng `MX <tên>` như hoạt ảnh afk (kể cả `~`, `@`), vũ khí như afk.ai.
+
+## Áo choàng / vạt áo bị kéo theo tay (D-244)
+
+Sau khi afk.ai gắn xương, render chạy / đánh: áo bị kéo thành dải theo tay thì
+`python3 -I tools/models/cloth_weights.py <tên>_afk.glb <tên>_afk_cloth.glb --cloth-hue <sắc độ áo, vd 250-320>`
+rồi dùng `<tên>_afk_cloth.glb` làm nguồn trong build_units.
