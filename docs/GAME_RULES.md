@@ -461,8 +461,9 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `SHOP-10` (D-117) Thứ tự lên đồ (`BuildPlan`): món kế tiếp = món đầu tiên trong danh sách chưa
   có (đã ghép vào món lớn hơn cũng tính là có). Mua lúc này: món đó nếu mua được, không thì thành
   phần còn thiếu đầu tiên mua được (đi sâu vào thành phần con). Bot dùng thứ tự `bot_item_build`;
-  người chơi có nút mua nhanh bên trái (trên joystick) hiện món mua được theo cùng thứ tự gợi ý
-  của hero, chạm là mua; không mua được gì thì ẩn.
+  người chơi có nút mua nhanh bên trái (trên joystick) hiện món mua được theo bộ đồ soạn sẵn của
+  người chơi (D-120), chưa soạn bộ nào thì theo thứ tự gợi ý của hero; chạm là mua; bộ soạn sẵn đã
+  mua hết hoặc không mua được gì thì ẩn (D-241).
 - `SHOP-11` (D-167) Món ghép mà phần **còn thiếu** có đồ shop ẩn (đi sâu vào thành phần con) cũng chỉ mua
   được ở shop ẩn như SHOP-02, vì mua lúc đó là mua luôn món shop ẩn. Đã có sẵn thành phần shop ẩn trong
   túi thì mua ở đâu cũng được. Ví dụ Ngọc Băng Sương II khi chưa có Ngọc Băng Sương.

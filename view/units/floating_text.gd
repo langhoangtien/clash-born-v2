@@ -5,6 +5,7 @@ extends RefCounted
 ## trên màn hình (Bars3D) tại điểm `to_screen(vị trí)` (trên đầu đơn vị; null = sau camera), bay lên dần.
 
 const LIFE_TICKS: float = 24.0
+const GOLD_OFFSET: Vector2 = Vector2(46, 34)  ## px: "+vàng" lệch phải, thấp hơn số sát thương
 
 
 static func draw(ci: CanvasItem, world: World, to_screen: Callable, me: int = -1) -> void:
@@ -47,6 +48,8 @@ static func draw(ci: CanvasItem, world: World, to_screen: Callable, me: int = -1
 		if head == null:
 			continue
 		var at: Vector2 = (head as Vector2) - Vector2(w * 0.5, 40 * age + (30 if n[0] == &"stun" else 0))
+		if n[0] == &"gold":
+			at += GOLD_OFFSET  # D-241: lệch khỏi số chí mạng của cùng cú kết liễu
 		var fade: float = 1.0 - age * age
 		ci.draw_string_outline(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, size, 5, Color(0, 0, 0, 0.8 * fade))
 		ci.draw_string(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, size, Color(color, fade))

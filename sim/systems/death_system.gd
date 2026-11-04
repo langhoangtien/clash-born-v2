@@ -118,6 +118,7 @@ static func hero_kill_rewards(world: World, e: Entity, lose_gold: bool = true) -
 		paid = [killer]
 	for h: Entity in paid:
 		h.gold += gold / paid.size()
+		world.note(&"gold", e.position, gold / paid.size(), h.id)  # D-241: chữ nổi +vàng
 	if not paid.is_empty():
 		world.emit(&"kill_credited", paid[0].id, e.id, gold)
 	_count_kda(world, e, killer)

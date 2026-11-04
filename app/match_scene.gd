@@ -137,7 +137,8 @@ func tick_frame(delta: float) -> void:
 	camera.position = minimap.peek_point if minimap.peeking else follow
 	if quick_buy != null:  # SHOP-10: món nên mua lúc này
 		_drop_finished_build()
-		var next: ItemDef = BuildPlan.next_buy(world, hero, shop.build if not shop.build.is_empty() else hero_def.bot_item_build)
+		var own: bool = not shop.build.is_empty() or not _build_done.is_empty()  # D-241: bộ soạn sẵn mua hết thì thôi gợi ý
+		var next: ItemDef = BuildPlan.next_buy(world, hero, shop.build if own else hero_def.bot_item_build)
 		quick_buy.show_item(next, Shop.price(world, hero, next) if next != null else 0)
 	var view_size: Vector2 = get_viewport_rect().size / camera.zoom
 	minimap.camera_rect = Rect2(camera.position - view_size * 0.5, view_size)

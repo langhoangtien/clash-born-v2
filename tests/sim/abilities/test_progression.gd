@@ -148,6 +148,8 @@ func test_ECO_hero_kill_gold_xp_and_death_loss() -> void:
 		seen.append(ev.type)
 	assert_true(seen.has(&"kill_credited"))
 	assert_eq(a.gold, 200 + 10 * 3, "vàng hạ hero")  # D-125
+	var gold: Array = w.recent_notes.filter(func(n: Array) -> bool: return n[0] == &"gold")
+	assert_eq(gold.map(func(n: Array) -> Array: return [int(n[2]), n[4]]), [[230, a.id]], "D-241: chữ nổi +vàng cho kẻ hạ")
 	assert_eq(a.stats.level(), 2, "XP hạ hero 60 + 30 × 3 = 150 → lên cấp 2")
 	assert_near(a.xp, 150.0 - 120.0, EPS)
 	assert_eq(b.gold, 500 - 25 * 3, "ECO-05")
