@@ -14,13 +14,19 @@ static func start(world: World, e: Entity) -> void:
 	world.emit(&"recall_started", e.id, e.id)
 
 
+## RCL-02 (D-243): hủy về thành đang kênh (nếu có) và phát `recall_cancelled` để VIEW tắt tiếng kênh.
+static func cancel(world: World, e: Entity) -> void:
+	if e.recall_until_tick >= 0:
+		e.recall_until_tick = -1
+		world.emit(&"recall_cancelled", e.id, e.id)
+
+
 func run(world: World) -> void:
 	for e: Entity in world.entities:
 		if e.recall_until_tick < 0:
 			continue
 		if not e.alive or not Rules.can_use_item(e) or _hurt(world, e):
-			e.recall_until_tick = -1
-			world.emit(&"recall_cancelled", e.id, e.id)
+			cancel(world, e)
 		elif world.tick >= e.recall_until_tick:
 			e.recall_until_tick = -1
 			var home: Vector2 = world.map.fountain_point(e.team) if world.map != null else e.position

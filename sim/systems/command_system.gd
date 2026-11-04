@@ -32,7 +32,7 @@ func run(world: World) -> void:
 				Progression.choose_talent(world, unit, command.slot)
 			world.command_log.append(command)
 			continue
-		unit.recall_until_tick = -1  # RCL-02: lệnh mới hủy về thành
+		Recall.cancel(world, unit)  # RCL-02: lệnh mới hủy về thành
 		if command.type == Command.Type.RECALL:
 			Recall.start(world, unit)
 			world.command_log.append(command)

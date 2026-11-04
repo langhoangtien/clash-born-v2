@@ -75,3 +75,19 @@ func test_RCL_02_cancelled_by_new_order_damage_or_stun() -> void:
 	var hash1: PackedByteArray = w.state_hash()
 	h.recall_until_tick = 5
 	assert_true(w.state_hash() != hash1, "D-30")
+
+
+func test_RCL_02_new_order_cancel_emits_event() -> void:
+	var s: Array = _world()
+	var w: World = s[0]
+	var h: Entity = s[1]
+	w.submit(Command.recall(h.id))
+	_steps(w, 30)
+	w.submit(Command.move_to(h.id, h.position + Vector2(200, 0)))
+	w.step()
+	var seen: bool = w.events.any(func(ev: GameEvent) -> bool: return ev.type == &"recall_cancelled" and ev.source_id == h.id)
+	assert_true(seen, "D-243: lệnh mới hủy về thành phát recall_cancelled (VIEW tắt tiếng kênh)")
+	w.submit(Command.move_to(h.id, h.position + Vector2(-200, 0)))
+	w.step()
+	seen = w.events.any(func(ev: GameEvent) -> bool: return ev.type == &"recall_cancelled")
+	assert_false(seen, "không đang về thành thì không phát")

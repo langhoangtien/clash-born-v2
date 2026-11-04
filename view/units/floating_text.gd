@@ -1,6 +1,6 @@
 class_name FloatingText
 extends RefCounted
-## Chữ nổi (VIEW): số sát thương (chí mạng to, vàng), "Trượt", "CHOÁNG", "+vàng" khi last hit (D-240: chỉ
+## Chữ nổi (VIEW): số sát thương (chí mạng to, đỏ), "Trượt", "CHOÁNG", "+vàng" khi last hit (D-240: chỉ
 ## ghi chú của hero `me`). Đọc World.recent_notes. D-180: vẽ
 ## trên màn hình (Bars3D) tại điểm `to_screen(vị trí)` (trên đầu đơn vị; null = sau camera), bay lên dần.
 
@@ -37,8 +37,8 @@ static func draw(ci: CanvasItem, world: World, to_screen: Callable, me: int = -1
 				color = Color(1.0, 0.82, 0.25)
 				size = 24
 			&"crit":
-				text = "%d!" % roundi(n[2])
-				color = Color(1.0, 0.8, 0.2)
+				text = "%d" % roundi(n[2])  # D-243: đỏ, không dấu chấm than
+				color = Color(1.0, 0.18, 0.15)
 				size = 34
 			_:
 				text = "%d" % roundi(n[2])

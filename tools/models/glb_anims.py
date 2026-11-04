@@ -137,7 +137,9 @@ def main():
     ap.add_argument("--attach", action="append", default=[], help="vũ khí.glb:xương (D-231, gắn cứng vào xương)")
     ap.add_argument("--join-gap", type=float, default=R.FRAME, help="giây nội suy ở chỗ nối A+B")
     a = ap.parse_args()
-    keep = dict(kv.split("=") for kv in a.keep.split(","))
+    pairs = [kv.split("=") for kv in a.keep.split(",")]
+    assert len({src for src, _ in pairs}) == len(pairs), "trùng tên nguồn trong --keep (cái sau đè cái trước); dùng tên@0-dài"
+    keep = dict(pairs)
     g, binc = read(a.src)
     have = {an.get("name") for an in g.get("animations", [])}
     missing = {n.split("@")[0].replace("~", "") for src in keep for n in src.split("+")} - have

@@ -29,10 +29,10 @@ UNITS = {
     "neutral_shaman": ("neutral_shaman", "creatures/shaman",
                        "Idle_A=idle,Jog=run,OverhandThrow=attack,Hit_Chest=hit,Death_B=death,Dizzy=stun", True, False),
     # D-228: hero Tripo + afk.ai (skill_1/2/3 = chiêu Q/W/R, cast = tung chiêu chung; RM = có dời gốc → không dùng)
-    "duy_anh": ("duy_anh_afk_mx.glb", "heroes/duy_anh",  # D-242: rig afk.ai; W, R chuyển từ Mixamo (retarget.py)
-                "Fighting Idle=idle,Jog=run,OverhandThrow=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
+    "duy_anh": ("duy_anh_afk_mx.glb", "heroes/duy_anh",  # D-242: rig afk.ai; W chuyển từ Mixamo (retarget.py); D-243: R nhảy 3 đoạn afk
+                "Fighting Idle=idle,Sprint@0-0.83=run,OverhandThrow=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
                 "Sword_Regular_A+Sword_Regular_A_Rec@0.6=cast,Shield_OneShot=skill_1,MX sword and shield slash=skill_2,"
-                "Sprint=sprint,MX Standing Melee Run Jump Attack~@0.85-2.2=dash", True, False,
+                "Sprint=sprint,Jump_Start@0.2-0.6+Jump_air@0-0.3+Jump_Land@0-0.6=dash", True, False,
                 ["duy_anh_sword_hand:hand_r", "duy_anh_shield_hand:hand_l"]),
     "brakk": ("brakk", "heroes/brakk",
               "Fighting Idle=idle,Jog=run,Melee_Hook+Melee_Hook_Rec=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"

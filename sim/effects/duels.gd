@@ -37,7 +37,7 @@ static func force_orders(world: World, d: DuelState) -> void:
 		var e: Entity = world.find_entity(id)
 		if e == null or not e.alive:
 			continue
-		e.recall_until_tick = -1
+		Recall.cancel(world, e)
 		e.queued_order = null
 		if e.order.type != Order.Type.ATTACK or e.order.target_id != d.other(id) or e.order.finished:
 			e.order = Order.attack(d.other(id))

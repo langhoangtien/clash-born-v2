@@ -154,8 +154,7 @@ func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int, faded: b
 	_set_faded(faded)
 	if _show_frog(Rules.has_state(e, UnitState.Id.HEXED)):
 		return
-	if e.facing != Vector2.ZERO:
-		rotation.y = atan2(e.facing.x, e.facing.y)
+	if e.facing != Vector2.ZERO: rotation.y = atan2(e.facing.x, e.facing.y)
 	_feel()
 	_stunned = e.cast == null and not Rules.can_move(e) and not Rules.can_attack(e)
 	if e.reincarnate_tick >= 0:  # DTH-02: nằm chờ tái sinh — ngã rồi nằm yên ở khung cuối
@@ -163,6 +162,7 @@ func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int, faded: b
 			_play(_rig["death"], 1.0)
 	elif e.dash != null:  # D-229: lao tới trước cả hoạt ảnh chiêu; D-238: hoạt ảnh vừa hết lúc tới nơi
 		_play(_cfg.get("dash", _rig["dash"]), ModelLibrary.dash_speed(w, e, _anim, _cfg.get("dash", _rig["dash"])))
+		position.y += ModelLibrary.dash_hop(_cfg, _anim)  # D-243: nhảy vòng cung
 	elif _skill_locked(moving):
 		pass
 	elif e.cast != null:

@@ -55,7 +55,8 @@
    "skill_impact": {
     "2": 0.49
    },
-   "dash": "dash"
+   "dash": "dash",
+   "dash_hop": 0.6
   },
   "brakk": {
    "model": "../style/heroes/brakk",

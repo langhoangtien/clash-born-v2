@@ -214,3 +214,12 @@ static func dash_speed(w: World, e: Entity, anim: AnimationPlayer, name: String)
 	var left: float = maxf(0.0, Rules.edge_distance(e, target)) / e.dash.speed + SimClock.TICK_SECONDS
 	var pos: float = anim.current_animation_position if anim.current_animation == name else 0.0
 	return clampf((anim.get_animation(name).length - pos) / left, 0.5, 4.0)
+
+
+## D-243: độ nâng hình (m) khi lướt theo vòng cung `dash_hop` (units_3d.json) — hoạt ảnh nhảy tại chỗ của afk.ai;
+## tiến độ = vị trí hoạt ảnh lướt (dash_speed cho nó vừa hết lúc tới nơi).
+static func dash_hop(cfg: Dictionary, anim: AnimationPlayer) -> float:
+	var hop: float = float(cfg.get("dash_hop", 0.0))
+	if hop <= 0.0 or anim.current_animation_length <= 0.0:
+		return 0.0
+	return hop * sin(PI * clampf(anim.current_animation_position / anim.current_animation_length, 0.0, 1.0))
