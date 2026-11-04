@@ -28,7 +28,7 @@ UNITS = {
                        "Idle_A=idle,Jog=run,OverhandThrow=attack,Hit_Chest=hit,Death_B=death,Dizzy=stun", True, False),
     # D-228: hero Tripo + afk.ai (skill_1/2/3 = chiêu Q/W/R, cast = tung chiêu chung; RM = có dời gốc → không dùng)
     "duy_anh": ("duy_anh", "heroes/duy_anh",
-                "Fighting Idle=idle,Jog=run,Sword_Regular_B+Sword_Regular_B_Rec@0.6=attack,Hit_Chest=hit,Death_B=death,"
+                "Fighting Idle=idle,Jog=run,OverhandThrow=attack,Hit_Chest=hit,Death_B=death,"
                 "Idle Hurt=stun,Sword_Regular_A+Sword_Regular_A_Rec@0.6=cast,Shield_OneShot=skill_1,"
                 "Sword_Attack@0.5-1.92=skill_2,Sprint=sprint,Sword_Dash_RM~@0.2-0.9=dash", True, False,
                 ["duy_anh_sword_hand:hand_r", "duy_anh_shield_hand:hand_l"]),  # D-235: thân tay không + vũ khí riêng
