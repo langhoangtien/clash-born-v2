@@ -142,6 +142,7 @@ def main():
     have = {an.get("name") for an in g.get("animations", [])}
     missing = {n.split("@")[0].replace("~", "") for src in keep for n in src.split("+")} - have
     assert not missing, f"không có hoạt ảnh: {missing}; có: {sorted(have)}"
+    R.bake_root(g, binc, array)  # D-238: gốc FBX (Mixamo) xoay / tỉ lệ 0,01 → đơn vị
     special = {src: name for src, name in keep.items() if "+" in src or "@" in src or "~" in src}
     joined = [R.concat(g, binc, array, [n.replace("~", "") for n in src.split("+")], name, a.join_gap) for src, name in special.items()]
     for an, src in zip(joined, special):
@@ -151,7 +152,8 @@ def main():
     if a.drop_bones:
         print("xương: %d → %d" % R.drop_bones(g, binc, array, a.drop_bones))
     for spec in a.attach:
-        path, bone = spec.rsplit(":", 1)
+        path, bone = spec.split(".glb:", 1)  # tên xương Mixamo có dấu ":" (mixamorig:RightHand)
+        path += ".glb"
         print(f"gắn {os.path.basename(path)} vào {bone}: {R.attach_rigid(g, binc, array, path, bone, read)} đỉnh")
     weld(g, binc)
     up = lift(g, binc)

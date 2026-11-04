@@ -204,3 +204,13 @@ static func skill_speed(cfg: Dictionary, slot: int, length: float, windup: float
 	if windup <= 0.0 or impact <= 0.0:
 		return fallback
 	return clampf(length * impact / windup, 0.5, 3.0)
+
+
+## D-238: tốc độ hoạt ảnh lướt `name` để phần còn lại vừa hết đúng lúc tới mục tiêu (cú bổ của R rơi khi chạm).
+static func dash_speed(w: World, e: Entity, anim: AnimationPlayer, name: String) -> float:
+	var target: Entity = w.find_entity(e.dash.target_id)
+	if target == null or not anim.has_animation(name) or e.dash.speed <= 0.0:
+		return 1.4
+	var left: float = maxf(0.0, Rules.edge_distance(e, target)) / e.dash.speed + SimClock.TICK_SECONDS
+	var pos: float = anim.current_animation_position if anim.current_animation == name else 0.0
+	return clampf((anim.get_animation(name).length - pos) / left, 0.5, 4.0)

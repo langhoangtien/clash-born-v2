@@ -43,6 +43,7 @@ values = Dictionary[StringName, PackedFloat32Array]({
 &"mana": PackedFloat32Array(50, 55, 60, 65, 70),
 &"radius": PackedFloat32Array(350, 350, 350, 350, 350)
 })
+cast_time = "0.4"
 on_cast = Array[ExtResource("1_act")]([SubResource("AR")])
 talent = SubResource("T0")
 bot_usages = Array[int]([1])

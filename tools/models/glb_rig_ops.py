@@ -144,15 +144,22 @@ def _remove_nodes(g, dropped, kept):
                          for k, c in enumerate(chans)]
 
 
-def in_place(g, binc, array, anim, root_names=("root",)):
-    """`tên~` (D-229): bỏ dời chỗ của xương gốc (hoạt ảnh 'RM' có tiến tới) — sim đã tự di chuyển đơn vị."""
+def in_place(g, binc, array, anim, root_names=("root",), hip_names=("mixamorig:Hips",)):
+    """`tên~` (D-229): bỏ dời chỗ của xương gốc (hoạt ảnh 'RM' có tiến tới) — sim đã tự di chuyển đơn vị.
+    Mixamo (D-238) không có xương gốc: khóa dời ngang của hông, giữ trục đứng (trục có tọa độ nghỉ lớn nhất) để
+    còn nhún / nhảy."""
     for c in anim["channels"]:
-        node = g["nodes"][c["target"]["node"]].get("name", "")
-        if c["target"]["path"] != "translation" or node not in root_names:
+        node = g["nodes"][c["target"]["node"]]
+        name = node.get("name", "")
+        if c["target"]["path"] != "translation" or name not in root_names + hip_names:
             continue
         s = anim["samplers"][c["sampler"]]
         v = array(g, binc, s["output"]).copy()
-        v[:] = v[0]
+        if name in hip_names:
+            up = int(np.argmax(np.abs(node.get("translation", v[0]))))
+            v[:, [k for k in range(3) if k != up]] = v[0, [k for k in range(3) if k != up]]
+        else:
+            v[:] = v[0]
         s["output"] = add_accessor(g, binc, v, "VEC3")
 
 
@@ -228,3 +235,48 @@ def _copy_material(g, binc, wg, wb, wp):
     mat = {"name": mat.get("name", "prop"), "pbrMetallicRoughness": pbr}
     g.setdefault("materials", []).append(mat)
     return len(g["materials"]) - 1
+
+
+def _qmul(a, b):
+    ax, ay, az, aw = a
+    bx, by, bz, bw = (b[..., i] for i in range(4))
+    return np.stack([aw * bx + ax * bw + ay * bz - az * by, aw * by - ax * bz + ay * bw + az * bx,
+                     aw * bz + ax * by - ay * bx + az * bw, aw * bw - ax * bx - ay * by - az * bz], -1)
+
+
+def _qrot(q, v):
+    x, y, z, w = q
+    m = np.array([[1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
+                  [2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)],
+                  [2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)]])
+    return v @ m.T
+
+
+def bake_root(g, binc, array):
+    """D-238: nút gốc của bộ xương xuất từ FBX (Mixamo: `Armature` xoay 90°, tỉ lệ 0,01) → dồn biến đổi vào các nút con
+    (kể cả khóa hoạt ảnh) để gốc là đơn vị; game đo khung bao lưới theo chuỗi nút cha nên gốc phải chuẩn. Lưới có da
+    bỏ qua biến đổi nút (glTF) nên không đổi."""
+    for r in g["scenes"][g.get("scene", 0)]["nodes"]:
+        root = g["nodes"][r]
+        if "mesh" in root or not ({"rotation", "scale"} & set(root)):
+            continue
+        q = np.array(root.pop("rotation", [0, 0, 0, 1]), np.float64)
+        s = root.pop("scale", [1, 1, 1])
+        assert max(s) - min(s) < 1e-6, "chỉ hỗ trợ tỉ lệ đều"
+        s, t0 = s[0], np.array(root.pop("translation", [0, 0, 0]), np.float64)
+        for c in root.get("children", []):
+            n = g["nodes"][c]
+            if "skin" in n:
+                continue
+            n["translation"] = (_qrot(q, s * np.array(n.get("translation", [0, 0, 0]))) + t0).tolist()
+            n["rotation"] = _qmul(q, np.array(n.get("rotation", [0, 0, 0, 1]), np.float64)).tolist()
+            n["scale"] = (s * np.array(n.get("scale", [1, 1, 1]))).tolist()
+            for a in g.get("animations", []):
+                for ch in a["channels"]:
+                    if ch["target"]["node"] != c:
+                        continue
+                    smp = a["samplers"][ch["sampler"]]
+                    v = array(g, binc, smp["output"]).astype(np.float64)
+                    path = ch["target"]["path"]
+                    v = _qrot(q, s * v) + t0 if path == "translation" else _qmul(q, v) if path == "rotation" else s * v
+                    smp["output"] = add_accessor(g, binc, v, {3: "VEC3", 4: "VEC4"}[v.shape[1]])

@@ -161,8 +161,8 @@ func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int, faded: b
 	if e.reincarnate_tick >= 0:  # DTH-02: nằm chờ tái sinh — ngã rồi nằm yên ở khung cuối
 		if _playing != _rig["death"]:
 			_play(_rig["death"], 1.0)
-	elif e.dash != null:  # D-229: lao tới trước cả hoạt ảnh chiêu (không trôi người khi chiêu có lướt)
-		_play(_cfg.get("dash", _rig["dash"]), 1.4)
+	elif e.dash != null:  # D-229: lao tới trước cả hoạt ảnh chiêu; D-238: hoạt ảnh vừa hết lúc tới nơi
+		_play(_cfg.get("dash", _rig["dash"]), ModelLibrary.dash_speed(w, e, _anim, _cfg.get("dash", _rig["dash"])))
 	elif _skill_locked(moving):
 		pass
 	elif e.cast != null:

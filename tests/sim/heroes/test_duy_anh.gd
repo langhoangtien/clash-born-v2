@@ -2,6 +2,8 @@ extends TestCase
 ## D-135: Duy Anh · Hiệp Sĩ — Bất Khuất (EFF-16), Xung Phong, Hoành Kiếm (ABL-20),
 ## Quyết Đấu (ABL-08b, DUL-01..08, ST-19).
 
+const WINDUP_TICKS: int = 12  ## D-238: Hoành Kiếm vung 0,4 s = 12 tick
+
 const MAP_PATH: String = "res://data/maps/clashborn.tres"
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
 const Slot := AbilityDef.Slot
@@ -156,7 +158,7 @@ func test_ABL_20_cleave_hits_cone_in_front_only() -> void:
 	w.step()
 	var hp: Array[float] = [front.health, side.health, behind.health, far.health]
 	w.submit(Command.cast(k.id, Slot.W, -1, Vector2.INF, Vector2.RIGHT))
-	for i: int in range(10):
+	for i: int in range(WINDUP_TICKS + 5):
 		w.step()
 	assert_true(front.health < hp[0], "trước mặt trúng")
 	assert_true(side.health < hp[1], "chếch 63° vẫn trong quạt 150°")
@@ -174,7 +176,18 @@ func test_D_135_cleave_damage_base_plus_80_percent_attack() -> void:
 	raw *= 1.0 + k.stats.get_stat(StatId.Id.SPELL_AMPLIFICATION)  # CMB-13
 	var mult: float = DamageFormulas.armor_multiplier(foe.stats.get_stat(StatId.Id.PHYSICAL_ARMOR), w.balance.armor_coefficient)
 	w.submit(Command.cast(k.id, Slot.W, -1, Vector2.INF, Vector2.RIGHT))
-	assert_near(_taken(w, foe, 10), raw * mult, 1.0, "300 + 0.8 × sát thương đánh, trước giáp")
+	assert_near(_taken(w, foe, WINDUP_TICKS + 5), raw * mult, 1.0, "300 + 0.8 × sát thương đánh, trước giáp")
+
+
+func test_ABL_03_cleave_lands_after_windup() -> void:
+	var w: World = _world()
+	var k: Entity = _knight(w, [0, 1, 0])
+	k.facing = Vector2.RIGHT
+	var foe: Entity = _foe(w, k.position + Vector2(200, 0))
+	w.step()
+	w.submit(Command.cast(k.id, Slot.W, -1, Vector2.INF, Vector2.RIGHT))
+	assert_near(_taken(w, foe, WINDUP_TICKS - 2), 0.0, 0.01, "D-238: đang vung kiếm 0,4 s chưa trúng")
+	assert_true(_taken(w, foe, 5) > 0.0, "vung xong thì trúng")
 
 
 func test_ABL_08b_duel_dash_stays_targetable() -> void:

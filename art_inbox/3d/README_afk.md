@@ -22,3 +22,12 @@ Tách vũ khí khỏi lưới cũ để lại chỗ ngón tay dính khiên; tố
    `python3 -I tools/models/place_prop.py duy_anh_afk.glb duy_anh_sword.glb duy_anh_sword_hand.glb --bone hand_r --size 0.48 --grip 0.12 --rot 90,0,0`
    `python3 -I tools/models/place_prop.py duy_anh_afk.glb duy_anh_shield.glb duy_anh_shield_hand.glb --bone hand_l --size 0.34 --grip 0.5 --grip-depth 0.1 --rot 0,-30,0 --offset 0.02,0,0`
 4. `build_units.py` cột vũ khí `["duy_anh_sword_hand:hand_r", "duy_anh_shield_hand:hand_l"]` — vật dính cứng, ảnh màu riêng.
+
+## Hoạt ảnh Mixamo (D-238)
+
+1. `to_mixamo.py` xuất thân tay không → `<tên>_mixamo.fbx`, tải lên Mixamo (Standard Skeleton, Use Symmetry).
+2. Tải gói / hoạt ảnh: FBX Binary, 30 fps, Keyframe Reduction none; một file With Skin (hoặc nhân vật T-pose), còn lại
+   Without Skin được; tick In Place nếu có (không có thì dùng `tên~` trong build_units để khóa dời ngang hông).
+3. `<venv bpy>/bin/python tools/models/mixamo_pack.py thân.fbx art_inbox/3d/<tên>_mixamo.glb thư_mục_fbx…`
+4. `place_prop.py <tên>_mixamo.glb vật.glb <tên>_sword_mx.glb --bone mixamorig:RightHand …` (cùng số như afk.ai).
+5. build_units: nguồn `"<tên>_mixamo.glb"`, bỏ xương `MIXAMO_FINGERS`, vũ khí `"<tên>_sword_mx:mixamorig:RightHand"`.
