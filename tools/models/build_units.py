@@ -31,7 +31,7 @@ UNITS = {
                 "Idle_Sword=idle,Jog=run,Sword_Regular_A+Sword_Regular_A_Rec@0.6=attack,Hit_Chest=hit,Death_B=death,"
                 "Idle Hurt=stun,Sword_Regular_B@0.5+Sword_Regular_B_Rec=cast,Shield_OneShot=skill_1,"
                 "Sword_Attack@0.5-1.92=skill_2,Sprint=sprint,Sword_Dash_RM~@0.2-0.9=dash", True, False,
-                ["duy_anh_sword:hand_r", "duy_anh_shield:hand_l"]),  # D-231: thân rig trơn, vũ khí gắn sau
+                ["duy_anh_sword_hand:hand_r", "duy_anh_shield_hand:hand_l"]),  # D-235: thân tay không + vũ khí riêng
     "brakk": ("brakk", "heroes/brakk",
               "Fighting Idle=idle,Jog=run,Melee_Hook+Melee_Hook_Rec=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
               "Punch_Cross=cast,NinjaJump_Start@0.2-0.96+NinjaJump_Land@0-0.7=skill_1,Defend=skill_2,Power Up=skill_3,"

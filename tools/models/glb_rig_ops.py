@@ -183,7 +183,10 @@ def attach_rigid(g, binc, array, src_path, joint_name, read):
     idx = array(wg, wb, wp["indices"]).astype(np.uint32).ravel()
     prim = {"attributes": attrs, "indices": _add_raw(g, binc, idx, 5125, "SCALAR")}
     body = g["meshes"][0]["primitives"][0]
-    if "material" in body:
+    own = _copy_material(g, binc, wg, wb, wp)  # D-235: vật dựng riêng có ảnh màu riêng
+    if own is not None:
+        prim["material"] = own
+    elif "material" in body:
         prim["material"] = body["material"]
     g["meshes"][0]["primitives"].append(prim)
     return count
@@ -197,3 +200,31 @@ def _add_raw(g, binc, arr, comp, kind):
     g["accessors"].append({"bufferView": len(g["bufferViews"]) - 1, "componentType": comp,
                            "count": len(arr), "type": kind})
     return len(g["accessors"]) - 1
+
+
+def _copy_material(g, binc, wg, wb, wp):
+    """Chép vật liệu + ảnh màu của vật (nếu ảnh khác ảnh của thân — vật tách từ cùng lưới thì dùng chung)."""
+    if "material" not in wp:
+        return None
+    mat = dict(wg["materials"][wp["material"]])
+    pbr = dict(mat.get("pbrMetallicRoughness", {}))
+    tex_ref = pbr.get("baseColorTexture")
+    if tex_ref is None:
+        return None
+    img = wg["images"][wg["textures"][tex_ref["index"]]["source"]]
+    bv = wg["bufferViews"][img["bufferView"]]
+    data = bytes(wb[bv.get("byteOffset", 0):bv.get("byteOffset", 0) + bv["byteLength"]])
+    for gi in g.get("images", []):  # cùng ảnh với thân (vũ khí tách từ chính lưới thân) → dùng vật liệu thân
+        gbv = g["bufferViews"][gi["bufferView"]]
+        if gbv["byteLength"] == len(data) and bytes(binc[gbv.get("byteOffset", 0):gbv.get("byteOffset", 0) + len(data)]) == data:
+            return None
+    binc += b"\0" * (-len(binc) % 4)
+    g["bufferViews"].append({"buffer": 0, "byteOffset": len(binc), "byteLength": len(data)})
+    binc += data
+    g.setdefault("images", []).append({"bufferView": len(g["bufferViews"]) - 1, "mimeType": img.get("mimeType", "image/jpeg")})
+    g.setdefault("textures", []).append({"source": len(g["images"]) - 1})
+    pbr["baseColorTexture"] = {"index": len(g["textures"]) - 1}
+    pbr.pop("metallicRoughnessTexture", None)
+    mat = {"name": mat.get("name", "prop"), "pbrMetallicRoughness": pbr}
+    g.setdefault("materials", []).append(mat)
+    return len(g["materials"]) - 1
