@@ -29,5 +29,12 @@ Tách vũ khí khỏi lưới cũ để lại chỗ ngón tay dính khiên; tố
 2. Tải gói / hoạt ảnh: FBX Binary, 30 fps, Keyframe Reduction none; một file With Skin (hoặc nhân vật T-pose), còn lại
    Without Skin được; tick In Place nếu có (không có thì dùng `tên~` trong build_units để khóa dời ngang hông).
 3. `<venv bpy>/bin/python tools/models/mixamo_pack.py thân.fbx art_inbox/3d/<tên>_mixamo.glb thư_mục_fbx…`
-4. `place_prop.py <tên>_mixamo.glb vật.glb <tên>_sword_mx.glb --bone mixamorig:RightHand …` (cùng số như afk.ai).
-5. build_units: nguồn `"<tên>_mixamo.glb"`, bỏ xương `MIXAMO_FINGERS`, vũ khí `"<tên>_sword_mx:mixamorig:RightHand"`.
+4. Dựng thẳng từ Mixamo: build_units nguồn `"<tên>_mixamo.glb"`, vũ khí đặt lại cho `mixamorig:RightHand` /
+   `LeftHand` (tư thế khiên Mixamo khác afk.ai — tính lại góc).
+
+## Lai: rig afk.ai + hoạt ảnh Mixamo bù chỗ thiếu (D-242, cách đang dùng cho Duy Anh)
+
+Thân afk.ai và thân Mixamo phải là **cùng một lưới** (cùng `<tên>_front.glb`). `retarget.py` đặt xương afk sao cho
+biến dạng lưới y như xương Mixamo tương ứng (ngón tay giữ nguyên), thêm hoạt ảnh `MX <tên>` vào bản sao file afk:
+`python3 -I tools/models/retarget.py <tên>_afk.glb <tên>_mixamo.glb <tên>_afk_mx.glb "sword and shield slash" …`
+build_units: nguồn `"<tên>_afk_mx.glb"`, dùng `MX <tên>` như hoạt ảnh afk (kể cả `~`, `@`), vũ khí như afk.ai.

@@ -144,7 +144,7 @@ def _remove_nodes(g, dropped, kept):
                          for k, c in enumerate(chans)]
 
 
-def in_place(g, binc, array, anim, root_names=("root",), hip_names=("mixamorig:Hips",)):
+def in_place(g, binc, array, anim, root_names=("root",), hip_names=("mixamorig:Hips", "pelvis")):
     """`tên~` (D-229): bỏ dời chỗ của xương gốc (hoạt ảnh 'RM' có tiến tới) — sim đã tự di chuyển đơn vị.
     Mixamo (D-238) không có xương gốc: khóa dời ngang của hông, giữ trục đứng (trục có tọa độ nghỉ lớn nhất) để
     còn nhún / nhảy."""
