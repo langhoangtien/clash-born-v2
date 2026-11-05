@@ -103,6 +103,7 @@ func setup(w: World, units_view: UnitsView, aim_indicator: AimIndicator) -> void
 	add_child(overlay)
 	add_child(projectiles)
 	add_child(skill_vfx)
+	skill_vfx.position_of = func(e: Entity) -> Vector3: return to_3d(units.display_position(e))
 
 
 func to_3d(p: Vector2) -> Vector3:

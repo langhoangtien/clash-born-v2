@@ -3,17 +3,20 @@ extends Node3D
 ## D-247: hiệu ứng chiêu 3D theo công thức dữ liệu (assets/vfx/vfx.json, khóa = art_id kỹ năng). Chỉ đọc World:
 ## `ability_finished` (chiêu ra, đúng lúc gây tác dụng) sinh các mảnh của công thức; `damage_taken` do chủ chiêu gây
 ## trong HIT_TICKS tick sau đó sinh tia lóe trên mục tiêu. Mảnh tự gỡ khi hết `life`. Code không biết tên chiêu.
+## `trail` (D-250): vệt gió đi theo chủ chiêu suốt `life` (vd thời gian tăng tốc), chỉ hiện khi đang chạy.
 
 const RECIPES: String = "res://assets/vfx/vfx.json"
 const TEXTURES: String = "res://assets/vfx/%s.png"
 const SWEEP_SHADER: Shader = preload("res://view/three/skill_sweep.gdshader")
 const HIT_TICKS: int = 4  ## hằng số hiển thị: sát thương của chủ chiêu trong 4 tick sau khi chiêu ra coi là trúng chiêu
 const SWEEP_SEGMENTS: int = 28  ## hằng số kỹ thuật: số đoạn của dải lưỡi liềm
-const SWEEP_TAIL: float = 0.55  ## độ dài đuôi vệt quét (phần góc quạt), khớp `tail` của shader
 
 static var _recipes: Dictionary = {}
 
-var _items: Array[Array] = []  # [Node3D, loại, tuổi (giây), part]
+var _items: Array[Array] = []  # [Node3D, loại, tuổi (giây), part, id chủ chiêu]
+var _world: World
+## Vị trí 3D đang vẽ của đơn vị (MatchView3D đặt = vị trí nội suy); mặc định theo vị trí sim.
+var position_of: Callable = func(e: Entity) -> Vector3: return _ground(e.position, {})
 var _armed: Dictionary[int, Array] = {}  # id chủ chiêu → [tick chiêu ra, part hit]
 
 
@@ -24,6 +27,7 @@ static func recipes() -> Dictionary:
 
 
 func on_event(w: World, ev: GameEvent) -> void:
+	_world = w
 	match ev.type:
 		&"ability_finished":
 			_cast(w, ev)
@@ -43,6 +47,8 @@ func _process(delta: float) -> void:
 func advance(delta: float) -> void:
 	for it: Array in _items:
 		it[2] += delta
+		if it[1] == "trail":
+			_follow(it, delta)
 		_animate(it)
 	for it: Array in _items.filter(func(x: Array) -> bool: return x[2] >= float(x[3].get("life", 0.3))):
 		(it[0] as Node3D).queue_free()
@@ -63,6 +69,10 @@ func _cast(w: World, ev: GameEvent) -> void:
 				_add(_quad(part["tex"], part, false), "burst", part, _ground(at, part))
 			"hit":
 				_armed[e.id] = [w.tick, part]
+			"trail":
+				var live: Dictionary = part.duplicate()
+				live["life"] = _value(e, a, part.get("life", 1.0))
+				_add(_trail_node(live), "trail", live, position_of.call(e), e.id)
 
 
 func _hit(w: World, ev: GameEvent) -> void:
@@ -77,10 +87,10 @@ func _hit(w: World, ev: GameEvent) -> void:
 	_add(node, "hit", part, _ground(target.position, part))
 
 
-func _add(node: Node3D, kind: String, part: Dictionary, at: Vector3) -> void:
+func _add(node: Node3D, kind: String, part: Dictionary, at: Vector3, owner_id: int = -1) -> void:
 	node.position = at
 	add_child(node)
-	var it: Array = [node, kind, 0.0, part]
+	var it: Array = [node, kind, 0.0, part, owner_id]
 	_items.append(it)
 	_animate(it)
 
@@ -113,7 +123,6 @@ func _sweep_node(e: Entity, a: AbilityInstance, part: Dictionary) -> MeshInstanc
 	mat.shader = SWEEP_SHADER
 	mat.set_shader_parameter("color", Color(part.get("color", "#4080ff")))
 	mat.set_shader_parameter("edge", Color(part.get("edge", "#ffffff")))
-	mat.set_shader_parameter("tail", SWEEP_TAIL)
 	mi.material_override = mat
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mi
@@ -140,19 +149,55 @@ static func _quad(tex: String, part: Dictionary, additive: bool) -> MeshInstance
 	return mi
 
 
+## Vệt gió: `count` dải phẳng sau lưng (ảnh `tex`, đầu sáng sát người), xếp theo độ cao.
+static func _trail_node(part: Dictionary) -> Node3D:
+	var root: Node3D = Node3D.new()
+	var n: int = int(part.get("count", 3))
+	for k: int in n:
+		var strip: MeshInstance3D = _quad(part["tex"], part, false)  # phủ màu: cộng sáng mất hút trên nền cát sáng
+		strip.material_override.billboard_mode = BaseMaterial3D.BILLBOARD_DISABLED
+		(strip.mesh as QuadMesh).size = Vector2(float(part.get("length", 1.0)), float(part.get("width", 0.12)))
+		strip.rotation = Vector3(-PI * 0.5, PI * 0.5, 0.0)  # nằm phẳng, chiều dài ảnh dọc ra sau lưng, đầu đậm sát người
+		var side: float = (float(k) - (n - 1) * 0.5) * 0.18
+		strip.position = Vector3(side, float(part.get("height", 0.4)) + 0.22 * k, -0.5 * float(part.get("length", 1.0)) - 0.15)
+		root.add_child(strip)
+	return root
+
+
+func _follow(it: Array, delta: float) -> void:
+	var e: Entity = _world.find_entity(it[4]) if _world != null else null
+	if e == null or not e.alive:
+		it[2] = INF
+		return
+	var node: Node3D = it[0]
+	var at: Vector3 = position_of.call(e)
+	var moving: bool = at.distance_to(node.position) > 0.001
+	node.position = at
+	if e.facing != Vector2.ZERO:
+		node.rotation.y = atan2(e.facing.x, e.facing.y)
+	node.set_meta("show", move_toward(float(node.get_meta("show", 0.0)), 1.0 if moving else 0.0, delta * 6.0))
+
+
 func _animate(it: Array) -> void:
 	var part: Dictionary = it[3]
 	var t: float = clampf(it[2] / float(part.get("life", 0.3)), 0.0, 1.0)
 	match it[1]:
 		"sweep":
 			var mat: ShaderMaterial = (it[0] as MeshInstance3D).material_override
-			mat.set_shader_parameter("progress", clampf(it[2] / float(part.get("sweep", 0.2)), 0.0, 1.0) * (1.0 + SWEEP_TAIL))
-			mat.set_shader_parameter("fade", 1.0 - t * t)
+			var sweep: float = float(part.get("sweep", 0.2))
+			mat.set_shader_parameter("progress", clampf(it[2] / sweep, 0.0, 1.0) * 1.05)
+			var after: float = clampf((it[2] - sweep) / maxf(0.01, float(part.get("life", 0.5)) - sweep), 0.0, 1.0)
+			mat.set_shader_parameter("fade", 1.0 - after * after)  # D-250: quét xong đứng lại rồi tan dần
 		"burst":
 			var frames: int = int(part.get("frames", 1))
 			var k: int = mini(int(t * frames * frames), frames * frames - 1)
 			var mat: StandardMaterial3D = (it[0] as MeshInstance3D).material_override
 			mat.uv1_offset = Vector3(float(k % frames) / frames, float(k / frames) / frames, 0.0)
+		"trail":
+			var show: float = float((it[0] as Node3D).get_meta("show", 0.0)) * (1.0 - smoothstep(0.85, 1.0, t))
+			for k: int in (it[0] as Node3D).get_child_count():
+				var strip: MeshInstance3D = (it[0] as Node3D).get_child(k)
+				(strip.material_override as StandardMaterial3D).albedo_color.a = show * (0.7 + 0.2 * sin(it[2] * 11.0 + k * 2.1))
 		"hit":
 			(it[0] as Node3D).scale = Vector3.ONE * (0.4 + 1.2 * sin(PI * minf(t * 1.4, 1.0)))
 			var mat: StandardMaterial3D = (it[0] as MeshInstance3D).material_override

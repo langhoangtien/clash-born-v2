@@ -850,3 +850,20 @@ Game sẽ dựng hiệu ứng chiêu bằng hạt / mặt phẳng / vệt sáng 
 Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng (kèm ảnh tổng hợp `07_vfx/_preview_v1.png`).
 
 - [x] V1 xong 15 ảnh
+
+## Đợt V2 — vệt chém & vệt gió riêng (người dùng gửi ảnh mẫu "vệt chém ánh sáng") — 2026-11-05
+
+Đã duyệt hướng **A. Vệt chém ánh sáng** (lưỡi liềm sáng viền mềm, mặt quạt mờ có vệt tốc độ, tan dần). Game đang vẽ bằng
+shader; cần ảnh để có **chất liệu vẽ tay** như ảnh mẫu. Quy tắc chung như V1 (PNG nền trong suốt, mép mờ dần, lưu
+`art_inbox/07_vfx/`, ảnh "trắng xám" để game tô màu).
+
+| File | Loại | Nội dung |
+|---|---|---|
+| `vfx_slash_arc.png` | trắng xám, 1024 × 512 | Vệt chém lưỡi liềm **nhìn từ trên xuống**, cung ~150°, tâm quạt ở giữa mép dưới ảnh: mép ngoài là lưỡi sáng dày giữa nhọn hai đầu, bên trong là mặt quạt mờ dần về tâm với 4–6 vệt tốc độ tỏa ra |
+| `vfx_slash_arc_sheet.png` | trắng xám, 4×4 | Cùng vệt trên, 16 khung: khung 1–6 cung mọc dần từ trái sang phải, 7–10 đứng yên sáng nhất, 11–16 mảnh dần và tan |
+| `vfx_wind.png` | trắng xám, 1024 × 256 | Làn gió nằm ngang: 2–3 dải mảnh uốn lượn, trái đậm, nhạt dần sang phải (vệt tăng tốc sau lưng) |
+| `vfx_shockwave_dust.png` | màu, 1024 × 512 | Sóng xung kích bụi đất hình quạt nhìn từ trên (như mẫu B), màu đất vàng nhạt, mép mờ |
+
+Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng (kèm `07_vfx/_preview_v2.png`).
+
+- [ ] V2 xong 4 ảnh

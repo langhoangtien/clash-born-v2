@@ -31,7 +31,7 @@ func collect(w: World) -> void:
 func draw(ci: GroundCanvas, w: World) -> void:
 	for r: Array in w.recent_areas:
 		var age: float = (w.tick - r[2]) / 15.0
-		if age < 1.0:
+		if age < 1.0 and not (r.size() > 9 and SkillVfx3D.recipes().has(String(r[9]))):  # D-250: chiêu có hiệu ứng 3D riêng
 			_area(ci, r, Color((BLUE if r[3] == 0 else RED).lightened(0.4), 1.0 - age))
 	for f: Array in flashes:
 		var age: float = float(w.tick - f[3]) / LIFE.get(f[0], 10)
