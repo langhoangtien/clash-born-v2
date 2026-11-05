@@ -861,7 +861,7 @@ shader; cần ảnh để có **chất liệu vẽ tay** như ảnh mẫu. Quy t
 |---|---|---|
 | `vfx_slash_arc.png` | trắng xám, 1024 × 512 | Vệt chém lưỡi liềm **nhìn từ trên xuống**, cung ~150°, tâm quạt ở giữa mép dưới ảnh: mép ngoài là lưỡi sáng dày giữa nhọn hai đầu, bên trong là mặt quạt mờ dần về tâm với 4–6 vệt tốc độ tỏa ra |
 | `vfx_slash_arc_sheet.png` | trắng xám, 4×4 | Cùng vệt trên, 16 khung: khung 1–6 cung mọc dần từ trái sang phải, 7–10 đứng yên sáng nhất, 11–16 mảnh dần và tan |
-| `vfx_wind.png` | trắng xám, 1024 × 256 | Làn gió nằm ngang: 2–3 dải mảnh uốn lượn, trái đậm, nhạt dần sang phải (vệt tăng tốc sau lưng) |
+| `vfx_wind.png` | màu, 1024 × 256 | **Theo ảnh mẫu `07_vfx/ref/ref_wind.png`**: 1–2 dải gió mảnh **cong nhẹ** như nét cọ, lõi trắng sáng, viền xanh dương lạnh, hai đầu vuốt nhọn mờ dần, có quầng mờ xanh mỏng quanh dải; nền trong suốt (vệt tăng tốc sau lưng Duy Anh) |
 | `vfx_shockwave_dust.png` | màu, 1024 × 512 | Sóng xung kích bụi đất hình quạt nhìn từ trên (như mẫu B), màu đất vàng nhạt, mép mờ |
 
 Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng (kèm `07_vfx/_preview_v2.png`).
