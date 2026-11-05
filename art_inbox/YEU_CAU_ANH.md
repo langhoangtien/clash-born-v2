@@ -866,4 +866,4 @@ shader; cần ảnh để có **chất liệu vẽ tay** như ảnh mẫu. Quy t
 
 Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng (kèm `07_vfx/_preview_v2.png`).
 
-- [ ] V2 xong 4 ảnh
+- [x] V2 xong 4 ảnh
