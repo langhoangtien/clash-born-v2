@@ -480,3 +480,25 @@ Dao `noctis_dagger_front/side.png` giữ nguyên. Nền xám nhạt trơn, khôn
 - [x] `noctis_front.png`
 - [x] `noctis_side.png`
 - [x] `noctis_back.png`
+
+
+### T9d — Noctis bỏ áo choàng (2026-11-05)
+
+T9c đã dựng vào game, nhưng gắn xương trên Mixamo **áo choàng vẫn dính** vào chân / tay, làm hoạt ảnh khó. Người dùng
+chọn **bỏ hẳn áo choàng**. Vẽ lại `noctis_front/_side/_back.png` (đè bản T9c), **giữ** mọi thứ khác của T9c (mũ trùm
+tím, khăn che mặt đen, mắt xanh ngọc, tóc xanh lộ dưới mũ, giáp đen viền bạc, đá ngọc xanh, tỉ lệ chibi, A-pose tay dang
+~45°, hai nắm tay khép rỗng); **đổi**:
+
+1. **Không áo choàng, không vạt / tà / dải vải** nào buông từ vai, lưng hay hông. Mũ trùm chỉ phủ đầu và **dừng ở vai**
+   (như mũ áo hoodie), không kéo dài xuống lưng.
+2. Khăn quàng cổ **ngắn, ôm sát cổ**, không có đuôi khăn buông.
+3. Lưng và mông thấy rõ bộ đồ bó / giáp (vẽ cho đẹp vì giờ nhìn thấy): áo giáp da tím – đen ôm người, thắt lưng gọn.
+4. Giữa hai chân, giữa tay và thân có **khe hở rõ** (không có gì nối chúng).
+5. Ảnh nghiêng nhìn từ **bên phải** (mặt quay về phía phải ảnh).
+
+Dao giữ nguyên. Nền xám nhạt trơn, không bóng / chữ. Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo
+người dùng.
+
+- [ ] `noctis_front.png`
+- [ ] `noctis_side.png`
+- [ ] `noctis_back.png`
