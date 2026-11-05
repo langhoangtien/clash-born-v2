@@ -17,10 +17,22 @@ func run(world: World) -> void:
 			continue
 		if c.returning:
 			_return(world, c, members)
-			continue
-		_note_hits(world, c)
-		if c.target_id >= 0:
-			_aggro(world, c, members)
+		else:
+			_note_hits(world, c)
+			if c.target_id >= 0:
+				_aggro(world, c, members)
+		var asleep: bool = not c.returning and c.target_id < 0 and not _anyone_near(world, c)
+		for e: Entity in members:
+			e.asleep = asleep  # JGL-08
+
+
+## JGL-08 (D-265): có đơn vị phe 0 / 1 trong `jungle_sleep_radius` quanh tâm trại.
+static func _anyone_near(world: World, c: CampState) -> bool:
+	var r: float = world.balance.jungle_sleep_radius
+	for e: Entity in world.spatial_near(c.center, r, World.Phase.CONTROLLER, false):
+		if (e.team == 0 or e.team == 1) and e.position.distance_to(c.center) <= r:
+			return true
+	return false
 
 
 func _alive(world: World, c: CampState) -> Array[Entity]:

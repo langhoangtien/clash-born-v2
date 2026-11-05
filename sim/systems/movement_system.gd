@@ -125,8 +125,8 @@ func _path_still_walkable(nav: MapNavigation, e: Entity) -> bool:
 func _separate(world: World) -> void:
 	var max_push: float = world.balance.separation_speed * SimClock.TICK_SECONDS
 	for a: Entity in world.entities:
-		if not a.alive or a.dash != null or a.knockback != null or a.kind == Entity.Kind.WARD:
-			continue  # WRD-02: ward không chắn ai
+		if not a.alive or a.dash != null or a.knockback != null or a.kind == Entity.Kind.WARD or a.asleep:
+			continue  # WRD-02: ward không chắn ai; JGL-08: quái trại đang ngủ không tự đẩy tách
 		# Lưới dựng một lần ở đầu bước đẩy; vị trí đổi trong lúc đẩy chỉ làm lọc thô kém đi
 		# vài đơn vị, kết quả vẫn xác định vì thứ tự theo id.
 		var later: Array[Entity] = []

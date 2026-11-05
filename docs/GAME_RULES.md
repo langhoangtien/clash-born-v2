@@ -232,6 +232,9 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `VIS-07` Ra tay thì lộ: bắt đầu vung đòn đánh (`attack_started`) hoặc tung chiêu
   (`ability_cast`) → lộ `bush_reveal_time` giây, tính từ tick sau sự kiện. Đang lộ thì
   bụi không che (vẫn cần trong tầm nhìn VIS-01).
+- `VIS-09` (D-265) Đội trung lập (quái rừng) chỉ được tính tầm nhìn khi có trại đang AGGRO / RETURN_HOME
+  hoặc một quái rừng bị gây sát thương ở tick trước; lúc khác đội trung lập không thấy ai (quái không chủ
+  động đánh ai, JGL-04). Hai đội người chơi vẫn tính đủ mỗi tick.
 - `VIS-05` Mất tầm nhìn tới mục tiêu: lệnh đánh/chiêu nhắm đơn vị bị hủy; đạn đã bay
   vẫn trúng. Không ra lệnh đánh / chiêu nhắm đơn vị lên kẻ không thấy (BAD_TARGET); nút
   đánh, lính, trụ chỉ chọn kẻ đang thấy. Vùng và đạn kỹ năng vẫn trúng kẻ không thấy (ABL-07).
@@ -661,6 +664,10 @@ Bảng ưu tiên (dòng trên thắng):
   siêu lính ở mọi lane: máu × `mega_creep_hp`, sát thương × `mega_creep_damage` (thay cho hệ số
   siêu cấp), thêm `mega_extra_melee` lính cận chiến mỗi đợt, vàng × `mega_creep_bounty`.
   Nhân với hệ số CRP-11.
+- `CRP-13` (D-265) Nhịp nghĩ: lính nghĩ lại mỗi 2 tick so le theo id (D-108); xong lệnh / đứng yên thì nghĩ
+  ngay. Lần nghĩ không có mục tiêu (đang đi đường, CRP-05) thì lần sau chờ thêm `creep_calm_think_time` giây
+  (0,2 s) — lính thấy địch muộn tối đa chừng đó. Bị gây sát thương (tick trước) hoặc nhận hero gây sự
+  (CRP-01) thì bỏ chờ, về nhịp 2 tick ngay.
 
 ## STR — Công trình
 
@@ -702,6 +709,9 @@ Quái rừng thuộc đội trung lập (đội 2), là **kẻ địch của m�
 - `JGL-07` Thưởng (D-76): hero kết liễu → vàng + last hit (ECO-01); XP chia cho hero **cùng
   phe kẻ hạ** trong `xp_share_range` (ECO-03). Lính / trụ hạ → không ai được vàng, XP chia
   cho hero phe kẻ hạ ở gần.
+- `JGL-08` (D-265) Trại ngủ: trại IDLE (không mục tiêu, không đang về) và không có đơn vị sống phe 0 / 1
+  nào trong `jungle_sleep_radius` quanh tâm trại → quái của trại không tự đẩy tách (MOV-04; đơn vị khác
+  vẫn đẩy được chúng). Có ai vào bán kính, hoặc trại bị đánh, thì thức ngay tick đó.
 
 ## DTH — Chết và hồi sinh tại chỗ
 

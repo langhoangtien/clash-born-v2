@@ -12,6 +12,8 @@ extends SimSystem
 
 ## Hằng số kỹ thuật: số đội có tầm nhìn (0, 1, trung lập 2).
 const TEAMS: int = 3
+## Hằng số kỹ thuật: đội trung lập (quái rừng, JGL).
+const NEUTRAL: int = 2
 const REVEAL_EVENTS: Array[StringName] = [&"attack_started", &"ability_cast"]
 
 var _eyes: Array[PackedVector2Array] = []
@@ -27,18 +29,34 @@ func run(world: World) -> void:
 	_mark_reveals(world)
 	_collect(world)
 	var sight_sq: float = world.balance.fountain_true_sight * world.balance.fountain_true_sight
+	var teams: int = TEAMS if neutral_needed(world) else NEUTRAL  # VIS-09
 	for e: Entity in world.entities:
 		var mask: int = 1 << e.team
 		if e.alive:
 			var revealed: int = _revealed_by(e)
 			var invisible: bool = Rules.has_state(e, UnitState.Id.INVISIBLE)
 			var covered: bool = e.bush_id >= 0 and world.tick > e.reveal_until_tick
-			for t: int in range(TEAMS):
+			for t: int in range(teams):
 				# D-264: các điều kiện không có tác dụng phụ → xét cái hay đúng trước (cùng kết quả)
 				if t != e.team and (revealed & (1 << t) != 0 or ((not invisible or _sentry_sight(e, t)) and _plain_seen(e, t, covered)) \
 						or _tower_sight(e, t) or _true_sight(world, t, e, sight_sq)):
 					mask |= 1 << t
 		e.visible_mask = mask
+
+
+## VIS-09 (D-265): phe trung lập chỉ cần thấy khi có trại đang đánh / đang về, hoặc quái rừng vừa bị đánh ở
+## tick trước (JGL-01 nhận kẻ đánh ở pha CONTROLLER ngay sau pha này). Lúc khác quái không chủ động đánh ai
+## (JGL-04) nên không tính — bit đội trung lập tắt.
+static func neutral_needed(world: World) -> bool:
+	for c: CampState in world.camps:
+		if c.target_id >= 0 or c.returning:
+			return true
+	for ev: GameEvent in world.previous_events:
+		if ev.type == &"damage_taken":
+			var e: Entity = world.find_entity(ev.target_id)
+			if e != null and e.team == NEUTRAL:
+				return true
+	return false
 
 
 func _collect(world: World) -> void:

@@ -32,6 +32,10 @@ var visible_mask: int = -1
 var bush_id: int = -1
 ## D-264: vị trí lúc tra `bush_id` gần nhất (VisionSystem chỉ tra lại khi đổi chỗ).
 var bush_checked_at: Vector2 = Vector2.INF
+## CRP-13: lính đường đang đi đường thì chưa nghĩ lại trước tick này (-1 = nhịp thường). LaneCreepController ghi.
+var calm_until_tick: int = -1
+## JGL-08: quái rừng của trại đang ngủ (không tự đẩy tách). JungleController ghi.
+var asleep: bool = false
 var reveal_until_tick: int = -1
 var siege: bool = false
 ## CRP-12: 0 thường, 1 lính siêu cấp, 2 siêu lính.

@@ -64,6 +64,8 @@ extends Resource
 @export var creep_hero_aggro_range: float
 @export var creep_hero_aggro_time: float
 @export var creep_front_margin: float
+## CRP-13 (D-265): lính đang đi đường (lần nghĩ trước không có mục tiêu) nghĩ lại sau chừng này giây.
+@export var creep_calm_think_time: float
 
 @export_group("Cửa hàng (SHOP)")
 ## SHOP-02: bán kính quanh shop ẩn.
@@ -80,6 +82,8 @@ extends Resource
 ## JGL-01: bỏ đuổi khi mục tiêu / quái ra xa tâm trại chừng này, hoặc chừng này giây không bị đánh.
 @export var jungle_leash: float
 @export var jungle_aggro_time: float
+## JGL-08 (D-265): trại ngủ khi không có đơn vị phe 0 / 1 nào trong bán kính này quanh tâm trại.
+@export var jungle_sleep_radius: float
 
 @export_group("Hero")
 ## ABL-04: mỗi lần đổi điểm thừa cộng chừng này vào cả 3 thuộc tính.

@@ -17,14 +17,28 @@ var _next_cache: Dictionary[int, Entity] = {}
 
 
 func run(world: World) -> void:
+	var hit: Dictionary[int, bool] = _hit_last_tick(world)
 	for c: Entity in world.entities:
 		if c.kind == Entity.Kind.LANE_CREEP and c.alive:
-			_remember_aggro(world, c)
-			if (world.tick + c.id) % THINK_TICKS == 0 or c.order.finished or c.order.type == Order.Type.IDLE:
+			if _remember_aggro(world, c) or hit.has(c.id):
+				c.calm_until_tick = -1  # CRP-13: bị đánh / hero phe mình bị đánh gần → thôi nhịp đi đường
+			var due: bool = (world.tick + c.id) % THINK_TICKS == 0 and world.tick >= c.calm_until_tick
+			if due or c.order.finished or c.order.type == Order.Type.IDLE:
 				_think(world, c)  # D-108: nghĩ mỗi 2 tick (so le theo id), xong lệnh thì nghĩ ngay
 
 
-func _remember_aggro(world: World, c: Entity) -> void:
+## CRP-13: đơn vị nhận sát thương ở tick trước (một lần duyệt sự kiện cho cả lượt).
+static func _hit_last_tick(world: World) -> Dictionary[int, bool]:
+	var out: Dictionary[int, bool] = {}
+	for ev: GameEvent in world.previous_events:
+		if ev.type == &"damage_taken":
+			out[ev.target_id] = true
+	return out
+
+
+## CRP-01; trả về true nếu vừa nhận hero gây sự.
+func _remember_aggro(world: World, c: Entity) -> bool:
+	var stirred: bool = false
 	for ev: GameEvent in world.previous_hero_fights():
 		var attacker: Entity = world.find_entity(ev.source_id)
 		var victim: Entity = world.find_entity(ev.target_id)
@@ -32,10 +46,13 @@ func _remember_aggro(world: World, c: Entity) -> void:
 				and c.position.distance_to(victim.position) <= world.balance.creep_hero_aggro_range:
 			c.aggro_target_id = attacker.id
 			c.aggro_until_tick = world.tick + SimClock.seconds_to_ticks(world.balance.creep_hero_aggro_time)
+			stirred = true
+	return stirred
 
 
 func _think(world: World, c: Entity) -> void:
 	var route: LaneRoute = LaneRoute.of(world, c.lane, c.team)
+	c.calm_until_tick = -1
 	if c.returning:
 		if route.distance_to_route(c.position) <= c.radius + 16.0 or (c.order.type == Order.Type.MOVE and c.order.finished):
 			c.returning = false
@@ -46,6 +63,7 @@ func _think(world: World, c: Entity) -> void:
 	var target: Entity = _pick(world, c)
 	if target == null:
 		c.has_origin = false
+		c.calm_until_tick = world.tick + SimClock.seconds_to_ticks(world.balance.creep_calm_think_time)  # CRP-13
 		_advance(world, c, route)
 		return
 	if not c.has_origin or Rules.is_structure(target):
