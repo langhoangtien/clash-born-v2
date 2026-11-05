@@ -455,8 +455,9 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `SHOP-07` Mỗi món thuộc một danh mục (`category`): Tấn công, Phép, Phòng thủ, Tiện ích. Cửa
   hàng có thêm hai bộ lọc: Tất cả và Shop ẩn. Danh mục chỉ để hiển thị, không đổi luật mua bán.
 - `SHOP-09` (ECO-06, D-106) Ghép đồ: món có `components` ghép từ các món đó (lặp được). Mua món
-  ghép khi đang có thành phần (một cấp, mỗi ô dùng một lần, theo thứ tự thành phần): trả
-  `cost` − tổng giá thành phần đang có, thành phần biến mất, món mới vào ô trống đầu tiên. Đầy ô
+  ghép khi đang có thành phần (**mọi tầng**, D-254: thành phần trực tiếp trước, không có thì tìm trong thành
+  phần của nó; mỗi ô dùng một lần, theo thứ tự thành phần): trả `cost` − tổng giá các món đang có được dùng,
+  các món đó biến mất, món mới vào ô trống đầu tiên. Đầy ô
   nhưng có ít nhất một thành phần thì vẫn mua được. Bán món ghép: theo giá món (SHOP-05).
 - `SHOP-10` (D-117) Thứ tự lên đồ (`BuildPlan`): món kế tiếp = món đầu tiên trong danh sách chưa
   có (đã ghép vào món lớn hơn cũng tính là có). Mua lúc này: món đó nếu mua được, không thì thành

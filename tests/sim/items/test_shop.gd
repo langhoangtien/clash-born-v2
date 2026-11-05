@@ -171,3 +171,21 @@ func test_SHOP_09_recipe_pays_difference_and_consumes_components() -> void:
 	Items.give(w, h, w.item_catalog[&"circlet"])
 	assert_eq(_buy(w, h, &"bracer"), R.NONE, "đầy ô nhưng ghép từ thành phần đang có thì vẫn mua được")
 	assert_true(Items.slots(h).any(func(it: ItemInstance) -> bool: return it != null and it.def.id == &"bracer"))
+
+
+## D-254 (người chơi: có thành phần con rồi mà bấm món lớn lại mua nguyên giá, thừa món cũ; đầy ô thì không mua
+## được): SHOP-09 ghép mọi tầng — thành phần của thành phần cũng được trừ giá và ghép vào.
+func test_SHOP_09_recipe_uses_nested_components() -> void:
+	var w: World = _world()
+	var h: Entity = _hero(w)
+	var sage: ItemDef = w.item_catalog[&"sage_cloak"]
+	var cloak: ItemDef = w.item_catalog[&"cloak"]
+	Items.give(w, h, cloak)
+	assert_eq(Shop.price(w, h, sage), sage.cost - cloak.cost, "Áo Choàng (thành phần của Áo Choàng Phép) được trừ giá")
+	h.gold = sage.cost
+	for i: int in range(5):
+		Items.give(w, h, w.item_catalog[&"iron_branch"])
+	assert_eq(_buy(w, h, &"sage_cloak"), R.NONE, "đầy 6 ô nhưng có thành phần con: vẫn mua được")
+	assert_eq(h.gold, cloak.cost, "chỉ trả phần thiếu")
+	assert_false(Items.slots(h).any(func(it: ItemInstance) -> bool: return it != null and it.def.id == &"cloak"), "Áo Choàng đã ghép vào")
+	assert_true(Items.slots(h).any(func(it: ItemInstance) -> bool: return it != null and it.def.id == &"sage_cloak"))

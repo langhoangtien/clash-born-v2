@@ -29,37 +29,42 @@ static func buy_problem(world: World, e: Entity, id: StringName) -> R:
 
 ## SHOP-02 / SHOP-11 (D-167): món shop ẩn, hoặc món ghép mà phần còn thiếu (đi sâu) có đồ shop ẩn.
 static func needs_secret_shop(world: World, e: Entity, def: ItemDef) -> bool:
-	if def.shop == ItemDef.ShopKind.SECRET:
-		return true
 	var held: Array[StringName] = []
 	for index: int in owned_components(world, e, def):
 		held.append(Items.slots(e)[index].def.id)
-	for id: StringName in def.components:
-		if held.has(id):
-			held.erase(id)
-		elif world.item_catalog.has(id) and _has_secret(world, world.item_catalog[id]):
-			return true
-	return false
+	return _missing_secret(world, def, held)
 
 
-static func _has_secret(world: World, def: ItemDef) -> bool:
+## Phần còn thiếu của `def` (trừ dần các món đang có `held`, cùng thứ tự với owned_components) có đồ shop ẩn không.
+static func _missing_secret(world: World, def: ItemDef, held: Array[StringName]) -> bool:
 	if def.shop == ItemDef.ShopKind.SECRET:
 		return true
 	for id: StringName in def.components:
-		if world.item_catalog.has(id) and _has_secret(world, world.item_catalog[id]):
+		if held.has(id):
+			held.erase(id)
+		elif world.item_catalog.has(id) and _missing_secret(world, world.item_catalog[id], held):
 			return true
 	return false
 
 
-## SHOP-09: ô đồ của các thành phần đang có sẽ được ghép (mỗi ô dùng một lần, theo thứ tự thành phần).
+## SHOP-09 (D-254: mọi tầng): ô đồ của các thành phần đang có sẽ được ghép — thành phần trực tiếp trước, không có
+## thì tìm trong thành phần của nó (đi sâu); mỗi ô dùng một lần, theo thứ tự thành phần.
 static func owned_components(world: World, e: Entity, def: ItemDef) -> Array[int]:
 	var used: Array[int] = []
+	_collect(world, e, def, used)
+	return used
+
+
+static func _collect(world: World, e: Entity, def: ItemDef, used: Array[int]) -> void:
 	for id: StringName in def.components:
+		var found: bool = false
 		for it: ItemInstance in Items.slots(e):
 			if it != null and it.def.id == id and not used.has(it.index):
 				used.append(it.index)
+				found = true
 				break
-	return used
+		if not found and world.item_catalog.has(id):
+			_collect(world, e, world.item_catalog[id], used)
 
 
 ## SHOP-09: giá phải trả = giá món − giá các thành phần đang có.
