@@ -32,6 +32,12 @@ static func save_level(level: Level) -> void:
 static func apply(vp: Viewport, level: Level) -> void:
 	vp.msaa_3d = Viewport.MSAA_DISABLED
 	vp.scaling_3d_scale = SCALES[level]
+	vp.scaling_3d_mode = upscale_mode(RenderingServer.get_current_rendering_method())  # D-258
+
+
+## D-258: cách phóng cảnh 3D khi vẽ dưới 100%: FSR (sắc nét) nếu trình vẽ hỗ trợ (Mobile / Forward+), không thì bilinear.
+static func upscale_mode(method: String) -> Viewport.Scaling3DMode:
+	return Viewport.SCALING_3D_MODE_BILINEAR if method == "gl_compatibility" else Viewport.SCALING_3D_MODE_FSR
 
 
 static func load_show_fps() -> bool:

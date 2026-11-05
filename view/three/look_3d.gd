@@ -37,9 +37,7 @@ static func environment() -> Environment:
 	e.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	e.ambient_light_color = AMBIENT_COLOR
 	e.ambient_light_energy = 0.7
-	e.adjustment_enabled = true
-	e.adjustment_saturation = 1.1
-	e.adjustment_contrast = 1.05
+	# D-258: không bật adjustment (bão hòa / tương phản) — trên Compatibility nó thêm một lượt toàn màn hình mỗi khung.
 	e.fog_enabled = true  # sương mỏng ở xa: có chiều sâu, che bớt phần đất xa độ phân giải thấp
 	e.fog_mode = Environment.FOG_MODE_DEPTH
 	e.fog_light_color = HAZE_COLOR

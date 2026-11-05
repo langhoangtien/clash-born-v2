@@ -16,3 +16,17 @@ func test_D_181_levels_set_3d_scale_without_msaa() -> void:
 func test_D_181_default_level_is_low() -> void:
 	var cfg: ConfigFile = ConfigFile.new()
 	assert_eq(cfg.get_value("graphics", "level", GraphicsSetting.DEFAULT), GraphicsSetting.Level.LOW)
+
+
+## D-258 (đo trên máy tính bảng: chỉ độ phân giải đổi FPS, tắt mọi phần vẽ không lên): bỏ chỉnh màu của
+## Environment — trên Compatibility nó thêm một lượt xử lý toàn màn hình mỗi khung, tốn theo độ phân giải.
+func test_D_258_environment_has_no_fullscreen_adjustment() -> void:
+	var e: Environment = Look3D.environment()
+	assert_false(e.adjustment_enabled, "không chỉnh màu toàn màn hình")
+	assert_false(e.glow_enabled, "không glow")
+
+
+## D-258: trình vẽ Mobile (Vulkan) phóng cảnh 3D bằng FSR (sắc nét khi vẽ dưới 100%); Compatibility chỉ có bilinear.
+func test_D_258_upscale_mode_by_renderer() -> void:
+	assert_eq(GraphicsSetting.upscale_mode("mobile"), Viewport.SCALING_3D_MODE_FSR)
+	assert_eq(GraphicsSetting.upscale_mode("gl_compatibility"), Viewport.SCALING_3D_MODE_BILINEAR)
