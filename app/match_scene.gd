@@ -127,7 +127,9 @@ func _process(delta: float) -> void:
 	input.set_direction(_held_direction())
 	for mode: int in range(ATTACK_KEYS.size()):
 		input.set_attack_held(mode, attack_buttons.is_held(mode) or Input.is_physical_key_pressed(ATTACK_KEYS[mode]))
+	var t: int = FrameProfile.now()
 	tick_frame(delta)
+	FrameProfile.shared.add(&"scene", t)  # D-261: gồm cả SIM và cảnh 3D (đo riêng)
 
 
 ## Một khung hình: chạy SIM theo thời gian thật, cập nhật nội suy và camera.
@@ -261,6 +263,7 @@ func _setup_test_panel() -> void:
 		$Hud.add_child(c)
 		c.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	diag.read_viewport(get_viewport())
+	FrameProbe.attach(self, world, view_3d)  # D-261: đo thời gian từng phần mỗi khung
 	settings = SettingsControl.attach($Hud, true, audio)
 	settings.hud = match_hud
 	settings.tools = {&"test": panel, &"diag": diag}

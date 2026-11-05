@@ -50,6 +50,7 @@ func advance(delta: float) -> int:
 			break
 	if steps > 0:  # D-108: thời gian SIM trung bình mỗi tick (hiện ở HUD để đo trên điện thoại)
 		step_ms = lerpf(step_ms, (Time.get_ticks_usec() - t0) / 1000.0 / steps, 0.1)
+		FrameProfile.shared.add(&"sim", t0)  # D-261
 	if steps == cap or world.winner >= 0:
 		_accumulator = minf(_accumulator, SimClock.TICK_SECONDS * 0.999)
 	return steps

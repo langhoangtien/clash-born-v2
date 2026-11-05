@@ -122,6 +122,8 @@ func screen_to_world(screen: Vector2) -> Vector2:
 
 ## Mỗi khung: camera theo `focus` (px thế giới), lớp đất theo camera, đồng bộ hình đơn vị.
 func update(focus: Vector2) -> void:
+	var prof: FrameProfile = FrameProfile.shared  # D-261: đo từng phần
+	var t: int = FrameProfile.now()
 	var target: Vector3 = to_3d(focus)
 	camera.position = target + CAM_OFFSET
 	camera.look_at(target, Vector3.UP)
@@ -129,6 +131,7 @@ func update(focus: Vector2) -> void:
 	camera.position += Vector3(randf_range(-1, 1), randf_range(-1, 1), 0) * _shake
 	scenery.update(world)
 	_paint_ground(focus)
+	t = prof.lap(&"ground", t)
 	var keep: Dictionary[int, bool] = {}
 	for e: Entity in world.entities:
 		if not e.alive or not units.seen(e) or e.kind == Entity.Kind.WARD:
@@ -143,8 +146,10 @@ func update(focus: Vector2) -> void:
 			_actors[e.id] = a
 		a.sync(world, e, to_3d(units.display_position(e)), units.is_moving(e), world.tick - units.hit_tick(e), units.faded(e))
 		a.visible = _show_actors
+	t = prof.lap(&"actors", t)
 	projectiles.sync(world)
 	_dispatch_events()
+	t = prof.lap(&"events", t)
 	for id: int in _actors.keys():
 		if not keep.has(id):
 			var dead: Entity = world.find_entity(id)  # D-210 lính / quái bị gỡ; D-234 hero chết chờ hồi sinh
@@ -153,6 +158,15 @@ func update(focus: Vector2) -> void:
 				_actors[id].queue_free()
 			_actors.erase(id)
 	_corpses.update(Actor3D._now(), get_process_delta_time())
+	prof.add(&"corpses", t)
+
+
+## D-261: bộ đếm cho bảng chẩn đoán (thứ có thể tăng dần theo trận).
+func count_into(p: FrameProfile) -> void:
+	p.set_count(&"actors", _actors.size())
+	p.set_count(&"corpses", _corpses.count())
+	p.set_count(&"projectiles", projectiles.count())
+	p.set_count(&"vfx", skill_vfx.kinds().size())
 
 
 ## D-179: bật / tắt một phần vẽ (bảng chẩn đoán FPS): cảnh vật, nền ảnh (tắt = màu phẳng), lớp phủ (hình

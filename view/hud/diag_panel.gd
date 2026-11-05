@@ -8,6 +8,8 @@ signal changed(key: StringName, value: int)
 
 const BUTTON: Rect2 = Rect2(584, 214, 170, 44)
 const PANEL: Rect2 = Rect2(864, 266, 470, 340)
+## D-261: bảng đo thời gian từng phần, bên trái bảng chẩn đoán.
+const PROFILE: Rect2 = Rect2(380, 266, 470, 470)
 const CELL: Vector2 = Vector2(215, 56)
 const KEYS: Array[StringName] = [&"scenery", &"ground", &"layer", &"fog", &"actors", &"water", &"scale", &"msaa"]
 const LABELS: Array[String] = ["Cảnh vật", "Nền ảnh", "Lớp phủ", "Sương", "Nhân vật", "Nước", "Độ phân giải", "MSAA"]
@@ -33,7 +35,7 @@ func cell_rect(i: int) -> Rect2:
 
 
 func _has_point(point: Vector2) -> bool:
-	return BUTTON.has_point(point) or (open and PANEL.has_point(point))
+	return BUTTON.has_point(point) or (open and (PANEL.has_point(point) or PROFILE.has_point(point)))
 
 
 func press_at(at: Vector2) -> void:
@@ -94,6 +96,7 @@ func _draw() -> void:
 	if not open:
 		return
 	UiStyle.panel(self, PANEL, 12)
+	ProfilePainter.draw(self, PROFILE, FrameProfile.shared)
 	var ms: float = Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0
 	var line: String = "FPS %d · xử lý %.1f ms · vẽ %d lệnh · %dk tam giác" % [Engine.get_frames_per_second(), ms,
 		int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)), int(Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME) / 1000.0)]
