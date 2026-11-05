@@ -34,7 +34,7 @@ UNITS = {
                 "Sword_Regular_A+Sword_Regular_A_Rec@0.6=cast,Shield_OneShot=skill_1,MX sword and shield slash=skill_2,"
                 "Sprint=sprint,Jump_Start@0.2-0.6+Jump_air@0-0.3+Jump_Land@0-0.6=dash", True, False,
                 ["duy_anh_sword_hand:hand_r", "duy_anh_shield_hand:hand_l"]),
-    "noctis": ("noctis", "heroes/noctis",  # D-246: vẽ lại T9c (áo choàng gọn sau lưng), hai dao
+    "noctis": ("noctis", "heroes/noctis",  # D-248: vẽ lại T9d (bỏ áo choàng), hai dao
                "Fighting Idle=idle,Sprint@0-0.83=run,Punch_Cross=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
                "Sword_Regular_A=cast,Spell_Simple_Shoot=skill_2,Throw Object=skill_3,Sprint=sprint,Run_Stealth=stealth,"
                "Sword_Dash_RM~@0.2-0.9=dash", True, False,
