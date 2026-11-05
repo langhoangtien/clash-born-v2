@@ -1,0 +1,12 @@
+{
+ "_ghi_chu": "D-247: hiệu ứng chiêu 3D (SkillVfx3D). Khóa = art_id kỹ năng. Mảnh: sweep (vệt quét theo quạt; radius / angle = số hoặc tên giá trị của kỹ năng), burst (bảng khung tại chỗ chủ chiêu, lệch `forward` đơn vị 3D về phía trước), hit (tia lóe trên mục tiêu bị chủ chiêu gây sát thương ngay sau khi chiêu ra). tex = tên ảnh trong assets/vfx/. Thời gian tính bằng giây.",
+ "duy_anh_w": {
+  "parts": [
+   {"type": "sweep", "radius": "radius", "angle": "angle", "inner": 0.5, "height": 0.45, "sweep": 0.22, "life": 0.5,
+    "color": "#1f6fff", "edge": "#f2fbff"},
+   {"type": "burst", "tex": "vfx_dust_sheet", "frames": 4, "forward": 1.0, "size": 2.0, "height": 0.35, "life": 0.6,
+    "color": "#c9ae80"},
+   {"type": "hit", "tex": "vfx_spark", "glow": "vfx_glow", "size": 0.9, "height": 0.6, "life": 0.3, "color": "#ffd47a"}
+  ]
+ }
+}

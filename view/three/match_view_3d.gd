@@ -38,6 +38,7 @@ var fog_alpha: float = FOG_ALPHA
 var camera: Camera3D
 var scenery: Scenery3D
 var projectiles: Projectiles3D = Projectiles3D.new()  # D-219: đạn đánh thường 3D
+var skill_vfx: SkillVfx3D = SkillVfx3D.new()  # D-247: hiệu ứng chiêu theo công thức dữ liệu
 ## D-159: tướng của người chơi (rung camera khi đánh trúng / bị đánh mạnh).
 var hero_id: int = -1
 var _event_tick: int = -1
@@ -101,6 +102,7 @@ func setup(w: World, units_view: UnitsView, aim_indicator: AimIndicator) -> void
 	add_child(marks)
 	add_child(overlay)
 	add_child(projectiles)
+	add_child(skill_vfx)
 
 
 func to_3d(p: Vector2) -> Vector3:
@@ -225,6 +227,7 @@ func _dispatch_events() -> void:
 		return
 	_event_tick = world.tick
 	for ev: GameEvent in world.events:
+		skill_vfx.on_event(world, ev)
 		var src: Actor3D = _actors.get(ev.source_id)
 		var dst: Actor3D = _actors.get(ev.target_id)
 		match ev.type:
