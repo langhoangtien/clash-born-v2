@@ -499,6 +499,6 @@ tím, khăn che mặt đen, mắt xanh ngọc, tóc xanh lộ dưới mũ, giáp
 Dao giữ nguyên. Nền xám nhạt trơn, không bóng / chữ. Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo
 người dùng.
 
-- [ ] `noctis_front.png`
-- [ ] `noctis_side.png`
-- [ ] `noctis_back.png`
+- [x] `noctis_front.png`
+- [x] `noctis_side.png`
+- [x] `noctis_back.png`
