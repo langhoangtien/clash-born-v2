@@ -45,6 +45,7 @@ var _build_done: Array[StringName] = []
 var minimap: Minimap
 var shop: ShopPanel
 var view_3d: MatchView3D
+var loading: MatchLoading  # D-260: làm nóng shader lúc vào trận
 var settings: SettingsControl
 
 
@@ -131,7 +132,8 @@ func _process(delta: float) -> void:
 
 ## Một khung hình: chạy SIM theo thời gian thật, cập nhật nội suy và camera.
 func tick_frame(delta: float) -> void:
-	runner.advance(delta)
+	if loading == null or not loading.busy():
+		runner.advance(delta)
 	units_view.alpha = runner.alpha()
 	var follow: Vector2 = death_cam.update(hero.alive, units_view.display_position(hero), _held_direction(), delta, _map_bounds())  # CAM-01
 	if minimap.peeking and death_cam.active():
@@ -234,6 +236,7 @@ func _setup_3d() -> void:
 	view_3d.fog_team = hero.team  # VIS-01: sương tính trong shader mặt đất (D-180)
 	view_3d.hero_id = hero.id  # D-159
 	GraphicsSetting.apply(get_viewport(), GraphicsSetting.load_level())  # D-157
+	loading = MatchLoading.start(view_3d, $Hud, hero.position)
 
 
 ## Điểm thế giới dưới điểm màn hình (2D: theo camera 2D; 3D: chiếu tia xuống đất).

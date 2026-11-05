@@ -42,6 +42,9 @@ func test_match_scene_builds_with_a_hero_and_follows_it() -> void:
 	assert_eq(scene.world.entities.size(), 24 + 2, "22 trụ + 2 nhà chính + hero + bot (lính ra ở giây 15)")
 	var hero: Entity = scene.hero
 	assert_eq(hero.kind, Entity.Kind.HERO)
+	for i: int in ShaderWarmup.FRAMES:  # D-260: màn tải làm nóng shader — trận chưa chạy
+		scene.tick_frame(1.0)
+	assert_eq(scene.world.tick, 0, "đang tải: SIM chưa chạy")
 	scene.tick_frame(1.0)
 	assert_eq(scene.world.tick, SimRunner.MAX_STEPS_PER_FRAME)
 	assert_true(hero.order.type == Order.Type.IDLE, "không còn tự đi tuần: chỉ đi khi người chơi ra lệnh")
