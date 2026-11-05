@@ -97,6 +97,12 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
+	var t: int = FrameProfile.now()  # D-263: đo thời gian vẽ từng bảng HUD
+	_paint()
+	FrameProfile.shared.hud(&"hud_minimap", t)
+
+
+func _paint() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color(0, 0, 0, 0.35))
 	if _terrain != null:
 		draw_texture_rect(_terrain, Rect2(Vector2.ZERO, Vector2(SIDE, SIDE)), false)

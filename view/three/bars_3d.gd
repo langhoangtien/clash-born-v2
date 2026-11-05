@@ -19,6 +19,12 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
+	var t: int = FrameProfile.now()  # D-263: đo thời gian vẽ từng bảng HUD
+	_paint()
+	FrameProfile.shared.hud(&"hud_bars", t)
+
+
+func _paint() -> void:
 	if view == null or view.world == null:
 		return
 	for e: Entity in view.world.entities:

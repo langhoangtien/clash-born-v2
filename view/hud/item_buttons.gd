@@ -36,6 +36,7 @@ var recall_progress: float = -1.0
 
 ## APP đặt mỗi khung, mỗi nút một món chủ động theo thứ tự ô: [chỉ số ô, tên tắt, giây hồi, số lần dùng (-1 = không), dùng được].
 var item_view: Array = []
+var _gate: RedrawGate = RedrawGate.new()
 var _press: int = -1
 var _pointer: int = -100
 var _offset: Vector2 = Vector2.ZERO
@@ -103,6 +104,18 @@ func press_at(pointer: int, local: Vector2) -> void:
 		_aiming = false
 
 
+## D-263: APP đặt mỗi khung; giây hồi làm tròn lên (đúng số hiện) → chỉ vẽ lại khi thứ hiện ra đổi.
+func show_view(view: Array, recall: float) -> bool:
+	for v: Array in view:
+		v[2] = ceilf(v[2])
+	item_view = view
+	recall_progress = recall
+	if not _gate.changed([view, recall]):
+		return false
+	queue_redraw()
+	return true
+
+
 func drag_to(pointer: int, local: Vector2) -> void:
 	if pointer != _pointer or _press < 0:
 		return
@@ -149,6 +162,12 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _draw() -> void:
+	var t: int = FrameProfile.now()  # D-263: đo thời gian vẽ từng bảng HUD
+	_paint()
+	FrameProfile.shared.hud(&"hud_items", t)
+
+
+func _paint() -> void:
 	var rc: Vector2 = recall_center()
 	UiStyle.orb(self, rc, RECALL_RADIUS, Color(0.16, 0.36, 0.72))  # D-222: nút tròn xanh viền vàng, nhà trắng
 	UiGlyphs.draw(self, &"home", rc + Vector2(0, 1), RECALL_RADIUS * 0.46, Color(1, 1, 1, 0.96))

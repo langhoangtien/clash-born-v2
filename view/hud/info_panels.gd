@@ -135,6 +135,12 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
+	var t: int = FrameProfile.now()  # D-263: đo thời gian vẽ từng bảng HUD
+	_paint()
+	FrameProfile.shared.hud(&"hud_info", t)
+
+
+func _paint() -> void:
 	if open == Open.NONE or world == null or hero == null:
 		return
 	var p: Rect2 = panel_rect()

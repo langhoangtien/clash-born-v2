@@ -7,11 +7,12 @@ const LABELS: Dictionary[StringName, String] = {
 	&"process": "Xử lý (_process)", &"scene": "  Màn trận", &"sim": "    SIM",
 	&"ground": "    Đất + lớp phủ", &"actors": "    Nhân vật 3D", &"events": "    Đạn + sự kiện",
 	&"corpses": "    Gỡ hình + xác", &"scene_other": "    Màn trận khác", &"process_other": "  _process khác",
-	&"draw2d": "Vẽ 2D (HUD _draw)", &"render": "Dựng khung 3D (CPU)", &"gpu": "GPU",
+	&"draw2d": "Cuối khung (HUD + xương)", &"hud": "  HUD _draw", &"hud_diag": "    trong đó bảng đo",
+	&"draw2d_other": "  Còn lại (xương, biến đổi)", &"render": "Dựng khung 3D (CPU)", &"gpu": "GPU",
 }
 ## Thứ tự hiện (cây cha – con).
 const ORDER: Array[StringName] = [&"process", &"scene", &"sim", &"ground", &"actors", &"events", &"corpses",
-	&"scene_other", &"process_other", &"draw2d", &"render", &"gpu"]
+	&"scene_other", &"process_other", &"draw2d", &"hud", &"hud_diag", &"draw2d_other", &"render", &"gpu"]
 const SCENE_PARTS: Array[StringName] = [&"sim", &"ground", &"actors", &"events", &"corpses"]
 
 
@@ -22,6 +23,8 @@ static func rows(p: FrameProfile) -> Array[Array]:
 	if avg.has(&"scene"):
 		avg[&"scene_other"] = maxf(0.0, avg[&"scene"] - _sum(avg, SCENE_PARTS))
 		avg[&"process_other"] = maxf(0.0, avg.get(&"process", 0.0) - avg[&"scene"])
+	if avg.has(&"draw2d"):
+		avg[&"draw2d_other"] = maxf(0.0, avg[&"draw2d"] - avg.get(&"hud", 0.0))
 	var out: Array[Array] = []
 	for key: StringName in ORDER:
 		if avg.has(key):

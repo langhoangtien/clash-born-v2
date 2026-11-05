@@ -9,7 +9,7 @@ signal changed(key: StringName, value: int)
 const BUTTON: Rect2 = Rect2(584, 214, 170, 44)
 const PANEL: Rect2 = Rect2(864, 266, 470, 340)
 ## D-261: bảng đo thời gian từng phần, bên trái bảng chẩn đoán.
-const PROFILE: Rect2 = Rect2(380, 266, 470, 470)
+const PROFILE: Rect2 = Rect2(380, 266, 470, 530)
 const CELL: Vector2 = Vector2(215, 56)
 const KEYS: Array[StringName] = [&"scenery", &"ground", &"layer", &"fog", &"actors", &"water", &"scale", &"msaa"]
 const LABELS: Array[String] = ["Cảnh vật", "Nền ảnh", "Lớp phủ", "Sương", "Nhân vật", "Nước", "Độ phân giải", "MSAA"]
@@ -22,6 +22,7 @@ var open: bool = false
 var values: Dictionary[StringName, int] = {&"scenery": 1, &"ground": 1, &"layer": 1, &"fog": 1, &"actors": 1, &"water": 1, &"scale": 1, &"msaa": 0}
 ## Nơi áp (APP đặt); null thì chỉ báo `changed`.
 var view_3d: MatchView3D
+var _phase: int = -1
 
 
 ## Lấy độ phân giải / MSAA đang dùng (mức đồ họa D-157) làm giá trị đầu.
@@ -87,11 +88,19 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 
 func _process(_delta: float) -> void:
-	if open:
+	var phase: int = Time.get_ticks_msec() / 250  # D-263: số công bố mỗi giây — vẽ lại 4 lần / giây đủ
+	if open and phase != _phase:
+		_phase = phase
 		queue_redraw()
 
 
 func _draw() -> void:
+	var t: int = FrameProfile.now()  # D-263: đo thời gian vẽ từng bảng HUD
+	_paint()
+	FrameProfile.shared.hud(&"hud_diag", t)
+
+
+func _paint() -> void:
 	UiStyle.button(self, BUTTON, &"gold" if open else &"ghost", "Chẩn đoán (G)", "", 18)
 	if not open:
 		return

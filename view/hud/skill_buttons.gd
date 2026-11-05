@@ -35,10 +35,25 @@ var skill_view: Array = [[0, 0.0, false, false, 5], [0, 0.0, false, false, 5], [
 var skill_art: Array[StringName] = [&"", &"", &""]
 var attributes_can_level: bool = false
 
+var _gate: RedrawGate = RedrawGate.new()
 var _aim_pointer: int = -100
 var _aim_index: int = -1
 var _aim_offset: Vector2 = Vector2.ZERO
 var _aiming: bool = false
+
+
+## D-263: APP đặt trạng thái ô chiêu mỗi khung; giây hồi làm tròn lên (đúng số đang hiện) nên chỉ vẽ lại khi
+## thứ hiện ra đổi. Trả về true nếu vẽ lại.
+func show_view(view: Array, art: Array[StringName], can_level_attributes: bool) -> bool:
+	for v: Array in view:
+		v[1] = ceilf(v[1])
+	skill_view = view
+	skill_art = art
+	attributes_can_level = can_level_attributes
+	if not _gate.changed([view, art, can_level_attributes]):
+		return false
+	queue_redraw()
+	return true
 
 
 func skill_center(index: int) -> Vector2:
@@ -148,6 +163,12 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _draw() -> void:
+	var t: int = FrameProfile.now()  # D-263: đo thời gian vẽ từng bảng HUD
+	_paint()
+	FrameProfile.shared.hud(&"hud_skills", t)
+
+
+func _paint() -> void:
 	var font: Font = ThemeDB.fallback_font
 	for i: int in range(SKILL_ANGLES.size()):
 		_draw_skill(font, i)

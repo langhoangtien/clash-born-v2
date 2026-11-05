@@ -44,6 +44,13 @@ func lap(key: StringName, since: int) -> int:
 	return t
 
 
+## D-263: thời gian `_draw` của một bảng HUD — cộng vào phần riêng `key` và tổng "hud".
+func hud(key: StringName, since: int, at: int = -1) -> void:
+	var end: int = at if at >= 0 else now()
+	add(key, since, end)
+	add(&"hud", since, end)
+
+
 func set_count(key: StringName, value: int) -> void:
 	counts[key] = value
 

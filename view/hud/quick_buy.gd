@@ -12,6 +12,9 @@ const RADIUS: float = 52.0
 ## Món đang mời mua (null = ẩn) và giá phải trả.
 var item: ItemDef
 var price: int = 0
+## D-263: bước vẽ lại viền nhấp nháy (ms).
+const PULSE_STEP_MS: int = 50
+var _phase: int = -1
 
 
 func show_item(d: ItemDef, cost: int) -> void:
@@ -32,11 +35,19 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _process(_delta: float) -> void:
-	if item != null:
-		queue_redraw()  # viền nhấp nháy
+	var phase: int = Time.get_ticks_msec() / PULSE_STEP_MS
+	if item != null and phase != _phase:
+		_phase = phase
+		queue_redraw()  # viền nhấp nháy; D-263: 20 lần / giây là đủ mượt
 
 
 func _draw() -> void:
+	var t: int = FrameProfile.now()  # D-263: đo thời gian vẽ từng bảng HUD
+	_paint()
+	FrameProfile.shared.hud(&"hud_quick", t)
+
+
+func _paint() -> void:
 	if item == null:
 		return
 	var pulse: float = 0.6 + 0.4 * sin(Time.get_ticks_msec() / 220.0)

@@ -88,7 +88,8 @@ clashborn_v2/
                            (sự kiện tick → tiếng, lọc sương mù), AudioView (phát, nhạc) — D-114
     hud/                   TouchJoystick (joystick ảo; tên VirtualJoystick trùng lớp có sẵn của Godot 4.7),
                            SettingsPanel (bảng Cài đặt, D-183), TestPanel / DiagPanel (công cụ thử, mở từ Cài đặt);
-                           FrameProfile + ProfilePainter: ms từng phần mỗi khung, hiện trong DiagPanel (D-261)
+                           FrameProfile + ProfilePainter: ms từng phần mỗi khung, hiện trong DiagPanel (D-261);
+                           RedrawGate: bảng HUD chỉ vẽ lại khi thứ hiện ra đổi (D-263)
   app/                     scene chính, luồng màn hình, màn xem map, màn trận;
                            SimRunner: chạy World 30 tick/giây theo thời gian thật;
                            MatchInput: joystick/WASD/chạm → Command (CTL-01);

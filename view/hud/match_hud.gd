@@ -21,6 +21,7 @@ var speed: int = 1
 var sim_ms: float = 0.0
 ## D-183: hiện dòng FPS (bảng Cài đặt).
 var show_fps: bool = true
+var _gate: RedrawGate = RedrawGate.new()
 
 
 static func clock_text(tick: int) -> String:
@@ -40,10 +41,26 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	queue_redraw()
+	if world != null and hero != null and _gate.changed(content_key()):
+		queue_redraw()  # D-263: chỉ khi thứ hiện ra đổi
+
+
+## D-263: mọi giá trị đúng như sẽ hiện (số đã làm tròn); dòng FPS / SIM đổi tối đa 2 lần mỗi giây.
+func content_key() -> Array:
+	var h: Entity = hero
+	return [world.tick / SimClock.TICKS_PER_SECOND, speed, size, roundi(h.health), roundi(h.stats.get_stat(StatId.Id.MAX_HP)),
+		roundi(h.mana), roundi(h.stats.get_stat(StatId.Id.MAX_MANA)), h.gold, h.last_hits, h.kills, h.deaths, h.assists,
+		roundi(h.xp), h.stats.level(), h.talent_slot, h.alive, h.respawn_tick, MatchScore.team_kills(world, 0),
+		MatchScore.team_kills(world, 1), Time.get_ticks_msec() / 500 if show_fps else 0]
 
 
 func _draw() -> void:
+	var t: int = FrameProfile.now()  # D-263: đo thời gian vẽ từng bảng HUD
+	_paint()
+	FrameProfile.shared.hud(&"hud_top", t)
+
+
+func _paint() -> void:
 	if world == null or hero == null:
 		return
 	var font: Font = UiStyle.sans(true)  # D-130

@@ -82,6 +82,12 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
+	var t: int = FrameProfile.now()  # D-263: đo thời gian vẽ từng bảng HUD
+	_paint()
+	FrameProfile.shared.hud(&"hud_buffs", t)
+
+
+func _paint() -> void:
 	if world == null or hero == null:
 		return
 	var list: Array = entries(world, hero, _duel_def)
