@@ -117,3 +117,18 @@ func test_D_230_skill_animation_timed_to_windup_and_cancelled_by_stun() -> void:
 	a.sync(w, e, Vector3.ZERO, false, -100, false)
 	assert_ne(a._playing, "skill_1", "bị choáng: thôi hoạt ảnh chiêu")
 	a.free()
+
+
+## D-245: đang tàng hình (INVISIBLE, vd Màn Đêm của Noctis) mà di chuyển thì đi dáng lén (`stealth` trong units_3d.json).
+func test_D_245_stealth_walk_when_invisible() -> void:
+	var w: World = World.new(1, Fixture.make())
+	var e: Entity = _unit(w, &"noctis", Entity.Kind.HERO)
+	var a: Actor3D = Actor3D.make(e)
+	a.sync(w, e, Vector3.ZERO, true, -100, false)
+	assert_eq(a._playing, "run", "chạy thường")
+	e.states |= 1 << UnitState.Id.INVISIBLE
+	a.sync(w, e, Vector3.ZERO, true, -100, true)
+	assert_eq(a._playing, "stealth", "tàng hình: đi lén")
+	a.sync(w, e, Vector3.ZERO, false, -100, true)
+	assert_eq(a._playing, "idle", "đứng yên vẫn là dáng đứng")
+	a.free()

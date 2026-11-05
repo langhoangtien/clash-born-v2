@@ -456,3 +456,27 @@ Nền xám nhạt trơn, không bóng / chữ. Xong thì commit + push nhánh `t
 - [x] `duy_anh_front/side/back.png` — vẽ đè bản cũ; A-pose, hai tay nắm rỗng, không còn kiếm / khiên dính vào tay.
 - [x] `duy_anh_sword_front/side.png` — kiếm đứng riêng, có chấm vị trí cầm trên chuôi.
 - [x] `duy_anh_shield_front/side.png` — khiên khối dày, viền vàng liền, mặt nghiêng thấy quai cầm sau lưng khiên.
+
+
+### T9c — Noctis vẽ lại áo choàng gọn (2026-11-05)
+
+Bản `noctis_front/side/back.png` hiện tại dựng 3D bị **rườm rà**: áo choàng dài rách mép (Tripo dựng thành mép te tua),
+**hai vạt áo buông phía trước** hai bên thân và dải vải tím trước bụng — khi gắn xương các vạt này bám theo tay, vung tay là
+bị kéo thành dải như cánh. Vẽ lại `noctis_front/_side/_back.png` (đè bản cũ), **giữ** mũ trùm tím, khăn che mặt đen, mắt
+xanh ngọc, tóc xanh lộ dưới mũ, giáp đen viền bạc, đá ngọc xanh, tỉ lệ chibi như cũ; **đổi**:
+
+1. **Áo choàng một mảnh gọn, chỉ ở sau lưng**: gắn ở vai, buông thẳng tới khoảng **đầu gối** (không chạm đất), mép
+   dưới **liền, cắt gọn** (không rách, không tua, không vạt nhọn). Nhìn thẳng từ trước chỉ thấy viền áo choàng sau
+   vai — **không có vạt nào vòng ra trước** hai bên thân.
+2. **Bỏ dải vải tím buông trước bụng** (tabard) và mọi dải / tua lủng lẳng; thắt lưng gọn.
+3. **Khe hở rõ giữa tay và áo choàng / thân** (A-pose, tay dang ~45°, hai nắm tay khép rỗng, không cầm dao) — để gắn
+   xương tay không dính áo.
+4. Giáp tay / vai bớt chi tiết nhỏ: khối lớn, rõ ràng, đọc được từ camera trên cao.
+5. Ảnh nghiêng nhìn từ **bên phải** (mặt quay về phía phải ảnh); ảnh sau thấy áo choàng phẳng, một mảng.
+
+Dao `noctis_dagger_front/side.png` giữ nguyên. Nền xám nhạt trơn, không bóng / chữ. Xong thì commit + push nhánh
+`thu-asset-tu-lam`, rồi **DỪNG** báo người dùng.
+
+- [ ] `noctis_front.png`
+- [ ] `noctis_side.png`
+- [ ] `noctis_back.png`

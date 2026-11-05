@@ -811,3 +811,42 @@ Chuẩn 7s (icon đồ vuông, nền trong suốt, vật to 80–85% ô, mỗi m
 
 Điều chỉnh sau duyệt Đợt 14: icon Đại Đao Thần và Đao Tán Ma chỉ lấy cận cảnh **đầu đao + một đoạn cán ngắn** để lưỡi đọc rõ ở 48 px; Đại Đao Thần tăng khối lưỡi, vàng kim và cảm giác trang bị chủ lực.
 Điều chỉnh tiếp: xoay bố cục cả hai đầu đao **từ trên trái xuống dưới phải**, để mũi đao hướng xuống thay vì chếch lên như bản trước.
+
+## Đợt V1 — ảnh hiệu ứng chiêu (VFX) — 2026-11-05
+
+Game sẽ dựng hiệu ứng chiêu bằng hạt / mặt phẳng / vệt sáng ghép từ **bộ ảnh dùng chung** dưới đây (mỗi chiêu một
+"công thức" trong dữ liệu). Ảnh phải hợp phong cách game: hoạt hình sáng, khối rõ, viền mềm — đính kèm
+`docs/art/reference_style_01.png` và `art_inbox/00_style/style_sheet.png`.
+
+### Quy tắc riêng cho ảnh hiệu ứng (bắt buộc)
+
+- PNG **nền trong suốt** (kênh alpha), không nền màu, không chữ, không khung, không bóng đổ.
+- Vật **nằm giữa ảnh**, chừa lề ~8%, mép **mờ dần ra trong suốt** (không cắt cứng ở mép ảnh).
+- Ảnh ghi "trắng xám" thì vẽ **trắng – xám** (game tự tô màu theo chiêu / phe); ảnh ghi "màu" thì vẽ đúng màu.
+- **Bảng khung (sheet)**: lưới **4 × 4 = 16 khung**, đọc trái → phải, trên → dưới, mỗi khung cùng cỡ, vật cùng tâm, diễn
+  biến đều từ khung 1 (bắt đầu) tới khung 16 (tan hết, gần trong suốt). Cỡ cả bảng 2048 × 2048 (mỗi khung 512).
+- Ảnh đơn: 512 × 512.
+
+### Danh sách (lưu `art_inbox/07_vfx/`)
+
+| File | Loại | Nội dung |
+|---|---|---|
+| `vfx_glow.png` | trắng xám | Đốm sáng tròn mềm, giữa sáng, tỏa mờ ra ngoài |
+| `vfx_spark.png` | trắng xám | Tia lấp lánh hình sao 4 cánh, cánh mảnh |
+| `vfx_ring.png` | trắng xám | Vòng sóng xung kích: vành tròn mảnh, mép trong ngoài mờ |
+| `vfx_slash.png` | trắng xám | Vệt chém hình lưỡi liềm, đầu nhọn hai bên, dày ở giữa, mép mềm |
+| `vfx_trail.png` | trắng xám | Vệt đuôi ngang: trái đậm, nhạt dần sang phải (đuôi đạn / lướt) |
+| `vfx_magic_circle.png` | trắng xám | Vòng phù chú tròn nhìn từ trên xuống (vòng kép + ký tự hình học đơn giản) — báo trước vùng chiêu |
+| `vfx_smoke_sheet.png` | trắng xám, 4×4 | Cụm khói tròn phồng ra rồi tan |
+| `vfx_dust_sheet.png` | trắng xám, 4×4 | Bụi đất bốc ngang sát mặt đất (dậm đất, tiếp đất) |
+| `vfx_fire_sheet.png` | màu, 4×4 | Ngọn lửa bùng lên rồi tắt (cam – vàng, lõi trắng) |
+| `vfx_explosion_sheet.png` | màu, 4×4 | Vụ nổ: chớp sáng → cầu lửa → khói đen tan |
+| `vfx_frost_sheet.png` | màu, 4×4 | Bùng băng: tinh thể băng xanh nhạt tỏa ra rồi vỡ vụn (Tia Băng của Myra) |
+| `vfx_shadow_sheet.png` | màu, 4×4 | Làn khói bóng tối tím – đen cuộn lên rồi tan (Màn Đêm, Lưỡi Bóng của Noctis) |
+| `vfx_meteor.png` | màu | Thiên thạch nhìn nghiêng: đầu đá cháy đỏ bên trái, đuôi lửa dài kéo sang phải (Mưa Sao Băng của Myra) |
+| `vfx_scorch.png` | màu | Vết cháy xém trên đất nhìn từ trên xuống: tâm đen, rìa nâu, mép mờ (để lại sau nổ) |
+| `vfx_cracks.png` | màu | Vết nứt đất tỏa từ tâm nhìn từ trên xuống, khe tối (dậm đất của Brakk) |
+
+Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng (kèm ảnh tổng hợp `07_vfx/_preview_v1.png`).
+
+- [ ] V1 xong 15 ảnh

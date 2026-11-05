@@ -36,7 +36,7 @@ UNITS = {
                 ["duy_anh_sword_hand:hand_r", "duy_anh_shield_hand:hand_l"]),
     "noctis": ("noctis_afk_cloth.glb", "heroes/noctis",  # D-244: áo choàng gỡ khỏi tay (cloth_weights.py), hai dao
                "Fighting Idle=idle,Sprint@0-0.83=run,Punch_Cross=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
-               "Sword_Regular_A=cast,Spell_Simple_Shoot=skill_2,Throw Object=skill_3,Sprint=sprint,"
+               "Sword_Regular_A=cast,Spell_Simple_Shoot=skill_2,Throw Object=skill_3,Sprint=sprint,Run_Stealth=stealth,"
                "Sword_Dash_RM~@0.2-0.9=dash", True, False,
                ["noctis_dagger_r:hand_r", "noctis_dagger_l:hand_l"]),
     "brakk": ("brakk", "heroes/brakk",

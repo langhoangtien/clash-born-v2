@@ -80,7 +80,7 @@ func _make_model(e: Entity, cfg: Dictionary) -> void:
 			for k: int in (n as MeshInstance3D).mesh.get_surface_count():
 				mats.append((n as MeshInstance3D).get_active_material(k))
 		_solid.append(mats)
-	for anim: String in [_rig["idle"], _rig["run"], _rig.get("stun", ""), _cfg.get("sprint", _rig.get("sprint", ""))].filter(_anim.has_animation):
+	for anim: String in [_rig["idle"], _rig["run"], _rig.get("stun", ""), _cfg.get("sprint", _rig.get("sprint", "")), _cfg.get("stealth", "")].filter(_anim.has_animation):
 		_anim.get_animation(anim).loop_mode = Animation.LOOP_LINEAR
 
 

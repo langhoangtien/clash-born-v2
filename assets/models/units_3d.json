@@ -138,7 +138,8 @@
     "2": "skill_2",
     "3": "skill_3"
    },
-   "dash": "dash"
+   "dash": "dash",
+   "stealth": "stealth"
   },
   "creep_melee": {
    "model": "../style/units/creep_melee",
