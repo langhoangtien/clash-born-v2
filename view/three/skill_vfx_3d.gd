@@ -3,7 +3,7 @@ extends Node3D
 ## D-247: hiệu ứng chiêu 3D theo công thức dữ liệu (assets/vfx/vfx.json, khóa = art_id kỹ năng). Chỉ đọc World:
 ## `ability_finished` (chiêu ra, đúng lúc gây tác dụng) sinh các mảnh của công thức; `damage_taken` do chủ chiêu gây
 ## trong HIT_TICKS tick sau đó sinh tia lóe trên mục tiêu. Mảnh tự gỡ khi hết `life`. Code không biết tên chiêu.
-## `trail` (D-250): vệt gió đi theo chủ chiêu suốt `life` (vd thời gian tăng tốc), chỉ hiện khi đang chạy.
+## `trail` (D-250, D-256): vệt tốc độ bám theo đường chạy của chủ chiêu suốt `life` (SpeedTrail3D), chỉ hiện khi chạy.
 ## `arc` (D-252): ảnh quạt vẽ tay nằm phẳng trước mặt chủ chiêu, đỉnh quạt ở chân, cỡ theo bán kính / góc của kỹ năng.
 
 const RECIPES: String = "res://assets/vfx/vfx.json"
@@ -69,7 +69,7 @@ func _cast(w: World, ev: GameEvent) -> void:
 			"trail":
 				var live: Dictionary = part.duplicate()
 				live["life"] = _value(e, a, part.get("life", 1.0))
-				_add(_trail_node(live), "trail", live, position_of.call(e), e.id)
+				_add(SpeedTrail3D.make(live, _tint_material(live)), "trail", live, Vector3.ZERO, e.id)
 
 
 func _hit(w: World, ev: GameEvent) -> void:
@@ -131,6 +131,9 @@ static func _tint_material(part: Dictionary) -> ShaderMaterial:
 	mat.set_shader_parameter("color", Color(part.get("color", "#ffffff")))
 	mat.set_shader_parameter("edge", Color(part.get("edge", "#ffffff")))
 	mat.set_shader_parameter("frames", float(part.get("frames", 1)))
+	var ur: Array = part.get("u_range", [0.0, 1.0])
+	mat.set_shader_parameter("u_range", Vector2(ur[0], ur[1]))
+	mat.set_shader_parameter("tail_fade", 1.0 if part["type"] == "trail" else 0.0)
 	return mat
 
 
@@ -153,35 +156,17 @@ static func _quad(tex: String, part: Dictionary, additive: bool) -> MeshInstance
 	return mi
 
 
-## Vệt gió: `count` dải phẳng sau lưng (ảnh `tex`, đầu sáng sát người), xếp theo độ cao.
-static func _trail_node(part: Dictionary) -> Node3D:
-	var root: Node3D = Node3D.new()
-	var n: int = int(part.get("count", 3))
-	for k: int in n:
-		var strip: MeshInstance3D = MeshInstance3D.new()
-		strip.mesh = QuadMesh.new()
-		strip.material_override = _tint_material(part)  # phủ màu: cộng sáng mất hút trên nền cát sáng
-		strip.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		(strip.mesh as QuadMesh).size = Vector2(float(part.get("length", 1.0)), float(part.get("width", 0.12)))
-		strip.rotation = Vector3(-PI * 0.5, PI * 0.5, 0.0)  # nằm phẳng, chiều dài ảnh dọc ra sau lưng, đầu đậm sát người
-		var side: float = (float(k) - (n - 1) * 0.5) * 0.25
-		strip.position = Vector3(side, float(part.get("height", 0.4)) + 0.2 * k, -0.5 * float(part.get("length", 1.0)) - 0.1)
-		root.add_child(strip)
-	return root
-
-
 func _follow(it: Array, delta: float) -> void:
 	var e: Entity = _world.find_entity(it[4]) if _world != null else null
 	if e == null or not e.alive:
 		it[2] = INF
 		return
-	var node: Node3D = it[0]
+	var trail: SpeedTrail3D = it[0]
 	var at: Vector3 = position_of.call(e)
-	var moving: bool = at.distance_to(node.position) > 0.001
-	node.position = at
-	if e.facing != Vector2.ZERO:
-		node.rotation.y = atan2(e.facing.x, e.facing.y)
-	node.set_meta("show", move_toward(float(node.get_meta("show", 0.0)), 1.0 if moving else 0.0, delta * 6.0))
+	var moving: bool = it.size() < 6 or at.distance_to(it[5]) > 0.0005  # so với khung trước (khung đầu coi là đang chạy)
+	it.resize(6)
+	it[5] = at
+	trail.update(at, moving, delta)
 
 
 func _animate(it: Array) -> void:
@@ -195,10 +180,7 @@ func _animate(it: Array) -> void:
 			if frames == 1:  # ảnh đơn: hiện nhanh rồi tan
 				mat.set_shader_parameter("fade", float(part.get("alpha", 1.0)) * minf(1.0, t * 6.0) * (1.0 - t * t))
 		"trail":
-			var show: float = float((it[0] as Node3D).get_meta("show", 0.0)) * (1.0 - smoothstep(0.85, 1.0, t))
-			for k: int in (it[0] as Node3D).get_child_count():
-				var strip: MeshInstance3D = (it[0] as Node3D).get_child(k)
-				(strip.material_override as ShaderMaterial).set_shader_parameter("fade", show * (0.75 + 0.2 * sin(it[2] * 11.0 + k * 2.1)))
+			(it[0] as SpeedTrail3D).set_fade(1.0 - smoothstep(0.85, 1.0, t))
 		"hit":
 			(it[0] as Node3D).scale = Vector3.ONE * (0.4 + 1.2 * sin(PI * minf(t * 1.4, 1.0)))
 			var mat: StandardMaterial3D = (it[0] as MeshInstance3D).material_override

@@ -48,7 +48,7 @@ func test_D_250_trail_follows_caster_for_duration() -> void:
 	assert_eq(fx.kinds(), ["trail"])
 	k.position += Vector2(300, 0)
 	fx.advance(0.1)
-	assert_near(fx.get_child(0).position.x, k.position.x * MatchView3D.S, 0.001, "đi theo hero")
+	assert_near((fx.get_child(0) as SpeedTrail3D).head().x, k.position.x * MatchView3D.S, 0.001, "đầu vệt bám theo hero")
 	fx.advance(4.0)
 	assert_eq(fx.kinds(), ["trail"], "còn trong 5 s tăng tốc")
 	fx.advance(1.5)

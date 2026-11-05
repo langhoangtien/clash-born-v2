@@ -1,17 +1,26 @@
 {
- "_ghi_chu": "D-247: hiệu ứng chiêu 3D (SkillVfx3D). Khóa = art_id kỹ năng. Mảnh: arc (ảnh quạt vẽ tay nằm phẳng trước mặt, đỉnh quạt ở chân; radius / angle = số hoặc tên giá trị kỹ năng; apex_x / apex_y / half_w / depth = vị trí đỉnh, nửa bề ngang, độ sâu cung trong một khung ảnh, phần cỡ khung; alpha = độ đục ảnh đơn; có color thì tô màu theo độ sáng — lõi sáng thành edge), hit (tia lóe trên mục tiêu bị chủ chiêu gây sát thương ngay sau khi chiêu ra), trail (vệt gió đi theo chủ chiêu suốt life, chỉ hiện khi chạy; life = số hoặc tên giá trị kỹ năng). tex = tên ảnh trong assets/vfx/. Thời gian tính bằng giây.",
+ "_ghi_chu": "D-247: hiệu ứng chiêu 3D (SkillVfx3D). Khóa = art_id kỹ năng. Mảnh: arc (ảnh quạt vẽ tay nằm phẳng trước mặt, đỉnh quạt ở chân; radius / angle = số hoặc tên giá trị kỹ năng; apex_x / apex_y / half_w / depth = vị trí đỉnh, nửa bề ngang, độ sâu cung trong một khung ảnh, phần cỡ khung; alpha = độ đục ảnh đơn; có color thì tô màu theo độ sáng — lõi sáng thành edge), hit (tia lóe trên mục tiêu bị chủ chiêu gây sát thương ngay sau khi chiêu ra), trail (vệt tốc độ bám đường chạy suốt life — ribbons = độ cao các dải, width, tail = giây đuôi, sparks = ảnh đốm sáng rơi lại, u_range = đoạn ảnh dùng dọc dải; life = số hoặc tên giá trị kỹ năng). tex = tên ảnh trong assets/vfx/. Thời gian tính bằng giây.",
  "duy_anh_q": {
   "parts": [
    {
     "type": "trail",
-    "tex": "vfx_wind",
+    "tex": "vfx_trail",
     "life": "duration",
-    "count": 2,
-    "length": 2.0,
-    "width": 0.7,
-    "height": 0.45,
-    "color": "#3f9dff",
-    "edge": "#f4fbff"
+    "ribbons": [
+     0.32,
+     0.6
+    ],
+    "width": 0.34,
+    "tail": 0.5,
+    "color": "#2f8dff",
+    "edge": "#f2fbff",
+    "sparks": "vfx_glow",
+    "spark_color": "#8fd0ff",
+    "spark_count": 18,
+    "u_range": [
+     0.08,
+     0.4
+    ]
    }
   ]
  },

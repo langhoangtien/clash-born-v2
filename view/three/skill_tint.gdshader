@@ -12,11 +12,14 @@ uniform float frames = 1.0;
 uniform float frame = 0.0;
 uniform float fade = 1.0;
 uniform float core = 0.55;  // độ sáng bắt đầu chuyển sang màu lõi
+uniform vec2 u_range = vec2(0.0, 1.0);  // D-256: dải vệt chỉ lấy phần sáng của ảnh theo chiều dọc dải
+uniform float tail_fade = 0.0;          // D-256: > 0 thì mờ dần về cuối dải (UV.x → 1)
 
 void fragment() {
 	vec2 cell = vec2(mod(frame, frames), floor(frame / frames));
-	vec4 t = texture(tex, (UV + cell) / frames);
+	vec2 uv = vec2(mix(u_range.x, u_range.y, UV.x), UV.y);
+	vec4 t = texture(tex, (uv + cell) / frames);
 	float lum = max(t.r, max(t.g, t.b));
 	ALBEDO = tint ? mix(color.rgb, edge.rgb, smoothstep(core, 1.0, lum)) : t.rgb;
-	ALPHA = clamp(t.a * fade * (tint ? 1.25 : 1.0), 0.0, 1.0);
+	ALPHA = clamp(t.a * fade * (tint ? 1.25 : 1.0) * mix(1.0, pow(1.0 - UV.x, 1.3), tail_fade), 0.0, 1.0);
 }
