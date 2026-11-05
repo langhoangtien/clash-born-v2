@@ -227,3 +227,20 @@ static func dash_hop(cfg: Dictionary, anim: AnimationPlayer) -> float:
 	if hop <= 0.0 or anim.current_animation_length <= 0.0:
 		return 0.0
 	return hop * sin(PI * clampf(anim.current_animation_position / anim.current_animation_length, 0.0, 1.0))
+
+
+## D-209: tô ảnh màu theo phe cho mọi lưới của mô hình KayKit (trừ vũ khí gắn tay).
+static func paint_team(root: Node, tex: String, team: int) -> void:
+	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
+		if n.get_parent() is BoneAttachment3D or n.get_parent().get_parent() is BoneAttachment3D:
+			continue
+		var mi: MeshInstance3D = n as MeshInstance3D
+		for i: int in mi.mesh.get_surface_count():
+			mi.set_surface_override_material(i, team_material(mi.mesh.surface_get_material(i), tex, team))
+
+
+## D-249: hoạt ảnh và điểm trúng của đòn thứ `n`: có `attack_alt` thì đòn lẻ dùng nó (`impact_alt`).
+static func attack_pick(cfg: Dictionary, n: int, fallback: float) -> Array:
+	if cfg.has("attack_alt") and n % 2 == 1:
+		return [cfg["attack_alt"], float(cfg.get("impact_alt", cfg.get("impact", fallback)))]
+	return [cfg["attack"], float(cfg.get("impact", fallback))]

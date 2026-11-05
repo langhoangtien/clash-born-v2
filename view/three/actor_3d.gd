@@ -33,6 +33,7 @@ var _solid: Array[Array] = []
 var _faded: bool = false
 var _playing: String = ""
 var _attack_tick: int = -1
+var _swing: int = -1  # D-249: số đòn đã đánh (chọn hoạt ảnh luân phiên)
 var _attack_phase: int = Entity.AttackPhase.NONE
 ## Mốc thời gian thật (giây, Time) cho khóa hoạt ảnh chiêu, khựng khung, lóe, giật lùi.
 var _skill_from: float = -1.0
@@ -89,7 +90,7 @@ func _kaykit(model: Node3D, e: Entity, cfg: Dictionary) -> void:
 	var skel: Skeleton3D = model.find_children("*", "Skeleton3D", true, false)[0]
 	_attach(skel, cfg.get("right", ""), "handslot.r")
 	_attach(skel, cfg.get("left", ""), "handslot.l")
-	_paint(model, cfg["tex"], e.team)
+	ModelLibrary.paint_team(model, cfg["tex"], e.team)
 	_anim = AnimationPlayer.new()
 	model.add_child(_anim)
 	_anim.add_animation_library(&"", ModelLibrary.animations(cfg["rig"]))
@@ -105,15 +106,6 @@ func _attach(skel: Skeleton3D, weapon: String, bone: String) -> void:
 
 
 ## Đổi bảng màu mọi lưới trong `root` sang bản theo đội (vũ khí giữ màu gốc).
-func _paint(root: Node, tex: String, team: int) -> void:
-	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
-		if n.get_parent() is BoneAttachment3D or n.get_parent().get_parent() is BoneAttachment3D:
-			continue
-		var mi: MeshInstance3D = n as MeshInstance3D
-		for i: int in mi.mesh.get_surface_count():
-			mi.set_surface_override_material(i, ModelLibrary.team_material(mi.mesh.surface_get_material(i), tex, team))
-
-
 ## D-158: công trình là mô hình tĩnh theo đội, cỡ theo chiều cao trong cấu hình.
 func _make_structure(e: Entity, cfg: Dictionary) -> void:
 	_model = ModelLibrary.static_scene(cfg["model"], e.team).instantiate() as Node3D
@@ -277,16 +269,18 @@ func _show_frog(hexed: bool) -> bool:
 ## D-159: mỗi đòn mới phát lại từ đầu; lúc vung tay chạy sao cho điểm chém (`impact`) trúng đúng tick ra
 ## đòn của SIM, sau đó phần thu tay kéo dài hết thời gian hồi.
 func _play_attack(w: World, e: Entity) -> void:
-	var name: String = _cfg["attack"]
-	var length: float = _anim.get_animation(name).length
-	var impact: float = _cfg.get("impact", IMPACT)
-	if e.attack_start_tick != _attack_tick:
+	var fresh: bool = e.attack_start_tick != _attack_tick
+	if fresh:
 		_attack_tick = e.attack_start_tick
+		_swing += 1
+	var pick: Array = ModelLibrary.attack_pick(_cfg, _swing, IMPACT)  # D-249: luân phiên `attack` / `attack_alt`
+	var length: float = _anim.get_animation(pick[0]).length
+	if fresh:
 		var windup: float = maxf(1.0, e.attack_release_tick - e.attack_start_tick) * SimClock.TICK_SECONDS
-		_play(name, clampf(length * impact / windup, 0.6, 4.0), true)
+		_play(pick[0], clampf(length * pick[1] / windup, 0.6, 4.0), true)
 	elif e.attack_phase == Entity.AttackPhase.RECOVERY and _attack_phase != Entity.AttackPhase.RECOVERY:
 		var rest: float = maxf(1.0, e.next_attack_tick - w.tick) * SimClock.TICK_SECONDS
-		_play(name, clampf(length * (1.0 - impact) / rest, 0.6, 4.0))
+		_play(pick[0], clampf(length * (1.0 - pick[1]) / rest, 0.6, 4.0))
 
 
 ## Tốc độ phát đặt qua speed_scale (`_speed`) để đổi giữa chừng và khựng khung được.

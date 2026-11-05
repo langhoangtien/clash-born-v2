@@ -132,7 +132,9 @@
    "rig": "Creature",
    "attack": "attack",
    "cast": "cast",
-   "impact": 0.27,
+   "impact": 0.4,
+   "attack_alt": "attack_2",
+   "impact_alt": 0.49,
    "height": 1.2,
    "skills": {
     "2": "skill_2",

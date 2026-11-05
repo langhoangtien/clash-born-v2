@@ -132,3 +132,19 @@ func test_D_245_stealth_walk_when_invisible() -> void:
 	a.sync(w, e, Vector3.ZERO, false, -100, true)
 	assert_eq(a._playing, "idle", "đứng yên vẫn là dáng đứng")
 	a.free()
+
+
+## D-249: đơn vị có `attack_alt` (units_3d.json) thì các đòn đánh luân phiên hai hoạt ảnh (Noctis hai kiểu chém).
+func test_D_249_attacks_alternate_two_animations() -> void:
+	var w: World = World.new(1, Fixture.make())
+	var e: Entity = _unit(w, &"noctis", Entity.Kind.HERO)
+	var a: Actor3D = Actor3D.make(e)
+	var seen: Array[String] = []
+	for k: int in 3:
+		e.attack_phase = Entity.AttackPhase.WINDUP
+		e.attack_start_tick = 10 + k * 40
+		e.attack_release_tick = e.attack_start_tick + 9
+		a.sync(w, e, Vector3.ZERO, false, -100, false)
+		seen.append(a._playing)
+	assert_eq(seen, ["attack", "attack_2", "attack"], "đòn 1, 2, 3 luân phiên")
+	a.free()
