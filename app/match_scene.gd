@@ -111,6 +111,8 @@ func _ready() -> void:
 	info.world = world
 	info.z_index = 10
 	info.hero = hero
+	info.level_pressed.connect(skills.level_up)  # D-253: nâng chiêu / chọn talent ngay trong bảng thông số
+	info.talent_pressed.connect(func(slot: int) -> void: world.submit(Command.choose_talent(hero.id, slot)))
 	skills.connect_signals()
 	match_hud.world = world
 	buff_bar.world = world

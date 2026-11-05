@@ -80,8 +80,8 @@ static func compact_lines(d: AbilityDef) -> PackedStringArray:
 		if arr.is_empty() or HIDDEN.has(n) or (arr[0] == 0.0 and arr[arr.size() - 1] == 0.0):
 			continue
 		var pct: bool = PERCENT.has(n)
-		var a: String = InfoPanels._num(arr[0] * (100.0 if pct else 1.0))
-		var b: String = InfoPanels._num(arr[arr.size() - 1] * (100.0 if pct else 1.0))
+		var a: String = InfoPanels.num(arr[0] * (100.0 if pct else 1.0))
+		var b: String = InfoPanels.num(arr[arr.size() - 1] * (100.0 if pct else 1.0))
 		var label: String = InfoPanels.VALUE_NAMES.get(n, String(n))
 		var unit: String = "%" if pct else ""
 		if label.ends_with(" (s)"):

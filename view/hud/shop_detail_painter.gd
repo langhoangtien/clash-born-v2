@@ -54,7 +54,7 @@ static func _ability(s: ShopPanel, d: ItemDef, at: Vector2, w: float) -> float:
 	var cd: PackedFloat32Array = d.ability.values.get(&"cooldown", PackedFloat32Array())
 	if active and not cd.is_empty():
 		var x: float = UiStyle.serif(true).get_string_size("Chủ động", HORIZONTAL_ALIGNMENT_LEFT, -1, 26).x
-		s.draw_string(UiStyle.sans(), at + Vector2(x + 10, 5), "· Hồi %s giây" % InfoPanels._num(cd[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, 22, UiStyle.DIM)
+		s.draw_string(UiStyle.sans(), at + Vector2(x + 10, 5), "· Hồi %s giây" % InfoPanels.num(cd[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, 22, UiStyle.DIM)
 	return at.y + 40.0
 
 

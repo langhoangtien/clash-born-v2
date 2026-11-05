@@ -3,9 +3,17 @@ extends Control
 ## D-100: hai bảng xem thông tin kiểu Liên Quân. Chạm ô máu/mana (MatchHud.PANEL) → bảng thông số
 ## hero: chỉ số và kỹ năng (con số theo từng cấp, cấp đang có đánh dấu). Chạm tỷ số giữa trên →
 ## bảng tỷ số: mỗi hero một dòng (cấp, K/D/A, last hit, giá trị đồ, 6 ô đồ). Chạm lần nữa / ✕ để
-## đóng. Chỉ đọc World.
+## đóng. Chỉ đọc World. D-253: bảng thông số 3 tab (StatsPainter); nút + nâng chiêu và chọn talent chỉ phát tín hiệu,
+## APP gửi lệnh.
 
 enum Open { NONE, STATS, SCORE }
+enum Tab { STATS, SKILLS, TALENT }
+
+signal level_pressed(slot: int)
+signal talent_pressed(slot: int)
+
+const SKILL_SLOTS: Array[int] = [AbilityDef.Slot.INNATE, AbilityDef.Slot.Q, AbilityDef.Slot.W, AbilityDef.Slot.R]
+const TALENT_SLOTS: Array[int] = [AbilityDef.Slot.Q, AbilityDef.Slot.W, AbilityDef.Slot.R]
 
 const PANEL_SIZE: Vector2 = Vector2(1500, 860)
 const SCORE_HIT: Vector2 = Vector2(360, 76)
@@ -29,6 +37,7 @@ const VALUE_NAMES: Dictionary = {
 var world: World
 var hero: Entity
 var open: Open = Open.NONE
+var tab: Tab = Tab.STATS
 
 
 func panel_rect() -> Rect2:
@@ -52,14 +61,64 @@ func _has_point(point: Vector2) -> bool:
 	return MatchHud.PANEL.has_point(point) or score_rect().has_point(point) or (open != Open.NONE and panel_rect().has_point(point))
 
 
+## D-253: vùng bấm trong bảng thông số (toạ độ của Control).
+func tab_rect(t: int) -> Rect2:
+	return Rect2(panel_rect().position + Vector2(640 + t * 230, 18), Vector2(210, 56))
+
+
+## Thẻ kỹ năng (tab Kỹ năng: lưới 2 × 2 theo SKILL_SLOTS) / thẻ talent (tab Talent: 3 cột Q, W, R).
+func card_rect(slot: int) -> Rect2:
+	var o: Vector2 = panel_rect().position
+	if tab == Tab.TALENT:
+		return Rect2(o + Vector2(28 + TALENT_SLOTS.find(slot) * 488, 100), Vector2(468, 720))
+	var i: int = SKILL_SLOTS.find(slot)
+	return Rect2(o + Vector2(24 + (i % 2) * 730, 96 + (i / 2) * 378), Vector2(714, 362))
+
+
+func level_rect(slot: int) -> Rect2:
+	var r: Rect2 = card_rect(slot)
+	return Rect2(r.position + Vector2(r.size.x - 78, 16), Vector2(62, 62))
+
+
+func talent_rect(slot: int) -> Rect2:
+	var r: Rect2 = card_rect(slot)
+	return Rect2(r.position + Vector2(50, r.size.y - 100), Vector2(r.size.x - 100, 70))
+
+
+func can_level(slot: int) -> bool:
+	return slot != AbilityDef.Slot.INNATE and Progression.level_problem(world, hero, slot) == Command.Reject.NONE
+
+
+func can_pick(slot: int) -> bool:
+	return Progression.talent_problem(world, hero, slot) == Command.Reject.NONE
+
+
 func press_at(local: Vector2) -> void:
 	if open != Open.NONE and (close_rect().has_point(local) or not panel_rect().has_point(local)):
 		open = Open.NONE
+	elif open == Open.STATS:
+		_press_stats(local)
 	elif open == Open.NONE and MatchHud.PANEL.has_point(local):
 		open = Open.STATS
+		tab = Tab.STATS
 	elif open == Open.NONE and score_rect().has_point(local):
 		open = Open.SCORE
 	queue_redraw()
+
+
+func _press_stats(local: Vector2) -> void:
+	for t: int in 3:
+		if tab_rect(t).has_point(local):
+			tab = t as Tab
+			return
+	if tab == Tab.SKILLS:
+		for slot: int in SKILL_SLOTS:
+			if level_rect(slot).has_point(local) and can_level(slot):
+				level_pressed.emit(slot)
+	elif tab == Tab.TALENT:
+		for slot: int in TALENT_SLOTS:
+			if talent_rect(slot).has_point(local) and can_pick(slot):
+				talent_pressed.emit(slot)
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -78,7 +137,6 @@ func _process(_delta: float) -> void:
 func _draw() -> void:
 	if open == Open.NONE or world == null or hero == null:
 		return
-	var font: Font = UiStyle.sans()  # D-130
 	var p: Rect2 = panel_rect()
 	if open == Open.SCORE:  # D-223: bảng tỷ số cao vừa số hero
 		p.size.y = ScorePainter.height(score_rows(world))
@@ -86,9 +144,9 @@ func _draw() -> void:
 	UiStyle.soft_frame(self, p, 22, Color(0.04, 0.06, 0.1, 0.95))  # D-223
 	UiStyle.glyph(self, &"close", close_rect().get_center(), 16.0, UiStyle.TEXT)
 	if open == Open.STATS:
-		_draw_stats(font, p)
+		StatsPainter.draw(self, p)
 	else:
-		_draw_score(font, p)
+		ScorePainter.draw(self, p, world, score_rows(world))  # D-223
 
 
 ## Màu theo loại chỉ số (D-124) để lướt nhanh trong trận.
@@ -104,7 +162,6 @@ const C_SPECIAL: Color = Color(1.0, 0.55, 0.65)
 const C_STR: Color = Color(1.0, 0.45, 0.4)
 const C_AGI: Color = Color(0.5, 1.0, 0.5)
 const C_INT: Color = Color(0.5, 0.75, 1.0)
-const C_BONUS: Color = Color(0.4, 1.0, 0.4)
 
 
 ## Dòng chỉ số: [tên, giá trị gốc, phần cộng thêm từ đồ / hiệu ứng ("" nếu không có), màu].
@@ -146,7 +203,8 @@ static func stat_rows(e: Entity) -> Array:
 static func _split(label: String, s: StatBlock, stat: StatId.Id, col: Color) -> Array:
 	var white: float = s.natural(stat)
 	var bonus: float = s.get_stat(stat) - white
-	return [label, "%d" % roundi(white), ("+%d" % roundi(bonus)) if absf(bonus) >= 0.5 else "", col]
+	var extra: String = ("+%d" % roundi(bonus) if bonus > 0.0 else "−%d" % roundi(-bonus)) if absf(bonus) >= 0.5 else ""
+	return [label, "%d" % roundi(white), extra, col]  # D-253: phần trừ "−27" (vẽ đỏ), không "+-27"
 
 
 ## Dòng kỹ năng: [tên + cấp, [dòng giá trị "Tên: 90 / 140 / [190] / 240"]].
@@ -165,7 +223,7 @@ static func ability_rows(e: Entity) -> Array:
 			var parts: PackedStringArray = PackedStringArray()
 			var arr: PackedFloat32Array = a.def.values[name]
 			for i: int in range(arr.size()):
-				var v: String = _num(arr[i])
+				var v: String = num(arr[i])
 				parts.append("[%s]" % v if i == a.rank - 1 else v)
 			lines.append("%s: %s" % [VALUE_NAMES.get(name, String(name)), " / ".join(parts)])
 		if a.talent_active and a.def.talent != null:
@@ -174,29 +232,8 @@ static func ability_rows(e: Entity) -> Array:
 	return out
 
 
-static func _num(v: float) -> String:
-	return str(int(v)) if is_equal_approx(v, roundf(v)) else ("%.2f" % v).rstrip("0").rstrip(".")
-
-
-func _draw_stats(font: Font, p: Rect2) -> void:
-	_text(UiStyle.serif(true), p.position + Vector2(28, 56), "%s — cấp %d" % [hero.hero_def.display_name if hero.hero_def != null else "Hero", hero.stats.level()], 34, UiStyle.TEXT)
-	var y: float = 100.0
-	for row: Array in stat_rows(hero):  # D-124: màu theo loại, phần cộng thêm màu xanh
-		_text(UiStyle.serif(), p.position + Vector2(28, y), row[0], 20, UiStyle.DIM)
-		_text(font, p.position + Vector2(300, y), row[1], 20, row[3])
-		if row[2] != "":
-			var w: float = font.get_string_size(row[1], HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
-			_text(font, p.position + Vector2(310 + w, y), row[2], 20, C_BONUS)
-		y += 31.0
-	var x: float = 620.0
-	y = 100.0
-	for row: Array in ability_rows(hero):
-		_text(UiStyle.serif(true), p.position + Vector2(x, y), row[0], 23, UiStyle.GOLD)
-		y += 30.0
-		for line: String in row[1]:
-			_text(font, p.position + Vector2(x + 20, y), line, 17, Color(1, 1, 1, 0.85))
-			y += 24.0
-		y += 12.0
+static func num(v: float) -> String:
+	return str(roundi(v)) if is_equal_approx(v, roundf(v)) else ("%.2f" % v).rstrip("0").rstrip(".")
 
 
 ## Dòng tỷ số: mỗi hero [đội, tên, cấp, K/D/A, LH, giá trị đồ, tên tắt 6 ô, art_id 6 ô (D-115), id ảnh chân dung (D-223)].
@@ -217,12 +254,3 @@ static func score_rows(w: World) -> Array:
 				"%d/%d/%d" % [e.kills, e.deaths, e.assists], e.last_hits, worth, slots, arts,
 				StringName(String(e.hero_def.id) + "_portrait") if e.hero_def != null else &""])
 	return out
-
-
-func _draw_score(_font: Font, p: Rect2) -> void:
-	ScorePainter.draw(self, p, world, score_rows(world))  # D-223
-
-
-func _text(font: Font, at: Vector2, text: String, font_size: int, color: Color) -> void:
-	draw_string_outline(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, 5, Color(0, 0, 0, 0.8))
-	draw_string(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
