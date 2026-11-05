@@ -27,7 +27,29 @@ def read(path):
     b = open(path, "rb").read()
     n = struct.unpack("<I", b[12:16])[0]
     off = 20 + n
-    return json.loads(b[20:20 + n]), bytearray(b[off + 8:off + 8 + struct.unpack("<I", b[off:off + 4])[0]])
+    g, binc = json.loads(b[20:20 + n]), bytearray(b[off + 8:off + 8 + struct.unpack("<I", b[off:off + 4])[0]])
+    _untangle(g, binc)
+    return g, binc
+
+
+def _untangle(g, binc):
+    """afk-rig ≥ 1.3 ghi thuộc tính đỉnh xen kẽ (byteStride) → chép mỗi accessor ra vùng liền để array() trả view."""
+    for a in g.get("accessors", []):
+        bv = g["bufferViews"][a["bufferView"]] if "bufferView" in a else None
+        if bv is None:
+            continue
+        c, dt = SIZE[a["type"]], np.dtype(COMP[a["componentType"]])
+        stride = bv.get("byteStride", c * dt.itemsize)
+        if stride == c * dt.itemsize:
+            continue
+        start = bv.get("byteOffset", 0) + a.get("byteOffset", 0)
+        rows = np.frombuffer(bytes(binc[start:start + stride * (a["count"] - 1) + c * dt.itemsize]) + bytes(stride),
+                             np.uint8, a["count"] * stride).reshape(a["count"], stride)[:, :c * dt.itemsize]
+        binc += b"\0" * (-len(binc) % 4)
+        g["bufferViews"].append({"buffer": 0, "byteOffset": len(binc), "byteLength": rows.size})
+        binc += rows.tobytes()
+        a["bufferView"] = len(g["bufferViews"]) - 1
+        a.pop("byteOffset", None)
 
 
 def array(g, binc, i):
@@ -90,21 +112,32 @@ def prune(g, binc):
     for a in g.get("animations", []):
         for s in a["samplers"]:
             used.update((s["input"], s["output"]))
-    views = sorted({g["accessors"][i]["bufferView"] for i in used} | {im["bufferView"] for im in g.get("images", [])})
-    vmap, blob, new_views = {}, bytearray(), []
-    for v in views:
-        bv = dict(g["bufferViews"][v])
-        data = binc[bv.get("byteOffset", 0):bv.get("byteOffset", 0) + bv["byteLength"]]
+    blob, new_views, vmap = bytearray(), [], {}
+
+    def put(data, extra):
+        nonlocal blob
         blob += b"\0" * (-len(blob) % 4)
-        bv.update(buffer=0, byteOffset=len(blob))
-        vmap[v] = len(new_views)
-        new_views.append(bv)
+        new_views.append(dict(extra, buffer=0, byteOffset=len(blob), byteLength=len(data)))
         blob += data
-    amap = {i: k for k, i in enumerate(sorted(used))}
-    g["accessors"] = [dict(g["accessors"][i], bufferView=vmap[g["accessors"][i]["bufferView"]]) for i in sorted(used)]
-    g["bufferViews"] = new_views
+        return len(new_views) - 1
+    accs = []
+    for i in sorted(used):  # mỗi accessor một vùng riêng, chỉ đúng phần dùng (afk-rig 1.3 gom mọi hoạt ảnh vào một vùng)
+        a = dict(g["accessors"][i])
+        bv = g["bufferViews"][a["bufferView"]]
+        start = bv.get("byteOffset", 0) + a.pop("byteOffset", 0)
+        size = a["count"] * SIZE[a["type"]] * np.dtype(COMP[a["componentType"]]).itemsize
+        extra = {"target": bv["target"]} if "target" in bv else {}
+        a["bufferView"] = put(bytes(binc[start:start + size]), extra)
+        accs.append(a)
     for im in g.get("images", []):
-        im["bufferView"] = vmap[im["bufferView"]]
+        v = im["bufferView"]
+        if v not in vmap:
+            bv = g["bufferViews"][v]
+            vmap[v] = put(bytes(binc[bv.get("byteOffset", 0):bv.get("byteOffset", 0) + bv["byteLength"]]), {})
+        im["bufferView"] = vmap[v]
+    amap = {i: k for k, i in enumerate(sorted(used))}
+    g["accessors"] = accs
+    g["bufferViews"] = new_views
     for m in g["meshes"]:
         for p in m["primitives"]:
             p["attributes"] = {k: amap[v] for k, v in p["attributes"].items()}
