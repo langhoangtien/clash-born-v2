@@ -1,75 +1,59 @@
-# Bàn giao — Clashborn v2 (2026-10-29)
+# Bàn giao — Clashborn v2 (2026-11-05)
 
-Tóm tắt để phiên làm việc mới (tài khoản Claude mới) làm tiếp. Đọc file này rồi đọc `AGENTS.md`
-(quy trình bắt buộc), `docs/DECISIONS.md` (các dòng D-167 → D-183) và `art_inbox/YEU_CAU_STYLE.md`.
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-260). Nhánh làm việc: **`thu-asset-tu-lam`**
+(commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 
-## 1. Trạng thái repo
+## 1. Trạng thái
 
-- Repo: `langhoangtien/clash-born-v2`. Game Godot **4.7.2**, MOBA 3D, máy thử: Huawei MatePad 11.5.
-- **Nhánh đang làm: `thu-asset-tu-lam`** (nhánh thử hình / map, **chưa gộp vào `main`**).
-  `main` dừng ở D-167. Mọi thay đổi D-168 → D-183 chỉ có trên nhánh này.
-- Test (`GODOT=... bash tools/run_tests.sh [--soak]`): xem số mới nhất trong dòng D-178 của ROADMAP / tin nhắn cuối.
-- **Không build APK / web khi người dùng chưa bảo** (người dùng thử trên PC).
-- Người dùng nói tiếng Việt; muốn **bàn trước khi làm** việc lớn. Không kiểm tra id hero / chiêu / đồ trong code.
-  File ≤ 300 dòng, hàm ≤ 40 dòng.
+- 725 test xanh (`GODOT=... bash tools/run_tests.sh`). APK thử mới nhất **0.1.433** trên gh-pages (D-257..260).
+- Android: trình vẽ **Mobile (Vulkan)**, đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
+  Máy tính bảng người chơi: ~60 fps đầu trận → 4x fps sau một lúc; tắt phần vẽ / đổi độ phân giải không đổi FPS
+  → nghẽn CPU (xem mục 3). Giật 50 → 11 fps đã hết sau D-260.
+- Hero 3D đã làm theo quy trình mới: **Duy Anh** (đạt), **Noctis** (bản T9d không áo choàng, chờ người chơi duyệt),
+  **Brakk** (afk.ai). Myra / Vexa / Gorran còn mô hình KayKit cũ; concept T9 của họ đã có trong `art_inbox/09_units/`.
+- Hiệu ứng chiêu 3D (D-247..256): Duy Anh W (vệt chém vẽ tay + sóng bụi + tia lóe), Q (vệt tốc độ bám đường chạy).
+  Chưa có: Duy Anh R, toàn bộ Noctis, các hero khác.
 
-## 2. Đã làm (tóm tắt theo quyết định)
+## 2. Quy trình hero 3D (D-235, D-242, D-244, D-249)
 
-| Mã | Nội dung |
-|---|---|
-| D-168…D-172 | Map v3 theo bản vẽ người dùng (`tools/map_build/sketch/map_sketch.png`), 9216 × 9216, sông, base, lane, trụ. Bản vẽ giờ chỉ còn cho sông / base / shop (D-178). |
-| D-173, D-174 | Quái rừng 3D tự mang xương (`jungle_boar`), `tools/models/reweight_skin.py` sửa da. Người dùng chưa xác nhận trong game. |
-| D-175…D-177 | Thử khối đá Tripo, rừng cây low-poly, làm mờ cây — **đều đã thay bằng D-178** (code / asset đã gỡ, còn trong lịch sử git). D-177 cũng sửa lỗi sự kiện hoạt ảnh 3D. |
-| **D-178** | **Đồ họa mới + map bục rừng.** Phong cách theo concept `art_inbox/08_style/concept.webp`: camera cố định → màu + sáng tối vẽ sẵn vào mô hình (Blender, `tools/models/style_kit.py` → `assets/models/style/`), vẽ không đèn; ảnh nền Codex (`assets/textures/style/`, nén GPU). Map: `plateau_design.py` (mạng lối đi → bục rừng 13 / nửa, đá bờ sông, rìa map, 8 trại / phe: rừng carry 5, lane khó 3) → `build_map.py` → `decor.py` (vị trí cảnh vật + mặt nạ nền + bóng, `data/maps/clashborn_decor.json`, chỉ VIEW đọc). VIEW: `Terrain3D` (mặt đất ảnh nền theo mặt nạ, nước, vật liệu), `Scenery3D` (cảnh vật). Rìa map: rào đá + tường thành (nam thấp). Luật MAP-01/02/07/08/11/12. |
-| **D-179** | Bảng chẩn đoán FPS trong trận (`view/hud/diag_panel.gd`, phím G); đá viền nằm hẳn trong vùng chặn, chiều cao đá / cây theo khoảng trống phía bắc (không che tướng); lối rộng hơn + 5 lối cắt bục; bụi cỏ mới `style/bush_*` to hơn. APK có bảng chẩn đoán đã gửi người dùng đo. |
-| **D-180** | Bỏ lớp 2D (SubViewport) trong trận: hình trên đất vẽ bằng `GroundCanvas` (MultiMesh + shader cắt hình), sương trong shader mặt đất, shader đất 6 lần đọc ảnh. Người chơi đo D-179: độ phân giải 8–10 fps, lớp 2D 4–5, cảnh vật 1–2; giảm độ phân giải 3D không thấy mờ → chọn mặc định thấp hơn sau khi đo lại. |
-| **D-181** | Đo D-180: mid 38–40 fps, đi đường 57–62. Mức đồ họa = độ phân giải 3D: Thấp 50% (mặc định) / Vừa 75% / Cao 100%, bỏ MSAA. |
-| **D-182, D-184, D-185** | Bỏ vân tán cây; `dirt` mới của Codex không đạt (giữ ảnh cũ); rào / tường thành dựng bằng khối đá (`tools/models/style_walls.py`), bỏ vân `wall_face`. |
-| **D-183** | Bảng Cài đặt (bánh răng trong trận, nút Cài đặt ở menu), tỷ số trong khung màu đội, chân dung + dấu "i" ở ô máu. |
-| **D-186…D-188** | Màu đá chung (đá rừng làm chuẩn). Đường rừng: đất nện (`dirt_color`); lane / base: ảnh `dirt_stones` Codex vẽ tay, chỉnh màu bằng `tools/textures/recolor.py` (D-191). Thông số trong `units_3d.json` → `scenery.style.ground`. |
-| **D-195…D-197** | Rìa map = vực kiểu Liên Quân: lan can răng cưa + vách + đáy vực sương (`Terrain3D.ground_mesh / abyss`, decor `ground / abyss / cliff`); đáy vực chốt kiểu A (D-202). |
+1. Codex vẽ **tay không** (A-pose, tay tách thân, không áo choàng / vạt dài) + vũ khí vẽ riêng (phiếu
+   `art_inbox/YEU_CAU_STYLE.md`, đợt T9*).
+2. `python3 tools/tripo_gen.py art_inbox/09_units/<tên> --multiview --views front,side,back --faces 2500`
+   (ảnh nghiêng nhìn từ trái thì `side_left`); vũ khí `--views front,side --faces 500`.
+3. `python3 -I tools/models/glb_yaw.py <tên>.glb <tên>_front.glb --deg -90` (Tripo nhìn +X → +Z).
+4. afk.ai: `AFK_API_KEY=$(cat ~/.secrets/afk_key) NODE_USE_ENV_PROXY=1 npx -y afk-rig <tên>_front.glb --type human
+   --facing 0 -a all -o <tên>_afk.glb` (5¢; key chỉ ở `~/.secrets`, không commit).
+5. Vũ khí: `tools/models/place_prop.py` (đặt vào nắm tay theo xương), gắn cứng qua cột vũ khí trong
+   `tools/models/build_units.py`. Áo bị kéo theo tay: `cloth_weights.py`. Đổi chất liệu: `recolor_prop.py`.
+6. Thiếu động tác: xuất `<tên>_mixamo.fbx` (`to_mixamo.py`, cùng thân `<tên>_front.glb`), người dùng gắn xương +
+   tải hoạt ảnh trên Mixamo → `mixamo_pack.py` → `retarget.py` sang rig afk → dùng `MX <tên>` trong build_units.
+   File gốc Mixamo lưu ở `art_inbox/3d/mixamo/<hero>/` (README ở đó).
+7. `python3 -I tools/models/build_units.py <tên>` → `assets/models/style/heroes/<tên>.glb`; cấu hình hoạt ảnh /
+   điểm trúng ở `assets/models/units_3d.json` (`impact`, `skill_impact`, `attack_alt`, `stealth`, `dash_hop`…).
+8. Render kiểm tra: Godot + xvfb (script chụp ở `.local/`, bị gitignore — tạo lại khi cần).
 
-## 3. Đang dở / việc tiếp theo (theo thứ tự)
+Người chơi thích phong cách afk.ai (hợp đồ họa); Mixamo chỉ để bù động tác.
 
-1. FPS đã ổn (D-181). Bảng chẩn đoán (phím G) giữ trong bản thử. Tiếp theo:
-   thiết kế trụ / nhà chính + quái rừng theo concept, rồi tướng / lính (người dùng đã chốt thứ tự).
-   Chỉnh nhanh: bề rộng lối `MAIN / SIDE / GAP`, vị trí trại `CAMPS`, mạng lối `PATHS` trong
-   `tools/map_build/plateau_design.py` → `--write` → `build_map.py` → `decor.py`. Mật độ / quy tắc cảnh vật:
-   `tools/map_build/decor_place.py`. Màu / dáng mô hình: `tools/models/style_kit.py` (cần bpy).
-2. Tướng / lính / trụ / nhà chính vẫn là KayKit (bản tạm) — lệch phong cách concept; người dùng sẽ làm asset động
-   sau (tướng, quái rừng, creep, hoạt ảnh). Trụ, nhà chính, chợ nên làm lại theo concept.
-3. Minimap / màn xem map còn vẽ phẳng kiểu cũ (MapPainter) — đổi màu theo bảng mới nếu người dùng muốn.
-4. Quái rừng khác: Mixamo (hình người); 4 chân: Tripo dựng lưới → sửa lưới nếu thừa khối (`tools/models/mirror_half.py`) → afk.ai gắn xương + hoạt ảnh → `tools/models/glb_anims.py` chọn 5 hoạt ảnh (D-205).
-5. Khi người dùng chơi thử ổn: chạy soak, cập nhật ROADMAP (thêm D-168 → D-178), gộp `thu-asset-tu-lam` vào `main`.
+## 3. Việc tiếp theo (theo thứ tự đề xuất)
 
-- Trang chủ game trên VPS của người dùng (giới thiệu, changelog, tải APK): **để sau**, người dùng sẽ cho truy cập
-  qua Claude trên máy tính (container cloud không SSH ra ngoài được — cổng 22 bị chặn).
+1. **Hiệu năng CPU**: thêm đo thời gian từng phần (SIM, Actor3D.sync, HUD `_draw` mỗi khung, hiệu ứng) vào bảng
+   chẩn đoán; giảm lệnh vẽ (571 lệnh / 57k tam giác — cây / đá thành MultiMesh, gộp vật liệu, ảnh vũ khí gộp vào
+   ảnh thân, bóng mờ dưới chân một MultiMesh). Tìm vì sao FPS giảm dần theo thời gian trận (số đơn vị / đạn / xác /
+   danh sách chữ nổi tăng?).
+2. APK sát giới hạn 100 MiB của GitHub: thu ảnh trùng (`*_Color_*` Godot tách từ GLB công trình, ~18,7 MB).
+3. Hiệu ứng Duy Anh R (dải bám đường nhảy + cú bổ chạm đất); bộ hiệu ứng Noctis.
+4. Duyệt Noctis trong game; làm Myra / Vexa / Gorran theo quy trình mục 2.
+5. Đề xuất đang chờ người dùng: cho cú lao R của Duy Anh nhảy qua vách / cây / trụ (đổi luật ABL-08).
 
-## 4. Công cụ và lệnh
+## 4. Công cụ
 
-- **Blender trong container (D-177):** tải trang blender.org bị chặn, nhưng gói `bpy` (Blender 5.0.1 dạng thư viện
-  Python, cần Python 3.11) cài được qua pip — mất 2–3 phút mỗi phiên mới:
-  `uv venv -p /usr/bin/python3.11 <scratchpad>/bvenv && VIRTUAL_ENV=<scratchpad>/bvenv uv pip install bpy`,
-  rồi chạy script dựng mô hình bằng `<scratchpad>/bvenv/bin/python script.py` (xuất .glb bằng `bpy.ops.export_scene.gltf`).
-- **Godot trong container:** tải `Godot_v4.7.2-stable_linux.x86_64.zip` từ GitHub releases vào scratchpad.
+- Godot 4.7.2: tải `Godot_v4.7.2-stable_linux.x86_64` về scratchpad. Import: `godot --headless --path . --import`.
+- Blender (bpy) cho `to_mixamo.py`, `mixamo_pack.py`, `bake_shading.py`: venv Python có gói `bpy`.
+- Build APK: xem `docs/ANDROID_BUILD.md` (mục "Dựng môi trường trong container mới").
+- Tripo: key ở biến `TRIPO_API_KEY` hoặc `~/.secrets/tripo_key`. Credit còn ~770.
 
-- Godot: `GODOT=<đường dẫn godot> bash tools/run_tests.sh [--filter=...] [--soak]`. Import trước khi chạy cảnh:
-  `godot --headless --path . --import`.
-- Dựng map (D-178): `python3 tools/map_build/plateau_design.py ảnh.png --write` (in MAP-08, bề rộng lối) →
-  `python3 tools/map_build/build_map.py` (in `validation OK`) → `python3 tools/map_build/decor.py` (cảnh vật).
-  `from_sketch.py --write` chỉ khi đổi sông / base / shop trên bản vẽ. Ảnh map có tên:
-  `xvfb-run godot --path . --rendering-driver opengl3 -s res://tools/map_dev_png.gd` → `docs/map_dev.png`.
-- Tripo (tạo 3D từ ảnh): `python3 tools/tripo_gen.py ảnh.png --faces N --out thư_mục` — **key đọc từ biến
-  `TRIPO_API_KEY` hoặc `~/.secrets/tripo_key`, không nằm trong repo**. Mạng phải mở `api.tripo3d.ai` và
-  `*.tripo3d.com`. Credit còn ~610 (mỗi mô hình 30). Key cũ đã lộ trong chat — người dùng nên thu hồi và tạo key mới.
-- Mô hình: `tools/models/style_kit.py` (bộ asset D-178, cần bpy), `glb_slim.py`, `paint_vc.py`, `reweight_skin.py` (D-174).
-- Chụp cảnh trong game (`.local/capture.gd`, bị gitignore — tạo lại nếu cần: SceneTree mở `app/match_scene.tscn`,
-  đặt `hero.position` = (x, y) ở khung 5, lưu ảnh viewport sau `giây` × 30 khung):
-  `xvfb-run -a godot --path . --rendering-driver opengl3 -s res://.local/capture.gd -- out.png x y [giây]`.
+## 5. Phiếu cho Codex
 
-## 5. Phiếu cho Codex (người dùng chuyển)
-
-- `art_inbox/YEU_CAU_STYLE.md` — ảnh nền + vân lá theo concept (đợt T, T2 xong; đợt C thẻ màu chưa làm).
-- `art_inbox/YEU_CAU_KIT_MAP.md` — bản 3 cũ (khối đá Tripo), **đã thay bằng YEU_CAU_STYLE (D-178)**.
-- `art_inbox/YEU_CAU_3D.md` — quái / công trình 3D (jungle_boar đã làm).
-- Mỗi lần Codex làm xong: `git pull origin thu-asset-tu-lam`, xem ảnh, dựng Tripo, ghép, chụp gửi người dùng.
+- `art_inbox/YEU_CAU_STYLE.md` — concept 3D (T8*, T9* hero: T9d Noctis xong).
+- `art_inbox/YEU_CAU_ANH.md` — icon, ảnh hiệu ứng (V1, V2 xong; bản gốc trong `art_inbox/07_vfx/`, game chỉ chép
+  ảnh đang dùng vào `assets/vfx/`).
