@@ -63,16 +63,16 @@ func _has_point(point: Vector2) -> bool:
 
 ## D-253: vùng bấm trong bảng thông số (toạ độ của Control).
 func tab_rect(t: int) -> Rect2:
-	return Rect2(panel_rect().position + Vector2(640 + t * 230, 18), Vector2(210, 56))
+	return Rect2(panel_rect().position + Vector2(PANEL_SIZE.x - 760 + t * 212, 22), Vector2(200, 56))  # D-255: như màn chọn tướng
 
 
 ## Thẻ kỹ năng (tab Kỹ năng: lưới 2 × 2 theo SKILL_SLOTS) / thẻ talent (tab Talent: 3 cột Q, W, R).
 func card_rect(slot: int) -> Rect2:
 	var o: Vector2 = panel_rect().position
-	if tab == Tab.TALENT:
-		return Rect2(o + Vector2(28 + TALENT_SLOTS.find(slot) * 488, 100), Vector2(468, 720))
+	if tab == Tab.TALENT:  # hàng như màn chọn tướng
+		return Rect2(o + Vector2(24, 156 + TALENT_SLOTS.find(slot) * 228), Vector2(PANEL_SIZE.x - 48, 212))
 	var i: int = SKILL_SLOTS.find(slot)
-	return Rect2(o + Vector2(24 + (i % 2) * 730, 96 + (i / 2) * 378), Vector2(714, 362))
+	return Rect2(o + Vector2(24 + (i % 2) * 734, 108 + (i / 2) * 376), Vector2(718, 360))
 
 
 func level_rect(slot: int) -> Rect2:
@@ -82,7 +82,7 @@ func level_rect(slot: int) -> Rect2:
 
 func talent_rect(slot: int) -> Rect2:
 	var r: Rect2 = card_rect(slot)
-	return Rect2(r.position + Vector2(50, r.size.y - 100), Vector2(r.size.x - 100, 70))
+	return Rect2(Vector2(r.end.x - 290, r.get_center().y - 36), Vector2(260, 72))
 
 
 func can_level(slot: int) -> bool:
@@ -141,7 +141,10 @@ func _draw() -> void:
 	if open == Open.SCORE:  # D-223: bảng tỷ số cao vừa số hero
 		p.size.y = ScorePainter.height(score_rows(world))
 	draw_rect(Rect2(Vector2.ZERO, size), Color(0, 0, 0, 0.5))
-	UiStyle.soft_frame(self, p, 22, Color(0.04, 0.06, 0.1, 0.95))  # D-223
+	if open == Open.STATS:
+		UiStyle.panel(self, p)  # D-255: cùng kiểu màn chọn tướng
+	else:
+		UiStyle.soft_frame(self, p, 22, Color(0.04, 0.06, 0.1, 0.95))  # D-223
 	UiStyle.glyph(self, &"close", close_rect().get_center(), 16.0, UiStyle.TEXT)
 	if open == Open.STATS:
 		StatsPainter.draw(self, p)

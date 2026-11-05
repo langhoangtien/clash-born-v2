@@ -3,6 +3,7 @@ extends RefCounted
 ## D-253: vẽ bảng thông số hero (InfoPanels.Open.STATS) theo 3 tab. Chỉ số: hai cột, phần cộng thêm xanh "+12", phần
 ## trừ đỏ "−27". Kỹ năng: 4 thẻ có icon, nút + nâng cấp, mỗi loại giá trị một màu, cấp hiện tại sáng / đậm; hồi
 ## chiêu · mana · tầm của cấp hiện tại gom ở chân thẻ. Talent: 3 thẻ talent Q / W / R với nút chọn. Chỉ vẽ.
+## D-255: cùng kiểu với màn chọn tướng (HeroDetail): UiStyle.panel / tab / section / button, serif cho tiêu đề – nhãn.
 
 const TAB_NAMES: Array[String] = ["Chỉ số", "Kỹ năng", "Talent"]
 const FOOTER: Array[StringName] = [&"cooldown", &"mana", &"cast_range"]
@@ -36,13 +37,14 @@ static func value_color(name: StringName) -> Color:
 
 
 static func draw(c: InfoPanels, p: Rect2) -> void:
-	var title: String = "%s — cấp %d" % [c.hero.hero_def.display_name if c.hero.hero_def != null else "Hero", c.hero.stats.level()]
-	_text(c, UiStyle.serif(true), p.position + Vector2(28, 58), title, 34, UiStyle.TEXT)
+	var name: String = c.hero.hero_def.display_name if c.hero.hero_def != null else "Hero"
+	c.draw_string(UiStyle.serif(true), p.position + Vector2(32, 64), name, HORIZONTAL_ALIGNMENT_LEFT, -1, 40, UiStyle.TEXT)
+	var w: float = UiStyle.serif(true).get_string_size(name, HORIZONTAL_ALIGNMENT_LEFT, -1, 40).x
+	c.draw_string(UiStyle.serif(), p.position + Vector2(48 + w, 62), "Cấp %d" % c.hero.stats.level(), HORIZONTAL_ALIGNMENT_LEFT, -1, 28, UiStyle.GOLD)
 	for t: int in 3:
-		var r: Rect2 = c.tab_rect(t)
-		UiStyle.tile(c, r, UiStyle.GOLD if t == c.tab else UiStyle.LINE, 2, UiStyle.CARD_HI if t == c.tab else UiStyle.CARD)
 		var label: String = TAB_NAMES[t] + (" (%d)" % c.hero.skill_points if t == InfoPanels.Tab.SKILLS and c.hero.skill_points > 0 else "")
-		UiStyle.text_center(c, UiStyle.sans(true), r.get_center() + Vector2(0, 8), label, 22, UiStyle.GOLD if t == c.tab else UiStyle.DIM)
+		UiStyle.tab(c, c.tab_rect(t), label, t == c.tab)
+	UiStyle.divider(c, p.position + Vector2(24, 92), Vector2(p.end.x - 24, p.position.y + 92))
 	match c.tab:
 		InfoPanels.Tab.STATS:
 			_stats(c, p)
@@ -50,23 +52,28 @@ static func draw(c: InfoPanels, p: Rect2) -> void:
 			for slot: int in InfoPanels.SKILL_SLOTS:
 				_skill_card(c, slot)
 		InfoPanels.Tab.TALENT:
+			c.draw_string(UiStyle.sans(), p.position + Vector2(30, 128), "Ở cấp %d chọn 1 trong 3 talent; talent nâng chiêu tương ứng lên tầng II." % c.world.balance.talent_level, HORIZONTAL_ALIGNMENT_LEFT, -1, 21, UiStyle.DIM)
 			for slot: int in InfoPanels.TALENT_SLOTS:
 				_talent_card(c, slot)
 
 
 static func _stats(c: InfoPanels, p: Rect2) -> void:
+	var area: Rect2 = Rect2(p.position + Vector2(24, 108), p.size - Vector2(48, 132))
+	UiStyle.section(c, area)
 	var rows: Array = InfoPanels.stat_rows(c.hero)
 	var half: int = ceili(rows.size() / 2.0)
-	var font: Font = UiStyle.sans()
+	var col_w: float = (area.size.x - 56.0) * 0.5
 	for i: int in rows.size():
 		var row: Array = rows[i]
-		var at: Vector2 = p.position + Vector2(40 + (i / half) * 730, 130 + (i % half) * 46)
-		_text(c, UiStyle.serif(), at, row[0], 22, UiStyle.DIM)
-		_text(c, UiStyle.sans(true), at + Vector2(300, 0), row[1], 22, row[3])
+		var x: float = area.position.x + 28.0 + (i / half) * (col_w + 28.0)
+		var y: float = area.position.y + 50.0 + (i % half) * 44.0
+		c.draw_string(UiStyle.serif(), Vector2(x, y), row[0], HORIZONTAL_ALIGNMENT_LEFT, 300, 21, UiStyle.DIM)
+		c.draw_string(UiStyle.sans(true), Vector2(x + 300, y), row[1], HORIZONTAL_ALIGNMENT_LEFT, -1, 21, row[3])
 		if row[2] != "":
-			var w: float = font.get_string_size(row[1], HORIZONTAL_ALIGNMENT_LEFT, -1, 22).x
+			var vw: float = UiStyle.sans(true).get_string_size(row[1], HORIZONTAL_ALIGNMENT_LEFT, -1, 21).x
 			var minus: bool = String(row[2]).begins_with("−")
-			_text(c, UiStyle.sans(true), at + Vector2(316 + w, 0), String(row[2]).insert(1, " "), 22, UiStyle.RED_TEXT if minus else UiStyle.GREEN)
+			c.draw_string(UiStyle.sans(true), Vector2(x + 314 + vw, y), String(row[2]).insert(1, " "), HORIZONTAL_ALIGNMENT_LEFT, -1, 21, UiStyle.RED_TEXT if minus else UiStyle.GREEN)
+		UiStyle.divider(c, Vector2(x, y + 12), Vector2(x + col_w, y + 12))
 
 
 static func _skill_card(c: InfoPanels, slot: int) -> void:
@@ -74,18 +81,16 @@ static func _skill_card(c: InfoPanels, slot: int) -> void:
 	if a == null:
 		return
 	var r: Rect2 = c.card_rect(slot)
-	UiStyle.card(c, r)
+	UiStyle.section(c, r)
 	var tex: Texture2D = ArtLibrary.texture(a.def.art_id)
 	if tex != null:
-		c.draw_texture_rect(tex, Rect2(r.position + Vector2(18, 16), Vector2(78, 78)), false)
+		c.draw_texture_rect(tex, Rect2(r.position + Vector2(18, 16), Vector2(84, 84)), false)
 	var key: String = ["Nội tại", "Q", "W", "R"][slot]
-	_text(c, UiStyle.serif(true), r.position + Vector2(112, 46), "%s  %s" % [key, a.def.display_name], 25, UiStyle.GOLD)
+	c.draw_string(UiStyle.serif(true), r.position + Vector2(120, 48), "%s · %s" % [key, a.def.display_name], HORIZONTAL_ALIGNMENT_LEFT, -1, 26, UiStyle.GOLD)
 	for k: int in a.def.expected_ranks():  # chấm cấp
-		UiStyle.orb(c, r.position + Vector2(122 + k * 26, 76), 8.0, UiStyle.GOLD if k < a.rank else UiStyle.LINE, k < a.rank)
+		UiStyle.orb(c, r.position + Vector2(130 + k * 26, 80), 8.0, UiStyle.GOLD if k < a.rank else UiStyle.LINE, k < a.rank)
 	if c.can_level(slot):
-		var b: Rect2 = c.level_rect(slot)
-		UiStyle.tile(c, b, UiStyle.GOLD, 3, UiStyle.BLUE_BTN)
-		UiStyle.text_center(c, UiStyle.sans(true), b.get_center() + Vector2(0, 12), "+", 36, UiStyle.GOLD)
+		UiStyle.button(c, c.level_rect(slot), &"gold", "+", "", 40)
 	var names: Array = a.def.values.keys().filter(func(n: StringName) -> bool: return not FOOTER.has(n) and not HeroPreview.HIDDEN.has(n))
 	names.sort_custom(func(x: StringName, y: StringName) -> bool: return String(x) < String(y))
 	var cols: int = 2 if names.size() > 6 else 1
@@ -123,24 +128,26 @@ static func _footer(c: InfoPanels, a: AbilityInstance, r: Rect2) -> void:
 	_text(c, UiStyle.sans(), r.position + Vector2(22, r.size.y - 18), line, 17, Color(0.6, 0.82, 1.0))
 
 
+## Hàng talent như màn chọn tướng: icon, "Q II · tên", mô tả; nút Chọn bên phải.
 static func _talent_card(c: InfoPanels, slot: int) -> void:
 	var a: AbilityInstance = Abilities.of(c.hero, slot)
 	if a == null or a.def.talent == null:
 		return
 	var r: Rect2 = c.card_rect(slot)
 	var chosen: bool = a.talent_active
-	UiStyle.card(c, r, chosen)
+	if chosen:
+		UiStyle.card(c, r, true)
+	else:
+		UiStyle.section(c, r)
 	var tex: Texture2D = ArtLibrary.texture(a.def.art_id)
 	if tex != null:
-		c.draw_texture_rect(tex, Rect2(r.position + Vector2(r.size.x * 0.5 - 60, 30), Vector2(120, 120)), false)
-	var font: Font = UiStyle.serif(true)
-	UiStyle.text_center(c, font, r.position + Vector2(r.size.x * 0.5, 196), a.def.talent.display_name, 26, UiStyle.GOLD)
-	c.draw_multiline_string(UiStyle.sans(), r.position + Vector2(30, 250), a.def.talent.description, HORIZONTAL_ALIGNMENT_CENTER,
-		r.size.x - 60, 21, -1, UiStyle.TEXT)
-	var b: Rect2 = c.talent_rect(slot)
+		c.draw_texture_rect(tex, Rect2(r.position + Vector2(20, (r.size.y - 110) * 0.5), Vector2(110, 110)), false)
+	var key: String = ["", "Q", "W", "R"][slot]
+	c.draw_string(UiStyle.serif(true), r.position + Vector2(156, 70), "%s II · %s" % [key, a.def.talent.display_name], HORIZONTAL_ALIGNMENT_LEFT, -1, 28, UiStyle.GOLD)
+	c.draw_multiline_string(UiStyle.sans(), r.position + Vector2(156, 112), a.def.talent.description, HORIZONTAL_ALIGNMENT_LEFT,
+		r.size.x - 470, 21, 3, UiStyle.TEXT)
 	var state: String = "Đã chọn" if chosen else ("Chọn" if c.can_pick(slot) else "Mở ở cấp %d" % c.world.balance.talent_level)
-	UiStyle.tile(c, b, UiStyle.GOLD if c.can_pick(slot) or chosen else UiStyle.LINE, 2, UiStyle.BLUE_BTN if c.can_pick(slot) else UiStyle.CARD)
-	UiStyle.text_center(c, UiStyle.sans(true), b.get_center() + Vector2(0, 9), state, 24, UiStyle.GOLD if chosen else UiStyle.TEXT)
+	UiStyle.button(c, c.talent_rect(slot), &"gold" if c.can_pick(slot) or chosen else &"ghost", state, "", 26)
 
 
 static func _text(c: CanvasItem, font: Font, at: Vector2, text: String, size: int, color: Color) -> void:

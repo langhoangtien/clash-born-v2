@@ -111,12 +111,7 @@ func _detail() -> void:
 	HeroDetail.draw_header(self, p, DETAIL.position + Vector2(24, 24))
 	for i: int in range(HeroDetail.TAB_NAMES.size()):
 		var r: Rect2 = tab_rect(i)
-		var on: bool = i == tab
-		if on:
-			draw_style_box(UiStyle.box(Color(0.5, 0.37, 0.14, 0.95), UiStyle.GOLD, 2, 8, Color(UiStyle.GOLD, 0.2), 6), r)
-		else:
-			draw_style_box(UiStyle.box(UiStyle.CARD, UiStyle.LINE, 1, 8), r)
-		UiStyle.text_center(self, UiStyle.serif(on), r.get_center(), HeroDetail.TAB_NAMES[i], 26, Color(1, 0.95, 0.85) if on else UiStyle.DIM)
+		UiStyle.tab(self, r, HeroDetail.TAB_NAMES[i], i == tab)
 	UiStyle.divider(self, Vector2(tab_rect(0).position.x, tab_rect(0).end.y + 8), Vector2(DETAIL.end.x - 24, tab_rect(0).end.y + 8))
 	var area: Rect2 = Rect2(DETAIL.position + Vector2(24, 272), DETAIL.size - Vector2(48, 292))
 	HeroDetail.draw_tab(self, p, tab, area)

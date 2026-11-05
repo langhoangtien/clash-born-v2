@@ -104,6 +104,20 @@ static func button(c: CanvasItem, r: Rect2, kind: StringName, text: String, sub:
 		text_center(c, sans(), r.get_center() + Vector2(0, size * 0.62), sub, int(size * 0.6), Color(col, 0.8))
 
 
+## Thẻ tab (màn chọn tướng D-130, bảng thông số trong trận D-255): đang chọn nền nâu vàng viền vàng, chữ serif đậm.
+static func tab(c: CanvasItem, r: Rect2, text: String, on: bool, size: int = 26) -> void:
+	if on:
+		c.draw_style_box(box(Color(0.5, 0.37, 0.14, 0.95), GOLD, 2, 8, Color(GOLD, 0.2), 6), r)
+	else:
+		c.draw_style_box(box(CARD, LINE, 1, 8), r)
+	text_center(c, serif(on), r.get_center(), text, size, Color(1, 0.95, 0.85) if on else DIM)
+
+
+## Khung nội dung (thẻ chiêu, bảng chỉ số) của màn chọn tướng và bảng thông số.
+static func section(c: CanvasItem, r: Rect2) -> void:
+	c.draw_style_box(box(CARD, LINE, 1, 12), r)
+
+
 ## Viên nhãn nhỏ ("Bị động", "Không chọn mục tiêu").
 static func pill(c: CanvasItem, at: Vector2, text: String, size: int = 17) -> float:
 	var f: Font = sans()

@@ -54,7 +54,7 @@ static func _skills(c: CanvasItem, p: HeroPreview, area: Rect2) -> void:
 
 
 static func _skill(c: CanvasItem, row: Array, cell: Rect2) -> void:
-	c.draw_style_box(UiStyle.box(UiStyle.CARD, UiStyle.LINE, 1, 12), cell)
+	UiStyle.section(c, cell)
 	var d: AbilityDef = row[0]
 	var tex: Texture2D = ArtLibrary.texture(d.art_id)
 	var icon: Rect2 = Rect2(cell.position + Vector2(18, 20), Vector2(108, 108))
@@ -77,7 +77,7 @@ static func _skill(c: CanvasItem, row: Array, cell: Rect2) -> void:
 
 
 static func _stats(c: CanvasItem, p: HeroPreview, area: Rect2) -> void:
-	c.draw_style_box(UiStyle.box(UiStyle.CARD, UiStyle.LINE, 1, 12), area)
+	UiStyle.section(c, area)
 	var x: Array[float] = [area.position.x + 28.0, area.position.x + 460.0, area.position.x + 760.0]
 	var y: float = area.position.y + 44.0
 	c.draw_string(UiStyle.serif(true), Vector2(x[1], y), "Cấp 1", HORIZONTAL_ALIGNMENT_LEFT, -1, 24, GOLD)
@@ -96,7 +96,7 @@ static func _talents(c: CanvasItem, p: HeroPreview, area: Rect2) -> void:
 	var y: float = area.position.y + 44.0
 	for t: Array in p.talents():
 		var cell: Rect2 = Rect2(Vector2(area.position.x, y), Vector2(area.size.x, 118))
-		c.draw_style_box(UiStyle.box(UiStyle.CARD, UiStyle.LINE, 1, 12), cell)
+		UiStyle.section(c, cell)
 		var d: AbilityDef = t[1]
 		var tal: TalentDef = t[2]
 		var tex: Texture2D = ArtLibrary.texture(d.art_id)
