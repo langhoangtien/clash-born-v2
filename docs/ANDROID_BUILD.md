@@ -1,7 +1,7 @@
 # Bản APK (Android / HarmonyOS 2–4)
 
 HarmonyOS 2, 3, 4 chạy APK như Android (người chơi: HarmonyOS 4.2). HarmonyOS NEXT / 5+ không
-cài APK trực tiếp. Bản build: chỉ arm64-v8a, renderer GL Compatibility, xoay ngang (D-116).
+cài APK trực tiếp. Bản build: chỉ arm64-v8a, xoay ngang (D-116); trình vẽ Mobile (Vulkan, D-259 — máy không có Vulkan thì Godot tự quay về OpenGL), cảnh 3D dưới 100% phóng bằng FSR. Bản web vẫn GL Compatibility.
 
 ## Build
 

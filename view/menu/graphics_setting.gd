@@ -1,7 +1,7 @@
 class_name GraphicsSetting
 extends RefCounted
 ## Mức đồ họa trận 3D (D-151, D-157, D-181), lưu ở user://settings.cfg (cạnh chế độ tiếng): độ phân giải
-## cảnh 3D theo SCALES — THẤP 50% (mặc định), VỪA 75%, CAO 100%. Không MSAA (đo trên MatePad không đổi FPS,
+## cảnh 3D theo SCALES — THẤP 50%, VỪA 75%, CAO 100% (mặc định từ D-259: Vulkan dư sức tô điểm ảnh). Không MSAA (đo trên MatePad không đổi FPS,
 ## không thấy khác). Giao diện, thanh máu, chữ luôn nét.
 
 enum Level { LOW, MEDIUM, HIGH }
@@ -10,7 +10,7 @@ const PATH: String = "user://settings.cfg"
 const NAMES: Array[String] = ["Thấp", "Vừa", "Cao"]
 ## Tỉ lệ độ phân giải cảnh 3D theo mức.
 const SCALES: Array[float] = [0.5, 0.75, 1.0]
-const DEFAULT: Level = Level.LOW
+const DEFAULT: Level = Level.HIGH
 ## D-183: hiện FPS · SIM ms trong trận (bản thử: bật mặc định).
 const SHOW_FPS_DEFAULT: bool = true
 

@@ -13,9 +13,10 @@ func test_D_181_levels_set_3d_scale_without_msaa() -> void:
 	vp.free()
 
 
-func test_D_181_default_level_is_low() -> void:
+## D-259 (đo trên máy tính bảng: Vulkan 48–52 fps ở 100%, đổi độ phân giải ảnh hưởng ít): mặc định Cao 100%.
+func test_D_259_default_level_is_high() -> void:
 	var cfg: ConfigFile = ConfigFile.new()
-	assert_eq(cfg.get_value("graphics", "level", GraphicsSetting.DEFAULT), GraphicsSetting.Level.LOW)
+	assert_eq(cfg.get_value("graphics", "level", GraphicsSetting.DEFAULT), GraphicsSetting.Level.HIGH)
 
 
 ## D-258 (đo trên máy tính bảng: chỉ độ phân giải đổi FPS, tắt mọi phần vẽ không lên): bỏ chỉnh màu của
