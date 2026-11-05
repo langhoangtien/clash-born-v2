@@ -4,12 +4,12 @@ extends Node3D
 ## `ability_finished` (chiêu ra, đúng lúc gây tác dụng) sinh các mảnh của công thức; `damage_taken` do chủ chiêu gây
 ## trong HIT_TICKS tick sau đó sinh tia lóe trên mục tiêu. Mảnh tự gỡ khi hết `life`. Code không biết tên chiêu.
 ## `trail` (D-250): vệt gió đi theo chủ chiêu suốt `life` (vd thời gian tăng tốc), chỉ hiện khi đang chạy.
+## `arc` (D-252): ảnh quạt vẽ tay nằm phẳng trước mặt chủ chiêu, đỉnh quạt ở chân, cỡ theo bán kính / góc của kỹ năng.
 
 const RECIPES: String = "res://assets/vfx/vfx.json"
 const TEXTURES: String = "res://assets/vfx/%s.png"
-const SWEEP_SHADER: Shader = preload("res://view/three/skill_sweep.gdshader")
+const TINT_SHADER: Shader = preload("res://view/three/skill_tint.gdshader")
 const HIT_TICKS: int = 4  ## hằng số hiển thị: sát thương của chủ chiêu trong 4 tick sau khi chiêu ra coi là trúng chiêu
-const SWEEP_SEGMENTS: int = 28  ## hằng số kỹ thuật: số đoạn của dải lưỡi liềm
 
 static var _recipes: Dictionary = {}
 
@@ -62,11 +62,8 @@ func _cast(w: World, ev: GameEvent) -> void:
 		return
 	for part: Dictionary in recipes().get(String(a.def.art_id), {}).get("parts", []):
 		match part["type"]:
-			"sweep":
-				_add(_sweep_node(e, a, part), "sweep", part, _ground(e.position, part))
-			"burst":
-				var at: Vector2 = e.position + e.facing * float(part.get("forward", 0.0)) / MatchView3D.S
-				_add(_quad(part["tex"], part, false), "burst", part, _ground(at, part))
+			"arc":
+				_add(_arc_node(e, a, part), "arc", part, _ground(e.position, part))
 			"hit":
 				_armed[e.id] = [w.tick, part]
 			"trail":
@@ -104,31 +101,40 @@ static func _value(e: Entity, a: AbilityInstance, v: Variant) -> float:
 	return Abilities.value(e, a, StringName(v)) if v is String else float(v)
 
 
-func _sweep_node(e: Entity, a: AbilityInstance, part: Dictionary) -> MeshInstance3D:
+## Quạt vẽ tay: trong mỗi khung ảnh, đỉnh quạt ở (`apex_x`, `apex_y`) (phần cỡ khung, gốc trên trái), nửa bề ngang cung
+## `half_w`, sâu `depth` (phần cỡ khung) → kéo giãn cho nửa bề ngang = R·sin(góc/2), độ sâu = R.
+func _arc_node(e: Entity, a: AbilityInstance, part: Dictionary) -> Node3D:
 	var radius: float = _value(e, a, part.get("radius", 300.0)) * MatchView3D.S
-	var half: float = deg_to_rad(_value(e, a, part.get("angle", 120.0))) * 0.5
-	var facing: float = e.facing.angle() if e.facing != Vector2.ZERO else 0.0
-	var st: SurfaceTool = SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLE_STRIP)
-	for i: int in SWEEP_SEGMENTS + 1:
-		var t: float = float(i) / SWEEP_SEGMENTS
-		var d: Vector2 = Vector2.from_angle(facing + half - 2.0 * half * t)  # quét từ một mép quạt sang mép kia
-		for v: float in [0.0, 1.0]:
-			st.set_uv(Vector2(t, v))
-			var r: float = radius * lerpf(float(part.get("inner", 0.3)), 1.0, v)
-			st.add_vertex(Vector3(d.x * r, 0.0, d.y * r))
+	var half: float = deg_to_rad(_value(e, a, part.get("angle", 150.0))) * 0.5
+	var sx: float = radius * sin(minf(half, PI * 0.5)) / float(part.get("half_w", 0.4))
+	var sy: float = radius / float(part.get("depth", 0.34))
+	var quad: QuadMesh = QuadMesh.new()
+	quad.size = Vector2(sx, sy)
 	var mi: MeshInstance3D = MeshInstance3D.new()
-	mi.mesh = st.commit()
-	var mat: ShaderMaterial = ShaderMaterial.new()
-	mat.shader = SWEEP_SHADER
-	mat.set_shader_parameter("color", Color(part.get("color", "#4080ff")))
-	mat.set_shader_parameter("edge", Color(part.get("edge", "#ffffff")))
-	mi.material_override = mat
+	mi.mesh = quad
+	mi.material_override = _tint_material(part)
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	return mi
+	mi.rotation.x = -PI * 0.5  # nằm phẳng, phía trên ảnh hướng ra trước
+	mi.position = Vector3((float(part.get("apex_x", 0.5)) - 0.5) * sx, 0.0, -(float(part.get("apex_y", 0.84)) - 0.5) * sy)
+	var root: Node3D = Node3D.new()
+	var f: Vector2 = e.facing if e.facing != Vector2.ZERO else Vector2.DOWN
+	root.rotation.y = atan2(-f.x, -f.y)
+	root.add_child(mi)
+	return root
 
 
-## Mặt phẳng luôn quay về camera, ảnh `tex` (bảng khung `frames` × `frames` nếu có), cộng sáng hoặc trong suốt.
+static func _tint_material(part: Dictionary) -> ShaderMaterial:
+	var mat: ShaderMaterial = ShaderMaterial.new()
+	mat.shader = TINT_SHADER
+	mat.set_shader_parameter("tex", load(TEXTURES % part["tex"]))
+	mat.set_shader_parameter("tint", part.has("color"))
+	mat.set_shader_parameter("color", Color(part.get("color", "#ffffff")))
+	mat.set_shader_parameter("edge", Color(part.get("edge", "#ffffff")))
+	mat.set_shader_parameter("frames", float(part.get("frames", 1)))
+	return mat
+
+
+## Mặt phẳng luôn quay về camera, ảnh `tex`, cộng sáng hoặc trong suốt (tia lóe khi trúng).
 static func _quad(tex: String, part: Dictionary, additive: bool) -> MeshInstance3D:
 	var mat: StandardMaterial3D = StandardMaterial3D.new()
 	mat.albedo_texture = load(TEXTURES % tex)
@@ -138,8 +144,6 @@ static func _quad(tex: String, part: Dictionary, additive: bool) -> MeshInstance
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD if additive else BaseMaterial3D.BLEND_MODE_MIX
 	mat.no_depth_test = additive
-	var frames: int = int(part.get("frames", 1))
-	mat.uv1_scale = Vector3(1.0 / frames, 1.0 / frames, 1.0)
 	var quad: QuadMesh = QuadMesh.new()
 	quad.size = Vector2.ONE * float(part.get("size", 1.0))
 	var mi: MeshInstance3D = MeshInstance3D.new()
@@ -154,12 +158,14 @@ static func _trail_node(part: Dictionary) -> Node3D:
 	var root: Node3D = Node3D.new()
 	var n: int = int(part.get("count", 3))
 	for k: int in n:
-		var strip: MeshInstance3D = _quad(part["tex"], part, false)  # phủ màu: cộng sáng mất hút trên nền cát sáng
-		strip.material_override.billboard_mode = BaseMaterial3D.BILLBOARD_DISABLED
+		var strip: MeshInstance3D = MeshInstance3D.new()
+		strip.mesh = QuadMesh.new()
+		strip.material_override = _tint_material(part)  # phủ màu: cộng sáng mất hút trên nền cát sáng
+		strip.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		(strip.mesh as QuadMesh).size = Vector2(float(part.get("length", 1.0)), float(part.get("width", 0.12)))
 		strip.rotation = Vector3(-PI * 0.5, PI * 0.5, 0.0)  # nằm phẳng, chiều dài ảnh dọc ra sau lưng, đầu đậm sát người
-		var side: float = (float(k) - (n - 1) * 0.5) * 0.18
-		strip.position = Vector3(side, float(part.get("height", 0.4)) + 0.22 * k, -0.5 * float(part.get("length", 1.0)) - 0.15)
+		var side: float = (float(k) - (n - 1) * 0.5) * 0.25
+		strip.position = Vector3(side, float(part.get("height", 0.4)) + 0.2 * k, -0.5 * float(part.get("length", 1.0)) - 0.1)
 		root.add_child(strip)
 	return root
 
@@ -182,22 +188,17 @@ func _animate(it: Array) -> void:
 	var part: Dictionary = it[3]
 	var t: float = clampf(it[2] / float(part.get("life", 0.3)), 0.0, 1.0)
 	match it[1]:
-		"sweep":
-			var mat: ShaderMaterial = (it[0] as MeshInstance3D).material_override
-			var sweep: float = float(part.get("sweep", 0.2))
-			mat.set_shader_parameter("progress", clampf(it[2] / sweep, 0.0, 1.0) * 1.05)
-			var after: float = clampf((it[2] - sweep) / maxf(0.01, float(part.get("life", 0.5)) - sweep), 0.0, 1.0)
-			mat.set_shader_parameter("fade", 1.0 - after * after)  # D-250: quét xong đứng lại rồi tan dần
-		"burst":
+		"arc":
+			var mat: ShaderMaterial = ((it[0] as Node3D).get_child(0) as MeshInstance3D).material_override
 			var frames: int = int(part.get("frames", 1))
-			var k: int = mini(int(t * frames * frames), frames * frames - 1)
-			var mat: StandardMaterial3D = (it[0] as MeshInstance3D).material_override
-			mat.uv1_offset = Vector3(float(k % frames) / frames, float(k / frames) / frames, 0.0)
+			mat.set_shader_parameter("frame", float(mini(int(t * frames * frames), frames * frames - 1)))
+			if frames == 1:  # ảnh đơn: hiện nhanh rồi tan
+				mat.set_shader_parameter("fade", float(part.get("alpha", 1.0)) * minf(1.0, t * 6.0) * (1.0 - t * t))
 		"trail":
 			var show: float = float((it[0] as Node3D).get_meta("show", 0.0)) * (1.0 - smoothstep(0.85, 1.0, t))
 			for k: int in (it[0] as Node3D).get_child_count():
 				var strip: MeshInstance3D = (it[0] as Node3D).get_child(k)
-				(strip.material_override as StandardMaterial3D).albedo_color.a = show * (0.7 + 0.2 * sin(it[2] * 11.0 + k * 2.1))
+				(strip.material_override as ShaderMaterial).set_shader_parameter("fade", show * (0.75 + 0.2 * sin(it[2] * 11.0 + k * 2.1)))
 		"hit":
 			(it[0] as Node3D).scale = Vector3.ONE * (0.4 + 1.2 * sin(PI * minf(t * 1.4, 1.0)))
 			var mat: StandardMaterial3D = (it[0] as MeshInstance3D).material_override

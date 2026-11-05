@@ -27,9 +27,9 @@ func test_D_247_recipe_parts_hits_and_cleanup() -> void:
 	var k: Entity = s[1]
 	var fx: SkillVfx3D = SkillVfx3D.new()
 	fx.on_event(w, GameEvent.make(&"ability_finished", w.tick, k.id, -1, AbilityDef.Slot.W))
-	assert_eq(fx.kinds(), ["sweep", "burst"], "W Duy Anh: vệt quét + bụi")
+	assert_eq(fx.kinds(), ["arc", "arc"], "W Duy Anh: sóng bụi + vệt chém")
 	fx.on_event(w, GameEvent.make(&"damage_taken", w.tick, k.id, s[2].id, 120.0))
-	assert_eq(fx.kinds(), ["sweep", "burst", "hit"], "trúng chiêu: tia lóe trên mục tiêu")
+	assert_eq(fx.kinds(), ["arc", "arc", "hit"], "trúng chiêu: tia lóe trên mục tiêu")
 	fx.on_event(w, GameEvent.make(&"ability_finished", w.tick, k.id, -1, AbilityDef.Slot.R))
 	assert_eq(fx.kinds().size(), 3, "chiêu không có công thức (R): không sinh gì")
 	fx.advance(5.0)
