@@ -849,4 +849,4 @@ Game sẽ dựng hiệu ứng chiêu bằng hạt / mặt phẳng / vệt sáng 
 
 Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng (kèm ảnh tổng hợp `07_vfx/_preview_v1.png`).
 
-- [ ] V1 xong 15 ảnh
+- [x] V1 xong 15 ảnh
