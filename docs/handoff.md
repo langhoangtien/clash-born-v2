@@ -1,11 +1,11 @@
 # Bàn giao — Clashborn v2 (2026-11-05)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-262). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-263). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 
 ## 1. Trạng thái
 
-- 735 test xanh (`GODOT=... bash tools/run_tests.sh`). APK thử mới nhất **0.1.438** trên gh-pages (bảng đo D-261).
+- 740 test xanh (`GODOT=... bash tools/run_tests.sh`). APK thử mới nhất **0.1.441** trên gh-pages (bảng đo D-261, HUD vẽ lại theo nội dung D-263).
 - Android: trình vẽ **Mobile (Vulkan)**, đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
   Máy tính bảng người chơi: ~60 fps đầu trận → 4x fps sau một lúc; tắt phần vẽ / đổi độ phân giải không đổi FPS
   → nghẽn CPU (xem mục 3). Giật 50 → 11 fps đã hết sau D-260.
@@ -37,8 +37,8 @@ Người chơi thích phong cách afk.ai (hợp đồ họa); Mixamo chỉ để
 ## 3. Việc tiếp theo (theo thứ tự đề xuất)
 
 1. **Hiệu năng CPU**: bước A xong (D-261: bảng đo từng phần trong Chẩn đoán, `tools/view_profile.gd` chạy trận thật
-   dưới xvfb; D-262: object tăng chỉ là `command_log`, không rò rỉ). Chờ người chơi gửi số từ 0.1.438 trên máy tính
-   bảng rồi làm bước B: SIM (Vision / Movement, bot gửi ~9 lệnh / giây), HUD `_draw` (4,6 ms trên PC), giảm lệnh vẽ (571 lệnh / 57k tam giác — cây / đá thành MultiMesh, gộp vật liệu, ảnh vũ khí gộp vào
+   dưới xvfb; D-262: object tăng chỉ là `command_log`, không rò rỉ). Máy tính bảng 0.1.438: 40 fps ổn định, nghẽn luồng
+   chính 25 ms. B1 + B2 xong (D-263, APK 0.1.441) — chờ người chơi đo lại. Còn B3–B5 (người dùng đã duyệt): SIM (Vision / Movement, bot gửi ~9 lệnh / giây), HUD `_draw` (4,6 ms trên PC), giảm lệnh vẽ (571 lệnh / 57k tam giác — cây / đá thành MultiMesh, gộp vật liệu, ảnh vũ khí gộp vào
    ảnh thân, bóng mờ dưới chân một MultiMesh). Tìm vì sao FPS giảm dần theo thời gian trận (số đơn vị / đạn / xác /
    danh sách chữ nổi tăng?).
 2. APK sát giới hạn 100 MiB của GitHub: thu ảnh trùng (`*_Color_*` Godot tách từ GLB công trình, ~18,7 MB).
