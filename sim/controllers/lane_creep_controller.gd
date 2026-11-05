@@ -102,6 +102,8 @@ func _nearest_creep_and_hero(world: World, c: Entity) -> Array[Entity]:
 	var best_d: Array[float] = [INF, INF, INF]
 	var acquire: float = world.balance.creep_acquire_range
 	for e: Entity in world.spatial_near(c.position, acquire + c.radius, World.Phase.CONTROLLER, false):
+		if e.team == c.team:
+			continue  # D-264: loại nhanh phe mình (is_attackable cũng loại — cùng kết quả)
 		var slot: int = 0 if e.kind == Entity.Kind.LANE_CREEP or e.kind == Entity.Kind.NEUTRAL else (1 if e.kind == Entity.Kind.HERO else (2 if e.kind == Entity.Kind.WARD else -1))
 		if slot < 0 or not Rules.is_attackable(c, e):
 			continue

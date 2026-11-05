@@ -30,6 +30,8 @@ var home_point: Vector2 = Vector2.ZERO
 var visible_mask: int = -1
 ## VIS-06: bụi đang đứng (-1 = không); VIS-07: lộ tới hết tick này. VisionSystem ghi.
 var bush_id: int = -1
+## D-264: vị trí lúc tra `bush_id` gần nhất (VisionSystem chỉ tra lại khi đổi chỗ).
+var bush_checked_at: Vector2 = Vector2.INF
 var reveal_until_tick: int = -1
 var siege: bool = false
 ## CRP-12: 0 thường, 1 lính siêu cấp, 2 siêu lính.

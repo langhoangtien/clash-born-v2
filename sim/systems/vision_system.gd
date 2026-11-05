@@ -34,8 +34,9 @@ func run(world: World) -> void:
 			var invisible: bool = Rules.has_state(e, UnitState.Id.INVISIBLE)
 			var covered: bool = e.bush_id >= 0 and world.tick > e.reveal_until_tick
 			for t: int in range(TEAMS):
-				if t != e.team and (revealed & (1 << t) != 0 or _true_sight(world, t, e, sight_sq) \
-						or _tower_sight(e, t) or ((not invisible or _sentry_sight(e, t)) and _plain_seen(e, t, covered))):
+				# D-264: các điều kiện không có tác dụng phụ → xét cái hay đúng trước (cùng kết quả)
+				if t != e.team and (revealed & (1 << t) != 0 or ((not invisible or _sentry_sight(e, t)) and _plain_seen(e, t, covered)) \
+						or _tower_sight(e, t) or _true_sight(world, t, e, sight_sq)):
 					mask |= 1 << t
 		e.visible_mask = mask
 
@@ -53,7 +54,7 @@ func _collect(world: World) -> void:
 		_reach.append(PackedFloat32Array())
 		_occupied.append({})
 	for o: Entity in world.entities:
-		o.bush_id = world.map.bushes.at(o.position) if world.map != null and o.alive else -1
+		_update_bush(world, o)
 		if not o.alive or o.team < 0 or o.team >= TEAMS:
 			continue
 		var sight: float = o.stats.get_stat(StatId.Id.VISION_RANGE) if o.stats != null else 0.0
@@ -68,10 +69,24 @@ func _collect(world: World) -> void:
 			_towers[o.team].append([o.position, o.radius + o.stats.get_stat(StatId.Id.ATTACK_RANGE)])
 
 
+## VIS-06: bụi chứa đơn vị; D-264: chỉ tra lại khi đơn vị đổi chỗ (bụi không đổi trong trận).
+static func _update_bush(world: World, o: Entity) -> void:
+	if world.map == null or not o.alive:
+		o.bush_id = -1
+		o.bush_checked_at = Vector2.INF
+	elif o.position != o.bush_checked_at:
+		o.bush_id = world.map.bushes.at(o.position)
+		o.bush_checked_at = o.position
+
+
 ## D-80, D-83: E trong tầm bắn một trụ của đội `t` (tính theo mép thân như CMB).
 func _tower_sight(e: Entity, t: int) -> bool:
 	for tower: Array in _towers[t]:
-		if e.position.distance_to(tower[0]) - e.radius <= tower[1]:
+		var reach: float = tower[1] + e.radius + 1.0  # D-264: hộp bao loại nhanh (nới 1 cho sai số căn)
+		var at: Vector2 = tower[0]
+		if absf(e.position.x - at.x) > reach or absf(e.position.y - at.y) > reach:
+			continue
+		if e.position.distance_to(at) - e.radius <= tower[1]:
 			return true
 	return false
 
@@ -120,7 +135,7 @@ func _mark_reveals(world: World) -> void:
 
 
 static func _seen(at: Vector2, eyes: PackedVector2Array, reach: PackedFloat32Array) -> bool:
-	for i: int in range(eyes.size()):
+	for i: int in eyes.size():
 		if at.distance_squared_to(eyes[i]) <= reach[i]:
 			return true
 	return false

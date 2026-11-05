@@ -49,13 +49,20 @@ func near(point: Vector2, radius: float, sorted: bool = true) -> Array[Entity]:
 	var reach_sq: float = reach * reach
 	var x0: int = _axis(point.x - reach)
 	var x1: int = _axis(point.x + reach)
+	var y1: int = _axis(point.y + reach)
 	var out: Array[Entity] = []
-	for y: int in range(_axis(point.y - reach), _axis(point.y + reach) + 1):
-		var row: int = y * SIDE
-		for x: int in range(x0, x1 + 1):
-			for e: Entity in _cells[row + x]:
-				if e.position.distance_squared_to(point) <= reach_sq:
-					out.append(e)
+	var y: int = _axis(point.y - reach)
+	while y <= y1:  # D-264: while thay range() (khỏi dựng mảng mỗi hàng), bỏ qua ô rỗng; cùng thứ tự ô
+		var x: int = y * SIDE + x0
+		var end: int = y * SIDE + x1
+		while x <= end:
+			var bucket: Array = _cells[x]
+			if not bucket.is_empty():
+				for e: Entity in bucket:
+					if e.position.distance_squared_to(point) <= reach_sq:
+						out.append(e)
+			x += 1
+		y += 1
 	if sorted and out.size() > 1:
 		out.sort_custom(func(a: Entity, b: Entity) -> bool: return a.id < b.id)
 	return out

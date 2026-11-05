@@ -51,6 +51,8 @@ func _in_range(world: World, tower: Entity) -> Array[Entity]:
 	var out: Array[Entity] = []
 	var reach: float = tower.stats.get_stat(StatId.Id.ATTACK_RANGE) + tower.radius
 	for e: Entity in world.spatial_near(tower.position, reach, World.Phase.CONTROLLER, false):
+		if e.team == tower.team:
+			continue  # D-264: loại nhanh phe mình (is_attackable cũng loại — cùng kết quả, đỡ chuỗi gọi hàm)
 		if Rules.is_attackable(tower, e) and Rules.in_attack_range(tower, e):
 			out.append(e)
 	return out

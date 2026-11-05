@@ -1,6 +1,6 @@
 # Bàn giao — Clashborn v2 (2026-11-05)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-263). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-264). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 
 ## 1. Trạng thái
@@ -38,7 +38,8 @@ Người chơi thích phong cách afk.ai (hợp đồ họa); Mixamo chỉ để
 
 1. **Hiệu năng CPU**: bước A xong (D-261: bảng đo từng phần trong Chẩn đoán, `tools/view_profile.gd` chạy trận thật
    dưới xvfb; D-262: object tăng chỉ là `command_log`, không rò rỉ). Máy tính bảng 0.1.438: 40 fps ổn định, nghẽn luồng
-   chính 25 ms. B1 + B2 xong (D-263, APK 0.1.441) — chờ người chơi đo lại. Còn B3–B5 (người dùng đã duyệt): SIM (Vision / Movement, bot gửi ~9 lệnh / giây), HUD `_draw` (4,6 ms trên PC), giảm lệnh vẽ (571 lệnh / 57k tam giác — cây / đá thành MultiMesh, gộp vật liệu, ảnh vũ khí gộp vào
+   chính 25 ms. B1 + B2 xong (D-263): TB 49,7 fps. B3 (D-264): tối ưu không đổi kết quả chỉ được
+   ~3–5 % SIM; chờ người dùng quyết đổi nhịp luật (Vision / trụ / đẩy tách mỗi 2–3 tick). Còn B4, B5: SIM (Vision / Movement, bot gửi ~9 lệnh / giây), HUD `_draw` (4,6 ms trên PC), giảm lệnh vẽ (571 lệnh / 57k tam giác — cây / đá thành MultiMesh, gộp vật liệu, ảnh vũ khí gộp vào
    ảnh thân, bóng mờ dưới chân một MultiMesh). Tìm vì sao FPS giảm dần theo thời gian trận (số đơn vị / đạn / xác /
    danh sách chữ nổi tăng?).
 2. APK sát giới hạn 100 MiB của GitHub: thu ảnh trùng (`*_Color_*` Godot tách từ GLB công trình, ~18,7 MB).
