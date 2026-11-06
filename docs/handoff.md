@@ -5,7 +5,7 @@
 
 ## 1. Trạng thái
 
-- 740 test xanh (`GODOT=... bash tools/run_tests.sh`). APK thử mới nhất **0.1.461** trên gh-pages (bảng đo D-261, HUD vẽ lại theo nội dung D-263).
+- 740 test xanh (`GODOT=... bash tools/run_tests.sh`). APK thử mới nhất **0.1.463** trên gh-pages (bảng đo D-261, HUD vẽ lại theo nội dung D-263).
 - Android: trình vẽ **Mobile (Vulkan)**, đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
   Máy tính bảng người chơi: ~60 fps đầu trận → 4x fps sau một lúc; tắt phần vẽ / đổi độ phân giải không đổi FPS
   → nghẽn CPU (xem mục 3). Giật 50 → 11 fps đã hết sau D-260.
