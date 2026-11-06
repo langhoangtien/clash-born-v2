@@ -208,18 +208,24 @@ func _paint_ground(focus: Vector2) -> void:
 	if aim != null:
 		aim.paint(overlay)
 	overlay.commit()
-	var eyes: Array[Vector4] = []
-	if fog_team < 0:
-		eyes.append(Vector4(0, 0, 1e6, 0))  # không sương: một mắt phủ hết
-	else:
-		var area: Rect2 = ground_world_rect(focus)
-		for v: Vector4 in FogView.eyes(world, fog_team, units.display_position):
-			if eyes.size() < FOG_EYES and area.grow(v.z).has_point(Vector2(v.x, v.y)):
-				eyes.append(Vector4(v.x * S, v.y * S, v.z * S, 0.0))
+	var eyes: Array[Vector4] = fog_eyes(focus)
 	_ground_mat.set_shader_parameter("eye_count", eyes.size())
 	eyes.resize(FOG_EYES)
 	_ground_mat.set_shader_parameter("eyes", eyes)
 	_ground_mat.set_shader_parameter("fog_color", Color(0.02, 0.03, 0.07, fog_alpha))
+
+
+## Mắt sương gửi shader đất; không sương / tắt ở bảng chẩn đoán thì một mắt phủ hết (D-266: đo đúng GPU).
+func fog_eyes(focus: Vector2) -> Array[Vector4]:
+	var eyes: Array[Vector4] = []
+	if fog_team < 0 or fog_alpha <= 0.0:
+		eyes.append(Vector4(0, 0, 1e6, 0))
+		return eyes
+	var area: Rect2 = ground_world_rect(focus)
+	for v: Vector4 in FogView.eyes(world, fog_team, units.display_position):
+		if eyes.size() < FOG_EYES and area.grow(v.z).has_point(Vector2(v.x, v.y)):
+			eyes.append(Vector4(v.x * S, v.y * S, v.z * S, 0.0))
+	return eyes
 
 
 ## D-151: đo vùng đất camera thấy (chiếu 4 góc màn hình xuống đất, phía xa cắt ở FAR_PX).

@@ -55,3 +55,13 @@ func test_D_179_closed_panel_ignores_cells() -> void:
 	p.press_at(p.cell_rect(0).get_center())
 	assert_eq(p.value_of(DiagPanel.KEYS[0]), 1, "bảng đóng: ô không phản ứng")
 	p.free()
+
+
+func test_D_266_fog_off_skips_eye_loop() -> void:
+	var v: MatchView3D = MatchView3D.new()
+	v.fog_team = 0
+	v.set_part(&"fog", false)
+	var eyes: Array[Vector4] = v.fog_eyes(Vector2.ZERO)
+	assert_eq(eyes.size(), 1, "tắt sương: shader chỉ chạy 1 vòng (một mắt phủ hết), không duyệt mắt phe mình")
+	assert_true(eyes[0].z > 1000.0)
+	v.free()
