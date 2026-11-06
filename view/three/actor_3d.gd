@@ -73,7 +73,7 @@ func _make_model(e: Entity, cfg: Dictionary) -> void:
 		_anim = model.find_children("*", "AnimationPlayer", true, false)[0]
 		ModelLibrary.dress_own(model, cfg, e.team)  # D-209 màu phe
 	else:
-		_kaykit(model, e, cfg)
+		_anim = ModelLibrary.dress_kaykit(model, e.team, cfg)
 	for n: Node in model.find_children("*", "GeometryInstance3D", true, false):
 		_meshes.append(n as GeometryInstance3D)
 		var mats: Array = []
@@ -83,26 +83,6 @@ func _make_model(e: Entity, cfg: Dictionary) -> void:
 		_solid.append(mats)
 	for anim: String in [_rig["idle"], _rig["run"], _rig.get("stun", ""), _cfg.get("sprint", _rig.get("sprint", "")), _cfg.get("stealth", "")].filter(_anim.has_animation):
 		_anim.get_animation(anim).loop_mode = Animation.LOOP_LINEAR
-
-
-## Nhân vật KayKit: vũ khí gắn tay, bảng màu theo đội, hoạt ảnh dùng chung của rig.
-func _kaykit(model: Node3D, e: Entity, cfg: Dictionary) -> void:
-	var skel: Skeleton3D = model.find_children("*", "Skeleton3D", true, false)[0]
-	_attach(skel, cfg.get("right", ""), "handslot.r")
-	_attach(skel, cfg.get("left", ""), "handslot.l")
-	ModelLibrary.paint_team(model, cfg["tex"], e.team)
-	_anim = AnimationPlayer.new()
-	model.add_child(_anim)
-	_anim.add_animation_library(&"", ModelLibrary.animations(cfg["rig"]))
-
-
-func _attach(skel: Skeleton3D, weapon: String, bone: String) -> void:
-	if weapon.is_empty():
-		return
-	var slot: BoneAttachment3D = BoneAttachment3D.new()
-	slot.bone_name = bone
-	skel.add_child(slot)
-	slot.add_child(ModelLibrary.scene(weapon + ".gltf").instantiate())
 
 
 ## Đổi bảng màu mọi lưới trong `root` sang bản theo đội (vũ khí giữ màu gốc).
@@ -222,14 +202,32 @@ func _feel() -> void:
 	_model.position.z = -_lean
 	var flash: float = clampf((_flash_until - t) / FLASH, 0.0, 1.0)
 	if flash > 0.0 or (_overlay != null and _overlay.albedo_color.a > 0.0):
-		if _overlay == null:
-			_overlay = StandardMaterial3D.new()
-			_overlay.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-			_overlay.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
-			_overlay.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-			for m: GeometryInstance3D in _meshes:
-				m.material_overlay = _overlay
+		_ensure_overlay()
 		_overlay.albedo_color = Color(FLASH_COLOR, flash * FLASH_ALPHA)
+
+
+## Lớp lóe trắng phủ lên mô hình (cộng sáng); D-271: màn làm nóng gắn sẵn để Vulkan dựng pipeline từ trước.
+func _ensure_overlay() -> void:
+	if _overlay != null:
+		return
+	_overlay = StandardMaterial3D.new()
+	_overlay.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_overlay.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	_overlay.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	for m: GeometryInstance3D in _meshes:
+		m.material_overlay = _overlay
+
+
+## D-271: gắn lớp lóe với độ sáng nhỏ (chỉ để vẽ thử ở màn làm nóng).
+func prime_flash() -> void:
+	if _anim == null:
+		return
+	_ensure_overlay()
+	_overlay.albedo_color = Color(FLASH_COLOR, 0.05)
+
+
+func has_flash_overlay() -> bool:
+	return _overlay != null
 
 
 static func _now() -> float:

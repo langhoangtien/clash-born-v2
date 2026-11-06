@@ -10,6 +10,8 @@ const STEP: float = 0.6  ## khoảng cách lưới (đơn vị 3D) giữa các v
 const COLS: int = 12
 
 var done: bool = false
+## D-271: có vẽ thử đống đổ nát trụ.
+var has_rubble: bool = false
 var _frames: int = 0
 var _count: int = 0
 
@@ -21,14 +23,17 @@ static func make(projectiles: Projectiles3D, focus: Vector3) -> ShaderWarmup:
 	for e: Entity in sample_entities():
 		var a: Actor3D = Actor3D.make(e)
 		w._place(a)
+		a.prime_flash()  # D-271: lớp lóe khi trúng đòn
 		if a._anim != null:
 			var faded: Actor3D = Actor3D.make(e)
 			w._place(faded)
 			faded._set_faded(true)  # bản mờ (bụi, tàng hình phe mình)
+			faded.prime_flash()
 	for cfg: Dictionary in ModelLibrary.config()["units"].values():
 		if cfg.has("projectile"):
 			w._projectile(projectiles, cfg["projectile"])
 	w._projectile(projectiles, ModelLibrary.config().get("projectiles", {}).get("default", {}))
+	w._rubble()
 	for recipe: Dictionary in SkillVfx3D.recipes().values().filter(func(r: Variant) -> bool: return r is Dictionary):
 		for part: Dictionary in recipe.get("parts", []):
 			w._vfx(part)
@@ -75,6 +80,18 @@ func _place(n: Node3D) -> void:
 	n.position = Vector3((_count % COLS - COLS * 0.5) * STEP, 0.0, (_count / COLS - 2) * STEP)
 	add_child(n)
 	_count += 1
+
+
+## D-271: đống đổ nát khi trụ đổ (Scenery3D) — nạp GLB + dựng shader từ màn tải.
+func _rubble() -> void:
+	var cfg: Dictionary = ModelLibrary.scenery().get("rubble", {})
+	if cfg.is_empty():
+		return
+	var n: Node3D = ModelLibrary.static_scene(cfg["model"]).instantiate() as Node3D
+	ModelLibrary.apply_team_texture(n, cfg["model"], -1)
+	ModelLibrary.use_vertex_colors_in(n)
+	_place(n)
+	has_rubble = true
 
 
 func _projectile(projectiles: Projectiles3D, cfg: Dictionary) -> void:

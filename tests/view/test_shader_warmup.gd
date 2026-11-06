@@ -16,3 +16,18 @@ func test_D_260_covers_every_model_and_frees_after_frames() -> void:
 	w.step()
 	assert_true(w.done, "vẽ đủ khung thì xong")
 	w.free()
+
+
+func test_D_271_warms_hit_flash_overlay_and_tower_rubble() -> void:
+	var w: ShaderWarmup = ShaderWarmup.make(Projectiles3D.new(), Vector3.ZERO)
+	var flashed: int = 0
+	var models: int = 0
+	for n: Node in w.get_children():
+		if n is Actor3D and (n as Actor3D)._anim != null:
+			models += 1
+			if (n as Actor3D).has_flash_overlay():
+				flashed += 1
+	assert_true(models > 0)
+	assert_eq(flashed, models, "lớp lóe khi trúng đòn đã gắn sẵn (Vulkan dựng pipeline từ màn tải, không phải lúc đánh nhau đầu tiên)")
+	assert_true(w.has_rubble, "đống đổ nát trụ (lần đầu trụ đổ không phải đọc GLB + dựng shader)")
+	w.free()

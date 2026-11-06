@@ -244,3 +244,24 @@ static func attack_pick(cfg: Dictionary, n: int, fallback: float) -> Array:
 	if cfg.has("attack_alt") and n % 2 == 1:
 		return [cfg["attack_alt"], float(cfg.get("impact_alt", cfg.get("impact", fallback)))]
 	return [cfg["attack"], float(cfg.get("impact", fallback))]
+
+
+## Nhân vật KayKit: vũ khí gắn tay, bảng màu theo đội, hoạt ảnh dùng chung của rig; trả về AnimationPlayer mới.
+static func dress_kaykit(model: Node3D, team: int, cfg: Dictionary) -> AnimationPlayer:
+	var skel: Skeleton3D = model.find_children("*", "Skeleton3D", true, false)[0]
+	_attach_weapon(skel, cfg.get("right", ""), "handslot.r")
+	_attach_weapon(skel, cfg.get("left", ""), "handslot.l")
+	paint_team(model, cfg["tex"], team)
+	var anim: AnimationPlayer = AnimationPlayer.new()
+	model.add_child(anim)
+	anim.add_animation_library(&"", animations(cfg["rig"]))
+	return anim
+
+
+static func _attach_weapon(skel: Skeleton3D, weapon: String, bone: String) -> void:
+	if weapon.is_empty():
+		return
+	var slot: BoneAttachment3D = BoneAttachment3D.new()
+	slot.bone_name = bone
+	skel.add_child(slot)
+	slot.add_child(scene(weapon + ".gltf").instantiate())
