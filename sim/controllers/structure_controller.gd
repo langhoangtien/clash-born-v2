@@ -26,9 +26,10 @@ func _remember_aggro(world: World, tower: Entity) -> void:
 
 func _choose(world: World, tower: Entity) -> void:
 	var pick: Entity = _valid(world, tower, tower.aggro_target_id) if world.tick <= tower.aggro_until_tick else null
-	if pick == null and tower.order.type == Order.Type.ATTACK and not tower.order.finished:
+	var had: bool = tower.order.type == Order.Type.ATTACK and not tower.order.finished
+	if pick == null and had:
 		pick = _valid(world, tower, tower.order.target_id)
-	if pick == null:
+	if pick == null and (had or _scan_due(world, tower)):  # STR-06: rảnh thì quét thưa; vừa mất mục tiêu thì quét ngay
 		var nearby: Array[Entity] = _in_range(world, tower)
 		pick = _nearest(tower, nearby, Entity.Kind.LANE_CREEP)
 		if pick == null:
@@ -40,6 +41,12 @@ func _choose(world: World, tower: Entity) -> void:
 		world.submit(Command.attack(tower.id, pick.id))
 	elif pick == null and current != -1:
 		world.submit(Command.stop(tower.id))
+
+
+## STR-06 (D-274): trụ không có mục tiêu quét tìm mỗi `tower_idle_scan_time`, so le theo id.
+static func _scan_due(world: World, tower: Entity) -> bool:
+	var n: int = maxi(1, SimClock.seconds_to_ticks(world.balance.tower_idle_scan_time))
+	return (world.tick + tower.id) % n == 0
 
 
 func _valid(world: World, tower: Entity, id: int) -> Entity:

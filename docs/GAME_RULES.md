@@ -664,6 +664,9 @@ Bảng ưu tiên (dòng trên thắng):
   siêu lính ở mọi lane: máu × `mega_creep_hp`, sát thương × `mega_creep_damage` (thay cho hệ số
   siêu cấp), thêm `mega_extra_melee` lính cận chiến mỗi đợt, vàng × `mega_creep_bounty`.
   Nhân với hệ số CRP-11.
+- `CRP-14` (D-274) Lính **đứng đánh** (mục tiêu đã trong tầm đánh) nghĩ lại mỗi `creep_fight_think_time` giây
+  (0,13 s), so le theo id; lính **đang đuổi** (mục tiêu ngoài tầm) giữ nhịp 2 tick (D-108) để kịp giữ leash và mép
+  trước (INV-03/04). Bị đánh / nhận hero gây sự / xong lệnh: nghĩ ngay.
 - `CRP-13` (D-265) Nhịp nghĩ: lính nghĩ lại mỗi 2 tick so le theo id (D-108); xong lệnh / đứng yên thì nghĩ
   ngay. Lần nghĩ không có mục tiêu (đang đi đường, CRP-05) thì lần sau chờ thêm `creep_calm_think_time` giây
   (0,2 s) — lính thấy địch muộn tối đa chừng đó. Bị gây sát thương (tick trước) hoặc nhận hero gây sự
@@ -674,6 +677,9 @@ Bảng ưu tiên (dòng trên thắng):
 - `STR-01` Trụ chọn mục tiêu (dòng trên thắng): (1) hero địch vừa gây giao tranh hero
   lên hero phe trụ, cả hai trong tầm, trong `tower_aggro_time`; (2) giữ mục tiêu hiện
   tại nếu còn trong tầm và nhắm được; (3) lính địch gần nhất; (4) hero địch gần nhất.
+- `STR-06` (D-274) Trụ **không có mục tiêu** quét tìm (dòng 3–4 của STR-01) mỗi `tower_idle_scan_time` giây
+  (0,2 s), so le theo id. Đang có mục tiêu thì kiểm tra mục tiêu mỗi tick; vừa mất mục tiêu thì quét ngay; dòng 1
+  (hero gây giao tranh dưới trụ) xét mỗi tick.
 - `STR-02` Khóa: T1 luôn mở; T2 mở khi T1 cùng lane chết; T3 mở khi T2 cùng lane
   chết; hai T4 mở khi **bất kỳ** T3 chết; nhà chính mở khi **cả hai** T4 chết. Công
   trình khóa không nhận sát thương và không nhắm được.
@@ -709,6 +715,9 @@ Quái rừng thuộc đội trung lập (đội 2), là **kẻ địch của m�
 - `JGL-07` Thưởng (D-76): hero kết liễu → vàng + last hit (ECO-01); XP chia cho hero **cùng
   phe kẻ hạ** trong `xp_share_range` (ECO-03). Lính / trụ hạ → không ai được vàng, XP chia
   cho hero phe kẻ hạ ở gần.
+- `JGL-09` (D-274) Trại xét lại ngủ / thức (JGL-08) mỗi `jungle_sleep_check_ticks` tick (3), so le theo trại; bị
+  đánh hoặc đang về thì thức ngay. Tầm nhìn của các đội lên quái của trại đang ngủ (đứng yên) xét lại mỗi
+  `jungle_sleep_check_ticks` tick (so le theo id) — sương mở / che chậm tối đa chừng đó.
 - `JGL-08` (D-265) Trại ngủ: trại IDLE (không mục tiêu, không đang về) và không có đơn vị sống phe 0 / 1
   nào trong `jungle_sleep_radius` quanh tâm trại → quái của trại không tự đẩy tách (MOV-04; đơn vị khác
   vẫn đẩy được chúng). Có ai vào bán kính, hoặc trại bị đánh, thì thức ngay tick đó.
@@ -809,6 +818,8 @@ chơi và bot (`Rules.pick_attack_target`), nút trên màn hình chỉ gọi h�
   Bước thẳng bị chặn thì **trượt dọc mép**: thử lệch ±15°, ±30°, ±45°, ±60°, ±75° (góc
   nhỏ trước, cùng góc thì + trước −), đi quãng = bước × cos(góc). Không góc nào đi được
   thì đứng yên tick đó. Lệnh không tự xong; dừng khi có lệnh khác (`STOP`).
+- `MOV-08` (D-274) Lính đường tự xét đẩy tách (MOV-04, lính là bên id nhỏ hơn của cặp) mỗi
+  `creep_separation_ticks` tick (2); cặp có hero vẫn đẩy mỗi tick. Lính có thể chồng nhau thêm tối đa chừng đó tick.
 
 ## CMD — Lệnh (Command)
 

@@ -42,6 +42,8 @@ extends Resource
 @export var siege_structure_damage: float
 ## STR-01: trụ nhớ hero gây giao tranh hero trong chừng này giây.
 @export var tower_aggro_time: float
+## STR-06 (D-274): trụ không có mục tiêu quét tìm lại sau chừng này giây (so le theo id).
+@export var tower_idle_scan_time: float
 
 @export_group("Lính đường (CRP)")
 @export var first_wave_time: float
@@ -66,6 +68,10 @@ extends Resource
 @export var creep_front_margin: float
 ## CRP-13 (D-265): lính đang đi đường (lần nghĩ trước không có mục tiêu) nghĩ lại sau chừng này giây.
 @export var creep_calm_think_time: float
+## CRP-14 (D-274): lính đang giao tranh nghĩ lại sau chừng này giây (so le theo id).
+@export var creep_fight_think_time: float
+## MOV-08 (D-274): lính đường tự xét đẩy tách mỗi chừng này tick (cặp có hero vẫn mỗi tick).
+@export var creep_separation_ticks: int
 
 @export_group("Cửa hàng (SHOP)")
 ## SHOP-02: bán kính quanh shop ẩn.
@@ -84,6 +90,8 @@ extends Resource
 @export var jungle_aggro_time: float
 ## JGL-08 (D-265): trại ngủ khi không có đơn vị phe 0 / 1 nào trong bán kính này quanh tâm trại.
 @export var jungle_sleep_radius: float
+## JGL-09 (D-274): trại xét lại ngủ / thức và tầm nhìn lên quái đang ngủ mỗi chừng này tick (so le).
+@export var jungle_sleep_check_ticks: int
 
 @export_group("Hero")
 ## ABL-04: mỗi lần đổi điểm thừa cộng chừng này vào cả 3 thuộc tính.

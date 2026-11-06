@@ -3,7 +3,9 @@ extends RefCounted
 ## D-272: kết quả Benchmark A/B — mỗi đoạn một phân bố thời gian khung + tổng µs theo phần; so mỗi phần tắt với
 ## trung bình hai mốc "đủ đồ họa" kề nó (A/B/A) để bớt nhiễu do máy nóng / cảnh đổi.
 
-const COLUMNS: PackedStringArray = ["label", "frames", "frame_ms", "p95_ms", "over_16_7", "gpu_ms", "render_ms",
+## D-274: khung "lỡ nhịp" thật (> 20 ms); ngưỡng 16,7 đếm cả dao động quanh 16,7 khi đã đủ 60 fps.
+const MISS_MS: float = 20.0
+const COLUMNS: PackedStringArray = ["label", "frames", "frame_ms", "p95_ms", "over_20", "gpu_ms", "render_ms",
 	"process_ms", "sim_ms", "hud_ms"]
 
 ## Mỗi đoạn: {step, hist, us: Dictionary[StringName, int]}.
@@ -33,7 +35,7 @@ func row(seg: Dictionary) -> Dictionary:
 	var n: int = maxi(1, h.count)
 	var us: Dictionary = seg["us"]
 	var out: Dictionary = {"label": seg["step"]["label"], "frames": h.count,
-		"frame_ms": snappedf(h.sum_ms / n, 0.01), "p95_ms": h.percentile(0.95), "over_16_7": snappedf(h.share_over(16.7), 0.001)}
+		"frame_ms": snappedf(h.sum_ms / n, 0.01), "p95_ms": h.percentile(0.95), "over_20": snappedf(h.share_over(MISS_MS), 0.001)}
 	for key: StringName in [&"gpu", &"render", &"process", &"sim", &"hud"]:
 		out[String(key) + "_ms"] = snappedf(us.get(key, 0) / 1000.0 / n, 0.01)
 	if us.get(&"gpu", 0) <= 0:
@@ -64,7 +66,7 @@ func compare() -> Array[Dictionary]:
 			continue
 		var me: Dictionary = row(segments[i])
 		var c: Dictionary = {"label": step["label"], "key": String(step["key"])}
-		for col: String in ["frame_ms", "gpu_ms", "over_16_7"]:
+		for col: String in ["frame_ms", "gpu_ms", "over_20"]:
 			c[col.replace("_ms", "") + "_delta" + ("_ms" if col.ends_with("_ms") else "")] = _delta(me, bases, col)
 		out.append(c)
 	return out
@@ -90,17 +92,18 @@ func text(meta: Dictionary) -> String:
 	])
 	var base: Array[Dictionary] = rows().filter(func(r: Dictionary) -> bool: return r["label"] == "Đủ đồ họa")
 	if not base.is_empty():
-		out.append("Mốc đủ đồ họa (đoạn đầu): khung %s ms · GPU %s ms · khung > 16,7 ms %s%%" % [base[0]["frame_ms"],
-			base[0]["gpu_ms"], snappedf(float(base[0]["over_16_7"]) * 100.0, 0.1)])
+		out.append("Mốc đủ đồ họa (đoạn đầu): khung %s ms · GPU %s ms · khung lỡ nhịp (> 20 ms) %s%%" % [base[0]["frame_ms"],
+			base[0]["gpu_ms"], snappedf(float(base[0]["over_20"]) * 100.0, 0.1)])
 	out.append("Tắt từng phần (so với mốc kề, âm = nhẹ đi):")
 	for c: Dictionary in compare():
-		var share: Variant = c["over_16_7_delta"]
-		out.append("  %s: GPU %s ms · khung %s ms · khung > 16,7 ms %s điểm %%" % [c["label"], _signed(c["gpu_delta_ms"]),
+		var share: Variant = c["over_20_delta"]
+		out.append("  %s: GPU %s ms · khung %s ms · khung lỡ nhịp (> 20 ms) %s điểm %%" % [c["label"], _signed(c["gpu_delta_ms"]),
 			_signed(c["frame_delta_ms"]), _signed(snappedf(float(share) * 100.0, 0.1) if share is float else share)])
 	for r: Dictionary in rows():
 		if r["label"].begins_with("SIM"):
-			out.append("SIM chạy: khung %s ms · P95 %s · GPU %s · xử lý %s · SIM %s · HUD %s ms" % [r["frame_ms"],
-				r["p95_ms"], r["gpu_ms"], r["process_ms"], r["sim_ms"], r["hud_ms"]])
+			out.append("SIM chạy: khung %s ms · P95 %s · lỡ nhịp %s%% · GPU %s · xử lý %s · SIM %s · HUD %s ms" % [
+				r["frame_ms"], r["p95_ms"], snappedf(float(r["over_20"]) * 100.0, 0.1), r["gpu_ms"], r["process_ms"],
+				r["sim_ms"], r["hud_ms"]])
 	return "\n".join(out)
 
 

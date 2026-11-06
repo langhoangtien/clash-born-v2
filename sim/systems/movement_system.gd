@@ -124,14 +124,20 @@ func _path_still_walkable(nav: MapNavigation, e: Entity) -> bool:
 ## bên bị chặn đứng yên thì bên kia nhận hết.
 func _separate(world: World) -> void:
 	var max_push: float = world.balance.separation_speed * SimClock.TICK_SECONDS
+	var lazy_tick: bool = world.tick % maxi(1, world.balance.creep_separation_ticks) != 0  # MOV-08
+	var heroes: Array[Entity] = _heroes(world) if lazy_tick else ([] as Array[Entity])
 	for a: Entity in world.entities:
 		if not a.alive or a.dash != null or a.knockback != null or a.kind == Entity.Kind.WARD or a.asleep:
 			continue  # WRD-02: ward không chắn ai; JGL-08: quái trại đang ngủ không tự đẩy tách
+		var lazy: bool = lazy_tick and a.kind == Entity.Kind.LANE_CREEP
+		if lazy and not _hero_near(a, heroes):
+			continue  # MOV-08 (D-274): lính tự đẩy tách mỗi creep_separation_ticks; cặp có hero vẫn mỗi tick
 		# Lưới dựng một lần ở đầu bước đẩy; vị trí đổi trong lúc đẩy chỉ làm lọc thô kém đi
 		# vài đơn vị, kết quả vẫn xác định vì thứ tự theo id.
 		var later: Array[Entity] = []
 		for b: Entity in world.spatial_near(a.position, a.radius + SEPARATION_SLACK, World.Phase.MOVEMENT, false):
-			if b.id > a.id and b.dash == null and b.knockback == null and b.kind != Entity.Kind.WARD:
+			if b.id > a.id and b.dash == null and b.knockback == null and b.kind != Entity.Kind.WARD \
+					and (not lazy or b.kind == Entity.Kind.HERO):
 				later.append(b)
 		if later.size() > 1:
 			later.sort_custom(func(x: Entity, y: Entity) -> bool: return x.id < y.id)
@@ -139,6 +145,22 @@ func _separate(world: World) -> void:
 			var overlap: float = a.radius + b.radius - a.position.distance_to(b.position)
 			if overlap > 0.0:
 				_push_pair(world, a, b, overlap, max_push)
+
+
+static func _heroes(world: World) -> Array[Entity]:
+	var out: Array[Entity] = []
+	for e: Entity in world.entities:
+		if e.alive and e.kind == Entity.Kind.HERO:
+			out.append(e)
+	return out
+
+
+static func _hero_near(a: Entity, heroes: Array[Entity]) -> bool:
+	for h: Entity in heroes:
+		var reach: float = a.radius + h.radius + SEPARATION_SLACK
+		if a.position.distance_squared_to(h.position) <= reach * reach:
+			return true
+	return false
 
 
 func _push_pair(world: World, a: Entity, b: Entity, overlap: float, max_push: float) -> void:

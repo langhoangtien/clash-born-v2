@@ -30,7 +30,10 @@ func run(world: World) -> void:
 	_collect(world)
 	var sight_sq: float = world.balance.fountain_true_sight * world.balance.fountain_true_sight
 	var teams: int = TEAMS if neutral_needed(world) else NEUTRAL  # VIS-09
+	var check: int = maxi(1, world.balance.jungle_sleep_check_ticks)
 	for e: Entity in world.entities:
+		if e.asleep and e.alive and (world.tick + e.id) % check != 0:
+			continue  # JGL-09 (D-274): quái trại đang ngủ (đứng yên) — tầm nhìn lên nó xét lại mỗi `check` tick
 		var mask: int = 1 << e.team
 		if e.alive:
 			var revealed: int = _revealed_by(e)

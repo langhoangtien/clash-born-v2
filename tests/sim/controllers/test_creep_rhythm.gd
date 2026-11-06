@@ -141,11 +141,13 @@ func test_JGL_08_camp_sleeps_until_someone_comes_near() -> void:
 	var members: Array[Entity] = []
 	for id: int in camp.unit_ids:
 		members.append(w.find_entity(id))
-	w.step()
+	for i: int in w.balance.jungle_sleep_check_ticks:
+		w.step()
 	assert_true(members[0].asleep, "không ai trong jungle_sleep_radius: trại ngủ")
 	_hero(w, 0, camp.center + Vector2(w.balance.jungle_sleep_radius - 60.0, 0))
-	w.step()
-	assert_true(not members[0].asleep, "có người lại gần: thức ngay tick đó")
+	for i: int in w.balance.jungle_sleep_check_ticks:  # D-274 / JGL-09: xét lại ngủ mỗi jungle_sleep_check_ticks
+		w.step()
+	assert_true(not members[0].asleep, "có người lại gần: thức trong ≤ jungle_sleep_check_ticks")
 
 
 func test_JGL_08_sleeping_creeps_do_not_push_each_other() -> void:
@@ -157,6 +159,8 @@ func test_JGL_08_sleeping_creeps_do_not_push_each_other() -> void:
 		return
 	var a: Entity = w.find_entity(camp.unit_ids[0])
 	var b: Entity = w.find_entity(camp.unit_ids[1])
+	for k: int in w.balance.jungle_sleep_check_ticks:  # JGL-09: trại vừa sinh được xét ngủ ở lượt kế
+		w.step()
 	b.position = a.position + Vector2(5, 0)
 	_steps(w, 3)
 	assert_near(a.position.distance_to(b.position), 5.0, 0.01, "đang ngủ: không đẩy tách")

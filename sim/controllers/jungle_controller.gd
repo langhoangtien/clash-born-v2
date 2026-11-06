@@ -21,7 +21,11 @@ func run(world: World) -> void:
 			_note_hits(world, c)
 			if c.target_id >= 0:
 				_aggro(world, c, members)
-		var asleep: bool = not c.returning and c.target_id < 0 and not _anyone_near(world, c)
+		var asleep: bool = members[0].asleep  # JGL-09 (D-274): giữ kết quả lần xét trước giữa hai lượt
+		if c.returning or c.target_id >= 0:
+			asleep = false  # bị đánh / đang về: thức ngay
+		elif (world.tick + c.index) % maxi(1, world.balance.jungle_sleep_check_ticks) == 0:
+			asleep = not _anyone_near(world, c)
 		for e: Entity in members:
 			e.asleep = asleep  # JGL-08
 

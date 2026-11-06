@@ -6,11 +6,11 @@ extends SimSystem
 ## hoặc mép trước → về lane (CRP-07), lúc về không nhận mục tiêu.
 
 
+## D-108: lính đang đuổi mục tiêu (chưa vào tầm) nghĩ lại mỗi chừng này tick — kịp giữ leash / mép trước (INV-03/04).
+const CHASE_TICKS: int = 2
+
 ## Hằng số kỹ thuật: cách điểm đích chừng này coi như đã tới (lính bị đẩy lệch khi tới góc lane).
 const ARRIVE: float = 16.0
-
-## D-108: lính nghĩ lại mỗi chừng này tick (nhẹ CPU điện thoại); vẫn giữ mục tiêu cũ giữa hai lần.
-const THINK_TICKS: int = 2
 
 var _next_tick: int = -1
 var _next_cache: Dictionary[int, Entity] = {}
@@ -18,13 +18,36 @@ var _next_cache: Dictionary[int, Entity] = {}
 
 func run(world: World) -> void:
 	var hit: Dictionary[int, bool] = _hit_last_tick(world)
+	var fight: int = maxi(1, SimClock.seconds_to_ticks(world.balance.creep_fight_think_time))
 	for c: Entity in world.entities:
 		if c.kind == Entity.Kind.LANE_CREEP and c.alive:
-			if _remember_aggro(world, c) or hit.has(c.id):
-				c.calm_until_tick = -1  # CRP-13: bị đánh / hero phe mình bị đánh gần → thôi nhịp đi đường
-			var due: bool = (world.tick + c.id) % THINK_TICKS == 0 and world.tick >= c.calm_until_tick
-			if due or c.order.finished or c.order.type == Order.Type.IDLE:
-				_think(world, c)  # D-108: nghĩ mỗi 2 tick (so le theo id), xong lệnh thì nghĩ ngay
+			var woke: bool = _remember_aggro(world, c) or hit.has(c.id)
+			if woke:
+				c.calm_until_tick = -1  # CRP-13: bị đánh / hero phe mình bị đánh gần → thôi nhịp đi đường, nghĩ ngay
+			if woke or _due(world, c, fight) or c.order.finished or c.order.type == Order.Type.IDLE:
+				_think(world, c)  # xong lệnh thì nghĩ ngay
+
+
+## Kiểm nhịp rẻ trước (tick so le theo id), chỉ tra tầm đánh khi có thể tới lượt.
+static func _due(world: World, c: Entity, fight: int) -> bool:
+	if c.calm_until_tick >= 0 or (world.tick + c.id) % CHASE_TICKS == 0:
+		return think_due(world.tick, c.id, c.calm_until_tick, _cadence(world, c, fight) if c.calm_until_tick < 0 else fight)
+	return false
+
+
+## CRP-14 (D-274): đứng đánh (mục tiêu trong tầm) → nghĩ mỗi `fight` tick; đang đuổi → mỗi CHASE_TICKS (D-108).
+static func _cadence(world: World, c: Entity, fight: int) -> int:
+	if c.order.type != Order.Type.ATTACK or c.order.finished:
+		return CHASE_TICKS
+	var target: Entity = world.find_entity(c.order.target_id)
+	return fight if target != null and Rules.in_attack_range(c, target) else CHASE_TICKS
+
+
+## CRP-13 / CRP-14 (D-274): đang đi đường → đúng tick hết chờ; giao tranh → mỗi `fight` tick, so le theo id.
+static func think_due(tick: int, id: int, calm_until: int, fight: int) -> bool:
+	if calm_until >= 0:
+		return tick >= calm_until
+	return (tick + id) % fight == 0
 
 
 ## CRP-13: đơn vị nhận sát thương ở tick trước (một lần duyệt sự kiện cho cả lượt).

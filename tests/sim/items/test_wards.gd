@@ -202,7 +202,7 @@ func test_WRD_04_06_tower_breaks_ward_last_in_six_hits() -> void:
 	var creep: Entity = UnitFactory.unit(w, _lib.units[&"creep_melee"], Entity.Kind.LANE_CREEP, 0, obs.position - _dir() * 100.0)
 	creep.stats.set_base(StatId.Id.MOVEMENT_SPEED, 0.0)
 	creep.stats.recompute()
-	_steps(w, 3)
+	_steps(w, SimClock.seconds_to_ticks(w.balance.tower_idle_scan_time) + 2)  # STR-06: chờ lượt quét của trụ rảnh
 	assert_eq(tower.order.target_id, creep.id, "trụ đánh lính trước ward")
 	creep.alive = false
 	var hits: int = 0

@@ -52,6 +52,12 @@ func _destroy(w: World, s: Entity) -> void:
 	w.step()
 
 
+## STR-06 (D-274): trụ rảnh quét mục tiêu mỗi tower_idle_scan_time — chờ đủ một lượt quét (+ 1 tick áp lệnh).
+func _settle(w: World) -> void:
+	for t: int in range(SimClock.seconds_to_ticks(w.balance.tower_idle_scan_time) + 2):
+		w.step()
+
+
 ## Điểm trong tầm trụ, cách tâm trụ `distance`, theo hướng `angle`, đứng được.
 func _near(w: World, tower: Entity, distance: float, angle: float = 0.0) -> Vector2:
 	return w.navigation(24.0).nearest_clear(tower.position + Vector2.from_angle(angle) * distance)
@@ -131,8 +137,7 @@ func test_STR_01_creep_before_hero() -> void:
 	var tower: Entity = _structure(w, &"red_mid_t1")
 	var hero: Entity = _unit(w, 0, Entity.Kind.HERO, _near(w, tower, 250, 0.0))
 	var creep: Entity = _unit(w, 0, Entity.Kind.LANE_CREEP, _near(w, tower, 450, PI))
-	w.step()
-	w.step()
+	_settle(w)
 	assert_eq(tower.order.target_id, creep.id, "lính trước hero dù hero gần hơn")
 
 
@@ -140,8 +145,7 @@ func test_STR_01_hero_only_when_no_creep() -> void:
 	var w: World = _world()
 	var tower: Entity = _structure(w, &"red_mid_t1")
 	var hero: Entity = _unit(w, 0, Entity.Kind.HERO, _near(w, tower, 250))
-	w.step()
-	w.step()
+	_settle(w)
 	assert_eq(tower.order.target_id, hero.id)
 	var hp: float = hero.health
 	for t: int in range(40):
@@ -153,8 +157,7 @@ func test_STR_01_keeps_current_target_in_range() -> void:
 	var w: World = _world()
 	var tower: Entity = _structure(w, &"red_mid_t1")
 	var hero: Entity = _unit(w, 0, Entity.Kind.HERO, _near(w, tower, 250))
-	w.step()
-	w.step()
+	_settle(w)
 	_unit(w, 0, Entity.Kind.LANE_CREEP, _near(w, tower, 300, PI))
 	for t: int in range(5):
 		w.step()
@@ -165,8 +168,7 @@ func test_STR_01_defends_hero_attacked_under_tower() -> void:
 	var w: World = _world()
 	var tower: Entity = _structure(w, &"red_mid_t1")
 	var creep: Entity = _unit(w, 0, Entity.Kind.LANE_CREEP, _near(w, tower, 300, PI))
-	w.step()
-	w.step()
+	_settle(w)
 	assert_eq(tower.order.target_id, creep.id)
 	var victim: Entity = _unit(w, 1, Entity.Kind.HERO, _near(w, tower, 350, 0.0))
 	var bully: Entity = _unit(w, 0, Entity.Kind.HERO, victim.position + Vector2(60, 0), 30.0)
