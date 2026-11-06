@@ -101,7 +101,7 @@ func text(meta: Dictionary) -> String:
 			_signed(c["frame_delta_ms"]), _signed(snappedf(float(share) * 100.0, 0.1) if share is float else share)])
 	for r: Dictionary in rows():
 		if r["label"].begins_with("SIM"):
-			out.append("SIM chạy: khung %s ms · P95 %s · lỡ nhịp %s%% · GPU %s · xử lý %s · SIM %s · HUD %s ms" % [
+			out.append(r["label"] + ": khung %s ms · P95 %s · lỡ nhịp %s%% · GPU %s · xử lý %s · SIM %s · HUD %s ms" % [
 				r["frame_ms"], r["p95_ms"], snappedf(float(r["over_20"]) * 100.0, 0.1), r["gpu_ms"], r["process_ms"],
 				r["sim_ms"], r["hud_ms"]])
 	return "\n".join(out)

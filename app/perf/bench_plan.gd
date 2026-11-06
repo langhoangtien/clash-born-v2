@@ -6,7 +6,7 @@ extends RefCounted
 ## Giây: chờ ổn định đầu, mỗi đoạn đo, đoạn SIM chạy; bỏ phần đầu mỗi đoạn (đổi cài đặt xong số mới ổn).
 const SETTLE: float = 3.0
 const SEGMENT: float = 4.0
-const SIM_SECONDS: float = 20.0
+const SIM_SECONDS: float = 15.0
 const WARM: float = 0.75
 ## Phần đồ họa (khóa bảng chẩn đoán) và tên hiện.
 const PARTS: Array[StringName] = [&"fog", &"ground", &"scenery", &"actors", &"water", &"layer", &"vfx"]
@@ -24,7 +24,8 @@ static func steps() -> Array[Dictionary]:
 	for sc: int in SCALES:
 		out.append(_step("Độ phân giải %d%%" % sc, SEGMENT, {"key": StringName("scale_%d" % sc), "scale": sc}))
 		out.append(_base())
-	out.append(_step("SIM chạy (đủ đồ họa)", SIM_SECONDS, {"sim": true}))
+	out.append(_step("SIM chạy (chia tick)", SIM_SECONDS, {"sim": true}))
+	out.append(_step("SIM chạy (không chia tick)", SIM_SECONDS, {"sim": true, "split": false}))  # D-276: so hai chế độ
 	return out
 
 

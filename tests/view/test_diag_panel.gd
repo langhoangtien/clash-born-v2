@@ -78,3 +78,14 @@ func test_D_268_vfx_cell_hides_skill_effects_and_projectiles() -> void:
 	v.set_part(&"vfx", true)
 	assert_true(v.skill_vfx.visible and v.projectiles.visible)
 	v.free()
+
+
+func test_D_276_split_cell_toggles_tick_splitting() -> void:
+	var p: DiagPanel = DiagPanel.new()
+	p.open = true
+	var got: Array[bool] = []
+	p.set_split = func(on: bool) -> void: got.append(on)
+	p.press_at(p.cell_rect(DiagPanel.KEYS.find(&"split")).get_center())
+	p.press_at(p.cell_rect(DiagPanel.KEYS.find(&"split")).get_center())
+	assert_eq(got, [false, true], "ô Chia tick: tắt rồi bật lại chia tick của SimRunner")
+	p.free()

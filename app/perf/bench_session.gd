@@ -93,6 +93,7 @@ func _enter(i: int) -> void:
 	var sc: int = DiagPanel.SCALES.find(int(step["scale"]))
 	diag.set_value(&"scale", _scale0 if int(step["scale"]) == 100 or sc < 0 else sc)
 	runner.paused = not step["sim"]
+	diag.set_value(&"split", 1 if step.get("split", true) else 0)  # D-276
 	result.begin(step)
 	_step_start = FrameProfile.now()
 	_status("Đang đo (%d/%d): %s — đừng chạm màn hình" % [i + 1, _steps.size(), step["label"]])
@@ -109,6 +110,7 @@ func _finish() -> void:
 	for p: StringName in BenchPlan.PARTS:
 		diag.set_value(p, 1)
 	diag.set_value(&"scale", _scale0)
+	diag.set_value(&"split", 1)
 	runner.paused = true
 	_label.visible = false
 	var meta: Dictionary = PerfSession.device_meta(get_viewport(), hero)

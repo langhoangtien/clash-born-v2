@@ -28,6 +28,8 @@ static func attach(parent: Node, w: World, v: MatchView3D, me: Entity, diag: Dia
 	parent.add_child(s)
 	if diag != null:
 		diag.changed.connect(s.mark)
+		var runner: SimRunner = parent.get("runner")
+		diag.set_split = func(on: bool) -> void: runner.split_ticks = on  # D-276: ô Chia tick
 	if BenchSession.requested:  # D-272: trận đo A/B — bộ đo riêng thay log
 		BenchSession.attach(parent, w, me, diag)
 		return s

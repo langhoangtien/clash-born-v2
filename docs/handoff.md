@@ -1,6 +1,6 @@
 # Bàn giao — Clashborn v2 (2026-11-05)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-275). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-276). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 
 ## 1. Trạng thái

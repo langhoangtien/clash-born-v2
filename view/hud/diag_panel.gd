@@ -11,17 +11,19 @@ const PANEL: Rect2 = Rect2(864, 266, 470, 400)
 ## D-261: bảng đo thời gian từng phần, bên trái bảng chẩn đoán.
 const PROFILE: Rect2 = Rect2(380, 266, 470, 530)
 const CELL: Vector2 = Vector2(215, 56)
-const KEYS: Array[StringName] = [&"scenery", &"ground", &"layer", &"fog", &"actors", &"water", &"vfx", &"scale", &"msaa"]
-const LABELS: Array[String] = ["Cảnh vật", "Nền ảnh", "Lớp phủ", "Sương", "Nhân vật", "Nước", "Hiệu ứng", "Độ phân giải", "MSAA"]
+const KEYS: Array[StringName] = [&"scenery", &"ground", &"layer", &"fog", &"actors", &"water", &"vfx", &"split", &"scale", &"msaa"]
+const LABELS: Array[String] = ["Cảnh vật", "Nền ảnh", "Lớp phủ", "Sương", "Nhân vật", "Nước", "Hiệu ứng", "Chia tick", "Độ phân giải", "MSAA"]
 ## Giá trị mỗi ô: bật / tắt, riêng độ phân giải (%) và MSAA (×) quay vòng.
 const SCALES: Array[int] = [100, 75, 60, 50]
 const MSAAS: Array[int] = [0, 2, 4]
 
 var open: bool = false
 ## Giá trị hiện tại theo KEYS: 1 bật / 0 tắt; `scale` là chỉ số trong SCALES, `msaa` trong MSAAS.
-var values: Dictionary[StringName, int] = {&"scenery": 1, &"ground": 1, &"layer": 1, &"fog": 1, &"actors": 1, &"water": 1, &"vfx": 1, &"scale": 1, &"msaa": 0}
+var values: Dictionary[StringName, int] = {&"scenery": 1, &"ground": 1, &"layer": 1, &"fog": 1, &"actors": 1, &"water": 1, &"vfx": 1, &"split": 1, &"scale": 1, &"msaa": 0}
 ## Nơi áp (APP đặt); null thì chỉ báo `changed`.
 var view_3d: MatchView3D
+## D-276: ô "Chia tick" (D-273) — APP đặt hàm bật / tắt chia tick của SimRunner (VIEW không biết SimRunner).
+var set_split: Callable = Callable()
 var _phase: int = -1
 
 
@@ -69,6 +71,9 @@ func _apply(key: StringName) -> void:
 		get_viewport().scaling_3d_scale = value_of(key) / 100.0
 	elif key == &"msaa":
 		get_viewport().msaa_3d = [Viewport.MSAA_DISABLED, Viewport.MSAA_2X, Viewport.MSAA_4X][values[key]]
+	elif key == &"split":
+		if set_split.is_valid():
+			set_split.call(on)
 	elif view_3d != null:
 		view_3d.set_part(key, on)
 

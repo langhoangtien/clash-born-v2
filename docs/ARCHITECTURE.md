@@ -292,6 +292,21 @@ Quy tắc:
 - Duyệt đơn vị theo `id` tăng dần. RNG chỉ lấy từ `World.rng` có seed.
 - Trigger gây ra trigger khác: tối đa 4 tầng, tránh vòng lặp vô hạn.
 
+### Chia tick qua hai khung (D-273) — luật cho VIEW / APP
+
+Trận thật chạy mỗi tick thành **hai nửa trên hai khung liên tiếp**: nửa đầu pha 1–5 (tới hết Controller),
+nửa sau pha 6–12. SIM không đổi (cùng thứ tự, test băm trạng thái khớp từng tick). Giữa hai nửa
+`World.mid_tick = true`: `tick` đã tăng, tầm nhìn / lệnh mới đã tính, nhưng **vị trí, máu, chiêu, sự kiện
+của tick đó chưa có**. Vì vậy:
+
+- VIEW **không đọc `world.events`** khi `world.mid_tick`; đọc sự kiện theo tín hiệu `SimRunner.stepped` hoặc
+  khi `tick` đổi **và** `not world.mid_tick` (như `MatchView3D._dispatch_events`, `UnitsView._process`).
+- VIEW **không so "trước tick / sau tick"** (vị trí cũ chụp ở `before_step` với vị trí hiện tại…) ở khung
+  giữa hai nửa — dùng giá trị của tick vừa xong (như `UnitsView.is_moving`, D-275).
+- Vị trí hiển thị dùng `UnitsView.display_position` (nội suy), không đọc thẳng `e.position` để vẽ chuyển động.
+- Có ô **Chia tick** trong bảng Chẩn đoán để tắt khi nghi lỗi hình; test `test_split_flicker` canh nháy
+  chạy / đứng. Thêm hiệu ứng / VIEW mới đọc trạng thái theo tick thì chạy test này (và chơi thử bật / tắt ô).
+
 ## 5. Trạng thái (State) — nơi các cơ chế gặp nhau
 
 State là cờ được **tính ra** từ các hiệu ứng đang có, không bao giờ gán tay. Danh
