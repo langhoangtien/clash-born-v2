@@ -93,3 +93,16 @@ func test_D_234_dead_hero_plays_death_like_creeps() -> void:
 	assert_eq(v._corpses.count(), 1, "hero chết: hình chuyển sang nằm chết, không biến mất")
 	root.remove_child(v)
 	v.free()
+
+
+func test_D_273_events_read_only_after_both_halves() -> void:
+	var v: MatchView3D = MatchView3D.new()
+	v.world = World.new(1, BalanceSettings.new())
+	v.world.tick = 5
+	v.world.mid_tick = true
+	v._dispatch_events()
+	assert_eq(v._event_tick, -1, "giữa tick: chưa đọc sự kiện (thiếu nửa sau)")
+	v.world.mid_tick = false
+	v._dispatch_events()
+	assert_eq(v._event_tick, 5, "tick xong: đọc")
+	v.free()

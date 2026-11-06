@@ -77,7 +77,7 @@ func _ready() -> void:
 	minimap.setup(world, hero)
 	input.world = world
 	input.hero = hero
-	runner = SimRunner.new(world)
+	runner = SimRunner.new(world, true)  # D-273: chia tick qua hai khung
 	runner.before_step.connect(_before_step)
 	_setup_audio()
 	_setup_quick_buy()

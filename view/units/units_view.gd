@@ -42,7 +42,7 @@ func display_position(e: Entity) -> Vector2:
 
 
 func _process(_delta: float) -> void:
-	if world != null and world.tick != _vfx_tick:
+	if world != null and world.tick != _vfx_tick and not world.mid_tick:  # D-273
 		_vfx_tick = world.tick
 		_vfx.collect(world)
 		for ev: GameEvent in world.events:

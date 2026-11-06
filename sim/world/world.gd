@@ -69,6 +69,8 @@ var recent_notes: Array = []
 ## RNG-01: bộ đếm PRD theo khóa (Prd.key).
 var prd_counters: Dictionary[int, int] = {}
 var _pending: Array[Command] = []
+## D-273: đã chạy nửa đầu tick hiện tại, chưa chạy nửa sau (VIEW chưa đọc sự kiện của tick này).
+var mid_tick: bool = false
 var _systems: Array[Array] = []  # [phase, thứ tự đăng ký, SimSystem]
 
 
@@ -197,13 +199,37 @@ func next_serial() -> int:
 
 
 func step() -> void:
-	if winner >= 0:
+	if mid_tick:
+		step_second_half()  # D-273: đang giữa tick thì làm nốt, không mở tick mới
+		return
+	step_first_half()
+	step_second_half()
+
+
+## D-273: nửa đầu một tick — mở tick mới và chạy các pha tới hết CONTROLLER. APP có thể chạy nửa sau ở khung kế
+## để một khung không gánh cả tick; cùng thứ tự hệ thống nên kết quả y như step().
+func step_first_half() -> void:
+	if winner >= 0 or mid_tick:
 		return
 	tick += 1
 	previous_events = events
 	events = []
+	_run_systems(true)
+	mid_tick = true
+
+
+## D-273: nửa sau — các pha từ MOVEMENT tới hết.
+func step_second_half() -> void:
+	if not mid_tick:
+		return
+	_run_systems(false)
+	mid_tick = false
+
+
+func _run_systems(first_half: bool) -> void:
 	for entry: Array in _systems:
-		(entry[2] as SimSystem).run(self)
+		if (int(entry[0]) <= Phase.CONTROLLER) == first_half:
+			(entry[2] as SimSystem).run(self)
 
 
 ## Băm toàn bộ trạng thái để so hai lần chạy (test phát lại, D-30).

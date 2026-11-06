@@ -240,7 +240,7 @@ func _fit_view() -> void:
 
 ## D-159: sự kiện của tick mới → hoạt ảnh chiêu, khựng khung / lóe khi trúng, rung camera.
 func _dispatch_events() -> void:
-	if world.tick == _event_tick:
+	if world.tick == _event_tick or world.mid_tick:  # D-273: chờ tick xong cả hai nửa
 		return
 	_event_tick = world.tick
 	for ev: GameEvent in world.events:

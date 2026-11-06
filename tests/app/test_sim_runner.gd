@@ -57,3 +57,40 @@ func test_STR_05_runner_stops_when_match_ended() -> void:
 	var r: SimRunner = _runner()
 	r.world.winner = 1
 	assert_eq(r.advance(1.0), 0)
+
+
+## D-273: trận thật chia mỗi tick thành hai nửa chạy trên hai khung liên tiếp.
+func _split_runner() -> SimRunner:
+	var r: SimRunner = SimRunner.new(World.new(1, Fixture.make()), true)
+	return r
+
+
+func test_D_273_tick_split_across_two_frames_at_60fps() -> void:
+	var r: SimRunner = _split_runner()
+	var completed: int = 0
+	var mid_seen: int = 0
+	for i: int in range(60):
+		completed += r.advance(1.0 / 60.0)
+		if r.world.mid_tick:
+			mid_seen += 1
+	assert_true(mid_seen >= 29, "khung có tick: chỉ chạy nửa đầu, nửa sau ở khung kế")
+	assert_true(completed >= 29 and completed <= 30, "vẫn ~30 tick / giây")
+	assert_true(r.world.tick - completed <= 1)
+
+
+func test_D_273_falls_back_to_full_ticks_when_behind() -> void:
+	var r: SimRunner = _split_runner()
+	r.advance(0.1)  # trễ 3 tick: chạy bù tick đầy đủ, chỉ tick cuối chia đôi
+	assert_true(r.world.tick >= 3)
+	assert_true(r.world.tick - (3 if not r.world.mid_tick else 2) <= 1)
+
+
+func test_D_273_stepped_signal_only_after_full_tick() -> void:
+	var r: SimRunner = _split_runner()
+	var done_ticks: Array[int] = []
+	r.stepped.connect(func() -> void:
+		assert_false(r.world.mid_tick, "VIEW chỉ đọc sự kiện khi tick đã xong cả hai nửa")
+		done_ticks.append(r.world.tick))
+	for i: int in range(12):
+		r.advance(1.0 / 60.0)
+	assert_eq(done_ticks, [1, 2, 3, 4, 5])

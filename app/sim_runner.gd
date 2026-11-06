@@ -20,14 +20,19 @@ var paused: bool = false
 var speed: int = 1
 
 var _accumulator: float = 0.0
+## D-273: trận thật — tick đến hạn cuối cùng của khung chỉ chạy nửa đầu, nửa sau ở khung kế (khung không gánh cả
+## tick: tick SIM ~7 ms trên máy tính bảng làm khung có tick vượt 16,7 ms → lỡ nhịp thành 33 ms). Chỉ ở tốc độ ×1;
+## trễ nhiều tick thì chạy bù tick đầy đủ. Test / công cụ để tắt.
+var split_ticks: bool = false
 
 
 ## D-108: ms SIM mỗi tick (trung bình trượt).
 var step_ms: float = 0.0
 
 
-func _init(p_world: World) -> void:
+func _init(p_world: World, p_split: bool = false) -> void:
 	world = p_world
+	split_ticks = p_split
 
 
 ## Chạy số tick tương ứng `delta` giây; trả về số tick đã chạy.
@@ -39,9 +44,16 @@ func advance(delta: float) -> int:
 	var cap: int = MAX_STEPS_PER_FRAME * speed
 	var start: int = Time.get_ticks_msec()
 	var t0: int = Time.get_ticks_usec()
+	if world.mid_tick:  # D-273: nửa sau của tick mở ở khung trước
+		world.step_second_half()
+		stepped.emit()
+		steps += 1
 	while _accumulator + 0.000001 >= SimClock.TICK_SECONDS and steps < cap and world.winner < 0:
 		_accumulator -= SimClock.TICK_SECONDS
 		before_step.emit()
+		if split_ticks and speed == 1 and _accumulator + 0.000001 < SimClock.TICK_SECONDS:
+			world.step_first_half()  # D-273: tick cuối của khung — nửa sau để khung kế
+			break
 		world.step()
 		stepped.emit()
 		steps += 1
@@ -50,7 +62,7 @@ func advance(delta: float) -> int:
 			break
 	if steps > 0:  # D-108: thời gian SIM trung bình mỗi tick (hiện ở HUD để đo trên điện thoại)
 		step_ms = lerpf(step_ms, (Time.get_ticks_usec() - t0) / 1000.0 / steps, 0.1)
-		FrameProfile.shared.add(&"sim", t0)  # D-261
+	FrameProfile.shared.add(&"sim", t0)  # D-261 (cả khung chỉ chạy nửa tick)
 	if steps == cap or world.winner >= 0:
 		_accumulator = minf(_accumulator, SimClock.TICK_SECONDS * 0.999)
 	return steps
