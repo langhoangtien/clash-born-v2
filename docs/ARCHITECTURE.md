@@ -81,7 +81,7 @@ clashborn_v2/
                            Look3D (ánh sáng, môi trường, bóng chân) — D-146, D-150; Terrain3D + ground / water /
                            kit / kit_tex .gdshader (mặt đất ảnh nền theo mặt nạ, nước, vật liệu cảnh vật vẽ sẵn sáng
                            tối — D-178); Scenery3D (cảnh vật decor.py, bụi, chợ, đổ nát, D-158, D-178)
-    art/                   ArtLibrary: res://assets/art/<art_id>.png, thiếu → hình tạm
+    art/                   ArtLibrary: res://assets/art/<art_id>.png, thiếu → hình tạm; vào trận nạp ngầm hình nội dung (D-269)
     ui/                    UiStyle (phông, màu, khung, nút, xu), UiGlyphs (icon nét) — D-130
     menu/                  HeroSelect, HeroDetail, HeroPreview (màn chọn tướng), GraphicsSetting (mức đồ họa, D-157)
     audio/                 SoundLibrary (res://assets/audio/<id>.ogg, thiếu → im lặng), AudioCues
@@ -96,7 +96,7 @@ clashborn_v2/
                            Updater: tự kiểm tra / tải / cài bản Android mới (D-148);
                            SettingsControl: áp lựa chọn của bảng Cài đặt (âm thanh, đồ họa, FPS, công cụ thử, D-183);
                            FrameProbe: mốc đầu / cuối _process, trước / sau vẽ cho FrameProfile (D-261);
-    perf/                  Log hiệu năng (D-268): FrameHistogram (thời gian từng khung → 1% low, P95…), PerfRecorder
+    perf/                  Log hiệu năng (D-268, v2 D-269): FrameHistogram (thời gian từng khung → 1% low, P95…), PerfRecorder
                            (mẫu 0,5 s, khung giật kèm bối cảnh, mốc bật / tắt đồ họa), PerfReport (tóm tắt, CSV,
                            JSON), PerfFiles (user://performance_logs/, hộp "Lưu vào…"), PerfSession (nối vào trận),
                            PerfSettings (công tắc trong Cài đặt)

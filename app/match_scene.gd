@@ -63,6 +63,7 @@ func _ready() -> void:
 	hero_def = library.heroes[hero_id]
 	for def: GameDef in library.units.values() + library.heroes.values():
 		ArtLibrary.texture(def.art_id)  # nạp sẵn hình lúc vào trận, không để lần xuất hiện đầu bị giật
+	ArtLibrary.load_ahead(ArtLibrary.content_ids(library))  # D-269: icon đồ / chiêu / buff nạp ngầm
 	hero = UnitFactory.hero(world, hero_def, 0, world.map.fountain_point(0))
 	if bot_hero_id != &"":
 		var foe: Entity = UnitFactory.hero(world, library.heroes[bot_hero_id], 1, world.map.fountain_point(1))

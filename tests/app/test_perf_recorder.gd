@@ -59,6 +59,46 @@ func test_D_268_spikes_capped() -> void:
 	assert_eq(r.spike_total, PerfRecorder.SPIKE_CAP + 20, "nhưng đếm đủ")
 
 
+func test_D_269_big_spikes_have_own_slots() -> void:
+	var r: PerfRecorder = _recorder()
+	var t: int = 0
+	for i: int in PerfRecorder.SPIKE_CAP + 50:
+		t += 34_000
+		r.on_frame(_frame(34.0), t)
+	t += 130_000
+	r.on_frame(_frame(130.0), t)
+	assert_eq(r.big_spikes.size(), 1, "giật lớn (> 50 ms) không bị giật nhỏ chiếm hết chỗ")
+	assert_eq(r.big_total, 1)
+	assert_eq(r.spikes.size(), PerfRecorder.SPIKE_CAP)
+
+
+func test_D_269_spike_lists_every_measured_part() -> void:
+	var r: PerfRecorder = _recorder()
+	var f: Dictionary = _frame(120.0)
+	f[&"scene"] = 100_000
+	f[&"actors"] = 2000
+	f[&"hud_quick"] = 90_000
+	f[&"process"] = 110_000
+	r.on_frame(f, 120_000)
+	var sec: Dictionary = r.big_spikes[0]["sections"]
+	assert_near(float(sec["hud_quick_ms"]), 90.0, 0.01, "ghi cả phần con (từng bảng HUD…)")
+	assert_near(float(sec["process_other_ms"]), 10.0, 0.01, "_process ngoài màn trận")
+	assert_near(float(sec["scene_other_ms"]), 96.0, 0.01, "màn trận trừ SIM và nhân vật 3D")
+
+
+func test_D_269_diag_panel_columns() -> void:
+	var r: PerfRecorder = _recorder({&"diag_open": 1})
+	var t: int = 0
+	for i: int in 30:
+		t += 20_000
+		var f: Dictionary = _frame(20.0)
+		f[&"hud_diag"] = 300
+		r.on_frame(f, t)
+	var row: Dictionary = r.row_dict(0)
+	assert_eq(row["diag_open"], "1", "ghi bảng chẩn đoán đang mở")
+	assert_near(float(row["diag_ms"]), 0.3, 0.001, "và bảng tự tốn bao nhiêu ms")
+
+
 func test_D_268_markers_and_graphics_state_in_rows() -> void:
 	var r: PerfRecorder = _recorder()
 	var t: int = _run(r, 0, 30, 20.0)

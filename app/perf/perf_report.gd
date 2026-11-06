@@ -13,7 +13,7 @@ static func summary(r: PerfRecorder) -> Dictionary:
 		"avg_fps": snappedf(h.avg_fps(), 0.1), "min_fps": snappedf(h.min_fps(), 0.1),
 		"low_1pct_fps": snappedf(h.low_fps(0.01), 0.1), "low_0_1pct_fps": snappedf(h.low_fps(0.001), 0.1),
 		"p50_frame_ms": h.percentile(0.5), "p95_frame_ms": h.percentile(0.95), "p99_frame_ms": h.percentile(0.99),
-		"spikes": r.spike_total,
+		"spikes": r.spike_total, "big_spikes": r.big_total,
 	}
 	for ms: float in THRESHOLDS:
 		s["share_over_" + str(ms).replace(".", "_")] = snappedf(h.share_over(ms), 0.0001)
@@ -71,6 +71,7 @@ static func json(r: PerfRecorder) -> String:
 	for row: PackedStringArray in r.rows:
 		rows.append(Array(row))
 	return JSON.stringify({"meta": r.meta, "summary": summary(r), "markers": r.markers, "spikes": r.spikes,
+		"big_spikes": r.big_spikes,
 		"columns": Array(PerfRecorder.COLUMNS), "rows": rows}, "\t")
 
 
@@ -89,7 +90,7 @@ static func summary_text(r: PerfRecorder) -> String:
 	for ms: float in THRESHOLDS:
 		over.append(">%s ms: %.1f%%" % [str(ms), 100.0 * float(s["share_over_" + str(ms).replace(".", "_")])])
 	out.append("Khung vượt ngưỡng: " + " · ".join(over))
-	out.append("Giật > 33,3 ms: %d lần" % s["spikes"])
+	out.append("Giật > 33,3 ms: %d lần · trong đó > 50 ms (đứng hình): %d lần" % [s["spikes"], s["big_spikes"]])
 	out.append("TB/khung: xử lý %s · SIM %s · HUD %s · xương %s · dựng 3D %s · GPU %s ms" % [s["process_ms"],
 		s["sim_ms"], s["hud_ms"], s["bones_ms"], s["render_ms"], s["gpu_ms"]])
 	out.append("Object +%s/phút · bộ nhớ +%s MB/phút" % [s["objects_per_min"], s["mem_static_mb_per_min"]])

@@ -9,6 +9,7 @@ const FLUSH_USEC: int = 60_000_000
 
 var world: World
 var view_3d: MatchView3D
+var diag: DiagPanel
 var hero: Entity
 var recorder: PerfRecorder
 var files: PerfFiles = PerfFiles.new()
@@ -23,6 +24,7 @@ static func attach(parent: Node, w: World, v: MatchView3D, me: Entity, diag: Dia
 	s.world = w
 	s.view_3d = v
 	s.hero = me
+	s.diag = diag
 	parent.add_child(s)
 	if diag != null:
 		diag.changed.connect(s.mark)
@@ -123,6 +125,7 @@ func _context() -> Dictionary:
 			Entity.Kind.NEUTRAL:
 				n[&"jungle"] += 1
 	c.merge(n, true)
+	c[&"diag_open"] = 1 if diag != null and diag.visible and diag.open else 0  # D-269
 	c[&"mem_static_mb"] = snappedf(Performance.get_monitor(Performance.MEMORY_STATIC) / 1048576.0, 0.1)
 	c[&"video_mem_mb"] = snappedf(Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED) / 1048576.0, 0.1)
 	return c
@@ -130,7 +133,7 @@ func _context() -> Dictionary:
 
 func _meta() -> Dictionary:
 	var vp: Viewport = get_viewport()
-	return {"version": Updater.current_name(), "device": OS.get_model_name(), "os": OS.get_name() + " " + OS.get_version(),
+	return {"log_version": 2, "version": Updater.current_name(), "device": OS.get_model_name(), "os": OS.get_name() + " " + OS.get_version(),
 		"gpu": RenderingServer.get_video_adapter_name(), "renderer": RenderingServer.get_current_rendering_method(),
 		"graphics": GraphicsSetting.NAMES[GraphicsSetting.load_level()],
 		"resolution": "%dx%d · 3D %d%%" % [vp.get_visible_rect().size.x, vp.get_visible_rect().size.y, roundi(vp.scaling_3d_scale * 100)],
