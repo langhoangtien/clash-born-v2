@@ -19,6 +19,7 @@ static func attach(layer: Node, in_match: bool, audio_view: AudioView) -> Settin
 	s.panel = SettingsPanel.new()
 	s.panel.name = "SettingsPanel"
 	s.panel.in_match = in_match
+	s.panel.version_text = Updater.current_name()  # D-267
 	layer.add_child(s.panel)
 	s.panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	s.viewport = s.panel.get_viewport()

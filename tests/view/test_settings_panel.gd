@@ -45,3 +45,19 @@ func test_D_183_closed_panel_ignores_rows() -> void:
 
 func test_D_183_show_fps_default_on_and_saved() -> void:
 	assert_true(GraphicsSetting.SHOW_FPS_DEFAULT, "bản thử hiện FPS mặc định")
+
+
+func test_D_267_version_line_below_rows() -> void:
+	var p: SettingsPanel = _panel(true)
+	p.version_text = "0.1.449"
+	assert_eq(p.version_line(), "Phiên bản 0.1.449")
+	var last: Rect2 = p.row_rect(p.rows().size() - 1)
+	assert_true(p.panel_rect().end.y >= last.end.y + SettingsPanel.VERSION_H, "bảng chừa chỗ cho dòng phiên bản dưới hàng cuối")
+	p.version_text = ""
+	assert_eq(p.version_line(), "Phiên bản: chạy từ editor", "không có build.json (chạy từ editor)")
+	p.free()
+
+
+func test_D_267_version_name_read_from_build_info() -> void:
+	assert_eq(Updater.version_name_from({"code": 449, "name": "0.1.449"}), "0.1.449")
+	assert_eq(Updater.version_name_from({}), "")

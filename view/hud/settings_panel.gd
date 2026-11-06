@@ -10,6 +10,8 @@ signal action(what: StringName)
 const GEAR_SIZE: float = 60.0  ## D-225: nhỏ hơn (76 → 60)
 const ROW: Vector2 = Vector2(600, 72)
 const ROW_GAP: float = 14.0
+## D-267: chiều cao dòng phiên bản dưới hàng cuối.
+const VERSION_H: float = 44.0
 const LABELS: Dictionary[StringName, String] = {
 	&"sound": "Âm thanh", &"graphics": "Đồ họa", &"fps": "Hiện FPS", &"test": "Bảng Test (thử)",
 	&"diag": "Chẩn đoán FPS (thử)", &"quit": "Thoát trận",
@@ -20,6 +22,8 @@ var open: bool = false
 var in_match: bool = true
 ## Chữ giá trị bên phải mỗi hàng (APP đặt), vd {&"sound": "Bật"}.
 var values: Dictionary[StringName, String] = {}
+## D-267: tên bản đang chạy (APP đặt, vd "0.1.449"); rỗng = chạy từ editor.
+var version_text: String = ""
 
 
 func rows() -> Array[StringName]:
@@ -34,12 +38,16 @@ func gear_rect() -> Rect2:
 
 
 func panel_rect() -> Rect2:
-	var h: float = 110 + rows().size() * (ROW.y + ROW_GAP) + 20
+	var h: float = 110 + rows().size() * (ROW.y + ROW_GAP) + 20 + VERSION_H
 	return Rect2((size - Vector2(ROW.x + 60, h)) * 0.5, Vector2(ROW.x + 60, h))
 
 
 func row_rect(i: int) -> Rect2:
 	return Rect2(panel_rect().position + Vector2(30, 100 + i * (ROW.y + ROW_GAP)), ROW)
+
+
+func version_line() -> String:
+	return "Phiên bản " + version_text if version_text != "" else "Phiên bản: chạy từ editor"
 
 
 func close_rect() -> Rect2:
@@ -88,6 +96,8 @@ func _draw() -> void:
 		draw_string(UiStyle.sans(true), r.position + Vector2(8, 46), LABELS[key], HORIZONTAL_ALIGNMENT_LEFT, -1, 28, UiStyle.TEXT)
 		var b: Rect2 = Rect2(r.end.x - 240, r.position.y + 6, 240, r.size.y - 12)
 		UiStyle.button(self, b, &"gold" if key == &"quit" else &"blue", values.get(key, "Mở" if key != &"quit" else "Thoát"), "", 24)
+	var at: Vector2 = Vector2(p.position.x + 38, p.end.y - 26)  # D-267
+	draw_string(UiStyle.sans(false), at, version_line(), HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color(UiStyle.TEXT, 0.6))
 
 
 ## Nút bánh răng: vành răng + lỗ giữa.

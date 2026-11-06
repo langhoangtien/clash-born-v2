@@ -22,6 +22,17 @@ static func current_code() -> int:
 	return int(data.get("code", 0)) if data is Dictionary else 0
 
 
+## D-267: tên bản đang chạy (vd "0.1.449"), rỗng nếu không rõ (chạy từ editor).
+static func current_name() -> String:
+	if not FileAccess.file_exists(BUILD_INFO):
+		return ""
+	return version_name_from(JSON.parse_string(FileAccess.get_file_as_string(BUILD_INFO)))
+
+
+static func version_name_from(data: Variant) -> String:
+	return String(data.get("name", "")) if data is Dictionary else ""
+
+
 ## Có nên mời cập nhật: chỉ khi biết bản đang chạy và bản mới lớn hơn.
 static func is_newer(latest: Dictionary, current: int) -> bool:
 	return current > 0 and int(latest.get("code", 0)) > current
