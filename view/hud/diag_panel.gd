@@ -53,6 +53,16 @@ func press_at(at: Vector2) -> void:
 	queue_redraw()
 
 
+## D-272: đặt giá trị một ô từ ngoài (Benchmark A/B): áp ngay và báo `changed` như khi bấm.
+func set_value(key: StringName, value: int) -> void:
+	if values.get(key, -1) == value:
+		return
+	values[key] = value
+	_apply(key)
+	changed.emit(key, value_of(key))
+	queue_redraw()
+
+
 func _apply(key: StringName) -> void:
 	var on: bool = value_of(key) != 0
 	if key == &"scale":

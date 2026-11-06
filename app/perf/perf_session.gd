@@ -28,6 +28,9 @@ static func attach(parent: Node, w: World, v: MatchView3D, me: Entity, diag: Dia
 	parent.add_child(s)
 	if diag != null:
 		diag.changed.connect(s.mark)
+	if BenchSession.requested:  # D-272: trận đo A/B — bộ đo riêng thay log
+		BenchSession.attach(parent, w, me, diag)
+		return s
 	s.set_recording(PerfSettings.enabled())
 	return s
 
@@ -39,7 +42,7 @@ func recording() -> bool:
 func set_recording(on: bool) -> void:
 	if on and recorder == null:
 		recorder = PerfRecorder.new()
-		recorder.meta = _meta()
+		recorder.meta = device_meta(get_viewport(), hero)
 		recorder.context = _context
 		files.begin(Time.get_datetime_string_from_system().replace(":", "-").replace("T", "_"))
 	FrameProfile.shared.frame_listener = _on_frame if on else Callable()
@@ -131,8 +134,8 @@ func _context() -> Dictionary:
 	return c
 
 
-func _meta() -> Dictionary:
-	var vp: Viewport = get_viewport()
+## Thông tin máy / bản / cài đặt cho log (dùng chung cho Benchmark A/B).
+static func device_meta(vp: Viewport, hero: Entity) -> Dictionary:
 	return {"log_version": 2, "version": Updater.current_name(), "device": OS.get_model_name(), "os": OS.get_name() + " " + OS.get_version(),
 		"gpu": RenderingServer.get_video_adapter_name(), "renderer": RenderingServer.get_current_rendering_method(),
 		"graphics": GraphicsSetting.NAMES[GraphicsSetting.load_level()],

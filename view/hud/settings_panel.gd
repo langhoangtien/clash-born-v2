@@ -15,7 +15,7 @@ const VERSION_H: float = 44.0
 const LABELS: Dictionary[StringName, String] = {
 	&"sound": "Âm thanh", &"graphics": "Đồ họa", &"fps": "Hiện FPS", &"test": "Bảng Test (thử)",
 	&"diag": "Chẩn đoán FPS (thử)", &"quit": "Thoát trận", &"perf_log": "Ghi log hiệu năng",
-	&"perf_export": "Xuất log hiệu năng",
+	&"perf_export": "Xuất log hiệu năng", &"bench": "Đo hiệu năng tự động",
 }
 
 var open: bool = false
@@ -31,6 +31,8 @@ func rows() -> Array[StringName]:
 	var out: Array[StringName] = [&"sound", &"graphics", &"fps", &"perf_log"]  # D-268
 	if in_match:
 		out.append_array([&"test", &"diag", &"perf_export", &"quit"] as Array[StringName])
+	else:
+		out.append(&"bench")  # D-272: trận đo riêng, chỉ mở từ menu
 	return out
 
 

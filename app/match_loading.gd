@@ -28,6 +28,11 @@ static func start(view: MatchView3D, hud: Node, focus: Vector2) -> MatchLoading:
 	return l
 
 
+## D-272: đã gỡ màn che (không bước làm nóng như busy()).
+func finished() -> bool:
+	return _cover == null
+
+
 ## Còn đang tải (mỗi khung gọi một lần): true thì APP chưa chạy SIM.
 func busy() -> bool:
 	if _cover == null:

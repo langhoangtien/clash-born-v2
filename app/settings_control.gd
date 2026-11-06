@@ -12,6 +12,8 @@ var hud: MatchHud
 var tools: Dictionary[StringName, Control] = {}
 ## D-268: phiên ghi log hiệu năng của trận (null ở menu).
 var perf: PerfSession
+## D-272: menu — mở trận Benchmark A/B.
+var start_bench: Callable = Callable()
 var quit: Callable
 
 
@@ -47,6 +49,11 @@ func apply(what: StringName) -> void:
 		&"perf_export":
 			if perf != null:
 				perf.export_now()
+		&"bench":
+			if start_bench.is_valid():
+				panel.open = false
+				start_bench.call()
+				return
 		&"quit":
 			quit.call()
 			return
@@ -62,6 +69,7 @@ func refresh() -> void:
 		&"fps": "Bật" if GraphicsSetting.load_show_fps() else "Tắt",
 		&"perf_log": "Bật" if PerfSettings.enabled() else "Tắt",
 		&"perf_export": "Xuất",
+		&"bench": "Bắt đầu",
 	}
 	for key: StringName in tools:
 		panel.values[key] = "Đang hiện" if tools[key].visible else "Ẩn"

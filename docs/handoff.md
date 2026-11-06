@@ -1,6 +1,6 @@
 # Bàn giao — Clashborn v2 (2026-11-05)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-271). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-272). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 
 ## 1. Trạng thái
@@ -37,7 +37,7 @@ Người chơi thích phong cách afk.ai (hợp đồ họa); Mixamo chỉ để
 ## 3. Việc tiếp theo (theo thứ tự đề xuất)
 
 0. **Đo hiệu năng**: bật Cài đặt → "Ghi log hiệu năng" rồi chơi; hết trận gửi file JSON / CSV hoặc dán tóm tắt (D-268).
-   Phần 2 (Benchmark A/B tự động: cảnh cố định, tự bật / tắt từng ô) chưa làm.
+   Benchmark A/B tự động (D-272): menu → Cài đặt → "Đo hiệu năng tự động" (~2,5 phút) → dán kết quả.
 
 1. **Hiệu năng CPU**: bước A xong (D-261: bảng đo từng phần trong Chẩn đoán, `tools/view_profile.gd` chạy trận thật
    dưới xvfb; D-262: object tăng chỉ là `command_log`, không rò rỉ). Máy tính bảng 0.1.438: 40 fps ổn định, nghẽn luồng

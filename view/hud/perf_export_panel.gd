@@ -8,6 +8,7 @@ signal save_json
 signal copy_summary
 signal closed
 
+var _title: Label
 var _summary: Label
 var _status: Label
 
@@ -26,7 +27,8 @@ func _ready() -> void:
 	box.custom_minimum_size = Vector2(1300, 0)
 	box.add_theme_constant_override("separation", 14)
 	add_child(box)
-	box.add_child(_label("Log hiệu năng", 40, UiStyle.GOLD))
+	_title = _label("Log hiệu năng", 40, UiStyle.GOLD)
+	box.add_child(_title)
 	_summary = _label("", 20, UiStyle.TEXT)
 	box.add_child(_summary)
 	_status = _label("", 22, Color(0.6, 0.9, 1.0))
@@ -40,7 +42,8 @@ func _ready() -> void:
 		row.add_child(_button(b[0], b[1], b[2]))
 
 
-func show_report(summary: String, status: String) -> void:
+func show_report(summary: String, status: String, title: String = "Log hiệu năng") -> void:
+	_title.text = title
 	_summary.text = summary
 	_status.text = status
 	visible = true

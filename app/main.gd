@@ -27,6 +27,9 @@ func _ready() -> void:
 	add_child(audio)
 	audio.play_music(&"music_menu")
 	var settings: SettingsControl = SettingsControl.attach(self, false, audio)  # D-183
+	settings.start_bench = func() -> void:  # D-272: Benchmark A/B — cảnh cố định, hai tướng do bot
+		BenchSession.requested = true
+		_start(BenchSession.HERO, BenchSession.FOE, BotState.Difficulty.NORMAL)
 	select.settings_pressed.connect(func() -> void:
 		settings.panel.open = true
 		settings.panel.queue_redraw())
