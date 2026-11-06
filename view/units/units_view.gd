@@ -19,6 +19,8 @@ var viewer_team: int = -1
 var alpha: float = 1.0
 
 var _previous: Dictionary[int, Vector2] = {}
+## D-273: đơn vị có đi trong tick vừa xong — dùng ở khung giữa hai nửa tick (vị trí chưa đổi tới nửa sau).
+var _was_moving: Dictionary[int, bool] = {}
 ## D-144: tick đơn vị trúng sát thương gần nhất (lóe đỏ).
 var _hit_tick: Dictionary[int, int] = {}
 var _vfx: Vfx = Vfx.new()
@@ -30,6 +32,10 @@ const CULL_MARGIN: float = 400.0
 
 ## Gọi ngay trước mỗi world.step() để nhớ vị trí cũ.
 func capture_previous() -> void:
+	_was_moving.clear()
+	for e: Entity in world.entities:
+		if _moving(e):
+			_was_moving[e.id] = true
 	_previous.clear()
 	for e: Entity in world.entities:
 		_previous[e.id] = e.position
@@ -52,6 +58,8 @@ func _process(_delta: float) -> void:
 
 ## D-145: cho bản 3D đọc.
 func is_moving(e: Entity) -> bool:
+	if world != null and world.mid_tick:
+		return _was_moving.has(e.id)  # D-273
 	return _moving(e)
 
 

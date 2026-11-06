@@ -69,3 +69,21 @@ func test_ST_state_marks_detect_slow() -> void:
 	d.modifiers = [m]
 	Effects.apply(w, e, d, null)
 	assert_true(StateMarks.is_slowed(e))
+
+
+func test_D_273_moving_stays_true_between_tick_halves() -> void:
+	var w: World = World.new(1, BalanceSettings.new())
+	var e: Entity = Entity.new()
+	e.position = Vector2(100, 100)
+	w.add_entity(e)
+	var v: UnitsView = UnitsView.new()
+	v.world = w
+	v.capture_previous()
+	e.position = Vector2(110, 100)  # tick trước: đơn vị chạy
+	assert_true(v.is_moving(e))
+	v.capture_previous()  # bắt đầu tick mới: nửa đầu chạy xong, vị trí chưa đổi (nửa sau mới đi)
+	w.mid_tick = true
+	assert_true(v.is_moving(e), "giữa hai nửa tick: vẫn đang chạy (không nhảy sang đứng yên mỗi khung)")
+	w.mid_tick = false
+	assert_false(v.is_moving(e), "tick xong mà không đi: đứng yên")
+	v.free()
