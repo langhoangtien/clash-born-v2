@@ -102,7 +102,7 @@ static func _make_sparks(part: Dictionary) -> CPUParticles3D:
 	var quad: QuadMesh = QuadMesh.new()
 	quad.size = Vector2.ONE * float(part.get("spark_size", 0.14))
 	var mat: StandardMaterial3D = StandardMaterial3D.new()
-	mat.albedo_texture = load(SkillVfx3D.TEXTURES % part["sparks"])
+	mat.albedo_texture = SkillVfx3D.texture(part["sparks"])  # D-270: ảnh giữ sẵn
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA

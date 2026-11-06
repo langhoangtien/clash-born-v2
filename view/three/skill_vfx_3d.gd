@@ -12,6 +12,11 @@ const TINT_SHADER: Shader = preload("res://view/three/skill_tint.gdshader")
 const HIT_TICKS: int = 4  ## hằng số hiển thị: sát thương của chủ chiêu trong 4 tick sau khi chiêu ra coi là trúng chiêu
 
 static var _recipes: Dictionary = {}
+## D-270: ảnh hiệu ứng giữ suốt trận. Trước đây mỗi lần tung chiêu `load()` lại; hiệu ứng trước đã gỡ thì ảnh bị
+## thả khỏi bộ nhớ → đọc đĩa lại mỗi lần (W Duy Anh: ảnh 2048² ~50–70 ms máy chủ, 100–375 ms máy tính bảng).
+static var _textures: Dictionary[String, Texture2D] = {}
+## Khóa trong mảnh công thức (vfx.json) trỏ tới ảnh.
+const TEX_KEYS: Array[String] = ["tex", "glow", "sparks"]
 
 var _items: Array[Array] = []  # [Node3D, loại, tuổi (giây), part, id chủ chiêu]
 var _world: World
@@ -24,6 +29,41 @@ static func recipes() -> Dictionary:
 	if _recipes.is_empty():
 		_recipes = JSON.parse_string(FileAccess.get_file_as_string(RECIPES))
 	return _recipes
+
+
+## D-270: vào trận nạp một lần mọi ảnh trong công thức.
+func _ready() -> void:
+	load_textures()
+
+
+static func texture(name: String) -> Texture2D:
+	if not _textures.has(name):
+		_textures[name] = load(TEXTURES % name) as Texture2D
+	return _textures[name]
+
+
+static func recipe_textures() -> PackedStringArray:
+	var out: PackedStringArray = PackedStringArray()
+	for key: String in recipes():
+		if recipes()[key] is Dictionary:
+			for part: Dictionary in recipes()[key].get("parts", []):
+				for k: String in TEX_KEYS:
+					if part.has(k) and not out.has(part[k]):
+						out.append(part[k])
+	return out
+
+
+static func load_textures() -> void:
+	for name: String in recipe_textures():
+		texture(name)
+
+
+static func has_texture(name: String) -> bool:
+	return _textures.has(name)
+
+
+static func forget_textures_for_test() -> void:
+	_textures.clear()
 
 
 func on_event(w: World, ev: GameEvent) -> void:
@@ -126,7 +166,7 @@ func _arc_node(e: Entity, a: AbilityInstance, part: Dictionary) -> Node3D:
 static func _tint_material(part: Dictionary) -> ShaderMaterial:
 	var mat: ShaderMaterial = ShaderMaterial.new()
 	mat.shader = TINT_SHADER
-	mat.set_shader_parameter("tex", load(TEXTURES % part["tex"]))
+	mat.set_shader_parameter("tex", texture(part["tex"]))
 	mat.set_shader_parameter("tint", part.has("color"))
 	mat.set_shader_parameter("color", Color(part.get("color", "#ffffff")))
 	mat.set_shader_parameter("edge", Color(part.get("edge", "#ffffff")))
@@ -140,7 +180,7 @@ static func _tint_material(part: Dictionary) -> ShaderMaterial:
 ## Mặt phẳng luôn quay về camera, ảnh `tex`, cộng sáng hoặc trong suốt (tia lóe khi trúng).
 static func _quad(tex: String, part: Dictionary, additive: bool) -> MeshInstance3D:
 	var mat: StandardMaterial3D = StandardMaterial3D.new()
-	mat.albedo_texture = load(TEXTURES % tex)
+	mat.albedo_texture = texture(tex)
 	mat.albedo_color = Color(part.get("color", "#ffffff"))
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
