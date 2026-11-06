@@ -35,3 +35,7 @@ Releases của repo. Lần đầu cài: cho phép "Cài ứng dụng không rõ 
 4. Repo clone nông → `git fetch --unshallow origin thu-asset-tu-lam` trước khi build (versionCode = số commit).
 5. `GODOT=... bash tools/build_android.sh`, rồi chép `build/android/clashborn.apk` + `version.json` lên nhánh
    `gh-pages` (git worktree, commit, push) — app tự thấy bản mới (D-148). APK phải < 100 MiB (giới hạn GitHub).
+6. Kiểm tra bản đã lên: `curl -s "https://langhoangtien.github.io/clash-born-v2/version.json?t=$(date +%s)"` phải báo
+   số mới (thường 1–2 phút sau khi push gh-pages). GitHub Pages đôi khi lỗi ở bước "Deploy to GitHub Pages"
+   (gặp ở 0.1.441, 0.1.451); bấm chạy lại thì kẹt "queued". Cách đã chạy được: build lại (số bản mới) và đẩy
+   commit mới lên gh-pages → GitHub mở lượt triển khai mới.
