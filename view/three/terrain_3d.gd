@@ -189,3 +189,11 @@ static func _png(b64: String) -> Image:
 	var img: Image = Image.new()
 	img.load_png_from_buffer(Marshalls.base64_to_raw(b64))
 	return img
+
+
+## D-179: nền phẳng một màu thay ảnh nền (bảng chẩn đoán — chỉ để đo, không phải màu trận).
+static func flat_material() -> StandardMaterial3D:
+	var m: StandardMaterial3D = StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.albedo_color = Color(0.42, 0.6, 0.3)
+	return m

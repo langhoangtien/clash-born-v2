@@ -95,7 +95,11 @@ clashborn_v2/
                            MatchInput: joystick/WASD/chạm → Command (CTL-01);
                            Updater: tự kiểm tra / tải / cài bản Android mới (D-148);
                            SettingsControl: áp lựa chọn của bảng Cài đặt (âm thanh, đồ họa, FPS, công cụ thử, D-183);
-                           FrameProbe: mốc đầu / cuối _process, trước / sau vẽ cho FrameProfile (D-261)
+                           FrameProbe: mốc đầu / cuối _process, trước / sau vẽ cho FrameProfile (D-261);
+    perf/                  Log hiệu năng (D-268): FrameHistogram (thời gian từng khung → 1% low, P95…), PerfRecorder
+                           (mẫu 0,5 s, khung giật kèm bối cảnh, mốc bật / tắt đồ họa), PerfReport (tóm tắt, CSV,
+                           JSON), PerfFiles (user://performance_logs/, hộp "Lưu vào…"), PerfSession (nối vào trận),
+                           PerfSettings (công tắc trong Cài đặt)
   tests/                   test (framework nhỏ tự viết, xem mục 9)
   tools/                   script ngoài Godot; sim_profile.gd đo ms mỗi tick theo hệ thống (D-152);
                            view_profile.gd chạy màn trận thật (xvfb, tướng mình do bot) in FrameProfile theo phút trận (D-261)

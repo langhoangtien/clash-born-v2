@@ -176,7 +176,7 @@ func set_part(key: StringName, on: bool) -> void:
 		&"scenery":
 			scenery.visible = on
 		&"ground":
-			_ground.material_override = _ground_mat if on else _flat_ground()
+			_ground.material_override = _ground_mat if on else Terrain3D.flat_material()
 		&"layer":
 			overlay.visible = on
 			marks.visible = on
@@ -187,13 +187,9 @@ func set_part(key: StringName, on: bool) -> void:
 		&"water":
 			if _water != null:
 				_water.visible = on
-
-
-static func _flat_ground() -> StandardMaterial3D:
-	var m: StandardMaterial3D = StandardMaterial3D.new()
-	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	m.albedo_color = Color(0.42, 0.6, 0.3)  # chỉ để đo, không phải màu trận
-	return m
+		&"vfx":  # D-268: hiệu ứng chiêu + đạn
+			skill_vfx.visible = on
+			projectiles.visible = on
 
 
 ## Vùng mặt đất đang vẽ (px thế giới) khi nhìn vào `focus` — cho sương và lọc đơn vị.

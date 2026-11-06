@@ -10,6 +10,8 @@ var viewport: Viewport
 ## Trong trận (null ở menu).
 var hud: MatchHud
 var tools: Dictionary[StringName, Control] = {}
+## D-268: phiên ghi log hiệu năng của trận (null ở menu).
+var perf: PerfSession
 var quit: Callable
 
 
@@ -38,6 +40,13 @@ func apply(what: StringName) -> void:
 			GraphicsSetting.save_show_fps(not GraphicsSetting.load_show_fps())
 		&"test", &"diag":
 			tools[what].visible = not tools[what].visible
+		&"perf_log":
+			PerfSettings.save_enabled(not PerfSettings.enabled())
+			if perf != null:
+				perf.set_recording(PerfSettings.enabled())
+		&"perf_export":
+			if perf != null:
+				perf.export_now()
 		&"quit":
 			quit.call()
 			return
@@ -51,6 +60,8 @@ func refresh() -> void:
 		&"sound": AudioView.MODE_NAMES[maxi(AudioView.mode, 0)],
 		&"graphics": GraphicsSetting.NAMES[GraphicsSetting.load_level()],
 		&"fps": "Bật" if GraphicsSetting.load_show_fps() else "Tắt",
+		&"perf_log": "Bật" if PerfSettings.enabled() else "Tắt",
+		&"perf_export": "Xuất",
 	}
 	for key: StringName in tools:
 		panel.values[key] = "Đang hiện" if tools[key].visible else "Ẩn"

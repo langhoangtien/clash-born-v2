@@ -7,19 +7,19 @@ extends Control
 signal changed(key: StringName, value: int)
 
 const BUTTON: Rect2 = Rect2(584, 214, 170, 44)
-const PANEL: Rect2 = Rect2(864, 266, 470, 340)
+const PANEL: Rect2 = Rect2(864, 266, 470, 400)
 ## D-261: bảng đo thời gian từng phần, bên trái bảng chẩn đoán.
 const PROFILE: Rect2 = Rect2(380, 266, 470, 530)
 const CELL: Vector2 = Vector2(215, 56)
-const KEYS: Array[StringName] = [&"scenery", &"ground", &"layer", &"fog", &"actors", &"water", &"scale", &"msaa"]
-const LABELS: Array[String] = ["Cảnh vật", "Nền ảnh", "Lớp phủ", "Sương", "Nhân vật", "Nước", "Độ phân giải", "MSAA"]
+const KEYS: Array[StringName] = [&"scenery", &"ground", &"layer", &"fog", &"actors", &"water", &"vfx", &"scale", &"msaa"]
+const LABELS: Array[String] = ["Cảnh vật", "Nền ảnh", "Lớp phủ", "Sương", "Nhân vật", "Nước", "Hiệu ứng", "Độ phân giải", "MSAA"]
 ## Giá trị mỗi ô: bật / tắt, riêng độ phân giải (%) và MSAA (×) quay vòng.
 const SCALES: Array[int] = [100, 75, 60, 50]
 const MSAAS: Array[int] = [0, 2, 4]
 
 var open: bool = false
 ## Giá trị hiện tại theo KEYS: 1 bật / 0 tắt; `scale` là chỉ số trong SCALES, `msaa` trong MSAAS.
-var values: Dictionary[StringName, int] = {&"scenery": 1, &"ground": 1, &"layer": 1, &"fog": 1, &"actors": 1, &"water": 1, &"scale": 1, &"msaa": 0}
+var values: Dictionary[StringName, int] = {&"scenery": 1, &"ground": 1, &"layer": 1, &"fog": 1, &"actors": 1, &"water": 1, &"vfx": 1, &"scale": 1, &"msaa": 0}
 ## Nơi áp (APP đặt); null thì chỉ báo `changed`.
 var view_3d: MatchView3D
 var _phase: int = -1

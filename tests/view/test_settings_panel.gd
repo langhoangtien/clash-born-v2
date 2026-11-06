@@ -26,9 +26,10 @@ func test_D_183_gear_opens_and_rows_report_action() -> void:
 
 func test_D_183_rows_in_match_and_menu() -> void:
 	var m: SettingsPanel = _panel(true)
-	assert_eq(m.rows(), [&"sound", &"graphics", &"fps", &"test", &"diag", &"quit"] as Array[StringName])
+	assert_eq(m.rows(), [&"sound", &"graphics", &"fps", &"perf_log", &"test", &"diag", &"perf_export", &"quit"] as Array[StringName],
+		"D-268: ghi log hiệu năng + xuất log trong trận")
 	var menu: SettingsPanel = _panel(false)
-	assert_eq(menu.rows(), [&"sound", &"graphics", &"fps"] as Array[StringName], "menu không có công cụ thử / thoát trận")
+	assert_eq(menu.rows(), [&"sound", &"graphics", &"fps", &"perf_log"] as Array[StringName], "menu không có công cụ thử / thoát trận")
 	assert_false(menu.gear_rect().has_area(), "menu tự có nút Cài đặt, không vẽ bánh răng")
 	m.free()
 	menu.free()

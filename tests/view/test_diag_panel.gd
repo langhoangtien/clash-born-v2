@@ -65,3 +65,16 @@ func test_D_266_fog_off_skips_eye_loop() -> void:
 	assert_eq(eyes.size(), 1, "tắt sương: shader chỉ chạy 1 vòng (một mắt phủ hết), không duyệt mắt phe mình")
 	assert_true(eyes[0].z > 1000.0)
 	v.free()
+
+
+func test_D_268_vfx_cell_hides_skill_effects_and_projectiles() -> void:
+	assert_true(DiagPanel.KEYS.has(&"vfx"), "ô Hiệu ứng cho đo A/B")
+	var v: MatchView3D = MatchView3D.new()
+	v.add_child(v.skill_vfx)
+	v.add_child(v.projectiles)
+	v.set_part(&"vfx", false)
+	assert_false(v.skill_vfx.visible)
+	assert_false(v.projectiles.visible)
+	v.set_part(&"vfx", true)
+	assert_true(v.skill_vfx.visible and v.projectiles.visible)
+	v.free()

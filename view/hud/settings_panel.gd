@@ -14,7 +14,8 @@ const ROW_GAP: float = 14.0
 const VERSION_H: float = 44.0
 const LABELS: Dictionary[StringName, String] = {
 	&"sound": "Âm thanh", &"graphics": "Đồ họa", &"fps": "Hiện FPS", &"test": "Bảng Test (thử)",
-	&"diag": "Chẩn đoán FPS (thử)", &"quit": "Thoát trận",
+	&"diag": "Chẩn đoán FPS (thử)", &"quit": "Thoát trận", &"perf_log": "Ghi log hiệu năng",
+	&"perf_export": "Xuất log hiệu năng",
 }
 
 var open: bool = false
@@ -27,9 +28,9 @@ var version_text: String = ""
 
 
 func rows() -> Array[StringName]:
-	var out: Array[StringName] = [&"sound", &"graphics", &"fps"]
+	var out: Array[StringName] = [&"sound", &"graphics", &"fps", &"perf_log"]  # D-268
 	if in_match:
-		out.append_array([&"test", &"diag", &"quit"] as Array[StringName])
+		out.append_array([&"test", &"diag", &"perf_export", &"quit"] as Array[StringName])
 	return out
 
 

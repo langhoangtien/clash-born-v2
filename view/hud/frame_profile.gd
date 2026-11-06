@@ -18,6 +18,8 @@ var peak_ms: Dictionary[StringName, float] = {}
 ## Số khung trong cửa sổ vừa xong.
 var frames: int = 0
 var counts: Dictionary[StringName, int] = {}
+## D-268: (µs theo phần của khung vừa xong, thời điểm µs) — bộ ghi log hiệu năng nghe; rỗng = không ai nghe.
+var frame_listener: Callable = Callable()
 
 var _frame: Dictionary[StringName, int] = {}
 var _sum: Dictionary[StringName, int] = {}
@@ -64,6 +66,8 @@ func next_frame(at: int = -1) -> void:
 			_sum[key] = _sum.get(key, 0) + _frame[key]
 			_peak[key] = maxi(_peak.get(key, 0), _frame[key])
 		_frames += 1
+		if frame_listener.is_valid():
+			frame_listener.call(_frame, t)
 	_frame.clear()
 	_last_frame = t
 	if _window_start < 0:

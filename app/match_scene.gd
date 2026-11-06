@@ -268,6 +268,7 @@ func _setup_test_panel() -> void:
 	settings.hud = match_hud
 	settings.tools = {&"test": panel, &"diag": diag}
 	settings.quit = func() -> void: get_tree().change_scene_to_file(MENU_SCENE)
+	settings.perf = PerfSession.attach(self, world, view_3d, hero, diag)  # D-268
 	settings.refresh()
 
 
