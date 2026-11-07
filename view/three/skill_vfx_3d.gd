@@ -5,6 +5,9 @@ extends Node3D
 ## trong HIT_TICKS tick sau đó sinh tia lóe trên mục tiêu. Mảnh tự gỡ khi hết `life`. Code không biết tên chiêu.
 ## `trail` (D-250, D-256): vệt tốc độ bám theo đường chạy của chủ chiêu suốt `life` (SpeedTrail3D), chỉ hiện khi chạy.
 ## `arc` (D-252): ảnh quạt vẽ tay nằm phẳng trước mặt chủ chiêu, đỉnh quạt ở chân, cỡ theo bán kính / góc của kỹ năng.
+## D-296: mảnh "dịu" dựng bằng shader (VfxParts: ring, disc, pillar, glow, aura, wave) đặt ở chủ chiêu / điểm chọn /
+## mục tiêu; `aura` đi theo đơn vị suốt `life`. Tia lóe khi trúng (`hit`) là đốm dịu trộn alpha (trước: cộng sáng xuyên
+## mọi vật → W Duy Anh chói mắt).
 
 const RECIPES: String = "res://assets/vfx/vfx.json"
 const TEXTURES: String = "res://assets/vfx/%s.png"
@@ -89,6 +92,8 @@ func advance(delta: float) -> void:
 		it[2] += delta
 		if it[1] == "trail":
 			_follow(it, delta)
+		elif it[1] == "aura":
+			_stick(it)
 		_animate(it)
 	for it: Array in _items.filter(func(x: Array) -> bool: return x[2] >= float(x[3].get("life", 0.3))):
 		(it[0] as Node3D).queue_free()
@@ -110,6 +115,37 @@ func _cast(w: World, ev: GameEvent) -> void:
 				var live: Dictionary = part.duplicate()
 				live["life"] = _value(e, a, part.get("life", 1.0))
 				_add(SpeedTrail3D.make(live, _tint_material(live)), "trail", live, Vector3.ZERO, e.id)
+			_ when VfxParts.is_soft(part["type"]) and part["type"] != "shot":  # shot: SkillShots3D
+				_soft(w, e, a, ev, part)
+
+
+## D-296: mảnh dịu ở chủ chiêu / điểm chọn / mục tiêu; `aura` bám theo đơn vị đó.
+func _soft(w: World, e: Entity, a: AbilityInstance, ev: GameEvent, part: Dictionary) -> void:
+	var live: Dictionary = part.duplicate()
+	live["life"] = _value(e, a, part.get("life", 0.5))
+	var anchor: Entity = e
+	var at: Vector2 = e.position
+	match String(part.get("at", "caster")):
+		"point":
+			at = ev.point if ev.point.is_finite() else at
+		"target":
+			anchor = w.find_entity(ev.target_id) if ev.target_id >= 0 else e
+			if anchor == null:
+				return
+			at = anchor.position
+	var px: float = _value(e, a, part.get("radius", anchor.radius * 1.6))
+	var size: Variant = px * MatchView3D.S
+	if part["type"] == "glow":
+		size = float(part.get("size", 1.0))
+	elif part["type"] == "wave":
+		size = Vector2(_value(e, a, part.get("width", 200.0)), _value(e, a, part.get("length", 600.0))) * MatchView3D.S
+	var node: Node3D = Node3D.new()
+	node.add_child(VfxParts.make(part, size))
+	var dir: Vector2 = ev.direction if ev.direction != Vector2.ZERO else e.facing
+	if dir != Vector2.ZERO:
+		node.rotation.y = atan2(-dir.x, -dir.y)
+	var lift: float = float(part.get("height", VfxParts.GROUND_LIFT))
+	_add(node, part["type"], live, _ground(at, {"height": lift}), anchor.id if part["type"] == "aura" else -1)
 
 
 func _hit(w: World, ev: GameEvent) -> void:
@@ -118,10 +154,17 @@ func _hit(w: World, ev: GameEvent) -> void:
 	if arm.is_empty() or w.tick - int(arm[0]) > HIT_TICKS or ev.amount <= 0.0 or target == null:
 		return
 	var part: Dictionary = arm[1]
-	var node: Node3D = _quad(part["tex"], part, true)
-	if part.has("glow"):
-		node.add_child(_quad(part["glow"], part, true))
+	var node: Node3D = Node3D.new()
+	node.add_child(VfxParts.make(soft_hit(part), float(part.get("size", 0.8))))  # D-296: đốm dịu, không cộng sáng
 	_add(node, "hit", part, _ground(target.position, part))
+
+
+## Mảnh `hit` trong công thức → đốm sáng dịu.
+static func soft_hit(part: Dictionary) -> Dictionary:
+	var p: Dictionary = part.duplicate()
+	p["type"] = "glow"
+	p["alpha"] = part.get("alpha", 0.55)
+	return p
 
 
 func _add(node: Node3D, kind: String, part: Dictionary, at: Vector3, owner_id: int = -1) -> void:
@@ -177,25 +220,6 @@ static func _tint_material(part: Dictionary) -> ShaderMaterial:
 	return mat
 
 
-## Mặt phẳng luôn quay về camera, ảnh `tex`, cộng sáng hoặc trong suốt (tia lóe khi trúng).
-static func _quad(tex: String, part: Dictionary, additive: bool) -> MeshInstance3D:
-	var mat: StandardMaterial3D = StandardMaterial3D.new()
-	mat.albedo_texture = texture(tex)
-	mat.albedo_color = Color(part.get("color", "#ffffff"))
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD if additive else BaseMaterial3D.BLEND_MODE_MIX
-	mat.no_depth_test = additive
-	var quad: QuadMesh = QuadMesh.new()
-	quad.size = Vector2.ONE * float(part.get("size", 1.0))
-	var mi: MeshInstance3D = MeshInstance3D.new()
-	mi.mesh = quad
-	mi.material_override = mat
-	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	return mi
-
-
 func _follow(it: Array, delta: float) -> void:
 	var e: Entity = _world.find_entity(it[4]) if _world != null else null
 	if e == null or not e.alive:
@@ -209,9 +233,22 @@ func _follow(it: Array, delta: float) -> void:
 	trail.update(at, moving, delta)
 
 
+## D-296: hào quang đi theo đơn vị (chết / mất thì tắt).
+func _stick(it: Array) -> void:
+	var e: Entity = _world.find_entity(it[4]) if _world != null else null
+	if e == null or not e.alive:
+		it[2] = INF
+		return
+	var at: Vector3 = position_of.call(e)
+	(it[0] as Node3D).position = Vector3(at.x, float(it[3].get("height", VfxParts.GROUND_LIFT)), at.z)
+
+
 func _animate(it: Array) -> void:
 	var part: Dictionary = it[3]
 	var t: float = clampf(it[2] / float(part.get("life", 0.3)), 0.0, 1.0)
+	if it[1] == "hit" or VfxParts.is_soft(it[1]):
+		VfxParts.animate((it[0] as Node3D).get_child(0) as MeshInstance3D, t)
+		return
 	match it[1]:
 		"arc":
 			var mat: ShaderMaterial = ((it[0] as Node3D).get_child(0) as MeshInstance3D).material_override
@@ -219,9 +256,7 @@ func _animate(it: Array) -> void:
 			mat.set_shader_parameter("frame", float(mini(int(t * frames * frames), frames * frames - 1)))
 			if frames == 1:  # ảnh đơn: hiện nhanh rồi tan
 				mat.set_shader_parameter("fade", float(part.get("alpha", 1.0)) * minf(1.0, t * 6.0) * (1.0 - t * t))
+			else:  # D-296: bảng khung cũng theo `alpha` của công thức
+				mat.set_shader_parameter("fade", float(part.get("alpha", 1.0)))
 		"trail":
 			(it[0] as SpeedTrail3D).set_fade(1.0 - smoothstep(0.85, 1.0, t))
-		"hit":
-			(it[0] as Node3D).scale = Vector3.ONE * (0.4 + 1.2 * sin(PI * minf(t * 1.4, 1.0)))
-			var mat: StandardMaterial3D = (it[0] as MeshInstance3D).material_override
-			mat.albedo_color.a = 1.0 - t

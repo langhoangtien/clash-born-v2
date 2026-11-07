@@ -30,8 +30,8 @@ func test_D_247_recipe_parts_hits_and_cleanup() -> void:
 	assert_eq(fx.kinds(), ["arc", "arc"], "W Duy Anh: sóng bụi + vệt chém")
 	fx.on_event(w, GameEvent.make(&"damage_taken", w.tick, k.id, s[2].id, 120.0))
 	assert_eq(fx.kinds(), ["arc", "arc", "hit"], "trúng chiêu: tia lóe trên mục tiêu")
-	fx.on_event(w, GameEvent.make(&"ability_finished", w.tick, k.id, -1, AbilityDef.Slot.R))
-	assert_eq(fx.kinds().size(), 3, "chiêu không có công thức (R): không sinh gì")
+	fx.on_event(w, GameEvent.make(&"ability_finished", w.tick, k.id, -1, AbilityDef.Slot.INNATE))
+	assert_eq(fx.kinds().size(), 3, "chiêu không có công thức (nội tại): không sinh gì")
 	fx.advance(5.0)
 	assert_eq(fx.kinds(), [], "hết thời gian: gỡ hết")
 	fx.free()
@@ -75,3 +75,62 @@ func test_D_270_all_recipe_textures_loaded_ahead() -> void:
 	SkillVfx3D.load_textures()
 	for n: String in names:
 		assert_true(SkillVfx3D.has_texture(n), n)
+
+
+
+## D-296: mảnh dịu (shader, không ảnh) đặt ở chủ chiêu / điểm chọn (sự kiện mang `point`) / mục tiêu; hào quang
+## đi theo đơn vị suốt `life` (tên giá trị kỹ năng) rồi tự gỡ.
+func test_D_296_soft_parts_at_point_target_and_aura_follows() -> void:
+	var s: Array = _setup()
+	var w: World = s[0]
+	var b: Entity = UnitFactory.hero(w, _lib.heroes[&"brakk"], 0, Vector2(500, 500))
+	var myra: Entity = UnitFactory.hero(w, _lib.heroes[&"myra"], 0, Vector2(800, 800))
+	var noc: Entity = UnitFactory.hero(w, _lib.heroes[&"noctis"], 0, Vector2(300, 300))
+	for h: Entity in [b, myra, noc]:
+		for slot: AbilityDef.Slot in [AbilityDef.Slot.W, AbilityDef.Slot.R]:
+			Abilities.set_rank(w, h, Abilities.of(h, slot), 1)
+	var fx: SkillVfx3D = SkillVfx3D.new()
+	var ev: GameEvent = GameEvent.make(&"ability_finished", w.tick, myra.id, -1, AbilityDef.Slot.W)
+	ev.point = Vector2(1500, 900)
+	fx.on_event(w, ev)
+	assert_eq(fx.kinds(), ["glow", "ring"])
+	assert_near((fx.get_child(1) as Node3D).position.x, 1500 * MatchView3D.S, 0.001, "vành ở điểm chọn")
+	fx.on_event(w, GameEvent.make(&"ability_finished", w.tick, noc.id, s[2].id, AbilityDef.Slot.R))
+	assert_near((fx.get_child(2) as Node3D).position.x, (s[2] as Entity).position.x * MatchView3D.S, 0.001, "dấu ở mục tiêu")
+	fx.on_event(w, GameEvent.make(&"ability_finished", w.tick, b.id, -1, AbilityDef.Slot.W))
+	var aura: Node3D = fx.get_child(4)
+	b.position += Vector2(200, 0)
+	fx.advance(0.1)
+	assert_near(aura.position.x, b.position.x * MatchView3D.S, 0.001, "hào quang đi theo tướng")
+	var duration: float = Abilities.value(b, Abilities.of(b, AbilityDef.Slot.W), &"duration")
+	fx.advance(duration - 0.3)
+	assert_true(fx.kinds().has("aura"), "còn trong thời gian giáp")
+	fx.advance(0.5)
+	assert_false(fx.kinds().has("aura"), "hết thời gian: gỡ")
+	fx.free()
+
+
+## D-296: công thức hợp lệ — khóa là art_id kỹ năng có thật, loại mảnh đã biết, tên giá trị có trong kỹ năng,
+## độ đục mảnh dịu ≤ 0,85 (5v5 không chói).
+func test_D_296_recipes_valid_and_soft() -> void:
+	if _lib == null:
+		_lib = ContentLibrary.load_dir()
+	var arts: Dictionary = {}
+	for a: AbilityDef in _lib.abilities.values():
+		arts[String(a.art_id)] = a
+	var known: Array = ["arc", "hit", "trail"] + VfxParts.MODES.keys()
+	for key: String in SkillVfx3D.recipes():
+		if key.begins_with("_"):
+			continue
+		assert_true(arts.has(key), "công thức %s: không có kỹ năng art_id này" % key)
+		var def: AbilityDef = arts.get(key)
+		for part: Dictionary in SkillVfx3D.recipes()[key]["parts"]:
+			assert_true(known.has(part["type"]), "%s: loại mảnh lạ %s" % [key, part["type"]])
+			for k: String in ["radius", "life", "length", "width", "angle"]:
+				if part.get(k) is String and def != null:
+					assert_true(def.values.has(StringName(part[k])), "%s.%s: kỹ năng không có giá trị %s" % [key, k, part[k]])
+			if VfxParts.is_soft(part["type"]) or part["type"] == "hit":
+				assert_true(float(part.get("alpha", 0.6)) <= 0.85, "%s: %s quá đục" % [key, part["type"]])
+	for hero: StringName in _lib.heroes:
+		for slot: String in ["q", "w", "r"]:
+			assert_true(SkillVfx3D.recipes().has("%s_%s" % [hero, slot]), "%s %s chưa có hiệu ứng" % [hero, slot])

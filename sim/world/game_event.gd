@@ -17,6 +17,9 @@ var seq: int = 0
 var depth: int = 0
 ## `effect_removed`: bản hiệu ứng vừa bị gỡ (điều kiện this_effect_*).
 var effect: EffectInstance
+## `ability_finished` (D-296): điểm chọn (INF nếu không có) và hướng của lần tung — cho VIEW vẽ hiệu ứng.
+var point: Vector2 = Vector2.INF
+var direction: Vector2 = Vector2.ZERO
 
 
 static func make(p_type: StringName, p_tick: int, p_source: int, p_target: int, p_amount: float = 0.0, p_reason: StringName = &"") -> GameEvent:

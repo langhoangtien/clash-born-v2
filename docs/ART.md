@@ -209,6 +209,24 @@ hướng lên/xuống khi có họa sĩ.
 
 Nhờ hợp đồng hình ảnh, hình tạm thay bằng hình thật lúc nào cũng được mà không đụng code.
 
+## Hiệu ứng chiêu — phong cách (D-296)
+
+Người chơi: giống Liên Quân / MLBB nhưng **nhẹ nhàng, ít màu mè** — 5v5 hiệu ứng chồng nhau dễ đau mắt.
+
+- **Không cộng sáng, không lóe trắng**: mọi mảnh trộn alpha; độ đục tối đa `alpha` ≤ 0,85, lõi chỉ sáng hơn màu chính
+  một chút (`edge`). Không mảnh nào vẽ xuyên vật thể (`no_depth_test`).
+- **Một màu chủ đạo dịu cho mỗi tướng** (độ bão hòa vừa): Duy Anh xanh lam `#3a72d8` (R vàng `#c8a85a`), Brakk đất
+  `#b48a62` / thép `#8ea7c2` / hồn `#9fd0c8`, Myra băng `#7fb2e0`, Noctis tím đêm `#8a76c4` (dấu R `#b25a7c`), Vexa
+  ngọc `#6fbf9e` (R `#a7c3e6`), Gorran axit `#a3bd5c` (R `#cc7a52`).
+- **Ưu tiên mặt đất**: vành loang, đĩa, sóng nằm trên đất (đọc được vùng tác dụng); phần đứng (cột sáng, đốm) mảnh
+  và ngắn. Chiêu tức thời tan trong 0,3–0,9 s; buff dài là hào quang mảnh dưới chân, thở nhẹ.
+- **Nhiễu nhẹ** trong shader cho đỡ phẳng, không cần ảnh — APK nhẹ, đồng bộ giữa các tướng. Ảnh vẽ tay chỉ dùng khi
+  shader không làm được (vệt chém W, vệt gió Q của Duy Anh).
+- Vòng vùng chiêu trên đất (ZonePainter) giữ màu phe để đọc địch / ta, nhưng nền mờ, viền mảnh.
+- Dựng: mảnh trong `assets/vfx/vfx.json` (khóa = art_id kỹ năng; xem ghi chú đầu file), shader
+  `view/three/vfx_soft.gdshader`, `VfxParts`, `SkillVfx3D`, đạn kỹ năng `SkillShots3D`. Xem trước trong cảnh trận:
+  `xvfb-run -a godot --path . --resolution 1920x1080 -s tools/vfx_preview.gd -- --out=<thư mục> [--delay=0.15]`.
+
 ## Giao diện trên điện thoại
 
 - Trái: joystick. Phải: nút đánh lớn, xung quanh là Q, W, R theo hình vòng cung,

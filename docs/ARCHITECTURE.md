@@ -80,7 +80,9 @@ clashborn_v2/
                            (tra assets/models/units_3d.json), Bars3D (thanh máu, dấu trạng thái, ổ khóa),
                            Look3D (ánh sáng, môi trường, bóng chân) — D-146, D-150; Terrain3D + ground / water /
                            kit / kit_tex .gdshader (mặt đất ảnh nền theo mặt nạ, nước, vật liệu cảnh vật vẽ sẵn sáng
-                           tối — D-178); Scenery3D (cảnh vật decor.py, bụi, chợ, đổ nát, D-158, D-178)
+                           tối — D-178); Scenery3D (cảnh vật decor.py, bụi, chợ, đổ nát, D-158, D-178);
+                           SkillVfx3D (hiệu ứng chiêu theo assets/vfx/vfx.json, D-247) + VfxParts / vfx_soft.gdshader
+                           (mảnh dịu dựng bằng shader, D-296), SkillShots3D (đạn kỹ năng 3D, D-296); Projectiles3D (đạn đánh thường, D-219)
     art/                   ArtLibrary: res://assets/art/<art_id>.png, thiếu → hình tạm; vào trận nạp ngầm hình nội dung (D-269)
     ui/                    UiStyle (phông, màu, khung, nút, xu), UiGlyphs (icon nét) — D-130; UiBake: ảnh dựng sẵn
                            cho nút tròn / chấm / vòng (gộp lệnh vẽ, D-290; PNG trong assets/ui/baked/ do
@@ -107,6 +109,7 @@ clashborn_v2/
   tests/                   test (framework nhỏ tự viết, xem mục 9)
   tools/                   script ngoài Godot; sim_profile.gd đo ms mỗi tick theo hệ thống (D-152);
                            view_profile.gd chạy màn trận thật (xvfb, tướng mình do bot) in FrameProfile theo phút trận (D-261);
+                           vfx_preview.gd chụp hiệu ứng Q / W / R của mọi tướng trong cảnh trận (D-296);
                            publish_vps.sh: đẩy APK lên clashborn.quest; vps/: cấu hình nginx, upload_server.py, reports.py (báo cáo hiệu năng, D-287), service (D-278..280);
                            fetch_reports.sh: đọc báo cáo người chơi gửi lên (D-287);
                            site/: dựng + đăng trang giới thiệu từ web/site và dữ liệu tướng (D-284)

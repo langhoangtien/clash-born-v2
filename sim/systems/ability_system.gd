@@ -69,7 +69,9 @@ func _release(world: World, e: Entity) -> void:
 	ctx.point = c.point
 	ctx.direction = c.direction if c.direction != Vector2.ZERO else e.facing
 	ActionRunner.run(world, Abilities.cast_actions(c.ability), ctx, e.id)
-	world.emit(&"ability_finished", e.id, c.target_id, c.ability.slot)
+	var ev: GameEvent = world.emit(&"ability_finished", e.id, c.target_id, c.ability.slot)
+	ev.point = c.point  # D-296: cho VIEW vẽ hiệu ứng đúng chỗ
+	ev.direction = ctx.direction
 	Items.drop_spent(world, e, c.ability)  # ITM-07
 	_end(e, false)
 

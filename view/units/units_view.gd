@@ -78,20 +78,9 @@ func paint(ci: GroundCanvas) -> void:
 	for item: Array in visible_units():
 		var e: Entity = item[1]
 		var at: Vector2 = item[0]
-		if e.dash != null:  # ABL-08: vệt lướt
-			var col: Color = _team_color(e.team).lightened(0.4)
-			ci.draw_line(at - e.facing * 110.0, at, Color(col, 0.4), e.radius * 1.6, true)
-			ci.draw_line(at - e.facing * 70.0, at, Color(col, 0.8), e.radius * 0.8, true)
 		_draw_ground_mark(ci, e, at)
 	_vfx.draw(ci, world)
-	for s: SkillShot in world.skill_shots:  # đạn kỹ năng (ABL-05); của địch chỉ hiện trong tầm nhìn
-		if viewer_team >= 0 and s.team != viewer_team and not FogView.lit(world, viewer_team, s.position):
-			continue
-		var col: Color = (BLUE if s.team == 0 else RED).lightened(0.5)
-		var tail: Vector2 = s.position - s.direction * minf(90.0, s.travelled + 1.0)
-		ci.draw_line(tail, s.position, Color(col, 0.35), s.half_width * 1.2, true)
-		ci.draw_line(tail, s.position, Color(col, 0.9), s.half_width * 0.4, true)
-		ci.draw_circle(s.position, s.half_width * 0.45, Color(1, 1, 1, 0.9))
+	# D-296: đạn kỹ năng và vệt lướt vẽ 3D (SkillShots3D, vệt `trail` trong vfx.json), không vẽ trên đất nữa.
 
 
 ## D-145, D-157: bóng (đơn vị ảnh đứng — nhân vật 3D tự có bóng mờ), vòng màu đội, CRP-12 vòng lính siêu

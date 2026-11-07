@@ -114,10 +114,10 @@ func _vfx(part: Dictionary) -> void:
 			mi.material_override = SkillVfx3D._tint_material(part)
 			_place(mi)
 		"hit":
-			var hit: MeshInstance3D = SkillVfx3D._quad(part["tex"], part, true)
-			if part.has("glow"):
-				hit.add_child(SkillVfx3D._quad(part["glow"], part, true))
-			_place(hit)
+			_place(VfxParts.make(SkillVfx3D.soft_hit(part), 0.5))
+		_ when VfxParts.is_soft(part["type"]):  # D-296: mảnh dịu (một shader, mỗi loại hình một lần)
+			var size: Variant = Vector2(0.4, 0.8) if part["type"] in ["shot", "wave"] else 0.3
+			_place(VfxParts.make(part, size))
 		"trail":
 			var t: SpeedTrail3D = SpeedTrail3D.make(part, SkillVfx3D._tint_material(part))
 			_place(t)

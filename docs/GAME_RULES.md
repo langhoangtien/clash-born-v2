@@ -632,6 +632,8 @@ knockback_finished, dispelled, attack_target_changed, innate_ranked, mana_burned
 lethal_damage, reincarnated, recall_started, recall_cancelled, recall_finished, duel_started,
 duel_ended, attack_deflected, teleported`. `gold_changed` (D-240): hero last hit lính / quái (ECO-01), kẻ gây = hero, đối tượng = con bị hạ, lượng = vàng. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
 `effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `removed` (hành động RemoveEffect), `dispelled`, `owner_died`.
+`ability_finished` (D-296) mang điểm chọn `point` (không chọn điểm thì INF) và hướng `direction` của lần tung — chỉ để
+VIEW vẽ hiệu ứng chiêu đúng chỗ, không luật nào đọc.
 Thêm sự kiện = thay đổi luật.
 
 ---
