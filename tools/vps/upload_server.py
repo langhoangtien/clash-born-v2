@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Clashborn — máy chủ nhận bản build (chạy trên VPS sau Caddy, chỉ nghe 127.0.0.1). Chỉ dùng thư viện chuẩn.
+"""Clashborn — máy chủ nhận bản build (chạy trên VPS sau nginx, chỉ nghe 127.0.0.1). Chỉ dùng thư viện chuẩn.
 
 API (mọi lệnh ghi cần header  Authorization: Bearer <mã trong /etc/clashborn/upload_token>):
   GET  /api/health                    → {"ok": true}

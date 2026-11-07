@@ -1,6 +1,13 @@
 # Dựng VPS cho Clashborn (clashborn.quest)
 
-Tài liệu cho **phiên Claude chạy trên VPS** (và người quản trị). Đọc hết trước khi làm. Quyết định: D-278.
+Tài liệu cho **phiên Claude chạy trên VPS** (và người quản trị). Đọc hết trước khi làm. Quyết định: D-278, D-279 (nginx thay Caddy).
+
+> **Trạng thái VPS (2026-11-07):** đã dựng bằng **nginx** (máy đã có nginx phục vụ `api.quitmood.net` → không cài
+> Caddy). Xong: người dùng `clashborn`, `/srv/clashborn/{repo,www,incoming}` (repo clone nhánh `thu-asset-tu-lam`),
+> mã bí mật, `clashborn-upload` chạy (`/api/health` ok ở 127.0.0.1:8787), web gốc đã chuyển từ
+> `/var/www/clashborn.quest` cũ (index.html, icon.png, `releases/clashborn-0.1.470.apk`, `download/clashborn.apk` →
+> bản đó). **Chưa có `version.json` ở gốc** — bản thật đầu tiên do phiên cloud đẩy. Cloudflare để **DNS only** (mây
+> xám): gói miễn phí giới hạn 100 MB / yêu cầu tải lên, APK ~96 MiB. Chưa có bản ghi `www`.
 
 ## 0. Mục tiêu và phân vai
 
@@ -17,7 +24,7 @@ Cấu trúc trên VPS:
 ```
 /srv/clashborn/
   repo/          git clone (chỉ đọc) — tools/vps/* dùng từ đây
-  www/           gốc web (Caddy phục vụ)
+  www/           gốc web (nginx phục vụ)
     index.html   trang giới thiệu (đẩy từ cloud bằng /api/site)
     version.json bản mới nhất {code, name, apk, url, sha256, size, notes} — app đọc mỗi lần mở
     releases/    clashborn-0.1.N.apk — giữ 5 bản gần nhất
@@ -31,8 +38,11 @@ Cấu trúc trên VPS:
 
 1. Ở nhà cung cấp domain: bản ghi **A** cho `clashborn.quest` và `www.clashborn.quest` → IP của VPS (có IPv6 thì
    thêm AAAA). Kiểm: `dig +short clashborn.quest` ra đúng IP.
-2. Mở cổng **80** và **443** (Caddy cần 80 để xin chứng chỉ). **Không** mở 8787 ra ngoài.
-   - ufw: `ufw allow 80,443/tcp` (giữ cổng SSH đang dùng).
+   Domain dùng nameserver Cloudflare: để bản ghi ở chế độ **DNS only** (mây xám). Proxy Cloudflare (mây cam) gói
+   miễn phí chặn yêu cầu tải lên > 100 MB và không hợp tải APK lớn.
+2. Mở cổng **80** và **443** cho mọi nguồn (certbot cần 80 để xin chứng chỉ). **Không** mở 8787 ra ngoài.
+   - ufw: `ufw allow 80,443/tcp` (giữ cổng SSH đang dùng). Nếu máy từng chỉ mở 80/443 cho dải IP Cloudflare
+     (có luật `DENY 80/tcp`, `DENY 443/tcp`), xóa các luật DENY đó trước — luật DENY đứng trước sẽ thắng.
 
 ## 2. Người dùng, thư mục, repo
 
@@ -59,20 +69,39 @@ chown root:clashborn /etc/clashborn/upload_token && chmod 640 /etc/clashborn/upl
   `Authorization: Bearer …` cho mọi yêu cầu tới host này; phiên cloud không nhìn thấy mã.
 - Đổi mã: ghi mã mới vào file (máy chủ đọc lại mỗi yêu cầu, không cần khởi động lại), rồi nhập lại ở form cloud.
 
-## 4. Caddy (web + HTTPS)
+## 4. nginx (web + HTTPS)
+
+VPS đã có nginx (site khác dùng chung cổng 80/443) → dùng nginx + certbot, **không** cài Caddy (D-279).
 
 ```bash
-apt install -y debian-keyring debian-archive-keyring apt-transport-https curl
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' > /etc/apt/sources.list.d/caddy-stable.list
-apt update && apt install -y caddy
-cp /srv/clashborn/repo/tools/vps/Caddyfile /etc/caddy/Caddyfile
-systemctl reload caddy
+apt install -y nginx certbot python3-certbot-nginx     # nếu chưa có
+# a) Cấu hình tạm chỉ để xin chứng chỉ (webroot):
+cat > /etc/nginx/sites-available/clashborn.quest <<'EOF'
+server {
+    listen 80; listen [::]:80;
+    server_name clashborn.quest;
+    location /.well-known/acme-challenge/ { root /srv/clashborn/www; }
+    location / { return 404; }
+}
+EOF
+ln -sfn /etc/nginx/sites-available/clashborn.quest /etc/nginx/sites-enabled/clashborn.quest
+nginx -t && systemctl reload nginx
+# b) Xin chứng chỉ (tự gia hạn qua cùng webroot):
+certbot certonly --webroot -w /srv/clashborn/www -d clashborn.quest --non-interactive --agree-tos -m <email>
+# c) Cấu hình thật:
+cp /srv/clashborn/repo/tools/vps/nginx-clashborn.conf /etc/nginx/sites-available/clashborn.quest
+nginx -t && systemctl reload nginx
 ```
 
-`tools/vps/Caddyfile`: phục vụ `/srv/clashborn/www`; `/api/*` → máy chủ nhận file ở `127.0.0.1:8787` (giới hạn
-400 MB); `version.json` và `download/` không cache; `releases/*.apk` cache lâu (tên theo số bản, không đổi nội
-dung); kiểu MIME APK đúng. Caddy cần đọc được `/srv/clashborn/www` (mặc định thư mục 755, file 644 là đủ).
+Cần `/etc/letsencrypt/options-ssl-nginx.conf` (có sẵn khi đã từng dùng `certbot --nginx`; thiếu thì cài
+`python3-certbot-nginx` hoặc bỏ dòng `include`).
+
+`tools/vps/nginx-clashborn.conf`: 80 → chuyển sang HTTPS (trừ `/.well-known/acme-challenge/`); phục vụ
+`/srv/clashborn/www`; `/api/` → máy chủ nhận file ở `127.0.0.1:8787` (giới hạn 400 MB, không đệm thân yêu cầu,
+timeout 600 s); `version.json` và `download/` không cache; `releases/*.apk` cache lâu (tên theo số bản, không đổi
+nội dung); kiểu MIME APK đúng. nginx (www-data) cần đọc được `/srv/clashborn/www` (thư mục 755, file 644 là đủ).
+Thêm `www.clashborn.quest`: bản ghi A (DNS only), bỏ chú thích ở hai `server_name`, xin lại chứng chỉ thêm
+`-d www.clashborn.quest`.
 
 ## 5. Máy chủ nhận bản build
 
@@ -109,9 +138,10 @@ Báo lại cho người dùng: domain chạy HTTPS, `/api/health` ok, mã đã t
 
 ## 7. Vận hành
 
-- Cập nhật script: `cd /srv/clashborn/repo && git pull && systemctl restart clashborn-upload` (đổi Caddyfile thì
-  chép lại rồi `systemctl reload caddy`).
-- Nhật ký: `journalctl -u clashborn-upload -n 100`, `journalctl -u caddy -n 100`.
+- Cập nhật script: `cd /srv/clashborn/repo && git pull && systemctl restart clashborn-upload` (đổi cấu hình nginx thì
+  chép lại `tools/vps/nginx-clashborn.conf` → `/etc/nginx/sites-available/clashborn.quest`, `nginx -t`, rồi
+  `systemctl reload nginx`).
+- Nhật ký: `journalctl -u clashborn-upload -n 100`, `/var/log/nginx/error.log`.
 - **Quay lại bản trước** (bản mới lỗi): trong `releases/` vẫn còn 4 bản cũ.
   ```bash
   cd /srv/clashborn/www
@@ -137,5 +167,5 @@ Báo lại cho người dùng: domain chạy HTTPS, `/api/health` ok, mã đã t
 
 Máy chủ trận sẽ chạy SIM của game không giao diện (`godot --headless` + script máy chủ trong repo), lệnh của người
 chơi qua mạng (D-30: cùng seed + cùng nhật ký Command → cùng trận). Khi làm: dành một cổng riêng (UDP / WebSocket)
-sau Caddy, chạy bằng người dùng `clashborn`, đọc code từ `/srv/clashborn/repo`. Mô hình mạng (lockstep hay máy
+sau nginx, chạy bằng người dùng `clashborn`, đọc code từ `/srv/clashborn/repo`. Mô hình mạng (lockstep hay máy
 chủ quyết định) chốt khi bắt đầu (D-30).
