@@ -7,7 +7,9 @@ Tài liệu cho **phiên Claude chạy trên VPS** (và người quản trị). 
 > mã bí mật, `clashborn-upload` chạy (`/api/health` ok ở 127.0.0.1:8787), web gốc đã chuyển từ
 > `/var/www/clashborn.quest` cũ (index.html, icon.png, `releases/clashborn-0.1.470.apk`, `download/clashborn.apk` →
 > bản đó). **Chưa có `version.json` ở gốc** — bản thật đầu tiên do phiên cloud đẩy. Cloudflare để **DNS only** (mây
-> xám): gói miễn phí giới hạn 100 MB / yêu cầu tải lên, APK ~96 MiB. Chưa có bản ghi `www`.
+> xám): gói miễn phí giới hạn 100 MB / yêu cầu tải lên, APK ~96 MiB. Chưa có bản ghi `www`. HTTPS chạy (chứng chỉ
+> Let's Encrypt, webroot, tự gia hạn); ufw mở 80/443 cho mọi nguồn. Cách cũ (`clashborn-publish`,
+> `/var/www/clashborn.quest`) đã gỡ.
 
 ## 0. Mục tiêu và phân vai
 
