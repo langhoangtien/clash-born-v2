@@ -11,7 +11,7 @@ API (mọi lệnh ghi cần header  Authorization: Bearer <mã trong /etc/clashb
                                          version.json, download/, play/).
 Chạy:  python3 upload_server.py --root /srv/clashborn --port 8787
 """
-import argparse, hashlib, hmac, json, os, re, shutil, tarfile, tempfile
+import argparse, errno, hashlib, hmac, json, os, re, shutil, tarfile, tempfile
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 APK_NAME = re.compile(r"^clashborn-0\.1\.\d{1,6}\.apk$")
@@ -44,6 +44,23 @@ def write_atomic(path: str, data: bytes) -> None:
     os.replace(tmp, path)
 
 
+def move(src: str, dst: str) -> None:
+    """Chuyển file; khác điểm gắn (systemd ReadWritePaths gắn riêng www/ và incoming/ → EXDEV) thì chép vào thư mục
+    đích dưới tên tạm rồi đổi tên trong cùng thư mục — người tải không bao giờ thấy file dở."""
+    try:
+        os.replace(src, dst)
+    except OSError as e:
+        if e.errno != errno.EXDEV:
+            raise
+        fd, tmp = tempfile.mkstemp(dir=os.path.dirname(dst))
+        with os.fdopen(fd, "wb") as out, open(src, "rb") as inp:
+            shutil.copyfileobj(inp, out, 1 << 20)
+            out.flush()
+            os.fsync(out.fileno())
+        os.replace(tmp, dst)
+        os.remove(src)
+
+
 def publish(info: dict) -> dict:
     name = str(info.get("file", ""))
     if not APK_NAME.match(name):
@@ -59,7 +76,7 @@ def publish(info: dict) -> dict:
     os.makedirs(rel, exist_ok=True)
     os.makedirs(os.path.join(www, "download"), exist_ok=True)
     dst = os.path.join(rel, name)
-    os.replace(src, dst)
+    move(src, dst)
     os.chmod(dst, 0o644)
     version = {"code": int(info["code"]), "name": str(info["name"]), "apk": "releases/" + name,
                "url": "https://clashborn.quest/releases/" + name, "sha256": digest,
@@ -94,7 +111,7 @@ def publish_site() -> dict:
                 rel_path = os.path.relpath(os.path.join(dirpath, f), stage)
                 dst = os.path.join(www, rel_path)
                 os.makedirs(os.path.dirname(dst), exist_ok=True)
-                os.replace(os.path.join(dirpath, f), dst)
+                move(os.path.join(dirpath, f), dst)
                 os.chmod(dst, 0o644)
                 count += 1
         return {"files": count}
