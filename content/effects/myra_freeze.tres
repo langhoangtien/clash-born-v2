@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="1_eff"]
+
+[resource]
+script = ExtResource("1_eff")
+tags = Array[StringName]([&"debuff"])
+dispel = 1
+states = Array[int]([0])
+id = &"myra_freeze"
+display_name = "Đóng băng"
+art_id = &"myra_w"

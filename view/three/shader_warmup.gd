@@ -34,7 +34,9 @@ static func make(projectiles: Projectiles3D, focus: Vector3) -> ShaderWarmup:
 			w._projectile(projectiles, cfg["projectile"])
 	w._projectile(projectiles, ModelLibrary.config().get("projectiles", {}).get("default", {}))
 	w._rubble()
-	for recipe: Dictionary in SkillVfx3D.recipes().values().filter(func(r: Variant) -> bool: return r is Dictionary):
+	var recipes: Array = SkillVfx3D.recipes().values().filter(func(r: Variant) -> bool: return r is Dictionary)
+	recipes.append_array(SkillVfx3D.recipes().get("_effects", {}).values())  # D-298: hiệu ứng trạng thái
+	for recipe: Dictionary in recipes:
 		for part: Dictionary in recipe.get("parts", []):
 			w._vfx(part)
 	return w
@@ -108,11 +110,6 @@ func _projectile(projectiles: Projectiles3D, cfg: Dictionary) -> void:
 
 func _vfx(part: Dictionary) -> void:
 	match part["type"]:
-		"arc":
-			var mi: MeshInstance3D = MeshInstance3D.new()
-			mi.mesh = QuadMesh.new()
-			mi.material_override = SkillVfx3D._tint_material(part)
-			_place(mi)
 		"hit":
 			_place(VfxParts.make(SkillVfx3D.soft_hit(part), 0.5))
 		_ when VfxParts.is_soft(part["type"]):  # D-296: mảnh dịu (một shader, mỗi loại hình một lần)

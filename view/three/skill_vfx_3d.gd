@@ -4,7 +4,7 @@ extends Node3D
 ## `ability_finished` (chiêu ra, đúng lúc gây tác dụng) sinh các mảnh của công thức; `damage_taken` do chủ chiêu gây
 ## trong HIT_TICKS tick sau đó sinh tia lóe trên mục tiêu. Mảnh tự gỡ khi hết `life`. Code không biết tên chiêu.
 ## `trail` (D-250, D-256): vệt tốc độ bám theo đường chạy của chủ chiêu suốt `life` (SpeedTrail3D), chỉ hiện khi chạy.
-## `arc` (D-252): ảnh quạt vẽ tay nằm phẳng trước mặt chủ chiêu, đỉnh quạt ở chân, cỡ theo bán kính / góc của kỹ năng.
+## D-298: bỏ `arc` (ảnh quạt vẽ tay, D-252) — W Duy Anh dùng vệt quét `cone` dựng bằng shader như các tướng khác.
 ## D-296: mảnh "dịu" dựng bằng shader (VfxParts: ring, disc, pillar, glow, aura, wave) đặt ở chủ chiêu / điểm chọn /
 ## mục tiêu; `aura` đi theo đơn vị suốt `life`. Tia lóe khi trúng (`hit`) là đốm dịu trộn alpha (trước: cộng sáng xuyên
 ## mọi vật → W Duy Anh chói mắt).
@@ -107,8 +107,6 @@ func _cast(w: World, ev: GameEvent) -> void:
 		return
 	for part: Dictionary in recipes().get(String(a.def.art_id), {}).get("parts", []):
 		match part["type"]:
-			"arc":
-				_add(_arc_node(e, a, part), "arc", part, _ground(e.position, part))
 			"hit":
 				_armed[e.id] = [w.tick, part]
 			"trail":
@@ -139,8 +137,10 @@ func _soft(w: World, e: Entity, a: AbilityInstance, ev: GameEvent, part: Diction
 		size = float(part.get("size", 1.0))
 	elif part["type"] == "wave":
 		size = Vector2(_value(e, a, part.get("width", 200.0)), _value(e, a, part.get("length", 600.0))) * MatchView3D.S
+	if part["type"] == "cone":  # D-298: góc quạt theo giá trị kỹ năng
+		live["angle_deg"] = _value(e, a, part.get("angle", 150.0))
 	var node: Node3D = Node3D.new()
-	node.add_child(VfxParts.make(part, size))
+	node.add_child(VfxParts.make(live, size))
 	var dir: Vector2 = ev.direction if ev.direction != Vector2.ZERO else e.facing
 	if dir != Vector2.ZERO:
 		node.rotation.y = atan2(-dir.x, -dir.y)
@@ -182,28 +182,6 @@ static func _ground(p: Vector2, part: Dictionary) -> Vector3:
 ## Giá trị mảnh: số, hoặc tên giá trị của kỹ năng (theo cấp hiện tại).
 static func _value(e: Entity, a: AbilityInstance, v: Variant) -> float:
 	return Abilities.value(e, a, StringName(v)) if v is String else float(v)
-
-
-## Quạt vẽ tay: trong mỗi khung ảnh, đỉnh quạt ở (`apex_x`, `apex_y`) (phần cỡ khung, gốc trên trái), nửa bề ngang cung
-## `half_w`, sâu `depth` (phần cỡ khung) → kéo giãn cho nửa bề ngang = R·sin(góc/2), độ sâu = R.
-func _arc_node(e: Entity, a: AbilityInstance, part: Dictionary) -> Node3D:
-	var radius: float = _value(e, a, part.get("radius", 300.0)) * MatchView3D.S
-	var half: float = deg_to_rad(_value(e, a, part.get("angle", 150.0))) * 0.5
-	var sx: float = radius * sin(minf(half, PI * 0.5)) / float(part.get("half_w", 0.4))
-	var sy: float = radius / float(part.get("depth", 0.34))
-	var quad: QuadMesh = QuadMesh.new()
-	quad.size = Vector2(sx, sy)
-	var mi: MeshInstance3D = MeshInstance3D.new()
-	mi.mesh = quad
-	mi.material_override = _tint_material(part)
-	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	mi.rotation.x = -PI * 0.5  # nằm phẳng, phía trên ảnh hướng ra trước
-	mi.position = Vector3((float(part.get("apex_x", 0.5)) - 0.5) * sx, 0.0, -(float(part.get("apex_y", 0.84)) - 0.5) * sy)
-	var root: Node3D = Node3D.new()
-	var f: Vector2 = e.facing if e.facing != Vector2.ZERO else Vector2.DOWN
-	root.rotation.y = atan2(-f.x, -f.y)
-	root.add_child(mi)
-	return root
 
 
 static func _tint_material(part: Dictionary) -> ShaderMaterial:
@@ -250,13 +228,5 @@ func _animate(it: Array) -> void:
 		VfxParts.animate((it[0] as Node3D).get_child(0) as MeshInstance3D, t)
 		return
 	match it[1]:
-		"arc":
-			var mat: ShaderMaterial = ((it[0] as Node3D).get_child(0) as MeshInstance3D).material_override
-			var frames: int = int(part.get("frames", 1))
-			mat.set_shader_parameter("frame", float(mini(int(t * frames * frames), frames * frames - 1)))
-			if frames == 1:  # ảnh đơn: hiện nhanh rồi tan
-				mat.set_shader_parameter("fade", float(part.get("alpha", 1.0)) * minf(1.0, t * 6.0) * (1.0 - t * t))
-			else:  # D-296: bảng khung cũng theo `alpha` của công thức
-				mat.set_shader_parameter("fade", float(part.get("alpha", 1.0)))
 		"trail":
 			(it[0] as SpeedTrail3D).set_fade(1.0 - smoothstep(0.85, 1.0, t))

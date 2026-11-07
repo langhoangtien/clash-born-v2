@@ -223,6 +223,8 @@ Người chơi: giống Liên Quân / MLBB nhưng **nhẹ nhàng, ít màu mè**
 - **Nhiễu nhẹ** trong shader cho đỡ phẳng, không cần ảnh — APK nhẹ, đồng bộ giữa các tướng. Ảnh vẽ tay chỉ dùng khi
   shader không làm được (vệt chém W, vệt gió Q của Duy Anh).
 - Vùng chiêu trên đất (ZoneView3D, D-297) là vũng 3D mép loang không đều, gợn + bọt chạy (vùng tồn tại) hoặc vùng nạp lõi sáng lớn dần (vùng có độ trễ) — không viền tròn sắc. Khiên là bong bóng sáng rìa; buff dài thêm làn sáng bốc lên quanh người.
+- Hiệu ứng trạng thái (D-298) theo id hiệu ứng (mục `_effects`): lốc xoáy (Gậy Lốc Xoáy), vòng xích (trói — Rìu Xiềng
+  Xích), khối băng (đóng băng Myra); thay dấu 2D tương ứng. Myra cả 3 chiêu tông băng, R có sao băng rơi.
 - Dựng: mảnh trong `assets/vfx/vfx.json` (khóa = art_id kỹ năng; xem ghi chú đầu file), shader
   `view/three/vfx_soft.gdshader`, `VfxParts`, `SkillVfx3D`, đạn kỹ năng `SkillShots3D`. Xem trước trong cảnh trận:
   `xvfb-run -a godot --path . --resolution 1920x1080 -s tools/vfx_preview.gd -- --out=<thư mục> [--delay=0.15]`.

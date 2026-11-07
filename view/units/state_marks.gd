@@ -26,14 +26,14 @@ static func draw(ci: CanvasItem, e: Entity, at: Vector2, height: float, tick: in
 		if inst.absorb_left > 0.0:  # khiên (EFF-06)
 			ci.draw_arc(at - Vector2(0, r), r * 1.5, 0, TAU, 32, Color(0.5, 0.9, 1.0, 0.9), 5.0, true)
 			break
-	if Rules.has_state(e, S.ROOTED):
+	if Rules.has_state(e, S.ROOTED) and not EffectVfx3D.covers(e, S.ROOTED):  # D-298: trói có xích 3D thì khỏi vòng 2D
 		ci.draw_arc(at, r * 1.35, 0, TAU, 24, Color(0.35, 0.8, 0.3), 5.0, true)
-	if Rules.has_state(e, S.INVULNERABLE):
+	if Rules.has_state(e, S.INVULNERABLE) and not EffectVfx3D.covers(e, S.INVULNERABLE):  # D-298: lốc xoáy 3D
 		ci.draw_arc(at - Vector2(0, r), r * 1.6, 0, TAU, 32, Color(1.0, 0.85, 0.3, 0.9), 4.0, true)
 	if Rules.has_state(e, S.GHOST):
 		ci.draw_circle(at - Vector2(0, r), r * 1.4, Color(0.7, 1.0, 0.8, 0.25))
 	var top: Vector2 = at - Vector2(0, height + 38)
-	if Rules.has_state(e, S.STUNNED):
+	if Rules.has_state(e, S.STUNNED) and not EffectVfx3D.covers(e, S.STUNNED):  # D-298: đóng băng 3D
 		for i: int in range(3):
 			var angle: float = tick * 0.25 + i * TAU / 3.0
 			ci.draw_circle(top + Vector2(cos(angle) * r * 1.1, sin(angle) * r * 0.4), r * 0.32, Color(1.0, 0.9, 0.2))

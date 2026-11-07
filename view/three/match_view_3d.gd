@@ -3,16 +3,13 @@ extends Node3D
 ## Bản 3D (D-145): mặt đất Terrain3D (sương trong shader), hình phẳng trên đất bằng GroundCanvas (D-180), đơn vị 3D có
 ## hoạt ảnh, camera nghiêng kiểu Liên Quân. Chỉ đọc World (qua UnitsView: vị trí nội suy, ai thấy được).
 
-## 1 px thế giới = 0,01 đơn vị 3D.
-const S: float = 0.01
+const S: float = 0.01  ## 1 px thế giới = 0,01 đơn vị 3D
 ## D-151: vùng camera thấy để lọc đơn vị / mắt sương; xa quá FAR_PX phía trước bị sương che; nới GROUND_MARGIN.
 const FAR_PX: float = 1500.0
 const GROUND_MARGIN: float = 96.0
-## Camera: lệch khỏi điểm nhìn (đơn vị 3D), góc nhìn.
-const CAM_OFFSET: Vector3 = Vector3(0, 11.5, 11.0)
+const CAM_OFFSET: Vector3 = Vector3(0, 11.5, 11.0)  ## camera: lệch khỏi điểm nhìn (đơn vị 3D); CAM_FOV góc nhìn
 const CAM_FOV: float = 40.0
-## Số mắt sương tối đa gửi shader mặt đất (khớp mảng eyes trong ground.gdshader).
-const FOG_EYES: int = 64
+const FOG_EYES: int = 64  ## số mắt sương tối đa gửi shader mặt đất (khớp mảng eyes trong ground.gdshader)
 const FOG_ALPHA: float = 0.6  ## độ đậm sương (như FogView của minimap)
 ## D-159: rung camera khi tướng mình đánh trúng / chí mạng / mất > SHAKE_HURT_FRACTION máu; giảm SHAKE_DECAY / giây.
 const SHAKE_HIT: float = 0.03
@@ -27,8 +24,7 @@ var aim: AimIndicator
 ## D-180: hình phẳng trên đất — `overlay` vẽ lại mỗi khung, `marks` (bụi, shop, trụ, trại) dựng một lần.
 var overlay: GroundCanvas
 var marks: GroundCanvas
-## Phe nhìn (sương); -1 = không sương.
-var fog_team: int = -1
+var fog_team: int = -1  ## phe nhìn (sương); -1 = không sương
 var fog_alpha: float = FOG_ALPHA
 var camera: Camera3D
 var scenery: Scenery3D
@@ -36,8 +32,8 @@ var projectiles: Projectiles3D = Projectiles3D.new()  # D-219: đạn đánh th�
 var skill_vfx: SkillVfx3D = SkillVfx3D.new()  # D-247: hiệu ứng chiêu theo công thức dữ liệu
 var skill_shots: SkillShots3D = SkillShots3D.new()  # D-296: đạn kỹ năng định hướng 3D
 var zones: ZoneView3D = ZoneView3D.new()  # D-297: vùng kỹ năng (vũng / vùng nạp) 3D
-## D-159: tướng của người chơi (rung camera khi đánh trúng / bị đánh mạnh).
-var hero_id: int = -1
+var effects: EffectVfx3D = EffectVfx3D.new()  # D-298: lốc xoáy, xích, băng… trên đơn vị
+var hero_id: int = -1  ## D-159: tướng của người chơi (rung camera khi đánh trúng / bị đánh mạnh)
 var _event_tick: int = -1
 var _shake: float = 0.0
 var _ground: MeshInstance3D
@@ -48,8 +44,7 @@ var _actors: Dictionary[int, Actor3D] = {}
 var _corpses: Corpses = Corpses.new()  # D-210
 ## D-179: bảng chẩn đoán — mặt nước, vật liệu mặt đất có ảnh nền, có vẽ nhân vật không.
 var _water: MeshInstance3D
-## D-197: vực ngoài rìa map.
-var abyss: MeshInstance3D
+var abyss: MeshInstance3D  ## D-197: vực ngoài rìa map
 var _show_actors: bool = true
 
 
@@ -102,7 +97,9 @@ func setup(w: World, units_view: UnitsView, aim_indicator: AimIndicator) -> void
 	add_child(skill_vfx)
 	add_child(skill_shots)
 	add_child(zones)
+	add_child(effects)
 	skill_vfx.position_of = func(e: Entity) -> Vector3: return to_3d(units.display_position(e))
+	effects.position_of = skill_vfx.position_of
 
 
 func to_3d(p: Vector2) -> Vector3:
@@ -150,6 +147,7 @@ func update(focus: Vector2) -> void:
 	skill_shots.viewer_team = units.viewer_team
 	skill_shots.sync(world)
 	zones.sync(world)
+	effects.sync(world, units.seen)
 	t = prof.lap(&"shots", t)  # D-295: tách đạn / sự kiện để log chỉ đúng cú giật còn lại
 	_dispatch_events()
 	t = prof.lap(&"events", t)
@@ -194,6 +192,7 @@ func set_part(key: StringName, on: bool) -> void:
 			projectiles.visible = on
 			skill_shots.visible = on
 			zones.visible = on
+			effects.visible = on
 
 
 ## Vùng mặt đất đang vẽ (px thế giới) khi nhìn vào `focus` — cho sương và lọc đơn vị.

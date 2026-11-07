@@ -43,8 +43,8 @@ actions = Array[ExtResource("1_jarcr")]([SubResource("Resource_0r4jp")])
 [sub_resource type="Resource" id="Resource_1a6df"]
 script = ExtResource("9_1q0vk")
 id = &"myra_r_ii"
-display_name = "Hỏa Ngục"
-description = "Để lại vùng cháy 4 s, 60 sát thương phép mỗi giây"
+display_name = "Băng Ngục"
+description = "Để lại vùng băng giá 4 s, 60 sát thương phép mỗi giây"
 extra_actions = Array[ExtResource("1_jarcr")]([SubResource("Resource_ckapc")])
 
 [resource]

@@ -72,6 +72,10 @@ func _setup(w: World) -> void:
 			Abilities.set_rank(w, h, Abilities.of(h, slot), 1)
 		_casters.append(h)
 		_dummies.append(UnitFactory.hero(w, lib.heroes[&"brakk"], 1, at + Vector2(0, -230)))
+	for k: int in 3:  # hiệu ứng trạng thái (D-298) trên ba hình nộm ở chỗ trống
+		var id: String = ["cyclone", "root", "myra_freeze"][k]
+		Effects.apply(w, _dummies[k], load("res://content/effects/%s.tres" % id) as EffectDef, _casters[0], {}, "4")
+		_dummies[k].effects[-1].start_tick -= 45  # giữa thời gian hiệu ứng (SIM dừng)
 
 
 func _fire(w: World, slot: int) -> void:
@@ -89,7 +93,7 @@ func _fire(w: World, slot: int) -> void:
 		ev.direction = Vector2.UP
 		view.skill_vfx.on_event(w, ev)
 		view.skill_vfx.on_event(w, GameEvent.make(&"damage_taken", w.tick, h.id, _dummies[i].id, 100.0))
-		_zones(w, h, a, _dummies[2].position + Vector2(0, 60))  # vùng chiêu đặt giữa màn hình (chỗ trống)
+		_zones(w, h, a, (_casters[0].position + _dummies[0].position) * 0.5 + Vector2(-260, 0))  # vùng chiêu giữa màn hình
 		if a.def.art_id == &"myra_q":
 			var s: SkillShot = SkillShot.new()
 			s.source_id = h.id
@@ -106,7 +110,7 @@ func _fire(w: World, slot: int) -> void:
 func _zones(w: World, h: Entity, a: AbilityInstance, at: Vector2) -> void:
 	var radius: float = Abilities.value(h, a, &"radius") if a.def.values.has(&"radius") else 250.0
 	var zone: ActionDef = _find(a.def.on_cast, ZoneAction)
-	if zone != null:
+	if zone != null and not a.def.values.has(&"delay"):  # có độ trễ (Myra R): xem vùng nạp + sao băng
 		var z: ActiveZone = ActiveZone.new()
 		z.action = zone
 		z.source_id = h.id

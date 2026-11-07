@@ -6,6 +6,9 @@
 //  6 sóng mặt đất chạy dọc UV.y (0 gần chủ chiêu → 1 xa) · 7 vũng (vùng tồn tại: mép loang không đều, gợn + bọt chạy) ·
 //  8 vùng nạp (vùng có độ trễ: lõi sáng lớn dần theo t) · 9 khiên (bong bóng cầu, sáng ở rìa theo góc nhìn) ·
 //  10 làn sáng bốc lên (hình trụ quanh người). D-297: mép mềm (không viền tròn sắc), thêm 7–10 theo góp ý người chơi.
+//  D-298: 11 lốc xoáy (hình nón cụt, dải xoắn chạy lên) · 12 vòng xích dưới chân (mắt xích theo vòng) ·
+//  13 vệt quét hình quạt (lưỡi sáng quét qua góc `angle` rồi tan; phía trước = UV.y nhỏ) · 14 khối băng (cầu, mặt
+//  tinh thể theo ô, sáng rìa).
 shader_type spatial;
 render_mode unshaded, blend_mix, cull_disabled, depth_draw_never, shadows_disabled;
 
@@ -17,6 +20,7 @@ uniform float alpha = 0.6;
 uniform float width = 0.1;
 uniform float from = 0.2;
 uniform bool billboard = false;
+uniform float angle = 1.3;  // D-298: nửa góc quạt (radian) cho dạng 13
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 
@@ -118,6 +122,39 @@ void fragment() {
 		float streak = smoothstep(0.55, 0.85, noise(vec2(UV.x * 14.0, v * 3.0 + TIME * 1.6)));
 		a = streak * smoothstep(0.0, 0.35, v) * smoothstep(1.0, 0.75, v) * 0.9 * life_fade(0.1, 0.88);
 		core = streak * 0.5;
+	}
+	if (mode == 11) {
+		float v = UV.y;
+		float spiral = sin((UV.x * 3.0 + (1.0 - v) * 2.2 - TIME * 1.8) * 6.2831853);
+		float bands = smoothstep(0.2, 0.9, spiral) * (0.65 + 0.35 * noise(vec2(UV.x * 12.0, v * 6.0 - TIME * 3.0)));
+		float dust = noise(vec2(UV.x * 20.0 - TIME * 4.0, v * 10.0)) * 0.25;
+		a = (bands + dust) * smoothstep(0.0, 0.15, v) * smoothstep(1.0, 0.8, v) * life_fade(0.08, 0.9);
+		core = bands * smoothstep(0.4, 1.0, spiral);
+	} else if (mode == 12) {
+		float ang = atan(c.y, c.x) / 6.2831853 + 0.5;
+		float n_links = 14.0;
+		float link = fract(ang * n_links);
+		float odd = mod(floor(ang * n_links), 2.0);
+		vec2 lp = vec2((link - 0.5) * 2.0, (r - 0.7) / mix(0.16, 0.07, odd));
+		float e = length(lp);
+		float metal = (1.0 - smoothstep(0.75, 0.95, e)) * smoothstep(0.3, 0.5, e);
+		a = metal * life_fade(0.08, 0.92);
+		core = metal * smoothstep(-0.5, 0.8, lp.y - lp.x * 0.3);
+	} else if (mode == 13) {
+		float ang = atan(c.x, -c.y);
+		float sweep = mix(-angle, angle, smoothstep(0.0, 0.35, t));
+		float inside = 1.0 - smoothstep(angle - 0.05, angle + 0.05, abs(ang));
+		float blade = exp(-pow((ang - sweep) * 5.0, 2.0)) * smoothstep(0.35, 0.8, r) * (1.0 - smoothstep(0.92, 1.0, r));
+		float swept = step(ang, sweep) * smoothstep(0.2, 0.9, r) * (1.0 - smoothstep(0.85, 1.0, r));
+		float n = 0.65 + 0.35 * noise(vec2(ang * 4.0, r * 6.0 - TIME * 2.0));
+		a = inside * (blade * (1.0 - smoothstep(0.35, 0.6, t)) + swept * 0.35 * n) * (1.0 - smoothstep(0.55, 1.0, t));
+		core = blade;
+	} else if (mode == 14) {
+		float fres = pow(1.0 - abs(dot(normalize(NORMAL), normalize(VIEW))), 1.6);
+		vec2 cell = floor(UV * vec2(9.0, 5.0));
+		float facet = hash(cell);
+		a = (0.28 + facet * 0.18 + fres * 0.55) * life_fade(0.06, 0.92);
+		core = fres * 0.7 + step(0.82, facet) * 0.4;
 	}
 	ALBEDO = mix(color.rgb, edge.rgb, clamp(core, 0.0, 1.0) * 0.8);
 	ALPHA = clamp(a * alpha, 0.0, 1.0);

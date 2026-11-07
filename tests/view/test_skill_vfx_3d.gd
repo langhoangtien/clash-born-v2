@@ -27,9 +27,9 @@ func test_D_247_recipe_parts_hits_and_cleanup() -> void:
 	var k: Entity = s[1]
 	var fx: SkillVfx3D = SkillVfx3D.new()
 	fx.on_event(w, GameEvent.make(&"ability_finished", w.tick, k.id, -1, AbilityDef.Slot.W))
-	assert_eq(fx.kinds(), ["arc", "arc"], "W Duy Anh: sóng bụi + vệt chém")
+	assert_eq(fx.kinds(), ["cone", "disc"], "W Duy Anh (D-298): vệt quét hình quạt + đĩa bụi dựng bằng shader")
 	fx.on_event(w, GameEvent.make(&"damage_taken", w.tick, k.id, s[2].id, 120.0))
-	assert_eq(fx.kinds(), ["arc", "arc", "hit"], "trúng chiêu: tia lóe trên mục tiêu")
+	assert_eq(fx.kinds(), ["cone", "disc", "hit"], "trúng chiêu: tia lóe trên mục tiêu")
 	fx.on_event(w, GameEvent.make(&"ability_finished", w.tick, k.id, -1, AbilityDef.Slot.INNATE))
 	assert_eq(fx.kinds().size(), 3, "chiêu không có công thức (nội tại): không sinh gì")
 	fx.advance(5.0)
@@ -58,20 +58,20 @@ func test_D_250_trail_follows_caster_for_duration() -> void:
 
 func test_D_270_effect_textures_kept_between_casts() -> void:
 	SkillVfx3D.forget_textures_for_test()
-	var a: Texture2D = SkillVfx3D.texture("vfx_slash_arc_sheet")
+	var a: Texture2D = SkillVfx3D.texture("vfx_trail")
 	assert_true(a != null)
 	var t0: int = Time.get_ticks_usec()
-	var b: Texture2D = SkillVfx3D.texture("vfx_slash_arc_sheet")
+	var b: Texture2D = SkillVfx3D.texture("vfx_trail")
 	assert_eq(b, a, "lần tung sau dùng lại ảnh đã nạp, không đọc đĩa lại (log 0.1.457: W Duy Anh đứng 100–375 ms)")
 	assert_true(Time.get_ticks_usec() - t0 < 5000)
-	var mat: ShaderMaterial = SkillVfx3D._tint_material({"type": "arc", "tex": "vfx_slash_arc_sheet"})
+	var mat: ShaderMaterial = SkillVfx3D._tint_material({"type": "trail", "tex": "vfx_trail"})
 	assert_eq(mat.get_shader_parameter("tex"), a, "vật liệu hiệu ứng dùng ảnh giữ sẵn")
 
 
 func test_D_270_all_recipe_textures_loaded_ahead() -> void:
 	SkillVfx3D.forget_textures_for_test()
 	var names: PackedStringArray = SkillVfx3D.recipe_textures()
-	assert_true(names.has("vfx_slash_arc_sheet") and names.has("vfx_glow") and names.has("vfx_trail"), "đủ ảnh trong vfx.json")
+	assert_true(names.has("vfx_trail"), "đủ ảnh trong vfx.json (D-298: chỉ còn ảnh vệt gió)")
 	SkillVfx3D.load_textures()
 	for n: String in names:
 		assert_true(SkillVfx3D.has_texture(n), n)
@@ -118,7 +118,7 @@ func test_D_296_recipes_valid_and_soft() -> void:
 	var arts: Dictionary = {}
 	for a: AbilityDef in _lib.abilities.values():
 		arts[String(a.art_id)] = a
-	var known: Array = ["arc", "hit", "trail"] + VfxParts.MODES.keys()
+	var known: Array = ["hit", "trail", "meteors"] + VfxParts.MODES.keys()
 	for key: String in SkillVfx3D.recipes():
 		if key.begins_with("_"):
 			continue
@@ -134,3 +134,30 @@ func test_D_296_recipes_valid_and_soft() -> void:
 	for hero: StringName in _lib.heroes:
 		for slot: String in ["q", "w", "r"]:
 			assert_true(SkillVfx3D.recipes().has("%s_%s" % [hero, slot]), "%s %s chưa có hiệu ứng" % [hero, slot])
+
+
+
+## D-298: hiệu ứng trạng thái 3D theo id hiệu ứng (mục _effects): lốc xoáy, xích, khối băng — đi theo đơn vị suốt thời
+## gian hiệu ứng, hết hiệu ứng thì gỡ; StateMarks bỏ dấu 2D của đúng trạng thái đó.
+func test_D_298_effect_visuals_follow_unit_and_cover_2d_marks() -> void:
+	var s: Array = _setup()
+	var w: World = s[0]
+	var foe: Entity = s[2]
+	for id: String in ["cyclone", "root", "myra_freeze"]:
+		assert_false(EffectVfx3D.parts_of(StringName(id)).is_empty(), "%s có hình 3D" % id)
+	var freeze: EffectDef = load("res://content/effects/myra_freeze.tres")
+	Effects.apply(w, foe, freeze, s[1], {}, "1")
+	assert_true(EffectVfx3D.covers(foe, UnitState.Id.STUNNED), "đóng băng: bỏ sao choáng 2D")
+	assert_false(EffectVfx3D.covers(foe, UnitState.Id.ROOTED))
+	var v: EffectVfx3D = EffectVfx3D.new()
+	v.sync(w, func(_e: Entity) -> bool: return true)
+	assert_eq(v.count(), 1)
+	foe.position += Vector2(100, 0)
+	v.sync(w, func(_e: Entity) -> bool: return true)
+	assert_near((v.get_child(0) as Node3D).position.x, foe.position.x * MatchView3D.S, 0.001, "đi theo đơn vị")
+	v.sync(w, func(_e: Entity) -> bool: return false)
+	assert_eq(v.count(), 0, "phe mình không thấy: không vẽ")
+	foe.effects.clear()
+	v.sync(w, func(_e: Entity) -> bool: return true)
+	assert_eq(v.count(), 0, "hết hiệu ứng: gỡ")
+	v.free()

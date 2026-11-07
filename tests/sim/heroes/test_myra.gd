@@ -112,7 +112,7 @@ func test_myra_data_matches_design_tables() -> void:
 	_check_values(q[&"mana"], [80.0, 90.0, 100.0, 110.0, 120.0])
 	var wv: Dictionary = _values(Slot.W)
 	_check_values(wv[&"damage"], [40.0, 80.0, 120.0, 160.0, 200.0])  # D-162
-	_check_values(wv[&"root_duration"], [1.0, 1.25, 1.5, 1.75, 2.0])
+	_check_values(wv[&"freeze_duration"], [0.8, 1.0, 1.2, 1.4, 1.6])  # D-298: đóng băng thay trói
 	_check_values(wv[&"cooldown"], [16.0, 15.0, 14.0, 13.0, 12.0])
 	_check_values(wv[&"mana"], [100.0, 110.0, 120.0, 130.0, 140.0])
 	_check_values(wv[&"cast_range"], [800.0, 800.0, 800.0, 800.0, 800.0])
@@ -200,7 +200,8 @@ func test_myra_q_first_enemy_damage_and_slow() -> void:
 	assert_eq(slowed.end_tick - slowed.start_tick, 60, "cấp 3: chậm 2 s")
 
 
-func test_myra_w_roots_after_delay() -> void:
+## D-298: người chơi — Myra ba chiêu băng: W đóng băng (choáng, hiệu ứng myra_freeze) thay vì trói.
+func test_myra_w_freezes_after_delay() -> void:
 	var w: World = _world()
 	var m: Entity = _myra(w, [0, 2, 0])
 	var spot: Vector2 = m.position + _lane_dir() * 600.0
@@ -211,8 +212,10 @@ func test_myra_w_roots_after_delay() -> void:
 	assert_near(inside.health, 100000.0, EPS, "chưa tới 0.8 s")
 	w.step()
 	assert_near(inside.health, 100000.0 - _lost(w, inside, 80.0), EPS, "cấp 2: 80 phép (D-162)")
-	assert_true(Rules.has_state(inside, UnitState.Id.ROOTED))
-	assert_eq(_effect_ticks(inside, UnitState.Id.ROOTED), roundi(1.25 * 30))
+	assert_true(Rules.has_state(inside, UnitState.Id.STUNNED), "đóng băng")
+	assert_false(Rules.has_state(inside, UnitState.Id.ROOTED), "không còn trói")
+	assert_eq(_effect_ticks(inside, UnitState.Id.STUNNED), roundi(1.0 * 30))
+	assert_eq(inside.effects[-1].def.id, &"myra_freeze")
 	assert_near(outside.health, 100000.0, EPS)
 
 
@@ -256,7 +259,7 @@ func test_myra_w_ii_faster_and_wider() -> void:
 	_steps(w, 9)
 	assert_near(foe.health, 100000.0, EPS)
 	w.step()
-	assert_true(Rules.has_state(foe, UnitState.Id.ROOTED), "Phong Ấn Tức Thì: 0.3 s, bán kính 380")
+	assert_true(Rules.has_state(foe, UnitState.Id.STUNNED), "Phong Ấn Tức Thì: 0.3 s, bán kính 380 (đóng băng)")
 
 
 func test_myra_r_ii_leaves_burning_zone() -> void:
