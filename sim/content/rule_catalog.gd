@@ -20,7 +20,7 @@ const EVENTS: PackedStringArray = [
 	"ability_cast", "ability_finished", "effect_applied", "effect_removed", "unit_died",
 	"kill_credited", "structure_destroyed", "unit_spawned", "gold_changed", "level_up",
 	"skill_leveled", "talent_chosen", "dash_finished", "projectile_hit", "item_used",
-	"knockback_finished", "dispelled", "attack_target_changed", "innate_ranked", "mana_burned",
+	"knockback_finished", "dispelled", "attack_target_changed", "mana_burned",
 	"lethal_damage", "reincarnated", "recall_started", "recall_cancelled", "recall_finished",
 	"duel_started", "duel_ended", "attack_deflected", "teleported",
 ]

@@ -70,17 +70,27 @@ func test_ABL_04_xp_table_and_level_up() -> void:
 	assert_near(b.xp, 0.0, EPS)
 
 
-func test_ABL_11_innate_ranks_with_hero_level() -> void:
+## D-301 (người chơi): nội tại nâng bằng điểm như Q/W — bậc n khi hero cấp 2n − 1, tối đa 5; chưa cộng thì chưa có
+## tác dụng (trước: tự lên 6 bậc theo cấp hero).
+func test_ABL_11_innate_leveled_with_points() -> void:
 	var w: World = _world()
 	var b: Entity = _brakk(w, 0, _center())
 	var innate: AbilityInstance = Abilities.of(b, Slot.INNATE)
-	var ranks: Array[int] = []
-	for level: int in range(2, 21):
-		Progression.add_xp(w, b, Progression.xp_to_next(w, level - 1))
-		if level in [3, 4, 8, 12, 16, 20]:
-			ranks.append(innate.rank)
-	assert_eq(ranks, [1, 2, 3, 4, 5, 6], "bậc 1–6 ở cấp 1/4/8/12/16/20")
-	assert_near(b.effects[0].values[&"chance"], 0.25, EPS, "bị động theo bậc mới")
+	assert_eq(innate.rank, 0, "mới vào trận: chưa học nội tại")
+	assert_eq(b.effects.size(), 0, "chưa có bị động")
+	assert_eq(_rejected(w, Command.level_up(b.id, Slot.INNATE)), Command.Reject.NONE, "cấp 1: cộng bậc 1")
+	assert_eq(innate.rank, 1)
+	assert_near(b.effects[0].values[&"chance"], 0.17, EPS, "bậc 1 mới = bậc 2 cũ (bỏ bậc đầu)")
+	Progression.add_xp(w, b, Progression.xp_to_next(w, 1))
+	assert_eq(_rejected(w, Command.level_up(b.id, Slot.INNATE)), Command.Reject.CANNOT_LEVEL, "bậc 2 cần hero cấp 3")
+	Progression.add_xp(w, b, 100000.0)
+	b.skill_points = 10
+	for i: int in 4:
+		assert_eq(_rejected(w, Command.level_up(b.id, Slot.INNATE)), Command.Reject.NONE)
+	assert_eq(innate.rank, 5)
+	assert_eq(_rejected(w, Command.level_up(b.id, Slot.INNATE)), Command.Reject.CANNOT_LEVEL, "tối đa bậc 5")
+	assert_near(b.effects[0].values[&"chance"], 0.25, EPS, "bậc 5 = bậc 6 cũ")
+	assert_eq(b.effects.size(), 1, "không chồng hai bản bị động")
 
 
 func test_ABL_04_skill_rank_rules() -> void:
@@ -92,7 +102,6 @@ func test_ABL_04_skill_rank_rules() -> void:
 	assert_eq(_rejected(w, Command.level_up(b.id, Slot.Q)), Command.Reject.NO_SKILL_POINT)
 	Progression.add_xp(w, b, Progression.xp_to_next(w, 1))
 	assert_eq(_rejected(w, Command.level_up(b.id, Slot.Q)), Command.Reject.CANNOT_LEVEL, "Q cấp 2 cần hero cấp 3")
-	assert_eq(_rejected(w, Command.level_up(b.id, Slot.INNATE)), Command.Reject.CANNOT_LEVEL, "nội tại không cộng điểm")
 	assert_eq(_rejected(w, Command.level_up(b.id, Command.ATTRIBUTES)), Command.Reject.NONE)
 	assert_eq(b.attribute_bonus_count, 1)
 	assert_eq(b.skill_points, 0)

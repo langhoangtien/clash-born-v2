@@ -139,8 +139,10 @@ func _fail(where: String, message: String) -> void:
 
 ## BOT-14 + ABL-04: thứ tự nâng của bot phải hợp lệ ở từng cấp.
 func _check_bot_order(hero: HeroDef, where: String) -> void:
-	var ranks: Dictionary[HeroDef.Upgrade, int] = {HeroDef.Upgrade.Q: 0, HeroDef.Upgrade.W: 0, HeroDef.Upgrade.R: 0, HeroDef.Upgrade.ATTRIBUTES: 0}
-	var limits: Dictionary[HeroDef.Upgrade, int] = {HeroDef.Upgrade.Q: 5, HeroDef.Upgrade.W: 5, HeroDef.Upgrade.R: 3, HeroDef.Upgrade.ATTRIBUTES: 7}
+	var ranks: Dictionary[HeroDef.Upgrade, int] = {HeroDef.Upgrade.Q: 0, HeroDef.Upgrade.W: 0, HeroDef.Upgrade.R: 0, HeroDef.Upgrade.ATTRIBUTES: 0,
+		HeroDef.Upgrade.INNATE: 0}
+	var limits: Dictionary[HeroDef.Upgrade, int] = {HeroDef.Upgrade.Q: 5, HeroDef.Upgrade.W: 5, HeroDef.Upgrade.R: 3, HeroDef.Upgrade.ATTRIBUTES: 7,
+		HeroDef.Upgrade.INNATE: 5}
 	const R_LEVELS: Array[int] = [6, 11, 16]
 	if hero.bot_skill_order.size() > 20:
 		_fail(where, "bot_skill_order dài hơn 20 cấp")
@@ -154,7 +156,7 @@ func _check_bot_order(hero: HeroDef, where: String) -> void:
 			_fail(where, "đổi thuộc tính quá 7 lần" if up == HeroDef.Upgrade.ATTRIBUTES else "%s quá cấp tối đa" % name)
 		elif up == HeroDef.Upgrade.R and level < R_LEVELS[rank - 1]:
 			_fail(where, "cấp %d nâng R lên %d (cần cấp %d)" % [level, rank, R_LEVELS[rank - 1]])
-		elif (up == HeroDef.Upgrade.Q or up == HeroDef.Upgrade.W) and level < 2 * rank - 1:
+		elif up in [HeroDef.Upgrade.Q, HeroDef.Upgrade.W, HeroDef.Upgrade.INNATE] and level < 2 * rank - 1:  # D-301
 			_fail(where, "cấp %d nâng %s lên %d (cần cấp %d)" % [level, name, rank, 2 * rank - 1])
 	var talents: Array[AbilityDef.Slot] = hero.bot_talent_priority.duplicate()
 	talents.sort()

@@ -3,7 +3,7 @@ extends GameDef
 ## Một hero: chỉ số, tăng trưởng thuộc tính (STAT-04, không có sát thương mỗi cấp),
 ## nội tại + Q/W/R, thứ tự nâng skill và chọn talent cho bot (BOT-14).
 
-enum Upgrade { Q, W, R, ATTRIBUTES }
+enum Upgrade { Q, W, R, ATTRIBUTES, INNATE }  # D-301: nội tại nâng bằng điểm
 
 @export var primary_attribute: StatFormulas.Attribute = StatFormulas.Attribute.STRENGTH
 @export var base_strength: float

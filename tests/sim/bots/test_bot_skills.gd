@@ -67,7 +67,7 @@ func test_BOT_14_levels_up_by_order_and_picks_talent() -> void:
 	for i: int in range(40):
 		w.step()
 	assert_eq(e.skill_points, 0)
-	assert_eq([Abilities.of(e, S.Q).rank, Abilities.of(e, S.W).rank], [2, 1], "myra: Q, W, Q")
+	assert_eq([Abilities.of(e, S.Q).rank, Abilities.of(e, S.INNATE).rank], [2, 1], "myra (D-301): Q, nội tại, Q")
 	Progression.add_xp(w, e, 999999.0)
 	for i: int in range(200):
 		w.step()

@@ -31,6 +31,7 @@ func _knight(w: World, ranks: Array[int] = [0, 0, 0]) -> Entity:
 	for i: int in range(3):
 		if ranks[i] > 0:
 			Abilities.set_rank(w, k, Abilities.of(k, [Slot.Q, Slot.W, Slot.R][i]), ranks[i])
+	Abilities.set_rank(w, k, Abilities.of(k, Slot.INNATE), 1)  # D-301: nội tại phải cộng điểm
 	k.mana = 5000.0
 	return k
 
@@ -78,7 +79,8 @@ func _attack_hit(w: World, from: Entity, k: Entity, raw: float) -> float:
 	return before - k.health
 
 
-func test_CMB_15_shield_deflects_8_percent_back_half() -> void:
+## D-301: bậc 1 mới = bậc 2 cũ (10%, hất 60%).
+func test_CMB_15_shield_deflects_10_percent_back_60() -> void:
 	var w: World = _world()
 	var k: Entity = _knight(w)
 	var foe: Entity = _foe(w, k.position + Vector2(150, 0), 1000000.0)
@@ -94,11 +96,11 @@ func test_CMB_15_shield_deflects_8_percent_back_half() -> void:
 		var taken: float = _attack_hit(w, foe, k, 100.0)
 		if taken == 0.0:
 			deflected += 1
-			assert_near(foe_hp - foe.health, 50.0 * fmult, 0.01, "cấp 1: kẻ đánh lãnh 50% đòn trước giáp")
+			assert_near(foe_hp - foe.health, 60.0 * fmult, 0.01, "bậc 1: kẻ đánh lãnh 60% đòn trước giáp")
 		else:
 			assert_near(taken, 100.0 * kmult, 0.01, "không hất: nhận đủ")
 			assert_near(foe.health, foe_hp, 0.001)
-	assert_true(deflected > 25 and deflected < 60, "≈8%% bị hất (được %d/500)" % deflected)
+	assert_true(deflected > 30 and deflected < 75, "≈10%% bị hất (được %d/500)" % deflected)
 
 
 func test_CMB_15_deflected_attack_has_no_on_hit() -> void:
@@ -126,9 +128,9 @@ func test_CMB_15_deflected_attack_has_no_on_hit() -> void:
 func test_CMB_15_innate_ranks_by_hero_level() -> void:
 	_world()
 	var inn: AbilityDef = _lib.heroes[&"duy_anh"].innate
-	var chance: Array[float] = [0.08, 0.1, 0.12, 0.14, 0.16, 0.18]
-	var back: Array[float] = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-	for i: int in range(6):
+	var chance: Array[float] = [0.1, 0.12, 0.14, 0.16, 0.18]  # D-301: 5 bậc, bỏ bậc đầu
+	var back: Array[float] = [0.6, 0.7, 0.8, 0.9, 1.0]
+	for i: int in range(5):
 		assert_near(inn.values[&"deflect_chance"][i], chance[i], 0.0001, "tỉ lệ bậc %d" % (i + 1))
 		assert_near(inn.values[&"deflect"][i], back[i], 0.0001, "hất bậc %d" % (i + 1))
 

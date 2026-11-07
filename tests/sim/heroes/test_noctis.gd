@@ -92,8 +92,8 @@ func _has(e: Entity, id: StringName) -> EffectInstance:
 func test_noctis_data_matches_design_tables() -> void:
 	_world()
 	var innate: Dictionary = _values(Slot.INNATE)
-	_check_values(innate[&"crit_chance"], [0.10, 0.12, 0.14, 0.16, 0.18, 0.20])
-	_check_values(innate[&"crit_multiplier"], [1.6, 1.8, 2.0, 2.2, 2.4, 2.6])
+	_check_values(innate[&"crit_chance"], [0.12, 0.14, 0.16, 0.18, 0.20])  # D-301
+	_check_values(innate[&"crit_multiplier"], [1.8, 2.0, 2.2, 2.4, 2.6])
 	var q: Dictionary = _values(Slot.Q)
 	_check_values(q[&"damage"], [80.0, 120.0, 160.0, 200.0, 240.0])
 	_check_values(q[&"cooldown"], [12.0, 11.0, 10.0, 9.0, 8.0])
@@ -119,7 +119,7 @@ func test_noctis_data_matches_design_tables() -> void:
 func test_noctis_innate_crit_rate_and_multiplier() -> void:
 	var w: World = _world(11)
 	var n: Entity = _noctis(w)
-	Abilities.set_rank(w, n, Abilities.of(n, Slot.INNATE), 6)
+	Abilities.set_rank(w, n, Abilities.of(n, Slot.INNATE), 5)  # D-301: tối đa 5
 	var foe: Entity = _dummy(w, n.position + _dir() * 90.0, 10000000.0)
 	w.submit(Command.attack(n.id, foe.id))
 	var hits: int = 0
@@ -136,7 +136,7 @@ func test_noctis_innate_crit_rate_and_multiplier() -> void:
 					big = ev.amount
 				else:
 					plain = ev.amount
-	assert_near(float(crits) / hits, 0.20, 0.04, "bậc 6: 20%% (%d/%d)" % [crits, hits])
+	assert_near(float(crits) / hits, 0.20, 0.04, "bậc 5: 20%% (%d/%d)" % [crits, hits])
 	assert_near(big / plain, 2.6, 0.01, "hệ số 2.6×")
 
 

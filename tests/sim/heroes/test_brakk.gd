@@ -74,9 +74,9 @@ func _stun_ticks(e: Entity) -> int:
 func test_brakk_data_matches_design_tables() -> void:
 	_world()
 	var innate: Dictionary = _values(Slot.INNATE)
-	_check_values(innate[&"chance"], [0.15, 0.17, 0.19, 0.21, 0.23, 0.25])
-	_check_values(innate[&"bonus_damage"], [30.0, 40.0, 50.0, 60.0, 70.0, 80.0])
-	_check_values(innate[&"stun_duration"], [0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+	_check_values(innate[&"chance"], [0.17, 0.19, 0.21, 0.23, 0.25])  # D-301: 5 bậc, bỏ bậc đầu
+	_check_values(innate[&"bonus_damage"], [40.0, 50.0, 60.0, 70.0, 80.0])
+	_check_values(innate[&"stun_duration"], [0.6, 0.7, 0.8, 0.9, 1.0])
 	var q: Dictionary = _values(Slot.Q)
 	_check_values(q[&"damage"], [70.0, 110.0, 150.0, 190.0, 230.0])
 	_check_values(q[&"stun_duration"], [0.8, 1.0, 1.2, 1.4, 1.6])
@@ -98,7 +98,7 @@ func test_brakk_data_matches_design_tables() -> void:
 func test_brakk_innate_never_bashes_structures() -> void:
 	var w: World = _world()
 	var b: Entity = _brakk(w)
-	Abilities.set_rank(w, b, Abilities.of(b, Slot.INNATE), 6)
+	Abilities.set_rank(w, b, Abilities.of(b, Slot.INNATE), 5)  # D-301: tối đa 5
 	var tower: Entity = _dummy(w, b.position + Vector2(1, -1).normalized() * 90.0, Entity.Kind.TOWER)
 	tower.stats.set_base(StatId.Id.ATTACK_RANGE, 0)
 	tower.stats.recompute()
@@ -118,7 +118,7 @@ func test_brakk_innate_never_bashes_structures() -> void:
 func test_brakk_innate_rate_by_rank() -> void:
 	var w: World = _world(8)
 	var b: Entity = _brakk(w)
-	Abilities.set_rank(w, b, Abilities.of(b, Slot.INNATE), 6)
+	Abilities.set_rank(w, b, Abilities.of(b, Slot.INNATE), 5)  # D-301: tối đa 5
 	var foe: Entity = _dummy(w, b.position + Vector2(1, -1).normalized() * 90.0)
 	foe.stats.set_base(StatId.Id.ATTACK_RANGE, 0)
 	foe.stats.recompute()
@@ -130,7 +130,7 @@ func test_brakk_innate_rate_by_rank() -> void:
 		for ev: GameEvent in w.events:
 			hits += int(ev.type == &"attack_landed" and ev.source_id == b.id)
 			bashes += int(ev.type == &"effect_applied" and ev.target_id == foe.id)
-	assert_near(float(bashes) / hits, 0.25, 0.04, "bậc 6: 25%% (%d/%d)" % [bashes, hits])
+	assert_near(float(bashes) / hits, 0.25, 0.04, "bậc 5: 25%% (%d/%d)" % [bashes, hits])
 
 
 func test_brakk_q_hits_enemies_in_300_not_towers_stun_by_rank() -> void:

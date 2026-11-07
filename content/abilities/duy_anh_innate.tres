@@ -16,8 +16,8 @@ description = "Bị động: đòn đánh thường nhắm vào hiệp sĩ có 8
 slot = 0
 targeting = 0
 values = Dictionary[StringName, PackedFloat32Array]({
-&"deflect": PackedFloat32Array(0.5, 0.6, 0.7, 0.8, 0.9, 1),
-&"deflect_chance": PackedFloat32Array(0.08, 0.1, 0.12, 0.14, 0.16, 0.18)
+&"deflect": PackedFloat32Array(0.6, 0.7, 0.8, 0.9, 1),
+&"deflect_chance": PackedFloat32Array(0.1, 0.12, 0.14, 0.16, 0.18)
 })
 on_learn = Array[ExtResource("1_act")]([SubResource("A0")])
 id = &"duy_anh_innate"

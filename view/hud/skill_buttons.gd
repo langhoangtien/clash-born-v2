@@ -3,7 +3,8 @@ extends Control
 ## Ô chiêu Q/W/R kiểu Liên Quân (M3.8), cùng khung góc dưới phải với AttackButtons:
 ## - chạm rồi thả tại chỗ → tung nhanh (tự nhắm); kéo ra khỏi vùng chết → nhắm, thả → tung
 ##   theo hướng/khoảng kéo; thả vào ô "Hủy" → không tung;
-## - nút "+" trên mỗi ô khi nâng được, nút "+TT" đổi điểm lấy thuộc tính (ABL-04).
+## - nút "+" trên mỗi ô khi nâng được, nút "+TT" đổi điểm lấy thuộc tính (ABL-04), nút "+NT" giữa chiêu 2 và 3 nâng
+##   nội tại (D-301).
 ## Chỉ báo bằng tín hiệu; không biết gì về trận đấu.
 
 const MAIN_OFFSET: Vector2 = Vector2(180, 180)
@@ -18,8 +19,9 @@ const PLUS_RADIUS: float = 34.0
 const PLUS_TOUCH_SLACK: float = 12.0
 const ATTR_OFFSET: Vector2 = Vector2(-50, -150)
 const CANCEL_RADIUS: float = 52.0
-## Mã ô "+" thuộc tính trong level_pressed.
+## Mã ô "+" thuộc tính / nội tại trong level_pressed.
 const ATTRIBUTES: int = 3
+const INNATE: int = 4
 const MOUSE_POINTER: int = -1
 
 signal skill_tapped(index: int)
@@ -34,6 +36,7 @@ var skill_view: Array = [[0, 0.0, false, false, 5], [0, 0.0, false, false, 5], [
 ## art_id của Q/W/R (APP đặt); có hình trong ArtLibrary thì vẽ hình thay chữ.
 var skill_art: Array[StringName] = [&"", &"", &""]
 var attributes_can_level: bool = false
+var innate_can_level: bool = false  # D-301
 
 var _gate: RedrawGate = RedrawGate.new()
 var _aim_pointer: int = -100
@@ -44,13 +47,14 @@ var _aiming: bool = false
 
 ## D-263: APP đặt trạng thái ô chiêu mỗi khung; giây hồi làm tròn lên (đúng số đang hiện) nên chỉ vẽ lại khi
 ## thứ hiện ra đổi. Trả về true nếu vẽ lại.
-func show_view(view: Array, art: Array[StringName], can_level_attributes: bool) -> bool:
+func show_view(view: Array, art: Array[StringName], can_level_attributes: bool, can_level_innate: bool = false) -> bool:
 	for v: Array in view:
 		v[1] = ceilf(v[1])
 	skill_view = view
 	skill_art = art
 	attributes_can_level = can_level_attributes
-	if not _gate.changed([view, art, can_level_attributes]):
+	innate_can_level = can_level_innate
+	if not _gate.changed([view, art, can_level_attributes, can_level_innate]):
 		return false
 	queue_redraw()
 	return true
@@ -63,6 +67,8 @@ func skill_center(index: int) -> Vector2:
 func plus_center(index: int) -> Vector2:
 	if index == ATTRIBUTES:
 		return skill_center(0) + ATTR_OFFSET
+	if index == INNATE:  # D-301: giữa chiêu 2 và chiêu 3
+		return size - MAIN_OFFSET + Vector2.from_angle(deg_to_rad((SKILL_ANGLES[1] + SKILL_ANGLES[2]) * 0.5)) * SKILL_DISTANCE
 	return skill_center(index) + Vector2.from_angle(deg_to_rad(SKILL_ANGLES[index])) * (SKILL_RADIUS + PLUS_RADIUS - 2.0)
 
 
@@ -78,8 +84,8 @@ func skill_at(local: Vector2) -> int:
 
 
 func plus_at(local: Vector2) -> int:
-	for i: int in range(4):
-		var shown: bool = attributes_can_level if i == ATTRIBUTES else skill_view[i][3]
+	for i: int in range(5):
+		var shown: bool = attributes_can_level if i == ATTRIBUTES else (innate_can_level if i == INNATE else skill_view[i][3])
 		if shown and local.distance_to(plus_center(i)) <= PLUS_RADIUS + PLUS_TOUCH_SLACK:
 			return i
 	return -1
@@ -174,6 +180,8 @@ func _paint() -> void:
 		_draw_skill(font, i)
 	if attributes_can_level:
 		_draw_plus(font, plus_center(ATTRIBUTES), "+TT")
+	if innate_can_level:
+		_draw_plus(font, plus_center(INNATE), "+NT")
 	if _aiming:
 		var c: Vector2 = skill_center(_aim_index)
 		draw_circle(c, AIM_RADIUS, Color(1, 1, 1, 0.08))

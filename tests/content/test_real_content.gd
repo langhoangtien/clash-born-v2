@@ -65,7 +65,7 @@ func test_D_35_heroes_grow_only_attributes() -> void:
 func test_CONTENT_brakk_numbers() -> void:
 	var brakk: HeroDef = _lib.heroes[&"brakk"]
 	assert_near(_v(brakk.q, "damage")[4], 230.0, 0.001, "Q cấp 5 gây 230")
-	assert_near(_v(brakk.innate, "chance")[5], 0.25, 0.0001, "bash bậc 6 = 25%")
+	assert_near(_v(brakk.innate, "chance")[4], 0.25, 0.0001, "bash bậc 5 = 25% (D-301)")
 	assert_eq(_v(brakk.r, "cooldown"), PackedFloat32Array([90, 80, 70]))
 
 
@@ -78,7 +78,7 @@ func test_CONTENT_myra_numbers() -> void:
 
 func test_CONTENT_noctis_and_vexa_numbers() -> void:
 	var noctis: HeroDef = _lib.heroes[&"noctis"]
-	assert_near(_v(noctis.innate, "crit_multiplier")[5], 2.6, 0.0001)
+	assert_near(_v(noctis.innate, "crit_multiplier")[4], 2.6, 0.0001)
 	var vexa: HeroDef = _lib.heroes[&"vexa"]
 	assert_true(vexa.r.pierces_magic_immunity, "Vexa R xuyên miễn phép (ST-15)")
 	assert_eq(_v(vexa.w, "length")[0], 700.0)

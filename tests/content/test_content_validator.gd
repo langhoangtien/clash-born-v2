@@ -31,10 +31,10 @@ func test_ABL_01_r_needs_three_ranks() -> void:
 	_expect_error([h], "giá trị 'duration' có 5 cấp, cần 3")
 
 
-func test_ABL_11_innate_needs_six_ranks() -> void:
+func test_ABL_11_innate_needs_five_ranks() -> void:
 	var h: HeroDef = F.hero()
-	h.innate.values[&"chance"] = PackedFloat32Array([1, 2, 3, 4, 5])
-	_expect_error([h], "giá trị 'chance' có 5 cấp, cần 6")
+	h.innate.values[&"chance"] = PackedFloat32Array([1, 2, 3, 4])
+	_expect_error([h], "giá trị 'chance' có 4 cấp, cần 5")  # D-301
 
 
 func test_ABL_09_action_uses_unknown_named_value() -> void:
@@ -170,6 +170,8 @@ func test_ABL_04_bot_skill_order_must_be_legal() -> void:
 	_expect_error([h], "cấp 2 nâng Q lên 2")
 	h.bot_skill_order = [U.R]
 	_expect_error([h], "cấp 1 nâng R lên 1")
+	h.bot_skill_order = [U.INNATE, U.INNATE]
+	_expect_error([h], "cấp 2 nâng INNATE lên 2")  # D-301: nội tại bậc n cần cấp 2n − 1
 	h.bot_skill_order = [U.Q, U.W, U.Q, U.W, U.Q, U.R, U.Q, U.W, U.Q, U.W, U.R, U.W, U.Q]
 	_expect_error([h], "Q quá cấp tối đa")
 	h.bot_skill_order = []

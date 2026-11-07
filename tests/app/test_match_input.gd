@@ -213,6 +213,8 @@ func test_ABL_04_auto_skill_follows_suggested_order() -> void:
 	assert_eq(picks[5], AbilityDef.Slot.R, "cấp 6 lên R")
 	assert_eq(Abilities.of(hero, AbilityDef.Slot.Q).rank, 5)
 	assert_eq(Abilities.of(hero, AbilityDef.Slot.R).rank, 3)
+	assert_eq(Abilities.of(hero, AbilityDef.Slot.INNATE).rank, 5, "D-301: nội tại cộng đủ 5 bậc")
+	assert_eq(picks[1], AbilityDef.Slot.INNATE, "cấp 2: nội tại bậc 1")
 	assert_eq(hero.skill_points, 0)
 
 
@@ -319,6 +321,14 @@ func test_M38_skill_buttons_tap_drag_cancel_and_plus() -> void:
 	b.press_at(0, b.plus_center(0))
 	b.press_at(1, b.plus_center(SkillButtons.ATTRIBUTES))
 	assert_eq(levels, [0, SkillButtons.ATTRIBUTES])
+	b.press_at(0, b.plus_center(SkillButtons.INNATE))
+	assert_eq(levels.size(), 2, "nội tại chưa nâng được: không có nút +NT")
+	b.innate_can_level = true
+	b.press_at(0, b.plus_center(SkillButtons.INNATE))
+	assert_eq(levels, [0, SkillButtons.ATTRIBUTES, SkillButtons.INNATE], "D-301: nút +NT nâng nội tại")
+	var mid: float = (b.skill_center(1) + b.skill_center(2)).x * 0.5
+	assert_near(b.plus_center(SkillButtons.INNATE).x, mid, 60.0, "+NT nằm giữa chiêu 2 và chiêu 3")
+	assert_eq(SkillControls.LEVEL_SLOTS[SkillButtons.INNATE], AbilityDef.Slot.INNATE)
 	b.free()
 
 

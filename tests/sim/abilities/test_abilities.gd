@@ -81,29 +81,33 @@ func _give(w: World, e: Entity, d: AbilityDef, rank: int = 1) -> AbilityInstance
 	return a
 
 
-func test_ABL_11_hero_spawns_with_innate_rank_1_and_its_passive() -> void:
+## D-301: nội tại không còn có sẵn — vào trận bậc 0, chưa có bị động; cộng điểm mới có.
+func test_ABL_11_hero_spawns_with_innate_unlearned() -> void:
 	var w: World = _world()
 	var b: Entity = _brakk(w, 0, _center())
 	assert_eq(b.abilities.size(), 4)
-	assert_eq(Abilities.of(b, Slot.INNATE).rank, 1)
+	assert_eq(Abilities.of(b, Slot.INNATE).rank, 0)
 	assert_eq(Abilities.of(b, Slot.Q).rank, 0)
-	assert_eq(b.effects.size(), 1)
+	assert_eq(b.effects.size(), 0, "chưa học nội tại: chưa có bị động")
+	Abilities.set_rank(w, b, Abilities.of(b, Slot.INNATE), 1)
 	assert_eq(b.effects[0].def.id, &"brakk_bash_passive")
-	assert_near(b.effects[0].values[&"chance"], 0.15, EPS)
+	assert_near(b.effects[0].values[&"chance"], 0.17, EPS)
 
 
 func test_ABL_passive_rank_up_reapplies_with_new_values() -> void:
 	var w: World = _world()
 	var b: Entity = _brakk(w, 0, _center())
+	Abilities.set_rank(w, b, Abilities.of(b, Slot.INNATE), 1)
 	Abilities.set_rank(w, b, Abilities.of(b, Slot.INNATE), 3)
 	assert_eq(b.effects.size(), 1, "không chồng hai bản bị động")
-	assert_near(b.effects[0].values[&"chance"], 0.19, EPS)
+	assert_near(b.effects[0].values[&"chance"], 0.21, EPS)
 
 
 func test_ABL_02_rejections() -> void:
 	var w: World = _world()
 	var b: Entity = _brakk(w, 0, _center())
 	assert_eq(_rejected(w, Command.cast(b.id, Slot.Q)), Command.Reject.NOT_LEARNED)
+	Abilities.set_rank(w, b, Abilities.of(b, Slot.INNATE), 1)  # D-301
 	assert_eq(_rejected(w, Command.cast(b.id, Slot.INNATE)), Command.Reject.CANNOT_CAST, "bị động không dùng được")
 	Abilities.set_rank(w, b, Abilities.of(b, Slot.Q), 1)
 	b.mana = 10.0
@@ -256,6 +260,7 @@ func test_D_30_casts_replay_identically() -> void:
 func test_ABL_11_brakk_innate_bash_procs_in_fights() -> void:
 	var w: World = _world()
 	var b: Entity = _brakk(w, 0, _center())
+	Abilities.set_rank(w, b, Abilities.of(b, Slot.INNATE), 1)  # D-301: nội tại phải cộng điểm
 	var foe: Entity = _dummy(w, 1, _center() + Vector2(1, -1).normalized() * 80.0)
 	foe.stats.set_base(StatId.Id.MAX_HP, 100000)
 	foe.stats.recompute()

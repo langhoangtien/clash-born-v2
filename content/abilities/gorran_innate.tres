@@ -16,7 +16,7 @@ description = "Bị động: +15 / 20 / 25 / 30 / 35 sát thương."
 slot = 0
 targeting = 0
 values = Dictionary[StringName, PackedFloat32Array]({
-&"bonus": PackedFloat32Array(15, 20, 25, 30, 35, 35)
+&"bonus": PackedFloat32Array(20, 25, 30, 35, 35)
 })
 on_learn = Array[ExtResource("1_act")]([SubResource("A0")])
 id = &"gorran_innate"

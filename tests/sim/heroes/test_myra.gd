@@ -34,6 +34,7 @@ func _myra(w: World, ranks: Array[int] = [0, 0, 0]) -> Entity:
 	for i: int in range(3):
 		if ranks[i] > 0:
 			Abilities.set_rank(w, m, Abilities.of(m, [Slot.Q, Slot.W, Slot.R][i]), ranks[i])
+	Abilities.set_rank(w, m, Abilities.of(m, Slot.INNATE), 1)  # D-301: nội tại phải cộng điểm
 	m.mana = 5000.0
 	return m
 
@@ -103,7 +104,7 @@ func _choose(w: World, m: Entity, slot: int) -> void:
 
 func test_myra_data_matches_design_tables() -> void:
 	_world()
-	_check_values(_values(Slot.INNATE)[&"slow_per_stack"], [0.02, 0.025, 0.03, 0.035, 0.04, 0.045])  # D-300
+	_check_values(_values(Slot.INNATE)[&"slow_per_stack"], [0.025, 0.03, 0.035, 0.04, 0.045])  # D-300, D-301: 5 bậc
 	var q: Dictionary = _values(Slot.Q)
 	_check_values(q[&"damage"], [90.0, 140.0, 190.0, 240.0, 290.0])
 	_check_values(q[&"slow"], [0.3, 0.3, 0.3, 0.3, 0.3])
@@ -130,7 +131,7 @@ func test_myra_data_matches_design_tables() -> void:
 
 
 ## D-300 (người chơi — nữ hoàng băng): bị động "Băng Giá" — mỗi đòn trúng cộng 1 tầng làm chậm lên MỤC TIÊU
-## (bậc 1: 2% / tầng, tối đa 8 tầng, giữ 3 s), thay tốc đánh cộng dồn cho mình (Nhịp Phép, D-162).
+## (bậc 1: 2,5% / tầng — D-301 bỏ bậc 2% cũ — tối đa 8 tầng, giữ 3 s), thay tốc đánh cộng dồn cho mình (Nhịp Phép, D-162).
 func test_D_300_myra_innate_hits_stack_slow_on_target_up_to_8() -> void:
 	var w: World = _world()
 	var m: Entity = _myra(w)
@@ -150,7 +151,7 @@ func test_D_300_myra_innate_hits_stack_slow_on_target_up_to_8() -> void:
 	assert_eq(most, 8, "tối đa 8 tầng")
 	assert_eq(_stacks(m), 0, "không còn cộng cho bản thân")
 	assert_near(m.stats.get_stat(StatId.Id.ATTACK_SPEED), speed, EPS, "không tăng tốc đánh")
-	assert_near(foe.stats.get_stat(StatId.Id.MOVEMENT_SPEED), 300.0 * (1.0 - 8 * 0.02), 0.5, "bậc 1: chậm 2% mỗi tầng")
+	assert_near(foe.stats.get_stat(StatId.Id.MOVEMENT_SPEED), 300.0 * (1.0 - 8 * 0.025), 0.5, "bậc 1: chậm 2,5% mỗi tầng")
 
 
 func test_D_300_myra_innate_slow_stays_per_target_and_expires() -> void:

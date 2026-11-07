@@ -186,7 +186,7 @@ Mọi con số trong EffectDef có thể là số hoặc **tên giá trị** c�
 ```
 AbilityDef
   id, display_name, icon
-  slot: INNATE | Q | W | R        # R = ultimate 3 cấp; INNATE tự lên 6 bậc (ABL-11)
+  slot: INNATE | Q | W | R        # R = ultimate 3 cấp; INNATE 5 bậc nâng bằng điểm (ABL-11, D-301)
   max_rank: 6 | 5 | 3
   targeting: PASSIVE | NO_TARGET | UNIT | POINT | DIRECTION
   target_filter: ENEMY | ALLY | SELF ... + loại đơn vị được nhắm

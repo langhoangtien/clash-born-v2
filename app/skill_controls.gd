@@ -6,7 +6,7 @@ extends RefCounted
 ## - Cấp 20 hiện bảng chọn talent (TAL-01).
 
 const SLOTS: Array[int] = [AbilityDef.Slot.Q, AbilityDef.Slot.W, AbilityDef.Slot.R]
-const LEVEL_SLOTS: Array[int] = [AbilityDef.Slot.Q, AbilityDef.Slot.W, AbilityDef.Slot.R, Command.ATTRIBUTES]
+const LEVEL_SLOTS: Array[int] = [AbilityDef.Slot.Q, AbilityDef.Slot.W, AbilityDef.Slot.R, Command.ATTRIBUTES, AbilityDef.Slot.INNATE]
 
 var world: World
 var hero: Entity
@@ -48,7 +48,8 @@ func refresh() -> void:
 		var can_level: bool = Progression.level_problem(world, hero, SLOTS[i]) == Command.Reject.NONE
 		view.append([a.rank if a != null else 0, cd, ok, can_level, AbilityDef.RANKS[SLOTS[i] as AbilityDef.Slot]])
 		art.append(a.def.art_id if a != null else &"")
-	buttons.show_view(view, art, Progression.level_problem(world, hero, Command.ATTRIBUTES) == Command.Reject.NONE)  # D-263
+	buttons.show_view(view, art, Progression.level_problem(world, hero, Command.ATTRIBUTES) == Command.Reject.NONE,
+		Progression.level_problem(world, hero, AbilityDef.Slot.INNATE) == Command.Reject.NONE)  # D-263, D-301
 	var want_talent: bool = hero.talent_slot < 0 and hero.stats.level() >= world.balance.talent_level
 	var options: Array = talent_options() if want_talent else []
 	if want_talent and (not talents.visible or options != _talent_view):  # D-300: cộng chiêu sau cấp 20 thì có thêm lựa chọn

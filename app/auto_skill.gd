@@ -8,6 +8,7 @@ const UPGRADE_SLOTS: Dictionary = {
 	HeroDef.Upgrade.W: AbilityDef.Slot.W,
 	HeroDef.Upgrade.R: AbilityDef.Slot.R,
 	HeroDef.Upgrade.ATTRIBUTES: Command.ATTRIBUTES,
+	HeroDef.Upgrade.INNATE: AbilityDef.Slot.INNATE,  # D-301
 }
 
 
@@ -21,7 +22,7 @@ static func pick(world: World, hero: Entity, order: Array[HeroDef.Upgrade]) -> i
 		wanted[slot] = wanted.get(slot, 0) + 1
 		if _current(hero, slot) < wanted[slot] and Progression.level_problem(world, hero, slot) == Command.Reject.NONE:
 			return slot
-	for slot: int in [AbilityDef.Slot.R, AbilityDef.Slot.Q, AbilityDef.Slot.W, Command.ATTRIBUTES]:
+	for slot: int in [AbilityDef.Slot.R, AbilityDef.Slot.Q, AbilityDef.Slot.W, AbilityDef.Slot.INNATE, Command.ATTRIBUTES]:
 		if Progression.level_problem(world, hero, slot) == Command.Reject.NONE:
 			return slot
 	return -2

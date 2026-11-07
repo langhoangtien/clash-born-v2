@@ -1,10 +1,7 @@
 class_name Progression
 extends RefCounted
-## Lên cấp hero (ABL-04, ABL-11, STAT-04): XP, điểm kỹ năng, đổi điểm lấy thuộc tính, nội tại
-## tự lên bậc. Lên cấp cộng máu/mana hiện tại đúng phần tối đa tăng thêm.
-
-## ABL-11: cấp hero mở bậc nội tại 1..6.
-const INNATE_LEVELS: Array[int] = [1, 4, 8, 12, 16, 20]
+## Lên cấp hero (ABL-04, ABL-11, STAT-04): XP, điểm kỹ năng, đổi điểm lấy thuộc tính. Nội tại nâng bằng điểm như
+## Q/W (D-301). Lên cấp cộng máu/mana hiện tại đúng phần tối đa tăng thêm.
 ## ABL-04: cấp hero tối thiểu để R lên bậc 1..3.
 const ULTIMATE_LEVELS: Array[int] = [6, 11, 16]
 
@@ -27,10 +24,6 @@ static func add_xp(world: World, hero: Entity, amount: float) -> void:
 static func _level_up(world: World, hero: Entity) -> void:
 	_apply_level(hero, hero.stats.level() + 1, hero.attribute_bonus_count, world.balance.attribute_bonus)
 	hero.skill_points += 1
-	var innate: AbilityInstance = Abilities.of(hero, AbilityDef.Slot.INNATE)
-	var rank: int = INNATE_LEVELS.filter(func(l: int) -> bool: return hero.stats.level() >= l).size()
-	if innate != null and innate.rank != rank:
-		Abilities.set_rank(world, hero, innate, rank)
 	world.emit(&"level_up", hero.id, hero.id, hero.stats.level())
 
 
@@ -71,7 +64,7 @@ static func level_problem(world: World, hero: Entity, slot: int) -> Command.Reje
 	if slot == Command.ATTRIBUTES:
 		return Command.Reject.NONE if hero.attribute_bonus_count < world.balance.attribute_bonus_max else Command.Reject.CANNOT_LEVEL
 	var a: AbilityInstance = Abilities.of(hero, slot)
-	if a == null or slot == AbilityDef.Slot.INNATE or a.rank >= a.def.expected_ranks():
+	if a == null or a.rank >= a.def.expected_ranks():  # D-301: nội tại cũng nâng bằng điểm (bậc n ở cấp 2n − 1)
 		return Command.Reject.CANNOT_LEVEL
 	var need: int = ULTIMATE_LEVELS[a.rank] if slot == AbilityDef.Slot.R else 2 * (a.rank + 1) - 1
 	return Command.Reject.NONE if hero.stats.level() >= need else Command.Reject.CANNOT_LEVEL

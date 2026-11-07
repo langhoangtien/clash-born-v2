@@ -10,8 +10,8 @@
 ## Khung chung (luật ở GAME_RULES mục ABL, TAL)
 
 - Mỗi hero có 3 skill: **Q** và **W** (5 cấp), **R** là ultimate (3 cấp), cộng một
-  **nội tại** (bị động) có sẵn từ đầu, tự lên 6 bậc ở hero cấp 1/4/8/12/16/20,
-  không tốn điểm (ABL-11).
+  **nội tại** (bị động) nâng bằng điểm như Q/W, 5 bậc ở hero cấp 1/3/5/7/9; chưa cộng thì chưa có tác dụng
+  (ABL-11, D-301 — trước tự lên 6 bậc theo cấp hero; bỏ bậc đầu).
 - Lên cấp hero nhận 1 điểm. Q/W cấp n cần hero cấp 2n−1 (1, 3, 5, 7, 9).
   R cần hero cấp 6 / 11 / 16. Điểm cũng có thể đổi lấy **+2 mọi thuộc tính**
   (tối đa 7 lần). 13 điểm skill + 7 điểm thuộc tính = 20 cấp.
@@ -81,11 +81,11 @@ BAT 1.7, mỗi cấp +1.5 Nhanh nhẹn, +1.5 Trí tuệ (D-133).
 
 ### Nội tại — Đòn Chấn Động (kiểu Faceless Void)
 
-| Bậc (hero cấp) | 1 (1) | 2 (4) | 3 (8) | 4 (12) | 5 (16) | 6 (20) |
-|---|---:|---:|---:|---:|---:|---:|
-| Xác suất (PRD) | 15% | 17% | 19% | 21% | 23% | 25% |
-| Sát thương vật lý thêm | 30 | 40 | 50 | 60 | 70 | 80 |
-| Choáng (giây) | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1.0 |
+| Bậc (cộng điểm, hero cấp tối thiểu — D-301) | 1 (1) | 2 (3) | 3 (5) | 4 (7) | 5 (9) |
+|---|---:|---:|---:|---:|---:|
+| Xác suất (PRD) | 17% | 19% | 21% | 23% | 25% |
+| Sát thương vật lý thêm | 40 | 50 | 60 | 70 | 80 |
+| Choáng (giây) | 0.6 | 0.7 | 0.8 | 0.9 | 1.0 |
 
 Đòn đánh trúng hero/lính/quái (không phải công trình) có xác suất choáng và gây
 thêm sát thương. Không có thời gian chờ (bash của Brakk; mỗi nguồn bash tự khai báo, D-63).
@@ -144,10 +144,10 @@ sát thương phép (ST-11). Hồi máu chia đều mỗi 0.5 s.
 
 ### Nội tại — Băng Giá (D-300, thay Nhịp Phép — người chơi: nữ hoàng băng)
 
-| Bậc (hero cấp) | 1 (1) | 2 (4) | 3 (8) | 4 (12) | 5 (16) | 6 (20) |
-|---|---:|---:|---:|---:|---:|---:|
-| Làm chậm mỗi tầng | 2% | 2.5% | 3% | 3.5% | 4% | 4.5% |
-| Tối đa tầng | 8 | 8 | 8 | 8 | 8 | 8 |
+| Bậc (cộng điểm, hero cấp tối thiểu — D-301) | 1 (1) | 2 (3) | 3 (5) | 4 (7) | 5 (9) |
+|---|---:|---:|---:|---:|---:|
+| Làm chậm mỗi tầng | 2.5% | 3% | 3.5% | 4% | 4.5% |
+| Tối đa tầng | 8 | 8 | 8 | 8 | 8 |
 
 Mỗi đòn đánh trúng cộng 1 tầng làm chậm **lên mục tiêu** (giữ 3 s, trúng lại thì làm mới). Tầng nằm trên từng
 mục tiêu — đổi mục tiêu không mất tầng trên mục tiêu cũ. Làm chậm ít hơn tốc đánh cũ (+5–10% / tầng, 15 tầng).
@@ -204,10 +204,10 @@ Cận chiến (tầm 150), thuộc tính chính Nhanh nhẹn. Ẩn mình, áp s�
 
 ### Nội tại — Tử Kiếm (kiểu Phantom Assassin)
 
-| Bậc (hero cấp) | 1 (1) | 2 (4) | 3 (8) | 4 (12) | 5 (16) | 6 (20) |
-|---|---:|---:|---:|---:|---:|---:|
-| Xác suất chí mạng (PRD) | 10% | 12% | 14% | 16% | 18% | 20% |
-| Hệ số chí mạng | 1.6× | 1.8× | 2.0× | 2.2× | 2.4× | 2.6× |
+| Bậc (cộng điểm, hero cấp tối thiểu — D-301) | 1 (1) | 2 (3) | 3 (5) | 4 (7) | 5 (9) |
+|---|---:|---:|---:|---:|---:|
+| Xác suất chí mạng (PRD) | 12% | 14% | 16% | 18% | 20% |
+| Hệ số chí mạng | 1.8× | 2.0× | 2.2× | 2.4× | 2.6× |
 
 Chí mạng theo CMB-07: chỉ nhân sát thương vật lý của đòn đánh, không nhân đòn
 phục kích của W. Không chí mạng lên công trình.
@@ -275,10 +275,10 @@ khống chế mạnh và phá các hiệu ứng có lợi của đối thủ. Ch
 
 ### Nội tại — Hút Trí Tuệ (kiểu Slark, hút Trí tuệ)
 
-| Bậc (hero cấp) | 1 (1) | 2 (4) | 3 (8) | 4 (12) | 5 (16) | 6 (20) |
-|---|---:|---:|---:|---:|---:|---:|
-| Trí tuệ hút mỗi đòn | 1 | 1 | 2 | 2 | 3 | 3 |
-| Thời gian (giây) | 20 | 20 | 25 | 25 | 30 | 30 |
+| Bậc (cộng điểm, hero cấp tối thiểu — D-301) | 1 (1) | 2 (3) | 3 (5) | 4 (7) | 5 (9) |
+|---|---:|---:|---:|---:|---:|
+| Trí tuệ hút mỗi đòn | 1 | 2 | 2 | 3 | 3 |
+| Thời gian (giây) | 20 | 25 | 25 | 30 | 30 |
 
 Mỗi đòn đánh trúng **hero** địch: hero địch −x Trí tuệ, Vexa +x Trí tuệ, mỗi lần là
 một bản riêng hết hạn riêng (INDEPENDENT). Không bị thanh tẩy (`dispel: NONE`).
@@ -334,7 +334,7 @@ bị tước gây thêm sát thương phép. Sau đó làm chậm.
 Đánh gần, Sức mạnh, BAT 1.7, đẩy trụ bằng đòn đánh (kiểu Alchemist). D-122. Mỗi cấp +1.4 Nhanh nhẹn (D-133).
 
 ### Nội tại — Sức Mạnh Giả Kim
-+15 / 20 / 25 / 30 / 35 / 35 sát thương (bậc ở cấp 1, 4, 8, 12, 16, 20).
++20 / 25 / 30 / 35 / 35 sát thương (5 bậc cộng điểm ở hero cấp 1 / 3 / 5 / 7 / 9 — D-301).
 
 ### Q — Vũng Axit (chọn điểm, tầm 900)
 Vùng bán kính 400 trong 10 s, 10 / 20 / 30 / 40 / 50 sát thương phép mỗi giây, không giảm giáp.
@@ -410,9 +410,9 @@ AGI 18 (+1.9), INT 15 (+2.3) — số gốc do Claude đặt theo Brakk / Gorran
 ép đấu tay đôi, mạnh dần qua các trận Quyết Đấu thắng.
 
 ### Nội tại — Khiên Chắn (D-143)
-Đòn đánh thường nhắm vào hiệp sĩ có 8 / 10 / 12 / 14 / 16 / 18% (PRD) bị khiên hất ngược: hiệp sĩ không
-nhận gì, kẻ đánh lãnh 50 / 60 / 70 / 80 / 90 / 100% đòn đó trước giáp (CMB-15). Bậc theo cấp hero
-1 / 4 / 8 / 12 / 16 / 20.
+Đòn đánh thường nhắm vào hiệp sĩ có 10 / 12 / 14 / 16 / 18% (PRD) bị khiên hất ngược: hiệp sĩ không
+nhận gì, kẻ đánh lãnh 60 / 70 / 80 / 90 / 100% đòn đó trước giáp (CMB-15). 5 bậc cộng điểm ở hero cấp
+1 / 3 / 5 / 7 / 9 (D-301).
 
 ### Q — Xung Phong
 +30 / 35 / 40 / 45 / 50% tốc chạy 5 s. Hồi 18 / 17 / 16 / 15 / 14 s, 40 mana. Không giải khống chế.

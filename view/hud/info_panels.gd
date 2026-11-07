@@ -86,7 +86,7 @@ func talent_rect(slot: int) -> Rect2:
 
 
 func can_level(slot: int) -> bool:
-	return slot != AbilityDef.Slot.INNATE and Progression.level_problem(world, hero, slot) == Command.Reject.NONE
+	return Progression.level_problem(world, hero, slot) == Command.Reject.NONE  # D-301: nội tại cũng nâng bằng điểm
 
 
 func can_pick(slot: int) -> bool:

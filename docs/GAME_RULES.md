@@ -315,9 +315,10 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 ## ABL — Kỹ năng
 
 - `ABL-01` Mỗi hero có 3 ô nâng bằng điểm: **Q**, **W** (tối đa cấp 5) và **R** —
-  ultimate (tối đa cấp 3); cộng một ô **nội tại** (innate) không tốn điểm (ABL-11).
-- `ABL-11` Nội tại là kỹ năng bị động có sẵn từ cấp 1, **tự lên cấp** theo cấp hero:
-  bậc 1–6 ở hero cấp 1 / 4 / 8 / 12 / 16 / 20. Mảng giá trị của nội tại có 6 phần tử.
+  ultimate (tối đa cấp 3); cộng một ô **nội tại** (innate, tối đa cấp 5) cũng nâng bằng điểm (ABL-11, D-301).
+- `ABL-11` (D-301, người chơi) Nội tại là kỹ năng bị động **nâng bằng điểm** như Q/W: bậc n (1–5) khi hero đạt cấp
+  `2n − 1` (1 / 3 / 5 / 7 / 9). Chưa cộng điểm nào thì nội tại chưa có tác dụng. Mảng giá trị của nội tại có 5 phần tử
+  (bỏ bậc 1 cũ của bản tự lên 6 bậc theo cấp hero 1 / 4 / 8 / 12 / 16 / 20).
 - `ABL-12` Q hoặc W cũng có thể là bị động (`targeting: PASSIVE`), nâng bằng điểm như
   skill thường. Bị động không tốn mana, không hồi chiêu trừ khi khai báo (ví dụ bash
   có thời gian chờ).
@@ -327,8 +328,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `ABL-03` Đang tung chiêu (`cast_time` > 0) mà bị STUNNED/SILENCED (hoặc mục tiêu biến mất
   trước khi chiêu ra): hủy, **không mất mana, không tính hồi chiêu** (D-240). Chiêu đã ra rồi
   mới bị ngắt (vd đang lướt, ABL-08) thì mana / hồi chiêu đã tính.
-- `ABL-04` Lên cấp hero nhận 1 điểm. Điểm dùng để: nâng Q/W lên cấp n khi hero
-  đạt cấp `2n − 1`; nâng R lên cấp 1/2/3 khi hero đạt cấp 6/11/16; hoặc đổi lấy
+- `ABL-04` Lên cấp hero nhận 1 điểm. Điểm dùng để: nâng Q/W / nội tại lên cấp n khi hero
+  đạt cấp `2n − 1` (D-301); nâng R lên cấp 1/2/3 khi hero đạt cấp 6/11/16; hoặc đổi lấy
   `attribute_bonus` mọi thuộc tính (tối đa `attribute_bonus_max` lần). Điểm chưa
   dùng được giữ lại. Cấp 1 có sẵn 1 điểm; cộng điểm được cả khi chờ hồi sinh (lệnh
   `LEVEL_UP`, không đổi lệnh đang làm). Lên cấp / cộng thuộc tính: máu và mana hiện tại
@@ -628,7 +629,7 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 ability_cast, ability_finished, effect_applied, effect_removed, unit_died,
 kill_credited, structure_destroyed, unit_spawned, gold_changed, level_up,
 skill_leveled, talent_chosen, dash_finished, projectile_hit, item_used,
-knockback_finished, dispelled, attack_target_changed, innate_ranked, mana_burned,
+knockback_finished, dispelled, attack_target_changed, mana_burned,
 lethal_damage, reincarnated, recall_started, recall_cancelled, recall_finished, duel_started,
 duel_ended, attack_deflected, teleported`. `gold_changed` (D-240): hero last hit lính / quái (ECO-01), kẻ gây = hero, đối tượng = con bị hạ, lượng = vàng. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
 `effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `removed` (hành động RemoveEffect), `dispelled`, `owner_died`.

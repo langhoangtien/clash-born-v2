@@ -35,6 +35,7 @@ func _vexa(w: World, ranks: Array[int] = [0, 0, 0]) -> Entity:
 	for i: int in range(3):
 		if ranks[i] > 0:
 			Abilities.set_rank(w, v, Abilities.of(v, [Slot.Q, Slot.W, Slot.R][i]), ranks[i])
+	Abilities.set_rank(w, v, Abilities.of(v, Slot.INNATE), 1)  # D-301: nội tại phải cộng điểm
 	v.mana = 5000.0
 	return v
 
@@ -115,8 +116,8 @@ func _has(e: Entity, id: StringName) -> EffectInstance:
 func test_vexa_data_matches_design_tables() -> void:
 	_world()
 	var innate: Dictionary = _values(Slot.INNATE)
-	_check_values(innate[&"drain"], [1.0, 1.0, 2.0, 2.0, 3.0, 3.0])
-	_check_values(innate[&"duration"], [20.0, 20.0, 25.0, 25.0, 30.0, 30.0])
+	_check_values(innate[&"drain"], [1.0, 2.0, 2.0, 3.0, 3.0])  # D-301
+	_check_values(innate[&"duration"], [20.0, 25.0, 25.0, 30.0, 30.0])
 	var q: Dictionary = _values(Slot.Q)
 	_check_values(q[&"hex_duration"], [1.5, 2.0, 2.5, 3.0, 3.5])
 	_check_values(q[&"cooldown"], [20.0, 18.0, 16.0, 14.0, 12.0])

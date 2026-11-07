@@ -446,6 +446,8 @@ static func _upgrade_slot(u: HeroDef.Upgrade) -> int:
 			return AbilityDef.Slot.W
 		HeroDef.Upgrade.R:
 			return AbilityDef.Slot.R
+		HeroDef.Upgrade.INNATE:  # D-301
+			return AbilityDef.Slot.INNATE
 	return Command.ATTRIBUTES
 
 

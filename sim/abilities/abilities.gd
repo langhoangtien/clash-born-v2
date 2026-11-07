@@ -14,10 +14,7 @@ static func setup_hero(world: World, e: Entity, def: HeroDef) -> void:
 		var a: AbilityInstance = AbilityInstance.new()
 		a.def = pair[1]
 		a.slot = pair[0]
-		e.abilities.append(a)
-	var innate: AbilityInstance = of(e, AbilityDef.Slot.INNATE)
-	if innate != null:
-		set_rank(world, e, innate, 1)  # ABL-11: nội tại có từ cấp 1
+		e.abilities.append(a)  # ABL-11 (D-301): nội tại bậc 0 tới khi cộng điểm
 
 
 static func of(e: Entity, slot: int) -> AbilityInstance:

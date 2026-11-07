@@ -8,7 +8,7 @@ enum Team { ENEMY, ALLY, SELF, ANY }
 enum BotUsage { DISABLE, POKE, FINISH, ENGAGE, ESCAPE, SELF_DEFENSE, TEAMFIGHT }  # BOT-13
 
 ## Số phần tử của mảng giá trị theo ô (ABL-01, ABL-11). Đồ không có cấp.
-const RANKS: Dictionary[Slot, int] = {Slot.INNATE: 6, Slot.Q: 5, Slot.W: 5, Slot.R: 3, Slot.ITEM: 1}
+const RANKS: Dictionary[Slot, int] = {Slot.INNATE: 5, Slot.Q: 5, Slot.W: 5, Slot.R: 3, Slot.ITEM: 1}
 ## Tên giá trị mà hệ thống kỹ năng đọc trực tiếp (ABL-02).
 const SYSTEM_VALUES: PackedStringArray = ["cooldown", "mana", "cast_range"]
 
