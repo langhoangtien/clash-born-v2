@@ -14,6 +14,7 @@ var hero: Entity
 var recorder: PerfRecorder
 var files: PerfFiles = PerfFiles.new()
 var panel: PerfExportPanel
+var uploader: PerfUpload
 var _last_flush: int = 0
 var _ended: bool = false
 
@@ -98,6 +99,7 @@ func _show(summary: String, status: String) -> void:
 		panel.save_csv.connect(func() -> void: _save(PerfReport.csv(recorder, 0), ".csv", "*.csv ; CSV"))
 		panel.save_json.connect(func() -> void: _save(PerfReport.json(recorder), ".json", "*.json ; JSON"))
 		panel.copy_summary.connect(_copy)
+		panel.upload.connect(_upload)
 		panel.closed.connect(func() -> void: panel.visible = false)
 	panel.show_report(summary, status)
 
@@ -111,6 +113,16 @@ func _copy() -> void:
 	if recorder != null:
 		DisplayServer.clipboard_set(PerfReport.summary_text(recorder))
 		panel.set_status(true, "Đã chép tóm tắt — dán vào chat")
+
+
+## D-287: gửi log trận lên máy chủ kèm ghi chú.
+func _upload(note: String) -> void:
+	if recorder == null:
+		return
+	if uploader == null:
+		uploader = PerfUpload.new()
+		add_child(uploader)
+	uploader.send(&"log", note, PerfReport.summary_text(recorder), PerfReport.data(recorder), panel.set_status)
 
 
 ## Bối cảnh trận lúc ghi dòng / lúc giật: bộ đếm FrameProbe + số đơn vị theo loại + bộ nhớ.

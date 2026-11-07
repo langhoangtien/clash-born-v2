@@ -129,4 +129,9 @@ func csv() -> String:
 
 
 func json(meta: Dictionary) -> String:
-	return JSON.stringify({"meta": meta, "segments": rows(), "compare": compare()}, "\t")
+	return JSON.stringify(data(meta), "\t")
+
+
+## Nội dung JSON (dùng chung cho file và gửi lên máy chủ, D-287).
+func data(meta: Dictionary) -> Dictionary:
+	return {"meta": meta, "segments": rows(), "compare": compare()}

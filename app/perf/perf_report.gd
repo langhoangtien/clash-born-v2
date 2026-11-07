@@ -67,12 +67,16 @@ static func csv(r: PerfRecorder, from: int, header: bool = true) -> String:
 
 
 static func json(r: PerfRecorder) -> String:
+	return JSON.stringify(data(r), "\t")
+
+
+## Nội dung JSON (dùng chung cho file và gửi lên máy chủ, D-287).
+static func data(r: PerfRecorder) -> Dictionary:
 	var rows: Array = []
 	for row: PackedStringArray in r.rows:
 		rows.append(Array(row))
-	return JSON.stringify({"meta": r.meta, "summary": summary(r), "markers": r.markers, "spikes": r.spikes,
-		"big_spikes": r.big_spikes,
-		"columns": Array(PerfRecorder.COLUMNS), "rows": rows}, "\t")
+	return {"meta": r.meta, "summary": summary(r), "markers": r.markers, "spikes": r.spikes,
+		"big_spikes": r.big_spikes, "columns": Array(PerfRecorder.COLUMNS), "rows": rows}
 
 
 ## Vài chục dòng chữ để dán thẳng vào chat.

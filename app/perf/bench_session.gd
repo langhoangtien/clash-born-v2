@@ -23,6 +23,7 @@ var hero: Entity
 var result: BenchResult = BenchResult.new()
 var files: PerfFiles = PerfFiles.new()
 var panel: PerfExportPanel
+var uploader: PerfUpload
 var _state: State = State.LOAD
 var _t0: int = 0
 var _index: int = -1
@@ -138,6 +139,10 @@ func _show(summary: String, status: String, meta: Dictionary) -> void:
 	panel.copy_summary.connect(func() -> void:
 		DisplayServer.clipboard_set(summary)
 		panel.set_status(true, "Đã chép kết quả — dán vào chat"))
+	uploader = PerfUpload.new()
+	add_child(uploader)
+	panel.upload.connect(func(note: String) -> void:
+		uploader.send(&"bench", note, summary, result.data(meta), panel.set_status))  # D-287
 	panel.closed.connect(func() -> void: get_tree().change_scene_to_file("res://app/main.tscn"))
 	panel.show_report(summary, status, "Benchmark A/B")
 

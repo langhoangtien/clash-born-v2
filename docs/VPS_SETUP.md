@@ -50,9 +50,9 @@ Cấu trúc trên VPS:
 
 ```bash
 useradd --system --home /srv/clashborn --shell /usr/sbin/nologin clashborn
-mkdir -p /srv/clashborn/www /srv/clashborn/incoming /etc/clashborn
+mkdir -p /srv/clashborn/www /srv/clashborn/incoming /srv/clashborn/reports /etc/clashborn
 git clone https://github.com/langhoangtien/clash-born-v2.git /srv/clashborn/repo   # repo riêng: dùng deploy key chỉ đọc
-chown -R clashborn:clashborn /srv/clashborn/www /srv/clashborn/incoming
+chown -R clashborn:clashborn /srv/clashborn/www /srv/clashborn/incoming /srv/clashborn/reports
 ```
 
 Repo **riêng tư**: tạo deploy key **chỉ đọc** (`ssh-keygen -t ed25519`, thêm khóa công khai ở GitHub → repo →
@@ -152,7 +152,20 @@ Báo lại cho người dùng: domain chạy HTTPS, `/api/health` ok, mã đã t
   ```
   App chỉ mời cập nhật khi `code` **lớn hơn** bản đang cài → quay lại chỉ có tác dụng với người chưa lên bản lỗi;
   cách chắc hơn là phiên cloud build lại một bản mới (số lớn hơn) đã sửa lỗi.
-- Dung lượng: 5 APK ≈ 500 MB.
+- Dung lượng: 5 APK ≈ 500 MB (APK 65 MB từ D-286). Báo cáo hiệu năng: tối đa 200 file × ≤ 4 MB.
+- **Báo cáo hiệu năng (D-287)**: game gửi `POST /api/report` (không cần mã, nginx giới hạn 6 lần / phút / IP, máy
+  chủ kiểm cỡ + dạng, giữ 200 bản mới nhất trong `/srv/clashborn/reports/` — ngoài `www/`, không ai xem được qua
+  web). Đọc: `GET /api/reports`, `GET /api/reports/<mã|latest>` (cần mã bí mật; phía cloud dùng
+  `tools/fetch_reports.sh`). Không lưu IP. Test: `python3 -m unittest discover -s tools/vps -p 'test_*.py'`.
+  **Cập nhật lần đầu lên D-287** (thư mục phải có trước khi khởi động lại, vì service ghi được vào nó):
+  ```bash
+  cd /srv/clashborn/repo && git pull
+  install -d -o clashborn -g clashborn /srv/clashborn/reports
+  cp tools/vps/clashborn-upload.service /etc/systemd/system/ && systemctl daemon-reload
+  systemctl restart clashborn-upload
+  cp tools/vps/nginx-clashborn.conf /etc/nginx/sites-available/clashborn.quest && nginx -t && systemctl reload nginx
+  curl -s -X POST https://clashborn.quest/api/report -d '{}'   # → {"error": "thiếu kind (bench | log) hoặc data"}
+  ```
 
 ## 8. Phía cloud (phiên Claude Code build game — để biết, không làm trên VPS)
 

@@ -9,10 +9,13 @@ API (mọi lệnh ghi cần header  Authorization: Bearer <mã trong /etc/clashb
                                          trỏ www/download/clashborn.apk tới bản mới, giữ KEEP bản gần nhất.
   POST /api/site                      → giải nén incoming/site.tar.gz thành trang web (không đụng releases/,
                                          version.json, download/, play/).
+Báo cáo hiệu năng (D-287, xem reports.py): POST /api/report (game gửi, KHÔNG cần mã), GET /api/reports[/<id>] (cần mã).
 Chạy:  python3 upload_server.py --root /srv/clashborn --port 8787
 """
 import argparse, errno, hashlib, hmac, json, os, re, shutil, tarfile, tempfile
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+import reports
 
 APK_NAME = re.compile(r"^clashborn-0\.1\.\d{1,6}\.apk$")
 UPLOAD_NAMES = re.compile(r"^(clashborn-0\.1\.\d{1,6}\.apk|site\.tar\.gz)$")
@@ -136,9 +139,27 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         if self.path == "/api/health":
-            self._send(200, {"ok": True})
-        else:
-            self._send(404, {"error": "không có"})
+            return self._send(200, {"ok": True})
+        if not self.path.startswith("/api/reports"):
+            return self._send(404, {"error": "không có"})
+        if not self._authorized():
+            return self._send(401, {"error": "sai mã"})
+        if self.path == "/api/reports":
+            return self._send(200, {"reports": reports.listing(ROOT)})
+        try:
+            self._send(200, reports.get(ROOT, self.path.removeprefix("/api/reports/")))
+        except KeyError:
+            self._send(404, {"error": "không có báo cáo này"})
+
+    def _report(self) -> None:
+        """D-287: game gửi báo cáo hiệu năng — không cần mã; kiểm cỡ + dạng."""
+        size = int(self.headers.get("Content-Length", "-1"))
+        if size <= 0 or size > reports.MAX_BYTES:
+            return self._send(413, {"error": "kích thước không hợp lệ"})
+        try:
+            self._send(200, reports.save(ROOT, reports.parse(self.rfile.read(size))))
+        except ValueError as e:
+            self._send(400, {"error": str(e)})
 
     def do_PUT(self) -> None:
         if not self._authorized():
@@ -167,6 +188,8 @@ class Handler(BaseHTTPRequestHandler):
         self._send(200, {"file": name, "size": size, "sha256": sha256_of(os.path.join(inc, name))})
 
     def do_POST(self) -> None:
+        if self.path == "/api/report":
+            return self._report()
         if not self._authorized():
             return self._send(401, {"error": "sai mã"})
         try:
