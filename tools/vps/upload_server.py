@@ -122,6 +122,17 @@ def publish_site() -> dict:
         shutil.rmtree(stage, ignore_errors=True)
 
 
+def health() -> dict:
+    """D-288: kèm commit đang chạy (update.sh ghi <root>/deployed) để phiên cloud tự kiểm VPS đã cập nhật chưa."""
+    out = {"ok": True}
+    try:
+        with open(os.path.join(ROOT, "deployed"), encoding="utf-8") as f:
+            out["commit"] = f.read().strip()[:40]
+    except OSError:
+        pass
+    return out
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "clashborn-upload"
 
@@ -139,7 +150,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         if self.path == "/api/health":
-            return self._send(200, {"ok": True})
+            return self._send(200, health())
         if not self.path.startswith("/api/reports"):
             return self._send(404, {"error": "không có"})
         if not self._authorized():

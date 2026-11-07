@@ -140,9 +140,7 @@ Báo lại cho người dùng: domain chạy HTTPS, `/api/health` ok, mã đã t
 
 ## 7. Vận hành
 
-- Cập nhật script: `cd /srv/clashborn/repo && git pull && systemctl restart clashborn-upload` (đổi cấu hình nginx thì
-  chép lại `tools/vps/nginx-clashborn.conf` → `/etc/nginx/sites-available/clashborn.quest`, `nginx -t`, rồi
-  `systemctl reload nginx`).
+- Cập nhật: `sudo bash /srv/clashborn/repo/tools/vps/update.sh` (xem dưới).
 - Nhật ký: `journalctl -u clashborn-upload -n 100`, `/var/log/nginx/error.log`.
 - **Quay lại bản trước** (bản mới lỗi): trong `releases/` vẫn còn 4 bản cũ.
   ```bash
@@ -157,15 +155,9 @@ Báo lại cho người dùng: domain chạy HTTPS, `/api/health` ok, mã đã t
   chủ kiểm cỡ + dạng, giữ 200 bản mới nhất trong `/srv/clashborn/reports/` — ngoài `www/`, không ai xem được qua
   web). Đọc: `GET /api/reports`, `GET /api/reports/<mã|latest>` (cần mã bí mật; phía cloud dùng
   `tools/fetch_reports.sh`). Không lưu IP. Test: `python3 -m unittest discover -s tools/vps -p 'test_*.py'`.
-  **Cập nhật lần đầu lên D-287** (thư mục phải có trước khi khởi động lại, vì service ghi được vào nó):
-  ```bash
-  cd /srv/clashborn/repo && git pull
-  install -d -o clashborn -g clashborn /srv/clashborn/reports
-  cp tools/vps/clashborn-upload.service /etc/systemd/system/ && systemctl daemon-reload
-  systemctl restart clashborn-upload
-  cp tools/vps/nginx-clashborn.conf /etc/nginx/sites-available/clashborn.quest && nginx -t && systemctl reload nginx
-  curl -s -X POST https://clashborn.quest/api/report -d '{}'   # → {"error": "thiếu kind (bench | log) hoặc data"}
-  ```
+- **Cập nhật VPS bằng một lệnh (D-288)**: `sudo bash /srv/clashborn/repo/tools/vps/update.sh` — kéo code, chạy test máy
+  chủ, tạo thư mục, cài service / nginx khi đổi (sao lưu, `nginx -t` lỗi thì trả lại), khởi động lại, ghi commit vào
+  `/srv/clashborn/deployed` (hiện ở `/api/health`). Việc riêng từng đợt: `docs/VPS_TASKS.md`.
 
 ## 8. Phía cloud (phiên Claude Code build game — để biết, không làm trên VPS)
 

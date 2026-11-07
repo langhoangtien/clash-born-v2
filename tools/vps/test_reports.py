@@ -68,6 +68,22 @@ class ReportServerTest(unittest.TestCase):
         self.assertEqual(self.call("POST", "/api/report", big)[0], 413)
         self.assertEqual(self.call("GET", "/api/reports", token="bi-mat")[1]["reports"], [], "không lưu báo cáo hỏng")
 
+    def test_D_288_hostile_reports_do_not_break_server(self) -> None:
+        deep = b'{"kind": "log", "data": {"x": ' + b"[" * 200000 + b"]" * 200000 + b"}}"
+        self.assertEqual(self.call("POST", "/api/report", deep)[0], 400, "lồng sâu: từ chối, không sập luồng")
+        odd = {"kind": "bench", "data": {"meta": 5}, "note": "<script>alert(1)</script>"}
+        self.assertEqual(self.call("POST", "/api/report", odd)[0], 200)
+        self.call("POST", "/api/report", {"kind": "log", "data": {"meta": {"version": ["x"], "device": {"a": 1}}}})
+        code, got = self.call("GET", "/api/reports", token="bi-mat")
+        self.assertEqual(code, 200, "meta sai kiểu không làm hỏng danh sách")
+        self.assertEqual([(r["version"], r["device"]) for r in got["reports"]], [("", ""), ("", "")])
+        self.assertEqual(self.call("GET", "/api/health")[0], 200, "máy chủ vẫn chạy")
+
+    def test_D_288_health_reports_deployed_commit(self) -> None:
+        with open(os.path.join(self.tmp.name, "deployed"), "w") as f:
+            f.write("abc1234\n")
+        self.assertEqual(self.call("GET", "/api/health")[1], {"ok": True, "commit": "abc1234"})
+
     def test_D_287_note_is_trimmed(self) -> None:
         self.call("POST", "/api/report", self.report(note="  " + "x" * 900))
         got = self.call("GET", "/api/reports/latest", token="bi-mat")[1]

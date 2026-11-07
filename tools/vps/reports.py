@@ -6,6 +6,7 @@ Game gửi (không cần mã bí mật — mã nhét trong APK thì ai cũng l�
 Đọc (cần mã bí mật):
   GET /api/reports              → [{id, received, kind, version, device, note}] mới nhất trước
   GET /api/reports/<id|latest>  → cả báo cáo
+Dữ liệu chỉ được json.loads (không bao giờ chạy), lưu dưới tên do máy chủ đặt, đọc lại không tin kiểu (D-288).
 Chặn lạm dụng: tối đa MAX_BYTES / lần, chỉ nhận JSON đúng dạng, giữ KEEP báo cáo (cũ nhất tự xóa); nginx giới hạn
 số lần gửi / IP. Lưu ở <root>/reports/ (ngoài www/ — người ngoài không xem được). Không lưu IP.
 """
@@ -39,7 +40,7 @@ def parse(body: bytes) -> dict:
     """Kiểm tra dạng báo cáo; sai thì ValueError."""
     try:
         info = json.loads(body)
-    except (ValueError, UnicodeDecodeError):
+    except (ValueError, UnicodeDecodeError, RecursionError):  # D-288: lồng quá sâu cũng là JSON hỏng
         raise ValueError("không phải JSON")
     if not isinstance(info, dict) or info.get("kind") not in PREFIX or not isinstance(info.get("data"), dict):
         raise ValueError("thiếu kind (bench | log) hoặc data")
@@ -74,10 +75,15 @@ def listing(root: str) -> list:
     out = []
     for name in reversed(_files(root)):
         r = _load(root, name)
-        meta = r.get("data", {}).get("meta", {})
-        out.append({"id": r["id"], "received": r["received"], "kind": r["kind"], "version": meta.get("version", ""),
-                    "device": meta.get("device", ""), "note": r.get("note", "")})
+        meta = r["data"].get("meta")
+        meta = meta if isinstance(meta, dict) else {}  # D-288: dữ liệu do người ngoài gửi — không tin kiểu
+        out.append({"id": r["id"], "received": r["received"], "kind": r["kind"], "version": _text(meta.get("version")),
+                    "device": _text(meta.get("device")), "note": r["note"]})
     return out
+
+
+def _text(v) -> str:
+    return v[:80] if isinstance(v, str) else ""
 
 
 def get(root: str, rid: str) -> dict:
