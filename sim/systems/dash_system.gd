@@ -3,6 +3,7 @@ extends SimSystem
 ## Pha 6, trước MovementSystem (ABL-08, D-74): đơn vị đang lướt đi thẳng về phía mục tiêu,
 ## xuyên qua đơn vị khác; chạm mép thì chạy `on_arrive`. Dừng sớm (không chạy) khi gặp
 ## vật cản, bị STUNNED, mục tiêu mất hoặc không còn nhắm được. Lướt xong thì làm lệnh đã chờ.
+## ABL-08c: cú lướt `over_terrain` không dừng vì địa hình; kết thúc mà kẹt thì về chỗ đi được gần nhất.
 
 ## Hằng số kỹ thuật: bước dò địa hình dọc đường lướt.
 const TERRAIN_STEP: float = 16.0
@@ -17,21 +18,21 @@ func run(world: World) -> void:
 func _advance(world: World, e: Entity) -> void:
 	var target: Entity = world.find_entity(e.dash.target_id)
 	if not e.alive or Rules.has_state(e, UnitState.Id.STUNNED) or not _valid(e, target):
-		_end(e)
+		_end(world, e)
 		return
 	var gap: float = maxf(0.0, Rules.edge_distance(e, target))
 	var dir: Vector2 = (target.position - e.position).normalized()
 	var move: float = minf(e.dash.speed * SimClock.TICK_SECONDS, gap)
-	var reached: float = clear_reach(world, e, dir, move)
+	var reached: float = move if e.dash.over_terrain else clear_reach(world, e, dir, move)
 	e.position += dir * reached
 	if dir != Vector2.ZERO:
 		e.facing = dir
 	if reached < move - 0.001:
-		_end(e)  # vướng vách / rừng / thân trụ
+		_end(world, e)  # vướng vách / rừng / thân trụ
 		return
 	if move >= gap - 0.001:
 		var d: DashState = e.dash
-		_end(e)
+		_end(world, e)
 		world.emit(&"dash_arrived", e.id, target.id)
 		ActionRunner.run(world, d.actions, d.ctx.with_target(target), d.source_id)
 
@@ -56,7 +57,9 @@ static func clear_reach(world: World, e: Entity, dir: Vector2, move: float) -> f
 	return move
 
 
-static func _end(e: Entity) -> void:
+static func _end(world: World, e: Entity) -> void:
+	if e.dash.over_terrain and world.map != null:  # ABL-08c: không đứng lại trong vách
+		e.position = world.navigation(e.radius).nearest_clear(e.position)
 	e.dash = null
 	Effects.refresh_states(e)
 	if e.queued_order != null:

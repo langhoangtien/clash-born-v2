@@ -245,7 +245,7 @@ Bốn hero và các món đồ đầu tiên cần đúng các action sau (CONTEN
 | `ApplyEffect(target, effect, duration)` / `RemoveEffect` | hầu hết skill |
 | `AreaAt(center, radius, delay, actions)` | Brakk Q, Myra W, Myra R |
 | `SpawnProjectile(direction, range, width, speed, pierce, on_hit)` | Myra Q |
-| `Dash(to_target, speed, on_arrive, untargetable)` | Noctis Q, Duy Anh R (ABL-08b) |
+| `Dash(to_target, speed, on_arrive, untargetable, over_terrain)` | Noctis Q, Duy Anh R (ABL-08b, ABL-08c) |
 | `Duel(duration, reflect, win/lose_damage, win_gold, duel_effect, self_effect, on_start)` | Duy Anh R (DUL, D-135) |
 | `ZoneAction(delay, radius, duration, interval, actions)` — world.zones, TriggerSystem cho tác dụng (ABL-17) | Myra R II |
 | `ModifyCooldown(slot, amount)` | Noctis Q II |

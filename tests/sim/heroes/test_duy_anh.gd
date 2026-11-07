@@ -205,6 +205,15 @@ func test_ABL_08b_duel_dash_stays_targetable() -> void:
 	assert_true(seen, "có lướt")
 
 
+func test_ABL_08c_duel_dash_flies_over_terrain() -> void:
+	var r: AbilityDef = load("res://content/abilities/duy_anh_r.tres") as AbilityDef
+	var dash: DashAction = null
+	for a: ActionDef in r.on_cast:
+		if a is DashAction:
+			dash = a
+	assert_true(dash != null and dash.over_terrain, "R của Duy Anh bay qua vách / rừng / thân trụ (D-292)")
+
+
 func test_DUL_02_duel_starts_both_dueling_with_strike_and_haste() -> void:
 	var w: World = _world()
 	var k: Entity = _knight(w, [0, 0, 1])

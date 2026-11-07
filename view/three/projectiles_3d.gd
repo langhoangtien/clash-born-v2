@@ -8,7 +8,9 @@ extends Node3D
 const LAUNCH: float = 1.0  ## độ cao lúc bắn (đơn vị 3D) — hằng số hiển thị
 const LAND: float = 0.6  ## độ cao lúc trúng
 
-var _items: Dictionary = {}  # Projectile → [Node3D, Vector2 điểm bắn, cfg, Vector2 điểm đích gần nhất, Vector3 trước]
+var _items: Dictionary = {}  # Projectile → [Node3D, Vector2 điểm bắn, cfg, Vector2 điểm đích gần nhất, Vector3 trước, khóa pool]
+## D-294: nút đạn đã bay xong (ẩn) theo khóa loại + phe — viên sau lấy lại, khỏi dựng mô hình / vật liệu mới.
+var _pool: Dictionary[String, Array] = {}
 
 
 func sync(world: World) -> void:
@@ -20,7 +22,9 @@ func sync(world: World) -> void:
 		_place(world, p)
 	for p: Projectile in _items.keys():
 		if not seen.has(p):
-			(_items[p][0] as Node3D).queue_free()
+			var node: Node3D = _items[p][0]
+			node.visible = false
+			_pool.get_or_add(_items[p][5], []).append(node)
 			_items.erase(p)
 
 
@@ -50,6 +54,12 @@ func _make(world: World, p: Projectile) -> Array:
 	var cfg: Dictionary = config_of(world, p)
 	var e: Entity = world.find_entity(p.source_id)
 	var team: int = e.team if e != null else -1
+	var key: String = "%s|%s|%s|%d" % [cfg.get("model", ""), cfg.get("shape", "orb"), cfg.get("color", ""), team]
+	var free: Array = _pool.get(key, [])
+	if not free.is_empty():
+		var reused: Node3D = free.pop_back()
+		reused.visible = true
+		return [reused, p.position, cfg, p.position, Vector3.INF, key]
 	var node: Node3D
 	if cfg.has("model"):
 		node = ModelLibrary.static_scene(cfg["model"], team).instantiate() as Node3D
@@ -57,7 +67,7 @@ func _make(world: World, p: Projectile) -> Array:
 	else:
 		node = _primitive(cfg.get("shape", "orb"), _color(cfg.get("color", "#ffffff"), team))
 	add_child(node)
-	return [node, p.position, cfg, p.position, Vector3.INF]
+	return [node, p.position, cfg, p.position, Vector3.INF, key]
 
 
 func _color(spec: String, team: int) -> Color:

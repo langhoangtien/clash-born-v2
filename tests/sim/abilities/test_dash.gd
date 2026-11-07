@@ -167,6 +167,74 @@ func test_ABL_08_stops_at_terrain_without_hitting() -> void:
 	assert_true(w.navigation(me.radius).point_is_clear(me.position), "không đứng trong vật cản")
 
 
+## Hướng có vách / rừng cách `origin` 200–600 px (thân 24 không lọt); trả [hướng, khoảng cách tới vách].
+func _wall_dir(origin: Vector2) -> Array:
+	for k: int in range(32):
+		var d: Vector2 = Vector2.from_angle(TAU * k / 32.0)
+		for step: int in range(4, 40):
+			if _map.clearance_at(origin + d * step * 16.0) < DASHER_RADIUS:
+				if step * 16.0 >= 200.0 and step * 16.0 <= 600.0:
+					return [d, step * 16.0]
+				break
+	return []
+
+
+## Đặt mục tiêu sau vách, chỗ đi được (dò ra xa dần).
+func _beyond(w: World, origin: Vector2, dir: Vector2, wall: float) -> Vector2:
+	var nav: MapNavigation = w.navigation(DASHER_RADIUS)
+	for extra: int in range(2, 40):
+		var p: Vector2 = origin + dir * (wall + extra * 32.0)
+		if nav.point_is_clear(p):
+			return p
+	return Vector2.INF
+
+
+func test_ABL_08c_over_terrain_dash_crosses_wall_and_arrives() -> void:
+	var w: World = _world()
+	var origin: Vector2 = _origin()
+	var found: Array = _wall_dir(origin)
+	assert_false(found.is_empty(), "tìm được vách")
+	var at: Vector2 = _beyond(w, origin, found[0], found[1])
+	assert_true(at != Vector2.INF, "có chỗ đứng sau vách")
+	var me: Entity = _dasher(w, origin)
+	(me.abilities[0].def.on_cast[0] as DashAction).over_terrain = true
+	me.abilities[0].def.values[&"cast_range"] = PackedFloat32Array([2000, 2000, 2000, 2000, 2000])  # sau vách có thể xa > 1000
+	var foe: Entity = _unit(w, 1, at)
+	w.submit(Command.cast(me.id, Slot.Q, foe.id))
+	var n: int = _dash_until_done(w, me)
+	assert_near(foe.health, 900.0, EPS, "bay qua vách, tới nơi, gây sát thương (xa %.0f, %d tick, cách %.0f)" % [origin.distance_to(at), n, Rules.edge_distance(me, foe)])
+	assert_true(w.navigation(me.radius).point_is_clear(me.position), "đứng ở chỗ đi được")
+
+
+func test_ABL_08c_stunned_over_wall_lands_on_clear_ground() -> void:
+	var w: World = _world()
+	var origin: Vector2 = _origin()
+	var found: Array = _wall_dir(origin)
+	var at: Vector2 = _beyond(w, origin, found[0], found[1])
+	var me: Entity = _dasher(w, origin)
+	(me.abilities[0].def.on_cast[0] as DashAction).over_terrain = true
+	(me.abilities[0].def.on_cast[0] as DashAction).speed = "300"  # chậm: chắc chắn có tick đang ở trong vách
+	me.abilities[0].def.values[&"cast_range"] = PackedFloat32Array([2000, 2000, 2000, 2000, 2000])
+	var foe: Entity = _unit(w, 1, at)
+	w.submit(Command.cast(me.id, Slot.Q, foe.id))
+	var nav: MapNavigation = w.navigation(me.radius)
+	var inside: bool = false
+	for i: int in 200:
+		w.step()
+		if me.dash != null and not nav.point_is_clear(me.position):
+			inside = true
+			break
+	assert_true(inside, "có lúc đang bay trên vách")
+	var stun: EffectDef = EffectDef.new()
+	stun.id = &"test_stun"
+	stun.states = [UnitState.Id.STUNNED]
+	Effects.apply(w, me, stun, foe, {}, "1")
+	_steps(w, 2)
+	assert_true(me.dash == null, "bị choáng thì hết lướt")
+	assert_true(nav.point_is_clear(me.position), "rơi về chỗ đi được gần nhất, không kẹt trong vách")
+	assert_near(foe.health, 1000.0, EPS, "không tới nơi thì không gây sát thương")
+
+
 func test_ABL_08_stun_or_target_lost_stops_without_hit_or_refund() -> void:
 	var w: World = _world()
 	var me: Entity = _dasher(w, _origin())

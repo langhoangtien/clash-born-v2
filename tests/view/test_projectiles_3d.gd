@@ -53,3 +53,27 @@ func test_D_221_tower_shoots_rock() -> void:
 	pj.sync(r[0])
 	assert_eq(pj.shape_of(r[1]), "rock", "trụ bắn viên đá")
 	pj.free()
+
+
+## D-294: đạn bay xong giữ lại (ẩn) để dùng lại — tạo mô hình + vật liệu mỗi viên làm giật 10–30 ms trên máy tính
+## bảng (log L-0006, "đạn + sự kiện"); viên sau cùng loại, cùng phe lấy lại đúng nút đó.
+func test_D_294_projectile_nodes_reused() -> void:
+	var r: Array = _setup(&"tower", Entity.Kind.TOWER)
+	var w: World = r[0]
+	w.find_entity((r[1] as Projectile).source_id).tier = 1
+	var pj: Projectiles3D = Projectiles3D.new()
+	pj.sync(w)
+	var first: Node3D = pj.node_of(r[1])
+	w.projectiles.clear()
+	pj.sync(w)
+	assert_false(first.visible, "bay xong: ẩn, chưa xóa")
+	assert_eq(pj.count(), 0)
+	var again: Projectile = Projectile.new()
+	again.source_id = (r[1] as Projectile).source_id
+	again.target_id = (r[1] as Projectile).target_id
+	w.projectiles.append(again)
+	pj.sync(w)
+	assert_true(pj.node_of(again) == first, "viên sau cùng loại dùng lại nút cũ")
+	assert_true(first.visible)
+	assert_eq(pj.get_child_count(), 1, "không tạo nút mới")
+	pj.free()

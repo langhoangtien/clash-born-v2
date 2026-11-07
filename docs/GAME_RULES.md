@@ -358,6 +358,10 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   còn lại của ô `slot` trên đơn vị nhận; âm thì giảm, không xuống dưới 0 (sẵn sàng ngay).
 - `ABL-08b` (D-135) Cú lướt có cờ `untargetable` (mặc định bật). Tắt thì trong lúc lướt vẫn bị
   nhắm, vẫn nhận sát thương và khống chế như thường (Quyết Đấu).
+- `ABL-08c` (D-292) Cú lướt có cờ `over_terrain` (mặc định tắt). Bật thì bay qua vách đá, rừng và thân trụ:
+  không dừng vì địa hình (các lý do dừng khác của ABL-08 giữ nguyên). Lướt kết thúc vì bất cứ lý do gì (tới
+  nơi, bị choáng, mục tiêu mất) mà thân đang ở chỗ không đi được thì đặt về điểm đi được gần nhất cho thân
+  đó, **trước** khi chạy `on_arrive`. Dùng cho R của Duy Anh (người chơi duyệt).
 - `ABL-20` (D-135) Vùng hình quạt (`CONE`): đỉnh ở chủ kỹ năng, bán kính `radius`, góc mở
   `angle` (độ), giữa quạt theo hướng chọn lúc tung (không có thì hướng đang nhìn). Trúng đơn vị
   có mép thân trong bán kính và thân chạm trong góc; mỗi đơn vị một lần mỗi lần tung.

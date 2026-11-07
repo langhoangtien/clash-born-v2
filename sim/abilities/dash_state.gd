@@ -8,3 +8,4 @@ var actions: Array[ActionDef] = []
 var ctx: ExprContext
 var source_id: int
 var untargetable: bool = true
+var over_terrain: bool = false  # ABL-08c

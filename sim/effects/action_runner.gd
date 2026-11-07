@@ -253,6 +253,7 @@ static func _dash(world: World, a: DashAction, ctx: ExprContext, source_id: int)
 	d.ctx = ctx
 	d.source_id = source_id
 	d.untargetable = a.untargetable  # ABL-08b
+	d.over_terrain = a.over_terrain  # ABL-08c
 	owner.dash = d
 	owner.attack_phase = Entity.AttackPhase.NONE
 	Effects.refresh_states(owner)

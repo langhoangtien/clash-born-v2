@@ -6,6 +6,11 @@ extends Control
 ## Độ cao (m) điểm chiếu chữ nổi / biểu tượng Quyết Đấu trên mặt đất.
 const TEXT_HEIGHT: float = 1.8
 const ICON_HEIGHT: float = 2.6
+## D-293: khấc trên thanh máu tướng (chỉ là hình): khấc mảnh mỗi HP_TICK máu, khấc đậm cao hết thanh mỗi
+## HP_BIG_TICK máu (kiểu Dota / Liên Quân) — tướng càng trâu khấc càng dày.
+const HP_TICK: float = 100.0
+const HP_BIG_TICK: float = 1000.0
+const TICK_COLOR: Color = Color(0, 0, 0, 0.75)
 
 var view: MatchView3D
 
@@ -42,6 +47,10 @@ func _paint() -> void:
 		draw_rect(r.grow(2), Color(0, 0, 0, 0.7))
 		var frac: float = clampf(e.health / maxf(1.0, e.stats.get_stat(StatId.Id.MAX_HP)), 0.0, 1.0)
 		draw_rect(Rect2(r.position, Vector2(w * frac, h)), col)
+		if hero:
+			for k: Array in hp_ticks(e.stats.get_stat(StatId.Id.MAX_HP), w):
+				var big: bool = k[1]
+				draw_rect(Rect2(r.position + Vector2(k[0] - (1.0 if big else 0.5), 0), Vector2(2.0 if big else 1.0, h if big else h * 0.55)), TICK_COLOR)
 		var foot: Variant = view.foot_screen(e)
 		if foot != null:
 			StateMarks.draw(self, e, foot, (foot as Vector2).y - (at as Vector2).y, view.world.tick)
@@ -52,6 +61,16 @@ func _paint() -> void:
 		var c: Variant = view.ground_screen(d[0], ICON_HEIGHT)
 		if c != null:
 			draw_texture_rect(d[1], Rect2((c as Vector2) - Vector2(36, 36), Vector2(72, 72)), false, Color(1, 1, 1, d[2]))
+
+
+## D-293: vị trí khấc [x tính từ mép trái, đậm?] trên thanh rộng `width` cho máu tối đa `max_hp`.
+static func hp_ticks(max_hp: float, width: float) -> Array[Array]:
+	var out: Array[Array] = []
+	var n: int = ceili(max_hp / HP_TICK) - 1
+	for k: int in range(1, n + 1):
+		var hp: float = k * HP_TICK
+		out.append([width * hp / max_hp, is_zero_approx(fmod(hp, HP_BIG_TICK))])
+	return out
 
 
 ## STR-02: ổ khóa trên công trình đang khóa.
