@@ -63,7 +63,7 @@ func test_ABL_23_regen_reduced_only_when_positive() -> void:
 
 func test_EFF_08_frost_blade_slow_depends_on_target_melee() -> void:
 	var w: World = _world()
-	var me: Entity = _hero(w, 0, Vector2.ZERO, &"myra")
+	var me: Entity = _hero(w, 0, Vector2.ZERO, &"vexa")  # D-300: Myra nay tự làm chậm (bị động) — dùng tướng đánh xa khác
 	var melee: Entity = _hero(w, 1, Vector2(400, 0), &"brakk")
 	Items.give(w, me, _lib.items[&"frost_blade"])
 	w.step()

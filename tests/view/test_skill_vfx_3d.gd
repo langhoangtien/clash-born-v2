@@ -37,8 +37,8 @@ func test_D_247_recipe_parts_hits_and_cleanup() -> void:
 	fx.free()
 
 
-## D-250: vệt gió bám đường chạy của chủ chiêu suốt `life` (nay dùng cho cú lướt — R Duy Anh, Q Noctis); D-299: Q Duy Anh
-## (tăng tốc) đổi sang hào quang + làn gió đi theo suốt thời gian tăng tốc (người chơi: vệt cũ như cái đuôi).
+## D-250: vệt gió bám đường chạy của chủ chiêu suốt `life` (R Duy Anh, Q Noctis lướt; Q Duy Anh tăng tốc). D-300: Q Duy
+## Anh lại là tia gió (người chơi không muốn thêm hào quang dưới chân) nhưng dịu, uốn lượn.
 func test_D_250_trail_follows_caster_and_q_buff_follows_for_duration() -> void:
 	var s: Array = _setup()
 	var w: World = s[0]
@@ -54,34 +54,24 @@ func test_D_250_trail_follows_caster_and_q_buff_follows_for_duration() -> void:
 	fx.advance(2.0)
 	assert_eq(fx.kinds(), [], "hết vệt lướt: gỡ")
 	fx.on_event(w, GameEvent.make(&"ability_finished", w.tick, k.id, -1, AbilityDef.Slot.Q))
-	assert_eq(fx.kinds(), ["ring", "aura", "wisps"])
+	assert_eq(fx.kinds(), ["ring", "trail"])
 	fx.advance(4.0)
-	assert_eq(fx.kinds(), ["aura", "wisps"], "còn trong 5 s tăng tốc")
+	assert_eq(fx.kinds(), ["trail"], "còn trong 5 s tăng tốc")
 	fx.advance(1.5)
 	assert_eq(fx.kinds(), [], "hết tăng tốc: gỡ")
 	fx.free()
 
 
-func test_D_270_effect_textures_kept_between_casts() -> void:
-	SkillVfx3D.forget_textures_for_test()
-	var a: Texture2D = SkillVfx3D.texture("vfx_trail")
-	assert_true(a != null)
-	var t0: int = Time.get_ticks_usec()
-	var b: Texture2D = SkillVfx3D.texture("vfx_trail")
-	assert_eq(b, a, "lần tung sau dùng lại ảnh đã nạp, không đọc đĩa lại (log 0.1.457: W Duy Anh đứng 100–375 ms)")
-	assert_true(Time.get_ticks_usec() - t0 < 5000)
-	var mat: ShaderMaterial = SkillVfx3D._tint_material({"type": "trail", "tex": "vfx_trail"})
-	assert_eq(mat.get_shader_parameter("tex"), a, "vật liệu hiệu ứng dùng ảnh giữ sẵn")
-
-
-func test_D_270_all_recipe_textures_loaded_ahead() -> void:
-	SkillVfx3D.forget_textures_for_test()
-	var names: PackedStringArray = SkillVfx3D.recipe_textures()
-	assert_true(names.has("vfx_trail"), "đủ ảnh trong vfx.json (D-298: chỉ còn ảnh vệt gió)")
-	SkillVfx3D.load_textures()
-	for n: String in names:
-		assert_true(SkillVfx3D.has_texture(n), n)
-
+## D-300: vệt bám đường chạy vẽ bằng tia gió dịu (vfx_soft dạng 16) — không còn ảnh (D-270 nạp ảnh vệt đã bỏ).
+func test_D_300_trails_use_soft_wind_shader() -> void:
+	for key: String in SkillVfx3D.recipes():
+		if key.begins_with("_"):
+			continue
+		for part: Dictionary in SkillVfx3D.recipes()[key]["parts"]:
+			assert_false(part.has("tex"), "%s: không còn ảnh" % key)
+	var mat: ShaderMaterial = VfxParts.material({"type": "trail", "color": "#5d97ee"}, VfxParts.WIND)
+	assert_eq(mat.shader, VfxParts.SHADER)
+	assert_eq(mat.get_shader_parameter("mode"), VfxParts.WIND)
 
 
 ## D-296: mảnh dịu (shader, không ảnh) đặt ở chủ chiêu / điểm chọn (sự kiện mang `point`) / mục tiêu; hào quang

@@ -221,12 +221,14 @@ Người chơi: giống Liên Quân / MLBB nhưng **nhẹ nhàng, ít màu mè**
 - **Ưu tiên mặt đất**: vành loang, đĩa, sóng nằm trên đất (đọc được vùng tác dụng); phần đứng (cột sáng, đốm) mảnh
   và ngắn. Chiêu tức thời tan trong 0,3–0,9 s; buff dài là hào quang mảnh dưới chân, thở nhẹ.
 - **Nhiễu nhẹ** trong shader cho đỡ phẳng, không cần ảnh — APK nhẹ, đồng bộ giữa các tướng. Ảnh vẽ tay chỉ dùng khi
-  shader không làm được (vệt chém W, vệt gió Q của Duy Anh).
+  shader không làm được (D-300: hiện không còn ảnh nào).
 - Vùng chiêu trên đất (ZoneView3D, D-297) là vũng 3D mép loang không đều, gợn + bọt chạy (vùng tồn tại) hoặc vùng nạp lõi sáng lớn dần (vùng có độ trễ) — không viền tròn sắc. Khiên là bong bóng sáng rìa; buff dài thêm làn sáng bốc lên quanh người.
 - Hiệu ứng trạng thái (D-298) theo id hiệu ứng (mục `_effects`): lốc xoáy (Gậy Lốc Xoáy), vòng xích (trói — Rìu Xiềng
   Xích), cụm tinh thể băng đa giác (đóng băng Myra, D-299); thay dấu 2D tương ứng. Myra cả 3 chiêu tông băng, R có sao
   băng rơi. D-299: sao choáng 3D xoay trên đầu (mục `_states`), lốc xoáy nhấc tướng lên và xoay, hóa ếch là mô hình
-  ếch 3D (Tripo, không xương — nhảy tưng bằng code).
+  ếch 3D (Tripo, không xương — nhảy tưng bằng code). D-300: đóng băng = khối băng lăng trụ bọc người + tinh thể ở chân;
+  sao choáng chạy trên vòng tròn mảnh (kiểu Dota); vệt bám đường chạy (Q Duy Anh, cú lướt) là tia gió mảnh uốn lượn
+  (shader, không ảnh — hết ảnh vẽ tay trong hiệu ứng chiêu).
 - Dựng: mảnh trong `assets/vfx/vfx.json` (khóa = art_id kỹ năng; xem ghi chú đầu file), shader
   `view/three/vfx_soft.gdshader`, `VfxParts`, `SkillVfx3D`, đạn kỹ năng `SkillShots3D`. Xem trước trong cảnh trận:
   `xvfb-run -a godot --path . --resolution 1920x1080 -s tools/vfx_preview.gd -- --out=<thư mục> [--delay=0.15]`.

@@ -80,7 +80,7 @@ func _steps(w: World, n: int) -> void:
 
 func _stacks(m: Entity) -> int:
 	for inst: EffectInstance in m.effects:
-		if inst.def.id == &"myra_rhythm_stack":
+		if inst.def.id == &"myra_chill":
 			return inst.stacks
 	return 0
 
@@ -103,7 +103,7 @@ func _choose(w: World, m: Entity, slot: int) -> void:
 
 func test_myra_data_matches_design_tables() -> void:
 	_world()
-	_check_values(_values(Slot.INNATE)[&"attack_speed_per_stack"], [0.05, 0.06, 0.07, 0.08, 0.09, 0.10])
+	_check_values(_values(Slot.INNATE)[&"slow_per_stack"], [0.02, 0.025, 0.03, 0.035, 0.04, 0.045])  # D-300
 	var q: Dictionary = _values(Slot.Q)
 	_check_values(q[&"damage"], [90.0, 140.0, 190.0, 240.0, 290.0])
 	_check_values(q[&"slow"], [0.3, 0.3, 0.3, 0.3, 0.3])
@@ -129,8 +129,9 @@ func test_myra_data_matches_design_tables() -> void:
 	assert_near(_lib.heroes[&"myra"].stats.attack_range, 550.0, EPS)
 
 
-## D-162: tối đa 15 tầng (trước 8).
-func test_myra_innate_stacks_on_same_target_up_to_15() -> void:
+## D-300 (người chơi — nữ hoàng băng): bị động "Băng Giá" — mỗi đòn trúng cộng 1 tầng làm chậm lên MỤC TIÊU
+## (bậc 1: 2% / tầng, tối đa 8 tầng, giữ 3 s), thay tốc đánh cộng dồn cho mình (Nhịp Phép, D-162).
+func test_D_300_myra_innate_hits_stack_slow_on_target_up_to_8() -> void:
 	var w: World = _world()
 	var m: Entity = _myra(w)
 	var foe: Entity = _dummy(w, m.position + _lane_dir() * 400.0)
@@ -138,52 +139,40 @@ func test_myra_innate_stacks_on_same_target_up_to_15() -> void:
 	w.submit(Command.attack(m.id, foe.id))
 	var hits: int = 0
 	var most: int = 0
-	for i: int in range(30 * 25):
+	for i: int in range(30 * 20):
 		w.step()
 		for ev: GameEvent in w.events:
 			if ev.type == &"attack_landed" and ev.source_id == m.id:
 				hits += 1
-				assert_eq(_stacks(m), mini(hits, 15), "mỗi đòn trúng thêm 1 tầng")
-		most = maxi(most, _stacks(m))
-	assert_true(hits > 16)
-	assert_eq(most, 15, "tối đa 15 tầng")
-	assert_near(m.stats.get_stat(StatId.Id.ATTACK_SPEED), speed + 15 * 0.05, EPS, "bậc 1: +5% mỗi tầng")
+				assert_eq(_stacks(foe), mini(hits, 8), "mỗi đòn trúng thêm 1 tầng lên mục tiêu")
+		most = maxi(most, _stacks(foe))
+	assert_true(hits > 9)
+	assert_eq(most, 8, "tối đa 8 tầng")
+	assert_eq(_stacks(m), 0, "không còn cộng cho bản thân")
+	assert_near(m.stats.get_stat(StatId.Id.ATTACK_SPEED), speed, EPS, "không tăng tốc đánh")
+	assert_near(foe.stats.get_stat(StatId.Id.MOVEMENT_SPEED), 300.0 * (1.0 - 8 * 0.02), 0.5, "bậc 1: chậm 2% mỗi tầng")
 
 
-func test_myra_innate_changing_target_clears_stacks() -> void:
+func test_D_300_myra_innate_slow_stays_per_target_and_expires() -> void:
 	var w: World = _world()
 	var m: Entity = _myra(w)
 	var a: Entity = _dummy(w, m.position + _lane_dir() * 400.0)
 	var b: Entity = _dummy(w, m.position + _lane_dir().orthogonal() * 400.0)
 	w.submit(Command.attack(m.id, a.id))
-	while _stacks(m) < 3:
+	for i: int in 30 * 10:
+		if _stacks(a) >= 3:
+			break
 		w.step()
-	while not w.projectiles.is_empty() or m.attack_phase == Entity.AttackPhase.WINDUP:
-		w.step()
-	assert_eq(_stacks(m), 3)
 	w.submit(Command.attack(m.id, b.id))
-	var changed: bool = false
-	while m.attack_phase != Entity.AttackPhase.WINDUP or m.attack_target_id != b.id:
+	for i: int in 30 * 10:
+		if _stacks(b) >= 1:
+			break
 		w.step()
-		changed = changed or w.events.any(func(ev: GameEvent) -> bool: return ev.type == &"attack_target_changed" and ev.source_id == m.id and ev.target_id == b.id)
-	assert_true(changed, "vung đòn vào mục tiêu khác thì phát attack_target_changed")
-	assert_eq(_stacks(m), 0, "đổi mục tiêu thì mất hết tầng ngay lúc bắt đầu vung")
-	while _stacks(m) == 0:
-		w.step()
-	assert_eq(_stacks(m), 1, "đòn trúng mục tiêu mới thì bắt đầu lại từ 1")
-
-
-func test_myra_innate_stacks_expire_and_count_on_towers() -> void:
-	var w: World = _world()
-	var m: Entity = _myra(w)
-	var tower: Entity = _dummy(w, m.position + _lane_dir() * 400.0, Entity.Kind.TOWER)
-	w.submit(Command.attack(m.id, tower.id))
-	while _stacks(m) < 2:
-		w.step()
-	assert_eq(_stacks(m), 2, "đánh trụ cũng cộng tầng")
+	assert_eq(_stacks(b), 1, "mục tiêu mới có tầng riêng")
+	assert_true(_stacks(a) >= 3, "đổi mục tiêu: tầng trên mục tiêu cũ vẫn còn")
 	w.submit(Command.stop(m.id))
-	_steps(w, 4 * 30 + 45)
-	assert_eq(_stacks(m), 0, "4 s không đánh trúng thì hết")
+	_steps(w, 3 * 30 + 45)
+	assert_eq(_stacks(a) + _stacks(b), 0, "3 s không trúng thì hết")
 
 
 func test_myra_q_first_enemy_damage_and_slow() -> void:
@@ -200,7 +189,8 @@ func test_myra_q_first_enemy_damage_and_slow() -> void:
 	assert_eq(slowed.end_tick - slowed.start_tick, 60, "cấp 3: chậm 2 s")
 
 
-## D-298 / D-299: Myra ba chiêu băng — W đóng băng (hiệu ứng myra_freeze, hình băng) nhưng tác dụng như trói (người chơi).
+## D-298 / D-300: Myra ba chiêu băng — W đóng băng kiểu Dota (người chơi): không đi, không đánh, vẫn dùng chiêu
+## (ROOTED + DISARMED, hiệu ứng myra_freeze), không phải choáng.
 func test_myra_w_freezes_after_delay() -> void:
 	var w: World = _world()
 	var m: Entity = _myra(w, [0, 2, 0])
@@ -212,8 +202,10 @@ func test_myra_w_freezes_after_delay() -> void:
 	assert_near(inside.health, 100000.0, EPS, "chưa tới 0.8 s")
 	w.step()
 	assert_near(inside.health, 100000.0 - _lost(w, inside, 80.0), EPS, "cấp 2: 80 phép (D-162)")
-	assert_true(Rules.has_state(inside, UnitState.Id.ROOTED), "đóng băng giữ chân")
-	assert_false(Rules.has_state(inside, UnitState.Id.STUNNED), "không choáng (D-299)")
+	assert_true(Rules.has_state(inside, UnitState.Id.ROOTED), "đóng băng: không đi được")
+	assert_true(Rules.has_state(inside, UnitState.Id.DISARMED), "đóng băng: không đánh được (D-300)")
+	assert_false(Rules.has_state(inside, UnitState.Id.STUNNED), "vẫn dùng chiêu được — không phải choáng")
+	assert_false(Rules.has_state(inside, UnitState.Id.SILENCED))
 	assert_eq(_effect_ticks(inside, UnitState.Id.ROOTED), roundi(1.25 * 30))
 	assert_eq(inside.effects[-1].def.id, &"myra_freeze")
 	assert_near(outside.health, 100000.0, EPS)

@@ -14,6 +14,7 @@ var input: MatchInput
 var buttons: SkillButtons
 var indicator: AimIndicator
 var talents: TalentPanel
+var _talent_view: Array = []  # lựa chọn talent đang hiện
 var items: ItemButtons
 
 
@@ -49,8 +50,10 @@ func refresh() -> void:
 		art.append(a.def.art_id if a != null else &"")
 	buttons.show_view(view, art, Progression.level_problem(world, hero, Command.ATTRIBUTES) == Command.Reject.NONE)  # D-263
 	var want_talent: bool = hero.talent_slot < 0 and hero.stats.level() >= world.balance.talent_level
-	if want_talent and not talents.visible:
-		talents.show_options(talent_options())
+	var options: Array = talent_options() if want_talent else []
+	if want_talent and (not talents.visible or options != _talent_view):  # D-300: cộng chiêu sau cấp 20 thì có thêm lựa chọn
+		_talent_view = options
+		talents.show_options(options)
 	elif not want_talent and talents.visible:
 		talents.visible = false
 	if indicator.active:

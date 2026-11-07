@@ -2,7 +2,8 @@ class_name SpeedTrail3D
 extends Node3D
 ## D-256: vệt tốc độ kiểu Triệu Vân (Liên Quân) — các dải sáng bám theo **đường đã chạy** (lưu vị trí vài phần mười
 ## giây gần nhất), đầu sáng sát người, đuôi mảnh dần rồi tan; rẽ thì vệt cong theo. D-298: bỏ đốm sáng rơi lại
-## (hạt — nghi gây giật lúc tạo, L-0009). Chỉ là hình, SkillVfx3D cấp vị trí mỗi khung.
+## (hạt — gây giật lúc tạo, L-0009). D-300: vẽ bằng tia gió dịu (vfx_soft dạng 16: đường mảnh uốn lượn trong dải),
+## không dùng ảnh. Chỉ là hình, SkillVfx3D cấp vị trí mỗi khung.
 
 const MIN_STEP: float = 0.04  ## hằng số kỹ thuật: khoảng cách tối thiểu (đơn vị 3D) giữa hai điểm lưu
 
@@ -18,10 +19,13 @@ static func make(part: Dictionary, material: ShaderMaterial) -> SpeedTrail3D:
 	var t: SpeedTrail3D = SpeedTrail3D.new()
 	t._part = part
 	t._material = material
-	for h: float in part.get("ribbons", [0.4]):
+	var ribbons: Array = part.get("ribbons", [0.4])
+	for k: int in ribbons.size():
+		var h: float = ribbons[k]
 		var mi: MeshInstance3D = MeshInstance3D.new()
 		mi.mesh = ImmediateMesh.new()
 		mi.material_override = material
+		mi.set_instance_shader_parameter("phase", k * 2.1)  # D-300: mỗi dải gió uốn lệch nhau
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		mi.set_meta("height", h)
 		t.add_child(mi)

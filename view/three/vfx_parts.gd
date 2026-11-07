@@ -9,16 +9,19 @@ extends RefCounted
 ##   của vùng tồn tại / vùng có độ trễ (ZoneView3D, cỡ theo vùng trong SIM) · D-298: tornado — lốc xoáy (radius px,
 ##   tall m), chains — vòng xích dưới chân, ice — khối băng bao người, cone — vệt quét hình quạt (radius, angle độ);
 ##   meteors — sao băng rơi xuống vùng có độ trễ (count, ZoneView3D) · D-299: crystals — cụm tinh thể băng nhọn
-##   quanh chân (radius px, count, tall m), stars — sao choáng xoay trên đầu (radius px, height m).
+##   quanh chân (radius px, count, tall m), stars — sao choáng xoay trên đầu (radius px, height m) · D-300: iceblock —
+##   khối băng lăng trụ 6 mặt bọc người (radius px, tall m).
 ## Chung: color, edge (lõi), alpha (độ đục tối đa — giữ ≤ 0,85 để 5v5 không chói), life (giây hoặc tên giá trị kỹ năng),
 ## height (m), at = caster | point | target.
 
 const SHADER: Shader = preload("res://view/three/vfx_soft.gdshader")
 const MODES: Dictionary[String, int] = {"ring": 0, "disc": 1, "pillar": 2, "glow": 3, "aura": 4, "shot": 5, "wave": 6,
 	"zone": 7, "pending": 8, "dome": 9, "wisps": 10, "tornado": 11, "chains": 12, "cone": 13, "ice": 14,
-	"crystals": 14, "stars": 15}
+	"crystals": 14, "stars": 15, "iceblock": 14}
+## D-300: dạng tia gió cho vệt bám đường chạy (`trail`, SpeedTrail3D).
+const WIND: int = 16
 ## Mảnh đi theo đơn vị suốt `life` (SkillVfx3D, EffectVfx3D).
-const FOLLOW: Array[String] = ["aura", "dome", "wisps", "tornado", "chains", "ice", "crystals", "stars"]
+const FOLLOW: Array[String] = ["aura", "dome", "wisps", "tornado", "chains", "ice", "crystals", "stars", "iceblock"]
 ## Độ cao mặc định (m) của mảnh nằm trên đất — trên mặt đất một chút để không chìm.
 const GROUND_LIFT: float = 0.05
 
@@ -40,6 +43,15 @@ static func make(part: Dictionary, size: Variant) -> MeshInstance3D:
 			sph.rings = 12
 			mi.mesh = sph
 			mi.position.y = float(size) * 0.55
+		"iceblock":
+			var block: CylinderMesh = CylinderMesh.new()
+			block.bottom_radius = float(size)
+			block.top_radius = float(size) * 0.82
+			block.height = float(part.get("tall", 1.9))
+			block.radial_segments = 6
+			block.rings = 1
+			mi.mesh = block
+			mi.position.y = block.height * 0.5
 		"crystals":
 			mi.mesh = crystals(float(size), int(part.get("count", 7)), float(part.get("tall", 1.1)))
 		"pillar", "wisps", "tornado":

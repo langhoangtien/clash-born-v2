@@ -10,7 +10,7 @@
 [sub_resource type="Resource" id="Resource_3rq15"]
 script = ExtResource("6_jk6qh")
 effect = ExtResource("5_u3t72")
-target = 0
+target = 3
 
 [sub_resource type="Resource" id="Resource_bxc8u"]
 script = ExtResource("4_ew7g7")

@@ -25,7 +25,7 @@ món đồ ở cuối tài liệu thì gần như mọi hero, món đồ sau ch�
 | Hero | Vai trò | Cơ chế mang vào game |
 |---|---|---|
 | Brakk · Thiết Quyền | Đỡ đòn, cận chiến, Sức mạnh | Vùng quanh mình, STUNNED, khiên (SHIELD), GHOST, hồi máu theo thời gian |
-| Myra · Pháp sư băng | Phép, đánh xa, Trí tuệ | Đạn định hướng (skillshot), vùng có độ trễ, làm chậm, đóng băng (ROOTED, D-299), SILENCED, vùng băng giá (talent) |
+| Myra · Pháp sư băng | Phép, đánh xa, Trí tuệ | Đạn định hướng (skillshot), vùng có độ trễ, làm chậm, đóng băng (ROOTED + DISARMED kiểu Dota, D-300), SILENCED, vùng băng giá (talent) |
 | Noctis · Sát Ảnh | Sát thủ, cận chiến, Nhanh nhẹn | Lướt (DASH, UNTARGETABLE), INVISIBLE, REVEALED, DISARMED, khuếch đại sát thương nhận vào, hồi chiêu khi hạ gục (talent) |
 | Vexa · Phù Thủy | Khống chế, đánh xa, Trí tuệ | HEXED (biến hình), đẩy lùi (KNOCKBACK), tước bỏ hiệu ứng có lợi (PURGE), skill xuyên miễn phép |
 
@@ -142,15 +142,15 @@ sát thương phép (ST-11). Hồi máu chia đều mỗi 0.5 s.
 
 Đánh xa (tầm 550), thuộc tính chính Trí tuệ, BAT 1.7 (D-162). Gây sát thương phép từ xa và khống chế.
 
-### Nội tại — Nhịp Phép (kiểu Troll Warlord)
+### Nội tại — Băng Giá (D-300, thay Nhịp Phép — người chơi: nữ hoàng băng)
 
 | Bậc (hero cấp) | 1 (1) | 2 (4) | 3 (8) | 4 (12) | 5 (16) | 6 (20) |
 |---|---:|---:|---:|---:|---:|---:|
-| Tốc đánh mỗi lần cộng dồn | +5% | +6% | +7% | +8% | +9% | +10% |
-| Tối đa cộng dồn (D-162) | 15 | 15 | 15 | 15 | 15 | 15 |
+| Làm chậm mỗi tầng | 2% | 2.5% | 3% | 3.5% | 4% | 4.5% |
+| Tối đa tầng | 8 | 8 | 8 | 8 | 8 | 8 |
 
-Mỗi đòn đánh trúng **cùng một mục tiêu** thêm 1 lần cộng dồn (giữ 4 s). Đổi mục
-tiêu thì mất hết (`removed_by attack_target_changed`), tính lúc bắt đầu vung vào mục tiêu khác (CMB-12). Đánh trụ cũng cộng.
+Mỗi đòn đánh trúng cộng 1 tầng làm chậm **lên mục tiêu** (giữ 3 s, trúng lại thì làm mới). Tầng nằm trên từng
+mục tiêu — đổi mục tiêu không mất tầng trên mục tiêu cũ. Làm chậm ít hơn tốc đánh cũ (+5–10% / tầng, 15 tầng).
 
 ### Q — Tia Băng (chọn hướng, đạn định hướng)
 
@@ -165,12 +165,12 @@ tiêu thì mất hết (`removed_by attack_target_changed`), tính lúc bắt đ
 Đạn bay thẳng 1000, rộng 120, tốc 1400, trúng kẻ địch **đầu tiên** (không phải
 công trình) thì dừng.
 
-### W — Vòng Băng (chọn điểm, vùng có độ trễ; D-298/299: đóng băng — hình băng, tác dụng như trói)
+### W — Vòng Băng (chọn điểm, vùng có độ trễ; D-300: đóng băng kiểu Dota — không đi, không đánh, vẫn dùng chiêu)
 
 | Cấp | 1 | 2 | 3 | 4 | 5 |
 |---|---:|---:|---:|---:|---:|
 | Sát thương phép (D-162) | 40 | 80 | 120 | 160 | 200 |
-| Đóng băng — giữ chân như trói (giây, D-299) | 1.0 | 1.25 | 1.5 | 1.75 | 2.0 |
+| Đóng băng — không đi, không đánh, vẫn dùng chiêu (giây, D-300) | 1.0 | 1.25 | 1.5 | 1.75 | 2.0 |
 | Hồi chiêu | 16 | 15 | 14 | 13 | 12 |
 | Mana | 100 | 110 | 120 | 130 | 140 |
 

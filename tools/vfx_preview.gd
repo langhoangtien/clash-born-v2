@@ -102,6 +102,12 @@ func _fire(w: World, slot: int) -> void:
 			s.direction = Vector2.UP
 			s.half_width = 60.0
 			w.skill_shots.append(s)
+	if slot == AbilityDef.Slot.Q:  # tia gió chỉ hiện khi chạy: dắt các tướng chạy một đường cong
+		view.skill_vfx.position_of = func(e: Entity) -> Vector3: return view.to_3d(e.position)
+		for step: int in 12:
+			for h: Entity in _casters:
+				h.position += Vector2(28, -16 * cos(step * 0.5))
+			view.skill_vfx.advance(0.04)
 	view.skill_vfx.advance(_delay)
 	_fired_at = _ready_frames
 

@@ -116,7 +116,7 @@ func _vfx(part: Dictionary) -> void:
 			var size: Variant = Vector2(0.4, 0.8) if part["type"] in ["shot", "wave"] else 0.3
 			_place(VfxParts.make(part, size))
 		"trail":
-			var t: SpeedTrail3D = SpeedTrail3D.make(part, SkillVfx3D._tint_material(part))
+			var t: SpeedTrail3D = SpeedTrail3D.make(part, VfxParts.material(part, VfxParts.WIND))
 			_place(t)
 			t.position = Vector3.ZERO
 			for k: int in 3:  # dựng dải + bật hạt để đường vẽ của chúng được biên dịch

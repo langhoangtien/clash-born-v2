@@ -7,17 +7,17 @@
 
 [sub_resource type="Resource" id="Resource_qltk2"]
 script = ExtResource("1_chy7v")
-stat = &"attack_speed"
-value = "attack_speed_per_stack"
+stat = &"movement_speed"
+op = 1
+value = "1 - slow_per_stack"
 
 [resource]
 script = ExtResource("3_lmi3c")
-duration = "4"
+duration = "3"
 stacking = 1
-max_stacks = 15
-tags = Array[StringName]([&"buff"])
+max_stacks = 8
+tags = Array[StringName]([&"debuff"])
 modifiers = Array[ExtResource("1_chy7v")]([SubResource("Resource_qltk2")])
-removed_by = Array[StringName]([&"attack_target_changed"])
-id = &"myra_rhythm_stack"
-display_name = "Nhịp Phép"
+id = &"myra_chill"
+display_name = "Băng Giá"
 art_id = &"myra_innate"

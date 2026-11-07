@@ -40,6 +40,6 @@ static func draw(ci: CanvasItem, e: Entity, at: Vector2, height: float, tick: in
 	if Rules.has_state(e, S.SILENCED):
 		ci.draw_arc(top, r * 0.55, 0, TAU, 16, Color(0.75, 0.45, 1.0), 4.0, true)
 		ci.draw_line(top + Vector2(-r, -r) * 0.4, top + Vector2(r, r) * 0.4, Color(0.75, 0.45, 1.0), 4.0)
-	if Rules.has_state(e, S.DISARMED):
+	if Rules.has_state(e, S.DISARMED) and not EffectVfx3D.covers(e, S.DISARMED):  # D-300: khối băng 3D
 		ci.draw_line(at + Vector2(-r, -r * 1.6), at + Vector2(r, -r * 0.4), Color(1, 0.3, 0.3), 4.0)
 		ci.draw_line(at + Vector2(r, -r * 1.6), at + Vector2(-r, -r * 0.4), Color(1, 0.3, 0.3), 4.0)

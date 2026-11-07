@@ -9,6 +9,8 @@
 //  D-298: 11 lốc xoáy (hình nón cụt, dải xoắn chạy lên) · 12 vòng xích dưới chân (mắt xích theo vòng) ·
 //  13 vệt quét hình quạt (lưỡi sáng quét qua góc `angle` rồi tan; phía trước = UV.y nhỏ) · 14 khối băng (cầu, mặt
 //  tinh thể theo ô, sáng rìa; D-299 dùng cho cụm tinh thể băng). 15 sao choáng xoay trên đầu (mặt phẳng ngang).
+//  D-300: 16 tia gió trên dải bám đường chạy (SpeedTrail3D: UV.x = tuổi 0 đầu → 1 đuôi, UV.y ngang dải) — một đường
+//  mảnh uốn lượn trong dải, mờ dần về đuôi (người chơi: vệt cũ thẳng tắp, đặc).
 shader_type spatial;
 render_mode unshaded, blend_mix, cull_disabled, depth_draw_never, shadows_disabled;
 
@@ -21,6 +23,8 @@ uniform float width = 0.1;
 uniform float from = 0.2;
 uniform bool billboard = false;
 uniform float angle = 1.3;  // D-298: nửa góc quạt (radian) cho dạng 13
+uniform float fade = 1.0;   // D-300: làm mờ cả mảnh (vệt gió tan cuối đời)
+instance uniform float phase = 0.0;  // D-300: lệch pha từng dải gió
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 
@@ -157,8 +161,9 @@ void fragment() {
 		core = fres * 0.7 + step(0.82, facet) * 0.4;
 	}
 	if (mode == 15) {
-		a = 0.0;
-		core = 0.0;
+		float track = exp(-pow((r - 0.6) / 0.05, 2.0));  // D-300: vòng tròn mảnh các sao chạy theo (kiểu Dota)
+		a = track * 0.45;
+		core = track * 0.3;
 		for (int k = 0; k < 3; k++) {
 			float ang = TIME * 2.4 + float(k) * 2.0944;
 			vec2 d = c - vec2(cos(ang), sin(ang)) * 0.6;
@@ -169,6 +174,14 @@ void fragment() {
 			core += shape * (1.0 - smoothstep(0.0, star_r, rr));
 		}
 	}
+	if (mode == 16) {
+		float age = UV.x;
+		float center = 0.5 + 0.28 * sin(age * 9.0 - TIME * 7.0 + phase);
+		float line = exp(-pow((UV.y - center) / 0.11, 2.0));
+		float wisp = 0.6 + 0.4 * noise(vec2(age * 6.0 - TIME * 3.0, phase));
+		a = line * pow(1.0 - age, 1.4) * smoothstep(0.0, 0.05, age) * wisp;
+		core = line * line * (1.0 - age);
+	}
 	ALBEDO = mix(color.rgb, edge.rgb, clamp(core, 0.0, 1.0) * 0.8);
-	ALPHA = clamp(a * alpha, 0.0, 1.0);
+	ALPHA = clamp(a * alpha * fade, 0.0, 1.0);
 }

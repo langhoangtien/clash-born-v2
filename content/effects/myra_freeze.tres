@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_eff")
 tags = Array[StringName]([&"debuff"])
-states = Array[int]([1])
+states = Array[int]([1, 3])
 id = &"myra_freeze"
 display_name = "Đóng băng"
 art_id = &"myra_w"

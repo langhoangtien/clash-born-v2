@@ -3,24 +3,17 @@ extends Node3D
 ## D-247: hiệu ứng chiêu 3D theo công thức dữ liệu (assets/vfx/vfx.json, khóa = art_id kỹ năng). Chỉ đọc World:
 ## `ability_finished` (chiêu ra, đúng lúc gây tác dụng) sinh các mảnh của công thức; `damage_taken` do chủ chiêu gây
 ## trong HIT_TICKS tick sau đó sinh tia lóe trên mục tiêu. Mảnh tự gỡ khi hết `life`. Code không biết tên chiêu.
-## `trail` (D-250, D-256): vệt tốc độ bám theo đường chạy của chủ chiêu suốt `life` (SpeedTrail3D), chỉ hiện khi chạy.
+## `trail` (D-250, D-256): vệt tốc độ bám theo đường chạy của chủ chiêu suốt `life` (SpeedTrail3D), chỉ hiện khi chạy;
+## D-300: vẽ bằng tia gió dịu (không ảnh — bỏ nạp ảnh D-270).
 ## D-298: bỏ `arc` (ảnh quạt vẽ tay, D-252) — W Duy Anh dùng vệt quét `cone` dựng bằng shader như các tướng khác.
 ## D-296: mảnh "dịu" dựng bằng shader (VfxParts: ring, disc, pillar, glow, aura, wave) đặt ở chủ chiêu / điểm chọn /
 ## mục tiêu; `aura` đi theo đơn vị suốt `life`. Tia lóe khi trúng (`hit`) là đốm dịu trộn alpha (trước: cộng sáng xuyên
 ## mọi vật → W Duy Anh chói mắt).
 
 const RECIPES: String = "res://assets/vfx/vfx.json"
-const TEXTURES: String = "res://assets/vfx/%s.png"
-const TINT_SHADER: Shader = preload("res://view/three/skill_tint.gdshader")
 const HIT_TICKS: int = 4  ## hằng số hiển thị: sát thương của chủ chiêu trong 4 tick sau khi chiêu ra coi là trúng chiêu
 
 static var _recipes: Dictionary = {}
-## D-270: ảnh hiệu ứng giữ suốt trận. Trước đây mỗi lần tung chiêu `load()` lại; hiệu ứng trước đã gỡ thì ảnh bị
-## thả khỏi bộ nhớ → đọc đĩa lại mỗi lần (W Duy Anh: ảnh 2048² ~50–70 ms máy chủ, 100–375 ms máy tính bảng).
-static var _textures: Dictionary[String, Texture2D] = {}
-## Khóa trong mảnh công thức (vfx.json) trỏ tới ảnh.
-const TEX_KEYS: Array[String] = ["tex", "glow", "sparks"]
-
 var _items: Array[Array] = []  # [Node3D, loại, tuổi (giây), part, id chủ chiêu]
 var _world: World
 ## Vị trí 3D đang vẽ của đơn vị (MatchView3D đặt = vị trí nội suy); mặc định theo vị trí sim.
@@ -32,41 +25,6 @@ static func recipes() -> Dictionary:
 	if _recipes.is_empty():
 		_recipes = JSON.parse_string(FileAccess.get_file_as_string(RECIPES))
 	return _recipes
-
-
-## D-270: vào trận nạp một lần mọi ảnh trong công thức.
-func _ready() -> void:
-	load_textures()
-
-
-static func texture(name: String) -> Texture2D:
-	if not _textures.has(name):
-		_textures[name] = load(TEXTURES % name) as Texture2D
-	return _textures[name]
-
-
-static func recipe_textures() -> PackedStringArray:
-	var out: PackedStringArray = PackedStringArray()
-	for key: String in recipes():
-		if recipes()[key] is Dictionary:
-			for part: Dictionary in recipes()[key].get("parts", []):
-				for k: String in TEX_KEYS:
-					if part.has(k) and not out.has(part[k]):
-						out.append(part[k])
-	return out
-
-
-static func load_textures() -> void:
-	for name: String in recipe_textures():
-		texture(name)
-
-
-static func has_texture(name: String) -> bool:
-	return _textures.has(name)
-
-
-static func forget_textures_for_test() -> void:
-	_textures.clear()
 
 
 func on_event(w: World, ev: GameEvent) -> void:
@@ -112,7 +70,7 @@ func _cast(w: World, ev: GameEvent) -> void:
 			"trail":
 				var live: Dictionary = part.duplicate()
 				live["life"] = _value(e, a, part.get("life", 1.0))
-				_add(SpeedTrail3D.make(live, _tint_material(live)), "trail", live, Vector3.ZERO, e.id)
+				_add(SpeedTrail3D.make(live, VfxParts.material(live, VfxParts.WIND)), "trail", live, Vector3.ZERO, e.id)  # D-300
 			_ when VfxParts.is_soft(part["type"]) and not (part["type"] in ["shot", "zone", "pending"]):  # SkillShots3D / ZoneView3D
 				_soft(w, e, a, ev, part)
 
@@ -182,20 +140,6 @@ static func _ground(p: Vector2, part: Dictionary) -> Vector3:
 ## Giá trị mảnh: số, hoặc tên giá trị của kỹ năng (theo cấp hiện tại).
 static func _value(e: Entity, a: AbilityInstance, v: Variant) -> float:
 	return Abilities.value(e, a, StringName(v)) if v is String else float(v)
-
-
-static func _tint_material(part: Dictionary) -> ShaderMaterial:
-	var mat: ShaderMaterial = ShaderMaterial.new()
-	mat.shader = TINT_SHADER
-	mat.set_shader_parameter("tex", texture(part["tex"]))
-	mat.set_shader_parameter("tint", part.has("color"))
-	mat.set_shader_parameter("color", Color(part.get("color", "#ffffff")))
-	mat.set_shader_parameter("edge", Color(part.get("edge", "#ffffff")))
-	mat.set_shader_parameter("frames", float(part.get("frames", 1)))
-	var ur: Array = part.get("u_range", [0.0, 1.0])
-	mat.set_shader_parameter("u_range", Vector2(ur[0], ur[1]))
-	mat.set_shader_parameter("tail_fade", 1.0 if part["type"] == "trail" else 0.0)
-	return mat
 
 
 func _follow(it: Array, delta: float) -> void:
