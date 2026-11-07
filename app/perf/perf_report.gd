@@ -95,7 +95,7 @@ static func summary_text(r: PerfRecorder) -> String:
 		over.append(">%s ms: %.1f%%" % [str(ms), 100.0 * float(s["share_over_" + str(ms).replace(".", "_")])])
 	out.append("Khung vượt ngưỡng: " + " · ".join(over))
 	out.append("Giật > 33,3 ms: %d lần · trong đó > 50 ms (đứng hình): %d lần" % [s["spikes"], s["big_spikes"]])
-	out.append("TB/khung: xử lý %s · SIM %s · HUD %s · xương %s · dựng 3D %s · GPU %s ms" % [s["process_ms"],
+	out.append("TB/khung: xử lý %s · SIM %s · HUD %s · cuối khung khác (xương…) %s · dựng khung (CPU) %s · GPU %s ms" % [s["process_ms"],
 		s["sim_ms"], s["hud_ms"], s["bones_ms"], s["render_ms"], s["gpu_ms"]])
 	out.append("Object +%s/phút · bộ nhớ +%s MB/phút" % [s["objects_per_min"], s["mem_static_mb_per_min"]])
 	if s.has("frame_ms_first10"):

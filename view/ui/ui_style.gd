@@ -157,13 +157,7 @@ static func glyph(c: CanvasItem, name: StringName, at: Vector2, s: float, col: C
 
 ## D-222: HUD mềm kiểu Liên Quân — nút tròn: bóng mềm, nền chuyển sáng vào tâm, viền vàng hai lớp, vệt bóng trên.
 static func orb(c: CanvasItem, at: Vector2, r: float, fill: Color, lit: bool = true) -> void:
-	c.draw_circle(at + Vector2(0, r * 0.07), r + 3.0, Color(0, 0, 0, 0.32), true, -1.0, true)
-	var base: Color = fill if lit else fill.darkened(0.45)
-	for k: int in 5:
-		c.draw_circle(at, r * (1.0 - k * 0.14), base.lightened(k * 0.06), true, -1.0, true)
-	c.draw_arc(at, r - 2.0, 0, TAU, 64, Color(GOLD_DEEP, 1.0 if lit else 0.6), 4.0, true)
-	c.draw_arc(at, r - 4.5, 0, TAU, 64, Color(GOLD, 0.85 if lit else 0.35), 1.5, true)
-	c.draw_arc(at, r * 0.72, PI * 1.18, PI * 1.82, 24, Color(1, 1, 1, 0.16 if lit else 0.06), r * 0.13, true)
+	UiBake.draw_orb(c, at, r, fill, lit)  # D-290: ảnh dựng sẵn — 1 lệnh vẽ thay vì 9
 
 
 ## D-222: khung bảng mềm: bóng, nền tối trong, viền vàng đậm + viền sáng mảnh bên trong, vệt sáng phía trên.

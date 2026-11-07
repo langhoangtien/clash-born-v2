@@ -7,8 +7,8 @@ const LABELS: Dictionary[StringName, String] = {
 	&"process": "Xử lý (_process)", &"scene": "  Màn trận", &"sim": "    SIM",
 	&"ground": "    Đất + lớp phủ", &"actors": "    Nhân vật 3D", &"events": "    Đạn + sự kiện",
 	&"corpses": "    Gỡ hình + xác", &"scene_other": "    Màn trận khác", &"process_other": "  _process khác",
-	&"draw2d": "Cuối khung (HUD + xương)", &"hud": "  HUD _draw", &"hud_diag": "    trong đó bảng đo",
-	&"draw2d_other": "  Còn lại (xương, biến đổi)", &"render": "Dựng khung 3D (CPU)", &"gpu": "GPU",
+	&"draw2d": "Cuối khung (HUD + khác)", &"hud": "  HUD _draw", &"hud_diag": "    trong đó bảng đo",
+	&"draw2d_other": "  Còn lại (xương, vẽ 2D chưa đo riêng)", &"render": "Dựng khung 3D (CPU)", &"gpu": "GPU",
 }
 ## Thứ tự hiện (cây cha – con).
 const ORDER: Array[StringName] = [&"process", &"scene", &"sim", &"ground", &"actors", &"events", &"corpses",

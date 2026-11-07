@@ -46,21 +46,48 @@ func _hud() -> MatchHud:
 
 func test_D_263_top_bar_key_changes_with_shown_content() -> void:
 	var h: MatchHud = _hud()
-	var before: Array = h.content_key()
-	assert_eq(h.content_key(), before, "không có gì đổi")
+	var before: Array = h.text_key()
+	assert_eq(h.text_key(), before, "không có gì đổi")
 	h.world.tick += 10
-	assert_eq(h.content_key(), before, "đồng hồ hiện theo giây: 10 tick chưa đổi")
+	assert_eq(h.text_key(), before, "đồng hồ hiện theo giây: 10 tick chưa đổi")
 	h.world.tick += 30
-	assert_ne(h.content_key(), before, "qua giây mới")
-	var t: Array = h.content_key()
+	assert_ne(h.text_key(), before, "qua giây mới")
+	var t: Array = h.panel_key()
 	h.hero.gold += 1
-	assert_ne(h.content_key(), t, "vàng đổi")
-	t = h.content_key()
+	assert_ne(h.panel_key(), t, "vàng đổi")
+	t = h.bars_key()
 	h.hero.health -= 0.2
-	assert_eq(h.content_key(), t, "máu hiện số nguyên: lệch 0,2 chưa đổi")
+	assert_eq(h.bars_key(), t, "máu hiện số nguyên: lệch 0,2 chưa đổi")
 	h.hero.health -= 1.0
-	assert_ne(h.content_key(), t)
+	assert_ne(h.bars_key(), t)
 	h.free()
+
+
+## D-290: máu / mana đổi ~8 lần / giây — chỉ lớp thanh máu vẽ lại, không kéo theo băng rôn tỷ số (nửa chi phí
+## vẽ, ~1,7 ms mỗi lần trên máy tính bảng) hay bảng tướng; đồng hồ đổi không vẽ lại băng rôn.
+func test_D_290_health_change_redraws_only_bars_layer() -> void:
+	var h: MatchHud = _hud()
+	var keys: Array = [h.banner_key(), h.text_key(), h.panel_key(), h.bars_key()]
+	h.hero.health -= 5.0
+	h.hero.mana -= 5.0
+	assert_eq(h.banner_key(), keys[0])
+	assert_eq(h.text_key(), keys[1])
+	assert_eq(h.panel_key(), keys[2], "bảng tướng (chân dung, vàng, K/D/A) không vẽ lại khi máu đổi")
+	assert_ne(h.bars_key(), keys[3])
+	h.world.tick += 60
+	assert_eq(h.banner_key(), keys[0], "đồng hồ đổi: băng rôn giữ nguyên")
+	assert_ne(h.text_key(), keys[1])
+	h.free()
+
+
+func test_D_290_hud_layers_draw_in_tree() -> void:
+	var h: MatchHud = _hud()
+	(Engine.get_main_loop() as SceneTree).root.add_child(h)
+	var names: Array[String] = []
+	for c: Node in h.get_children():
+		names.append(c.name)
+	assert_eq(names, ["Banner", "Panel", "Bars", "TopText"] as Array[String], "thứ tự vẽ: chữ đè lên băng rôn")
+	h.queue_free()
 
 
 func test_D_261_hud_draw_time_counted_in_total_and_part() -> void:

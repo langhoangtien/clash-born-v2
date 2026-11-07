@@ -16,6 +16,8 @@ var fog_alpha: float = 0.6
 ## Vùng camera đang nhìn (tọa độ map); chỉ gửi mắt có vòng nhìn chạm vùng này lên shader
 ## (D-108: nhẹ GPU điện thoại). Rỗng = gửi hết.
 var view_rect: Rect2 = Rect2()
+## D-290: true = chủ gọi `refresh()` khi cần (minimap ~15 lần / giây); false = tự tính mỗi khung (sương 3D).
+var manual: bool = false
 
 
 func _ready() -> void:
@@ -48,6 +50,12 @@ static func lit(world: World, team: int, point: Vector2) -> bool:
 
 
 func _process(_delta: float) -> void:
+	if not manual:
+		refresh()
+
+
+## Tính lại các mắt gửi lên shader và vẽ lại.
+func refresh() -> void:
 	if world == null:
 		return
 	var list: Array[Vector4] = eyes(world, team, place)

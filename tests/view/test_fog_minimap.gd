@@ -113,3 +113,32 @@ func test_VIS_02_own_invisible_drawn_faded_enemy_invisible_not_drawn() -> void:
 	assert_true(view.faded(me), "phe mình tàng hình vẽ mờ")
 	assert_false(view.seen(foe), "địch tàng hình không vẽ")
 	view.free()
+
+
+## D-290: minimap vẽ lại chấm đơn vị + sương của nó tối đa ~15 lần / giây (trước: mỗi khung — đo trên PC ~¾ phần
+## "cuối khung" bị tính nhầm là xương); sương 3D trong trận vẫn mỗi khung.
+func test_D_290_minimap_refreshes_at_most_15_per_second() -> void:
+	var w: World = _world()
+	var hero: Entity = _unit(w, 0, Vector2(1000, 1000), 1200.0)
+	var m: Minimap = Minimap.new()
+	m.setup(w, hero)
+	assert_true(m.refresh_due(1000), "lần đầu luôn vẽ")
+	assert_false(m.refresh_due(1016), "khung sau (16 ms): chưa")
+	assert_false(m.refresh_due(1050))
+	assert_true(m.refresh_due(1000 + Minimap.REFRESH_MS), "đủ 1/15 giây")
+	assert_false(m.refresh_due(1000 + Minimap.REFRESH_MS + 16))
+	m.free()
+
+
+func test_D_290_fog_view_manual_refresh_only_when_asked() -> void:
+	var w: World = _world()
+	_unit(w, 0, Vector2(1000, 1000), 1200.0)
+	var f: FogView = FogView.new()
+	f.world = w
+	f.manual = true
+	f._ready()
+	f._process(0.016)
+	assert_eq((f.material as ShaderMaterial).get_shader_parameter("count"), null, "chế độ tay: _process không tự tính")
+	f.refresh()
+	assert_eq((f.material as ShaderMaterial).get_shader_parameter("count"), 1)
+	f.free()

@@ -82,7 +82,9 @@ clashborn_v2/
                            kit / kit_tex .gdshader (mặt đất ảnh nền theo mặt nạ, nước, vật liệu cảnh vật vẽ sẵn sáng
                            tối — D-178); Scenery3D (cảnh vật decor.py, bụi, chợ, đổ nát, D-158, D-178)
     art/                   ArtLibrary: res://assets/art/<art_id>.png, thiếu → hình tạm; vào trận nạp ngầm hình nội dung (D-269)
-    ui/                    UiStyle (phông, màu, khung, nút, xu), UiGlyphs (icon nét) — D-130
+    ui/                    UiStyle (phông, màu, khung, nút, xu), UiGlyphs (icon nét) — D-130; UiBake: ảnh dựng sẵn
+                           cho nút tròn / chấm / vòng (gộp lệnh vẽ, D-290; PNG trong assets/ui/baked/ do
+                           tools/ui/bake_orbs.gd dựng). HUD vẽ theo lớp HudLayer, mỗi lớp có cổng vẽ lại riêng (D-290)
     menu/                  HeroSelect, HeroDetail, HeroPreview (màn chọn tướng), GraphicsSetting (mức đồ họa, D-157)
     audio/                 SoundLibrary (res://assets/audio/<id>.ogg, thiếu → im lặng), AudioCues
                            (sự kiện tick → tiếng, lọc sương mù), AudioView (phát, nhạc) — D-114
