@@ -26,7 +26,9 @@ const CONTEXT_KEYS: Array[StringName] = [&"draw_calls", &"triangles_k", &"nodes"
 const COLUMNS: PackedStringArray = ["time_s", "match_time", "tick", "fps", "frame_avg_ms", "frame_max_ms",
 	"process_ms", "sim_ms", "hud_ms", "bones_ms", "render_ms", "gpu_ms", "draw_calls", "triangles_k", "nodes",
 	"objects", "mem_static_mb", "video_mem_mb", "entities", "heroes", "lane_creeps", "jungle", "fighting_heroes",
-	"actors", "projectiles", "vfx", "graphics_off", "diag_open", "diag_ms"]
+	"actors", "projectiles", "vfx", "graphics_off", "diag_open", "diag_ms", "sim_first_ms", "sim_second_ms"]
+## D-277: phần chỉ có ở một số khung (nửa tick) — trung bình trên các khung có chạy, không chia đều mọi khung.
+const SOMETIMES: Array[StringName] = [&"sim_first", &"sim_second"]
 
 ## Thông tin máy / bản / cài đặt (APP đặt), ghi vào JSON.
 var meta: Dictionary = {}
@@ -52,6 +54,7 @@ var _n: int = 0
 var _frame_sum: float = 0.0
 var _frame_max: float = 0.0
 var _sum: Dictionary[StringName, int] = {}
+var _ran: Dictionary[StringName, int] = {}
 var _off: PackedStringArray = PackedStringArray()
 
 
@@ -80,6 +83,10 @@ func on_frame(frame: Dictionary, at_usec: int) -> void:
 		total_us[key] = total_us.get(key, 0) + us
 	if frame.get(&"gpu", 0) > 0:
 		gpu_seen = true
+	for key: StringName in SOMETIMES:
+		if frame.get(key, 0) > 0:
+			_sum[key] = _sum.get(key, 0) + frame[key]
+			_ran[key] = _ran.get(key, 0) + 1
 	if ms > SPIKE_MS:
 		_spike(frame, ms, at_usec)
 	if at_usec - _sample_start >= SAMPLE_USEC:
@@ -150,6 +157,8 @@ func _emit_row(at_usec: int) -> void:
 	v["graphics_off"] = ";".join(_off)
 	v["diag_open"] = ctx.get(&"diag_open", "N/A")
 	v["diag_ms"] = snappedf(_sum.get(&"hud_diag", 0) / 1000.0 / _n, 0.01)
+	for key: StringName in SOMETIMES:
+		v[String(key) + "_ms"] = snappedf(_sum.get(key, 0) / 1000.0 / _ran[key], 0.01) if _ran.get(key, 0) > 0 else "N/A"
 	var row: PackedStringArray = PackedStringArray()
 	for col: String in COLUMNS:
 		row.append(str(v[col]))
@@ -159,6 +168,7 @@ func _emit_row(at_usec: int) -> void:
 	_frame_sum = 0.0
 	_frame_max = 0.0
 	_sum.clear()
+	_ran.clear()
 
 
 ## Khóa StringName → String (để JSON / so sánh dùng tên thường).

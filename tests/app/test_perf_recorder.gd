@@ -167,3 +167,17 @@ func test_D_268_summary_text_is_short() -> void:
 	assert_true(text.contains("0.1.999"))
 	assert_true(text.contains("1% low"))
 	assert_true(text.split("\n").size() <= 40, "đủ ngắn để dán vào chat")
+
+
+func test_D_277_tick_halves_averaged_where_they_ran() -> void:
+	var r: PerfRecorder = _recorder()
+	var t: int = 0
+	for i: int in 30:
+		t += 20_000
+		var f: Dictionary = _frame(20.0)
+		f[&"sim_first"] = 3000 if i % 2 == 0 else 0
+		f[&"sim_second"] = 0 if i % 2 == 0 else 2000
+		r.on_frame(f, t)
+	var row: Dictionary = r.row_dict(0)
+	assert_near(float(row["sim_first_ms"]), 3.0, 0.01, "nửa đầu: trung bình các khung có chạy nửa đầu")
+	assert_near(float(row["sim_second_ms"]), 2.0, 0.01)

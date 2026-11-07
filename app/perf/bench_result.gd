@@ -28,6 +28,10 @@ func add(frame: Dictionary) -> void:
 	var us: Dictionary = seg["us"]
 	for key: StringName in [&"gpu", &"render", &"process", &"sim", &"hud"]:
 		us[key] = us.get(key, 0) + frame.get(key, 0)
+	for key: StringName in PerfRecorder.SOMETIMES:  # D-277: trung bình trên khung có chạy nửa tick
+		if frame.get(key, 0) > 0:
+			us[key] = us.get(key, 0) + frame[key]
+			us[String(key) + "_n"] = us.get(String(key) + "_n", 0) + 1
 
 
 func row(seg: Dictionary) -> Dictionary:
@@ -40,6 +44,9 @@ func row(seg: Dictionary) -> Dictionary:
 		out[String(key) + "_ms"] = snappedf(us.get(key, 0) / 1000.0 / n, 0.01)
 	if us.get(&"gpu", 0) <= 0:
 		out["gpu_ms"] = "N/A"
+	for key: StringName in PerfRecorder.SOMETIMES:
+		var k: int = us.get(String(key) + "_n", 0)
+		out[String(key) + "_ms"] = snappedf(us.get(key, 0) / 1000.0 / k, 0.01) if k > 0 else "N/A"
 	return out
 
 
@@ -101,9 +108,9 @@ func text(meta: Dictionary) -> String:
 			_signed(c["frame_delta_ms"]), _signed(snappedf(float(share) * 100.0, 0.1) if share is float else share)])
 	for r: Dictionary in rows():
 		if r["label"].begins_with("SIM"):
-			out.append(r["label"] + ": khung %s ms · P95 %s · lỡ nhịp %s%% · GPU %s · xử lý %s · SIM %s · HUD %s ms" % [
+			out.append(r["label"] + ": khung %s ms · P95 %s · lỡ nhịp %s%% · GPU %s · xử lý %s · SIM %s (nửa đầu %s · nửa sau %s) · HUD %s ms" % [
 				r["frame_ms"], r["p95_ms"], snappedf(float(r["over_20"]) * 100.0, 0.1), r["gpu_ms"], r["process_ms"],
-				r["sim_ms"], r["hud_ms"]])
+				r["sim_ms"], r["sim_first_ms"], r["sim_second_ms"], r["hud_ms"]])
 	return "\n".join(out)
 
 

@@ -45,14 +45,18 @@ func advance(delta: float) -> int:
 	var start: int = Time.get_ticks_msec()
 	var t0: int = Time.get_ticks_usec()
 	if world.mid_tick:  # D-273: nửa sau của tick mở ở khung trước
+		var h: int = Time.get_ticks_usec()
 		world.step_second_half()
+		FrameProfile.shared.add(&"sim_second", h)  # D-277: đo riêng từng nửa
 		stepped.emit()
 		steps += 1
 	while _accumulator + 0.000001 >= SimClock.TICK_SECONDS and steps < cap and world.winner < 0:
 		_accumulator -= SimClock.TICK_SECONDS
 		before_step.emit()
 		if split_ticks and speed == 1 and _accumulator + 0.000001 < SimClock.TICK_SECONDS:
+			var h1: int = Time.get_ticks_usec()
 			world.step_first_half()  # D-273: tick cuối của khung — nửa sau để khung kế
+			FrameProfile.shared.add(&"sim_first", h1)
 			break
 		world.step()
 		stepped.emit()

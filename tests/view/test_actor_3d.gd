@@ -148,3 +148,28 @@ func test_D_249_attacks_alternate_two_animations() -> void:
 		seen.append(a._playing)
 	assert_eq(seen, ["attack", "attack_2", "attack"], "đòn 1, 2, 3 luân phiên")
 	a.free()
+
+
+func test_D_277_creeps_animate_at_half_rate_heroes_full() -> void:
+	var w: World = World.new(1, Fixture.make())
+	var creep: Actor3D = Actor3D.make(_unit(w, &"creep_melee", Entity.Kind.LANE_CREEP))
+	var hero: Actor3D = Actor3D.make(_unit(w, &"duy_anh", Entity.Kind.HERO))
+	assert_eq(creep._anim.callback_mode_process, AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL, "lính: xương cập nhật tay")
+	assert_eq(hero._anim.callback_mode_process, AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_IDLE, "hero: 60 lần / giây như cũ")
+	var done: Array[bool] = []
+	for f: int in 4:
+		done.append(creep._rate.tick(1.0 / 60.0, f))
+	assert_eq(done.count(true), 2, "30 lần / giây: cách một khung")
+	assert_true(done[0] != done[1], "so le theo đơn vị")
+	assert_true(hero._rate == null, "hero tự chạy")
+	creep.free()
+	hero.free()
+
+
+func test_D_277_corpse_animates_on_its_own() -> void:
+	var w: World = World.new(1, Fixture.make())
+	var creep: Actor3D = Actor3D.make(_unit(w, &"creep_melee", Entity.Kind.LANE_CREEP))
+	assert_true(Corpses.new().add(creep, 0.0))
+	assert_eq(creep._anim.callback_mode_process, AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_IDLE,
+		"xác không còn được đồng bộ: hoạt ảnh chết tự chạy")
+	creep.free()

@@ -32,6 +32,7 @@ var _meshes: Array[GeometryInstance3D] = []
 var _solid: Array[Array] = []
 var _faded: bool = false
 var _playing: String = ""
+var _rate: AnimRate  # D-277: lính / quái 30 lần / giây; null = hero (mỗi khung)
 var _attack_tick: int = -1
 var _swing: int = -1  # D-249: số đòn đã đánh (chọn hoạt ảnh luân phiên)
 var _attack_phase: int = Entity.AttackPhase.NONE
@@ -83,6 +84,8 @@ func _make_model(e: Entity, cfg: Dictionary) -> void:
 		_solid.append(mats)
 	for anim: String in [_rig["idle"], _rig["run"], _rig.get("stun", ""), _cfg.get("sprint", _rig.get("sprint", "")), _cfg.get("stealth", "")].filter(_anim.has_animation):
 		_anim.get_animation(anim).loop_mode = Animation.LOOP_LINEAR
+	if e.kind != Entity.Kind.HERO:
+		_rate = AnimRate.attach(_anim, e.id)
 
 
 ## Đổi bảng màu mọi lưới trong `root` sang bản theo đội (vũ khí giữ màu gốc).
@@ -118,6 +121,8 @@ func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int, faded: b
 	position = at
 	if _anim == null and _sprite == null:
 		return  # D-158: công trình — đứng yên
+	if _rate != null:  # D-277: lính / quái chạy hoạt ảnh 30 lần / giây
+		_rate.tick(get_process_delta_time(), Engine.get_process_frames())
 	if _sprite != null:
 		_sprite.flip_h = e.facing.x < 0.0
 		_sprite.modulate = Color(1, 0.55, 0.5) if hit_age >= 0 and hit_age < UnitSprite.HIT_TICKS else Color.WHITE
@@ -290,3 +295,4 @@ func _play(name: String, speed: float, restart: bool = false) -> void:
 	if restart:
 		_anim.seek(0.0, true)
 	_playing = name
+

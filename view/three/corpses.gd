@@ -16,6 +16,8 @@ func add(a: Actor3D, now: float) -> bool:
 		return false
 	a._play(a._rig["death"], 1.0, true)
 	a._anim.speed_scale = 1.0  # có thể đang khựng khung (D-159) đúng lúc chết
+	if a._rate != null:
+		a._rate.release()  # D-277: xác không còn được đồng bộ — hoạt ảnh chết tự chạy
 	_items.append([a, now + a._anim.get_animation(a._rig["death"]).length + LIE])
 	return true
 
