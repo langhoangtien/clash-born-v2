@@ -104,7 +104,8 @@ clashborn_v2/
   tests/                   test (framework nhỏ tự viết, xem mục 9)
   tools/                   script ngoài Godot; sim_profile.gd đo ms mỗi tick theo hệ thống (D-152);
                            view_profile.gd chạy màn trận thật (xvfb, tướng mình do bot) in FrameProfile theo phút trận (D-261);
-                           publish_vps.sh: đẩy APK lên clashborn.quest; vps/: Caddyfile, upload_server.py, service (D-278)
+                           publish_vps.sh: đẩy APK lên clashborn.quest; vps/: cấu hình nginx, upload_server.py, service (D-278..280);
+                           site/: dựng + đăng trang giới thiệu từ web/site và dữ liệu tướng (D-284)
                            map_build (D-178): from_sketch.py (sông, base, shop từ bản vẽ) → plateau_design.py --write
                            (bục rừng, đá bờ, rìa map, trại, bụi) → build_map.py (dữ liệu SIM) → decor.py (cảnh vật VIEW)
                            models/style_kit.py: bộ asset Blender (cần bpy, xem handoff.md)

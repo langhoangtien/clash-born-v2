@@ -1,6 +1,6 @@
 # Bàn giao — Clashborn v2 (2026-11-05)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-283). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-284). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 
 ## 1. Trạng thái
@@ -56,6 +56,7 @@ Người chơi thích phong cách afk.ai (hợp đồ họa); Mixamo chỉ để
 
 - **Phát hành từ VPS** `https://clashborn.quest` (D-278..283): `bash tools/build_android.sh` rồi `bash tools/publish_vps.sh "ghi chú"`
   (xem ANDROID_BUILD.md mục 5–7, VPS_SETUP.md). GitHub Pages không đăng APK nữa (dừng ở 0.1.479).
+  Trang giới thiệu: sửa `web/site/` rồi `GODOT=... bash tools/site/publish_site.sh` (D-284).
 
 - Godot 4.7.2: tải `Godot_v4.7.2-stable_linux.x86_64` về scratchpad. Import: `godot --headless --path . --import`.
 - Blender (bpy) cho `to_mixamo.py`, `mixamo_pack.py`, `bake_shading.py`: venv Python có gói `bpy`.

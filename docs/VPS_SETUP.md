@@ -162,8 +162,8 @@ Báo lại cho người dùng: domain chạy HTTPS, `/api/health` ok, mã đã t
 3. **Chuyển tiếp**: bản đầu tiên trỏ về domain được đăng lên **cả** GitHub Pages lẫn VPS (vẫn dưới 100 MiB) — máy
    đang cài bản cũ (chỉ hỏi GitHub) cập nhật một lần lên bản đó; từ đó chỉ đăng lên VPS.
 4. Phát hành: `bash tools/build_android.sh` rồi `bash tools/publish_vps.sh "ghi chú"`.
-5. Trang giới thiệu: mã nguồn trong repo (`web/site/`), đóng `site.tar.gz`, `PUT /api/upload/site.tar.gz` rồi
-   `POST /api/site`.
+5. Trang giới thiệu: mã nguồn trong repo (`web/site/`); `bash tools/site/publish_site.sh` dựng (thêm dữ liệu tướng,
+   ảnh) rồi `PUT /api/upload/site.tar.gz` + `POST /api/site` (D-284).
 
 ## 9. Sau này: máy chủ trận online (chưa làm)
 
