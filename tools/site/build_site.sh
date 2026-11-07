@@ -5,7 +5,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 GODOT="${GODOT:-godot}"
 OUT="$ROOT/build/site"
-rm -rf "$OUT" && mkdir -p "$OUT"
+rm -rf "$OUT" && mkdir -p "$OUT" && touch "$ROOT/build/.gdignore"  # Godot không nạp ảnh trong build/ vào dự án
 cp -r "$ROOT/web/site/." "$OUT/"
 mkdir -p "$OUT/fonts" "$OUT/img/heroes" "$OUT/img/skills"
 cp "$ROOT/assets/fonts/Lora-Variable.ttf" "$OUT/fonts/"

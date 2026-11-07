@@ -22,6 +22,8 @@ static func hero(world: World, def: HeroDef, team: int, position: Vector2, level
 	e.skill_points = 1  # ABL-04: cấp 1 có 1 điểm
 	world.add_entity(e)
 	Abilities.setup_hero(world, e, def)
+	if world.map != null:
+		world.navigation(e.radius)  # D-285: dựng sẵn lưới tìm đường cỡ thân tướng lúc tạo, không dựng giữa trận
 	return e
 
 

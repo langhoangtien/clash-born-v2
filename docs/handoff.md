@@ -1,14 +1,14 @@
 # Bàn giao — Clashborn v2 (2026-11-05)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-284). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-286). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 
 ## 1. Trạng thái
 
-- 808 test xanh (`GODOT=... bash tools/run_tests.sh`). APK mới nhất **0.1.479** trên https://clashborn.quest (cũng là bản chuyển tiếp cuối trên gh-pages, D-283). Đo hiệu năng: log D-268 / Benchmark A/B D-272.
+- 809 test xanh (`GODOT=... bash tools/run_tests.sh`). APK mới nhất **0.1.483** (65 MB, D-286) trên https://clashborn.quest — bản đầu tiên chỉ phát hành qua VPS; gh-pages dừng ở 0.1.479 (D-283). Đo hiệu năng: log D-268 / Benchmark A/B D-272.
 - Android: trình vẽ **Mobile (Vulkan)**, đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
-  Máy tính bảng người chơi: ~60 fps đầu trận → 4x fps sau một lúc; tắt phần vẽ / đổi độ phân giải không đổi FPS
-  → nghẽn CPU (xem mục 3). Giật 50 → 11 fps đã hết sau D-260.
+  Hiệu năng máy tính bảng (D-261..277): tối ưu SIM, sương thành ảnh nhỏ, chia tick (D-273), nạp trước hình / icon;
+  Benchmark A/B gần nhất (0.1.470) ổn. Khựng đầu trận đã sửa (D-285).
 - Hero 3D đã làm theo quy trình mới: **Duy Anh** (đạt), **Noctis** (bản T9d không áo choàng, chờ người chơi duyệt),
   **Brakk** (afk.ai). Myra / Vexa / Gorran còn mô hình KayKit cũ; concept T9 của họ đã có trong `art_inbox/09_units/`.
 - Hiệu ứng chiêu 3D (D-247..256): Duy Anh W (vệt chém vẽ tay + sóng bụi + tia lóe), Q (vệt tốc độ bám đường chạy).
@@ -36,21 +36,19 @@ Người chơi thích phong cách afk.ai (hợp đồ họa); Mixamo chỉ để
 
 ## 3. Việc tiếp theo (theo thứ tự đề xuất)
 
-0. **Đo hiệu năng**: bật Cài đặt → "Ghi log hiệu năng" rồi chơi; hết trận gửi file JSON / CSV hoặc dán tóm tắt (D-268).
-   Benchmark A/B tự động (D-272): menu → Cài đặt → "Đo hiệu năng tự động" (~2,5 phút) → dán kết quả.
-
-1. **Hiệu năng CPU**: bước A xong (D-261: bảng đo từng phần trong Chẩn đoán, `tools/view_profile.gd` chạy trận thật
-   dưới xvfb; D-262: object tăng chỉ là `command_log`, không rò rỉ). Máy tính bảng 0.1.438: 40 fps ổn định, nghẽn luồng
-   chính 25 ms. B1 + B2 xong (D-263): TB 49,7 fps. B3 (D-264): tối ưu không đổi kết quả chỉ được
-   ~3–5 % SIM. D-265: lính đi đường nghĩ thưa, quái rừng ngủ, trung lập chỉ nhìn khi trại đánh → SIM −18–20 %.
-   Còn đề xuất chưa làm: Vision / trụ / đẩy tách mỗi 2 tick (cần người dùng duyệt). 0.1.447: CPU ~13 ms, nghẽn
-   GPU 11–14 ms (D-266). Nghi shader đất (sương duyệt ≤ 64 mắt / điểm ảnh) → G2: sương thành ảnh nhỏ. Còn B4, B5: SIM (Vision / Movement, bot gửi ~9 lệnh / giây), HUD `_draw` (4,6 ms trên PC), giảm lệnh vẽ (571 lệnh / 57k tam giác — cây / đá thành MultiMesh, gộp vật liệu, ảnh vũ khí gộp vào
-   ảnh thân, bóng mờ dưới chân một MultiMesh). Tìm vì sao FPS giảm dần theo thời gian trận (số đơn vị / đạn / xác /
-   danh sách chữ nổi tăng?).
-2. APK sát giới hạn 100 MiB của GitHub: thu ảnh trùng (`*_Color_*` Godot tách từ GLB công trình, ~18,7 MB).
-3. Hiệu ứng Duy Anh R (dải bám đường nhảy + cú bổ chạm đất); bộ hiệu ứng Noctis.
-4. Duyệt Noctis trong game; làm Myra / Vexa / Gorran theo quy trình mục 2.
-5. Đề xuất đang chờ người dùng: cho cú lao R của Duy Anh nhảy qua vách / cây / trụ (đổi luật ABL-08).
+0. **Kiểm tra 0.1.483 trên máy**: game tự thấy bản mới từ clashborn.quest, tải + kiểm sha256 + cài được (lần đầu chỉ
+   qua VPS); hết khựng lúc mở trận (D-285); hình mô hình không xấu đi (D-286). Chạy lại Benchmark A/B (Cài đặt →
+   "Đo hiệu năng tự động") để đo D-277, dán kết quả.
+1. Chọn hướng tiếp (người dùng chọn):
+   - **A. Chế độ 5v5** — cần luật mới trong GAME_RULES (đội, bot đồng đội, chia đường) + đo lại hiệu năng 10 tướng.
+   - **B. Hoàn thiện tướng 3D / hiệu ứng** — duyệt Noctis trong game; Myra / Vexa / Gorran theo quy trình mục 2;
+     hiệu ứng Duy Anh R (dải bám đường nhảy + cú bổ chạm đất); bộ hiệu ứng Noctis.
+   - **C. Âm thanh / giọng nói** — ElevenLabs (key trong biến môi trường): tiếng chiêu, đánh, trụ, câu thoại tướng.
+   - **D. 1v1 trực tuyến** — SIM đã tất định (D-30), hướng đồng bộ lệnh (lockstep) qua máy chủ trên VPS.
+2. Đề xuất đang chờ người dùng: cho cú lao R của Duy Anh nhảy qua vách / cây / trụ (đổi luật ABL-08).
+3. Hiệu năng còn để dành (chỉ làm nếu đo thấy cần, nhất là khi lên 5v5): giảm lệnh vẽ (cây / đá thành MultiMesh,
+   gộp vật liệu), HUD `_draw`, Vision / trụ / đẩy tách mỗi 2 tick.
+4. APK hiện 65 MB: phần lớn là thư viện Godot (~23 MB nén), cảnh (~5 MB), nhạc (~4 MB). Ảnh `*_Color_*` thừa còn ~1 MB.
 
 ## 4. Công cụ
 

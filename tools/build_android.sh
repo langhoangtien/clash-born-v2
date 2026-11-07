@@ -14,7 +14,7 @@ sed -i "s/^version\/code=.*/version\/code=$CODE/; s/^version\/name=.*/version\/n
 export GODOT_ANDROID_KEYSTORE_RELEASE_PATH="$ROOT/tools/android/clashborn-test.keystore"
 export GODOT_ANDROID_KEYSTORE_RELEASE_USER=clashborn
 export GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD=clashborn-test
-mkdir -p "$ROOT/build/android"
+mkdir -p "$ROOT/build/android" && touch "$ROOT/build/.gdignore"  # Godot không nạp file trong build/
 # D-148: bản đang chạy (app đọc để so với version.json trên gh-pages khi tự cập nhật).
 printf '{"code": %s, "name": "0.1.%s"}\n' "$CODE" "$CODE" > "$ROOT/app/build.json"
 printf '{"code": %s, "name": "0.1.%s", "apk": "clashborn.apk"}\n' "$CODE" "$CODE" > "$ROOT/build/android/version.json"
