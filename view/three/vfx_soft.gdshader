@@ -3,7 +3,9 @@
 // `t` = tiến độ 0..1 của mảnh (VfxParts đặt mỗi khung). Chế độ `mode`:
 //  0 vành mặt đất loang từ `from` ra mép · 1 đĩa mặt đất lóe rồi tan · 2 cột sáng (hình trụ, UV.y dọc) ·
 //  3 đốm sáng quay về camera · 4 hào quang dưới chân (đứng yên, thở nhẹ) · 5 vệt đạn (UV.x dọc thân, đầu ở x = 1) ·
-//  6 sóng mặt đất chạy dọc UV.y (0 gần chủ chiêu → 1 xa).
+//  6 sóng mặt đất chạy dọc UV.y (0 gần chủ chiêu → 1 xa) · 7 vũng (vùng tồn tại: mép loang không đều, gợn + bọt chạy) ·
+//  8 vùng nạp (vùng có độ trễ: lõi sáng lớn dần theo t) · 9 khiên (bong bóng cầu, sáng ở rìa theo góc nhìn) ·
+//  10 làn sáng bốc lên (hình trụ quanh người). D-297: mép mềm (không viền tròn sắc), thêm 7–10 theo góp ý người chơi.
 shader_type spatial;
 render_mode unshaded, blend_mix, cull_disabled, depth_draw_never, shadows_disabled;
 
@@ -23,6 +25,13 @@ float noise(vec2 p) {
 	vec2 f = fract(p);
 	vec2 u = f * f * (3.0 - 2.0 * f);
 	return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+
+// Mép tròn mềm, loang không đều theo góc (không ra đường tròn compa).
+float soft_edge(vec2 c, float r, float inner, float wobble) {
+	float ang = atan(c.y, c.x);
+	float n = noise(vec2(ang * 2.2 + 3.0, TIME * 0.35)) + 0.5 * noise(vec2(ang * 5.0, TIME * 0.6 + 7.0));
+	return 1.0 - smoothstep(inner, 1.0, r + (n - 0.75) * wobble);
 }
 
 // Hiện nhanh trong `rise`, tan dần từ `hold` tới hết.
@@ -45,15 +54,17 @@ void fragment() {
 	float core = 0.0;
 	if (mode == 0) {
 		float rr = mix(from, 1.0, 1.0 - pow(1.0 - t, 3.0));
-		float band = 1.0 - smoothstep(0.0, width, abs(r - rr));
-		float fill = (1.0 - smoothstep(0.0, rr, r)) * step(r, rr) * 0.3;
-		a = (band + fill) * (0.8 + 0.2 * noise(c * 7.0 + TIME)) * life_fade(0.04, 0.45);
+		float d = (r - rr) / width;
+		float band = exp(-d * d * 2.2);
+		float fill = (1.0 - smoothstep(0.0, rr, r)) * smoothstep(rr + width, rr - width, r) * 0.3;
+		float breakup = 0.6 + 0.4 * noise(vec2(atan(c.y, c.x) * 6.0, r * 4.0 - TIME * 1.5));
+		a = (band * breakup + fill) * life_fade(0.04, 0.45);
 		core = band * band;
 	} else if (mode == 1) {
 		float n = noise(c * 4.0 + vec2(TIME * 0.6, -TIME * 0.4));
-		float body = 1.0 - smoothstep(0.7, 1.0, r);
-		float rim = 1.0 - smoothstep(0.0, 0.07, abs(r - 0.92));
-		a = (body * (0.35 + 0.35 * n) + rim * 0.8) * life_fade(0.1, 0.55);
+		float body = soft_edge(c, r, 0.55, 0.25);
+		float rim = body * smoothstep(0.45, 0.9, r);
+		a = (body * (0.3 + 0.4 * n) + rim * 0.35) * life_fade(0.1, 0.55);
 		core = rim;
 	} else if (mode == 2) {
 		float v = UV.y;
@@ -64,22 +75,49 @@ void fragment() {
 		a = exp(-r * r * 5.0) * (1.0 - t * t);
 		core = exp(-r * r * 22.0);
 	} else if (mode == 4) {
-		float band = 1.0 - smoothstep(0.0, width, abs(r - 0.82));
-		float inner = (1.0 - smoothstep(0.15, 0.82, r)) * 0.1;
-		float swirl = noise(vec2(atan(c.y, c.x) * 2.5 + TIME * 0.8, TIME * 0.5));
-		a = (band * (0.7 + 0.3 * swirl) + inner * 1.5) * (0.85 + 0.15 * sin(TIME * 3.5)) * life_fade(0.06, 0.88);
-		core = band * 0.5;
+		float d = (r - 0.7) / max(width, 0.05);
+		float band = exp(-d * d * 1.5);
+		float glow = (1.0 - smoothstep(0.0, 0.85, r)) * 0.35;
+		float swirl = noise(vec2(atan(c.y, c.x) * 3.0 + TIME * 0.9, r * 3.0 - TIME * 0.6));
+		a = (band * (0.45 + 0.55 * swirl) + glow) * soft_edge(c, r, 0.7, 0.2) * (0.85 + 0.15 * sin(TIME * 3.0))
+			* life_fade(0.06, 0.88);
+		core = band * swirl * 0.6;
 	} else if (mode == 5) {
 		float across = 1.0 - smoothstep(0.0, 1.0, abs(c.y));
 		a = pow(UV.x, 2.2) * across * (0.8 + 0.2 * noise(vec2(UV.x * 12.0 - TIME * 8.0, c.y * 3.0)));
 		core = pow(UV.x, 8.0) * pow(across, 3.0);
-	} else {
+	} else if (mode == 6) {
 		float y = 1.0 - UV.y + c.x * c.x * 0.12;  // QuadMesh: UV.y = 0 ở đầu xa; mép sóng cong như lưỡi liềm
 		float front = mix(-0.1, 1.15, t);
 		float band = smoothstep(front - 0.35, front, y) * (1.0 - smoothstep(front, front + 0.06, y));
 		float across = 1.0 - smoothstep(0.35, 1.0, abs(c.x));
 		a = band * across * (0.6 + 0.4 * noise(vec2(c.x * 5.0, y * 6.0 - TIME * 3.0))) * (1.0 - smoothstep(0.75, 1.0, t));
 		core = band * band * across;
+	}
+	if (mode == 7) {
+		vec2 flow = c * 3.0 + vec2(TIME * 0.25, -TIME * 0.18);
+		float n = noise(flow) * 0.6 + noise(flow * 2.3 - TIME * 0.4) * 0.4;
+		float body = soft_edge(c, r, 0.6, 0.3);
+		float bubbles = smoothstep(0.72, 0.9, noise(c * 9.0 + vec2(0.0, TIME * 0.8)));
+		a = body * (0.32 + 0.38 * n + bubbles * 0.35) * life_fade(0.06, 0.92);
+		core = bubbles + body * smoothstep(0.55, 0.95, r) * 0.4;
+	} else if (mode == 8) {
+		float body = soft_edge(c, r, 0.7, 0.15);
+		float fillr = mix(0.05, 1.0, t);
+		float charge = smoothstep(fillr, fillr - 0.25, r);
+		float runes = 0.6 + 0.4 * noise(vec2(atan(c.y, c.x) * 8.0 + TIME, r * 6.0));
+		a = body * (0.2 + charge * 0.55 * runes + smoothstep(0.7, 1.0, r) * 0.35);
+		core = charge * runes;
+	} else if (mode == 9) {
+		float fres = pow(1.0 - abs(dot(normalize(NORMAL), normalize(VIEW))), 2.2);
+		float shimmer = noise(UV * vec2(18.0, 9.0) + vec2(TIME * 0.6, TIME * 0.3));
+		a = (fres * 0.85 + 0.06 + shimmer * fres * 0.3) * life_fade(0.08, 0.9);
+		core = fres * fres;
+	} else if (mode == 10) {
+		float v = UV.y;
+		float streak = smoothstep(0.55, 0.85, noise(vec2(UV.x * 14.0, v * 3.0 + TIME * 1.6)));
+		a = streak * smoothstep(0.0, 0.35, v) * smoothstep(1.0, 0.75, v) * 0.9 * life_fade(0.1, 0.88);
+		core = streak * 0.5;
 	}
 	ALBEDO = mix(color.rgb, edge.rgb, clamp(core, 0.0, 1.0) * 0.8);
 	ALPHA = clamp(a * alpha, 0.0, 1.0);

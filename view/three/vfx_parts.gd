@@ -4,12 +4,17 @@ extends RefCounted
 ##   ring  — vành loang trên đất (radius px, from, width) · disc — đĩa lóe trên đất (radius px) ·
 ##   pillar — cột sáng (radius px, tall m) · glow — đốm sáng quay về camera (size m) ·
 ##   aura — hào quang dưới chân, đi theo đơn vị suốt `life` (radius px) · wave — sóng chạy dọc hướng tung (length,
-##   width px) · shot — vệt đạn kỹ năng (size m; SkillShots3D).
+##   width px) · shot — vệt đạn kỹ năng (size m; SkillShots3D) · D-297: dome — bong bóng khiên quanh người (radius px),
+##   wisps — làn sáng bốc lên quanh người (radius px, tall m) — cả hai đi theo đơn vị như aura · zone / pending — vũng
+##   của vùng tồn tại / vùng có độ trễ (ZoneView3D, cỡ theo vùng trong SIM).
 ## Chung: color, edge (lõi), alpha (độ đục tối đa — giữ ≤ 0,85 để 5v5 không chói), life (giây hoặc tên giá trị kỹ năng),
 ## height (m), at = caster | point | target.
 
 const SHADER: Shader = preload("res://view/three/vfx_soft.gdshader")
-const MODES: Dictionary[String, int] = {"ring": 0, "disc": 1, "pillar": 2, "glow": 3, "aura": 4, "shot": 5, "wave": 6}
+const MODES: Dictionary[String, int] = {"ring": 0, "disc": 1, "pillar": 2, "glow": 3, "aura": 4, "shot": 5, "wave": 6,
+	"zone": 7, "pending": 8, "dome": 9, "wisps": 10}
+## Mảnh đi theo đơn vị suốt `life` (SkillVfx3D).
+const FOLLOW: Array[String] = ["aura", "dome", "wisps"]
 ## Độ cao mặc định (m) của mảnh nằm trên đất — trên mặt đất một chút để không chìm.
 const GROUND_LIFT: float = 0.05
 
@@ -23,11 +28,19 @@ static func make(part: Dictionary, size: Variant) -> MeshInstance3D:
 	var mode: int = MODES[part["type"]]
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	match part["type"]:
-		"pillar":
+		"dome":
+			var sph: SphereMesh = SphereMesh.new()
+			sph.radius = float(size)
+			sph.height = float(size) * 2.0
+			sph.radial_segments = 24
+			sph.rings = 12
+			mi.mesh = sph
+			mi.position.y = float(size) * 0.55
+		"pillar", "wisps":
 			var cyl: CylinderMesh = CylinderMesh.new()
 			cyl.top_radius = float(size)
 			cyl.bottom_radius = float(size)
-			cyl.height = float(part.get("tall", 2.0))
+			cyl.height = float(part.get("tall", 2.0 if part["type"] == "pillar" else 1.4))
 			cyl.cap_top = false
 			cyl.cap_bottom = false
 			cyl.radial_segments = 16

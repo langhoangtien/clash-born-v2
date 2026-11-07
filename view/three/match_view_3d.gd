@@ -1,8 +1,7 @@
 class_name MatchView3D
 extends Node3D
-## Bản 3D (D-145): mặt đất Terrain3D (sương trong shader), hình phẳng trên đất (vòng đội, vùng chiêu, mũi nhắm…)
-## vẽ bằng GroundCanvas (D-180); đơn vị là mô hình 3D có hoạt ảnh. Camera nghiêng kiểu Liên Quân. Chỉ đọc World
-## (qua UnitsView: vị trí nội suy, ai thấy được).
+## Bản 3D (D-145): mặt đất Terrain3D (sương trong shader), hình phẳng trên đất bằng GroundCanvas (D-180), đơn vị 3D có
+## hoạt ảnh, camera nghiêng kiểu Liên Quân. Chỉ đọc World (qua UnitsView: vị trí nội suy, ai thấy được).
 
 ## 1 px thế giới = 0,01 đơn vị 3D.
 const S: float = 0.01
@@ -14,8 +13,7 @@ const CAM_OFFSET: Vector3 = Vector3(0, 11.5, 11.0)
 const CAM_FOV: float = 40.0
 ## Số mắt sương tối đa gửi shader mặt đất (khớp mảng eyes trong ground.gdshader).
 const FOG_EYES: int = 64
-## Độ đậm sương (như FogView của minimap).
-const FOG_ALPHA: float = 0.6
+const FOG_ALPHA: float = 0.6  ## độ đậm sương (như FogView của minimap)
 ## D-159: rung camera khi tướng mình đánh trúng / chí mạng / mất > SHAKE_HURT_FRACTION máu; giảm SHAKE_DECAY / giây.
 const SHAKE_HIT: float = 0.03
 const SHAKE_CRIT: float = 0.07
@@ -37,6 +35,7 @@ var scenery: Scenery3D
 var projectiles: Projectiles3D = Projectiles3D.new()  # D-219: đạn đánh thường 3D
 var skill_vfx: SkillVfx3D = SkillVfx3D.new()  # D-247: hiệu ứng chiêu theo công thức dữ liệu
 var skill_shots: SkillShots3D = SkillShots3D.new()  # D-296: đạn kỹ năng định hướng 3D
+var zones: ZoneView3D = ZoneView3D.new()  # D-297: vùng kỹ năng (vũng / vùng nạp) 3D
 ## D-159: tướng của người chơi (rung camera khi đánh trúng / bị đánh mạnh).
 var hero_id: int = -1
 var _event_tick: int = -1
@@ -102,6 +101,7 @@ func setup(w: World, units_view: UnitsView, aim_indicator: AimIndicator) -> void
 	add_child(projectiles)
 	add_child(skill_vfx)
 	add_child(skill_shots)
+	add_child(zones)
 	skill_vfx.position_of = func(e: Entity) -> Vector3: return to_3d(units.display_position(e))
 
 
@@ -149,6 +149,7 @@ func update(focus: Vector2) -> void:
 	projectiles.sync(world)
 	skill_shots.viewer_team = units.viewer_team
 	skill_shots.sync(world)
+	zones.sync(world)
 	t = prof.lap(&"shots", t)  # D-295: tách đạn / sự kiện để log chỉ đúng cú giật còn lại
 	_dispatch_events()
 	t = prof.lap(&"events", t)
@@ -171,8 +172,7 @@ func count_into(p: FrameProfile) -> void:
 	p.set_count(&"vfx", skill_vfx.kinds().size())
 
 
-## D-179: bật / tắt một phần vẽ (bảng chẩn đoán FPS): cảnh vật, nền ảnh (tắt = màu phẳng), lớp phủ (hình
-## phẳng trên đất, D-180), sương, nhân vật, nước.
+## D-179: bật / tắt một phần vẽ (bảng chẩn đoán): cảnh vật, nền ảnh, lớp phủ (D-180), sương, nhân vật, nước, hiệu ứng.
 func set_part(key: StringName, on: bool) -> void:
 	match key:
 		&"scenery":
@@ -193,6 +193,7 @@ func set_part(key: StringName, on: bool) -> void:
 			skill_vfx.visible = on
 			projectiles.visible = on
 			skill_shots.visible = on
+			zones.visible = on
 
 
 ## Vùng mặt đất đang vẽ (px thế giới) khi nhìn vào `focus` — cho sương và lọc đơn vị.

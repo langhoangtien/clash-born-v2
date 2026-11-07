@@ -78,6 +78,8 @@ func _fire(w: World, slot: int) -> void:
 	var view: MatchView3D = _scene.get("view_3d")
 	view.skill_vfx.advance(60.0)  # gỡ hiệu ứng của lần chụp trước
 	w.skill_shots.clear()
+	w.zones.clear()
+	w.pending_areas.clear()
 	for i: int in _casters.size():
 		var h: Entity = _casters[i]
 		var a: AbilityInstance = Abilities.of(h, slot)
@@ -87,6 +89,7 @@ func _fire(w: World, slot: int) -> void:
 		ev.direction = Vector2.UP
 		view.skill_vfx.on_event(w, ev)
 		view.skill_vfx.on_event(w, GameEvent.make(&"damage_taken", w.tick, h.id, _dummies[i].id, 100.0))
+		_zones(w, h, a, _dummies[2].position + Vector2(0, 60))  # vùng chiêu đặt giữa màn hình (chỗ trống)
 		if a.def.art_id == &"myra_q":
 			var s: SkillShot = SkillShot.new()
 			s.source_id = h.id
@@ -97,3 +100,43 @@ func _fire(w: World, slot: int) -> void:
 			w.skill_shots.append(s)
 	view.skill_vfx.advance(_delay)
 	_fired_at = _ready_frames
+
+
+## Vùng tồn tại / vùng có độ trễ của kỹ năng (đặt tay vào World, giữa chừng thời gian) — ZoneView3D vẽ.
+func _zones(w: World, h: Entity, a: AbilityInstance, at: Vector2) -> void:
+	var radius: float = Abilities.value(h, a, &"radius") if a.def.values.has(&"radius") else 250.0
+	var zone: ActionDef = _find(a.def.on_cast, ZoneAction)
+	if zone != null:
+		var z: ActiveZone = ActiveZone.new()
+		z.action = zone
+		z.source_id = h.id
+		z.center = at
+		z.radius = radius
+		z.start_tick = w.tick - 30
+		z.end_tick = w.tick + 60
+		z.interval_ticks = 15
+		w.zones.append(z)
+		return
+	if a.def.values.has(&"delay"):
+		var p: PendingArea = PendingArea.new()
+		p.action = _find(a.def.on_cast, AreaAction)
+		p.source_id = h.id
+		p.center = at
+		p.radius = radius
+		p.start_tick = w.tick - 15
+		p.due_tick = w.tick + 15
+		w.pending_areas.append(p)
+
+
+static func _find(list: Array, type: Variant) -> ActionDef:
+	for x: Variant in list:
+		if is_instance_of(x, type):
+			return x
+		if x is Resource:
+			for prop: Dictionary in (x as Resource).get_property_list():
+				var v: Variant = (x as Resource).get(prop["name"])
+				if v is Array:
+					var got: ActionDef = _find(v, type)
+					if got != null:
+						return got
+	return null

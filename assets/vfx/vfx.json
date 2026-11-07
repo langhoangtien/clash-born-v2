@@ -122,22 +122,21 @@
  "brakk_w": {
   "parts": [
    {
-    "type": "aura",
-    "radius": 75,
+    "type": "dome",
+    "radius": 80,
     "life": "duration",
-    "width": 0.14,
-    "color": "#8ea7c2",
-    "edge": "#e8f0f8",
-    "alpha": 0.8
+    "color": "#8eb0d6",
+    "edge": "#eef6ff",
+    "alpha": 0.7
    },
    {
-    "type": "glow",
-    "size": 1.6,
-    "height": 0.9,
-    "life": 0.35,
-    "color": "#a9bdd2",
-    "edge": "#f2f6fb",
-    "alpha": 0.65
+    "type": "aura",
+    "radius": 70,
+    "life": "duration",
+    "width": 0.2,
+    "color": "#8ea7c2",
+    "edge": "#e8f0f8",
+    "alpha": 0.45
    }
   ]
  },
@@ -150,16 +149,25 @@
     "life": 0.9,
     "color": "#9fd0c8",
     "edge": "#eefaf7",
+    "alpha": 0.7
+   },
+   {
+    "type": "wisps",
+    "radius": 42,
+    "tall": 1.6,
+    "life": "duration",
+    "color": "#9fd0c8",
+    "edge": "#f2fffc",
     "alpha": 0.75
    },
    {
     "type": "aura",
-    "radius": 80,
+    "radius": 75,
     "life": "duration",
-    "width": 0.14,
+    "width": 0.2,
     "color": "#9fd0c8",
     "edge": "#eefaf7",
-    "alpha": 0.75
+    "alpha": 0.5
    }
   ]
  },
@@ -205,6 +213,12 @@
     "alpha": 0.75,
     "color": "#7fb2e0",
     "edge": "#e6f4ff"
+   },
+   {
+    "type": "pending",
+    "alpha": 0.8,
+    "color": "#7fb2e0",
+    "edge": "#e6f4ff"
    }
   ]
  },
@@ -230,6 +244,18 @@
     "alpha": 0.8,
     "color": "#7fb2e0",
     "edge": "#e6f4ff"
+   },
+   {
+    "type": "pending",
+    "color": "#8f9ee6",
+    "edge": "#eef0ff",
+    "alpha": 0.8
+   },
+   {
+    "type": "zone",
+    "color": "#8f9ee6",
+    "edge": "#eef0ff",
+    "alpha": 0.7
    }
   ]
  },
@@ -291,10 +317,20 @@
     "at": "target",
     "radius": 70,
     "life": "duration",
-    "width": 0.14,
+    "width": 0.2,
     "color": "#b25a7c",
     "edge": "#ffd6e4",
-    "alpha": 0.8
+    "alpha": 0.6
+   },
+   {
+    "type": "wisps",
+    "at": "target",
+    "radius": 38,
+    "tall": 1.5,
+    "life": "duration",
+    "color": "#b25a7c",
+    "edge": "#ffd6e4",
+    "alpha": 0.7
    },
    {
     "type": "glow",
@@ -382,6 +418,12 @@
     "alpha": 0.8,
     "color": "#a3bd5c",
     "edge": "#eefcc8"
+   },
+   {
+    "type": "zone",
+    "alpha": 0.8,
+    "color": "#8fbf3a",
+    "edge": "#efffb8"
    }
   ]
  },
@@ -419,16 +461,25 @@
     "life": 0.8,
     "color": "#cc7a52",
     "edge": "#ffe2cf",
-    "alpha": 0.7
+    "alpha": 0.65
+   },
+   {
+    "type": "wisps",
+    "radius": 45,
+    "tall": 1.6,
+    "life": "duration",
+    "color": "#d98450",
+    "edge": "#ffe6d2",
+    "alpha": 0.75
    },
    {
     "type": "aura",
-    "radius": 80,
+    "radius": 75,
     "life": "duration",
-    "width": 0.14,
+    "width": 0.2,
     "color": "#cc7a52",
     "edge": "#ffe2cf",
-    "alpha": 0.75
+    "alpha": 0.5
    }
   ]
  }

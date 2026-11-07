@@ -73,7 +73,7 @@ clashborn_v2/
                            cho màn xem map, minimap)
     units/                 UnitsView: phần dưới đất của đơn vị (bóng, vòng đội / siêu cấp / về thành / tái
                            sinh, mắt) vẽ vào GroundCanvas, nội suy giữa hai tick; FloatingText (chữ nổi, Bars3D vẽ); UnitSprite (ảnh đứng, D-144), Vfx (hiệu ứng chiêu /
-                           đòn), ZonePainter (vùng kỹ năng), StateMarks (dấu trạng thái)
+                           đòn), StateMarks (dấu trạng thái); vùng kỹ năng vẽ 3D ở ZoneView3D (D-297)
     three/                 Trận vẽ 3D (D-145, D-157): MatchView3D (mặt đất, camera, sương trong shader đất,
                            D-180), GroundCanvas + ground_shapes.gdshader (hình phẳng trên đất kiểu lệnh CanvasItem,
                            mỗi hình một ô MultiMesh — D-180), GroundMarks (bụi, vòng shop, vòng trại dựng một lần), Actor3D (một đơn vị: nhân vật KayKit hoặc ảnh billboard), ModelLibrary

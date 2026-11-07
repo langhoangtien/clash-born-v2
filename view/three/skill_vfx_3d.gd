@@ -92,7 +92,7 @@ func advance(delta: float) -> void:
 		it[2] += delta
 		if it[1] == "trail":
 			_follow(it, delta)
-		elif it[1] == "aura":
+		elif it[1] in VfxParts.FOLLOW:
 			_stick(it)
 		_animate(it)
 	for it: Array in _items.filter(func(x: Array) -> bool: return x[2] >= float(x[3].get("life", 0.3))):
@@ -115,7 +115,7 @@ func _cast(w: World, ev: GameEvent) -> void:
 				var live: Dictionary = part.duplicate()
 				live["life"] = _value(e, a, part.get("life", 1.0))
 				_add(SpeedTrail3D.make(live, _tint_material(live)), "trail", live, Vector3.ZERO, e.id)
-			_ when VfxParts.is_soft(part["type"]) and part["type"] != "shot":  # shot: SkillShots3D
+			_ when VfxParts.is_soft(part["type"]) and not (part["type"] in ["shot", "zone", "pending"]):  # SkillShots3D / ZoneView3D
 				_soft(w, e, a, ev, part)
 
 
@@ -145,7 +145,7 @@ func _soft(w: World, e: Entity, a: AbilityInstance, ev: GameEvent, part: Diction
 	if dir != Vector2.ZERO:
 		node.rotation.y = atan2(-dir.x, -dir.y)
 	var lift: float = float(part.get("height", VfxParts.GROUND_LIFT))
-	_add(node, part["type"], live, _ground(at, {"height": lift}), anchor.id if part["type"] == "aura" else -1)
+	_add(node, part["type"], live, _ground(at, {"height": lift}), anchor.id if part["type"] in VfxParts.FOLLOW else -1)
 
 
 func _hit(w: World, ev: GameEvent) -> void:

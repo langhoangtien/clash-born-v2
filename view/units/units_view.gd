@@ -74,7 +74,6 @@ func _moving(e: Entity) -> bool:
 func paint(ci: GroundCanvas) -> void:
 	if world == null:
 		return
-	ZonePainter.draw(ci, world)
 	for item: Array in visible_units():
 		var e: Entity = item[1]
 		var at: Vector2 = item[0]
