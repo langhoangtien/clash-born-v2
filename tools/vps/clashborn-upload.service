@@ -1,0 +1,18 @@
+# /etc/systemd/system/clashborn-upload.service
+[Unit]
+Description=Clashborn upload server (nhận bản build, chỉ 127.0.0.1)
+After=network.target
+
+[Service]
+User=clashborn
+Group=clashborn
+ExecStart=/usr/bin/python3 /srv/clashborn/repo/tools/vps/upload_server.py --root /srv/clashborn --port 8787
+Restart=on-failure
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/clashborn/www /srv/clashborn/incoming /srv/clashborn
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

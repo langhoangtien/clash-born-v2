@@ -1,6 +1,6 @@
 # Bàn giao — Clashborn v2 (2026-11-05)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-277). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-278). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 
 ## 1. Trạng thái
@@ -53,6 +53,9 @@ Người chơi thích phong cách afk.ai (hợp đồ họa); Mixamo chỉ để
 5. Đề xuất đang chờ người dùng: cho cú lao R của Duy Anh nhảy qua vách / cây / trụ (đổi luật ABL-08).
 
 ## 4. Công cụ
+
+- Phát hành sắp chuyển sang VPS `https://clashborn.quest` (D-278, `docs/VPS_SETUP.md`): chờ VPS dựng xong → mở mạng +
+  nhập mã ở form bảo mật → sửa `app/updater.gd` (domain, sha256, GitHub dự phòng) → bản chuyển tiếp đăng cả hai nơi.
 
 - Godot 4.7.2: tải `Godot_v4.7.2-stable_linux.x86_64` về scratchpad. Import: `godot --headless --path . --import`.
 - Blender (bpy) cho `to_mixamo.py`, `mixamo_pack.py`, `bake_shading.py`: venv Python có gói `bpy`.
