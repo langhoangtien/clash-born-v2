@@ -1,11 +1,11 @@
 # Bàn giao — Clashborn v2 (2026-11-05)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-294). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-295). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 
 ## 1. Trạng thái
 
-- 827 test xanh (soak 831) (`GODOT=... bash tools/run_tests.sh`). APK mới nhất **0.1.491** (65 MB; D-290..294) trên https://clashborn.quest — bản đầu tiên chỉ phát hành qua VPS; gh-pages dừng ở 0.1.479 (D-283). Đo hiệu năng: log D-268 / Benchmark A/B D-272.
+- 827 test xanh (soak 831) (`GODOT=... bash tools/run_tests.sh`). APK mới nhất **0.1.492** (65 MB; D-290..295) trên https://clashborn.quest — bản đầu tiên chỉ phát hành qua VPS; gh-pages dừng ở 0.1.479 (D-283). Đo hiệu năng: log D-268 / Benchmark A/B D-272.
 - Android: trình vẽ **Mobile (Vulkan)**, đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
   Hiệu năng máy tính bảng (D-261..277): tối ưu SIM, sương thành ảnh nhỏ, chia tick (D-273), nạp trước hình / icon;
   Benchmark A/B gần nhất (0.1.470) ổn. Khựng đầu trận đã sửa (D-285).
@@ -36,7 +36,7 @@ Người chơi thích phong cách afk.ai (hợp đồ họa); Mixamo chỉ để
 
 ## 3. Việc tiếp theo (theo thứ tự đề xuất)
 
-0. **Kiểm tra 0.1.491 trên máy** (D-294 pool đạn: log trận so L-0006; chơi thử R Duy Anh qua vách, khấc máu): game tự thấy bản mới từ clashborn.quest, tải + kiểm sha256 + cài được (lần đầu chỉ
+0. **Kiểm tra 0.1.492 trên máy** (log trận so L-0008, xem cột Đạn / Sự kiện; chơi thử R Duy Anh qua vách, khấc máu): game tự thấy bản mới từ clashborn.quest, tải + kiểm sha256 + cài được (lần đầu chỉ
    qua VPS); hết khựng lúc mở trận (D-285); hình mô hình không xấu đi (D-286). Chạy lại Benchmark A/B (Cài đặt →
    "Đo hiệu năng tự động") để đo D-277. Từ D-287 người chơi bấm **"Gửi lên máy chủ"** (kèm ghi chú) rồi nhắn mã
    (B-0042 / L-0043): đọc bằng `bash tools/fetch_reports.sh <mã|latest>` (không có tham số = danh sách).

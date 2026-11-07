@@ -6,9 +6,10 @@ extends Control
 ## Độ cao (m) điểm chiếu chữ nổi / biểu tượng Quyết Đấu trên mặt đất.
 const TEXT_HEIGHT: float = 1.8
 const ICON_HEIGHT: float = 2.6
-## D-293: khấc trên thanh máu tướng (chỉ là hình): khấc mảnh mỗi HP_TICK máu, khấc đậm cao hết thanh mỗi
-## HP_BIG_TICK máu (kiểu Dota / Liên Quân) — tướng càng trâu khấc càng dày.
-const HP_TICK: float = 100.0
+## D-293: khấc trên thanh máu tướng (chỉ là hình), kiểu Dota / Liên Quân — tướng càng trâu khấc càng dày.
+## D-295 (người chơi): khấc 100 máu ở 7000 máu đen kín thanh → khấc mảnh mỗi HP_TICK 500 máu, khấc đậm mỗi
+## HP_BIG_TICK 1000 máu; bước cố định (không theo máu tối đa) để nhìn số khấc là biết tướng trâu cỡ nào.
+const HP_TICK: float = 500.0
 const HP_BIG_TICK: float = 1000.0
 const TICK_COLOR: Color = Color(0, 0, 0, 0.75)
 

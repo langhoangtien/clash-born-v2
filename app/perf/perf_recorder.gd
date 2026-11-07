@@ -14,7 +14,7 @@ const SPIKE_CAP: int = 100
 const BIG_SPIKE_MS: float = 50.0
 const BIG_SPIKE_CAP: int = 200
 ## Phần con trong "màn trận" (để tính phần còn lại).
-const SCENE_PARTS: Array[StringName] = [&"sim", &"ground", &"actors", &"events", &"corpses"]
+const SCENE_PARTS: Array[StringName] = [&"sim", &"ground", &"actors", &"shots", &"events", &"corpses"]
 ## Phần đo (khóa FrameProfile, µs) → cột ms.
 const SECTIONS: Dictionary[StringName, String] = {
 	&"process": "process_ms", &"sim": "sim_ms", &"hud": "hud_ms", &"render": "render_ms", &"gpu": "gpu_ms",

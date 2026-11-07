@@ -148,6 +148,7 @@ func update(focus: Vector2) -> void:
 		a.visible = _show_actors
 	t = prof.lap(&"actors", t)
 	projectiles.sync(world)
+	t = prof.lap(&"shots", t)  # D-295: tách đạn / sự kiện để log chỉ đúng cú giật còn lại
 	_dispatch_events()
 	t = prof.lap(&"events", t)
 	for id: int in _actors.keys():

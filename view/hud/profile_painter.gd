@@ -5,15 +5,15 @@ extends RefCounted
 
 const LABELS: Dictionary[StringName, String] = {
 	&"process": "Xử lý (_process)", &"scene": "  Màn trận", &"sim": "    SIM",
-	&"ground": "    Đất + lớp phủ", &"actors": "    Nhân vật 3D", &"events": "    Đạn + sự kiện",
+	&"ground": "    Đất + lớp phủ", &"actors": "    Nhân vật 3D", &"shots": "    Đạn", &"events": "    Sự kiện (hiệu ứng chiêu…)",
 	&"corpses": "    Gỡ hình + xác", &"scene_other": "    Màn trận khác", &"process_other": "  _process khác",
 	&"draw2d": "Cuối khung (HUD + khác)", &"hud": "  HUD _draw", &"hud_diag": "    trong đó bảng đo",
 	&"draw2d_other": "  Còn lại (xương, vẽ 2D chưa đo riêng)", &"render": "Dựng khung 3D (CPU)", &"gpu": "GPU",
 }
 ## Thứ tự hiện (cây cha – con).
-const ORDER: Array[StringName] = [&"process", &"scene", &"sim", &"ground", &"actors", &"events", &"corpses",
+const ORDER: Array[StringName] = [&"process", &"scene", &"sim", &"ground", &"actors", &"shots", &"events", &"corpses",
 	&"scene_other", &"process_other", &"draw2d", &"hud", &"hud_diag", &"draw2d_other", &"render", &"gpu"]
-const SCENE_PARTS: Array[StringName] = [&"sim", &"ground", &"actors", &"events", &"corpses"]
+const SCENE_PARTS: Array[StringName] = [&"sim", &"ground", &"actors", &"shots", &"events", &"corpses"]
 
 
 ## [nhãn, ms trung bình, ms đỉnh] theo ORDER; phần chưa đo thì bỏ.
