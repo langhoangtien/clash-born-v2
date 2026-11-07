@@ -80,7 +80,7 @@ def publish(info: dict) -> dict:
 def publish_site() -> dict:
     src = os.path.join(ROOT, "incoming", "site.tar.gz")
     www = os.path.join(ROOT, "www")
-    stage = tempfile.mkdtemp(dir=ROOT)
+    stage = tempfile.mkdtemp(dir=os.path.join(ROOT, "incoming"))  # người dùng clashborn ghi được ở đây
     try:
         with tarfile.open(src, "r:gz") as tar:
             for m in tar.getmembers():
