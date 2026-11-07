@@ -82,7 +82,7 @@ clashborn_v2/
                            kit / kit_tex .gdshader (mặt đất ảnh nền theo mặt nạ, nước, vật liệu cảnh vật vẽ sẵn sáng
                            tối — D-178); Scenery3D (cảnh vật decor.py, bụi, chợ, đổ nát, D-158, D-178);
                            SkillVfx3D (hiệu ứng chiêu theo assets/vfx/vfx.json, D-247) + VfxParts / vfx_soft.gdshader
-                           (mảnh dịu dựng bằng shader, D-296), SkillShots3D (đạn kỹ năng 3D, D-296), ZoneView3D (vùng chiêu, D-297), EffectVfx3D (hiệu ứng trạng thái, D-298); Projectiles3D (đạn đánh thường, D-219)
+                           (mảnh dịu dựng bằng shader, D-296), SkillShots3D (đạn kỹ năng 3D, D-296), ZoneView3D (vùng chiêu, D-297), EffectVfx3D (hiệu ứng trạng thái, D-298), HexFrog3D (ếch hóa hình, D-299); Projectiles3D (đạn đánh thường, D-219)
     art/                   ArtLibrary: res://assets/art/<art_id>.png, thiếu → hình tạm; vào trận nạp ngầm hình nội dung (D-269)
     ui/                    UiStyle (phông, màu, khung, nút, xu), UiGlyphs (icon nét) — D-130; UiBake: ảnh dựng sẵn
                            cho nút tròn / chấm / vòng (gộp lệnh vẽ, D-290; PNG trong assets/ui/baked/ do

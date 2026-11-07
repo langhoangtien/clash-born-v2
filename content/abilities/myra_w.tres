@@ -46,7 +46,7 @@ value_changes = Array[ExtResource("9_q5iyd")]([SubResource("Resource_2po6h"), Su
 
 [resource]
 script = ExtResource("6_q0t3o")
-description = "Vòng băng bán kính 280 tại điểm chọn, sau 0.8 s gây sát thương phép và đóng băng (choáng; né được)."
+description = "Vòng băng bán kính 280 tại điểm chọn, sau 0.8 s gây sát thương phép và đóng băng — giữ chân tại chỗ như trói (né được)."
 slot = 2
 targeting = 3
 values = Dictionary[StringName, PackedFloat32Array]({
@@ -56,7 +56,7 @@ values = Dictionary[StringName, PackedFloat32Array]({
 &"delay": PackedFloat32Array(0.8, 0.8, 0.8, 0.8, 0.8),
 &"mana": PackedFloat32Array(100, 110, 120, 130, 140),
 &"radius": PackedFloat32Array(280, 280, 280, 280, 280),
-&"freeze_duration": PackedFloat32Array(0.8, 1, 1.2, 1.4, 1.6)
+&"freeze_duration": PackedFloat32Array(1, 1.25, 1.5, 1.75, 2)
 })
 on_cast = Array[ExtResource("1_opuw6")]([SubResource("Resource_tyda7")])
 talent = SubResource("Resource_gfk57")

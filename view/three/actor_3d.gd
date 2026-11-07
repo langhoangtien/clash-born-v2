@@ -26,7 +26,7 @@ var _anim: AnimationPlayer
 var _sprite: Sprite3D
 var _model: Node3D
 ## ST-16: hình ếch khi bị hóa ếch (tạo khi cần).
-var _frog: Sprite3D
+var _frog: HexFrog3D
 var _meshes: Array[GeometryInstance3D] = []
 ## D-161: vật liệu đặc của từng bề mặt (theo _meshes), để trả lại sau khi hết mờ.
 var _solid: Array[Array] = []
@@ -252,17 +252,12 @@ func _set_faded(faded: bool) -> void:
 			mi.set_surface_override_material(k, ModelLibrary.faded_material(solid) if faded else solid)
 
 
-## ST-16: hóa ếch — giấu nhân vật, hiện ảnh ếch đứng (thiếu ảnh thì UnitsView vẽ ếch tạm dưới đất).
+## ST-16: hóa ếch — giấu nhân vật, hiện ếch 3D nhảy tưng (D-299, HexFrog3D); thiếu mô hình thì UnitsView vẽ ếch tạm.
 func _show_frog(hexed: bool) -> bool:
-	if hexed and _frog == null and ArtLibrary.texture(&"hex_frog") != null:
-		_frog = Sprite3D.new()
-		_frog.texture = ArtLibrary.texture(&"hex_frog")
-		_frog.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-		_frog.shaded = false
-		_frog.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
-		_frog.pixel_size = height * 0.6 / _frog.texture.get_height()
-		_frog.offset = Vector2(0, _frog.texture.get_height() * 0.5)
-		add_child(_frog)
+	if hexed and _frog == null:
+		_frog = HexFrog3D.make(height)
+		if _frog != null:
+			add_child(_frog)
 	_model.visible = not hexed
 	if _frog != null:
 		_frog.visible = hexed

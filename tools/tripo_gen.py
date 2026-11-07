@@ -6,6 +6,7 @@ Key đọc từ biến môi trường TRIPO_API_KEY hoặc file ~/.secrets/tripo
 Mỗi ảnh → <out>/<tên>.glb; in số credit trước và sau.
 --multiview: mỗi tham số là tên chung của bộ ảnh 3 hướng (phiếu T8, <tên>_front/_side/_back.png; _side là
 nghiêng phải) → một mô hình <out>/<tên>.glb dựng từ cả ba ảnh; --views front,back: bỏ hướng có ảnh lệch tư thế; side_left: ảnh _side là nhìn từ bên trái (mũi vật quay sang trái ảnh — D-224).
+--prompt "mô tả" (D-299): tham số là tên file ra, dựng từ câu mô tả (text_to_model) thay vì ảnh.
 """
 import argparse, json, os, sys, time, urllib.request
 
@@ -40,7 +41,9 @@ def upload(png):
     return call("/upload", headers={"Content-Type": f"multipart/form-data; boundary={boundary}"}, raw=raw)["image_token"]
 
 
-def request(png, faces, multiview, use=("front", "side", "back")):
+def request(png, faces, multiview, use=("front", "side", "back"), prompt=None):
+    if prompt:
+        return {"type": "text_to_model", "prompt": prompt}
     if not multiview:
         return {"type": "image_to_model", "file": {"type": "png", "file_token": upload(png)}}
     # thứ tự Tripo: trước, trái, sau, phải; thiếu hướng nào để trống (D-211: bỏ ảnh nghiêng lệch tư thế)
@@ -63,13 +66,13 @@ def wait(task):
     return d
 
 
-def generate(png, faces, out_dir, multiview=False, use=("front", "side", "back")):
+def generate(png, faces, out_dir, multiview=False, use=("front", "side", "back"), prompt=None):
     name = os.path.splitext(os.path.basename(png))[0]
     note = os.path.join(out_dir, name + ".task")
     if os.path.exists(note):  # đã gửi trước đó: chỉ chờ / tải lại, không tốn credit
         task = open(note).read().strip()
     else:
-        body = request(png, faces, multiview, use) | {"face_limit": faces, "texture": True, "pbr": False}
+        body = request(png, faces, multiview, use, prompt) | {"face_limit": faces, "texture": True, "pbr": False}
         task = call("/task", body)["task_id"]
         open(note, "w").write(task)
     print(name, "task", task, flush=True)
@@ -88,11 +91,12 @@ def main():
     ap.add_argument("--out", default="art_inbox/3d")
     ap.add_argument("--multiview", action="store_true")
     ap.add_argument("--views", default="front,side,back", help="hướng dùng khi --multiview (vd front,back)")
+    ap.add_argument("--prompt", default=None, help="dựng từ câu mô tả; tham số đầu là tên file ra")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     print("credit trước:", call("/user/balance")["balance"])
     for png in a.images:
-        print("→", generate(png, a.faces, a.out, a.multiview, a.views.split(",")), flush=True)
+        print("→", generate(png, a.faces, a.out, a.multiview, a.views.split(","), a.prompt), flush=True)
     print("credit sau:", call("/user/balance")["balance"])
 
 

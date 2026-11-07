@@ -2,16 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dd2l2hisy4oap"
-path="res://.godot/imported/hex_frog.png-c02d9bb0f498d5ebfd5c793597b3e711.ctex"
+uid="uid://kre5rnp0egir"
+path="res://.godot/imported/hex_frog_Color_c5420ee4-1432-42d7-b070-8d7654ed1db1.jpg-28c661dcfd08b07f323eb25754ff44e1.ctex"
 metadata={
 "vram_texture": false
+}
+generator_parameters={
+"md5": "569f904adc615c039f57925edb0a5db7"
 }
 
 [deps]
 
-source_file="res://assets/art/hex_frog.png"
-dest_files=["res://.godot/imported/hex_frog.png-c02d9bb0f498d5ebfd5c793597b3e711.ctex"]
+source_file="res://assets/models/style/fx/hex_frog_Color_c5420ee4-1432-42d7-b070-8d7654ed1db1.jpg"
+dest_files=["res://.godot/imported/hex_frog_Color_c5420ee4-1432-42d7-b070-8d7654ed1db1.jpg-28c661dcfd08b07f323eb25754ff44e1.ctex"]
 
 [params]
 

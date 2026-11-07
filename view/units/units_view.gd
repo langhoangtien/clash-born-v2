@@ -103,7 +103,7 @@ func _draw_ground_mark(ci: GroundCanvas, e: Entity, at: Vector2) -> void:
 		var left: float = clampf((e.reincarnate_tick - world.tick) / maxf(SimClock.seconds_to_ticks(world.balance.reincarnate_delay), 1.0), 0.0, 1.0)
 		ci.draw_arc(at, e.radius * 2.0, 0, TAU, 32, Color(1, 1, 1, 0.2), 4.0, true)
 		ci.draw_arc(at, e.radius * 2.0, -PI * 0.5, -PI * 0.5 + TAU * left, 32, Color(1, 0.85, 0.35, 0.9), 5.0, true)
-	if Rules.has_state(e, UnitState.Id.HEXED) and ArtLibrary.texture(&"hex_frog") == null:
+	if Rules.has_state(e, UnitState.Id.HEXED) and not ResourceLoader.exists(HexFrog3D.MODEL):
 		_draw_frog(ci, e, at, color)
 
 

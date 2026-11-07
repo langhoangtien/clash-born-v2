@@ -4,8 +4,7 @@ extends Node3D
 ## hoạt ảnh, camera nghiêng kiểu Liên Quân. Chỉ đọc World (qua UnitsView: vị trí nội suy, ai thấy được).
 
 const S: float = 0.01  ## 1 px thế giới = 0,01 đơn vị 3D
-## D-151: vùng camera thấy để lọc đơn vị / mắt sương; xa quá FAR_PX phía trước bị sương che; nới GROUND_MARGIN.
-const FAR_PX: float = 1500.0
+const FAR_PX: float = 1500.0  ## D-151: vùng camera thấy (lọc đơn vị / mắt sương): xa quá FAR_PX bị sương che
 const GROUND_MARGIN: float = 96.0
 const CAM_OFFSET: Vector3 = Vector3(0, 11.5, 11.0)  ## camera: lệch khỏi điểm nhìn (đơn vị 3D); CAM_FOV góc nhìn
 const CAM_FOV: float = 40.0
@@ -141,6 +140,7 @@ func update(focus: Vector2) -> void:
 			add_child(a)
 			_actors[e.id] = a
 		a.sync(world, e, to_3d(units.display_position(e)), units.is_moving(e), world.tick - units.hit_tick(e), units.faded(e))
+		EffectVfx3D.pose(world, e, a)  # D-299: lốc xoáy nhấc lên, xoay
 		a.visible = _show_actors
 	t = prof.lap(&"actors", t)
 	projectiles.sync(world)

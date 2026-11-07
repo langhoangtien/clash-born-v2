@@ -8,15 +8,17 @@ extends RefCounted
 ##   wisps — làn sáng bốc lên quanh người (radius px, tall m) — cả hai đi theo đơn vị như aura · zone / pending — vũng
 ##   của vùng tồn tại / vùng có độ trễ (ZoneView3D, cỡ theo vùng trong SIM) · D-298: tornado — lốc xoáy (radius px,
 ##   tall m), chains — vòng xích dưới chân, ice — khối băng bao người, cone — vệt quét hình quạt (radius, angle độ);
-##   meteors — sao băng rơi xuống vùng có độ trễ (count, ZoneView3D).
+##   meteors — sao băng rơi xuống vùng có độ trễ (count, ZoneView3D) · D-299: crystals — cụm tinh thể băng nhọn
+##   quanh chân (radius px, count, tall m), stars — sao choáng xoay trên đầu (radius px, height m).
 ## Chung: color, edge (lõi), alpha (độ đục tối đa — giữ ≤ 0,85 để 5v5 không chói), life (giây hoặc tên giá trị kỹ năng),
 ## height (m), at = caster | point | target.
 
 const SHADER: Shader = preload("res://view/three/vfx_soft.gdshader")
 const MODES: Dictionary[String, int] = {"ring": 0, "disc": 1, "pillar": 2, "glow": 3, "aura": 4, "shot": 5, "wave": 6,
-	"zone": 7, "pending": 8, "dome": 9, "wisps": 10, "tornado": 11, "chains": 12, "cone": 13, "ice": 14}
+	"zone": 7, "pending": 8, "dome": 9, "wisps": 10, "tornado": 11, "chains": 12, "cone": 13, "ice": 14,
+	"crystals": 14, "stars": 15}
 ## Mảnh đi theo đơn vị suốt `life` (SkillVfx3D, EffectVfx3D).
-const FOLLOW: Array[String] = ["aura", "dome", "wisps", "tornado", "chains", "ice"]
+const FOLLOW: Array[String] = ["aura", "dome", "wisps", "tornado", "chains", "ice", "crystals", "stars"]
 ## Độ cao mặc định (m) của mảnh nằm trên đất — trên mặt đất một chút để không chìm.
 const GROUND_LIFT: float = 0.05
 
@@ -38,6 +40,8 @@ static func make(part: Dictionary, size: Variant) -> MeshInstance3D:
 			sph.rings = 12
 			mi.mesh = sph
 			mi.position.y = float(size) * 0.55
+		"crystals":
+			mi.mesh = crystals(float(size), int(part.get("count", 7)), float(part.get("tall", 1.1)))
 		"pillar", "wisps", "tornado":
 			var cyl: CylinderMesh = CylinderMesh.new()
 			cyl.top_radius = float(size) * (1.7 if part["type"] == "tornado" else 1.0)
@@ -89,3 +93,25 @@ static func _quad(s: Vector2) -> QuadMesh:
 	var q: QuadMesh = QuadMesh.new()
 	q.size = s
 	return q
+
+
+## D-299: cụm tinh thể băng — `count` lăng trụ nhọn 5 mặt quanh vòng bán kính `ring` (m), nghiêng ra ngoài, cao lệch
+## nhau (cố định theo số thứ tự); một lưới, mặt phẳng (đa giác rõ).
+static func crystals(ring: float, count: int, tall: float) -> ArrayMesh:
+	var st: SurfaceTool = SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for k: int in count:
+		var h: float = tall * (0.6 + 0.4 * absf(sin(k * 2.7)))
+		var prism: CylinderMesh = CylinderMesh.new()
+		prism.top_radius = 0.0
+		prism.bottom_radius = ring * (0.32 + 0.12 * absf(cos(k * 1.9)))
+		prism.height = h
+		prism.radial_segments = 5
+		prism.rings = 1
+		var ang: float = TAU * k / count + 0.4 * sin(k * 3.1)
+		var out: Vector3 = Vector3(cos(ang), 0, sin(ang))
+		var basis: Basis = Basis(out.cross(Vector3.UP).normalized(), deg_to_rad(18.0 + 10.0 * sin(k * 1.3)))
+		st.append_from(prism, 0, Transform3D(basis, out * ring * 0.85 + Vector3(0, h * 0.42, 0)))
+	st.deindex()  # mặt phẳng: mỗi tam giác pháp tuyến riêng
+	st.generate_normals()
+	return st.commit()

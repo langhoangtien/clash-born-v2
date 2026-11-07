@@ -3,6 +3,8 @@ extends Node3D
 ## D-298: hiệu ứng 3D cho hiệu ứng đang có trên đơn vị (lốc xoáy của Gậy Lốc Xoáy, trói của Rìu Xiềng Xích, đóng băng
 ## của Myra…) theo mục "_effects" của vfx.json (khóa = id hiệu ứng): các mảnh đi theo đơn vị suốt thời gian hiệu ứng
 ## (t = phần thời gian đã qua). Đơn vị phe kia không thấy thì không vẽ. Thay các vòng tròn 2D tương ứng (StateMarks).
+## D-299: mục "_states" (khóa = tên trạng thái, vd STUNNED) — hình chung cho trạng thái khi không hiệu ứng nào của nó
+## có hình riêng (sao choáng 3D trên đầu); hiệu ứng có `lift` / `spin` (lốc xoáy) nhấc hình đơn vị lên và xoay (`pose`).
 ## Chỉ đọc World.
 
 ## Vị trí 3D đang vẽ của đơn vị (MatchView3D đặt = vị trí nội suy).
@@ -14,12 +16,33 @@ static func parts_of(id: StringName) -> Array:
 	return SkillVfx3D.recipes().get("_effects", {}).get(String(id), {}).get("parts", [])
 
 
-## Trạng thái `state` của đơn vị đến từ hiệu ứng được vẽ 3D (StateMarks bỏ dấu 2D trùng).
-static func covers(e: Entity, state: int) -> bool:
+static func state_parts(state: int) -> Array:
+	return SkillVfx3D.recipes().get("_states", {}).get(UnitState.Id.keys()[state], {}).get("parts", [])
+
+
+## Trạng thái `state` của đơn vị do một hiệu ứng có hình riêng gây ra.
+static func covered_by_effect(e: Entity, state: int) -> bool:
 	for inst: EffectInstance in e.effects:
 		if inst.def.states.has(state) and not parts_of(inst.def.id).is_empty():
 			return true
 	return false
+
+
+## Trạng thái `state` của đơn vị đang được vẽ 3D (StateMarks bỏ dấu 2D trùng).
+static func covers(e: Entity, state: int) -> bool:
+	return covered_by_effect(e, state) or (Rules.has_state(e, state) and not state_parts(state).is_empty())
+
+
+## D-299: hiệu ứng có `lift` (m) / `spin` (vòng / giây) — lốc xoáy nhấc hình đơn vị lên và xoay (sau Actor3D.sync).
+static func pose(world: World, e: Entity, actor: Node3D) -> void:
+	for inst: EffectInstance in e.effects:
+		var r: Dictionary = SkillVfx3D.recipes().get("_effects", {}).get(String(inst.def.id), {})
+		if not r.has("lift"):
+			continue
+		var age: float = (world.tick - inst.start_tick) * SimClock.TICK_SECONDS
+		var left: float = (inst.end_tick - world.tick) * SimClock.TICK_SECONDS
+		actor.position.y += float(r["lift"]) * smoothstep(0.0, 0.4, age) * smoothstep(0.0, 0.3, left)
+		actor.rotation.y += float(r.get("spin", 0.0)) * TAU * age
 
 
 func sync(world: World, seen: Callable) -> void:
@@ -40,6 +63,13 @@ func sync(world: World, seen: Callable) -> void:
 			var t: float = clampf((world.tick - inst.start_tick) / span, 0.0, 1.0) if span > 0.0 else 0.5
 			for child: Node in node.get_children():
 				VfxParts.animate(child as MeshInstance3D, t)
+		for state: int in UnitState.Id.values():
+			if Rules.has_state(e, state) and not state_parts(state).is_empty() and not covered_by_effect(e, state):
+				var key: String = "%d:%d" % [e.id, state]
+				live[key] = true
+				if not _items.has(key):
+					_items[key] = _make(e, state_parts(state))
+				(_items[key] as Node3D).position = position_of.call(e)
 	for inst: Variant in _items.keys():
 		if not live.has(inst):
 			(_items[inst] as Node3D).queue_free()

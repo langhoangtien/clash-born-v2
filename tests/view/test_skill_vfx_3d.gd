@@ -37,20 +37,26 @@ func test_D_247_recipe_parts_hits_and_cleanup() -> void:
 	fx.free()
 
 
-## D-250: Xung Phong (Q) để lại vệt gió đi theo hero suốt thời gian tăng tốc (`life` = giá trị `duration` của kỹ năng).
-func test_D_250_trail_follows_caster_for_duration() -> void:
+## D-250: vệt gió bám đường chạy của chủ chiêu suốt `life` (nay dùng cho cú lướt — R Duy Anh, Q Noctis); D-299: Q Duy Anh
+## (tăng tốc) đổi sang hào quang + làn gió đi theo suốt thời gian tăng tốc (người chơi: vệt cũ như cái đuôi).
+func test_D_250_trail_follows_caster_and_q_buff_follows_for_duration() -> void:
 	var s: Array = _setup()
 	var w: World = s[0]
 	var k: Entity = s[1]
-	Abilities.set_rank(w, k, Abilities.of(k, AbilityDef.Slot.Q), 1)
+	for slot: AbilityDef.Slot in [AbilityDef.Slot.Q, AbilityDef.Slot.R]:
+		Abilities.set_rank(w, k, Abilities.of(k, slot), 1)
 	var fx: SkillVfx3D = SkillVfx3D.new()
-	fx.on_event(w, GameEvent.make(&"ability_finished", w.tick, k.id, -1, AbilityDef.Slot.Q))
-	assert_eq(fx.kinds(), ["trail"])
+	fx.on_event(w, GameEvent.make(&"ability_finished", w.tick, k.id, -1, AbilityDef.Slot.R))
+	assert_eq(fx.kinds(), ["trail", "ring"])
 	k.position += Vector2(300, 0)
 	fx.advance(0.1)
 	assert_near((fx.get_child(0) as SpeedTrail3D).head().x, k.position.x * MatchView3D.S, 0.001, "đầu vệt bám theo hero")
+	fx.advance(2.0)
+	assert_eq(fx.kinds(), [], "hết vệt lướt: gỡ")
+	fx.on_event(w, GameEvent.make(&"ability_finished", w.tick, k.id, -1, AbilityDef.Slot.Q))
+	assert_eq(fx.kinds(), ["ring", "aura", "wisps"])
 	fx.advance(4.0)
-	assert_eq(fx.kinds(), ["trail"], "còn trong 5 s tăng tốc")
+	assert_eq(fx.kinds(), ["aura", "wisps"], "còn trong 5 s tăng tốc")
 	fx.advance(1.5)
 	assert_eq(fx.kinds(), [], "hết tăng tốc: gỡ")
 	fx.free()
@@ -147,8 +153,8 @@ func test_D_298_effect_visuals_follow_unit_and_cover_2d_marks() -> void:
 		assert_false(EffectVfx3D.parts_of(StringName(id)).is_empty(), "%s có hình 3D" % id)
 	var freeze: EffectDef = load("res://content/effects/myra_freeze.tres")
 	Effects.apply(w, foe, freeze, s[1], {}, "1")
-	assert_true(EffectVfx3D.covers(foe, UnitState.Id.STUNNED), "đóng băng: bỏ sao choáng 2D")
-	assert_false(EffectVfx3D.covers(foe, UnitState.Id.ROOTED))
+	assert_true(EffectVfx3D.covers(foe, UnitState.Id.ROOTED), "đóng băng (giữ chân, D-299): bỏ vòng trói 2D")
+	assert_false(EffectVfx3D.covers(foe, UnitState.Id.SILENCED))
 	var v: EffectVfx3D = EffectVfx3D.new()
 	v.sync(w, func(_e: Entity) -> bool: return true)
 	assert_eq(v.count(), 1)
@@ -161,3 +167,37 @@ func test_D_298_effect_visuals_follow_unit_and_cover_2d_marks() -> void:
 	v.sync(w, func(_e: Entity) -> bool: return true)
 	assert_eq(v.count(), 0, "hết hiệu ứng: gỡ")
 	v.free()
+
+
+
+## D-299: sao choáng 3D trên đầu cho mọi nguồn choáng (mục _states) thay sao 2D; lốc xoáy nhấc hình đơn vị lên và xoay.
+func test_D_299_stun_stars_and_cyclone_lift() -> void:
+	var s: Array = _setup()
+	var w: World = s[0]
+	var foe: Entity = s[2]
+	Effects.apply(w, foe, load("res://content/effects/stun.tres") as EffectDef, s[1], {}, "2")
+	assert_true(EffectVfx3D.covers(foe, UnitState.Id.STUNNED), "choáng thường: sao 3D, bỏ sao 2D")
+	var v: EffectVfx3D = EffectVfx3D.new()
+	v.sync(w, func(_e: Entity) -> bool: return true)
+	assert_eq(v.count(), 1, "sao choáng")
+	foe.effects.clear()
+	Effects.refresh_states(foe)
+	v.sync(w, func(_e: Entity) -> bool: return true)
+	assert_eq(v.count(), 0, "hết choáng: gỡ")
+	Effects.apply(w, foe, load("res://content/effects/cyclone.tres") as EffectDef, foe, {}, "2.5")
+	var body: Node3D = Node3D.new()
+	w.tick += 20
+	EffectVfx3D.pose(w, foe, body)
+	assert_true(body.position.y > 1.0, "lốc xoáy: nhấc lên không (%.2f m)" % body.position.y)
+	assert_true(absf(body.rotation.y) > 0.1, "xoay")
+	body.free()
+	v.free()
+
+
+func test_D_299_hex_frog_is_3d_model() -> void:
+	var f: HexFrog3D = HexFrog3D.make(2.0)
+	assert_true(f != null, "có mô hình ếch")
+	(Engine.get_main_loop() as SceneTree).root.add_child(f)
+	f._process(0.3)
+	assert_true(f.position.y > 0.0, "đang nhảy")
+	f.queue_free()

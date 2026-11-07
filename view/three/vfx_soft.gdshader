@@ -8,7 +8,7 @@
 //  10 làn sáng bốc lên (hình trụ quanh người). D-297: mép mềm (không viền tròn sắc), thêm 7–10 theo góp ý người chơi.
 //  D-298: 11 lốc xoáy (hình nón cụt, dải xoắn chạy lên) · 12 vòng xích dưới chân (mắt xích theo vòng) ·
 //  13 vệt quét hình quạt (lưỡi sáng quét qua góc `angle` rồi tan; phía trước = UV.y nhỏ) · 14 khối băng (cầu, mặt
-//  tinh thể theo ô, sáng rìa).
+//  tinh thể theo ô, sáng rìa; D-299 dùng cho cụm tinh thể băng). 15 sao choáng xoay trên đầu (mặt phẳng ngang).
 shader_type spatial;
 render_mode unshaded, blend_mix, cull_disabled, depth_draw_never, shadows_disabled;
 
@@ -155,6 +155,19 @@ void fragment() {
 		float facet = hash(cell);
 		a = (0.28 + facet * 0.18 + fres * 0.55) * life_fade(0.06, 0.92);
 		core = fres * 0.7 + step(0.82, facet) * 0.4;
+	}
+	if (mode == 15) {
+		a = 0.0;
+		core = 0.0;
+		for (int k = 0; k < 3; k++) {
+			float ang = TIME * 2.4 + float(k) * 2.0944;
+			vec2 d = c - vec2(cos(ang), sin(ang)) * 0.6;
+			float rr = length(d);
+			float star_r = 0.17 * (0.62 + 0.38 * cos(5.0 * atan(d.y, d.x) + TIME * 2.0));
+			float shape = 1.0 - smoothstep(star_r - 0.03, star_r + 0.03, rr);
+			a += shape + exp(-rr * rr * 45.0) * 0.35;
+			core += shape * (1.0 - smoothstep(0.0, star_r, rr));
+		}
 	}
 	ALBEDO = mix(color.rgb, edge.rgb, clamp(core, 0.0, 1.0) * 0.8);
 	ALPHA = clamp(a * alpha, 0.0, 1.0);

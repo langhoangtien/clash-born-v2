@@ -72,8 +72,8 @@ func _setup(w: World) -> void:
 			Abilities.set_rank(w, h, Abilities.of(h, slot), 1)
 		_casters.append(h)
 		_dummies.append(UnitFactory.hero(w, lib.heroes[&"brakk"], 1, at + Vector2(0, -230)))
-	for k: int in 3:  # hiệu ứng trạng thái (D-298) trên ba hình nộm ở chỗ trống
-		var id: String = ["cyclone", "root", "myra_freeze"][k]
+	for k: int in 5:  # hiệu ứng trạng thái (D-298, D-299) trên các hình nộm
+		var id: String = ["cyclone", "root", "myra_freeze", "stun", "hex"][k]
 		Effects.apply(w, _dummies[k], load("res://content/effects/%s.tres" % id) as EffectDef, _casters[0], {}, "4")
 		_dummies[k].effects[-1].start_tick -= 45  # giữa thời gian hiệu ứng (SIM dừng)
 

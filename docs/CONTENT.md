@@ -25,7 +25,7 @@ món đồ ở cuối tài liệu thì gần như mọi hero, món đồ sau ch�
 | Hero | Vai trò | Cơ chế mang vào game |
 |---|---|---|
 | Brakk · Thiết Quyền | Đỡ đòn, cận chiến, Sức mạnh | Vùng quanh mình, STUNNED, khiên (SHIELD), GHOST, hồi máu theo thời gian |
-| Myra · Pháp sư băng | Phép, đánh xa, Trí tuệ | Đạn định hướng (skillshot), vùng có độ trễ, làm chậm, đóng băng (STUNNED, D-298), SILENCED, vùng băng giá (talent) |
+| Myra · Pháp sư băng | Phép, đánh xa, Trí tuệ | Đạn định hướng (skillshot), vùng có độ trễ, làm chậm, đóng băng (ROOTED, D-299), SILENCED, vùng băng giá (talent) |
 | Noctis · Sát Ảnh | Sát thủ, cận chiến, Nhanh nhẹn | Lướt (DASH, UNTARGETABLE), INVISIBLE, REVEALED, DISARMED, khuếch đại sát thương nhận vào, hồi chiêu khi hạ gục (talent) |
 | Vexa · Phù Thủy | Khống chế, đánh xa, Trí tuệ | HEXED (biến hình), đẩy lùi (KNOCKBACK), tước bỏ hiệu ứng có lợi (PURGE), skill xuyên miễn phép |
 
@@ -165,12 +165,12 @@ tiêu thì mất hết (`removed_by attack_target_changed`), tính lúc bắt đ
 Đạn bay thẳng 1000, rộng 120, tốc 1400, trúng kẻ địch **đầu tiên** (không phải
 công trình) thì dừng.
 
-### W — Vòng Băng (chọn điểm, vùng có độ trễ; D-298: đóng băng thay trói)
+### W — Vòng Băng (chọn điểm, vùng có độ trễ; D-298/299: đóng băng — hình băng, tác dụng như trói)
 
 | Cấp | 1 | 2 | 3 | 4 | 5 |
 |---|---:|---:|---:|---:|---:|
 | Sát thương phép (D-162) | 40 | 80 | 120 | 160 | 200 |
-| Đóng băng — choáng (giây, D-298) | 0.8 | 1.0 | 1.2 | 1.4 | 1.6 |
+| Đóng băng — giữ chân như trói (giây, D-299) | 1.0 | 1.25 | 1.5 | 1.75 | 2.0 |
 | Hồi chiêu | 16 | 15 | 14 | 13 | 12 |
 | Mana | 100 | 110 | 120 | 130 | 140 |
 

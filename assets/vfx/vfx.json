@@ -1,23 +1,34 @@
 {
- "_ghi_chu": "D-247: hiệu ứng chiêu 3D (SkillVfx3D). Khóa = art_id kỹ năng. Mảnh: arc (ảnh quạt vẽ tay nằm phẳng trước mặt, đỉnh quạt ở chân; radius / angle = số hoặc tên giá trị kỹ năng; apex_x / apex_y / half_w / depth = vị trí đỉnh, nửa bề ngang, độ sâu cung trong một khung ảnh, phần cỡ khung; alpha = độ đục ảnh đơn; có color thì tô màu theo độ sáng — lõi sáng thành edge), hit (tia lóe trên mục tiêu bị chủ chiêu gây sát thương ngay sau khi chiêu ra), trail (vệt tốc độ bám đường chạy suốt life — ribbons = độ cao các dải, width, tail = giây đuôi, sparks = ảnh đốm sáng rơi lại, u_range = đoạn ảnh dùng dọc dải; life = số hoặc tên giá trị kỹ năng). tex = tên ảnh trong assets/vfx/. Thời gian tính bằng giây. D-296: mảnh dịu dựng bằng shader (VfxParts): ring (vành loang trên đất: radius px, from, width), disc (đĩa lóe trên đất: radius), pillar (cột sáng: radius px, tall m), glow (đốm sáng: size m), aura (hào quang dưới chân đi theo đơn vị suốt life: radius px), wave (sóng chạy dọc hướng tung: length, width px), shot (vệt đạn kỹ năng: size m); chung: color, edge, alpha (≤ 0,7), life, height, at = caster | point | target. Phong cách (ART.md mục Hiệu ứng chiêu): trộn alpha không cộng sáng, màu dịu theo tướng, tan nhanh. D-298: mục _effects (khóa = id hiệu ứng) — mảnh đi theo đơn vị suốt thời gian hiệu ứng (EffectVfx3D): tornado (lốc xoáy: radius, tall), chains (vòng xích), ice (khối băng), dome, wisps, aura; cone (vệt quét hình quạt: radius, angle = số độ hoặc tên giá trị); meteors (sao băng rơi xuống vùng có độ trễ: count, size).",
+ "_ghi_chu": "D-247: hiệu ứng chiêu 3D (SkillVfx3D). Khóa = art_id kỹ năng. Mảnh: arc (ảnh quạt vẽ tay nằm phẳng trước mặt, đỉnh quạt ở chân; radius / angle = số hoặc tên giá trị kỹ năng; apex_x / apex_y / half_w / depth = vị trí đỉnh, nửa bề ngang, độ sâu cung trong một khung ảnh, phần cỡ khung; alpha = độ đục ảnh đơn; có color thì tô màu theo độ sáng — lõi sáng thành edge), hit (tia lóe trên mục tiêu bị chủ chiêu gây sát thương ngay sau khi chiêu ra), trail (vệt tốc độ bám đường chạy suốt life — ribbons = độ cao các dải, width, tail = giây đuôi, sparks = ảnh đốm sáng rơi lại, u_range = đoạn ảnh dùng dọc dải; life = số hoặc tên giá trị kỹ năng). tex = tên ảnh trong assets/vfx/. Thời gian tính bằng giây. D-296: mảnh dịu dựng bằng shader (VfxParts): ring (vành loang trên đất: radius px, from, width), disc (đĩa lóe trên đất: radius), pillar (cột sáng: radius px, tall m), glow (đốm sáng: size m), aura (hào quang dưới chân đi theo đơn vị suốt life: radius px), wave (sóng chạy dọc hướng tung: length, width px), shot (vệt đạn kỹ năng: size m); chung: color, edge, alpha (≤ 0,7), life, height, at = caster | point | target. Phong cách (ART.md mục Hiệu ứng chiêu): trộn alpha không cộng sáng, màu dịu theo tướng, tan nhanh. D-298: mục _effects (khóa = id hiệu ứng) — mảnh đi theo đơn vị suốt thời gian hiệu ứng (EffectVfx3D): tornado (lốc xoáy: radius, tall), chains (vòng xích), ice (khối băng), dome, wisps, aura; cone (vệt quét hình quạt: radius, angle = số độ hoặc tên giá trị); meteors (sao băng rơi xuống vùng có độ trễ: count, size). D-299: mục _states (khóa = tên trạng thái, vd STUNNED) — hình chung cho trạng thái khi không hiệu ứng nào gây ra nó có hình riêng (stars: sao choáng xoay trên đầu); hiệu ứng trong _effects có lift (m) / spin (vòng/giây) thì nhấc hình đơn vị lên và xoay (lốc xoáy); crystals: cụm tinh thể băng nhọn quanh chân (radius, count, tall).",
  "duy_anh_q": {
   "parts": [
    {
-    "type": "trail",
-    "tex": "vfx_trail",
+    "type": "ring",
+    "radius": 110,
+    "from": 0.3,
+    "width": 0.12,
+    "life": 0.45,
+    "color": "#4a86e6",
+    "edge": "#e4eeff",
+    "alpha": 0.7
+   },
+   {
+    "type": "aura",
+    "radius": 70,
     "life": "duration",
-    "ribbons": [
-     0.32,
-     0.6
-    ],
-    "width": 0.34,
-    "tail": 0.5,
-    "color": "#3f86e0",
-    "edge": "#f2fbff",
-    "u_range": [
-     0.08,
-     0.4
-    ]
+    "width": 0.22,
+    "color": "#4a86e6",
+    "edge": "#e4eeff",
+    "alpha": 0.5
+   },
+   {
+    "type": "wisps",
+    "radius": 38,
+    "tall": 1.2,
+    "life": "duration",
+    "color": "#6fa2ef",
+    "edge": "#eef4ff",
+    "alpha": 0.6
    }
   ]
  },
@@ -496,7 +507,9 @@
      "edge": "#ffffff",
      "alpha": 0.45
     }
-   ]
+   ],
+   "lift": 1.6,
+   "spin": 1.5
   },
   "root": {
    "parts": [
@@ -512,8 +525,10 @@
   "myra_freeze": {
    "parts": [
     {
-     "type": "ice",
-     "radius": 62,
+     "type": "crystals",
+     "radius": 58,
+     "count": 8,
+     "tall": 1.15,
      "alpha": 0.85,
      "color": "#8fc6f0",
      "edge": "#f0faff"
@@ -525,6 +540,20 @@
      "alpha": 0.5,
      "color": "#8fc6f0",
      "edge": "#f0faff"
+    }
+   ]
+  }
+ },
+ "_states": {
+  "STUNNED": {
+   "parts": [
+    {
+     "type": "stars",
+     "radius": 62,
+     "height": 1.5,
+     "color": "#ffcf5a",
+     "edge": "#fff6d6",
+     "alpha": 0.95
     }
    ]
   }
