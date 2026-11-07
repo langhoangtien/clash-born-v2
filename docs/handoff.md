@@ -1,11 +1,11 @@
 # Bàn giao — Clashborn v2 (2026-11-05)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-282). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-283). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 
 ## 1. Trạng thái
 
-- 740 test xanh (`GODOT=... bash tools/run_tests.sh`). APK thử mới nhất **0.1.472** trên gh-pages (bảng đo D-261, HUD vẽ lại theo nội dung D-263).
+- 740 test xanh (`GODOT=... bash tools/run_tests.sh`). APK thử mới nhất **0.1.479** trên gh-pages (bảng đo D-261, HUD vẽ lại theo nội dung D-263).
 - Android: trình vẽ **Mobile (Vulkan)**, đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
   Máy tính bảng người chơi: ~60 fps đầu trận → 4x fps sau một lúc; tắt phần vẽ / đổi độ phân giải không đổi FPS
   → nghẽn CPU (xem mục 3). Giật 50 → 11 fps đã hết sau D-260.
@@ -54,8 +54,8 @@ Người chơi thích phong cách afk.ai (hợp đồ họa); Mixamo chỉ để
 
 ## 4. Công cụ
 
-- Phát hành sắp chuyển sang VPS `https://clashborn.quest` (D-278, `docs/VPS_SETUP.md`): chờ VPS dựng xong → mở mạng +
-  nhập mã ở form bảo mật → sửa `app/updater.gd` (domain, sha256, GitHub dự phòng) → bản chuyển tiếp đăng cả hai nơi.
+- **Phát hành từ VPS** `https://clashborn.quest` (D-278..283): `bash tools/build_android.sh` rồi `bash tools/publish_vps.sh "ghi chú"`
+  (xem ANDROID_BUILD.md mục 5–7, VPS_SETUP.md). GitHub Pages không đăng APK nữa (dừng ở 0.1.479).
 
 - Godot 4.7.2: tải `Godot_v4.7.2-stable_linux.x86_64` về scratchpad. Import: `godot --headless --path . --import`.
 - Blender (bpy) cho `to_mixamo.py`, `mixamo_pack.py`, `bake_shading.py`: venv Python có gói `bpy`.

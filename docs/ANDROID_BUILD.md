@@ -33,9 +33,11 @@ Releases của repo. Lần đầu cài: cho phép "Cài ứng dụng không rõ 
 3. `~/.config/godot/editor_settings-4.7.tres`: `export/android/android_sdk_path = "<sdk>"`,
    `export/android/java_sdk_path = "/usr/lib/jvm/java-21-openjdk-amd64"`.
 4. Repo clone nông → `git fetch --unshallow origin thu-asset-tu-lam` trước khi build (versionCode = số commit).
-5. `GODOT=... bash tools/build_android.sh`, rồi chép `build/android/clashborn.apk` + `version.json` lên nhánh
-   `gh-pages` (git worktree, commit, push) — app tự thấy bản mới (D-148). APK phải < 100 MiB (giới hạn GitHub).
-6. Kiểm tra bản đã lên: `curl -s "https://langhoangtien.github.io/clash-born-v2/version.json?t=$(date +%s)"` phải báo
-   số mới (thường 1–2 phút sau khi push gh-pages). GitHub Pages đôi khi lỗi ở bước "Deploy to GitHub Pages"
-   (gặp ở 0.1.441, 0.1.451); bấm chạy lại thì kẹt "queued". Cách đã chạy được: build lại (số bản mới) và đẩy
-   commit mới lên gh-pages → GitHub mở lượt triển khai mới.
+5. `GODOT=... bash tools/build_android.sh`, rồi **`bash tools/publish_vps.sh "ghi chú bản này"`** (D-278, D-281): đẩy APK
+   lên `https://clashborn.quest` (mã tải lên do proxy của môi trường gắn — form bảo mật, host `clashborn.quest`;
+   không có thì xin lại bằng request_credential), máy chủ kiểm sha256 rồi ghi `version.json`; script tự kiểm trang
+   báo đúng số. App hỏi clashborn.quest trước, GitHub Pages dự phòng.
+6. Kiểm thêm: tải `https://clashborn.quest/download/clashborn.apk` về so `sha256sum` với `build/android/clashborn.apk`.
+7. **GitHub Pages không đăng APK nữa** (APK ~96 MiB sát giới hạn 100 MiB / file). Bản cuối trên gh-pages là
+   **0.1.479** — bản chuyển tiếp để máy cài bản cũ (chỉ hỏi GitHub) lên được bộ cập nhật mới. gh-pages vẫn giữ bản
+   chơi trên trình duyệt (index.html…). Lỗi phát hành VPS: xem `docs/VPS_SETUP.md` mục 7 (nhật ký, quay lại bản cũ).
