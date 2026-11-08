@@ -8,20 +8,21 @@ extends RefCounted
 ##   wisps — làn sáng bốc lên quanh người (radius px, tall m) — cả hai đi theo đơn vị như aura · zone / pending — vũng
 ##   của vùng tồn tại / vùng có độ trễ (ZoneView3D, cỡ theo vùng trong SIM) · D-298: tornado — lốc xoáy (radius px,
 ##   tall m), chains — vòng xích dưới chân, ice — khối băng bao người, cone — vệt quét hình quạt (radius, angle độ);
-##   meteors — sao băng rơi xuống vùng có độ trễ (count, ZoneView3D) · D-299: crystals — cụm tinh thể băng nhọn
-##   quanh chân (radius px, count, tall m), stars — sao choáng xoay trên đầu (radius px, height m) · D-300: iceblock —
-##   khối băng lăng trụ 6 mặt bọc người (radius px, tall m).
+##   meteors — sao băng rơi xuống vùng có độ trễ (count, ZoneView3D) · D-299: stars — sao choáng xoay trên đầu
+##   (radius px, height m) · D-300: iceblock —
+##   khối băng bọc người (radius px, tall m) — D-302: khối đa giác méo (ice_chunk), không còn hình trụ · D-302: gust —
+##   luồng gió sau lưng khi chạy (radius px, height m; SkillVfx3D quay theo hướng chạy, đứng yên thì tắt dần).
 ## Chung: color, edge (lõi), alpha (độ đục tối đa — giữ ≤ 0,85 để 5v5 không chói), life (giây hoặc tên giá trị kỹ năng),
 ## height (m), at = caster | point | target.
 
 const SHADER: Shader = preload("res://view/three/vfx_soft.gdshader")
 const MODES: Dictionary[String, int] = {"ring": 0, "disc": 1, "pillar": 2, "glow": 3, "aura": 4, "shot": 5, "wave": 6,
 	"zone": 7, "pending": 8, "dome": 9, "wisps": 10, "tornado": 11, "chains": 12, "cone": 13, "ice": 14,
-	"crystals": 14, "stars": 15, "iceblock": 14}
+	"stars": 15, "iceblock": 14, "gust": 17}
 ## D-300: dạng tia gió cho vệt bám đường chạy (`trail`, SpeedTrail3D).
 const WIND: int = 16
 ## Mảnh đi theo đơn vị suốt `life` (SkillVfx3D, EffectVfx3D).
-const FOLLOW: Array[String] = ["aura", "dome", "wisps", "tornado", "chains", "ice", "crystals", "stars", "iceblock"]
+const FOLLOW: Array[String] = ["aura", "dome", "wisps", "tornado", "chains", "ice", "stars", "iceblock", "gust"]
 ## Độ cao mặc định (m) của mảnh nằm trên đất — trên mặt đất một chút để không chìm.
 const GROUND_LIFT: float = 0.05
 
@@ -44,16 +45,7 @@ static func make(part: Dictionary, size: Variant) -> MeshInstance3D:
 			mi.mesh = sph
 			mi.position.y = float(size) * 0.55
 		"iceblock":
-			var block: CylinderMesh = CylinderMesh.new()
-			block.bottom_radius = float(size)
-			block.top_radius = float(size) * 0.82
-			block.height = float(part.get("tall", 1.9))
-			block.radial_segments = 6
-			block.rings = 1
-			mi.mesh = block
-			mi.position.y = block.height * 0.5
-		"crystals":
-			mi.mesh = crystals(float(size), int(part.get("count", 7)), float(part.get("tall", 1.1)))
+			mi.mesh = ice_chunk(float(size), float(part.get("tall", 1.4)))
 		"pillar", "wisps", "tornado":
 			var cyl: CylinderMesh = CylinderMesh.new()
 			cyl.top_radius = float(size) * (1.7 if part["type"] == "tornado" else 1.0)
@@ -66,6 +58,8 @@ static func make(part: Dictionary, size: Variant) -> MeshInstance3D:
 			mi.position.y = cyl.height * 0.5
 		"glow":
 			mi.mesh = _quad(Vector2.ONE * float(size))
+		"gust":
+			mi.mesh = _quad(Vector2.ONE * float(size) * 2.0)
 		"shot":
 			mi.mesh = _quad(size as Vector2)
 			mi.rotation.x = -PI * 0.5
@@ -91,7 +85,7 @@ static func material(part: Dictionary, mode: int) -> ShaderMaterial:
 	mat.set_shader_parameter("alpha", float(part.get("alpha", 0.6)))
 	mat.set_shader_parameter("width", float(part.get("width", 0.1)))
 	mat.set_shader_parameter("from", float(part.get("from", 0.2)))
-	mat.set_shader_parameter("billboard", mode == MODES["glow"])
+	mat.set_shader_parameter("billboard", mode == MODES["glow"] or mode == MODES["gust"])
 	mat.set_shader_parameter("angle", deg_to_rad(float(part.get("angle_deg", 150.0))) * 0.5)
 	return mat
 
@@ -107,23 +101,33 @@ static func _quad(s: Vector2) -> QuadMesh:
 	return q
 
 
-## D-299: cụm tinh thể băng — `count` lăng trụ nhọn 5 mặt quanh vòng bán kính `ring` (m), nghiêng ra ngoài, cao lệch
-## nhau (cố định theo số thứ tự); một lưới, mặt phẳng (đa giác rõ).
-static func crystals(ring: float, count: int, tall: float) -> ArrayMesh:
+## D-302: khối băng đa giác méo bọc người — 3 vòng 7 đỉnh (đáy, giữa phình ra, vai thu vào) bán kính / độ cao lệch
+## nhau theo số thứ tự (cố định), chóp vát lệch tâm; mặt phẳng (đa giác rõ như băng đá).
+static func ice_chunk(radius: float, tall: float) -> ArrayMesh:
+	const SIDES: int = 7
+	var rings: Array[PackedVector3Array] = []
+	var spec: Array[Vector2] = [Vector2(0.9, 0.0), Vector2(1.08, 0.45), Vector2(0.72, 0.82)]  # [bán kính, độ cao] tương đối
+	for ri: int in spec.size():
+		var ring: PackedVector3Array = PackedVector3Array()
+		for k: int in SIDES:
+			var ang: float = TAU * k / SIDES + 0.25 * sin(k * 2.3 + ri)
+			var rr: float = radius * spec[ri].x * (0.86 + 0.22 * absf(sin(k * 1.7 + ri * 2.1)))
+			var y: float = tall * spec[ri].y + (tall * 0.07 * sin(k * 3.1 + ri) if ri > 0 else 0.0)
+			ring.append(Vector3(cos(ang) * rr, y, sin(ang) * rr))
+		rings.append(ring)
+	var apex: Vector3 = Vector3(radius * 0.12, tall, -radius * 0.08)
 	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for k: int in count:
-		var h: float = tall * (0.6 + 0.4 * absf(sin(k * 2.7)))
-		var prism: CylinderMesh = CylinderMesh.new()
-		prism.top_radius = 0.0
-		prism.bottom_radius = ring * (0.32 + 0.12 * absf(cos(k * 1.9)))
-		prism.height = h
-		prism.radial_segments = 5
-		prism.rings = 1
-		var ang: float = TAU * k / count + 0.4 * sin(k * 3.1)
-		var out: Vector3 = Vector3(cos(ang), 0, sin(ang))
-		var basis: Basis = Basis(out.cross(Vector3.UP).normalized(), deg_to_rad(18.0 + 10.0 * sin(k * 1.3)))
-		st.append_from(prism, 0, Transform3D(basis, out * ring * 0.85 + Vector3(0, h * 0.42, 0)))
-	st.deindex()  # mặt phẳng: mỗi tam giác pháp tuyến riêng
+	for ri: int in rings.size() - 1:
+		for k: int in SIDES:
+			var a: Vector3 = rings[ri][k]
+			var b: Vector3 = rings[ri][(k + 1) % SIDES]
+			var c: Vector3 = rings[ri + 1][k]
+			var d: Vector3 = rings[ri + 1][(k + 1) % SIDES]
+			for v: Vector3 in [a, c, b, b, c, d]:
+				st.add_vertex(v)
+	for k: int in SIDES:
+		for v: Vector3 in [rings[-1][k], apex, rings[-1][(k + 1) % SIDES]]:
+			st.add_vertex(v)
 	st.generate_normals()
 	return st.commit()

@@ -1,30 +1,37 @@
 {
- "_ghi_chu": "D-247: hiệu ứng chiêu 3D (SkillVfx3D). Khóa = art_id kỹ năng. Mảnh: arc (ảnh quạt vẽ tay nằm phẳng trước mặt, đỉnh quạt ở chân; radius / angle = số hoặc tên giá trị kỹ năng; apex_x / apex_y / half_w / depth = vị trí đỉnh, nửa bề ngang, độ sâu cung trong một khung ảnh, phần cỡ khung; alpha = độ đục ảnh đơn; có color thì tô màu theo độ sáng — lõi sáng thành edge), hit (tia lóe trên mục tiêu bị chủ chiêu gây sát thương ngay sau khi chiêu ra), trail (vệt tốc độ bám đường chạy suốt life — ribbons = độ cao các dải, width, tail = giây đuôi, sparks = ảnh đốm sáng rơi lại, u_range = đoạn ảnh dùng dọc dải; life = số hoặc tên giá trị kỹ năng).  Thời gian tính bằng giây. D-296: mảnh dịu dựng bằng shader (VfxParts): ring (vành loang trên đất: radius px, from, width), disc (đĩa lóe trên đất: radius), pillar (cột sáng: radius px, tall m), glow (đốm sáng: size m), aura (hào quang dưới chân đi theo đơn vị suốt life: radius px), wave (sóng chạy dọc hướng tung: length, width px), shot (vệt đạn kỹ năng: size m); chung: color, edge, alpha (≤ 0,7), life, height, at = caster | point | target. Phong cách (ART.md mục Hiệu ứng chiêu): trộn alpha không cộng sáng, màu dịu theo tướng, tan nhanh. D-298: mục _effects (khóa = id hiệu ứng) — mảnh đi theo đơn vị suốt thời gian hiệu ứng (EffectVfx3D): tornado (lốc xoáy: radius, tall), chains (vòng xích), ice (khối băng), dome, wisps, aura; cone (vệt quét hình quạt: radius, angle = số độ hoặc tên giá trị); meteors (sao băng rơi xuống vùng có độ trễ: count, size). D-299: mục _states (khóa = tên trạng thái, vd STUNNED) — hình chung cho trạng thái khi không hiệu ứng nào gây ra nó có hình riêng (stars: sao choáng xoay trên đầu); hiệu ứng trong _effects có lift (m) / spin (vòng/giây) thì nhấc hình đơn vị lên và xoay (lốc xoáy); crystals: cụm tinh thể băng nhọn quanh chân (radius, count, tall). D-300: trail vẽ bằng tia gió dịu (đường mảnh uốn lượn, không ảnh): ribbons = độ cao các dải, width = nửa bề rộng dải, tail = giây đuôi.",
+ "_ghi_chu": "D-247: hiệu ứng chiêu 3D (SkillVfx3D). Khóa = art_id kỹ năng. Mảnh: arc (ảnh quạt vẽ tay nằm phẳng trước mặt, đỉnh quạt ở chân; radius / angle = số hoặc tên giá trị kỹ năng; apex_x / apex_y / half_w / depth = vị trí đỉnh, nửa bề ngang, độ sâu cung trong một khung ảnh, phần cỡ khung; alpha = độ đục ảnh đơn; có color thì tô màu theo độ sáng — lõi sáng thành edge), hit (tia lóe trên mục tiêu bị chủ chiêu gây sát thương ngay sau khi chiêu ra), trail (vệt tốc độ bám đường chạy suốt life — ribbons = độ cao các dải, width, tail = giây đuôi, sparks = ảnh đốm sáng rơi lại, u_range = đoạn ảnh dùng dọc dải; life = số hoặc tên giá trị kỹ năng).  Thời gian tính bằng giây. D-296: mảnh dịu dựng bằng shader (VfxParts): ring (vành loang trên đất: radius px, from, width), disc (đĩa lóe trên đất: radius), pillar (cột sáng: radius px, tall m), glow (đốm sáng: size m), aura (hào quang dưới chân đi theo đơn vị suốt life: radius px), wave (sóng chạy dọc hướng tung: length, width px), shot (vệt đạn kỹ năng: size m); chung: color, edge, alpha (≤ 0,7), life, height, at = caster | point | target. Phong cách (ART.md mục Hiệu ứng chiêu): trộn alpha không cộng sáng, màu dịu theo tướng, tan nhanh. D-298: mục _effects (khóa = id hiệu ứng) — mảnh đi theo đơn vị suốt thời gian hiệu ứng (EffectVfx3D): tornado (lốc xoáy: radius, tall), chains (vòng xích), ice (khối băng), dome, wisps, aura; cone (vệt quét hình quạt: radius, angle = số độ hoặc tên giá trị); meteors (sao băng rơi xuống vùng có độ trễ: count, size). D-299: mục _states (khóa = tên trạng thái, vd STUNNED) — hình chung cho trạng thái khi không hiệu ứng nào gây ra nó có hình riêng (stars: sao choáng xoay trên đầu); hiệu ứng trong _effects có lift (m) / spin (vòng/giây) thì nhấc hình đơn vị lên và xoay (lốc xoáy); D-300: trail vẽ bằng tia gió dịu (đường mảnh uốn lượn, không ảnh): ribbons = độ cao các dải, width = nửa bề rộng dải, tail = giây đuôi. D-302: iceblock — khối băng đa giác méo bọc người (radius, tall); gust — luồng gió sau lưng khi chạy (radius, height), quay theo hướng chạy, đứng yên thì tắt dần.",
  "duy_anh_q": {
   "parts": [
    {
-    "type": "ring",
-    "radius": 110,
-    "from": 0.3,
-    "width": 0.12,
-    "life": 0.45,
-    "color": "#4a86e6",
-    "edge": "#e4eeff",
-    "alpha": 0.6
+    "type": "wave",
+    "length": 320,
+    "width": 160,
+    "life": 0.35,
+    "color": "#7aa8f0",
+    "edge": "#f0f6ff",
+    "alpha": 0.7
+   },
+   {
+    "type": "gust",
+    "radius": 75,
+    "height": 0.85,
+    "life": "duration",
+    "color": "#86b2f2",
+    "edge": "#f4f8ff",
+    "alpha": 0.85
    },
    {
     "type": "trail",
     "life": "duration",
     "ribbons": [
-     0.3,
-     0.65,
-     1.0
+     0.45,
+     0.95
     ],
-    "width": 0.32,
-    "tail": 0.55,
-    "color": "#5d97ee",
+    "width": 0.26,
+    "tail": 0.4,
+    "color": "#6c9ff0",
     "edge": "#eef5ff",
-    "alpha": 0.85
+    "alpha": 0.55
    }
   ]
  },
@@ -516,26 +523,9 @@
    "parts": [
     {
      "type": "iceblock",
-     "radius": 52,
-     "tall": 1.9,
-     "alpha": 0.7,
-     "color": "#8fc6f0",
-     "edge": "#f0faff"
-    },
-    {
-     "type": "crystals",
-     "radius": 62,
-     "count": 7,
-     "tall": 0.8,
-     "alpha": 0.85,
-     "color": "#8fc6f0",
-     "edge": "#f0faff"
-    },
-    {
-     "type": "aura",
-     "radius": 80,
-     "width": 0.25,
-     "alpha": 0.45,
+     "radius": 55,
+     "tall": 1.35,
+     "alpha": 0.72,
      "color": "#8fc6f0",
      "edge": "#f0faff"
     }

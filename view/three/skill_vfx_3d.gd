@@ -51,7 +51,7 @@ func advance(delta: float) -> void:
 		if it[1] == "trail":
 			_follow(it, delta)
 		elif it[1] in VfxParts.FOLLOW:
-			_stick(it)
+			_stick(it, delta)
 		_animate(it)
 	for it: Array in _items.filter(func(x: Array) -> bool: return x[2] >= float(x[3].get("life", 0.3))):
 		(it[0] as Node3D).queue_free()
@@ -156,13 +156,36 @@ func _follow(it: Array, delta: float) -> void:
 
 
 ## D-296: hào quang đi theo đơn vị (chết / mất thì tắt).
-func _stick(it: Array) -> void:
+func _stick(it: Array, delta: float) -> void:
 	var e: Entity = _world.find_entity(it[4]) if _world != null else null
 	if e == null or not e.alive:
 		it[2] = INF
 		return
 	var at: Vector3 = position_of.call(e)
 	(it[0] as Node3D).position = Vector3(at.x, float(it[3].get("height", VfxParts.GROUND_LIFT)), at.z)
+	if it[1] == "gust":
+		_gust(it, at, delta)
+
+
+## D-302: luồng gió sau lưng — đặt phía sau hướng chạy, quay làn gió theo hướng đó; đứng yên thì tắt dần.
+func _gust(it: Array, at: Vector3, delta: float) -> void:
+	if it.size() < 7:
+		it.resize(7)
+		it[5] = at
+		it[6] = [Vector3.RIGHT, 0.0]  # [hướng chạy, độ hiện]
+	var move: Vector3 = Vector3(at.x - it[5].x, 0, at.z - it[5].z)
+	it[5] = at
+	var state: Array = it[6]
+	var running: bool = move.length() > 0.0005
+	if running:
+		state[0] = move.normalized()
+	state[1] = move_toward(float(state[1]), 1.0 if running else 0.0, delta * (6.0 if running else 2.5))
+	var t: float = float(it[2]) / maxf(0.01, float(it[3].get("life", 1.0)))
+	var node: Node3D = it[0]
+	node.position -= (state[0] as Vector3) * 0.45
+	var mat: ShaderMaterial = (node.get_child(0) as MeshInstance3D).material_override
+	mat.set_shader_parameter("flow_angle", atan2((state[0] as Vector3).z, (state[0] as Vector3).x))
+	mat.set_shader_parameter("fade", float(state[1]) * (1.0 - smoothstep(0.9, 1.0, t)))  # tắt dần cuối thời gian
 
 
 func _animate(it: Array) -> void:

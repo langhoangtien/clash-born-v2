@@ -228,7 +228,10 @@ Người chơi: giống Liên Quân / MLBB nhưng **nhẹ nhàng, ít màu mè**
   băng rơi. D-299: sao choáng 3D xoay trên đầu (mục `_states`), lốc xoáy nhấc tướng lên và xoay, hóa ếch là mô hình
   ếch 3D (Tripo, không xương — nhảy tưng bằng code). D-300: đóng băng = khối băng lăng trụ bọc người + tinh thể ở chân;
   sao choáng chạy trên vòng tròn mảnh (kiểu Dota); vệt bám đường chạy (Q Duy Anh, cú lướt) là tia gió mảnh uốn lượn
-  (shader, không ảnh — hết ảnh vẽ tay trong hiệu ứng chiêu).
+  (shader, không ảnh — hết ảnh vẽ tay trong hiệu ứng chiêu). D-302: khối băng là khối đa giác méo, thấp (bỏ tinh thể
+  ở chân); Q Duy Anh do Claude thiết kế — luồng gió vụt trước lúc tung, làn gió cong sau lưng khi chạy (tắt khi đứng
+  yên), 2 vệt gió mảnh. Icon Myra tông băng (W, R, nội tại) vẽ bằng API ảnh OpenAI theo mẫu icon Q
+  (`tools/icons/gen_icon.py`; nguồn trong art_inbox/04_icons).
 - Dựng: mảnh trong `assets/vfx/vfx.json` (khóa = art_id kỹ năng; xem ghi chú đầu file), shader
   `view/three/vfx_soft.gdshader`, `VfxParts`, `SkillVfx3D`, đạn kỹ năng `SkillShots3D`. Xem trước trong cảnh trận:
   `xvfb-run -a godot --path . --resolution 1920x1080 -s tools/vfx_preview.gd -- --out=<thư mục> [--delay=0.15]`.
