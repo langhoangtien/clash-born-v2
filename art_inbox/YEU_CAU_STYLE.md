@@ -583,7 +583,7 @@ Lưu vào `art_inbox/13_highground/`. Xong thì đánh dấu `[x]`, commit + pus
 
 | Xong | Tên | Nội dung | Ảnh 1024 phủ |
 |---|---|---|---|
-| [ ] | `flagstones.png` | Sân đá lát đất cao **như nền ô A của ảnh mẫu**: phiến đá xám **to nhỏ lẫn lộn, hình không đều** (đa giác bo góc, không phải gạch vuông), ghép khít; mép phiến vát nhẹ (sáng phía trên-trái, tối phía dưới-phải — rất nhẹ, game vẽ không đèn); **mạch sẫm mảnh**, rêu / cỏ xanh lẫn trong vài mạch; vài phiến nứt. Màu: xám ấm `#9E968A` xen xám lạnh `#8A8E92`, mạch `#4E4840`, rêu `#60743E`. Cỡ phiến: ~40–50 phiến trong một ảnh (phiến to ~ 1/5 cạnh ảnh) | 4,2 m |
+| [x] | `flagstones.png` | Sân đá lát đất cao **như nền ô A của ảnh mẫu**: phiến đá xám **to nhỏ lẫn lộn, hình không đều** (đa giác bo góc, không phải gạch vuông), ghép khít; mép phiến vát nhẹ (sáng phía trên-trái, tối phía dưới-phải — rất nhẹ, game vẽ không đèn); **mạch sẫm mảnh**, rêu / cỏ xanh lẫn trong vài mạch; vài phiến nứt. Màu: xám ấm `#9E968A` xen xám lạnh `#8A8E92`, mạch `#4E4840`, rêu `#60743E`. Cỡ phiến: ~40–50 phiến trong một ảnh (phiến to ~ 1/5 cạnh ảnh) | 4,2 m |
 
 Yêu cầu kỹ thuật như mục "Yêu cầu kỹ thuật chung cho ảnh nền" ở đầu phiếu: **1024 × 1024, lặp liền mép cả hai chiều** (ghép
 3 × 3 kiểm trước khi nộp), nhìn thẳng từ trên, không bóng đổ, không vật nổi khối, không phiến nào nổi bật lặp lại dễ thấy.
