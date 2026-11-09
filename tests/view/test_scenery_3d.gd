@@ -140,3 +140,48 @@ func test_D_221_fountain_per_team_faces_core() -> void:
 		var tex: Texture2D = (mi.get_active_material(0) as StandardMaterial3D).albedo_texture
 		assert_true(tex.resource_path.ends_with(("_blue" if team == 0 else "_red") + ".jpg"), "ảnh màu phe %d" % team)
 	s.free()
+
+
+## D-310: tường rào base / fountain (MAP-09, MAP-10) là đoạn tường đá + cột đèn cờ theo phe; cột nằm trên vật cản rào
+## (trông chặn thì chặn), cờ phe nào ở base phe đó; không còn mô hình rào cũ.
+func test_D_310_base_walls_pillars_per_team() -> void:
+	var layout: MapLayout = load(MAP_PATH) as MapLayout
+	var counts: Dictionary = {"base_wall": 0, "base_pillar_blue": 0, "base_pillar_red": 0, "fence": 0}
+	for it: Array in Terrain3D.items():
+		var kind: String = String(it[0])
+		if not counts.has(kind):
+			continue
+		counts[kind] += 1
+		if not kind.begins_with("base_pillar"):
+			continue
+		var p: Vector2 = Vector2(float(it[1]), float(it[2]))
+		var team: int = 0 if kind.ends_with("blue") else 1
+		assert_true(p.distance_to(layout.fountain_point(team)) < p.distance_to(layout.fountain_point(1 - team)), "cột cờ %s tại %s ở nửa phe mình" % [kind, p])
+		var inside: bool = false
+		for poly: PackedVector2Array in layout.collision_polygons:
+			inside = inside or Geometry2D.is_point_in_polygon(p, poly)
+		assert_true(inside, "cột tại %s nằm trên vật cản rào" % p)
+	assert_eq(counts["fence"], 0, "không còn rào cũ")
+	assert_true(counts["base_wall"] > 30, "có tường đá (%d)" % counts["base_wall"])
+	assert_eq(counts["base_pillar_blue"], counts["base_pillar_red"], "hai phe đối xứng")
+	assert_true(counts["base_pillar_blue"] > 10, "có cột (%d)" % counts["base_pillar_blue"])
+
+
+## D-310: nền đất cao lát đá (mặt nạ base R) thay đất nện một màu; sân lát kín quanh nhà chính / fountain / trụ, có vòng
+## đá viền (G) ở ranh giới sân; ngoài base không lát (trừ sân quanh trụ).
+func test_D_310_base_ground_paved_with_plaza_rings() -> void:
+	var layout: MapLayout = load(MAP_PATH) as MapLayout
+	var img: Image = Terrain3D.base_image()
+	var rect: Rect2 = Terrain3D.mask_rect()
+	var at: Callable = func(p: Vector2) -> Color:
+		var uv: Vector2 = (p - rect.position) / rect.size * Vector2(img.get_size())
+		return img.get_pixelv(Vector2i(uv))
+	for team: int in [0, 1]:
+		for p: Vector2 in [layout.core_point(team), layout.fountain_point(team)]:
+			assert_true(at.call(p).r > 0.9, "sân quanh %s lát đá" % p)
+			assert_true(Terrain3D.mask_image().get_pixelv(Vector2i((p - rect.position) / rect.size * Vector2(img.get_size()))).r < 0.1, "base không còn đất nện tại %s" % p)
+		var ring: bool = false
+		for r: float in range(250, 420, 6):
+			ring = ring or at.call(layout.core_point(team) + Vector2(r, 0)).g > 0.9
+		assert_true(ring, "vòng đá viền quanh nhà chính phe %d" % team)
+	assert_true(at.call(layout.world_size() * 0.5).r < 0.1, "giữa map không lát đá base")

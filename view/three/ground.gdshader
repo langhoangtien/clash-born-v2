@@ -5,7 +5,8 @@ shader_type spatial;
 // D-187: đường đất rừng (kênh R) là đất nện: ảnh dirt chỉ lấy sáng tối, tô dirt_color. D-190, D-191: nền lane /
 // base (kênh G) là ảnh "đất có phiến đá" Codex vẽ tay, đã chỉnh về bảng màu chung (tools/textures/recolor.py).
 // Mép cỏ loang theo vân lớn.
-// 6 lần đọc ảnh mỗi điểm. Không đèn. Đơn vị: mét.
+// D-310: đất cao (base) — mặt nạ base_tex (R đá lát ảnh flagstones, G vòng đá viền sân công trình); chỉ đọc ảnh
+// đá lát khi có. 7–8 lần đọc ảnh mỗi điểm. Không đèn. Đơn vị: mét.
 render_mode unshaded, cull_back;
 
 uniform sampler2D mask_tex : filter_linear, repeat_disable;
@@ -13,6 +14,10 @@ uniform sampler2D grass_tex : source_color, filter_linear_mipmap, repeat_enable;
 uniform sampler2D forest_tex : source_color, filter_linear_mipmap, repeat_enable;
 uniform sampler2D dirt_tex : source_color, filter_linear_mipmap, repeat_enable;
 uniform sampler2D stones_tex : source_color, filter_linear_mipmap, repeat_enable;
+uniform sampler2D base_tex : filter_linear, repeat_disable;
+uniform sampler2D flag_tex : source_color, filter_linear_mipmap, repeat_enable;
+uniform float flag_m = 5.0;
+uniform vec3 curb_color : source_color = vec3(0.62, 0.6, 0.56);
 uniform vec2 mask_origin = vec2(0.0);
 uniform vec2 mask_size = vec2(1.0);
 uniform float grass_m = 7.0;
@@ -60,6 +65,14 @@ void fragment() {
 	col = mix(col, dirt, smoothstep(0.35, 0.62, m.r + wobble * 0.6 + patch * 0.15));
 	vec3 stones = texture(stones_tex, xz / stones_m).rgb;
 	col = mix(col, stones, smoothstep(0.4, 0.75, m.g + wobble * 0.3 + patch * 0.15));
+	vec2 b = texture(base_tex, (xz - mask_origin) / mask_size).rg;
+	if (b.r + b.g > 0.004) {
+		vec3 flag = texture(flag_tex, xz / flag_m).rgb;
+		col = mix(col, flag, smoothstep(0.3, 0.6, b.r + wobble * 0.35 + patch * 0.1));
+		float fl = dot(flag, LUMA) / 0.55;  // vòng viền: đá sáng hơn, giữ vân phiến; mạch sẫm hai bên (G ~ 0.43)
+		col *= 1.0 - 0.4 * (smoothstep(0.15, 0.35, b.g) - smoothstep(0.5, 0.7, b.g));
+		col = mix(col, curb_color * fl, smoothstep(0.6, 0.8, b.g));
+	}
 	col *= mix(vec3(1.0), shadow_tint, m.a);
 	ALBEDO = mix(col, fog_color.rgb, fog_color.a * (1.0 - lit(xz)));
 }

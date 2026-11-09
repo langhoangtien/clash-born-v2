@@ -20,6 +20,7 @@ const WATER_Y: float = 0.03
 static var _decor: Dictionary = {}
 static var _mask: Image
 static var _depth: Image
+static var _base: Image
 static var _textures: Dictionary[String, Texture2D] = {}
 static var _materials: Dictionary[String, Material] = {}
 
@@ -48,6 +49,13 @@ static func depth_image() -> Image:
 	return _depth
 
 
+## D-310: mặt nạ đất cao (R đá lát, G viền sân công trình), cùng lưới mặt nạ.
+static func base_image() -> Image:
+	if _base == null:
+		_base = _png(decor()["base"])
+	return _base
+
+
 ## Vùng mặt nạ (px thế giới).
 static func mask_rect() -> Rect2:
 	var o: Array = decor()["mask_origin"]
@@ -65,6 +73,10 @@ static func ground_material() -> ShaderMaterial:
 		m.set_shader_parameter(key, float(cfg[key]))
 	m.set_shader_parameter("dirt_color", Color(cfg["dirt_color"]))  # D-187: đất nện tô màu đất chung
 	m.set_shader_parameter("dirt_luma", float(cfg["dirt_luma"]))
+	m.set_shader_parameter("base_tex", ImageTexture.create_from_image(base_image()))  # D-310
+	m.set_shader_parameter("flag_tex", texture(cfg["flag"]))
+	m.set_shader_parameter("flag_m", float(cfg["flag_m"]))
+	m.set_shader_parameter("curb_color", Color(cfg["curb_color"]))
 	return m
 
 

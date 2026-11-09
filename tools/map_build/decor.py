@@ -4,9 +4,10 @@
 Đọc data/maps/clashborn_map.json (toạ độ thế giới, 100 px = 1 m) và mạng lối đi (plateau_design.py), ghi
 data/maps/clashborn_decor.json:
   items   [mô hình, x, z, góc, cỡ, y (m)] — mô hình trong assets/models/style/
-  mask    PNG base64 RGBA: R đất nện (đường rừng, base, sân rìa map), G đất có phiến đá (lane), B nền rừng, A bóng vẽ sẵn (nắng tây
+  mask    PNG base64 RGBA: R đất nện (đường rừng, sân rìa map), G đất có phiến đá (lane), B nền rừng, A bóng vẽ sẵn (nắng tây
           bắc → bóng lệch đông nam) — D-180: gộp một ảnh để shader mặt đất đọc một lần
   water   PNG base64 L: độ sâu nước (shader nước)
+  base    PNG base64 RGB: R đá lát đất cao, G vòng viền sân công trình (D-310, base_decor.py)
   ground / abyss  tam giác [x1,z1,x2,z2,x3,z3]: mặt đất (khung map trừ rìa MAP-12) / vực ngoài (D-197)
   cliff   vòng mép mặt đất — VIEW dựng vách đổ xuống vực
   mask_origin, mask_px: góc trên trái (px thế giới) và số px thế giới mỗi điểm ảnh mặt nạ
@@ -27,6 +28,7 @@ sys.path.insert(0, HERE)
 import plateau_design as PD  # noqa: E402
 import decor_place as DP  # noqa: E402
 import arena as AR  # noqa: E402
+import base_decor as BD  # noqa: E402
 
 DATA = os.path.join(HERE, "..", "..", "data", "maps")
 MARGIN = 1600.0   # mặt nạ phủ thêm ngoài khung map (px thế giới)
@@ -90,9 +92,9 @@ def mask_images(m, forest, rocks, water, edge):
     dp = ImageDraw.Draw(pave)
     for x, y in pv:  # D-308b: lõi sân bãi đấu lát phiến đá
         dp.ellipse(T([(x - 210, y - 190), (x + 210, y + 190)]), fill=255)
-    for b in m["bases"]:  # D-192: nền base (đất cao) là đất nện trơn, không đá — kể cả đoạn lane đi qua
+    for b in m["bases"]:  # D-310: nền base là cỏ + đá lát (mặt nạ `base`, base_decor) — không đất nện, không đá lane
         dp.polygon(T(b["polygon"]), fill=0)
-        dd.polygon(T(b["polygon"]), fill=255)
+        dd.polygon(T(b["polygon"]), fill=0)
     for g in edge:
         dd.polygon(T(g.exterior.coords), fill=255)
     for g in forest:
@@ -101,7 +103,9 @@ def mask_images(m, forest, rocks, water, edge):
         dw.polygon(T(g.exterior.coords), fill=255)
     depth = np.array(wet.filter(ImageFilter.GaussianBlur(160 / MASK_PX))).astype(float)
     depth = (np.clip((depth - 128) * 2, 0, 255) * (np.array(wet) > 0)).astype(np.uint8)
-    return [DP.ragged(dirt, 3, 5), DP.ragged(pave, 1.6, 2), DP.ragged(floor, 6, 7)], Image.fromarray(depth), n
+    bp, bc = BD.mask(m, n, T, MASK_PX, m["lane_width"])
+    base = Image.merge("RGB", [DP.ragged(bp, 1.2, 9), bc, Image.new("L", (n, n), 0)])
+    return [DP.ragged(dirt, 3, 5), DP.ragged(pave, 1.6, 2), DP.ragged(floor, 6, 7)], Image.fromarray(depth), base, n
 
 
 def shadow_image(items, n, water, edge):
@@ -156,17 +160,18 @@ def main():
     items = []
     DP.plateaus(items, forest, rng)
     DP.river(items, water, bank, rng)
-    DP.base_fences(items, m["render"].get("rock_lines", []))
+    BD.walls(items, m)  # D-310: tường đá + cột đèn cờ (MAP-09, MAP-10)
+    BD.tufts(items, m, rng)
     DP.scatter(items, m, forest, wet, rng)
     AR.clear_items(items, m)
     AR.decor_items(items, m)  # D-308: tường + vật trang trí bãi đấu boss
     abyss, rail = abyss_data(m, edge)
     for r in [rail.exterior] + list(rail.interiors):
         DP.along(items, r, "parapet", PARAPET_STEP)
-    rgb, depth, n = mask_images(m, forest, rocks, water, edge)
+    rgb, depth, base, n = mask_images(m, forest, rocks, water, edge)
     mask = Image.merge("RGBA", rgb + [shadow_image(items, n, water, edge)])
     data = {"items": [[k, round(x, 1), round(z, 1), round(a, 3), round(s, 3)] + ([round(y[0], 3)] if y else []) for k, x, z, a, s, *y in items],
-            "mask": b64(mask), "water": b64(depth),
+            "mask": b64(mask), "water": b64(depth), "base": b64(base),
             **abyss,
             "mask_origin": [-MARGIN, -MARGIN], "mask_px": MASK_PX}
     json.dump(data, open(os.path.join(DATA, "clashborn_decor.json"), "w"), separators=(",", ":"))

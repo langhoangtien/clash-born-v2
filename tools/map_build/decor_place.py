@@ -11,10 +11,10 @@ M = 100.0  # px mỗi mét
 # Bán kính bóng vẽ sẵn (m) theo mô hình.
 SHADOW_R = {"pine_l": 1.4, "pine_m": 1.2, "pine_s": 1.0, "tree_round": 1.5, "tree_autumn": 1.6, "rock_tall": 1.0,
             "rock_wide": 1.2, "rock_low": 0.9, "rock_small": 0.5, "plant_orange": 0.4, "reeds": 0.35,
-            "grass_tuft": 0.2, "boulder_a": 0.8, "boulder_b": 0.55}
+            "grass_tuft": 0.2, "boulder_a": 0.8, "boulder_b": 0.55,
+            "base_pillar_blue": 0.55, "base_pillar_red": 0.55}
 TREE_STEP = (1.6 * M, 1.45 * M) # lưới cây trong bục (D-179: dày hơn — bục nhìn kín)
 TREE_INSET = 0.95 * M            # sau hàng đá viền (bề sâu ~1,1 m), tán cây chồng lên đỉnh đá
-FENCE_STEP = 3.8 * M             # đoạn rào dài 4 m, chồng nhẹ
 
 
 def ragged(img, blur_m, seed, mask_px=8.0):
@@ -183,13 +183,6 @@ def _reeds(items, p, frame, rng):
         a, o = rng.uniform(0, span), rng.uniform(50, 160)
         items.append([rng.choice(["grass_tuft", "grass_tuft", "plant_orange"]), p.x + tx * a + nx * o, p.y + tz * a + nz * o, rng.uniform(0, 6.28), rng.uniform(0.8, 1.1)])
     return span
-
-
-def base_fences(items, rock_lines):
-    """MAP-09 / MAP-10: rào base / fountain bằng đoạn rào đá cùng kiểu rìa map."""
-    for line in rock_lines:
-        if line.get("kind") == "fence":
-            along(items, LineString(line["points"]), "fence", FENCE_STEP)
 
 
 def along(items, line, kind, step):

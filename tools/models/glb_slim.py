@@ -68,6 +68,7 @@ def main():
     ap.add_argument('--hue', default='150-210')
     ap.add_argument('--tint', default='', help='tô lại theo độ sáng: "tối,sáng" mỗi màu hex, vd 1e2230,c4cee4 (D-170: đá xám → xám xanh)')
     ap.add_argument('--saturation', type=float, default=1.0, help='nhân độ đậm màu ảnh (D-168: đá viền 0.5)')
+    ap.add_argument('--embed', default='blue', choices=['blue', 'red'], help='--team: bản màu nhúng vào GLB (D-310: cột cờ phe đỏ là GLB riêng)')
     ap.add_argument('--min-sat', type=float, default=0.25, help='--team: chỉ đổi điểm ảnh đậm hơn ngưỡng (D-221: nước xanh nhạt của fountain giữ nguyên)')
     a = ap.parse_args()
     g, binc, before = read_glb(a.src)
@@ -105,7 +106,7 @@ def main():
             red = recolor(im, lo, hi, RED_HUE, a.min_sat)
             stem = a.dst[:-4]
             blue.save(stem + '_blue.jpg', quality=90); red.save(stem + '_red.jpg', quality=90)
-            im = blue
+            im = blue if a.embed == 'blue' else red
         buf = io.BytesIO()
         im.save(buf, 'PNG', optimize=True) if alpha else im.save(buf, 'JPEG', quality=90)
         img_bytes[i] = (buf.getvalue(), 'image/png' if alpha else 'image/jpeg')

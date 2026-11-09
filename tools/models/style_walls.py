@@ -40,16 +40,6 @@ def _paint(obj, rng, top_z):
     K.paint(obj, zone, rng)
 
 
-def fence(name, rng, length=4.0, height=1.1, thick=0.7):
-    """Rào đá ranh giới: lõi thấp + một hàng khối đá lớn cỡ lệch nhau trên đỉnh (kiểu lỗ châu mai thấp)."""
-    bm = bmesh.new()
-    block(bm, 0, 0, length, thick * 0.9, 0, height * 0.45, 0.04)
-    _course(bm, rng, length, 0, thick, height * 0.4, height, (0.7, 1.15), 0.09)
-    obj = K.finish(name, bm)
-    _paint(obj, rng, height)
-    return obj
-
-
 def parapet(name, rng, length=2.0, height=0.75, thick=0.55):
     """D-197: lan can đá thấp mép vực (kiểu Liên Quân): thân thấp + 1 răng cưa (khối vuông nhô) mỗi đoạn 2 m,
     đặt nối tiếp thành dải. Vân castle_wall_face dán theo mặt."""
