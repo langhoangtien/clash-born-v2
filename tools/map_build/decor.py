@@ -104,7 +104,7 @@ def mask_images(m, forest, rocks, water, edge):
     depth = np.array(wet.filter(ImageFilter.GaussianBlur(160 / MASK_PX))).astype(float)
     depth = (np.clip((depth - 128) * 2, 0, 255) * (np.array(wet) > 0)).astype(np.uint8)
     bp, bc = BD.mask(m, n, T, MASK_PX, m["lane_width"])
-    base = Image.merge("RGB", [DP.ragged(bp, 1.2, 9), bc, Image.new("L", (n, n), 0)])
+    base = Image.merge("RGB", [DP.ragged(bp, 1.2, 9).filter(ImageFilter.GaussianBlur(BD.FRINGE_M * 100 / MASK_PX)), bc, Image.new("L", (n, n), 0)])  # D-311: mép mềm cho dải đất
     return [DP.ragged(dirt, 3, 5), DP.ragged(pave, 1.6, 2), DP.ragged(floor, 6, 7)], Image.fromarray(depth), base, n
 
 

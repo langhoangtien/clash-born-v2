@@ -1,6 +1,6 @@
 # Bàn giao — Clashborn v2 (cập nhật 2026-11-09)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-310**). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-311**). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh thì chụp trong game (xvfb) và gửi ảnh JPG.
 
@@ -22,10 +22,12 @@ Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh 
   hồi 5 phút sau khi hạ, mạnh dần mỗi phút, **dậm đất** gây sát thương + choáng quanh mình (hồi 7 s), cả đội hạ được
   thì mỗi người nhận vàng + XP. Bot không tự đánh boss. **Trại tê giác** (1 to + 2 con) thay một trại 2 sói ở rừng
   carry mỗi phe. Bảng số: `docs/CONTENT.md` mục "Quái rừng boss".
-- **Đất cao (base) kiểu ảnh mẫu A** (D-310, chưa phát hành APK): nền cỏ + đá lát `flagstones` (mặt nạ `base` trong
-  decor.json, `tools/map_build/base_decor.py`), sân lát + vòng đá viền quanh mọi trụ / nhà chính / fountain, tường rào
+- **Đất cao (base) kiểu ảnh mẫu A** (D-310, D-311, chưa phát hành APK): nền cỏ + dải đất nện + đá lát be ấm `flagstones`
+  (ảnh Codex T12 qua `tools/textures/warm_stone.py`; mặt nạ `base` trong decor.json, `tools/map_build/base_decor.py`), sân lát + vòng đá viền quanh mọi trụ / nhà chính / fountain, tường rào
   `base_wall` + cột đèn cờ `base_pillar_blue/red` (Tripo text-to-model). **API ảnh OpenAI hết credit** — concept_gen
-  không chạy được tới khi người dùng nạp thêm; ảnh nền sinh bằng code (`tools/textures/flagstones.py`).
+  không chạy được tới khi người dùng nạp thêm. **Codex CLI cài được trong phiên cloud**: `npm i -g @openai/codex`,
+  `codex login --device-auth` (người dùng nhập mã), giao việc bằng `codex exec -s workspace-write "..."` (Codex có skill
+  `imagegen` vẽ ảnh bằng tài khoản ChatGPT của người dùng).
 
 ## 2. Quy trình mô hình 3D (hero, quái, vật)
 

@@ -67,6 +67,7 @@ def main():
     ap.add_argument('--team', action='store_true')
     ap.add_argument('--hue', default='150-210')
     ap.add_argument('--tint', default='', help='tô lại theo độ sáng: "tối,sáng" mỗi màu hex, vd 1e2230,c4cee4 (D-170: đá xám → xám xanh)')
+    ap.add_argument('--tint-max-sat', type=float, default=1.0, help='--tint chỉ áp điểm ảnh ít màu hơn ngưỡng (D-311: đá cột tô ấm, cờ / đèn giữ màu)')
     ap.add_argument('--saturation', type=float, default=1.0, help='nhân độ đậm màu ảnh (D-168: đá viền 0.5)')
     ap.add_argument('--embed', default='blue', choices=['blue', 'red'], help='--team: bản màu nhúng vào GLB (D-310: cột cờ phe đỏ là GLB riêng)')
     ap.add_argument('--min-sat', type=float, default=0.25, help='--team: chỉ đổi điểm ảnh đậm hơn ngưỡng (D-221: nước xanh nhạt của fountain giữ nguyên)')
@@ -95,7 +96,12 @@ def main():
         if a.tint:
             from PIL import ImageOps
             dark, light = ('#' + c for c in a.tint.split(','))
-            im = ImageOps.colorize(ImageOps.grayscale(im), black=dark, white=light, mid=None).convert(im.mode)
+            tinted = ImageOps.colorize(ImageOps.grayscale(im), black=dark, white=light, mid=None).convert(im.mode)
+            if a.tint_max_sat < 1.0:
+                sat = im.convert('HSV').getchannel('S').point(lambda v: 255 if v < a.tint_max_sat * 255 else 0)
+                im = Image.composite(tinted, im, sat)
+            else:
+                im = tinted
         if a.saturation != 1.0:
             from PIL import ImageEnhance
             im = ImageEnhance.Color(im).enhance(a.saturation)

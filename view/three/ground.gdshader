@@ -6,7 +6,7 @@ shader_type spatial;
 // base (kênh G) là ảnh "đất có phiến đá" Codex vẽ tay, đã chỉnh về bảng màu chung (tools/textures/recolor.py).
 // Mép cỏ loang theo vân lớn.
 // D-310: đất cao (base) — mặt nạ base_tex (R đá lát ảnh flagstones, G vòng đá viền sân công trình); chỉ đọc ảnh
-// đá lát khi có. 7–8 lần đọc ảnh mỗi điểm. Không đèn. Đơn vị: mét.
+// đá lát khi có. 7–8 lần đọc ảnh mỗi điểm. D-311: mép đá lát chuyển qua dải đất nện rồi mới tới cỏ; đá be ấm. Không đèn. Đơn vị: mét.
 render_mode unshaded, cull_back;
 
 uniform sampler2D mask_tex : filter_linear, repeat_disable;
@@ -68,9 +68,12 @@ void fragment() {
 	vec2 b = texture(base_tex, (xz - mask_origin) / mask_size).rg;
 	if (b.r + b.g > 0.004) {
 		vec3 flag = texture(flag_tex, xz / flag_m).rgb;
-		col = mix(col, flag, smoothstep(0.3, 0.6, b.r + wobble * 0.35 + patch * 0.1));
-		float fl = dot(flag, LUMA) / 0.55;  // vòng viền: đá sáng hơn, giữ vân phiến; mạch sẫm hai bên (G ~ 0.43)
-		col *= 1.0 - 0.4 * (smoothstep(0.15, 0.35, b.g) - smoothstep(0.5, 0.7, b.g));
+		flag = mix(flag, dirt * 1.04, smoothstep(0.55, 1.0, patch) * 0.3);  // D-311: chỗ mòn lộ đất
+		float v = b.r + wobble * 0.35 + patch * 0.1;
+		col = mix(col, dirt, smoothstep(0.06, 0.3, v) * 0.9);  // D-311: dải đất nện giữa cỏ và đá (như ảnh mẫu)
+		col = mix(col, flag, smoothstep(0.42, 0.62, v));
+		float fl = dot(flag, LUMA) / 0.55;  // vòng viền: đá sáng hơn, giữ vân phiến; mạch nhạt hai bên (G ~ 0.43)
+		col *= 1.0 - 0.18 * (smoothstep(0.15, 0.35, b.g) - smoothstep(0.5, 0.7, b.g));
 		col = mix(col, curb_color * fl, smoothstep(0.6, 0.8, b.g));
 	}
 	col *= mix(vec3(1.0), shadow_tint, m.a);

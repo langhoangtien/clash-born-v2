@@ -9,7 +9,7 @@ tự nhiên"). Dùng bởi decor.py. Toạ độ thế giới px (100 px = 1 m).
 """
 import math
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 from shapely.geometry import LineString, Point, Polygon
 from shapely.ops import unary_union
 
@@ -18,6 +18,7 @@ M = 100.0
 PLAZA_R = {"tower": 175.0, "core": 340.0, "fountain": 330.0}
 CURB_W = 40.0          # bề rộng vòng đá viền sân (px); G = 255 đá viền sáng
 CURB_EDGE = 10.0       # mạch sẫm hai bên vòng (px); G ≈ 110
+FRINGE_M = 0.9         # D-311: độ nhòe mép đá lát (m) — shader vẽ dải đất nện ở phần nhòe
 PAVE_SHARE = 0.78      # phần nền base lát đá (còn lại mảng cỏ)
 PATCH_M = 4.0          # cỡ mảng cỏ / đá (m)
 WALL_GRASS = 110.0     # dải cỏ dưới chân tường (px)
@@ -70,7 +71,7 @@ def mask(m, n, T, mask_px, lane_width):
         e = max(1, int(CURB_EDGE / mask_px))
         dc.ellipse([x0 - e, y0 - e, x1 + e, y1 + e], outline=110, width=w + 2 * e)  # mạch sẫm hai bên vòng
         dc.ellipse([x0, y0, x1, y1], outline=255, width=w)
-    return pave, curb
+    return pave, curb.filter(ImageFilter.GaussianBlur(0.8))  # mép vòng không răng cưa
 
 
 def walls(items, m):
