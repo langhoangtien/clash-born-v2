@@ -34,6 +34,9 @@ static func make(projectiles: Projectiles3D, focus: Vector3) -> ShaderWarmup:
 			w._projectile(projectiles, cfg["projectile"])
 	w._projectile(projectiles, ModelLibrary.config().get("projectiles", {}).get("default", {}))
 	w._rubble()
+	var ripples: Wading3D = Wading3D.new()  # D-314: vòng gợn chân người lội (shader ripple) — tránh khựng lần đầu lội sông
+	ripples.multimesh.visible_instance_count = 1
+	w._place(ripples)
 	var recipes: Array = SkillVfx3D.recipes().values().filter(func(r: Variant) -> bool: return r is Dictionary)
 	recipes.append_array(SkillVfx3D.recipes().get("_effects", {}).values())  # D-298: hiệu ứng trạng thái
 	for recipe: Dictionary in recipes:

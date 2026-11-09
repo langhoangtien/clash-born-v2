@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c01yeccyocjfl"
-path="res://.godot/imported/flagstones.png-6589e39416aefbf59333e4a398d93086.ctex"
+path.s3tc="res://.godot/imported/flagstones.png-6589e39416aefbf59333e4a398d93086.s3tc.ctex"
+path.etc2="res://.godot/imported/flagstones.png-6589e39416aefbf59333e4a398d93086.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/textures/style/flagstones.png"
-dest_files=["res://.godot/imported/flagstones.png-6589e39416aefbf59333e4a398d93086.ctex"]
+dest_files=["res://.godot/imported/flagstones.png-6589e39416aefbf59333e4a398d93086.s3tc.ctex", "res://.godot/imported/flagstones.png-6589e39416aefbf59333e4a398d93086.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
