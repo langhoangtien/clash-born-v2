@@ -80,7 +80,7 @@ func test_JGL_10_dragon_content_first_spawn_and_respawn() -> void:
 		assert_eq(d.first_spawn, 300.0, "%s: phút 5" % kind)
 		assert_eq(d.respawn, 300.0, "%s: 5 phút sau khi hạ" % kind)
 	var beast: CampDef = _lib.camps[&"beast"]
-	assert_eq(beast.units.map(func(u: UnitDef) -> StringName: return u.id), [&"rhino", &"raptor", &"raptor"], "D-307b: tê giác + 2 khủng long lá")
+	assert_eq(beast.units.map(func(u: UnitDef) -> StringName: return u.id), [&"rhino", &"rhino_small", &"rhino_small"], "D-307c: 1 tê giác to + 2 tê giác con")
 	assert_true(beast.units[0].stats.base_hp > _lib.camps[&"large"].units[0].stats.base_hp, "bãi mạnh hơn bãi lớn")
 
 
@@ -115,13 +115,13 @@ func test_JGL_12_growth_stacks_by_minute_and_heals_the_gain() -> void:
 	_to(w, 0.2)
 	var dragon: Entity = _alive(w, c)[0]
 	var base_hp: float = dragon.stats.get_stat(StatId.Id.MAX_HP)
-	assert_near(base_hp, 4500.0, 0.01, "phút 0: chưa mạnh thêm")
+	assert_near(base_hp, 8000.0, 0.01, "phút 0: chưa mạnh thêm")
 	_to(w, 60.1)
-	assert_near(dragon.stats.get_stat(StatId.Id.MAX_HP), base_hp + 120.0, 0.01, "phút 1: 1 tầng")
-	assert_near(dragon.health, base_hp + 120.0, 0.01, "máu hiện tại tăng đúng phần máu tối đa tăng")
+	assert_near(dragon.stats.get_stat(StatId.Id.MAX_HP), base_hp + 250.0, 0.01, "phút 1: 1 tầng")
+	assert_near(dragon.health, base_hp + 250.0, 0.01, "máu hiện tại tăng đúng phần máu tối đa tăng")
 	_to(w, 180.1)
-	assert_near(dragon.stats.get_stat(StatId.Id.MAX_HP), base_hp + 360.0, 0.01, "phút 3: 3 tầng")
-	assert_near(dragon.stats.get_stat(StatId.Id.PHYSICAL_DAMAGE), 75.0 + 12.0, 0.01)
+	assert_near(dragon.stats.get_stat(StatId.Id.MAX_HP), base_hp + 750.0, 0.01, "phút 3: 3 tầng")
+	assert_near(dragon.stats.get_stat(StatId.Id.PHYSICAL_DAMAGE), 160.0 + 24.0, 0.01)
 
 
 func test_JGL_12_late_spawn_starts_with_minutes_stacks() -> void:
@@ -129,7 +129,7 @@ func test_JGL_12_late_spawn_starts_with_minutes_stacks() -> void:
 	var c: CampState = _boss_camp(w, &"dragon_fire", 600.0, 300.0)
 	_to(w, 600.1)
 	var dragon: Entity = _alive(w, c)[0]
-	assert_near(dragon.stats.get_stat(StatId.Id.MAX_HP), 5000.0 + 10 * 140.0, 0.01, "sinh ở phút 10: 10 tầng")
+	assert_near(dragon.stats.get_stat(StatId.Id.MAX_HP), 9000.0 + 10 * 280.0, 0.01, "sinh ở phút 10: 10 tầng")
 	assert_near(dragon.health, dragon.stats.get_stat(StatId.Id.MAX_HP), 0.01, "sinh ra đầy máu")
 
 
@@ -157,3 +157,21 @@ func test_JGL_13_fire_burn_damages_over_time_and_ice_slows() -> void:
 	Effects.apply(w, hero, load("res://content/effects/dragon_ice_slow.tres") as EffectDef, dragon)
 	hero.stats.recompute()
 	assert_near(hero.stats.get_stat(StatId.Id.MOVEMENT_SPEED), speed * 0.7, 1.0, "Rồng Băng làm chậm 30%")
+
+
+## D-307c (người chơi: rồng yếu quá, cấp 5 đã đánh được): một tướng cấp 5 đứng đánh tay đôi với rồng phút 5 thì chết
+## trước khi rồng mất một nửa máu.
+func test_JGL_12_dragon_beats_a_level_5_hero_alone() -> void:
+	var w: World = _world()
+	for kind: StringName in [&"dragon_ice", &"dragon_fire"]:
+		var d: UnitDef = _lib.camps[kind].units[0]
+		var dps_dragon: float = (d.stats.base_damage + 5 * 8.0) / d.stats.base_attack_time
+		var hero: Entity = UnitFactory.hero(w, _lib.heroes[&"brakk"], 0, Vector2(100, 100))
+		while hero.stats.level() < 5:
+			Progression.add_xp(w, hero, Progression.xp_to_next(w, hero.stats.level()))
+		hero.stats.recompute()
+		var hero_hp: float = hero.stats.get_stat(StatId.Id.MAX_HP)
+		var hero_dps: float = hero.stats.get_stat(StatId.Id.PHYSICAL_DAMAGE) * hero.stats.attacks_per_second() \
+			* DamageFormulas.armor_multiplier(d.stats.physical_armor, w.balance.armor_coefficient)
+		var hero_alive: float = hero_hp / (dps_dragon * DamageFormulas.armor_multiplier(hero.stats.get_stat(StatId.Id.PHYSICAL_ARMOR), w.balance.armor_coefficient))
+		assert_true(hero_alive * hero_dps < d.stats.base_hp * 0.5, "%s: tướng cấp 5 sống %.0f s, gây %.0f / %.0f máu" % [kind, hero_alive, hero_alive * hero_dps, d.stats.base_hp])

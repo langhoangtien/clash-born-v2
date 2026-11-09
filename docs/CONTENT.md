@@ -625,12 +625,12 @@ Luật: GAME_RULES JGL-10..14. Số nằm trong `content/units`, `content/effect
 
 | Quái | Máu | Sát thương | Giáp / kháng phép | Mạnh dần mỗi phút (JGL-12) | Thưởng |
 |---|---|---|---|---|---|
-| Rồng Băng (`dragon_ice`, hang F5 / F6) | 4500 | 75, đòn đánh làm chậm 30% trong 1,5 s (phủ màu băng) | 8 / 5 | +120 máu, +4 sát thương, +0,3 giáp | mỗi hero phe hạ 160 vàng + 380 XP; kẻ kết liễu thêm 150 vàng |
-| Rồng Lửa (`dragon_fire`, hang đối xứng) | 5000 | 85, đòn đánh đốt 20 sát thương phép / s trong 3 s | 8 / 5 | +140 máu, +5 sát thương, +0,3 giáp | mỗi hero phe hạ 230 vàng + 260 XP; kẻ kết liễu thêm 150 vàng |
+| Rồng Băng (`dragon_ice`, hang F5 / F6) | 8000 | 160 mỗi 1,2 s, đòn đánh làm chậm 30% trong 1,5 s (phủ màu băng) | 15 / 15 | +250 máu, +8 sát thương, +0,5 giáp | mỗi hero phe hạ 200 vàng + 450 XP; kẻ kết liễu thêm 150 vàng |
+| Rồng Lửa (`dragon_fire`, hang đối xứng) | 9000 | 180 mỗi 1,2 s, đòn đánh đốt 30 sát thương phép / s trong 3 s | 15 / 15 | +280 máu, +9 sát thương, +0,5 giáp | mỗi hero phe hạ 280 vàng + 320 XP; kẻ kết liễu thêm 150 vàng |
 | Tê giác đá (`rhino`) | 1500 | 65 | 5 / 0 | — | 120 vàng, 150 XP (JGL-07) |
-| Khủng long lá ×2 (`raptor`) | 550 | 30 | 2 / 0 | — | 45 vàng, 60 XP |
+| Tê giác con ×2 (`rhino_small`) | 550 | 30 | 2 / 0 | — | 45 vàng, 60 XP |
 
 Rồng xuất hiện lần đầu ở phút 5, hạ xong 5 phút sau mới có lại (JGL-10); mỗi con một hang vách đá sát bờ sông (Băng ở
-giáp ranh F5 / F6, Lửa ở chỗ đối xứng). Trại tê giác (1 tê giác + 2 khủng long lá, D-307b) thay một trại 2 sói ở rừng
+giáp ranh F5 / F6, Lửa ở chỗ đối xứng). Trại tê giác (1 tê giác to + 2 tê giác con, D-307c) thay một trại 2 sói ở rừng
 carry mỗi phe (trại 08, gần sông), hồi như trại thường.
 

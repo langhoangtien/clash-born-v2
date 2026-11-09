@@ -7,19 +7,19 @@
 script = ExtResource("1_mod")
 stat = &"max_hp"
 op = 0
-value = "140"
+value = "280"
 
 [sub_resource type="Resource" id="M1"]
 script = ExtResource("1_mod")
 stat = &"physical_damage"
 op = 0
-value = "5"
+value = "9"
 
 [sub_resource type="Resource" id="M2"]
 script = ExtResource("1_mod")
 stat = &"physical_armor"
 op = 0
-value = "0.3"
+value = "0.5"
 
 [resource]
 script = ExtResource("2_eff")

@@ -122,3 +122,22 @@ func test_MAP_01_same_query_same_path() -> void:
 	var a: PackedVector2Array = _nav.path(_map.fountain_point(0), _map.fountain_point(1))
 	var b: PackedVector2Array = _nav.path(_map.fountain_point(0), _map.fountain_point(1))
 	assert_eq(a, b)
+
+
+## D-307c (lỗi người chơi báo: rồng không đuổi theo): mỗi quái trại đi ra khỏi trại được theo cỡ thân của nó (JGL-01
+## đuổi kẻ đánh) — cửa hang rồng phải đủ rộng cho thân rồng.
+func test_MAP_01_JGL_01_camp_units_can_leave_their_camp() -> void:
+	var lib: ContentLibrary = ContentLibrary.load_dir()
+	var navs: Dictionary = {}
+	for i: int in range(_map.camp_points.size()):
+		var kind: StringName = StringName(_map.camp_kinds[i])
+		if not lib.camps.has(kind):
+			continue
+		for u: UnitDef in lib.camps[kind].units:
+			var r: float = u.stats.collision_radius
+			if not navs.has(r):
+				navs[r] = MapNavigation.new(_map, r, TOWER_BODY)
+			var nav: MapNavigation = navs[r]
+			var home: Vector2 = nav.nearest_clear(_map.camp_points[i])
+			var goal: Vector2 = nav.nearest_clear(_map.world_size() * 0.5)
+			assert_false(nav.path(home, goal).is_empty(), "%s (%s, thân %.0f) ra khỏi trại được" % [_map.camp_ids[i], u.id, r])

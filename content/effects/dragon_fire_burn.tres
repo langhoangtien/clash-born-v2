@@ -7,7 +7,7 @@
 [sub_resource type="Resource" id="D0"]
 script = ExtResource("3_dmg")
 damage_type = 1
-amount = "10"
+amount = "15"
 target = 0
 
 [resource]

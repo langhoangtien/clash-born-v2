@@ -15,7 +15,7 @@ FINGERS = "^(index|middle|pinky|ring|thumb)_|_leaf"  # bộ xương người: b�
 TEAM = ["--team", "--hue", "195-245"]  # màu phe xanh → đỏ (D-209)
 
 # tên: (nguồn, đích trong assets/models/style/, hoạt ảnh, bỏ xương (True = FINGERS, hoặc regex), màu phe
-#       [, vũ khí gắn cứng "tệp:xương"])
+#       [, vũ khí gắn cứng "tệp:xương"] [, tham số thêm cho glb_slim])
 UNITS = {
     "creep_melee": ("creep_melee", "units/creep_melee",
                     "Idle_A=idle,Jog=run,OverhandThrow=attack,Hit_Chest=hit,Death_B=death,Dizzy=stun", True, True),
@@ -53,22 +53,22 @@ UNITS = {
              "Idle_A=idle,Run_Female=run,Magic_1H_Attack_2=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
              "Magic_1H_Cast=cast,Fireball=skill_1,Spell_Wide=skill_2,Magic_2H_Attack=skill_3,Sprint=sprint",
              True, False),
-    # D-307b: rồng, tê giác, khủng long lá theo style người chơi gửi (concept_gen.py từ ảnh mẫu → split_turnaround.py →
-    # Tripo multiview → glb_yaw -90 → afk.ai: dragon / horse / kaiju → fix-stretching)
-    "dragon_ice": ("creatures/dragon_ice_afk_fix.glb", "creatures/dragon_ice",
-                   "Idle=idle,Walk=run,Bite=attack,Hit=hit,Death=death", False, False),
-    "dragon_fire": ("creatures/dragon_fire_afk_fix.glb", "creatures/dragon_fire",
+    # D-307b: tê giác theo style ảnh mẫu người chơi; D-307c: rồng vẽ lại hợp style game (Brakk + ảnh trận làm mẫu) (concept_gen.py từ ảnh mẫu → split_turnaround.py →
+    # Tripo multiview → glb_yaw -90 → afk.ai: dragon / horse → fix-stretching)
+    "dragon_ice": ("creatures/dragon_ice_v2_afk_fix.glb", "creatures/dragon_ice",
+                   "Idle=idle,Walk=run,Bite=attack,Hit=hit,Death=death", False, False, [],
+                   ["--saturation", "2.2"]),  # dưới nắng trận gần như trắng → đậm màu băng lên (giữ chi tiết)
+    "dragon_fire": ("creatures/dragon_fire_v2_afk_fix.glb", "creatures/dragon_fire",
                     "Idle=idle,Walk=run,Bite=attack,Hit=hit,Death=death", False, False),
     "rhino": ("creatures/rhino_afk_fix.glb", "creatures/rhino", "Idle=idle,Run=run,Head_But=attack,Hit=hit,Death=death",
               False, False),
-    "raptor": ("creatures/raptor_afk_fix.glb", "creatures/raptor", "Idle=idle,Run=run,Attack=attack,Hit=hit,Death=death",
-               False, False),
 }
 
 
 def build(name):
     src, dst, keep, fingers, team = UNITS[name][:5]
     attach = UNITS[name][5] if len(UNITS[name]) > 5 else []
+    slim = UNITS[name][6] if len(UNITS[name]) > 6 else []  # D-307c: tham số thêm cho glb_slim (vd --tint)
     with tempfile.TemporaryDirectory() as tmp:
         mid = os.path.join(tmp, "anims.glb")
         cmd = [sys.executable, "-I", os.path.join(HERE, "glb_anims.py"),
@@ -80,7 +80,7 @@ def build(name):
         subprocess.run(cmd + (["--drop-bones", fingers if isinstance(fingers, str) else FINGERS] if fingers else []), check=True)
         out = os.path.join(ROOT, "assets", "models", "style", dst + ".glb")
         subprocess.run([sys.executable, "-I", os.path.join(HERE, "glb_slim.py"), mid, out, "--size", "1024"]
-                       + (TEAM if team else []), check=True)
+                       + (TEAM if team else []) + slim, check=True)
 
 
 def main():

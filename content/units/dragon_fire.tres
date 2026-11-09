@@ -8,11 +8,11 @@
 
 [sub_resource type="Resource" id="Resource_stats"]
 script = ExtResource("2_stats")
-base_hp = 5000.0
-base_damage = 85.0
-physical_armor = 8.0
-magic_armor = 5.0
-base_attack_time = 1.5
+base_hp = 9000.0
+base_damage = 180.0
+physical_armor = 15.0
+magic_armor = 15.0
+base_attack_time = 1.2
 attack_point = 0.5
 attack_range = 180.0
 movement_speed = 300.0
@@ -28,7 +28,7 @@ display_name = "Rồng Lửa"
 art_id = &"dragon_fire"
 bounty_xp = 0
 bounty_gold = 150
-team_gold = 230
-team_xp = 260
+team_gold = 280
+team_xp = 320
 growth = ExtResource("3_growth")
 passives = Array[ExtResource("5_eff")]([ExtResource("4_passive")])

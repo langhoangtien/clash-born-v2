@@ -3,11 +3,11 @@
 [ext_resource type="Script" path="res://sim/defs/camp_def.gd" id="1_camp"]
 [ext_resource type="Script" path="res://sim/defs/unit_def.gd" id="2_unit"]
 [ext_resource type="Resource" path="res://content/units/rhino.tres" id="u_rhino"]
-[ext_resource type="Resource" path="res://content/units/raptor.tres" id="u_raptor"]
+[ext_resource type="Resource" path="res://content/units/rhino_small.tres" id="u_rhino_small"]
 
 [resource]
 script = ExtResource("1_camp")
 kind = &"beast"
-units = Array[ExtResource("2_unit")]([ExtResource("u_rhino"), ExtResource("u_raptor"), ExtResource("u_raptor")])
+units = Array[ExtResource("2_unit")]([ExtResource("u_rhino"), ExtResource("u_rhino_small"), ExtResource("u_rhino_small")])
 id = &"camp_beast"
 display_name = "Trại tê giác"

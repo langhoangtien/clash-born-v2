@@ -8,11 +8,11 @@
 
 [sub_resource type="Resource" id="Resource_stats"]
 script = ExtResource("2_stats")
-base_hp = 4500.0
-base_damage = 75.0
-physical_armor = 8.0
-magic_armor = 5.0
-base_attack_time = 1.5
+base_hp = 8000.0
+base_damage = 160.0
+physical_armor = 15.0
+magic_armor = 15.0
+base_attack_time = 1.2
 attack_point = 0.5
 attack_range = 180.0
 movement_speed = 300.0
@@ -28,7 +28,7 @@ display_name = "Rồng Băng"
 art_id = &"dragon_ice"
 bounty_xp = 0
 bounty_gold = 150
-team_gold = 160
-team_xp = 380
+team_gold = 200
+team_xp = 450
 growth = ExtResource("3_growth")
 passives = Array[ExtResource("5_eff")]([ExtResource("4_passive")])
