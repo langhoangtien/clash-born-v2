@@ -3,7 +3,7 @@ extends Node3D
 ## D-256: vệt tốc độ kiểu Triệu Vân (Liên Quân) — các dải sáng bám theo **đường đã chạy** (lưu vị trí vài phần mười
 ## giây gần nhất), đầu sáng sát người, đuôi mảnh dần rồi tan; rẽ thì vệt cong theo. D-298: bỏ đốm sáng rơi lại
 ## (hạt — gây giật lúc tạo, L-0009). D-300: vẽ bằng tia gió dịu (vfx_soft dạng 16: đường mảnh uốn lượn trong dải),
-## không dùng ảnh. Chỉ là hình, SkillVfx3D cấp vị trí mỗi khung.
+## không dùng ảnh. D-303: `vertical` — dải dựng đứng (tấm khí kéo sau lưng). Chỉ là hình, SkillVfx3D cấp vị trí mỗi khung.
 
 const MIN_STEP: float = 0.04  ## hằng số kỹ thuật: khoảng cách tối thiểu (đơn vị 3D) giữa hai điểm lưu
 
@@ -67,7 +67,7 @@ func _build(m: ImmediateMesh, height: float, at: Vector3, tail: float) -> void:
 		var a: Vector3 = _points[mini(i + 1, _points.size() - 1)]
 		var b: Vector3 = _points[maxi(i - 1, 0)]
 		var dir: Vector3 = Vector3(a.x - b.x, 0, a.z - b.z).normalized()
-		var side: Vector3 = Vector3(-dir.z, 0, dir.x)
+		var side: Vector3 = Vector3.UP if _part.get("vertical", false) else Vector3(-dir.z, 0, dir.x)  # D-303: tấm khí đứng
 		var age: float = clampf((_clock - _times[i]) / tail, 0.0, 1.0)
 		var w: float = width * (1.0 - 0.7 * age)
 		m.surface_set_uv(Vector2(age, 0.0))

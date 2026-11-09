@@ -54,9 +54,11 @@ func test_D_250_trail_follows_caster_and_q_buff_follows_for_duration() -> void:
 	fx.advance(2.0)
 	assert_eq(fx.kinds(), [], "hết vệt lướt: gỡ")
 	fx.on_event(w, GameEvent.make(&"ability_finished", w.tick, k.id, -1, AbilityDef.Slot.Q))
-	assert_eq(fx.kinds(), ["wave", "gust", "trail"], "D-302: luồng gió vụt trước + gió sau lưng + vệt gió")
+	assert_eq(fx.kinds(), ["wave", "trail"], "D-303: luồng gió vụt trước + làn khí kiểu Triệu Vân")
+	var air: SpeedTrail3D = fx.get_children().filter(func(n: Node) -> bool: return n is SpeedTrail3D and not n.is_queued_for_deletion())[0]
+	assert_eq((air.get_child(0) as MeshInstance3D).material_override.get_shader_parameter("mode"), VfxParts.AIR)
 	fx.advance(4.0)
-	assert_eq(fx.kinds(), ["gust", "trail"], "còn trong 5 s tăng tốc")
+	assert_eq(fx.kinds(), ["trail"], "còn trong 5 s tăng tốc")
 	fx.advance(1.5)
 	assert_eq(fx.kinds(), [], "hết tăng tốc: gỡ")
 	fx.free()
@@ -191,24 +193,3 @@ func test_D_299_hex_frog_is_3d_model() -> void:
 	f._process(0.3)
 	assert_true(f.position.y > 0.0, "đang nhảy")
 	f.queue_free()
-
-
-
-## D-302: luồng gió sau lưng (Q Duy Anh) — nằm phía sau hướng chạy, hiện khi chạy, đứng yên thì tắt dần.
-func test_D_302_gust_behind_runner_and_fades_when_still() -> void:
-	var s: Array = _setup()
-	var w: World = s[0]
-	var k: Entity = s[1]
-	Abilities.set_rank(w, k, Abilities.of(k, AbilityDef.Slot.Q), 1)
-	var fx: SkillVfx3D = SkillVfx3D.new()
-	fx.on_event(w, GameEvent.make(&"ability_finished", w.tick, k.id, -1, AbilityDef.Slot.Q))
-	var gust: Node3D = fx.get_child(fx.kinds().find("gust"))
-	var mat: ShaderMaterial = (gust.get_child(0) as MeshInstance3D).material_override
-	for i: int in 10:
-		k.position += Vector2(20, 0)
-		fx.advance(0.05)
-	assert_true(gust.position.x < k.position.x * MatchView3D.S - 0.2, "chạy sang phải: gió ở sau lưng (bên trái)")
-	assert_near(float(mat.get_shader_parameter("fade")), 1.0, 0.01, "đang chạy: hiện rõ")
-	fx.advance(1.0)
-	assert_near(float(mat.get_shader_parameter("fade")), 0.0, 0.01, "đứng yên: tắt dần")
-	fx.free()

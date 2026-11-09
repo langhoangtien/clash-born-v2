@@ -1,11 +1,11 @@
 # Bàn giao — Clashborn v2 (2026-11-05)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-302). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-303). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 
 ## 1. Trạng thái
 
-- 838 test xanh (soak 842) (`GODOT=... bash tools/run_tests.sh`). APK mới nhất **0.1.499** (65 MB; hiệu ứng D-296..302, Myra băng, nội tại cộng điểm D-301) trên https://clashborn.quest — bản đầu tiên chỉ phát hành qua VPS; gh-pages dừng ở 0.1.479 (D-283). Đo hiệu năng: log D-268 / Benchmark A/B D-272.
+- 838 test xanh (soak 842) (`GODOT=... bash tools/run_tests.sh`). APK mới nhất **0.1.500** (65 MB; hiệu ứng D-296..303, Myra băng, nội tại cộng điểm D-301) trên https://clashborn.quest — bản đầu tiên chỉ phát hành qua VPS; gh-pages dừng ở 0.1.479 (D-283). Đo hiệu năng: log D-268 / Benchmark A/B D-272.
 - Android: trình vẽ **Mobile (Vulkan)**, đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
   Hiệu năng máy tính bảng (D-261..277): tối ưu SIM, sương thành ảnh nhỏ, chia tick (D-273), nạp trước hình / icon;
   Benchmark A/B gần nhất (0.1.470) ổn. Khựng đầu trận đã sửa (D-285).

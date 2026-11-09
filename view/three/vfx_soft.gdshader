@@ -11,8 +11,9 @@
 //  tinh thể theo ô, sáng rìa; D-299 dùng cho cụm tinh thể băng). 15 sao choáng xoay trên đầu (mặt phẳng ngang).
 //  D-300: 16 tia gió trên dải bám đường chạy (SpeedTrail3D: UV.x = tuổi 0 đầu → 1 đuôi, UV.y ngang dải) — một đường
 //  mảnh uốn lượn trong dải, mờ dần về đuôi (người chơi: vệt cũ thẳng tắp, đặc).
-//  D-302: 17 luồng gió sau lưng (mặt phẳng quay về camera): 4 làn gió cong đứt quãng chảy ngược hướng chạy
-//  `flow_angle`, đậm phía sau lưng, mờ dần ra rìa.
+//  (17 luồng gió sau lưng — D-302 — đã bỏ ở D-303.)
+//  D-303: 18 làn khí kiểu Triệu Vân trên dải bám đường chạy (UV như dạng 16): dải khí mềm rộng (mép mờ), vân khí chảy
+//  dọc dải, lõi sáng nhẹ ở giữa, tan dần về đuôi.
 shader_type spatial;
 render_mode unshaded, blend_mix, cull_disabled, depth_draw_never, shadows_disabled;
 
@@ -27,7 +28,6 @@ uniform bool billboard = false;
 uniform float angle = 1.3;  // D-298: nửa góc quạt (radian) cho dạng 13
 uniform float fade = 1.0;   // D-300: làm mờ cả mảnh (vệt gió tan cuối đời)
 instance uniform float phase = 0.0;  // D-300: lệch pha từng dải gió
-uniform float flow_angle = 0.0;     // D-302: hướng chạy trên màn hình (radian) cho dạng 17
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 
@@ -185,24 +185,13 @@ void fragment() {
 		a = line * pow(1.0 - age, 1.4) * smoothstep(0.0, 0.05, age) * wisp;
 		core = line * line * (1.0 - age);
 	}
-	if (mode == 17) {
-		vec2 p = UV - 0.5;
-		float ca = cos(-flow_angle);
-		float sa = sin(-flow_angle);
-		vec2 q = vec2(ca * p.x - sa * p.y, sa * p.x + ca * p.y);
-		a = 0.0;
-		core = 0.0;
-		for (int k = 0; k < 4; k++) {
-			float fk = float(k);
-			float yk = (fk - 1.5) * 0.11 + 0.02 * sin(fk * 2.7);
-			float d = q.y - yk - 0.035 * sin(q.x * 16.0 + TIME * 11.0 + fk * 1.9) * (0.5 - q.x);
-			float line = exp(-d * d / 0.00035);
-			float f = fract(q.x * 1.5 + TIME * 2.4 + fk * 0.37);
-			float dash = smoothstep(0.0, 0.2, f) * (1.0 - smoothstep(0.5, 0.75, f));
-			float back = smoothstep(0.3, -0.35, q.x) * (1.0 - smoothstep(0.42, 0.5, length(q)));
-			a += line * dash * back;
-			core += line * line * dash * back;
-		}
+	if (mode == 18) {
+		float age = UV.x;
+		float across = exp(-pow((UV.y - 0.5) / 0.34, 2.0));
+		float flow = noise(vec2(age * 5.0 - TIME * 4.0 + phase, UV.y * 5.0)) * 0.6
+			+ noise(vec2(age * 11.0 - TIME * 7.0, UV.y * 9.0 + phase)) * 0.4;
+		a = across * (0.7 + 0.3 * flow) * pow(1.0 - age, 0.9) * smoothstep(0.0, 0.05, age) * 1.3;
+		core = across * across * flow * (1.0 - age);
 	}
 	ALBEDO = mix(color.rgb, edge.rgb, clamp(core, 0.0, 1.0) * 0.8);
 	ALPHA = clamp(a * alpha * fade, 0.0, 1.0);
