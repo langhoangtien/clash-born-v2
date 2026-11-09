@@ -134,9 +134,9 @@ func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int, faded: b
 		return
 	if e.facing != Vector2.ZERO: rotation.y = atan2(e.facing.x, e.facing.y)
 	_tint = EffectVfx3D.tint_of(e)
-	var look: Dictionary = EffectLook.of(_cfg, e)
-	if look.get("skin", "") != _look.get("skin", ""):
-		EffectLook.apply_skin(_meshes, _base, _solid, look.get("skin", ""), _cfg.get("skin_of", ""), _faded)
+	var look: Dictionary = EffectLook.of(_cfg, e, w.tick)
+	if EffectLook.key(look) != EffectLook.key(_look):  # D-322, D-323: da theo hiệu ứng, kiếm chỉ hiện khi rút
+		EffectLook.apply(_meshes, _base, _solid, look, _cfg, _faded)
 	_look = look
 	_feel()
 	_stunned = e.cast == null and not Rules.can_move(e) and not Rules.can_attack(e)

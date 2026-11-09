@@ -4,7 +4,8 @@
   python3 -I tools/models/glb_anims.py vào.glb ra.glb --keep Idle=idle,Run=run,Bite=attack,Hit=hit,Death=death
       [--drop-bones REGEX]
 
-- `A+B=tên`: nối hoạt ảnh A rồi B thành một (D-209, vd vung + thu tay của afk.ai); --join-gap: giây nội suy ở chỗ nối; `A@0.5`: chỉ lấy A tới 0,5 s; `A@1.05-2.4`: chỉ lấy đoạn đó; `A~`: giữ tại chỗ (bỏ dời của xương gốc, D-229).
+- `A+B=tên`: nối hoạt ảnh A rồi B thành một (D-209, vd vung + thu tay của afk.ai); --join-gap: giây nội suy ở chỗ nối; `A@0.5`: chỉ lấy A tới 0,5 s; `A@1.05-2.4`: chỉ lấy đoạn đó; `A~`: giữ tại chỗ (bỏ dời của xương gốc, D-229);
+  `A^`: soi gương trái ↔ phải, `A%`: nửa trái làm theo nửa phải (D-323, glb_mirror.py).
 - --drop-bones: bỏ xương có tên khớp REGEX (ngón tay…), trọng số dồn về xương cha (D-209).
 
 - Chỉ giữ các hoạt ảnh trong --keep, đổi sang tên game (rig `Creature`: idle / run / attack / hit / death);
@@ -18,6 +19,7 @@ import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import glb_rig_ops as R  # noqa: E402
+import glb_mirror as M  # noqa: E402
 
 COMP = {5126: np.float32, 5125: np.uint32, 5123: np.uint16, 5121: np.uint8}
 SIZE = {"SCALAR": 1, "VEC2": 2, "VEC3": 3, "VEC4": 4, "MAT4": 16}
@@ -162,6 +164,10 @@ def write(path, g, blob):
     open(path, "wb").write(out)
 
 
+def _bare(n):
+    return n.replace("~", "").replace("^", "").replace("%", "")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("src"); ap.add_argument("dst")
@@ -175,14 +181,16 @@ def main():
     keep = dict(pairs)
     g, binc = read(a.src)
     have = {an.get("name") for an in g.get("animations", [])}
-    missing = {n.split("@")[0].replace("~", "") for src in keep for n in src.split("+")} - have
+    missing = {_bare(n).split("@")[0] for src in keep for n in src.split("+")} - have
     assert not missing, f"không có hoạt ảnh: {missing}; có: {sorted(have)}"
     R.bake_root(g, binc, array)  # D-238: gốc FBX (Mixamo) xoay / tỉ lệ 0,01 → đơn vị
-    special = {src: name for src, name in keep.items() if "+" in src or "@" in src or "~" in src}
-    joined = [R.concat(g, binc, array, [n.replace("~", "") for n in src.split("+")], name, a.join_gap) for src, name in special.items()]
+    special = {src: name for src, name in keep.items() if any(ch in src for ch in "+@~^%")}
+    joined = [R.concat(g, binc, array, [_bare(n) for n in src.split("+")], name, a.join_gap) for src, name in special.items()]
     for an, src in zip(joined, special):
         if "~" in src:
             R.in_place(g, binc, array, an)
+        if "^" in src or "%" in src:
+            M.mirror(g, binc, array, an, "full" if "^" in src else "sym")
     g["animations"] = [dict(an, name=keep[an["name"]]) for an in g["animations"] if an.get("name") in keep] + joined
     if a.drop_bones:
         print("xương: %d → %d" % R.drop_bones(g, binc, array, a.drop_bones))

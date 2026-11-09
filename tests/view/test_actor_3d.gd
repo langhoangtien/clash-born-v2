@@ -175,31 +175,40 @@ func test_D_277_corpse_animates_on_its_own() -> void:
 	creep.free()
 
 
-## D-322: Gorran Cuồng Hóa — đang có hiệu ứng gorran_rage thì da đỏ (ảnh màu `skin`) và đánh bằng hoạt ảnh chém hai kiếm;
-## hết hiệu ứng trả về hình gốc.
-func test_D_322_rage_look_red_skin_and_dual_sword_attack() -> void:
+## D-322 / D-323: Gorran — kiếm ẩn, đánh thường đấm; đang có gorran_rage thì da đỏ (ảnh màu `skin`), kiếm hiện sau
+## props_after (lúc tay rút kiếm sau vai), đánh luân phiên chém tay phải / tay trái; hết hiệu ứng trả về hình gốc.
+func test_D_323_rage_draws_swords_red_skin_alternate_slashes() -> void:
 	var lib: ContentLibrary = ContentLibrary.load_dir()
 	var w: World = World.new(1, BalanceSettings.new())
 	var g: Entity = UnitFactory.hero(w, lib.heroes[&"gorran"], 0, Vector2(500, 500))
 	var cfg: Dictionary = ModelLibrary.unit(g.art_id)
-	assert_true(EffectLook.of(cfg, g).is_empty(), "chưa Cuồng Hóa: hình gốc")
+	var a: Actor3D = Actor3D.make(g)
+	var calm: Dictionary = EffectLook.of(cfg, g, w.tick)
+	EffectLook.apply(a._meshes, a._base, a._solid, calm, cfg, false)
+	assert_eq(_surfaces(a), [1, 0, 2], "chưa Cuồng Hóa: thân gốc, hai kiếm ẩn")
+	assert_eq(ModelLibrary.attack_pick(cfg.merged(calm, true), 0, 0.4)[0], "attack", "đánh thường: đấm")
 	var values: Dictionary = {&"bat_cut": 0.3, &"regen": 15.0, &"move_bonus": 30.0, &"rage_damage": 0.0, &"duration": 25.0}
 	Effects.apply(w, g, load("res://content/effects/gorran_rage.tres") as EffectDef, g, values, "25")
-	var look: Dictionary = EffectLook.of(cfg, g)
-	assert_eq(look.get("attack", ""), "attack_rage", "Cuồng Hóa: chém hai kiếm")
+	var look: Dictionary = EffectLook.of(cfg, g, w.tick)
+	assert_false(look["props"], "vừa Cuồng Hóa: tay chưa tới sau vai, kiếm chưa hiện")
 	assert_true(ResourceLoader.exists(ModelLibrary.MODELS + String(look.get("skin", ""))), "có ảnh da đỏ")
-	var a: Actor3D = Actor3D.make(g)
-	assert_true(a._anim.has_animation("attack_rage"), "mô hình có hoạt ảnh chém hai kiếm")
-	var mats: Array[Array] = []
-	for row: Array in a._base:
-		mats.append(row.duplicate())
-	EffectLook.apply_skin(a._meshes, a._base, a._solid, look["skin"], cfg["skin_of"], false)
-	var changed: int = 0
-	var kept: int = 0
-	for k: int in a._base[0].size():
-		changed += int(a._solid[0][k] != a._base[0][k])
-		kept += int(a._solid[0][k] == a._base[0][k])
-	assert_eq([changed, kept], [1, 2], "chỉ thân đổi sang da đỏ, hai kiếm (ảnh riêng) giữ nguyên")
-	EffectLook.apply_skin(a._meshes, a._base, a._solid, "", cfg["skin_of"], false)
-	assert_eq(a._solid[0], a._base[0], "hết hiệu ứng: trả vật liệu gốc")
+	look = EffectLook.of(cfg, g, w.tick + SimClock.seconds_to_ticks(float(look["props_after"])))
+	assert_true(look["props"], "rút xong: hiện kiếm")
+	EffectLook.apply(a._meshes, a._base, a._solid, look, cfg, false)
+	assert_eq(_surfaces(a), [2, 1, 0], "thân đổi sang da đỏ, hai kiếm hiện màu gốc")
+	var picks: Array = [ModelLibrary.attack_pick(cfg.merged(look, true), 0, 0.4)[0], ModelLibrary.attack_pick(cfg.merged(look, true), 1, 0.4)[0]]
+	assert_eq(picks, ["attack_rage", "attack_rage_l"], "chém luân phiên tay phải / tay trái")
+	for anim: String in ["attack", "attack_rage", "attack_rage_l", "skill_3"]:
+		assert_true(a._anim.has_animation(anim), "mô hình có hoạt ảnh " + anim)
+	EffectLook.apply(a._meshes, a._base, a._solid, calm, cfg, false)
+	assert_eq(_surfaces(a), [1, 0, 2], "hết hiệu ứng: da gốc, cất kiếm")
 	a.free()
+
+
+## [bề mặt giữ vật liệu gốc, bề mặt đổi ảnh da, bề mặt ẩn] của lưới đầu tiên.
+func _surfaces(a: Actor3D) -> Array[int]:
+	var out: Array[int] = [0, 0, 0]
+	for k: int in a._base[0].size():
+		var m: Material = a._solid[0][k]
+		out[0 if m == a._base[0][k] else 2 if m is ShaderMaterial else 1] += 1
+	return out

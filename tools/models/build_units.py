@@ -46,12 +46,14 @@ UNITS = {
               True, False),
     # D-304: Myra / Vexa bản người lớn (concept_gen.py → split_turnaround.py → Tripo multiview → afk.ai), tay không
     # D-321: Gorran dựng lại theo quy trình Brakk (concept T9 bỏ goblin trên lưng — Codex T15 → Tripo multiview → glb_yaw −90 →
-    # afk.ai human); W Lọ Độc = ném qua vai, Q Vũng Axit = tung lựu đạn, R Cuồng Hóa = gồng sức; D-322: đánh = chém kiếm,
-    # Cuồng Hóa đánh bằng combo hai kiếm (attack_rage, units_3d.json effect_looks).
-    "gorran": ("gorran/gorran_lo", "heroes/gorran",  # D-322: Blender giảm 6002 → 3200 tam giác rồi rig lại; 2 kiếm Blender
-               "Fighting Idle=idle,Jog=run,Sword_Regular_A+Sword_Regular_A_Rec=attack,Dual_Weapon_Combo@2.2-3.3=attack_rage,"
+    # afk.ai human); W Lọ Độc = ném qua vai, Q Vũng Axit = tung lựu đạn. D-322: giảm mặt + 2 kiếm Blender. D-323: đánh thường
+    # = đấm móc (kiếm ẩn); Cuồng Hóa (R) rút hai kiếm sau vai (GS_Draw đối xứng `%`), đánh luân phiên chém tay phải /
+    # tay trái (Sword_Inward và bản soi gương `^`) — units_3d.json effect_looks.
+    "gorran": ("gorran/gorran_lo", "heroes/gorran",
+               "Fighting Idle=idle,Jog=run,Melee_Hook+Melee_Hook_Rec=attack,"
+               "Sword_Inward@0.3-1.15=attack_rage,Sword_Inward^@0.3-1.15=attack_rage_l,"
                "Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
-               "Throw_Generic=cast,Grenade_Toss=skill_1,OverhandThrow=skill_2,Power Up=skill_3,Sprint=sprint",
+               "Throw_Generic=cast,Grenade_Toss=skill_1,OverhandThrow=skill_2,GS_Draw%@0.2-1.3=skill_3,Sprint=sprint",
                True, False, ["gorran/gorran_sword_r:hand_r", "gorran/gorran_sword_l:hand_l"]),
     "myra": ("myra_v2", "heroes/myra",
              "Idle_A=idle,Run_Female=run,Magic_1H_Attack=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
