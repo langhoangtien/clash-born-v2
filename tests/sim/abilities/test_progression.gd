@@ -72,7 +72,7 @@ func test_ABL_04_xp_table_and_level_up() -> void:
 
 ## D-301 (người chơi): nội tại nâng bằng điểm như Q/W — bậc n khi hero cấp 2n − 1, tối đa 5; chưa cộng thì chưa có
 ## tác dụng (trước: tự lên 6 bậc theo cấp hero).
-func test_ABL_11_innate_leveled_with_points() -> void:
+func test_ABL_11_innate_leveled_with_points_no_level_requirement() -> void:
 	var w: World = _world()
 	var b: Entity = _brakk(w, 0, _center())
 	var innate: AbilityInstance = Abilities.of(b, Slot.INNATE)
@@ -81,14 +81,12 @@ func test_ABL_11_innate_leveled_with_points() -> void:
 	assert_eq(_rejected(w, Command.level_up(b.id, Slot.INNATE)), Command.Reject.NONE, "cấp 1: cộng bậc 1")
 	assert_eq(innate.rank, 1)
 	assert_near(b.effects[0].values[&"chance"], 0.17, EPS, "bậc 1 mới = bậc 2 cũ (bỏ bậc đầu)")
-	Progression.add_xp(w, b, Progression.xp_to_next(w, 1))
-	assert_eq(_rejected(w, Command.level_up(b.id, Slot.INNATE)), Command.Reject.CANNOT_LEVEL, "bậc 2 cần hero cấp 3")
-	Progression.add_xp(w, b, 100000.0)
 	b.skill_points = 10
 	for i: int in 4:
 		assert_eq(_rejected(w, Command.level_up(b.id, Slot.INNATE)), Command.Reject.NONE)
 	assert_eq(innate.rank, 5)
 	assert_eq(_rejected(w, Command.level_up(b.id, Slot.INNATE)), Command.Reject.CANNOT_LEVEL, "tối đa bậc 5")
+	assert_eq(b.stats.level(), 1, "D-318: hero cấp 1 vẫn nâng nội tại tới bậc 5 nếu có điểm")
 	assert_near(b.effects[0].values[&"chance"], 0.25, EPS, "bậc 5 = bậc 6 cũ")
 	assert_eq(b.effects.size(), 1, "không chồng hai bản bị động")
 
@@ -101,10 +99,26 @@ func test_ABL_04_skill_rank_rules() -> void:
 	assert_eq(Abilities.of(b, Slot.Q).rank, 1)
 	assert_eq(_rejected(w, Command.level_up(b.id, Slot.Q)), Command.Reject.NO_SKILL_POINT)
 	Progression.add_xp(w, b, Progression.xp_to_next(w, 1))
-	assert_eq(_rejected(w, Command.level_up(b.id, Slot.Q)), Command.Reject.CANNOT_LEVEL, "Q cấp 2 cần hero cấp 3")
 	assert_eq(_rejected(w, Command.level_up(b.id, Command.ATTRIBUTES)), Command.Reject.NONE)
 	assert_eq(b.attribute_bonus_count, 1)
 	assert_eq(b.skill_points, 0)
+
+
+## D-318 (người chơi): Q / W / nội tại không cần cấp hero — có điểm là nâng; cấp 5 (5 điểm) max được một chiêu.
+## R vẫn cần cấp 6 / 11 / 16.
+func test_ABL_04_q_w_no_level_requirement_max_at_level_5() -> void:
+	var w: World = _world()
+	var b: Entity = _brakk(w, 0, _center())
+	for i: int in 4:
+		Progression.add_xp(w, b, Progression.xp_to_next(w, b.stats.level()))
+	assert_eq(b.stats.level(), 5)
+	assert_eq(b.skill_points, 5)
+	for i: int in 5:
+		assert_eq(_rejected(w, Command.level_up(b.id, Slot.Q)), Command.Reject.NONE, "Q bậc %d ở hero cấp 5" % (i + 1))
+	assert_eq(Abilities.of(b, Slot.Q).rank, 5, "cấp 5 max Q")
+	b.skill_points = 1
+	assert_eq(_rejected(w, Command.level_up(b.id, Slot.Q)), Command.Reject.CANNOT_LEVEL, "Q tối đa bậc 5")
+	assert_eq(_rejected(w, Command.level_up(b.id, Slot.R)), Command.Reject.CANNOT_LEVEL, "R vẫn cần cấp 6")
 
 
 func test_ABL_04_attribute_bonus_limit_and_effect() -> void:

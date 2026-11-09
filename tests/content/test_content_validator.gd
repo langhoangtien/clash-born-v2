@@ -166,12 +166,10 @@ func test_ABL_04_bot_skill_order_must_be_legal() -> void:
 	var U := HeroDef.Upgrade
 	h.bot_skill_order = [U.Q, U.W, U.Q, U.W, U.Q, U.R, U.Q, U.W, U.Q, U.W, U.R, U.W, U.ATTRIBUTES, U.ATTRIBUTES, U.ATTRIBUTES, U.R, U.ATTRIBUTES, U.ATTRIBUTES, U.ATTRIBUTES, U.ATTRIBUTES]
 	assert_true(_errors([h]).is_empty(), "\n".join(_errors([h])))
-	h.bot_skill_order = [U.Q, U.Q]
-	_expect_error([h], "cấp 2 nâng Q lên 2")
+	h.bot_skill_order = [U.Q, U.Q, U.INNATE, U.INNATE]  # D-318: Q / W / nội tại không cần cấp hero
+	assert_true(_errors([h]).is_empty(), "\n".join(_errors([h])))
 	h.bot_skill_order = [U.R]
 	_expect_error([h], "cấp 1 nâng R lên 1")
-	h.bot_skill_order = [U.INNATE, U.INNATE]
-	_expect_error([h], "cấp 2 nâng INNATE lên 2")  # D-301: nội tại bậc n cần cấp 2n − 1
 	h.bot_skill_order = [U.Q, U.W, U.Q, U.W, U.Q, U.R, U.Q, U.W, U.Q, U.W, U.R, U.W, U.Q]
 	_expect_error([h], "Q quá cấp tối đa")
 	h.bot_skill_order = []

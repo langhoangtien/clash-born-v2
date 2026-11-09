@@ -156,8 +156,6 @@ func _check_bot_order(hero: HeroDef, where: String) -> void:
 			_fail(where, "đổi thuộc tính quá 7 lần" if up == HeroDef.Upgrade.ATTRIBUTES else "%s quá cấp tối đa" % name)
 		elif up == HeroDef.Upgrade.R and level < R_LEVELS[rank - 1]:
 			_fail(where, "cấp %d nâng R lên %d (cần cấp %d)" % [level, rank, R_LEVELS[rank - 1]])
-		elif up in [HeroDef.Upgrade.Q, HeroDef.Upgrade.W, HeroDef.Upgrade.INNATE] and level < 2 * rank - 1:  # D-301
-			_fail(where, "cấp %d nâng %s lên %d (cần cấp %d)" % [level, name, rank, 2 * rank - 1])
 	var talents: Array[AbilityDef.Slot] = hero.bot_talent_priority.duplicate()
 	talents.sort()
 	if talents != [AbilityDef.Slot.Q, AbilityDef.Slot.W, AbilityDef.Slot.R]:

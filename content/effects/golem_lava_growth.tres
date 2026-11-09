@@ -7,7 +7,7 @@
 script = ExtResource("1_mod")
 stat = &"max_hp"
 op = 0
-value = "280"
+value = "225"
 
 [sub_resource type="Resource" id="M1"]
 script = ExtResource("1_mod")

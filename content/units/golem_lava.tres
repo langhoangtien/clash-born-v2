@@ -8,7 +8,7 @@
 
 [sub_resource type="Resource" id="Resource_stats"]
 script = ExtResource("2_stats")
-base_hp = 9000.0
+base_hp = 7200.0
 base_damage = 180.0
 physical_armor = 15.0
 magic_armor = 15.0

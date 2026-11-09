@@ -115,12 +115,14 @@ func test_JGL_12_growth_stacks_by_minute_and_heals_the_gain() -> void:
 	_to(w, 0.2)
 	var boss: Entity = _alive(w, c)[0]
 	var base_hp: float = boss.stats.get_stat(StatId.Id.MAX_HP)
-	assert_near(base_hp, 8000.0, 0.01, "phút 0: chưa mạnh thêm")
+	var def: UnitDef = _lib.camps[&"golem_moss"].units[0]
+	var per: float = _growth_hp(def)  # D-318: số lấy từ content (cân bằng đổi không phải sửa test)
+	assert_near(base_hp, def.stats.base_hp, 0.01, "phút 0: chưa mạnh thêm")
 	_to(w, 60.1)
-	assert_near(boss.stats.get_stat(StatId.Id.MAX_HP), base_hp + 250.0, 0.01, "phút 1: 1 tầng")
-	assert_near(boss.health, base_hp + 250.0, 0.01, "máu hiện tại tăng đúng phần máu tối đa tăng")
+	assert_near(boss.stats.get_stat(StatId.Id.MAX_HP), base_hp + per, 0.01, "phút 1: 1 tầng")
+	assert_near(boss.health, base_hp + per, 0.01, "máu hiện tại tăng đúng phần máu tối đa tăng")
 	_to(w, 180.1)
-	assert_near(boss.stats.get_stat(StatId.Id.MAX_HP), base_hp + 750.0, 0.01, "phút 3: 3 tầng")
+	assert_near(boss.stats.get_stat(StatId.Id.MAX_HP), base_hp + 3.0 * per, 0.01, "phút 3: 3 tầng")
 	assert_near(boss.stats.get_stat(StatId.Id.PHYSICAL_DAMAGE), 160.0 + 24.0, 0.01)
 
 
@@ -129,8 +131,16 @@ func test_JGL_12_late_spawn_starts_with_minutes_stacks() -> void:
 	var c: CampState = _boss_camp(w, &"golem_lava", 600.0, 300.0)
 	_to(w, 600.1)
 	var boss: Entity = _alive(w, c)[0]
-	assert_near(boss.stats.get_stat(StatId.Id.MAX_HP), 9000.0 + 10 * 280.0, 0.01, "sinh ở phút 10: 10 tầng")
+	var def: UnitDef = _lib.camps[&"golem_lava"].units[0]
+	assert_near(boss.stats.get_stat(StatId.Id.MAX_HP), def.stats.base_hp + 10.0 * _growth_hp(def), 0.01, "sinh ở phút 10: 10 tầng")
 	assert_near(boss.health, boss.stats.get_stat(StatId.Id.MAX_HP), 0.01, "sinh ra đầy máu")
+
+
+static func _growth_hp(def: UnitDef) -> float:
+	for m: ModifierDef in def.growth.modifiers:
+		if m.stat == &"max_hp":
+			return float(m.value)
+	return 0.0
 
 
 func test_JGL_13_passives_attached_on_spawn() -> void:

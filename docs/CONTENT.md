@@ -626,8 +626,8 @@ bằng **Người Đá** (người chơi thấy rồng đánh không có lực).
 
 | Quái | Máu | Sát thương | Giáp / kháng phép | Mạnh dần mỗi phút (JGL-12) | Thưởng |
 |---|---|---|---|---|---|
-| Người Đá Rêu (`golem_moss`, bãi F5 / F6) | 8000 | 160 mỗi 1,2 s | 15 / 15 | +250 máu, +8 sát thương, +0,5 giáp | mỗi hero phe hạ 200 vàng + 450 XP; kẻ kết liễu thêm 150 vàng |
-| Người Đá Dung Nham (`golem_lava`, bãi đối xứng) | 9000 | 180 mỗi 1,2 s | 15 / 15 | +280 máu, +9 sát thương, +0,5 giáp | mỗi hero phe hạ 280 vàng + 320 XP; kẻ kết liễu thêm 150 vàng |
+| Người Đá Rêu (`golem_moss`, bãi F5 / F6) | 6400 (D-318; trước 8000) | 160 mỗi 1,2 s | 15 / 15 | +200 máu, +8 sát thương, +0,5 giáp | mỗi hero phe hạ 200 vàng + 450 XP; kẻ kết liễu thêm 150 vàng |
+| Người Đá Dung Nham (`golem_lava`, bãi đối xứng) | 7200 (D-318; trước 9000) | 180 mỗi 1,2 s | 15 / 15 | +225 máu, +9 sát thương, +0,5 giáp | mỗi hero phe hạ 280 vàng + 320 XP; kẻ kết liễu thêm 150 vàng |
 | Tê giác đá (`rhino`) | 1500 | 65 | 5 / 0 | — | 120 vàng, 150 XP (JGL-07) |
 | Tê giác con ×2 (`rhino_small`) | 550 | 30 | 2 / 0 | — | 45 vàng, 60 XP |
 

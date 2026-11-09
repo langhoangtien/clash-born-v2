@@ -64,10 +64,11 @@ static func level_problem(world: World, hero: Entity, slot: int) -> Command.Reje
 	if slot == Command.ATTRIBUTES:
 		return Command.Reject.NONE if hero.attribute_bonus_count < world.balance.attribute_bonus_max else Command.Reject.CANNOT_LEVEL
 	var a: AbilityInstance = Abilities.of(hero, slot)
-	if a == null or a.rank >= a.def.expected_ranks():  # D-301: nội tại cũng nâng bằng điểm (bậc n ở cấp 2n − 1)
+	if a == null or a.rank >= a.def.expected_ranks():  # D-301: nội tại cũng nâng bằng điểm
 		return Command.Reject.CANNOT_LEVEL
-	var need: int = ULTIMATE_LEVELS[a.rank] if slot == AbilityDef.Slot.R else 2 * (a.rank + 1) - 1
-	return Command.Reject.NONE if hero.stats.level() >= need else Command.Reject.CANNOT_LEVEL
+	if slot != AbilityDef.Slot.R:
+		return Command.Reject.NONE  # ABL-04 (D-318): Q / W / nội tại không cần cấp hero
+	return Command.Reject.NONE if hero.stats.level() >= ULTIMATE_LEVELS[a.rank] else Command.Reject.CANNOT_LEVEL
 
 
 static func spend_point(world: World, hero: Entity, slot: int) -> void:

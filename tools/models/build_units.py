@@ -56,7 +56,8 @@ UNITS = {
     # D-307b: tê giác theo style ảnh mẫu người chơi (concept_gen.py từ ảnh mẫu → split_turnaround.py →
     # Tripo multiview → glb_yaw -90 → afk.ai: dragon / horse → fix-stretching)
     # D-309: Người Đá thay rồng (concept_gen theo ảnh mẫu bãi đấu → Tripo → afk.ai human); fix-stretching + drop_loose (tam giác lẻ kéo dài); đòn đánh = đấm móc (đấm đất kéo méo nắm tay)
-    "golem_moss": ("golem/golem_moss_afk_clean.glb", "creatures/golem_moss",
+    # D-318: bản rêu bỏ hai tấm đá mỏng sau bàn tay (lưới Tripo có sẵn, gắn xương ngón → đấm là văng): drop_loose --max-tris 40
+    "golem_moss": ("golem/golem_moss_afk_drop.glb", "creatures/golem_moss",
                    "Fighting Idle=idle,Walk_Large=run,Melee_Hook+Melee_Hook_Rec=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun",
                    True, False),
     "golem_lava": ("golem/golem_lava_afk_clean.glb", "creatures/golem_lava",

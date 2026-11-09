@@ -316,8 +316,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 
 - `ABL-01` Mỗi hero có 3 ô nâng bằng điểm: **Q**, **W** (tối đa cấp 5) và **R** —
   ultimate (tối đa cấp 3); cộng một ô **nội tại** (innate, tối đa cấp 5) cũng nâng bằng điểm (ABL-11, D-301).
-- `ABL-11` (D-301, người chơi) Nội tại là kỹ năng bị động **nâng bằng điểm** như Q/W: bậc n (1–5) khi hero đạt cấp
-  `2n − 1` (1 / 3 / 5 / 7 / 9). Chưa cộng điểm nào thì nội tại chưa có tác dụng. Mảng giá trị của nội tại có 5 phần tử
+- `ABL-11` (D-301, người chơi) Nội tại là kỹ năng bị động **nâng bằng điểm** như Q/W (D-318: không cần cấp hero, như
+  Q/W — ABL-04). Chưa cộng điểm nào thì nội tại chưa có tác dụng. Mảng giá trị của nội tại có 5 phần tử
   (bỏ bậc 1 cũ của bản tự lên 6 bậc theo cấp hero 1 / 4 / 8 / 12 / 16 / 20).
 - `ABL-12` Q hoặc W cũng có thể là bị động (`targeting: PASSIVE`), nâng bằng điểm như
   skill thường. Bị động không tốn mana, không hồi chiêu trừ khi khai báo (ví dụ bash
@@ -328,8 +328,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `ABL-03` Đang tung chiêu (`cast_time` > 0) mà bị STUNNED/SILENCED (hoặc mục tiêu biến mất
   trước khi chiêu ra): hủy, **không mất mana, không tính hồi chiêu** (D-240). Chiêu đã ra rồi
   mới bị ngắt (vd đang lướt, ABL-08) thì mana / hồi chiêu đã tính.
-- `ABL-04` Lên cấp hero nhận 1 điểm. Điểm dùng để: nâng Q/W / nội tại lên cấp n khi hero
-  đạt cấp `2n − 1` (D-301); nâng R lên cấp 1/2/3 khi hero đạt cấp 6/11/16; hoặc đổi lấy
+- `ABL-04` Lên cấp hero nhận 1 điểm. Điểm dùng để: nâng Q/W / nội tại thêm một bậc **bất cứ lúc nào còn điểm**
+  (D-318, người chơi: không cần cấp hero — cấp 5 có thể max một chiêu); nâng R lên cấp 1/2/3 khi hero đạt cấp 6/11/16; hoặc đổi lấy
   `attribute_bonus` mọi thuộc tính (tối đa `attribute_bonus_max` lần). Điểm chưa
   dùng được giữ lại. Cấp 1 có sẵn 1 điểm; cộng điểm được cả khi chờ hồi sinh (lệnh
   `LEVEL_UP`, không đổi lệnh đang làm). Lên cấp / cộng thuộc tính: máu và mana hiện tại
