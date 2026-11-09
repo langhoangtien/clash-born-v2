@@ -1,5 +1,5 @@
 {
- "_ghi_chu": "D-146: hình 3D theo art_id (bản thử 3D). D-321: mọi đơn vị là mô hình tự mang xương + hoạt ảnh (rig Creature, afk.ai / Blender), đường dẫn tính từ assets/models/ (gỡ KayKit); attack / cast: hoạt ảnh đánh / tung chiêu; height: chiều cao trên sân (đơn vị 3D). D-159: skills: hoạt ảnh theo ô chiêu (1 Q, 2 W, 3 R), phát trọn khi tung; impact: điểm chém trong hoạt ảnh đánh (phần độ dài, mặc định 0,42). D-160: sprite_scale: cỡ đơn vị còn vẽ bằng ảnh đứng (quái rừng chưa có mô hình) so với cỡ của ảnh 2D. D-322: effect_looks — khóa = id hiệu ứng: skin (ảnh màu thay khi đang có hiệu ứng, đường dẫn từ assets/models/; chỉ bề mặt dùng ảnh `skin_of` — vũ khí giữ màu), attack / impact / attack_alt / impact_alt (hoạt ảnh đánh thay), props_after (giây sau khi có hiệu ứng thì hiện vật gắn tay) — EffectLook. D-323/D-324: props_drawn / props_stowed — tên vật liệu của vật chỉ hiện khi đã rút (kiếm trên tay, sau props_after của look) / khi chưa rút (cán kiếm sau lưng).",
+ "_ghi_chu": "D-146: hình 3D theo art_id (bản thử 3D). D-321: mọi đơn vị là mô hình tự mang xương + hoạt ảnh (rig Creature, afk.ai / Blender), đường dẫn tính từ assets/models/ (gỡ KayKit); attack / cast: hoạt ảnh đánh / tung chiêu; height: chiều cao trên sân (đơn vị 3D). D-159: skills: hoạt ảnh theo ô chiêu (1 Q, 2 W, 3 R), phát trọn khi tung; impact: điểm chém trong hoạt ảnh đánh (phần độ dài, mặc định 0,42). D-160: sprite_scale: cỡ đơn vị còn vẽ bằng ảnh đứng (quái rừng chưa có mô hình) so với cỡ của ảnh 2D. D-322: effect_looks — khóa = id hiệu ứng: skin (ảnh màu thay khi đang có hiệu ứng, đường dẫn từ assets/models/; chỉ bề mặt dùng ảnh `skin_of` — vũ khí giữ màu), attack / impact / attack_alt / impact_alt (hoạt ảnh đánh thay), props_after (giây sau khi có hiệu ứng thì hiện vật gắn tay) — EffectLook. D-323/D-324: props_drawn / props_stowed — tên vật liệu của vật chỉ hiện khi đã rút (kiếm trên tay, sau props_after của look) / khi chưa rút (cán kiếm sau lưng). D-326: trail — vệt chém bám lưỡi kiếm khi đã rút (SwordTrail3D: bones, from / to đoạn lưỡi đơn vị mô hình, color, alpha).",
  "rigs": {
   "Creature": {
    "_ghi_chu": "D-205, D-213: mô hình Tripo gắn xương + hoạt ảnh bằng afk.ai, tools/models/glb_anims.py chọn 5 hoạt ảnh và đổi tên theo rig này; team_tex: ảnh màu theo phe (D-209)",
@@ -69,7 +69,25 @@
      "attack": "attack_rage",
      "attack_alt": "attack_rage_l",
      "impact": 0.47,
-     "impact_alt": 0.47
+     "impact_alt": 0.47,
+     "trail": {
+      "bones": [
+       "hand_r",
+       "hand_l"
+      ],
+      "from": 0.22,
+      "to": 0.47,
+      "color": "#ffe6d6",
+      "alpha": 0.55,
+      "anims": [
+       "attack_rage",
+       "attack_rage_l"
+      ],
+      "window": [
+       0.4,
+       0.6
+      ]
+     }
     }
    },
    "skin_of": "gorran_albedo.jpg",

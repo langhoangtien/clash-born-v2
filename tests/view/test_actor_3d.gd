@@ -175,10 +175,10 @@ func test_D_277_corpse_animates_on_its_own() -> void:
 	creep.free()
 
 
-## D-322 / D-323 / D-324: Gorran — kiếm trong bao sau lưng, đánh thường đấm; đang có gorran_rage thì da đỏ (ảnh màu
+## D-322 / D-323 / D-324 / D-326: Gorran — kiếm trong bao sau lưng, đánh thường đấm; đang có gorran_rage thì da đỏ (ảnh màu
 ## `skin`), sau props_after (lúc tay tới sau vai) kiếm hiện trên tay và cán sau lưng ẩn (bao vẫn đeo), đánh luân phiên
 ## chém tay phải / tay trái; hết hiệu ứng trả về hình gốc.
-func test_D_324_rage_draws_swords_from_back_red_skin_alternate_slashes() -> void:
+func test_D_326_rage_draws_swords_from_back_red_skin_slash_trail() -> void:
 	var lib: ContentLibrary = ContentLibrary.load_dir()
 	var w: World = World.new(1, BalanceSettings.new())
 	var g: Entity = UnitFactory.hero(w, lib.heroes[&"gorran"], 0, Vector2(500, 500))
@@ -197,13 +197,21 @@ func test_D_324_rage_draws_swords_from_back_red_skin_alternate_slashes() -> void
 	assert_true(look["drawn"], "rút xong")
 	EffectLook.apply(a._meshes, a._base, a._solid, look, cfg, false)
 	assert_eq(_surfaces(a), [4, 1, 2], "da đỏ, kiếm trên tay + bao hiện, cán sau lưng ẩn")
+	assert_true(_trail(a), "D-326: rút kiếm thì có vệt chém bám lưỡi kiếm")
 	var picks: Array = [ModelLibrary.attack_pick(cfg.merged(look, true), 0, 0.4)[0], ModelLibrary.attack_pick(cfg.merged(look, true), 1, 0.4)[0]]
 	assert_eq(picks, ["attack_rage", "attack_rage_l"], "chém luân phiên tay phải / tay trái")
 	for anim: String in ["attack", "attack_rage", "attack_rage_l", "skill_3"]:
 		assert_true(a._anim.has_animation(anim), "mô hình có hoạt ảnh " + anim)
 	EffectLook.apply(a._meshes, a._base, a._solid, calm, cfg, false)
 	assert_eq(_surfaces(a), [5, 0, 2], "hết hiệu ứng: da gốc, kiếm về bao")
+	assert_false(_trail(a), "cất kiếm: gỡ vệt chém")
 	a.free()
+
+
+func _trail(a: Actor3D) -> bool:
+	var mi: MeshInstance3D = a._meshes[0] as MeshInstance3D
+	var t: Node = mi.get_node(mi.skeleton).get_node_or_null(NodePath(SwordTrail3D.NAME))
+	return t != null and not t.is_queued_for_deletion()
 
 
 ## [bề mặt giữ vật liệu gốc, bề mặt đổi ảnh da, bề mặt ẩn] của lưới đầu tiên.

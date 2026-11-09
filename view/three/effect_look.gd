@@ -52,6 +52,7 @@ static func apply(meshes: Array[GeometryInstance3D], base: Array[Array], solid: 
 			else:
 				solid[i][k] = _hidden_material() if hide.has(m.resource_name) else m
 			mi.set_surface_override_material(k, ModelLibrary.faded_material(solid[i][k]) if faded else solid[i][k])
+	SwordTrail3D.attach(meshes, look.get("trail", {}) if drawn else {})  # D-326: vệt chém khi đã rút kiếm
 
 
 static func _is_skin(m: Material, from: String) -> bool:

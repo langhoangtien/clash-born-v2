@@ -14,14 +14,15 @@ LENGTH = 0.9  # giây — game co giãn theo nhịp đánh
 # (thời điểm 0..1, cổ tay phải, hướng lưỡi, hướng khuỷu, xoay thân°, cúi°); None = theo tư thế đứng gốc
 KEYS = [
     (0.0, None, None, (-1.0, -0.6, 0.0), 0, 0),
-    (0.36, (-0.22, 0.42, -0.1), (-0.55, 0.6, -0.58), (-1.0, 0.3, -0.2), -35, -8),     # giơ cao chếch ra vai phải
-    (0.46, (-0.04, 0.24, 0.26), (0.1, 0.15, 1.0), (-0.6, -1.0, 0.0), 20, 12),         # chém qua trước ngực (trúng)
-    (0.55, (0.12, -0.06, 0.18), (0.75, -0.6, -0.25), (-0.2, -1.0, -0.3), 40, 18),     # xuống hông trái
-    (0.7, (0.12, -0.06, 0.18), (0.75, -0.6, -0.25), (-0.2, -1.0, -0.3), 38, 16),      # giữ đà
+    (0.3, (-0.24, 0.38, -0.2), (-0.35, 0.05, -0.94), (-1.0, 0.5, 0.1), -50, -10),    # kiếm vắt sau gáy, thân vặn hết
+    (0.4, (-0.25, 0.4, -0.18), (-0.45, 0.25, -0.86), (-1.0, 0.5, 0.1), -54, -12),    # nén lực (gần như đứng)
+    (0.47, (-0.02, 0.24, 0.33), (0.3, 0.05, 0.95), (-0.5, -1.0, 0.0), 18, 14),       # tay duỗi chém qua trước mặt (trúng)
+    (0.54, (0.22, 0.0, 0.14), (0.75, -0.4, -0.52), (-0.1, -1.0, -0.3), 52, 22),      # kéo ra sau hông trái
+    (0.74, (0.22, -0.01, 0.12), (0.72, -0.45, -0.52), (-0.1, -1.0, -0.3), 48, 20),   # giữ đà
     (1.0, None, None, (-1.0, -0.6, 0.0), 0, 0),
 ]
 # Tay trái (cầm kiếm kia) hạ xuống hông trái, lưỡi chúc ra sau — không che đòn chém; vào / ra theo LEFT_IN / LEFT_OUT.
-LEFT_HOLD = ((0.2, 0.0, 0.06), (0.25, -0.45, -0.85), (1.0, -0.5, -0.3))
+LEFT_HOLD = ((0.21, 0.02, -0.06), (0.2, -0.5, -0.85), (1.0, -0.5, -0.3))
 LEFT_IN, LEFT_OUT = 0.25, 0.8
 SPINE = ("spine_01", "spine_02", "spine_03")
 ARM = ("upperarm_r", "lowerarm_r", "hand_r")
@@ -42,7 +43,7 @@ def slash(g, binc, array, anim):
     lens = {a[0]: tuple(np.linalg.norm(rest[by[b]][:3, 3] - rest[by[a_]][:3, 3]) for a_, b in zip(a, a[1:])) for a in (ARM, ARM_L)}
     g0 = M._globals(g, parent, order, base)
     ready = {h: (g0[by[h]][:3, 3], g0[by[h]][:3, :3] @ axes[h][0]) for h in ("hand_r", "hand_l")}
-    n_plane = _unit(np.cross(KEYS[1][2], KEYS[3][2]))
+    n_plane = _unit(np.cross(KEYS[2][2], KEYS[4][2]))
     times = np.linspace(0, LENGTH, int(round(LENGTH * 30)) + 1)
     moved = [by[b] for b in SPINE + ARM + ARM_L]
     frames = {j: [] for j in moved}
