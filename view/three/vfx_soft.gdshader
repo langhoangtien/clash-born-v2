@@ -195,6 +195,18 @@ void fragment() {
 		a = across * (0.7 + 0.3 * flow) * pow(1.0 - age, 0.9) * head * 1.3;
 		core = across * across * flow * (1.0 - age);
 	}
+	if (mode == 19) {  // D-320: sóng dậm đất — gợn bụi dày loang nhanh rồi chậm, vỡ cụm theo nhiễu; bụi đuôi; vết nứt tỏa
+		float ang = atan(c.y, c.x);
+		float lump = noise(vec2(ang * 5.0, r * 6.0));
+		float front = mix(from, 1.0, 1.0 - pow(1.0 - t, 2.5)) + (lump - 0.5) * 0.08;
+		float d = (r - front) / width;
+		float band = exp(-d * d * 1.6) * (0.55 + 0.45 * noise(vec2(ang * 9.0, r * 10.0 + t * 3.0)));
+		float trail = smoothstep(front - 0.45, front, r) * (1.0 - step(front, r)) * 0.4 * (0.5 + 0.5 * lump);
+		float crack_line = abs(fract(ang * 1.2732 + noise(vec2(r * 5.0, ang)) * 0.35) - 0.5);
+		float crack = (1.0 - smoothstep(0.0, 0.045, crack_line)) * (1.0 - smoothstep(0.2, 0.7, r)) * (1.0 - t * t);
+		a = (band * 1.3 + trail) * life_fade(0.03, 0.5) + crack;
+		core = band * 0.8;
+	}
 	ALBEDO = mix(color.rgb, edge.rgb, clamp(core, 0.0, 1.0) * 0.8);
 	ALPHA = clamp(a * alpha * fade, 0.0, 1.0);
 }

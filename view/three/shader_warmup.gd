@@ -40,6 +40,7 @@ static func make(projectiles: Projectiles3D, focus: Vector3) -> ShaderWarmup:
 	w._place(CampfireFx.make(Vector3.ZERO, 1.0))  # D-319: lửa trại (2 shader)
 	var recipes: Array = SkillVfx3D.recipes().values().filter(func(r: Variant) -> bool: return r is Dictionary)
 	recipes.append_array(SkillVfx3D.recipes().get("_effects", {}).values())  # D-298: hiệu ứng trạng thái
+	recipes.append_array(SkillVfx3D.recipes().get("_triggers", {}).values())  # D-320: bị động kích hoạt
 	for recipe: Dictionary in recipes:
 		for part: Dictionary in recipe.get("parts", []):
 			w._vfx(part)

@@ -1,5 +1,5 @@
 {
- "_ghi_chu": "D-247: hiệu ứng chiêu 3D (SkillVfx3D). Khóa = art_id kỹ năng. Mảnh: arc (ảnh quạt vẽ tay nằm phẳng trước mặt, đỉnh quạt ở chân; radius / angle = số hoặc tên giá trị kỹ năng; apex_x / apex_y / half_w / depth = vị trí đỉnh, nửa bề ngang, độ sâu cung trong một khung ảnh, phần cỡ khung; alpha = độ đục ảnh đơn; có color thì tô màu theo độ sáng — lõi sáng thành edge), hit (tia lóe trên mục tiêu bị chủ chiêu gây sát thương ngay sau khi chiêu ra), trail (vệt tốc độ bám đường chạy suốt life — ribbons = độ cao các dải, width, tail = giây đuôi, sparks = ảnh đốm sáng rơi lại, u_range = đoạn ảnh dùng dọc dải; life = số hoặc tên giá trị kỹ năng).  Thời gian tính bằng giây. D-296: mảnh dịu dựng bằng shader (VfxParts): ring (vành loang trên đất: radius px, from, width), disc (đĩa lóe trên đất: radius), pillar (cột sáng: radius px, tall m), glow (đốm sáng: size m), aura (hào quang dưới chân đi theo đơn vị suốt life: radius px), wave (sóng chạy dọc hướng tung: length, width px), shot (vệt đạn kỹ năng: size m); chung: color, edge, alpha (≤ 0,7), life, height, at = caster | point | target. Phong cách (ART.md mục Hiệu ứng chiêu): trộn alpha không cộng sáng, màu dịu theo tướng, tan nhanh. D-298: mục _effects (khóa = id hiệu ứng) — mảnh đi theo đơn vị suốt thời gian hiệu ứng (EffectVfx3D): tornado (lốc xoáy: radius, tall), chains (vòng xích), ice (khối băng), dome, wisps, aura; cone (vệt quét hình quạt: radius, angle = số độ hoặc tên giá trị); meteors (sao băng rơi xuống vùng có độ trễ: count, size). D-299: mục _states (khóa = tên trạng thái, vd STUNNED) — hình chung cho trạng thái khi không hiệu ứng nào gây ra nó có hình riêng (stars: sao choáng xoay trên đầu); hiệu ứng trong _effects có lift (m) / spin (vòng/giây) thì nhấc hình đơn vị lên và xoay (lốc xoáy); D-300: trail vẽ bằng tia gió dịu (đường mảnh uốn lượn, không ảnh): ribbons = độ cao các dải, width = nửa bề rộng dải, tail = giây đuôi. D-302: iceblock — khối băng đa giác méo bọc người (radius, tall) (gust — luồng gió sau lưng D-302 — bỏ ở D-303). D-303: trail có style \"air\" → làn khí kiểu Triệu Vân (dải khí mềm rộng, vân chảy). vertical: dải dựng đứng (tấm khí sau lưng). D-305: mục _effects có `tint` (màu) / `tint_alpha` → phủ màu băng lên mô hình đơn vị (lớp cộng sáng của Actor3D, không thêm lưới) thay vòng chậm 2D.",
+ "_ghi_chu": "D-247: hiệu ứng chiêu 3D (SkillVfx3D). Khóa = art_id kỹ năng. Mảnh: arc (ảnh quạt vẽ tay nằm phẳng trước mặt, đỉnh quạt ở chân; radius / angle = số hoặc tên giá trị kỹ năng; apex_x / apex_y / half_w / depth = vị trí đỉnh, nửa bề ngang, độ sâu cung trong một khung ảnh, phần cỡ khung; alpha = độ đục ảnh đơn; có color thì tô màu theo độ sáng — lõi sáng thành edge), hit (tia lóe trên mục tiêu bị chủ chiêu gây sát thương ngay sau khi chiêu ra), trail (vệt tốc độ bám đường chạy suốt life — ribbons = độ cao các dải, width, tail = giây đuôi, sparks = ảnh đốm sáng rơi lại, u_range = đoạn ảnh dùng dọc dải; life = số hoặc tên giá trị kỹ năng).  Thời gian tính bằng giây. D-296: mảnh dịu dựng bằng shader (VfxParts): ring (vành loang trên đất: radius px, from, width), disc (đĩa lóe trên đất: radius), pillar (cột sáng: radius px, tall m), glow (đốm sáng: size m), aura (hào quang dưới chân đi theo đơn vị suốt life: radius px), wave (sóng chạy dọc hướng tung: length, width px), shot (vệt đạn kỹ năng: size m); chung: color, edge, alpha (≤ 0,7), life, height, at = caster | point | target. Phong cách (ART.md mục Hiệu ứng chiêu): trộn alpha không cộng sáng, màu dịu theo tướng, tan nhanh. D-298: mục _effects (khóa = id hiệu ứng) — mảnh đi theo đơn vị suốt thời gian hiệu ứng (EffectVfx3D): tornado (lốc xoáy: radius, tall), chains (vòng xích), ice (khối băng), dome, wisps, aura; cone (vệt quét hình quạt: radius, angle = số độ hoặc tên giá trị); meteors (sao băng rơi xuống vùng có độ trễ: count, size). D-299: mục _states (khóa = tên trạng thái, vd STUNNED) — hình chung cho trạng thái khi không hiệu ứng nào gây ra nó có hình riêng (stars: sao choáng xoay trên đầu); hiệu ứng trong _effects có lift (m) / spin (vòng/giây) thì nhấc hình đơn vị lên và xoay (lốc xoáy); D-300: trail vẽ bằng tia gió dịu (đường mảnh uốn lượn, không ảnh): ribbons = độ cao các dải, width = nửa bề rộng dải, tail = giây đuôi. D-302: iceblock — khối băng đa giác méo bọc người (radius, tall) (gust — luồng gió sau lưng D-302 — bỏ ở D-303). D-303: trail có style \"air\" → làn khí kiểu Triệu Vân (dải khí mềm rộng, vân chảy). vertical: dải dựng đứng (tấm khí sau lưng). D-305: mục _effects có `tint` (màu) / `tint_alpha` → phủ màu băng lên mô hình đơn vị (lớp cộng sáng của Actor3D, không thêm lưới) thay vòng chậm 2D. D-320: mục _triggers (khóa = id hiệu ứng) — mảnh vẽ khi một trigger của hiệu ứng chạy (sự kiện effect_triggered, vd Dậm Đất người đá), ở chân chủ hiệu ứng; giá trị là số (không theo cấp kỹ năng).",
  "duy_anh_q": {
   "parts": [
    {
@@ -550,6 +550,39 @@
      "color": "#ffcf5a",
      "edge": "#fff6d6",
      "alpha": 0.95
+    }
+   ]
+  }
+ },
+ "_triggers": {
+  "golem_stomp": {
+   "parts": [
+    {
+     "type": "quake",
+     "radius": 350,
+     "from": 0.06,
+     "width": 0.16,
+     "life": 0.85,
+     "color": "#4f4130",
+     "edge": "#c9b48a",
+     "alpha": 0.95
+    },
+    {
+     "type": "disc",
+     "radius": 110,
+     "life": 0.3,
+     "color": "#8a7454",
+     "edge": "#efe2c4",
+     "alpha": 0.6
+    },
+    {
+     "type": "glow",
+     "size": 3.0,
+     "height": 0.4,
+     "life": 0.45,
+     "color": "#7a6648",
+     "edge": "#efe2c6",
+     "alpha": 0.6
     }
    ]
   }

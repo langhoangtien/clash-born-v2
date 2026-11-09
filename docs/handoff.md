@@ -1,12 +1,12 @@
 # Bàn giao — Clashborn v2 (cập nhật 2026-11-09)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-319**). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-320**). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh thì chụp trong game (xvfb) và gửi ảnh JPG.
 
 ## 1. Trạng thái
 
-- **858 test xanh** (`GODOT=... bash tools/run_tests.sh`; soak `--soak` chạy trước khi đóng mốc). APK mới nhất trên
+- **860 test xanh** (`GODOT=... bash tools/run_tests.sh`; soak `--soak` chạy trước khi đóng mốc). APK mới nhất trên
   https://clashborn.quest (xem `curl -s https://clashborn.quest/version.json`); phát hành mục 4.
 - Android: trình vẽ Mobile (Vulkan), đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
   Hiệu năng máy tính bảng ổn (D-261..277, D-285). Tên miền `clashborn.quest` từng bị registry treo (serverHold) — đã
@@ -68,9 +68,7 @@ Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh 
    người dùng muốn đồng bộ. Rồi phát hành APK.
    **Người dùng chơi thử 0.1.5xx mới nhất**: người đá (dậm đất có đủ mạnh / quá mạnh?), bãi đấu, trại tê giác, bản đồ lớn.
    Chỉnh số trong `content/` theo góp ý.
-1. Người đá **chưa có hiệu ứng hình khi dậm đất** (chỉ thấy sao choáng trên nạn nhân) — nên thêm vòng sóng đất
-   (vfx_soft dạng ring / disc) khi trigger `golem_stomp` chạy; cần sự kiện VIEW nhận biết (vd effect trigger phát
-   `GameEvent` riêng) → là cơ chế VIEW nhỏ, làm theo AGENTS mục 3.
+1. ~~Hiệu ứng dậm đất~~ — xong D-320 (sự kiện `effect_triggered`, mục `_triggers` trong vfx.json, mảnh `quake`).
 2. Người Đá Rêu: mảnh đá thừa ở tay đã bỏ (D-318, `drop_loose.py` đọc đúng GLB xen kẽ của afk.ai).
 3. Hướng lớn (người dùng chọn): 5v5 / âm thanh (ElevenLabs) / 1v1 trực tuyến / đổi tên game.
 4. Gorran vẫn KayKit — làm lại theo quy trình mục 2 nếu người dùng muốn.

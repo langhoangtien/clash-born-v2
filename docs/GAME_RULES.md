@@ -631,10 +631,13 @@ kill_credited, structure_destroyed, unit_spawned, gold_changed, level_up,
 skill_leveled, talent_chosen, dash_finished, projectile_hit, item_used,
 knockback_finished, dispelled, attack_target_changed, mana_burned,
 lethal_damage, reincarnated, recall_started, recall_cancelled, recall_finished, duel_started,
-duel_ended, attack_deflected, teleported`. `gold_changed` (D-240): hero last hit lính / quái (ECO-01), kẻ gây = hero, đối tượng = con bị hạ, lượng = vàng. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
+duel_ended, attack_deflected, teleported, effect_triggered`. `gold_changed` (D-240): hero last hit lính / quái (ECO-01), kẻ gây = hero, đối tượng = con bị hạ, lượng = vàng. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
 `effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `removed` (hành động RemoveEffect), `dispelled`, `owner_died`.
 `ability_finished` (D-296) mang điểm chọn `point` (không chọn điểm thì INF) và hướng `direction` của lần tung — chỉ để
 VIEW vẽ hiệu ứng chiêu đúng chỗ, không luật nào đọc.
+`effect_triggered` (D-320): một trigger của hiệu ứng vừa chạy hành động (qua điều kiện, tỉ lệ, hồi chiêu trigger) — kẻ gây =
+chủ hiệu ứng, đối tượng = đơn vị kia của sự kiện gốc (không có thì −1), mang chính bản hiệu ứng (`effect`); phát **trước** khi
+chạy hành động. Chỉ để VIEW vẽ hiệu ứng của bị động (vd Dậm Đất người đá), không trigger nào nghe sự kiện này.
 Thêm sự kiện = thay đổi luật.
 
 ---

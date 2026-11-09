@@ -102,6 +102,7 @@ func _fire_instance(world: World, ev: GameEvent, owner: Entity, other: Entity, i
 			continue  # RNG-01
 		if not t.cooldown.is_empty():
 			inst.trigger_ready[index] = world.tick + SimClock.seconds_to_ticks(ExprEval.evaluate(t.cooldown, ctx))
+		world.emit(&"effect_triggered", owner.id, other.id if other != null else -1).effect = inst  # EVT (D-320): cho VIEW
 		ActionRunner.run(world, t.actions, ctx, owner.id)
 
 

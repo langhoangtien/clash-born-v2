@@ -196,3 +196,24 @@ func test_JGL_12_boss_beats_a_level_5_hero_alone() -> void:
 			* DamageFormulas.armor_multiplier(d.stats.physical_armor, w.balance.armor_coefficient)
 		var hero_alive: float = hero_hp / (dps_boss * DamageFormulas.armor_multiplier(hero.stats.get_stat(StatId.Id.PHYSICAL_ARMOR), w.balance.armor_coefficient))
 		assert_true(hero_alive * hero_dps < d.stats.base_hp * 0.5, "%s: tướng cấp 5 sống %.0f s, gây %.0f / %.0f máu" % [kind, hero_alive, hero_alive * hero_dps, d.stats.base_hp])
+
+
+## D-320: trigger Dậm Đất chạy → phát `effect_triggered` (chủ = người đá, mang hiệu ứng golem_stomp) để VIEW vẽ sóng dậm
+## đất; đang hồi 7 s thì đòn sau không phát.
+func test_EVT_effect_triggered_emitted_when_stomp_fires_not_on_cooldown() -> void:
+	var w: World = _world()
+	var golem: Entity = UnitFactory.unit(w, _lib.camps[&"golem_moss"].units[0], Entity.Kind.NEUTRAL, 2, Vector2(3000, 3000))
+	golem.position = w.navigation(golem.radius).nearest_clear(w.map.world_size() * 0.5 + Vector2(0, 900))
+	Effects.apply(w, golem, load("res://content/effects/golem_stomp.tres") as EffectDef, golem)
+	var near: Entity = UnitFactory.hero(w, _lib.heroes[&"brakk"], 0, golem.position + Vector2(150, 0))
+	var fired: Array[int] = []
+	for round: int in 2:
+		w.emit(&"attack_landed", golem.id, near.id, 100.0)
+		for i: int in 3:
+			w.step()
+			for ev: GameEvent in w.previous_events + w.events:
+				if ev.type == &"effect_triggered" and ev.source_id == golem.id and not fired.has(ev.seq):
+					assert_eq(ev.effect.def.id, &"golem_stomp", "mang hiệu ứng Dậm Đất")
+					assert_eq(ev.target_id, near.id, "đối tượng = kẻ bị đánh")
+					fired.append(ev.seq)
+	assert_eq(fired.size(), 1, "lần đầu phát, lần sau đang hồi 7 s thì không")

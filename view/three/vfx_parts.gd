@@ -12,12 +12,13 @@ extends RefCounted
 ##   (radius px, height m) · D-300: iceblock —
 ##   khối băng bọc người (radius px, tall m) — D-302: khối đa giác méo (ice_chunk), không còn hình trụ.
 ## Chung: color, edge (lõi), alpha (độ đục tối đa — giữ ≤ 0,85 để 5v5 không chói), life (giây hoặc tên giá trị kỹ năng),
-## height (m), at = caster | point | target.
+## height (m), at = caster | point | target. D-320: quake — sóng dậm đất trên đất (radius px, from, width): gợn bụi
+## vỡ cụm loang ra + bụi đuôi + vết nứt tỏa từ tâm.
 
 const SHADER: Shader = preload("res://view/three/vfx_soft.gdshader")
 const MODES: Dictionary[String, int] = {"ring": 0, "disc": 1, "pillar": 2, "glow": 3, "aura": 4, "shot": 5, "wave": 6,
 	"zone": 7, "pending": 8, "dome": 9, "wisps": 10, "tornado": 11, "chains": 12, "cone": 13, "ice": 14,
-	"stars": 15, "iceblock": 14}
+	"stars": 15, "iceblock": 14, "quake": 19}
 ## D-300: dạng tia gió cho vệt bám đường chạy (`trail`, SpeedTrail3D); D-303: `style: "air"` → làn khí kiểu Triệu Vân.
 const WIND: int = 16
 const AIR: int = 18

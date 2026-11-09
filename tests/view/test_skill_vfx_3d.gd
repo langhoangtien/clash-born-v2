@@ -223,3 +223,21 @@ func test_D_305_frost_slow_tints_body_instead_of_ring() -> void:
 	assert_true(StateMarks.is_slowed(foe), "chậm không phải băng: vẫn vòng")
 	foe.effects.clear()
 	assert_eq(EffectVfx3D.tint_of(foe).a, 0.0, "hết hiệu ứng: hết màu")
+
+
+## D-320: bị động kích hoạt (`effect_triggered`) → mảnh của mục `_triggers` theo id hiệu ứng ở chân chủ hiệu ứng (Dậm Đất
+## người đá: vành sóng bụi + đĩa lóe + bụi); hiệu ứng không có công thức thì không sinh gì.
+func test_D_320_effect_triggered_draws_trigger_recipe() -> void:
+	var s: Array = _setup()
+	var w: World = s[0]
+	var k: Entity = s[1]
+	var fx: SkillVfx3D = SkillVfx3D.new()
+	var ev: GameEvent = GameEvent.make(&"effect_triggered", w.tick, k.id, -1)
+	ev.effect = Effects.apply(w, k, load("res://content/effects/golem_stomp.tres") as EffectDef, k)
+	fx.on_event(w, ev)
+	assert_eq(fx.kinds(), ["quake", "disc", "glow"], "Dậm Đất: sóng bụi + đĩa lóe + bụi")
+	var other: GameEvent = GameEvent.make(&"effect_triggered", w.tick, k.id, -1)
+	other.effect = Effects.apply(w, k, load("res://content/effects/stun.tres") as EffectDef, k)
+	fx.on_event(w, other)
+	assert_eq(fx.kinds().size(), 3, "hiệu ứng không có công thức: không sinh gì")
+	fx.free()

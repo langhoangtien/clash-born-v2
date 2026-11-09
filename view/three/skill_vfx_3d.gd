@@ -34,6 +34,8 @@ func on_event(w: World, ev: GameEvent) -> void:
 			_cast(w, ev)
 		&"damage_taken":
 			_hit(w, ev)
+		&"effect_triggered":  # D-320: bị động vừa kích hoạt (vd Dậm Đất người đá)
+			_triggered(w, ev)
 
 
 ## Loại mảnh đang chạy (cho test / chẩn đoán).
@@ -73,6 +75,15 @@ func _cast(w: World, ev: GameEvent) -> void:
 				_add(SpeedTrail3D.make(live, VfxParts.material(live, VfxParts.AIR if live.get("style") == "air" else VfxParts.WIND)), "trail", live, Vector3.ZERO, e.id)  # D-300
 			_ when VfxParts.is_soft(part["type"]) and not (part["type"] in ["shot", "zone", "pending"]):  # SkillShots3D / ZoneView3D
 				_soft(w, e, a, ev, part)
+
+
+## D-320: mảnh của mục `_triggers` (khóa = id hiệu ứng) ở chân chủ hiệu ứng; giá trị là số (không có kỹ năng).
+func _triggered(w: World, ev: GameEvent) -> void:
+	var e: Entity = w.find_entity(ev.source_id)
+	if e == null or ev.effect == null:
+		return
+	for part: Dictionary in recipes().get("_triggers", {}).get(String(ev.effect.def.id), {}).get("parts", []):
+		_soft(w, e, null, ev, part)
 
 
 ## D-296: mảnh dịu ở chủ chiêu / điểm chọn / mục tiêu; `aura` bám theo đơn vị đó.
