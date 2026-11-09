@@ -568,3 +568,23 @@ Nền xám nhạt trơn, không đất / cỏ dưới chân (trừ cỏ / rêu m
 khối ≈ 600 tam giác, đặt lại 4–6 lần quanh vòng ≈ 2 400–3 600 nhưng **đẹp hơn ở cùng số tam giác** (chi tiết nằm ở ảnh
 màu, không ở số mặt) và game vẽ cả vòng bằng **một lệnh vẽ** (MultiMesh cùng một mô hình). Không làm cả vòng thành
 một mô hình duy nhất vì cần chừa cửa và ảnh màu sẽ bị kéo giãn (mờ) trên vòng dài.
+
+## Đợt T12 — ảnh nền đá lát đất cao vẽ tay (2026-11-09)
+
+Claude đã làm lại đất cao (base) theo phương án A trong ảnh mẫu người dùng **`art_inbox/08_style/ref/highground_ref.png`**
+(ô góc trên trái "A. Cân bằng – tự nhiên"; bản cắt sẵn `highground_ref_a.png`) — D-310. API ảnh của Claude hết credit nên ảnh
+đá lát hiện **sinh bằng code** (`art_inbox/13_highground/flagstones_code.png`), trông hơi "máy" so với ảnh mẫu. Giống D-191
+(người dùng thấy ảnh Codex vẽ tay đẹp hơn bản code) → nhờ Codex **vẽ tay ảnh thay thế**.
+
+Xem trước: ảnh trong game `art_inbox/13_highground/ingame_d310.jpg` (đá lát + mảng cỏ, vòng đá viền quanh trụ / nhà chính /
+fountain do game tự vẽ — **không** vẽ vòng tròn vào ảnh).
+
+Lưu vào `art_inbox/13_highground/`. Xong thì đánh dấu `[x]`, commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng.
+
+| Xong | Tên | Nội dung | Ảnh 1024 phủ |
+|---|---|---|---|
+| [ ] | `flagstones.png` | Sân đá lát đất cao **như nền ô A của ảnh mẫu**: phiến đá xám **to nhỏ lẫn lộn, hình không đều** (đa giác bo góc, không phải gạch vuông), ghép khít; mép phiến vát nhẹ (sáng phía trên-trái, tối phía dưới-phải — rất nhẹ, game vẽ không đèn); **mạch sẫm mảnh**, rêu / cỏ xanh lẫn trong vài mạch; vài phiến nứt. Màu: xám ấm `#9E968A` xen xám lạnh `#8A8E92`, mạch `#4E4840`, rêu `#60743E`. Cỡ phiến: ~40–50 phiến trong một ảnh (phiến to ~ 1/5 cạnh ảnh) | 4,2 m |
+
+Yêu cầu kỹ thuật như mục "Yêu cầu kỹ thuật chung cho ảnh nền" ở đầu phiếu: **1024 × 1024, lặp liền mép cả hai chiều** (ghép
+3 × 3 kiểm trước khi nộp), nhìn thẳng từ trên, không bóng đổ, không vật nổi khối, không phiến nào nổi bật lặp lại dễ thấy.
+Đậm nhạt và màu gần bản code (`flagstones_code.png`) để thay thẳng vào game không lệch tông với cỏ xung quanh.
