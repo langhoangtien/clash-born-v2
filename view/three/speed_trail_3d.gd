@@ -7,6 +7,7 @@ extends Node3D
 ## phía camera không còn bị nhìn cạnh mỏng thành vết cắt). Chỉ là hình, SkillVfx3D cấp vị trí mỗi khung.
 
 const MIN_STEP: float = 0.04  ## hằng số kỹ thuật: khoảng cách tối thiểu (đơn vị 3D) giữa hai điểm lưu
+const SMOOTH_PASSES: int = 3  ## hằng số hiển thị: số lượt làm mượt cạnh dải đứng (D-306)
 
 var _part: Dictionary
 var _points: Array[Vector3] = []
@@ -63,24 +64,40 @@ func _build(m: ImmediateMesh, height: float, at: Vector3, tail: float) -> void:
 		return
 	var width: float = float(_part.get("width", 0.15))
 	var up: Vector3 = Vector3(0, height, 0)
-	var cam: Camera3D = get_viewport().get_camera_3d() if is_inside_tree() else null
 	var face: bool = _part.get("vertical", false)
+	var sides: PackedVector3Array = _sides(face)
 	m.surface_begin(Mesh.PRIMITIVE_TRIANGLE_STRIP)
 	for i: int in range(_points.size() - 1, -1, -1):
+		var age: float = clampf((_clock - _times[i]) / tail, 0.0, 1.0)
+		var w: float = width * (1.0 - 0.7 * age)
+		if face:  # D-306: làn khí nhọn dần về phía người (không cắt ngang thẳng)
+			w *= 0.3 + 0.7 * smoothstep(0.0, 0.2, age)
+		m.surface_set_uv(Vector2(age, 0.0))
+		m.surface_add_vertex(_points[i] + up + sides[i] * w)
+		m.surface_set_uv(Vector2(age, 1.0))
+		m.surface_add_vertex(_points[i] + up - sides[i] * w)
+	m.surface_end()
+
+
+## Cạnh dải ở từng điểm. Dải đứng (D-303) quay về camera (D-305); D-306: làm mượt qua các điểm kề — rẽ gắt không
+## gấp thành nếp sáng.
+func _sides(face: bool) -> PackedVector3Array:
+	var cam: Camera3D = get_viewport().get_camera_3d() if is_inside_tree() else null
+	var out: PackedVector3Array = PackedVector3Array()
+	for i: int in _points.size():
 		var a: Vector3 = _points[mini(i + 1, _points.size() - 1)]
 		var b: Vector3 = _points[maxi(i - 1, 0)]
 		var dir: Vector3 = Vector3(a.x - b.x, 0, a.z - b.z).normalized()
-		var side: Vector3 = Vector3(-dir.z, 0, dir.x)
-		if face:  # D-303 tấm khí đứng; D-305 quay về camera
-			side = facing_side(dir, cam.global_position - _points[i]) if cam != null else Vector3.UP
-		var age: float = clampf((_clock - _times[i]) / tail, 0.0, 1.0)
-		var w: float = width * (1.0 - 0.7 * age)
-		m.surface_set_uv(Vector2(age, 0.0))
-		m.surface_add_vertex(_points[i] + up + side * w)
-		m.surface_set_uv(Vector2(age, 1.0))
-		m.surface_add_vertex(_points[i] + up - side * w)
-	m.surface_end()
-
+		if not face:
+			out.append(Vector3(-dir.z, 0, dir.x))
+		else:
+			out.append(facing_side(dir, cam.global_position - _points[i]) if cam != null else Vector3.UP)
+	if face:
+		for _pass: int in SMOOTH_PASSES:
+			var prev: PackedVector3Array = out.duplicate()
+			for i: int in range(1, out.size() - 1):
+				out[i] = (prev[i - 1] + prev[i] * 2.0 + prev[i + 1]).normalized()
+	return out
 
 
 ## D-305: cạnh dải quay về mắt — vuông góc với hướng chạy và hướng tới mắt (chạy ngang màn hình: gần như đứng).

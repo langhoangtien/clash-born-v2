@@ -187,10 +187,12 @@ void fragment() {
 	}
 	if (mode == 18) {
 		float age = UV.x;
-		float across = exp(-pow((UV.y - 0.5) / 0.34, 2.0));
+		float across = exp(-pow((UV.y - 0.5) / 0.28, 2.0));  // D-306: mép dải mờ hẳn
 		float flow = noise(vec2(age * 5.0 - TIME * 4.0 + phase, UV.y * 5.0)) * 0.6
 			+ noise(vec2(age * 11.0 - TIME * 7.0, UV.y * 9.0 + phase)) * 0.4;
-		a = across * (0.7 + 0.3 * flow) * pow(1.0 - age, 0.9) * smoothstep(0.0, 0.05, age) * 1.3;
+		// D-306: đầu dải (sát người) hiện dần, giữa dải tới trước, mép rối theo vân khí — không còn mép thẳng
+		float head = smoothstep(0.0, 0.25, age * (0.6 + 0.8 * across) + (flow - 0.5) * 0.08);
+		a = across * (0.7 + 0.3 * flow) * pow(1.0 - age, 0.9) * head * 1.3;
 		core = across * across * flow * (1.0 - age);
 	}
 	ALBEDO = mix(color.rgb, edge.rgb, clamp(core, 0.0, 1.0) * 0.8);
