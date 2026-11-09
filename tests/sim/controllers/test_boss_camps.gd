@@ -1,5 +1,5 @@
 extends TestCase
-## D-307: trại boss (rồng, JGL-10..14) và trại khủng long.
+## D-307: trại boss (rồng, JGL-10..14) và trại tê giác (D-307b: thay trại khủng long).
 
 const MAP_PATH: String = "res://data/maps/clashborn.tres"
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
@@ -79,9 +79,9 @@ func test_JGL_10_dragon_content_first_spawn_and_respawn() -> void:
 		var d: CampDef = _lib.camps[kind]
 		assert_eq(d.first_spawn, 300.0, "%s: phút 5" % kind)
 		assert_eq(d.respawn, 300.0, "%s: 5 phút sau khi hạ" % kind)
-	var dino: CampDef = _lib.camps[&"dino"]
-	assert_eq(dino.units.map(func(u: UnitDef) -> StringName: return u.id), [&"dino_big", &"dino_small", &"dino_small"])
-	assert_true(dino.units[0].stats.base_hp > _lib.camps[&"large"].units[0].stats.base_hp, "bãi mạnh hơn bãi lớn")
+	var beast: CampDef = _lib.camps[&"beast"]
+	assert_eq(beast.units.map(func(u: UnitDef) -> StringName: return u.id), [&"rhino", &"raptor", &"raptor"], "D-307b: tê giác + 2 khủng long lá")
+	assert_true(beast.units[0].stats.base_hp > _lib.camps[&"large"].units[0].stats.base_hp, "bãi mạnh hơn bãi lớn")
 
 
 func test_JGL_11_team_reward_every_hero_of_killer_team() -> void:

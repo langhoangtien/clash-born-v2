@@ -30,7 +30,7 @@ CAMPS = {"camp_blue_01": (130, 380), "camp_blue_02": (222, 296), "camp_blue_03":
          "camp_blue_04": (380, 522), "camp_blue_05": (282, 510), "camp_blue_06": (488, 528),
          "camp_blue_07": (342, 420), "camp_blue_08": (440, 460)}
 # Loại trại mới (07, 08) — các trại cũ giữ loại trong map_source.
-NEW_KINDS = {"camp_blue_07": "medium", "camp_blue_08": "dino"}  # D-307: trại khủng long thay trại 2 sói
+NEW_KINDS = {"camp_blue_07": "medium", "camp_blue_08": "beast"}  # D-307: trại tê giác (bãi mạnh) thay trại 2 sói
 P = {
     "c1": CAMPS["camp_blue_01"], "c2": CAMPS["camp_blue_02"], "c3": CAMPS["camp_blue_03"],
     "c4": CAMPS["camp_blue_04"], "c5": CAMPS["camp_blue_05"], "c6": CAMPS["camp_blue_06"],
@@ -63,7 +63,7 @@ PATHS = [
     (["j23", "riv_mid"], SIDE),                 # giữa trại 7 / 8 xuống sông
     (["j2", "cut_c"], SIDE),                    # lối carry → lane dưới (cắt bục giữa trại 5 / 4)
 ]
-CAMP_R = {"large": 17.0, "medium": 16.0, "small": 15.0, "dino": 17.0}  # bãi trại (MAP-08 dò ở 330 = 20,6 ô)
+CAMP_R = {"large": 17.0, "medium": 16.0, "small": 15.0, "beast": 17.0}  # bãi trại (MAP-08 dò ở 330 = 20,6 ô)
 HOOK_W = 12.0       # bề dày vách quanh bãi trại (ô)
 BANK = 5.0          # tường đá bờ sông dày (ô), hở ở chỗ lối chạm sông
 MOUTH = MAIN        # D-200: lối đầu sông ra lane rộng như lối chính (704)

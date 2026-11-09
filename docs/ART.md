@@ -234,7 +234,7 @@ Người chơi: giống Liên Quân / MLBB nhưng **nhẹ nhàng, ít màu mè**
   (`tools/icons/gen_icon.py`; nguồn trong art_inbox/04_icons).
 - D-304: mô hình tướng tỉ lệ người lớn (~6,5 đầu, không chibi) — Myra, Vexa làm lại theo hướng này, tung phép bằng tay.
 - D-305: chậm vì băng phủ màu băng lên người (`tint` trong `_effects`) thay vòng dưới chân; làn khí Q Duy Anh quay về camera.
-- D-307: Rồng Băng, Rồng Lửa, khủng long — Tripo + afk.ai (`assets/models/style/creatures/`), không màu phe.
+- D-307b: quái rừng boss / bãi mạnh theo style ảnh mẫu người chơi (`art_inbox/11_creatures/*_ref.png`): low-poly đá, rune phát sáng, vẽ tay — Rồng Băng, Rồng Lửa, Tê giác đá, Khủng long lá (`assets/models/style/creatures/`), không màu phe; hang rồng là vòng vách đá sát sông.
 - Dựng: mảnh trong `assets/vfx/vfx.json` (khóa = art_id kỹ năng; xem ghi chú đầu file), shader
   `view/three/vfx_soft.gdshader`, `VfxParts`, `SkillVfx3D`, đạn kỹ năng `SkillShots3D`. Xem trước trong cảnh trận:
   `xvfb-run -a godot --path . --resolution 1920x1080 -s tools/vfx_preview.gd -- --out=<thư mục> [--delay=0.15]`.

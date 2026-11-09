@@ -65,9 +65,9 @@ func test_D_179_plateau_rim_rocks_inside_blocked_area() -> void:
 			continue  # đá bờ sông (decor_place.river) lún nửa xuống nước
 		rocks += 1
 		var inside: bool = false
-		for shape: MapShape in layout.forest_shapes:
+		for shape: MapShape in layout.forest_shapes + layout.rock_shapes:  # D-307: vách đá hang rồng
 			inside = inside or Geometry2D.is_point_in_polygon(p, shape.outer)
-		assert_true(inside, "đá viền tại %s nằm trong bục" % p)
+		assert_true(inside, "đá viền tại %s nằm trong bục / khối đá" % p)
 	assert_true(rocks > 300, "bục có viền đá (%d)" % rocks)
 
 

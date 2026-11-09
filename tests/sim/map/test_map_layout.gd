@@ -64,23 +64,28 @@ func test_MAP_02_eight_camps_per_side_and_two_dragon_pits() -> void:
 	assert_eq(map.camp_points.size(), 18)
 	assert_eq(Array(map.camp_sides).count(0), 8)
 	assert_eq(Array(map.camp_sides).count(1), 8)
-	assert_eq(map.camp_kinds.count("dino"), 2, "D-307: mỗi rừng carry một trại khủng long")
-	assert_eq(map.camp_kinds.count("small"), 4, "D-307: trại khủng long thay một trại 2 sói")
+	assert_eq(map.camp_kinds.count("beast"), 2, "D-307: mỗi rừng carry một trại tê giác (bãi mạnh)")
+	assert_eq(map.camp_kinds.count("small"), 4, "D-307: trại tê giác thay một trại 2 sói")
 
 
-## D-307 (JGL-10, 14): hai hang rồng dùng chung (side -1) nằm trên sông, xoay 180° vào nhau — Rồng Băng nửa trên, Rồng Lửa
-## nửa dưới; cách đều hai fountain.
-func test_MAP_02_dragon_pits_on_river_axis() -> void:
+## D-307 (JGL-10, 14): hai hang rồng dùng chung (side -1) sát bờ sông, xoay 180° vào nhau — Rồng Băng ở giáp ranh F5 / F6
+## (nửa đỏ, người chơi chọn), Rồng Lửa ở chỗ đối xứng (nửa xanh); mỗi hang là hốc vách đá có cửa (MAP-08).
+func test_MAP_02_dragon_pits_beside_river() -> void:
 	var ice: int = map.camp_kinds.find("dragon_ice")
 	var fire: int = map.camp_kinds.find("dragon_fire")
 	assert_true(ice >= 0 and fire >= 0)
+	var cell: Vector2 = map.camp_points[ice] / (map.world_size().x / 16.0)  # lưới ký hiệu A1…P16 (D-77)
+	assert_eq(int(cell.x), 5, "Rồng Băng ở cột F")
+	assert_true(absf(cell.y - 5.0) < 0.6, "giáp ranh F5 / F6 (hàng %.2f)" % (cell.y + 1.0))
+	assert_true(map.camp_points[ice].distance_to(map.world_size() - map.camp_points[fire]) < 2.0, "xoay 180°")
 	for i: int in [ice, fire]:
 		assert_eq(map.camp_sides[i], -1, "dùng chung: bot không đi farm (JGL-14)")
 		var p: Vector2 = map.camp_points[i]
-		assert_near(p.distance_to(map.fountain_point(0)), p.distance_to(map.fountain_point(1)), 2.0, "cách đều hai đội")
-		assert_true(map.water_shapes.any(func(s: MapShape) -> bool: return Geometry2D.is_point_in_polygon(p, s.outer)), "nằm trên sông")
-	assert_true(map.camp_points[ice].y < map.camp_points[fire].y, "Rồng Băng nửa trên")
-	assert_true(map.camp_points[ice].distance_to(map.world_size() - map.camp_points[fire]) < 2.0, "xoay 180°")
+		var near_water: bool = false
+		for k: int in 24:
+			var probe: Vector2 = p + Vector2.from_angle(TAU * k / 24.0) * 450.0
+			near_water = near_water or map.water_shapes.any(func(s: MapShape) -> bool: return Geometry2D.is_point_in_polygon(probe, s.outer))
+		assert_true(near_water, "cửa hang mở ra sông")
 
 
 func test_MAP_02_three_distinct_lanes_from_spawn_to_enemy_spawn() -> void:
@@ -265,8 +270,6 @@ func test_MAP_07_river_edge_is_rock_with_few_openings() -> void:
 func test_MAP_08_every_camp_sits_in_rock_or_forest_hook() -> void:
 	var m: MapLayout = map
 	for i: int in m.camp_ids.size():
-		if m.camp_sides[i] < 0:
-			continue  # D-307: hang rồng giữa sông (MAP-02) — bờ đá hai bên, mở dọc sông
 		var wall: int = 0
 		for k: int in 24:
 			var probe: Vector2 = m.camp_points[i] + Vector2.from_angle(TAU * k / 24.0) * 330.0

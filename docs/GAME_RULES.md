@@ -945,8 +945,8 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   trông như lối đi mà hero không lọt.
 - `MAP-02` Map 10598 × 10598 (D-172 9216; D-307 lớn thêm 15%, lane giữ bề rộng 288); Blue dưới–trái, Red trên–phải;
   3 lane; sông; 11 trụ mỗi đội; 8 trại mỗi phe (D-171, D-178): rừng phía lane an toàn (rừng carry) 5 trại (D-307: một
-  trại 2 sói thành trại khủng long), rừng phía lane khó 3 trại. Hai hang rồng dùng chung (D-307, JGL-10..14) trên sông,
-  trên trục đối xứng: Rồng Băng nửa trên, Rồng Lửa nửa dưới. Mọi trại cách trụ ≥ 720.
+  trại 2 sói thành trại khủng long), rừng phía lane khó 3 trại. Hai hang rồng dùng chung (D-307, JGL-10..14): hốc vách đá
+  sát bờ sông, cửa mở ra sông — hang Rồng Băng ở giáp ranh F5 / F6 (nửa đỏ), hang Rồng Lửa ở chỗ xoay 180° (nửa xanh). Mọi trại cách trụ ≥ 720.
 - `MAP-06` (D-168) Trụ lane đứng sát mép lane, cùng một bên cho cả lane (TOP, BOT: phía trong
   map; MID: bên phải theo chiều Blue → Red), tâm cách tim lane `tower_offset` (12 ô guide = 192).
   T1 đặt theo MAP-04; T2/T3 giữ khoảng cách dọc lane.
@@ -954,7 +954,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   chạm sông; phần lớn mép sông (ngoài lane và khu mid) bị đá chặn; chỉ xuống sông ở chỗ lối rừng chạm sông (mỗi nửa ít nhất 2 lối), ở lane và khu mid
   cắt sông (MAP-05), và ở **hai đầu sông**: mỗi đầu sông mở thẳng ra lane bên bằng lối rộng 704, loe tròn ở hai đầu (đi từ sông lên
   lane không phải vòng qua trụ, D-200). Không có bậc thang. Sông vẫn đi được.
-- `MAP-08` (D-171, D-178) Mỗi trại rừng (trừ hang rồng giữa sông, D-307) nằm trong hốc của bục rừng (hoặc đá): vách bao quanh bãi trại, lối đi
+- `MAP-08` (D-171, D-178) Mỗi trại (kể cả hang rồng, D-307) nằm trong hốc của bục rừng (hoặc đá): vách bao quanh bãi trại, lối đi
   khoét ra cửa (thường 2: một từ lối chính, một khe ra lane / sông / trại bên). Quanh trại, ở bán kính
   330, ít nhất 10/24 hướng bị chặn và còn ít nhất một hướng mở làm cửa.
 - `MAP-09` (D-169) Base là đất cao có rào đá: vào / ra base chỉ qua 3 cổng ở chỗ 3 lane đi qua (cổng

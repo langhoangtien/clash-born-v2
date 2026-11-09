@@ -199,28 +199,28 @@
    "rig": "Creature",
    "attack": "attack",
    "impact": 0.42,
-   "height": 2.6
+   "height": 2.4
   },
   "dragon_fire": {
    "model": "../style/creatures/dragon_fire",
    "rig": "Creature",
    "attack": "attack",
    "impact": 0.42,
-   "height": 2.8
+   "height": 2.4
   },
-  "dino_big": {
-   "model": "../style/creatures/dino",
+  "rhino": {
+   "model": "../style/creatures/rhino",
+   "rig": "Creature",
+   "attack": "attack",
+   "impact": 0.4,
+   "height": 1.1
+  },
+  "raptor": {
+   "model": "../style/creatures/raptor",
    "rig": "Creature",
    "attack": "attack",
    "impact": 0.42,
-   "height": 1.6
-  },
-  "dino_small": {
-   "model": "../style/creatures/dino",
-   "rig": "Creature",
-   "attack": "attack",
-   "impact": 0.42,
-   "height": 0.9
+   "height": 1.0
   }
  },
  "_ghi_chu_cong_trinh": "D-158, D-218…D-228: công trình 3D Tripo theo concept người dùng (assets/models/style/structures/). Đường dẫn model tính từ assets/models/. structures: theo art_id (trụ thêm _t<bậc>), ảnh màu theo đội <model>_blue / _red.jpg, height: chiều cao trên sân (đơn vị 3D). scenery: bụi cỏ (bushes, spacing px thế giới, scale [nhỏ nhất, lớn nhất]), shop ẩn, đống đổ nát chỗ trụ đã đổ, fountain; style: cảnh vật + mặt đất + nước D-178.",
