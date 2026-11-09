@@ -1,0 +1,2 @@
+Built-in imagegen, reference lane_ref.png + concept.webp. 1024 square overhead painterly warm compacted earth #B8915A, highlights #CFA86E, wear #8E6C42; varied wear directions; tiny pebbles; 2–3 sparse sunken cool gray #8E959C stone clusters covering <10%; sparse grass; no cast shadows or road borders.
+Seam repair: np.roll 512 on both axes; imagegen edit central cross width 160px, preserve outer quadrants; feather edit within cross; inverse roll.

@@ -3,7 +3,7 @@ shader_type spatial;
 // G đá lát, B nền rừng, A bóng vẽ sẵn); mép trộn bẻ theo vân cho giống nét vẽ tay; cỏ đổi tông theo vân lớn
 // để không lộ ô lặp. Sương (VIS-01) tính ngay ở đây từ các mắt phe mình (eyes = x, z, tầm nhìn theo mét).
 // D-187: đường đất rừng (kênh R) là đất nện: ảnh dirt chỉ lấy sáng tối, tô dirt_color. D-190, D-191: nền lane /
-// base (kênh G) là ảnh "đất có phiến đá" Codex vẽ tay, đã chỉnh về bảng màu chung (tools/textures/recolor.py).
+// base (kênh G) là ảnh "đất có phiến đá" Codex vẽ tay. D-312: lane = ảnh lane_dirt (Codex T13, đất vẽ tay + cụm đá thưa).
 // Mép cỏ loang theo vân lớn.
 // D-310: đất cao (base) — mặt nạ base_tex (R đá lát ảnh flagstones, G vòng đá viền sân công trình); chỉ đọc ảnh
 // đá lát khi có. 7–8 lần đọc ảnh mỗi điểm. D-311: mép đá lát chuyển qua dải đất nện rồi mới tới cỏ; đá be ấm. Không đèn. Đơn vị: mét.
@@ -61,8 +61,12 @@ void fragment() {
 	const vec3 LUMA = vec3(0.2126, 0.7152, 0.0722);
 	float patch = clamp((macro - 0.447) * 14.0, -1.0, 1.0);  // vân lớn (−1…1): chỗ rêu nhiều / mòn lộ đất
 	float dl = dot(texture(dirt_tex, r / dirt_m).rgb, LUMA) / dirt_luma;
-	vec3 dirt = dirt_color * dl;
-	col = mix(col, dirt, smoothstep(0.35, 0.62, m.r + wobble * 0.6 + patch * 0.15));
+	vec3 dirt = dirt_color * dl * mix(0.93, 1.06, smoothstep(0.38, 0.56, macro));  // D-312: đất loang sáng / sẫm
+	float de = m.r + wobble * 0.6 + patch * 0.15;
+	// D-312: mép đường như ảnh mẫu — cỏ sát mép sẫm và rậm hơn, đất sát cỏ sẫm nhẹ (vệt mòn / bóng cỏ).
+	col *= mix(1.0, 0.8, smoothstep(0.1, 0.33, de) * (1.0 - smoothstep(0.33, 0.5, de)));
+	dirt *= mix(0.88, 1.0, smoothstep(0.5, 0.8, de));
+	col = mix(col, dirt, smoothstep(0.35, 0.62, de));
 	vec3 stones = texture(stones_tex, xz / stones_m).rgb;
 	col = mix(col, stones, smoothstep(0.4, 0.75, m.g + wobble * 0.3 + patch * 0.15));
 	vec2 b = texture(base_tex, (xz - mask_origin) / mask_size).rg;

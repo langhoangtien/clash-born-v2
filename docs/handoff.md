@@ -1,12 +1,12 @@
 # Bàn giao — Clashborn v2 (cập nhật 2026-11-09)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-311**). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-312**). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh thì chụp trong game (xvfb) và gửi ảnh JPG.
 
 ## 1. Trạng thái
 
-- **852 test xanh** (`GODOT=... bash tools/run_tests.sh`; soak `--soak` chạy trước khi đóng mốc). APK mới nhất trên
+- **853 test xanh** (`GODOT=... bash tools/run_tests.sh`; soak `--soak` chạy trước khi đóng mốc). APK mới nhất trên
   https://clashborn.quest (xem `curl -s https://clashborn.quest/version.json`); phát hành mục 4.
 - Android: trình vẽ Mobile (Vulkan), đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
   Hiệu năng máy tính bảng ổn (D-261..277, D-285). Tên miền `clashborn.quest` từng bị registry treo (serverHold) — đã
@@ -22,8 +22,10 @@ Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh 
   hồi 5 phút sau khi hạ, mạnh dần mỗi phút, **dậm đất** gây sát thương + choáng quanh mình (hồi 7 s), cả đội hạ được
   thì mỗi người nhận vàng + XP. Bot không tự đánh boss. **Trại tê giác** (1 to + 2 con) thay một trại 2 sói ở rừng
   carry mỗi phe. Bảng số: `docs/CONTENT.md` mục "Quái rừng boss".
-- **Đất cao (base) kiểu ảnh mẫu A** (D-310, D-311, chưa phát hành APK): nền cỏ + dải đất nện + đá lát be ấm `flagstones`
-  (ảnh Codex T12 qua `tools/textures/warm_stone.py`; mặt nạ `base` trong decor.json, `tools/map_build/base_decor.py`), sân lát + vòng đá viền quanh mọi trụ / nhà chính / fountain, tường rào
+- **Bảng màu chốt (D-312)**: mọi đá cùng họ xám trung tính → xanh lạnh (như lan can rìa map, người dùng thích); đất vàng
+  ấm; cỏ xanh. Lane = ảnh Codex `lane_dirt` + cụm cỏ / dương xỉ / đá nhỏ dọc mép (`tools/map_build/lane_decor.py`).
+- **Đất cao (base) kiểu ảnh mẫu A** (D-310..312, chưa phát hành APK): nền cỏ + dải đất nện + đá lát xám lạnh `flagstones`
+  (ảnh Codex T12 qua `tools/textures/stone_tint.py`; mặt nạ `base` trong decor.json, `tools/map_build/base_decor.py`), sân lát + vòng đá viền quanh mọi trụ / nhà chính / fountain, tường rào
   `base_wall` + cột đèn cờ `base_pillar_blue/red` (Tripo text-to-model). **API ảnh OpenAI hết credit** — concept_gen
   không chạy được tới khi người dùng nạp thêm. **Codex CLI cài được trong phiên cloud**: `npm i -g @openai/codex`,
   `codex login --device-auth` (người dùng nhập mã), giao việc bằng `codex exec -s workspace-write "..."` (Codex có skill

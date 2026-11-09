@@ -588,3 +588,19 @@ Lưu vào `art_inbox/13_highground/`. Xong thì đánh dấu `[x]`, commit + pus
 Yêu cầu kỹ thuật như mục "Yêu cầu kỹ thuật chung cho ảnh nền" ở đầu phiếu: **1024 × 1024, lặp liền mép cả hai chiều** (ghép
 3 × 3 kiểm trước khi nộp), nhìn thẳng từ trên, không bóng đổ, không vật nổi khối, không phiến nào nổi bật lặp lại dễ thấy.
 Đậm nhạt và màu gần bản code (`flagstones_code.png`) để thay thẳng vào game không lệch tông với cỏ xung quanh.
+
+## Đợt T13 — đất lane tự nhiên (2026-11-09)
+
+Người dùng: lane trong game "không tự nhiên" (`art_inbox/14_lane/ingame_before.jpg`: đất vàng một màu phẳng, đá lát phủ
+dày). Ảnh mẫu người dùng muốn: **`art_inbox/08_style/ref/lane_ref.png`** — đất nện vàng đất có vệt mòn sẫm / mảng sáng,
+sỏi nhỏ, **cụm phiến đá xám lạnh nhỏ, thưa, lún trong đất**. Tông đá chung của game là **xám lạnh** (như vách đá trong
+ảnh mẫu); đất giữ ấm. Mép cỏ / bụi ven đường game tự vẽ — ảnh chỉ là mặt đất nện.
+
+Lưu vào `art_inbox/14_lane/`. Xong thì đánh dấu `[x]`, **không commit / push** (Claude duyệt và commit).
+
+| Xong | Tên | Nội dung | Ảnh 1024 phủ |
+|---|---|---|---|
+| [x] | `lane_dirt.png` | Đất nện như phần đường trong ảnh mẫu: vàng đất `#B8915A` (sáng nhất `#CFA86E`, sẫm `#8E6C42`), **nét cọ vẽ tay**, vệt mòn sẫm dài mềm **theo nhiều hướng khác nhau** (không một hướng chủ đạo — đường trong game chạy dọc, ngang, chéo), mảng sáng loang, sỏi li ti, **2–3 cụm phiến đá xám lạnh `#8E959C` nhỏ** (mỗi cụm 3–7 phiến, chiếm tổng < 10% ảnh), vài cọng cỏ lẻ. Không cụm nào nổi bật lặp dễ thấy | 8 m |
+
+Kỹ thuật: như mục "Yêu cầu kỹ thuật chung cho ảnh nền" đầu phiếu — 1024 × 1024, **lặp liền mép cả hai chiều** (ghép 3 × 3
+kiểm, sửa mép nếu lộ — có thể vẽ xong rồi dời nửa ảnh và vẽ lại vùng chữ thập giữa), nhìn thẳng từ trên, không bóng đổ.

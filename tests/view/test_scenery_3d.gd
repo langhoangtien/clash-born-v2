@@ -185,3 +185,21 @@ func test_D_310_base_ground_paved_with_plaza_rings() -> void:
 			ring = ring or at.call(layout.core_point(team) + Vector2(r, 0)).g > 0.9
 		assert_true(ring, "vòng đá viền quanh nhà chính phe %d" % team)
 	assert_true(at.call(layout.world_size() * 0.5).r < 0.1, "giữa map không lát đá base")
+
+
+## D-312: ven lane có cụm cỏ / dương xỉ xanh / đá nhỏ dọc mép đất (ảnh mẫu lane), không nằm giữa lane đi lại.
+func test_D_312_lane_edges_have_plants_not_on_lane() -> void:
+	var json: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/maps/clashborn_map.json"))
+	var half: float = float(json["lane_width"]) * 0.5
+	var ferns: int = 0
+	for it: Array in Terrain3D.items():
+		if String(it[0]) != "plant_green":
+			continue
+		ferns += 1
+		var p: Vector2 = Vector2(float(it[1]), float(it[2]))
+		for pts: Array in json["lanes"].values():
+			for i: int in pts.size() - 1:
+				var a: Vector2 = Vector2(pts[i][0], pts[i][1])
+				var b: Vector2 = Vector2(pts[i + 1][0], pts[i + 1][1])
+				assert_true(Geometry2D.get_closest_point_to_segment(p, a, b).distance_to(p) > half, "dương xỉ tại %s không nằm trên lane" % p)
+	assert_true(ferns > 50, "mép lane có dương xỉ (%d)" % ferns)

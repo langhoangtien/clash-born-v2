@@ -4,7 +4,7 @@
 Đọc data/maps/clashborn_map.json (toạ độ thế giới, 100 px = 1 m) và mạng lối đi (plateau_design.py), ghi
 data/maps/clashborn_decor.json:
   items   [mô hình, x, z, góc, cỡ, y (m)] — mô hình trong assets/models/style/
-  mask    PNG base64 RGBA: R đất nện (đường rừng, sân rìa map), G đất có phiến đá (lane), B nền rừng, A bóng vẽ sẵn (nắng tây
+  mask    PNG base64 RGBA: R đất nện (đường rừng, sân rìa map), G đất lane vẽ tay có cụm đá thưa (ảnh lane_dirt, D-312), B nền rừng, A bóng vẽ sẵn (nắng tây
           bắc → bóng lệch đông nam) — D-180: gộp một ảnh để shader mặt đất đọc một lần
   water   PNG base64 L: độ sâu nước (shader nước)
   base    PNG base64 RGB: R đá lát đất cao, G vòng viền sân công trình (D-310, base_decor.py)
@@ -29,6 +29,7 @@ import plateau_design as PD  # noqa: E402
 import decor_place as DP  # noqa: E402
 import arena as AR  # noqa: E402
 import base_decor as BD  # noqa: E402
+import lane_decor as LD  # noqa: E402
 
 DATA = os.path.join(HERE, "..", "..", "data", "maps")
 MARGIN = 1600.0   # mặt nạ phủ thêm ngoài khung map (px thế giới)
@@ -56,18 +57,6 @@ def paths_world(m):
     return out
 
 
-STONE_SHARE = 0.85  # D-194: phần lane có đá (còn lại đất trơn) — phá nhịp lặp của ảnh dirt_stones
-SECTION_M = 6.0     # cỡ đoạn có đá / đất trơn (m, độ nhòe của nhiễu)
-
-
-def stone_sections(n):
-    """D-194: mặt nạ 0/1 nhiễu tần số thấp — đoạn lane có đá (1) xen đoạn đất trơn (0), cỡ vài mét."""
-    rng = np.random.default_rng(194)
-    cells = max(4, int(n * MASK_PX / (SECTION_M * 100)))  # một ô nhiễu ~ SECTION_M mét, phóng to mềm
-    a = np.array(Image.fromarray((rng.random((cells, cells)) * 255).astype(np.uint8)).resize((n, n), Image.BICUBIC)).astype(float)
-    return (a > np.percentile(a, (1 - STONE_SHARE) * 100)).astype(float)
-
-
 def mask_images(m, forest, rocks, water, edge):
     size = m["world_size"][0]
     n = int((size + 2 * MARGIN) / MASK_PX)
@@ -86,10 +75,8 @@ def mask_images(m, forest, rocks, water, edge):
         dd.ellipse(T([(x - r, y - r), (x + r, y + r)]), fill=255)
         pv.append((x, y))
     for pts in m["lanes"].values():
-        dd.line(T(pts), fill=255, width=int((m["lane_width"] + 140) / MASK_PX), joint="curve")
+        dd.line(T(pts), fill=255, width=int((m["lane_width"] + 2 * LD.EDGE_OUT) / MASK_PX), joint="curve")  # D-312: dải đất hẹp lại, cỏ ôm sát lane
         dp.line(T(pts), fill=255, width=int((m["lane_width"] - 20) / MASK_PX), joint="curve")
-    pave = Image.fromarray((np.array(pave) * stone_sections(n)).astype(np.uint8))  # D-194: đoạn có đá / đất trơn
-    dp = ImageDraw.Draw(pave)
     for x, y in pv:  # D-308b: lõi sân bãi đấu lát phiến đá
         dp.ellipse(T([(x - 210, y - 190), (x + 210, y + 190)]), fill=255)
     for b in m["bases"]:  # D-310: nền base là cỏ + đá lát (mặt nạ `base`, base_decor) — không đất nện, không đá lane
@@ -163,6 +150,7 @@ def main():
     BD.walls(items, m)  # D-310: tường đá + cột đèn cờ (MAP-09, MAP-10)
     BD.tufts(items, m, rng)
     DP.scatter(items, m, forest, wet, rng)
+    LD.edges(items, m, forest, wet, rng)  # D-312: cỏ / dương xỉ / đá nhỏ dọc mép lane
     AR.clear_items(items, m)
     AR.decor_items(items, m)  # D-308: tường + vật trang trí bãi đấu boss
     abyss, rail = abyss_data(m, edge)
