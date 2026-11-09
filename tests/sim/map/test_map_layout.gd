@@ -68,14 +68,14 @@ func test_MAP_02_eight_camps_per_side_and_two_dragon_pits() -> void:
 	assert_eq(map.camp_kinds.count("small"), 4, "D-307: trại tê giác thay một trại 2 sói")
 
 
-## D-307 (JGL-10, 14): hai hang rồng dùng chung (side -1) sát bờ sông, xoay 180° vào nhau — Rồng Băng ở giáp ranh F5 / F6
-## (nửa đỏ, người chơi chọn), Rồng Lửa ở chỗ đối xứng (nửa xanh); mỗi hang là hốc vách đá có cửa (MAP-08).
+## D-307 (JGL-10, 14): hai hang rồng dùng chung (side -1) sát bờ sông, xoay 180° vào nhau — Người Đá Rêu (D-309, thay Rồng Băng) ở giáp ranh F5 / F6
+## (nửa đỏ, người chơi chọn), Người Đá Dung Nham ở chỗ đối xứng (nửa xanh); mỗi hang là hốc vách đá có cửa (MAP-08).
 func test_MAP_02_dragon_pits_beside_river() -> void:
-	var ice: int = map.camp_kinds.find("dragon_ice")
-	var fire: int = map.camp_kinds.find("dragon_fire")
+	var ice: int = map.camp_kinds.find("golem_moss")
+	var fire: int = map.camp_kinds.find("golem_lava")
 	assert_true(ice >= 0 and fire >= 0)
 	var cell: Vector2 = map.camp_points[ice] / (map.world_size().x / 16.0)  # lưới ký hiệu A1…P16 (D-77)
-	assert_eq(int(cell.x), 5, "Rồng Băng ở cột F")
+	assert_eq(int(cell.x), 5, "Người Đá Rêu ở cột F")
 	assert_true(absf(cell.y - 5.0) < 0.6, "giáp ranh F5 / F6 (hàng %.2f)" % (cell.y + 1.0))
 	assert_true(map.camp_points[ice].distance_to(map.world_size() - map.camp_points[fire]) < 2.0, "xoay 180°")
 	for i: int in [ice, fire]:

@@ -728,7 +728,7 @@ Quái rừng thuộc đội trung lập (đội 2), là **kẻ địch của m�
 - `JGL-08` (D-265) Trại ngủ: trại IDLE (không mục tiêu, không đang về) và không có đơn vị sống phe 0 / 1
   nào trong `jungle_sleep_radius` quanh tâm trại → quái của trại không tự đẩy tách (MOV-04; đơn vị khác
   vẫn đẩy được chúng). Có ai vào bán kính, hoặc trại bị đánh, thì thức ngay tick đó.
-- `JGL-10` (D-307) Trại boss (rồng): CampDef có `first_spawn` (giây) và `respawn` (giây) ≥ 0 thì trại xuất hiện lần
+- `JGL-10` (D-307) Trại boss (người đá, D-309; trước là rồng): CampDef có `first_spawn` (giây) và `respawn` (giây) ≥ 0 thì trại xuất hiện lần
   đầu ở `first_spawn` (không theo `jungle_first_spawn`), và hồi lại `respawn` giây **sau khi trại trống** (con cuối
   chết), nếu lúc đó không có đơn vị sống nào trong `camp_spawn_box` (có thì chờ tới tick đầu tiên trống). Không theo
   chu kỳ `jungle_respawn_check` (JGL-05). Trại boss nằm trên trục sông, `side` = -1 (dùng chung).
@@ -739,7 +739,8 @@ Quái rừng thuộc đội trung lập (đội 2), là **kẻ địch của m�
   **số tầng = số phút trọn của trận** (`floor(tick / 60 s)`; 0 tầng thì không gắn); số tầng cập nhật lúc sinh và mỗi phút khi còn sống (Modifier × tầng, EFF-12). Máu tối đa tăng thì máu
   hiện tại tăng đúng phần đó.
 - `JGL-13` (D-307) Hiệu ứng thường trực của quái: UnitDef `passives` (EffectDef) gắn lúc sinh, suốt đời (vd đòn
-  đánh Rồng Băng làm chậm, Rồng Lửa đốt — trigger `attack_landed`). Không bị xua (dispel) như hiệu ứng nội tại.
+  Người Đá **dậm đất**: đòn đánh trúng → sát thương phép + choáng mọi kẻ địch quanh mình, trigger `attack_landed` có
+  `cooldown` 7 s — D-309). Không bị xua (dispel) như hiệu ứng nội tại.
 - `JGL-14` (D-307) Bot không chủ động đánh trại boss: JUNGLE (BOT-16) chỉ chọn trại `side` của phe bot, trại boss
   `side` = -1 nên không bao giờ được chọn. Đánh lan trúng (vùng, đạn) thì trại boss vẫn đánh trả theo JGL-01.
 
@@ -946,8 +947,8 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 - `MAP-02` Map 10598 × 10598 (D-172 9216; D-307 lớn thêm 15%, lane giữ bề rộng 288); Blue dưới–trái, Red trên–phải;
   3 lane; sông; 11 trụ mỗi đội; 8 trại mỗi phe (D-171, D-178): rừng phía lane an toàn (rừng carry) 5 trại (D-307: một
   trại 2 sói thành trại khủng long), rừng phía lane khó 3 trại. Hai bãi đấu boss dùng chung (D-307, D-308, JGL-10..14): sân tròn
-  sát bờ sông, vòng tường đá thấp bán kính 4,8 m (6/8 đoạn cung), hai cửa (ra sông và phía đối diện) — bãi Rồng Băng
-  ở ô F5 gần giáp F6 (nửa đỏ), bãi Rồng Lửa ở chỗ xoay 180° (nửa xanh). Mọi trại cách trụ ≥ 720.
+  sát bờ sông, vòng tường đá thấp bán kính 4,8 m (6/8 đoạn cung), hai cửa (ra sông và phía đối diện) — bãi Người Đá
+  Rêu ở ô F5 gần giáp F6 (nửa đỏ), bãi Người Đá Dung Nham ở chỗ xoay 180° (nửa xanh). Mọi trại cách trụ ≥ 720.
 - `MAP-06` (D-168) Trụ lane đứng sát mép lane, cùng một bên cho cả lane (TOP, BOT: phía trong
   map; MID: bên phải theo chiều Blue → Red), tâm cách tim lane `tower_offset` (12 ô guide = 192).
   T1 đặt theo MAP-04; T2/T3 giữ khoảng cách dọc lane.

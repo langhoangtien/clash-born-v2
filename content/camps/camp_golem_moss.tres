@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CampDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/camp_def.gd" id="1_camp"]
+[ext_resource type="Script" path="res://sim/defs/unit_def.gd" id="2_unit"]
+[ext_resource type="Resource" path="res://content/units/golem_moss.tres" id="u_golem_moss"]
+
+[resource]
+script = ExtResource("1_camp")
+kind = &"golem_moss"
+units = Array[ExtResource("2_unit")]([ExtResource("u_golem_moss")])
+first_spawn = 300.0
+respawn = 300.0
+id = &"camp_golem_moss"
+display_name = "Bãi Người Đá Rêu"

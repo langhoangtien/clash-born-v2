@@ -515,8 +515,7 @@ bên kia sông) → đổi thành **bãi đấu rộng, vòng tường đá th�
 low-poly vừa phải, **rune / mắt là mảng màu cam phẳng, không quầng sáng tỏa ra**.
 
 **Cập nhật 2026-11-09 (D-308): Claude đã tự làm T11c và dựng bãi thật trong game** (`art_inbox/12_golem_arena/`, ảnh tờ
-+ mô hình `assets/models/style/arena_*.glb`); **T11a bỏ** (xem bãi thật trong game). **Codex chỉ còn làm T11b** (người
-đá) — vẽ cho hợp với bãi đã có: tường đá xám ấm, rêu vàng xanh, rune cam.
++ mô hình `assets/models/style/arena_*.glb`); **T11a bỏ** (xem bãi thật trong game). ~~Codex chỉ còn làm T11b~~ — **T11b cũng bỏ: Claude đã tự vẽ người đá (D-309)**. Đợt T11 xong hết.
 
 Thứ tự làm (cũ): **T11a → DỪNG duyệt → T11b + T11c**. Lưu vào `art_inbox/12_golem_arena/`. Xong mỗi bước thì đánh dấu `[x]`,
 commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng.

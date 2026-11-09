@@ -19,7 +19,7 @@ STATE = {
     "stunned": ["stun"], "rooted": ["root"], "silenced": ["silence"], "disarmed": ["disarm"],
     "slowed": ["frost_orb_slow", "myra_frost_slow", "vexa_purge_slow"], "revealed": ["revealed"],
     "ghost": ["ghost_form", "brakk_undying"], "invulnerable": ["cyclone"], "magic_immune": ["magic_immune"],
-    "hexed": ["hex", "vexa_frog"], "shield": ["brakk_iron_shield"], "burning": ["dragon_fire_burn"], "recall": ["recall"],
+    "hexed": ["hex", "vexa_frog"], "shield": ["brakk_iron_shield"], "burning": [], "recall": ["recall"],
 }
 
 

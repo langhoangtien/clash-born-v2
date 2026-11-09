@@ -1,5 +1,5 @@
 extends TestCase
-## D-307: trại boss (rồng, JGL-10..14) và trại tê giác (D-307b: thay trại khủng long).
+## D-307: trại boss (rồng → D-309 người đá, JGL-10..14) và trại tê giác (D-307b: thay trại khủng long).
 
 const MAP_PATH: String = "res://data/maps/clashborn.tres"
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
@@ -58,7 +58,7 @@ func _alive(w: World, c: CampState) -> Array[Entity]:
 
 func test_JGL_10_boss_first_spawn_and_respawn_after_empty() -> void:
 	var w: World = _world()
-	var c: CampState = _boss_camp(w, &"dragon_ice", 2.0, 3.0)
+	var c: CampState = _boss_camp(w, &"golem_moss", 2.0, 3.0)
 	_to(w, 1.9)
 	assert_eq(_alive(w, c).size(), 0, "chưa tới first_spawn")
 	_to(w, 2.05)
@@ -73,9 +73,9 @@ func test_JGL_10_boss_first_spawn_and_respawn_after_empty() -> void:
 	assert_eq(_alive(w, c).size(), 1, "hồi lại sau `respawn` giây")
 
 
-func test_JGL_10_dragon_content_first_spawn_and_respawn() -> void:
+func test_JGL_10_boss_content_first_spawn_and_respawn() -> void:
 	_world()
-	for kind: StringName in [&"dragon_ice", &"dragon_fire"]:
+	for kind: StringName in [&"golem_moss", &"golem_lava"]:
 		var d: CampDef = _lib.camps[kind]
 		assert_eq(d.first_spawn, 300.0, "%s: phút 5" % kind)
 		assert_eq(d.respawn, 300.0, "%s: 5 phút sau khi hạ" % kind)
@@ -86,9 +86,9 @@ func test_JGL_10_dragon_content_first_spawn_and_respawn() -> void:
 
 func test_JGL_11_team_reward_every_hero_of_killer_team() -> void:
 	var w: World = _world()
-	var c: CampState = _boss_camp(w, &"dragon_fire", 0.1, 300.0)
+	var c: CampState = _boss_camp(w, &"golem_lava", 0.1, 300.0)
 	_to(w, 0.2)
-	var dragon: Entity = _alive(w, c)[0]
+	var boss: Entity = _alive(w, c)[0]
 	var killer: Entity = UnitFactory.hero(w, _lib.heroes[&"brakk"], 0, c.center + Vector2(150, 0))
 	var far: Entity = UnitFactory.hero(w, _lib.heroes[&"myra"], 0, w.map.fountain_point(0))
 	var dead: Entity = UnitFactory.hero(w, _lib.heroes[&"vexa"], 0, w.map.fountain_point(0))
@@ -98,9 +98,9 @@ func test_JGL_11_team_reward_every_hero_of_killer_team() -> void:
 	var before: Array[int] = [killer.gold, far.gold, dead.gold, foe.gold]
 	var foe_gold: int = foe.gold
 	var ref: Entity = UnitFactory.hero(w, _lib.heroes[&"myra"], 1, w.map.fountain_point(1))
-	_kill(w, dragon, killer)
+	_kill(w, boss, killer)
 	w.step()
-	var d: UnitDef = _lib.camps[&"dragon_fire"].units[0]
+	var d: UnitDef = _lib.camps[&"golem_lava"].units[0]
 	assert_eq(killer.gold - before[0], d.team_gold + d.bounty_gold, "kẻ hạ: thưởng đội + vàng kết liễu")
 	assert_eq(far.gold - before[1], d.team_gold, "ở xa vẫn nhận")
 	assert_eq(dead.gold - before[2], d.team_gold, "đang chết vẫn nhận")
@@ -111,61 +111,72 @@ func test_JGL_11_team_reward_every_hero_of_killer_team() -> void:
 
 func test_JGL_12_growth_stacks_by_minute_and_heals_the_gain() -> void:
 	var w: World = _world()
-	var c: CampState = _boss_camp(w, &"dragon_ice", 0.1, 300.0)
+	var c: CampState = _boss_camp(w, &"golem_moss", 0.1, 300.0)
 	_to(w, 0.2)
-	var dragon: Entity = _alive(w, c)[0]
-	var base_hp: float = dragon.stats.get_stat(StatId.Id.MAX_HP)
+	var boss: Entity = _alive(w, c)[0]
+	var base_hp: float = boss.stats.get_stat(StatId.Id.MAX_HP)
 	assert_near(base_hp, 8000.0, 0.01, "phút 0: chưa mạnh thêm")
 	_to(w, 60.1)
-	assert_near(dragon.stats.get_stat(StatId.Id.MAX_HP), base_hp + 250.0, 0.01, "phút 1: 1 tầng")
-	assert_near(dragon.health, base_hp + 250.0, 0.01, "máu hiện tại tăng đúng phần máu tối đa tăng")
+	assert_near(boss.stats.get_stat(StatId.Id.MAX_HP), base_hp + 250.0, 0.01, "phút 1: 1 tầng")
+	assert_near(boss.health, base_hp + 250.0, 0.01, "máu hiện tại tăng đúng phần máu tối đa tăng")
 	_to(w, 180.1)
-	assert_near(dragon.stats.get_stat(StatId.Id.MAX_HP), base_hp + 750.0, 0.01, "phút 3: 3 tầng")
-	assert_near(dragon.stats.get_stat(StatId.Id.PHYSICAL_DAMAGE), 160.0 + 24.0, 0.01)
+	assert_near(boss.stats.get_stat(StatId.Id.MAX_HP), base_hp + 750.0, 0.01, "phút 3: 3 tầng")
+	assert_near(boss.stats.get_stat(StatId.Id.PHYSICAL_DAMAGE), 160.0 + 24.0, 0.01)
 
 
 func test_JGL_12_late_spawn_starts_with_minutes_stacks() -> void:
 	var w: World = _world()
-	var c: CampState = _boss_camp(w, &"dragon_fire", 600.0, 300.0)
+	var c: CampState = _boss_camp(w, &"golem_lava", 600.0, 300.0)
 	_to(w, 600.1)
-	var dragon: Entity = _alive(w, c)[0]
-	assert_near(dragon.stats.get_stat(StatId.Id.MAX_HP), 9000.0 + 10 * 280.0, 0.01, "sinh ở phút 10: 10 tầng")
-	assert_near(dragon.health, dragon.stats.get_stat(StatId.Id.MAX_HP), 0.01, "sinh ra đầy máu")
+	var boss: Entity = _alive(w, c)[0]
+	assert_near(boss.stats.get_stat(StatId.Id.MAX_HP), 9000.0 + 10 * 280.0, 0.01, "sinh ở phút 10: 10 tầng")
+	assert_near(boss.health, boss.stats.get_stat(StatId.Id.MAX_HP), 0.01, "sinh ra đầy máu")
 
 
 func test_JGL_13_passives_attached_on_spawn() -> void:
 	var w: World = _world()
-	var c: CampState = _boss_camp(w, &"dragon_ice", 0.1, 300.0)
+	var c: CampState = _boss_camp(w, &"golem_moss", 0.1, 300.0)
 	_to(w, 0.2)
 	var ids: Array = _alive(w, c)[0].effects.map(func(i: EffectInstance) -> StringName: return i.def.id)
-	assert_true(ids.has(&"dragon_ice_passive"), "đòn đánh làm chậm gắn lúc sinh")
-	var fire: Entity = UnitFactory.unit(w, _lib.camps[&"dragon_fire"].units[0], Entity.Kind.NEUTRAL, 2, Vector2(100, 100))
+	assert_true(ids.has(&"golem_stomp"), "dậm đất gắn lúc sinh")
+	var fire: Entity = UnitFactory.unit(w, _lib.camps[&"golem_lava"].units[0], Entity.Kind.NEUTRAL, 2, Vector2(100, 100))
 	assert_eq(fire.effects.size(), 0, "UnitFactory không tự gắn: JungleSpawner gắn khi sinh trại")
 
 
-func test_JGL_13_fire_burn_damages_over_time_and_ice_slows() -> void:
+## D-309 (người chơi: người đá dậm đất làm choáng): đòn đánh trúng thì dậm đất — sát thương phép + choáng mọi kẻ địch
+## trong 350 quanh mình, hồi 7 s (trigger `cooldown`); đơn vị ngoài vùng không dính.
+func test_JGL_13_golem_stomp_stuns_enemies_around_with_cooldown() -> void:
 	var w: World = _world()
-	var dragon: Entity = UnitFactory.unit(w, _lib.camps[&"dragon_fire"].units[0], Entity.Kind.NEUTRAL, 2, Vector2(100, 100))
-	var hero: Entity = UnitFactory.hero(w, _lib.heroes[&"brakk"], 0, w.map.fountain_point(0) + Vector2(2000, -2000))
-	var hp: float = hero.health
-	Effects.apply(w, hero, load("res://content/effects/dragon_fire_burn.tres") as EffectDef, dragon)
-	for i: int in SimClock.seconds_to_ticks(3.2):
+	var golem: Entity = UnitFactory.unit(w, _lib.camps[&"golem_moss"].units[0], Entity.Kind.NEUTRAL, 2, Vector2(3000, 3000))
+	golem.position = w.navigation(golem.radius).nearest_clear(w.map.world_size() * 0.5 + Vector2(0, 900))
+	Effects.apply(w, golem, load("res://content/effects/golem_stomp.tres") as EffectDef, golem)
+	var near: Entity = UnitFactory.hero(w, _lib.heroes[&"brakk"], 0, golem.position + Vector2(150, 0))
+	var side: Entity = UnitFactory.hero(w, _lib.heroes[&"myra"], 0, golem.position + Vector2(-250, 0))
+	var far: Entity = UnitFactory.hero(w, _lib.heroes[&"vexa"], 0, golem.position + Vector2(0, 700))
+	var hp: float = side.health
+	w.emit(&"attack_landed", golem.id, near.id, 100.0)
+	for i: int in 3:
 		w.step()
-	assert_true(hp - hero.health > 30.0, "đốt máu suốt 3 s (mất %.0f)" % (hp - hero.health))
-	assert_eq(hero.effects.size(), 0, "hết 3 s thì hết đốt")
-	var speed: float = hero.stats.get_stat(StatId.Id.MOVEMENT_SPEED)
-	Effects.apply(w, hero, load("res://content/effects/dragon_ice_slow.tres") as EffectDef, dragon)
-	hero.stats.recompute()
-	assert_near(hero.stats.get_stat(StatId.Id.MOVEMENT_SPEED), speed * 0.7, 1.0, "Rồng Băng làm chậm 30%")
+	assert_true(Rules.has_state(near, UnitState.Id.STUNNED), "mục tiêu bị choáng")
+	assert_true(Rules.has_state(side, UnitState.Id.STUNNED), "kẻ địch trong 350 cũng bị choáng")
+	assert_true(side.health < hp, "dậm đất gây sát thương")
+	assert_false(Rules.has_state(far, UnitState.Id.STUNNED), "ngoài vùng không dính")
+	for i: int in SimClock.seconds_to_ticks(2.0):
+		w.step()
+	w.emit(&"attack_landed", golem.id, near.id, 100.0)
+	for i: int in 3:
+		w.step()
+	assert_false(Rules.has_state(near, UnitState.Id.STUNNED), "trong 7 s hồi: không dậm lại")
+
 
 
 ## D-307c (người chơi: rồng yếu quá, cấp 5 đã đánh được): một tướng cấp 5 đứng đánh tay đôi với rồng phút 5 thì chết
 ## trước khi rồng mất một nửa máu.
-func test_JGL_12_dragon_beats_a_level_5_hero_alone() -> void:
+func test_JGL_12_boss_beats_a_level_5_hero_alone() -> void:
 	var w: World = _world()
-	for kind: StringName in [&"dragon_ice", &"dragon_fire"]:
+	for kind: StringName in [&"golem_moss", &"golem_lava"]:
 		var d: UnitDef = _lib.camps[kind].units[0]
-		var dps_dragon: float = (d.stats.base_damage + 5 * 8.0) / d.stats.base_attack_time
+		var dps_boss: float = (d.stats.base_damage + 5 * 8.0) / d.stats.base_attack_time
 		var hero: Entity = UnitFactory.hero(w, _lib.heroes[&"brakk"], 0, Vector2(100, 100))
 		while hero.stats.level() < 5:
 			Progression.add_xp(w, hero, Progression.xp_to_next(w, hero.stats.level()))
@@ -173,5 +184,5 @@ func test_JGL_12_dragon_beats_a_level_5_hero_alone() -> void:
 		var hero_hp: float = hero.stats.get_stat(StatId.Id.MAX_HP)
 		var hero_dps: float = hero.stats.get_stat(StatId.Id.PHYSICAL_DAMAGE) * hero.stats.attacks_per_second() \
 			* DamageFormulas.armor_multiplier(d.stats.physical_armor, w.balance.armor_coefficient)
-		var hero_alive: float = hero_hp / (dps_dragon * DamageFormulas.armor_multiplier(hero.stats.get_stat(StatId.Id.PHYSICAL_ARMOR), w.balance.armor_coefficient))
+		var hero_alive: float = hero_hp / (dps_boss * DamageFormulas.armor_multiplier(hero.stats.get_stat(StatId.Id.PHYSICAL_ARMOR), w.balance.armor_coefficient))
 		assert_true(hero_alive * hero_dps < d.stats.base_hp * 0.5, "%s: tướng cấp 5 sống %.0f s, gây %.0f / %.0f máu" % [kind, hero_alive, hero_alive * hero_dps, d.stats.base_hp])

@@ -214,7 +214,7 @@ func test_D_305_frost_slow_tints_body_instead_of_ring() -> void:
 	assert_eq(EffectVfx3D.tint_of(foe).a, 0.0)
 	var vals: Dictionary = {&"slow_per_stack": 0.03, &"slow_vs_melee": 0.3, &"slow_vs_ranged": 0.2, &"attack_slow": 20.0,
 		&"slow": 0.3}
-	for path: String in ["myra_rhythm_stack", "frost_blade_slow_melee", "frost_blade_slow_ranged", "myra_frost_slow", "dragon_ice_slow"]:
+	for path: String in ["myra_rhythm_stack", "frost_blade_slow_melee", "frost_blade_slow_ranged", "myra_frost_slow"]:
 		foe.effects.clear()
 		Effects.apply(w, foe, load("res://content/effects/%s.tres" % path) as EffectDef, s[1], vals, "1")
 		assert_true(EffectVfx3D.tint_of(foe).a > 0.0, "%s: phủ màu băng" % path)

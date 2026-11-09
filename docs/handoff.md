@@ -1,75 +1,73 @@
-# Bàn giao — Clashborn v2 (2026-11-05)
+# Bàn giao — Clashborn v2 (cập nhật 2026-11-09)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-308b). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-309**). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
+Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh thì chụp trong game (xvfb) và gửi ảnh JPG.
 
 ## 1. Trạng thái
 
-- 838 test xanh (soak 842) (`GODOT=... bash tools/run_tests.sh`). APK mới nhất **0.1.500** (65 MB; hiệu ứng D-296..303, Myra băng, nội tại cộng điểm D-301) trên https://clashborn.quest — bản đầu tiên chỉ phát hành qua VPS; gh-pages dừng ở 0.1.479 (D-283). Đo hiệu năng: log D-268 / Benchmark A/B D-272.
-- Android: trình vẽ **Mobile (Vulkan)**, đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
-  Hiệu năng máy tính bảng (D-261..277): tối ưu SIM, sương thành ảnh nhỏ, chia tick (D-273), nạp trước hình / icon;
-  Benchmark A/B gần nhất (0.1.470) ổn. Khựng đầu trận đã sửa (D-285).
-- Hero 3D đã làm theo quy trình mới: **Duy Anh** (đạt), **Noctis** (bản T9d không áo choàng, chờ người chơi duyệt),
-  **Brakk** (afk.ai), **Myra / Vexa** (D-304: bản người lớn, concept vẽ bằng `tools/concept_gen.py`, tay không). Gorran còn
-  mô hình KayKit cũ.
-- Hiệu ứng chiêu 3D (D-247..256): Duy Anh W (vệt chém vẽ tay + sóng bụi + tia lóe), Q (vệt tốc độ bám đường chạy).
-  Chưa có: Duy Anh R, toàn bộ Noctis, các hero khác.
+- **850 test xanh** (`GODOT=... bash tools/run_tests.sh`; soak `--soak` chạy trước khi đóng mốc). APK mới nhất trên
+  https://clashborn.quest (xem `curl -s https://clashborn.quest/version.json`); phát hành mục 4.
+- Android: trình vẽ Mobile (Vulkan), đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
+  Hiệu năng máy tính bảng ổn (D-261..277, D-285). Tên miền `clashborn.quest` từng bị registry treo (serverHold) — đã
+  chạy lại; người dùng đang cân nhắc **đổi tên game** để mua tên miền `.com` (gợi ý: Clashveil, Clashara, RiftClash…).
+- Hero 3D (afk.ai, quy trình mục 2): Duy Anh, Noctis, Brakk, **Myra / Vexa bản người lớn** (D-304). Gorran còn KayKit.
+- Hiệu ứng chiêu 3D: shader dịu `vfx_soft` cho cả 6 tướng (D-296..306); Q Duy Anh là **làn khí kiểu Triệu Vân**
+  (D-303, 305, 306); **chậm vì băng phủ màu băng lên người** (D-305, `tint` trong `_effects` của vfx.json).
+- **Bản đồ 10598 × 10598** (D-307: lớn thêm 15%, lane giữ 288). Dựng lại: `python3 tools/map_build/build_map.py` rồi
+  `python3 tools/map_build/decor.py` (cần numpy, shapely, scipy, opencv-python-headless, pillow); ảnh ký hiệu
+  `docs/map_dev.png` (`xvfb-run -a godot --path . -s tools/map_dev_png.gd`, lưới A1…P16).
+- **Boss rừng kiểu Roshan** (D-307 → D-309, luật JGL-10..14): hai **Người Đá** (Rêu ở ô F5 sát F6 — nửa đỏ, Dung Nham
+  ở chỗ xoay 180° — nửa xanh) trong **bãi đấu vòng tường đá** (D-308/308b, `tools/map_build/arena.py`): xuất hiện phút 5,
+  hồi 5 phút sau khi hạ, mạnh dần mỗi phút, **dậm đất** gây sát thương + choáng quanh mình (hồi 7 s), cả đội hạ được
+  thì mỗi người nhận vàng + XP. Bot không tự đánh boss. **Trại tê giác** (1 to + 2 con) thay một trại 2 sói ở rừng
+  carry mỗi phe. Bảng số: `docs/CONTENT.md` mục "Quái rừng boss".
 
-## 2. Quy trình hero 3D (D-235, D-242, D-244, D-249)
+## 2. Quy trình mô hình 3D (hero, quái, vật)
 
-1. Codex vẽ (hoặc `tools/concept_gen.py` vẽ tờ 3 góc nhìn → `tools/split_turnaround.py`, D-304) **tay không** (A-pose, tay tách thân, không áo choàng / vạt dài) + vũ khí vẽ riêng (phiếu
-   `art_inbox/YEU_CAU_STYLE.md`, đợt T9*).
-2. `python3 tools/tripo_gen.py art_inbox/09_units/<tên> --multiview --views front,side,back --faces 2500`
-   (ảnh nghiêng nhìn từ trái thì `side_left`); vũ khí `--views front,side --faces 500`.
-3. `python3 -I tools/models/glb_yaw.py <tên>.glb <tên>_front.glb --deg -90` (Tripo nhìn +X → +Z).
-4. afk.ai: `AFK_API_KEY=$(cat ~/.secrets/afk_key) NODE_USE_ENV_PROXY=1 npx -y afk-rig <tên>_front.glb --type human
-   --facing 0 -a all -o <tên>_afk.glb` (5¢; key chỉ ở `~/.secrets`, không commit).
-5. Vũ khí: `tools/models/place_prop.py` (đặt vào nắm tay theo xương), gắn cứng qua cột vũ khí trong
-   `tools/models/build_units.py`. Áo bị kéo theo tay: `cloth_weights.py`. Đổi chất liệu: `recolor_prop.py`.
-6. Thiếu động tác: xuất `<tên>_mixamo.fbx` (`to_mixamo.py`, cùng thân `<tên>_front.glb`), người dùng gắn xương +
-   tải hoạt ảnh trên Mixamo → `mixamo_pack.py` → `retarget.py` sang rig afk → dùng `MX <tên>` trong build_units.
-   File gốc Mixamo lưu ở `art_inbox/3d/mixamo/<hero>/` (README ở đó).
-7. `python3 -I tools/models/build_units.py <tên>` → `assets/models/style/heroes/<tên>.glb`; cấu hình hoạt ảnh /
-   điểm trúng ở `assets/models/units_3d.json` (`impact`, `skill_impact`, `attack_alt`, `stealth`, `dash_hop`…).
-8. Render kiểm tra: Godot + xvfb (script chụp ở `.local/`, bị gitignore — tạo lại khi cần).
+1. Concept: `python3 tools/concept_gen.py <ra.png> "mô tả tờ 3 góc nhìn" <ảnh mẫu…>` (API ảnh OpenAI, key
+   `OPEN_AI_API_KEY`). Luôn đòi **nền xám phẳng một màu** (hay bị nền loang → vẽ lại), dáng trung tính, 3 hướng cùng
+   tư thế. Muốn hợp style game thì đưa thêm Brakk (`art_inbox/09_units/brakk_front.png`) + ảnh chụp trận làm mẫu.
+2. Tách: `python3 -I tools/split_turnaround.py <tờ.png> <thư_mục>/<tên>` → `_front/_side/_back.png` (cắt sát, cùng khung,
+   tự tách hình chạm nhau / xóa mẩu thừa).
+3. `python3 tools/tripo_gen.py <thư_mục>/<tên> --multiview --views front,side,back --faces N --out art_inbox/3d/<nhóm>`
+   (ảnh nghiêng nhìn từ trái → `side_left`; vật tĩnh một ảnh: bỏ `--multiview`). Key `TRIPO_API_KEY`; **credit còn ~210**.
+4. `python3 -I tools/models/glb_yaw.py <tên>.glb <tên>_front.glb --deg -90` (Tripo nhìn +X → +Z).
+5. afk.ai: `NODE_USE_ENV_PROXY=1 npx -y afk-rig <tên>_front.glb --type <human|dragon|horse|kaiju|bird…> --facing 0 -a all
+   -o <tên>_afk.glb` (key `AFK_API_KEY`; ~5¢ từ tín dụng Lifetime). Kiểm: `afk-rig render <glb> --animation X --views
+   front,left`; mảnh bị kéo văng: `afk-rig fix-stretching`.
+6. `python3 -I tools/models/build_units.py <tên>` → `assets/models/style/...`; cột thứ 7 = tham số thêm cho `glb_slim`
+   (vd `--saturation`, `--tint`). Khai báo `assets/models/units_3d.json` (`height`, `impact`…).
+7. Vật tĩnh cảnh vật: `glb_slim.py --size 512` → `assets/models/style/<tên>.glb`; tên bắt đầu `arena_` giữ ảnh màu riêng
+   (`own_material` trong style). Tường cong: `tools/models/bend_arc.py` uốn đoạn thẳng thành cung.
+8. Chụp kiểm tra: Godot + xvfb, script chụp ở `.local/` (gitignore — tạo lại khi cần, mẫu: nạp `app/match_scene.tscn`,
+   dừng `runner`, đặt tướng / sinh trại bằng `JungleSpawner.spawn`, chụp `root.get_texture()`).
 
-Người chơi thích phong cách afk.ai (hợp đồ họa); Mixamo chỉ để bù động tác.
+## 3. Việc tiếp theo
 
-## 3. Việc tiếp theo (theo thứ tự đề xuất)
-
-0. **Kiểm tra 0.1.492 trên máy** (log trận so L-0008, xem cột Đạn / Sự kiện; chơi thử R Duy Anh qua vách, khấc máu): game tự thấy bản mới từ clashborn.quest, tải + kiểm sha256 + cài được (lần đầu chỉ
-   qua VPS); hết khựng lúc mở trận (D-285); hình mô hình không xấu đi (D-286). Chạy lại Benchmark A/B (Cài đặt →
-   "Đo hiệu năng tự động") để đo D-277. Từ D-287 người chơi bấm **"Gửi lên máy chủ"** (kèm ghi chú) rồi nhắn mã
-   (B-0042 / L-0043): đọc bằng `bash tools/fetch_reports.sh <mã|latest>` (không có tham số = danh sách).
-1. Chọn hướng tiếp (người dùng chọn):
-   - **A. Chế độ 5v5** — cần luật mới trong GAME_RULES (đội, bot đồng đội, chia đường) + đo lại hiệu năng 10 tướng.
-   - **B. Hoàn thiện tướng 3D / hiệu ứng** — ĐANG LÀM. Hiệu ứng đợt 1 xong (D-296: shader dịu, cả 6 tướng Q / W / R,
-     chờ người chơi xem). Tiếp: chỉnh theo góp ý; mô hình tướng bớt chibi (người chơi: Brakk đẹp nhất — tỷ lệ người
-     thật hơn), Myra / Vexa / Gorran theo quy trình mục 2.
-   - **C. Âm thanh / giọng nói** — ElevenLabs (key trong biến môi trường): tiếng chiêu, đánh, trụ, câu thoại tướng.
-   - **D. 1v1 trực tuyến** — SIM đã tất định (D-30), hướng đồng bộ lệnh (lockstep) qua máy chủ trên VPS.
-2. Cú lao R của Duy Anh bay qua vách / rừng / thân trụ (ABL-08c, D-292) — chờ chơi thử.
-3. Hiệu năng còn để dành (chỉ làm nếu đo thấy cần, nhất là khi lên 5v5): giảm lệnh vẽ (cây / đá thành MultiMesh,
-   gộp vật liệu), HUD `_draw`, Vision / trụ / đẩy tách mỗi 2 tick.
-4. APK hiện 65 MB: phần lớn là thư viện Godot (~23 MB nén), cảnh (~5 MB), nhạc (~4 MB). Ảnh `*_Color_*` thừa còn ~1 MB.
+0. **Người dùng chơi thử 0.1.5xx mới nhất**: người đá (dậm đất có đủ mạnh / quá mạnh?), bãi đấu, trại tê giác, bản đồ lớn.
+   Chỉnh số trong `content/` theo góp ý.
+1. Người đá **chưa có hiệu ứng hình khi dậm đất** (chỉ thấy sao choáng trên nạn nhân) — nên thêm vòng sóng đất
+   (vfx_soft dạng ring / disc) khi trigger `golem_stomp` chạy; cần sự kiện VIEW nhận biết (vd effect trigger phát
+   `GameEvent` riêng) → là cơ chế VIEW nhỏ, làm theo AGENTS mục 3.
+2. Phiếu Codex T11b (người đá) **đã bỏ** — Claude tự vẽ (D-309). Bản rêu còn một mảnh nhỏ bị kéo ở cánh tay khi
+   đấm (trọng số da) — thử `afk-rig fix-spot` hoặc gắn xương lại nếu người chơi thấy.
+3. Hướng lớn (người dùng chọn): 5v5 / âm thanh (ElevenLabs) / 1v1 trực tuyến / đổi tên game.
+4. Gorran vẫn KayKit — làm lại theo quy trình mục 2 nếu người dùng muốn.
 
 ## 4. Công cụ
 
-- **Phát hành từ VPS** `https://clashborn.quest` (D-278..283): `bash tools/build_android.sh` rồi `bash tools/publish_vps.sh "ghi chú"`
-  (xem ANDROID_BUILD.md mục 5–7, VPS_SETUP.md). GitHub Pages không đăng APK nữa (dừng ở 0.1.479).
-  Trang giới thiệu: sửa `web/site/` rồi `GODOT=... bash tools/site/publish_site.sh` (D-284).
-  **Việc cho VPS**: ghi vào `docs/VPS_TASKS.md`, đẩy lên, rồi nhắn phiên **vps** (mcp send_message; tìm bằng
-  list_sessions, tiêu đề "vps"); kiểm `curl https://clashborn.quest/api/health` → `commit` (D-288).
-  Báo cáo hiệu năng người chơi gửi lên: `bash tools/fetch_reports.sh [mã|latest]` (D-287). Test máy chủ:
-  `python3 -m unittest discover -s tools/vps -p 'test_*.py'`.
-
-- Godot 4.7.2: tải `Godot_v4.7.2-stable_linux.x86_64` về scratchpad. Import: `godot --headless --path . --import`.
-- Blender (bpy) cho `to_mixamo.py`, `mixamo_pack.py`, `bake_shading.py`: venv Python có gói `bpy`.
-- Build APK: xem `docs/ANDROID_BUILD.md` (mục "Dựng môi trường trong container mới").
-- Tripo: key ở biến `TRIPO_API_KEY` hoặc `~/.secrets/tripo_key`. Credit còn ~770.
+- **Phát hành**: `GODOT=... bash tools/build_android.sh` rồi `bash tools/publish_vps.sh "ghi chú"`; kiểm sha256 file
+  `https://clashborn.quest/releases/clashborn-0.1.<code>.apk`; commit `export_presets.cfg` (số bản). Chỉ phát hành khi
+  **toàn bộ test xanh** (0.1.514 từng lỡ phát hành khi đỏ — D-308b).
+- **Việc cho VPS**: ghi `docs/VPS_TASKS.md`, đẩy lên, nhắn phiên **vps** (send_message; tìm bằng list_sessions, tiêu đề
+  "vps"; phiên đó không nhắn lại được — đọc kết quả bằng list_events). Báo cáo người chơi: `bash tools/fetch_reports.sh`.
+- Godot 4.7.2: tải `Godot_v4.7.2-stable_linux.x86_64` về scratchpad. Import: `godot --headless --path . --import`
+  (bắt buộc sau khi thêm script / mô hình).
+- Build APK: `docs/ANDROID_BUILD.md` (mục "Dựng môi trường trong container mới").
+- Key chỉ ở biến môi trường (OPEN_AI_API_KEY, TRIPO_API_KEY, AFK_API_KEY); không bao giờ commit hay dán vào chat.
 
 ## 5. Phiếu cho Codex
 
-- `art_inbox/YEU_CAU_STYLE.md` — concept 3D (T8*, T9* hero: T9d Noctis xong).
-- `art_inbox/YEU_CAU_ANH.md` — icon, ảnh hiệu ứng (V1, V2 xong; bản gốc trong `art_inbox/07_vfx/`, game chỉ chép
-  ảnh đang dùng vào `assets/vfx/`).
+- `art_inbox/YEU_CAU_STYLE.md` — concept 3D (T8*, T9*, T11 — T11 Claude đã làm hết).
+- `art_inbox/YEU_CAU_ANH.md` — icon, ảnh hiệu ứng.

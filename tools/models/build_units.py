@@ -53,13 +53,15 @@ UNITS = {
              "Idle_A=idle,Run_Female=run,Magic_1H_Attack_2=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
              "Magic_1H_Cast=cast,Fireball=skill_1,Spell_Wide=skill_2,Magic_2H_Attack=skill_3,Sprint=sprint",
              True, False),
-    # D-307b: tê giác theo style ảnh mẫu người chơi; D-307c: rồng vẽ lại hợp style game (Brakk + ảnh trận làm mẫu) (concept_gen.py từ ảnh mẫu → split_turnaround.py →
+    # D-307b: tê giác theo style ảnh mẫu người chơi (concept_gen.py từ ảnh mẫu → split_turnaround.py →
     # Tripo multiview → glb_yaw -90 → afk.ai: dragon / horse → fix-stretching)
-    "dragon_ice": ("creatures/dragon_ice_v2_afk_fix.glb", "creatures/dragon_ice",
-                   "Idle=idle,Walk=run,Bite=attack,Hit=hit,Death=death", False, False, [],
-                   ["--saturation", "2.2"]),  # dưới nắng trận gần như trắng → đậm màu băng lên (giữ chi tiết)
-    "dragon_fire": ("creatures/dragon_fire_v2_afk_fix.glb", "creatures/dragon_fire",
-                    "Idle=idle,Walk=run,Bite=attack,Hit=hit,Death=death", False, False),
+    # D-309: Người Đá thay rồng (concept_gen theo ảnh mẫu bãi đấu → Tripo → afk.ai human); fix-stretching + drop_loose (tam giác lẻ kéo dài); đòn đánh = đấm móc (đấm đất kéo méo nắm tay)
+    "golem_moss": ("golem/golem_moss_afk_clean.glb", "creatures/golem_moss",
+                   "Fighting Idle=idle,Walk_Large=run,Melee_Hook+Melee_Hook_Rec=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun",
+                   True, False),
+    "golem_lava": ("golem/golem_lava_afk_clean.glb", "creatures/golem_lava",
+                   "Fighting Idle=idle,Walk_Large=run,Melee_Hook+Melee_Hook_Rec=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun",
+                   True, False),
     "rhino": ("creatures/rhino_afk_fix.glb", "creatures/rhino", "Idle=idle,Run=run,Head_But=attack,Hit=hit,Death=death",
               False, False),
 }

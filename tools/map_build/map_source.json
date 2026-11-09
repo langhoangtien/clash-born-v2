@@ -375,18 +375,18 @@
    ]
   },
   {
-   "id": "camp_dragon_ice",
+   "id": "camp_golem_moss",
    "side": -1,
-   "kind": "dragon_ice",
+   "kind": "golem_moss",
    "pos": [
     248.0,
     200.0
    ]
   },
   {
-   "id": "camp_dragon_fire",
+   "id": "camp_golem_lava",
    "side": -1,
-   "kind": "dragon_fire",
+   "kind": "golem_lava",
    "pos": [
     400.0,
     448.0
@@ -2679,7 +2679,7 @@
  "rock_min_thick": 5.217,
  "arenas": [
   {
-   "camp": "camp_dragon_ice",
+   "camp": "camp_golem_moss",
    "pos": [
     248.0,
     200.0
@@ -2689,7 +2689,7 @@
    "slots": 8
   },
   {
-   "camp": "camp_dragon_fire",
+   "camp": "camp_golem_lava",
    "pos": [
     400.0,
     448.0

@@ -619,18 +619,20 @@ Thêm hero mới: sao chép một mục ở trên, điền bảng số, ghi rõ:
 2. `bot_usage` của từng skill.
 3. Một kịch bản test cho mỗi skill và mỗi talent.
 
-## Quái rừng boss và trại mạnh (D-307)
+## Quái rừng boss và trại mạnh (D-307, D-309)
 
-Luật: GAME_RULES JGL-10..14. Số nằm trong `content/units`, `content/effects`, `content/camps`.
+Luật: GAME_RULES JGL-10..14. Số nằm trong `content/units`, `content/effects`, `content/camps`. D-309: hai con rồng thay
+bằng **Người Đá** (người chơi thấy rồng đánh không có lực).
 
 | Quái | Máu | Sát thương | Giáp / kháng phép | Mạnh dần mỗi phút (JGL-12) | Thưởng |
 |---|---|---|---|---|---|
-| Rồng Băng (`dragon_ice`, hang F5 / F6) | 8000 | 160 mỗi 1,2 s, đòn đánh làm chậm 30% trong 1,5 s (phủ màu băng) | 15 / 15 | +250 máu, +8 sát thương, +0,5 giáp | mỗi hero phe hạ 200 vàng + 450 XP; kẻ kết liễu thêm 150 vàng |
-| Rồng Lửa (`dragon_fire`, hang đối xứng) | 9000 | 180 mỗi 1,2 s, đòn đánh đốt 30 sát thương phép / s trong 3 s | 15 / 15 | +280 máu, +9 sát thương, +0,5 giáp | mỗi hero phe hạ 280 vàng + 320 XP; kẻ kết liễu thêm 150 vàng |
+| Người Đá Rêu (`golem_moss`, bãi F5 / F6) | 8000 | 160 mỗi 1,2 s | 15 / 15 | +250 máu, +8 sát thương, +0,5 giáp | mỗi hero phe hạ 200 vàng + 450 XP; kẻ kết liễu thêm 150 vàng |
+| Người Đá Dung Nham (`golem_lava`, bãi đối xứng) | 9000 | 180 mỗi 1,2 s | 15 / 15 | +280 máu, +9 sát thương, +0,5 giáp | mỗi hero phe hạ 280 vàng + 320 XP; kẻ kết liễu thêm 150 vàng |
 | Tê giác đá (`rhino`) | 1500 | 65 | 5 / 0 | — | 120 vàng, 150 XP (JGL-07) |
 | Tê giác con ×2 (`rhino_small`) | 550 | 30 | 2 / 0 | — | 45 vàng, 60 XP |
 
-Rồng xuất hiện lần đầu ở phút 5, hạ xong 5 phút sau mới có lại (JGL-10); mỗi con một hang vách đá sát bờ sông (Băng ở
-giáp ranh F5 / F6, Lửa ở chỗ đối xứng). Trại tê giác (1 tê giác to + 2 tê giác con, D-307c) thay một trại 2 sói ở rừng
-carry mỗi phe (trại 08, gần sông), hồi như trại thường.
+**Dậm Đất** (`golem_stomp`, cả hai người đá): đòn đánh trúng → 150 sát thương phép + choáng 1,25 s mọi kẻ địch trong
+350 quanh mình; hồi 7 s.
 
+Người đá xuất hiện lần đầu ở phút 5, hạ xong 5 phút sau mới có lại (JGL-10); mỗi con một bãi đấu vòng tường đá sát bờ sông.
+Trại tê giác (1 to + 2 con) thay một trại 2 sói ở rừng carry mỗi phe (trại 08, gần sông), hồi như trại thường.
