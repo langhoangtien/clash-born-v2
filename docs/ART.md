@@ -74,8 +74,8 @@ tam giác, quy cách GLB, Mixamo): **`art_inbox/YEU_CAU_3D.md`**. Mục dưới 
 hoạt ảnh đứng / chạy / đánh / tung chiêu / lướt / trúng đòn / ngã lấy từ bộ hoạt ảnh dùng chung của rig.
 Mỗi chiêu một hoạt ảnh (`skills`), đòn đánh khựng / lóe / giật lùi khi trúng (D-159).
 Hiệu ứng có thể đổi hình đơn vị (`effect_looks`, D-322): ảnh da khác (chỉ bề mặt dùng ảnh `skin_of`, vũ khí giữ nguyên) và
-hoạt ảnh đánh khác, vật gắn tay chỉ hiện khi có hiệu ứng (`hide_props` / `props_after`, D-323) — vd Gorran Cuồng Hóa:
-da đỏ, rút hai kiếm sau vai, chém luân phiên tay phải / tay trái. Hoạt ảnh tay trái làm từ tay phải bằng `A^`
+hoạt ảnh đánh khác, vật rút ra theo hiệu ứng (`props_drawn` / `props_stowed` / `props_after`, D-323, D-324) — vd Gorran Cuồng Hóa:
+da đỏ, rút hai kiếm từ bao sau lưng, chém luân phiên tay phải / tay trái. Hoạt ảnh tay trái làm từ tay phải bằng `A^`
 (soi gương, glb_mirror.py), động tác hai tay đối xứng bằng `A%`.
 Ảnh 2D của tướng / lính vẫn dùng cho chân dung, nút, minimap; đơn vị chưa có mô hình (quái rừng, công trình)
 hiện bằng ảnh đứng quay về camera. Công trình, cây, đá: KayKit Medieval Hexagon (D-158), cùng phong cách.

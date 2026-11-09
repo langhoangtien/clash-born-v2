@@ -31,6 +31,8 @@ STEEL = (176, 186, 198)
 STEEL_LIGHT = (232, 238, 244)
 GOLD = (214, 168, 64)
 GRIP = (92, 56, 36)
+SHEATH = (132, 82, 52)  # D-324: bao kiếm da nâu
+SHEATH_LIGHT = (170, 112, 72)
 
 
 def _box(bm, center, size, rot=0.0, tilt=0.0):
@@ -259,27 +261,59 @@ def flowers(name, rng):
 
 
 def sword(name, rng):
-    """D-322: kiếm Gorran (cầm hai tay, Cuồng Hóa chém hai kiếm): lưỡi thép thuôn nhọn mặt vát, chắn tay vàng, cán nâu
-    quấn, núm vàng. Đứng thẳng (Blender z = trục dọc), cao 1 đơn vị — place_prop.py đặt cỡ / chỗ nắm."""
+    """D-322: kiếm Gorran (Cuồng Hóa rút hai kiếm): lưỡi thép thuôn nhọn mặt vát, chắn tay vàng, cán nâu quấn, núm vàng.
+    Đứng thẳng (Blender z = trục dọc), cao 1 đơn vị, cán ở dưới (0..0,245) — place_prop.py đặt cỡ / chỗ nắm."""
     bm = bmesh.new()
+    _hilt(bm)
+    _tapered(bm, [(0.245, 0.085, 0.016), (0.8, 0.078, 0.016), (0.93, 0.042, 0.016), (1.0, 0.0, 0.0)])
+    obj = K.finish(name, bm)
+    K.paint(obj, lambda c, n: (STEEL, STEEL_LIGHT) if c.z > 0.25 else _hilt_colour(c), rng)
+    _bake_palette(obj)
+    return obj
+
+
+def sword_hilt(name, rng):
+    """D-324: cán kiếm thò khỏi bao sau lưng (cùng hệ tọa độ với `sword`) — ẩn khi đã rút kiếm (vật liệu `sword_hilt_mat`)."""
+    bm = bmesh.new()
+    _hilt(bm)
+    _box(bm, (0, 0, 0.5), (0.001, 0.001, 0.001))  # đỉnh mốc: khung bao cao 0..1 như kiếm → place_prop đặt trùng chỗ
+    _box(bm, (0, 0, 1.0), (0.001, 0.001, 0.001))
+    obj = K.finish(name, bm)
+    K.paint(obj, lambda c, n: _hilt_colour(c), rng)
+    _bake_palette(obj)
+    return obj
+
+
+def sword_sheath(name, rng):
+    """D-324: bao kiếm da sẫm, miệng + mũi bọc vàng, ôm lưỡi `sword` — đeo sau lưng, luôn hiện."""
+    bm = bmesh.new()
+    _box(bm, (0, 0, -0.04), (0.001, 0.001, 0.001))  # đỉnh mốc ở đáy núm: khung bao như kiếm
+    _tapered(bm, [(0.235, 0.11, 0.035), (0.8, 0.1, 0.033), (0.95, 0.06, 0.028), (1.0, 0.02, 0.02)])
+    obj = K.finish(name, bm)
+    K.paint(obj, lambda c, n: (GOLD, None) if c.z < 0.29 or c.z > 0.93 else (SHEATH, SHEATH_LIGHT), rng)
+    _bake_palette(obj)
+    return obj
+
+
+def _hilt(bm):
     _box(bm, (0, 0, 0.11), (0.045, 0.045, 0.2))
     _box(bm, (0, 0, 0.225), (0.24, 0.06, 0.04))
-    knob = bmesh.ops.create_icosphere(bm, subdivisions=1, radius=0.04)
-    for v in knob["verts"]:
-        v.co.z += 0.0
-    base, tip = 0.245, 1.0
-    rows = [(base, 0.085), (0.8, 0.078), (0.93, 0.042), (tip, 0.0)]
-    rings = []
-    for z, w in rows:  # mặt cắt hình thoi dẹt: rộng theo x, mỏng theo y
-        rings.append([bm.verts.new((x * w, y * 0.016 if w else 0.0, z)) for x, y in ((1, 0), (0, 1), (-1, 0), (0, -1))])
+    bmesh.ops.create_icosphere(bm, subdivisions=1, radius=0.04)
+
+
+def _hilt_colour(c):
+    return (GOLD, None) if c.z > 0.2 or c.z < 0.02 else (GRIP, None)
+
+
+def _tapered(bm, rows):
+    """Thân thuôn mặt cắt hình thoi: rows (z, nửa rộng x, nửa dày y); hàng cuối rộng 0 là mũi nhọn."""
+    rings = [[bm.verts.new((x * w, y * d, z)) for x, y in ((1, 0), (0, 1), (-1, 0), (0, -1))] for z, w, d in rows]
     for r0, r1 in zip(rings, rings[1:]):
         for k in range(4):
             bm.faces.new((r0[k], r0[(k + 1) % 4], r1[(k + 1) % 4], r1[k]))
     bm.faces.new(list(reversed(rings[0])))
-    obj = K.finish(name, bm)
-    K.paint(obj, lambda c, n: (STEEL, STEEL_LIGHT) if c.z > 0.25 else ((GOLD, None) if c.z > 0.2 or c.z < 0.02 else (GRIP, None)), rng)
-    _bake_palette(obj)
-    return obj
+    if rows[-1][1] > 0:
+        bm.faces.new(rings[-1])
 
 
 def _bake_palette(obj):
@@ -309,4 +343,4 @@ def _bake_palette(obj):
     obj["textured"] = True
 
 
-BUILDERS = [bones, log, stump, campfire, totem, crystals, mushrooms, flowers, sword]
+BUILDERS = [bones, log, stump, campfire, totem, crystals, mushrooms, flowers, sword, sword_hilt, sword_sheath]

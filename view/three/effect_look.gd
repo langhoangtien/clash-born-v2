@@ -3,40 +3,44 @@ extends RefCounted
 ## D-322: hình của tướng thay theo hiệu ứng đang có — `effect_looks` trong cấu hình mô hình (units_3d.json), khóa = id hiệu
 ## ứng: `skin` (ảnh màu thay, đường dẫn từ assets/models/, vd Gorran Cuồng Hóa da đỏ) cho bề mặt dùng ảnh `skin_of`,
 ## `attack` / `impact` / `attack_alt` / `impact_alt` (hoạt ảnh đánh thay, vd chém luân phiên hai tay).
-## D-323: `hide_props` — vật gắn tay (bề mặt không dùng ảnh `skin_of`, vd kiếm) ẩn; look có `props_after` (giây) thì
-## hiện sau từng ấy giây kể từ lúc có hiệu ứng (khớp lúc tay rút kiếm sau vai). Chỉ VIEW; hết hiệu ứng thì trả hình gốc.
+## D-323 / D-324: vật "rút ra" — bề mặt có vật liệu tên trong `props_drawn` (kiếm trên tay) chỉ hiện khi đã rút, trong
+## `props_stowed` (cán kiếm sau lưng) chỉ hiện khi chưa rút; look có `props_after` (giây) thì rút sau từng ấy giây kể từ
+## lúc có hiệu ứng (khớp lúc tay tới sau vai). Chỉ VIEW; hết hiệu ứng thì trả hình gốc.
 
 static var _skinned: Dictionary[String, Material] = {}
 static var _hidden: ShaderMaterial = null
 
 
-## Mục hình của hiệu ứng đầu tiên (theo thứ tự trên đơn vị) có khai báo, kèm `props` (vật gắn tay đang hiện); đơn vị
-## không có gì để đổi thì rỗng.
+## Mục hình của hiệu ứng đầu tiên (theo thứ tự trên đơn vị) có khai báo, kèm `drawn` (đã rút vật) nếu đơn vị có vật
+## rút ra; đơn vị không có gì để đổi thì rỗng.
 static func of(cfg: Dictionary, e: Entity, tick: int) -> Dictionary:
 	var looks: Dictionary = cfg.get("effect_looks", {})
-	if looks.is_empty() and not cfg.get("hide_props", false):
+	var props: bool = cfg.has("props_drawn") or cfg.has("props_stowed")
+	if looks.is_empty() and not props:
 		return {}
 	for inst: EffectInstance in e.effects:
 		if looks.has(String(inst.def.id)):
 			var look: Dictionary = (looks[String(inst.def.id)] as Dictionary).duplicate()
 			var after: float = float(look.get("props_after", -1.0))
-			look["props"] = not cfg.get("hide_props", false) \
-				or (after >= 0.0 and tick - inst.start_tick >= SimClock.seconds_to_ticks(after))
+			if props:
+				look["drawn"] = after >= 0.0 and tick - inst.start_tick >= SimClock.seconds_to_ticks(after)
 			return look
-	return {"props": not cfg.get("hide_props", false)}
+	return {"drawn": false} if props else {}
 
 
-## Khóa so sánh hai look: đổi thì phải đặt lại vật liệu.
+## Khóa so sánh hai look: đổi thì phải đặt lại vật liệu (look rỗng ban đầu khác look "chưa rút" → đặt lần đầu).
 static func key(look: Dictionary) -> String:
-	return "%s|%s" % [look.get("skin", ""), look.get("props", true)]
+	return "%s|%s" % [look.get("skin", ""), look.get("drawn", null)]
 
 
 ## Đặt vật liệu mọi bề mặt theo look: sửa `solid` (vật liệu đặc đang dùng, theo `base` gốc) rồi áp lại (đang mờ thì áp
-## bản mờ). Bề mặt có ảnh màu tên `skin_of` (da) đổi sang `skin` của look; bề mặt khác (vũ khí) giữ màu, ẩn khi
-## look có `props` = false.
+## bản mờ). Bề mặt có ảnh màu tên `skin_of` (da) đổi sang `skin` của look; vật rút ra ẩn / hiện theo `drawn`; còn lại
+## giữ gốc.
 static func apply(meshes: Array[GeometryInstance3D], base: Array[Array], solid: Array[Array], look: Dictionary, cfg: Dictionary, faded: bool) -> void:
 	var skin: String = look.get("skin", "")
 	var from: String = cfg.get("skin_of", "")
+	var drawn: bool = look.get("drawn", false)
+	var hide: Array = cfg.get("props_stowed", []) if drawn else cfg.get("props_drawn", [])
 	for i: int in meshes.size():
 		var mi: MeshInstance3D = meshes[i] as MeshInstance3D
 		if mi == null:
@@ -46,7 +50,7 @@ static func apply(meshes: Array[GeometryInstance3D], base: Array[Array], solid: 
 			if _is_skin(m, from):
 				solid[i][k] = m if skin.is_empty() else _skin_of(m, skin)
 			else:
-				solid[i][k] = m if look.get("props", true) else _hidden_material()
+				solid[i][k] = _hidden_material() if hide.has(m.resource_name) else m
 			mi.set_surface_override_material(k, ModelLibrary.faded_material(solid[i][k]) if faded else solid[i][k])
 
 

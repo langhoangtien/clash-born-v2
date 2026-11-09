@@ -175,9 +175,10 @@ func test_D_277_corpse_animates_on_its_own() -> void:
 	creep.free()
 
 
-## D-322 / D-323: Gorran — kiếm ẩn, đánh thường đấm; đang có gorran_rage thì da đỏ (ảnh màu `skin`), kiếm hiện sau
-## props_after (lúc tay rút kiếm sau vai), đánh luân phiên chém tay phải / tay trái; hết hiệu ứng trả về hình gốc.
-func test_D_323_rage_draws_swords_red_skin_alternate_slashes() -> void:
+## D-322 / D-323 / D-324: Gorran — kiếm trong bao sau lưng, đánh thường đấm; đang có gorran_rage thì da đỏ (ảnh màu
+## `skin`), sau props_after (lúc tay tới sau vai) kiếm hiện trên tay và cán sau lưng ẩn (bao vẫn đeo), đánh luân phiên
+## chém tay phải / tay trái; hết hiệu ứng trả về hình gốc.
+func test_D_324_rage_draws_swords_from_back_red_skin_alternate_slashes() -> void:
 	var lib: ContentLibrary = ContentLibrary.load_dir()
 	var w: World = World.new(1, BalanceSettings.new())
 	var g: Entity = UnitFactory.hero(w, lib.heroes[&"gorran"], 0, Vector2(500, 500))
@@ -185,23 +186,23 @@ func test_D_323_rage_draws_swords_red_skin_alternate_slashes() -> void:
 	var a: Actor3D = Actor3D.make(g)
 	var calm: Dictionary = EffectLook.of(cfg, g, w.tick)
 	EffectLook.apply(a._meshes, a._base, a._solid, calm, cfg, false)
-	assert_eq(_surfaces(a), [1, 0, 2], "chưa Cuồng Hóa: thân gốc, hai kiếm ẩn")
+	assert_eq(_surfaces(a), [5, 0, 2], "chưa Cuồng Hóa: thân, bao + cán kiếm sau lưng; kiếm trên tay ẩn")
 	assert_eq(ModelLibrary.attack_pick(cfg.merged(calm, true), 0, 0.4)[0], "attack", "đánh thường: đấm")
 	var values: Dictionary = {&"bat_cut": 0.3, &"regen": 15.0, &"move_bonus": 30.0, &"rage_damage": 0.0, &"duration": 25.0}
 	Effects.apply(w, g, load("res://content/effects/gorran_rage.tres") as EffectDef, g, values, "25")
 	var look: Dictionary = EffectLook.of(cfg, g, w.tick)
-	assert_false(look["props"], "vừa Cuồng Hóa: tay chưa tới sau vai, kiếm chưa hiện")
+	assert_false(look["drawn"], "vừa Cuồng Hóa: tay chưa tới sau vai, chưa rút")
 	assert_true(ResourceLoader.exists(ModelLibrary.MODELS + String(look.get("skin", ""))), "có ảnh da đỏ")
 	look = EffectLook.of(cfg, g, w.tick + SimClock.seconds_to_ticks(float(look["props_after"])))
-	assert_true(look["props"], "rút xong: hiện kiếm")
+	assert_true(look["drawn"], "rút xong")
 	EffectLook.apply(a._meshes, a._base, a._solid, look, cfg, false)
-	assert_eq(_surfaces(a), [2, 1, 0], "thân đổi sang da đỏ, hai kiếm hiện màu gốc")
+	assert_eq(_surfaces(a), [4, 1, 2], "da đỏ, kiếm trên tay + bao hiện, cán sau lưng ẩn")
 	var picks: Array = [ModelLibrary.attack_pick(cfg.merged(look, true), 0, 0.4)[0], ModelLibrary.attack_pick(cfg.merged(look, true), 1, 0.4)[0]]
 	assert_eq(picks, ["attack_rage", "attack_rage_l"], "chém luân phiên tay phải / tay trái")
 	for anim: String in ["attack", "attack_rage", "attack_rage_l", "skill_3"]:
 		assert_true(a._anim.has_animation(anim), "mô hình có hoạt ảnh " + anim)
 	EffectLook.apply(a._meshes, a._base, a._solid, calm, cfg, false)
-	assert_eq(_surfaces(a), [1, 0, 2], "hết hiệu ứng: da gốc, cất kiếm")
+	assert_eq(_surfaces(a), [5, 0, 2], "hết hiệu ứng: da gốc, kiếm về bao")
 	a.free()
 
 

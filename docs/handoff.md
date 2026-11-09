@@ -1,6 +1,6 @@
 # Bàn giao — Clashborn v2 (cập nhật 2026-11-09)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-323**). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-324**). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh thì chụp trong game (xvfb) và gửi ảnh JPG.
 
@@ -11,7 +11,7 @@ Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh 
 - Android: trình vẽ Mobile (Vulkan), đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
   Hiệu năng máy tính bảng ổn (D-261..277, D-285). Tên miền `clashborn.quest` từng bị registry treo (serverHold) — đã
   chạy lại; người dùng đang cân nhắc **đổi tên game** để mua tên miền `.com` (gợi ý: Clashveil, Clashara, RiftClash…).
-- Hero 3D (afk.ai, quy trình mục 2): Duy Anh, Noctis, Brakk, **Myra / Vexa bản người lớn** (D-304). Gorran dựng lại D-321 (không còn KayKit), D-322 giảm còn 3,4k mặt + 2 kiếm, R da đỏ (EffectLook); D-323 đánh thường đấm, R rút kiếm sau vai + chém luân phiên hai tay (hoạt ảnh soi gương `A^` / `A%`).
+- Hero 3D (afk.ai, quy trình mục 2): Duy Anh, Noctis, Brakk, **Myra / Vexa bản người lớn** (D-304). Gorran dựng lại D-321 (không còn KayKit), D-322 giảm còn 3,4k mặt + 2 kiếm, R da đỏ (EffectLook); D-323/324 đánh thường đấm, kiếm trong bao sau lưng; R rút kiếm + chém mạnh (SS_Power_Slash) luân phiên hai tay (hoạt ảnh soi gương `A^` / `A%`).
 - Hiệu ứng chiêu 3D: shader dịu `vfx_soft` cho cả 6 tướng (D-296..306); Q Duy Anh là **làn khí kiểu Triệu Vân**
   (D-303, 305, 306); **chậm vì băng phủ màu băng lên người** (D-305, `tint` trong `_effects` của vfx.json).
 - **Bản đồ 10598 × 10598** (D-307: lớn thêm 15%, lane giữ 288). Dựng lại: `python3 tools/map_build/build_map.py` rồi
