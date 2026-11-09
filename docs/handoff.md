@@ -1,6 +1,6 @@
 # Bàn giao — Clashborn v2 (cập nhật 2026-11-09)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-313**). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-314**). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh thì chụp trong game (xvfb) và gửi ảnh JPG.
 
@@ -24,8 +24,10 @@ Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh 
   carry mỗi phe. Bảng số: `docs/CONTENT.md` mục "Quái rừng boss".
 - **Bảng màu chốt (D-312)**: mọi đá cùng họ xám trung tính → xanh lạnh (như lan can rìa map, người dùng thích); đất vàng
   ấm; cỏ xanh vàng (Codex T14). Lane = ảnh Codex `lane_dirt` + cụm cỏ / dương xỉ / đá nhỏ dọc mép (`lane_decor.py`).
-  D-313: đá lát base phiến lớn trơn (Codex T14 qua `stone_tint.py`), không vòng viền, rêu quanh chân trụ; hang người đá
-  dựng bằng đá chung (cao giữa, thấp về cửa); sông bờ lượn + bọt, nước trong, người lội lún + vòng gợn (`Wading3D`).
+  D-313/314: đá lát base phiến lớn trơn (Codex T14 qua `stone_tint.py`), không vòng viền, rêu quanh chân trụ; rào base /
+  fountain = lan can rìa map; hang người đá **một cửa ra sông**, đá chung style_kit cao dần về phía đối diện cửa; sông bờ
+  lượn, sóng vệt dài, đáy đứng yên, người lội lún + vòng gợn (`Wading3D`). **Người dùng thích đá Blender (style_kit) hơn
+  Tripo / Codex** — vật đá mới ưu tiên dựng bằng style_kit (cần bpy).
 - **Đất cao (base) kiểu ảnh mẫu A** (D-310..312, chưa phát hành APK): nền cỏ + dải đất nện + đá lát xám lạnh `flagstones`
   (ảnh Codex T12 qua `tools/textures/stone_tint.py`; mặt nạ `base` trong decor.json, `tools/map_build/base_decor.py`), sân lát + vòng đá viền quanh mọi trụ / nhà chính / fountain, tường rào
   `base_wall` + cột đèn cờ `base_pillar_blue/red` (Tripo text-to-model). **API ảnh OpenAI hết credit** — concept_gen

@@ -1,5 +1,5 @@
 """D-308: bãi đấu boss — sân tròn, vòng tường đá (D-313: dựng bằng đá chung của map), chừa
-cửa: một cửa quay ra sông (hướng điểm sông gần nhất), một cửa đối diện. Toạ độ guide.
+cửa: D-314 chỉ một cửa quay ra sông (hướng điểm sông gần nhất). Toạ độ guide.
 
 map_source `arenas`: [{"camp": id trại, "pos": [x, y], "r": bán kính tim tường, "thick": bề dày tường, "slots": số
 đoạn cung một vòng}] — ghi đủ cả hai bãi (không tự xoay). Tường là vật cản (lớp `cliffs`, MAP-01); sân + cửa là khu trống.
@@ -15,7 +15,7 @@ def specs(src, river):
         q = nearest_points(Point(a["pos"]), river)[1]
         gate = math.atan2(q.y - a["pos"][1], q.x - a["pos"][0])
         step = 2 * math.pi / a["slots"]
-        gates = {0, a["slots"] // 2}  # cửa sông + cửa đối diện
+        gates = {0}  # D-314: chỉ một cửa ra sông (người chơi: chặn lối từ rừng vào)
         walls = [gate + k * step for k in range(a["slots"]) if k not in gates]
         out.append(dict(a, gate=gate, step=step, walls=walls))
     return out
@@ -33,11 +33,10 @@ def walls(spec, river):
 
 
 def clear(spec, extra=8.0):
-    """Khu trống: sân trong tường + hai cửa mở rộng ra ngoài."""
+    """Khu trống: sân trong tường + cửa sông mở rộng ra ngoài."""
     c, r, t, h = spec["pos"], spec["r"], spec["thick"], spec["step"] / 2
     parts = [Point(c).buffer(r - t / 2, 64)]  # rừng áp sát mặt ngoài tường (dải trống mảnh = khe dễ hiểu nhầm, MAP-03)
-    for a in (spec["gate"], spec["gate"] + math.pi):
-        parts.append(_sector(c, r + t + extra, a - h, a + h))
+    parts.append(_sector(c, r + t + extra, spec["gate"] - h, spec["gate"] + h))  # D-314: một cửa ra sông
     return unary_union(parts)
 
 
@@ -45,15 +44,15 @@ def export(spec, W, scale):
     """Dữ liệu cho decor.py / VIEW: tâm, bán kính tim tường (thế giới), góc giữa từng đoạn tường và hai cửa."""
     return {"camp": spec["camp"], "pos": W(spec["pos"]), "r": round(spec["r"] * scale, 1),
             "thick": round(spec["thick"] * scale, 1), "step": round(spec["step"], 5),
-            "walls": [round(a, 5) for a in spec["walls"]], "gates": [round(spec["gate"], 5), round(spec["gate"] + math.pi, 5)]}
+            "walls": [round(a, 5) for a in spec["walls"]], "gates": [round(spec["gate"], 5)]}
 
 
 # D-313: vòng tường dựng bằng đá chung của map (bộ style_kit: rock_tall / rock_wide / rock_low / boulder — cùng vân
-# rock_face, cùng tông lạnh D-312), không còn mô hình Tripo riêng (arena_*). Hang cao ở giữa mỗi cung tường, thấp dần
-# về hai cửa; cung quay về camera (nam, +z) giữ thấp cho khỏi che boss. Hàng đá cao phía sau (ngoài vòng, trong vùng chặn).
+# rock_face, cùng tông lạnh D-312), không còn mô hình Tripo riêng (arena_*). D-314: cao nhất ở điểm đối diện cửa sông,
+# thấp dần về hai bên cửa; cung quay về camera (nam, +z) hạ bớt cho khỏi che boss. Hàng đá cao phía sau (trong vùng chặn).
 ROCK_GAP = 80.0     # khoảng cách hai tảng dọc tim tường (px)
 BACK_OUT = 115.0    # hàng đá sau cách tim tường (px)
-SOUTH_CAP = 0.75    # cung phía nam hạ chiều cao tối đa 75%
+SOUTH_CAP = 0.45    # cung phía nam hạ chiều cao tối đa 45%
 
 
 def _put(items, kind, cx, cz, ang, dist, face, scale):
@@ -62,10 +61,10 @@ def _put(items, kind, cx, cz, ang, dist, face, scale):
 
 
 def _level(ang, a):
-    """0 ở mép cửa → 1 xa cửa nhất; hạ ở cung phía nam."""
+    """0 ở mép cửa → 1 ở điểm đối diện cửa; hạ ở cung phía nam."""
     h = a["step"] / 2
     gd = min(abs(math.remainder(ang - g, math.tau)) for g in a["gates"]) - h
-    return max(0.0, min(1.0, gd / (1.6 * a["step"]))) * (1 - SOUTH_CAP * max(0.0, math.sin(ang)))
+    return max(0.0, min(1.0, gd / (math.pi - h))) ** 0.8 * (1 - SOUTH_CAP * max(0.0, math.sin(ang)))
 
 
 def _rock(level, rng):

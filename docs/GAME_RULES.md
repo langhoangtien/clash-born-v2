@@ -947,7 +947,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 - `MAP-02` Map 10598 × 10598 (D-172 9216; D-307 lớn thêm 15%, lane giữ bề rộng 288); Blue dưới–trái, Red trên–phải;
   3 lane; sông; 11 trụ mỗi đội; 8 trại mỗi phe (D-171, D-178): rừng phía lane an toàn (rừng carry) 5 trại (D-307: một
   trại 2 sói thành trại khủng long), rừng phía lane khó 3 trại. Hai bãi đấu boss dùng chung (D-307, D-308, JGL-10..14): sân tròn
-  sát bờ sông, vòng tường đá thấp bán kính 4,8 m (6/8 đoạn cung), hai cửa (ra sông và phía đối diện) — bãi Người Đá
+  sát bờ sông, vòng tường đá bán kính 4,8 m (7/8 đoạn cung), **một cửa duy nhất ra sông** (D-314: chặn cửa phía rừng) — bãi Người Đá
   Rêu ở ô F5 gần giáp F6 (nửa đỏ), bãi Người Đá Dung Nham ở chỗ xoay 180° (nửa xanh). Mọi trại cách trụ ≥ 720.
 - `MAP-06` (D-168) Trụ lane đứng sát mép lane, cùng một bên cho cả lane (TOP, BOT: phía trong
   map; MID: bên phải theo chiều Blue → Red), tâm cách tim lane `tower_offset` (12 ô guide = 192).

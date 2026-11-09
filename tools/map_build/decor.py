@@ -149,7 +149,7 @@ def main():
     items = []
     DP.plateaus(items, forest, rng)
     DP.river(items, water, bank, rng)
-    BD.walls(items, m)  # D-310: tường đá + cột đèn cờ (MAP-09, MAP-10)
+    BD.walls(items, m)  # D-314: rào base / fountain = lan can rìa map (MAP-09, MAP-10)
     BD.tufts(items, m, rng)
     DP.scatter(items, m, forest, wet, rng)
     LD.edges(items, m, forest, wet, rng)  # D-312: cỏ / dương xỉ / đá nhỏ dọc mép lane

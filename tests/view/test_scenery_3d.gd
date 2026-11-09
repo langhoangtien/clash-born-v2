@@ -142,29 +142,35 @@ func test_D_221_fountain_per_team_faces_core() -> void:
 	s.free()
 
 
-## D-310: tường rào base / fountain (MAP-09, MAP-10) là đoạn tường đá + cột đèn cờ theo phe; cột nằm trên vật cản rào
-## (trông chặn thì chặn), cờ phe nào ở base phe đó; không còn mô hình rào cũ.
-func test_D_310_base_walls_pillars_per_team() -> void:
+## D-310, D-314: rào base / fountain (MAP-09, MAP-10) dựng bằng lan can đá như rìa map (`parapet`), dọc đúng đường rào
+## (nằm trên vật cản rào — trông chặn thì chặn); không còn rào cũ / tường + cột Tripo.
+func test_D_314_base_fences_are_parapets_on_fence_obstacle() -> void:
 	var layout: MapLayout = load(MAP_PATH) as MapLayout
-	var counts: Dictionary = {"base_wall": 0, "base_pillar_blue": 0, "base_pillar_red": 0, "fence": 0}
+	var json: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/maps/clashborn_map.json"))
+	var fences: Array = (json["render"]["rock_lines"] as Array).filter(func(l: Dictionary) -> bool: return l.get("kind") == "fence")
+	var on_fence: int = 0
 	for it: Array in Terrain3D.items():
 		var kind: String = String(it[0])
-		if not counts.has(kind):
-			continue
-		counts[kind] += 1
-		if not kind.begins_with("base_pillar"):
-			continue
+		assert_false(kind == "fence" or kind.begins_with("base_wall") or kind.begins_with("base_pillar"), "không còn %s" % kind)
 		var p: Vector2 = Vector2(float(it[1]), float(it[2]))
-		var team: int = 0 if kind.ends_with("blue") else 1
-		assert_true(p.distance_to(layout.fountain_point(team)) < p.distance_to(layout.fountain_point(1 - team)), "cột cờ %s tại %s ở nửa phe mình" % [kind, p])
+		if kind != "parapet" or not _near_line(fences, p, 10.0):
+			continue
+		on_fence += 1
 		var inside: bool = false
 		for poly: PackedVector2Array in layout.collision_polygons:
 			inside = inside or Geometry2D.is_point_in_polygon(p, poly)
-		assert_true(inside, "cột tại %s nằm trên vật cản rào" % p)
-	assert_eq(counts["fence"], 0, "không còn rào cũ")
-	assert_true(counts["base_wall"] > 30, "có tường đá (%d)" % counts["base_wall"])
-	assert_eq(counts["base_pillar_blue"], counts["base_pillar_red"], "hai phe đối xứng")
-	assert_true(counts["base_pillar_blue"] > 10, "có cột (%d)" % counts["base_pillar_blue"])
+		assert_true(inside, "lan can rào tại %s nằm trên vật cản" % p)
+	assert_true(on_fence > 50, "rào base / fountain là lan can (%d đoạn)" % on_fence)
+
+
+static func _near_line(lines: Array, p: Vector2, r: float) -> bool:
+	for l: Dictionary in lines:
+		var pts: Array = l["points"]
+		for k: int in pts.size() - 1:
+			var a: Vector2 = Vector2(pts[k][0], pts[k][1])
+			if Geometry2D.get_closest_point_to_segment(p, a, Vector2(pts[k + 1][0], pts[k + 1][1])).distance_to(p) < r:
+				return true
+	return false
 
 
 ## D-310: nền đất cao lát đá (mặt nạ base R) thay đất nện một màu; sân lát kín quanh nhà chính / fountain.

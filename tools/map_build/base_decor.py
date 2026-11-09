@@ -4,10 +4,10 @@ tự nhiên"). Dùng bởi decor.py. Toạ độ thế giới px (100 px = 1 m).
 - Mặt nạ `base` (RG): R đá lát (ảnh flagstones) — nền base là cỏ, đá lát phủ phần lớn, chừa mảng cỏ loang và dải
   cỏ dưới chân tường; lane trong base và sân quanh nhà chính / fountain / trụ trong base lát kín. G rêu: D-313 (người
   chơi: vòng viền quanh công trình xấu → bỏ; quanh trụ có ít rêu xanh) — mảng rêu loang quanh chân mọi trụ.
-- Tường rào base / fountain (MAP-09, MAP-10): đoạn tường đá `base_wall` giữa các cột `base_pillar_<phe>` (đèn vàng +
-  cờ màu phe) — cột ở mọi đỉnh đường rào và chia đều đoạn dài.
+- Rào base / fountain (MAP-09, MAP-10): D-314 lan can đá `parapet` như rìa map.
 """
 import math
+import decor_place as DP
 import numpy as np
 from PIL import Image, ImageDraw
 from shapely.geometry import LineString, Point, Polygon
@@ -21,14 +21,7 @@ FRINGE_M = 0.9         # D-311: độ nhòe mép đá lát (m) — shader vẽ d
 PAVE_SHARE = 0.78      # phần nền base lát đá (còn lại mảng cỏ)
 PATCH_M = 4.0          # cỡ mảng cỏ / đá (m)
 WALL_GRASS = 110.0     # dải cỏ dưới chân tường (px)
-EDGE_SKIP = 80.0       # không đặt cột sát khung map (px)
-PILLAR_MAX = 620.0     # khoảng cách tối đa giữa hai cột tường (px)
-WALL_STEP = 230.0      # đoạn tường base_wall dài 2,5 m (cao 0,9 m) → bước 2,3 m, chồng nhẹ
-
-
-def team_of(pt, m):
-    f = m["fountains"]
-    return min((0, 1), key=lambda t: math.dist(pt, f[t]))
+PARAPET_STEP = 190.0   # đoạn lan can 2 m, chồng nhẹ (như rìa map, decor.py)
 
 
 def plazas(m):
@@ -81,33 +74,11 @@ def _box(T, x, y, r):
 
 
 def walls(items, m):
-    """Tường rào base / fountain: cột ở đỉnh + chia đều đoạn dài, đoạn tường giữa các cột."""
+    """D-314: rào base / fountain (MAP-09, MAP-10) = lan can đá của rìa map (`parapet`, Blender — người chơi thấy đá dựng
+    Blender sắc nét hơn; bỏ tường + cột Tripo D-310). Đoạn 2 m nối tiếp dọc đường rào."""
     for line in m["render"].get("rock_lines", []):
-        if line.get("kind") != "fence":
-            continue
-        pts = line["points"]
-        team = ("blue", "red")[team_of(pts[len(pts) // 2], m)]
-        posts = [tuple(pts[0])]
-        for a, b in zip(pts, pts[1:]):
-            span = math.dist(a, b)
-            k = max(1, math.ceil(span / PILLAR_MAX))
-            posts += [(a[0] + (b[0] - a[0]) * i / k, a[1] + (b[1] - a[1]) * i / k) for i in range(1, k + 1)]
-        for a, b in zip(posts, posts[1:]):
-            _wall_run(items, a, b)
-        size = m["world_size"][0]
-        for p in posts:
-            if min(p[0], p[1], size - p[0], size - p[1]) < EDGE_SKIP:
-                continue  # đầu rào chạm khung map: đã là vực / lan can (D-197)
-            items.append(["base_pillar_" + team, p[0], p[1], 0.0, 1.0])  # mặt cờ quay về camera (nam)
-
-
-def _wall_run(items, a, b):
-    span = math.dist(a, b)
-    k = max(1, math.ceil(span / WALL_STEP))
-    ang = -math.atan2(b[1] - a[1], b[0] - a[0])
-    for i in range(k):
-        t = (i + 0.5) / k
-        items.append(["base_wall", a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, ang + (math.pi if i % 2 else 0.0), 1.0])
+        if line.get("kind") == "fence":
+            DP.along(items, LineString(line["points"]), "parapet", PARAPET_STEP)
 
 
 def tufts(items, m, rng):
