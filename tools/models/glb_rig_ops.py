@@ -210,6 +210,15 @@ def _add_raw(g, binc, arr, comp, kind):
     return len(g["accessors"]) - 1
 
 
+def _material_of_image(g, image):
+    """Vật liệu (không phải đầu tiên — của thân) có ảnh màu là `image`; không có thì None (dùng vật liệu thân)."""
+    for i, m in enumerate(g.get("materials", [])):
+        ref = m.get("pbrMetallicRoughness", {}).get("baseColorTexture")
+        if i > 0 and ref is not None and g["textures"][ref["index"]]["source"] == image:
+            return i
+    return None
+
+
 def _copy_material(g, binc, wg, wb, wp):
     """Chép vật liệu + ảnh màu của vật (nếu ảnh khác ảnh của thân — vật tách từ cùng lưới thì dùng chung)."""
     if "material" not in wp:
@@ -222,10 +231,10 @@ def _copy_material(g, binc, wg, wb, wp):
     img = wg["images"][wg["textures"][tex_ref["index"]]["source"]]
     bv = wg["bufferViews"][img["bufferView"]]
     data = bytes(wb[bv.get("byteOffset", 0):bv.get("byteOffset", 0) + bv["byteLength"]])
-    for gi in g.get("images", []):  # cùng ảnh với thân (vũ khí tách từ chính lưới thân) → dùng vật liệu thân
+    for k, gi in enumerate(g.get("images", [])):  # ảnh đã có: dùng lại vật liệu đang trỏ tới ảnh đó
         gbv = g["bufferViews"][gi["bufferView"]]
         if gbv["byteLength"] == len(data) and bytes(binc[gbv.get("byteOffset", 0):gbv.get("byteOffset", 0) + len(data)]) == data:
-            return None
+            return _material_of_image(g, k)  # thân (vũ khí tách từ chính lưới thân) → None; D-322: vật thứ hai cùng ảnh
     binc += b"\0" * (-len(binc) % 4)
     g["bufferViews"].append({"buffer": 0, "byteOffset": len(binc), "byteLength": len(data)})
     binc += data

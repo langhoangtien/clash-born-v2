@@ -30,6 +30,8 @@ var _frog: HexFrog3D
 var _meshes: Array[GeometryInstance3D] = []
 ## D-161: vật liệu đặc của từng bề mặt (theo _meshes), để trả lại sau khi hết mờ.
 var _solid: Array[Array] = []
+var _base: Array[Array] = []  ## D-322: vật liệu gốc (EffectLook đổi ảnh màu theo hiệu ứng)
+var _look: Dictionary = {}
 var _faded: bool = false
 var _playing: String = ""
 var _rate: AnimRate  # D-277: lính / quái 30 lần / giây; null = hero (mỗi khung)
@@ -80,6 +82,7 @@ func _make_model(e: Entity, cfg: Dictionary) -> void:
 			for k: int in (n as MeshInstance3D).mesh.get_surface_count():
 				mats.append((n as MeshInstance3D).get_active_material(k))
 		_solid.append(mats)
+		_base.append(mats.duplicate())
 	for anim: String in [_rig["idle"], _rig["run"], _rig.get("stun", ""), _cfg.get("sprint", _rig.get("sprint", "")), _cfg.get("stealth", "")].filter(_anim.has_animation):
 		_anim.get_animation(anim).loop_mode = Animation.LOOP_LINEAR
 	if e.kind != Entity.Kind.HERO:
@@ -131,6 +134,10 @@ func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int, faded: b
 		return
 	if e.facing != Vector2.ZERO: rotation.y = atan2(e.facing.x, e.facing.y)
 	_tint = EffectVfx3D.tint_of(e)
+	var look: Dictionary = EffectLook.of(_cfg, e)
+	if look.get("skin", "") != _look.get("skin", ""):
+		EffectLook.apply_skin(_meshes, _base, _solid, look.get("skin", ""), _cfg.get("skin_of", ""), _faded)
+	_look = look
 	_feel()
 	_stunned = e.cast == null and not Rules.can_move(e) and not Rules.can_attack(e)
 	if e.reincarnate_tick >= 0:  # DTH-02: nằm chờ tái sinh — ngã rồi nằm yên ở khung cuối
@@ -270,7 +277,7 @@ func _play_attack(w: World, e: Entity) -> void:
 	if fresh:
 		_attack_tick = e.attack_start_tick
 		_swing += 1
-	var pick: Array = ModelLibrary.attack_pick(_cfg, _swing, IMPACT)  # D-249: luân phiên `attack` / `attack_alt`
+	var pick: Array = ModelLibrary.attack_pick(_cfg.merged(_look, true), _swing, IMPACT)  # D-249; D-322 đòn theo hiệu ứng
 	var length: float = _anim.get_animation(pick[0]).length
 	if fresh:
 		var windup: float = maxf(1.0, e.attack_release_tick - e.attack_start_tick) * SimClock.TICK_SECONDS

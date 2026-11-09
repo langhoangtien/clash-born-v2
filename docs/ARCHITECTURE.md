@@ -76,7 +76,7 @@ clashborn_v2/
                            đòn), StateMarks (dấu trạng thái); vùng kỹ năng vẽ 3D ở ZoneView3D (D-297)
     three/                 Trận vẽ 3D (D-145, D-157): MatchView3D (mặt đất, camera, sương trong shader đất,
                            D-180), GroundCanvas + ground_shapes.gdshader (hình phẳng trên đất kiểu lệnh CanvasItem,
-                           mỗi hình một ô MultiMesh — D-180), GroundMarks (bụi, vòng shop, vòng trại dựng một lần), Actor3D (một đơn vị: nhân vật KayKit hoặc ảnh billboard), ModelLibrary
+                           mỗi hình một ô MultiMesh — D-180), GroundMarks (bụi, vòng shop, vòng trại dựng một lần), Actor3D (một đơn vị: nhân vật 3D có xương hoặc ảnh billboard; EffectLook — đổi da / đòn đánh theo hiệu ứng đang có, `effect_looks` trong units_3d.json, D-322), ModelLibrary
                            (tra assets/models/units_3d.json), Bars3D (thanh máu, dấu trạng thái, ổ khóa),
                            Look3D (ánh sáng, môi trường, bóng chân) — D-146, D-150; Terrain3D + ground / water /
                            kit / kit_tex .gdshader (mặt đất ảnh nền theo mặt nạ, nước, vật liệu cảnh vật vẽ sẵn sáng

@@ -238,7 +238,7 @@ def export(obj):
     bpy.context.view_layer.objects.active = obj
     path = os.path.join(OUT, obj.name + ".glb")
     bpy.ops.export_scene.gltf(filepath=path, use_selection=True, export_vertex_color="ACTIVE", export_normals=False,
-                              export_materials="NONE", export_yup=True)
+                              export_materials="EXPORT" if obj.get("textured") else "NONE", export_yup=True)  # D-322
     print(f"{obj.name}: {sum(len(p.vertices) - 2 for p in obj.data.polygons)} tam giác")
 
 

@@ -27,6 +27,10 @@ RUNE = (96, 214, 250)
 BANNER = (190, 52, 40)
 PETAL = (246, 244, 236)
 LEAF = (86, 132, 52)
+STEEL = (176, 186, 198)
+STEEL_LIGHT = (232, 238, 244)
+GOLD = (214, 168, 64)
+GRIP = (92, 56, 36)
 
 
 def _box(bm, center, size, rot=0.0, tilt=0.0):
@@ -254,4 +258,55 @@ def flowers(name, rng):
     return obj
 
 
-BUILDERS = [bones, log, stump, campfire, totem, crystals, mushrooms, flowers]
+def sword(name, rng):
+    """D-322: kiếm Gorran (cầm hai tay, Cuồng Hóa chém hai kiếm): lưỡi thép thuôn nhọn mặt vát, chắn tay vàng, cán nâu
+    quấn, núm vàng. Đứng thẳng (Blender z = trục dọc), cao 1 đơn vị — place_prop.py đặt cỡ / chỗ nắm."""
+    bm = bmesh.new()
+    _box(bm, (0, 0, 0.11), (0.045, 0.045, 0.2))
+    _box(bm, (0, 0, 0.225), (0.24, 0.06, 0.04))
+    knob = bmesh.ops.create_icosphere(bm, subdivisions=1, radius=0.04)
+    for v in knob["verts"]:
+        v.co.z += 0.0
+    base, tip = 0.245, 1.0
+    rows = [(base, 0.085), (0.8, 0.078), (0.93, 0.042), (tip, 0.0)]
+    rings = []
+    for z, w in rows:  # mặt cắt hình thoi dẹt: rộng theo x, mỏng theo y
+        rings.append([bm.verts.new((x * w, y * 0.016 if w else 0.0, z)) for x, y in ((1, 0), (0, 1), (-1, 0), (0, -1))])
+    for r0, r1 in zip(rings, rings[1:]):
+        for k in range(4):
+            bm.faces.new((r0[k], r0[(k + 1) % 4], r1[(k + 1) % 4], r1[k]))
+    bm.faces.new(list(reversed(rings[0])))
+    obj = K.finish(name, bm)
+    K.paint(obj, lambda c, n: (STEEL, STEEL_LIGHT) if c.z > 0.25 else ((GOLD, None) if c.z > 0.2 or c.z < 0.02 else (GRIP, None)), rng)
+    _bake_palette(obj)
+    return obj
+
+
+def _bake_palette(obj):
+    """Màu đỉnh → ảnh bảng màu nhỏ + UV mỗi mặt trỏ vào ô màu của nó (vật gắn vào thân tướng cần ảnh màu riêng —
+    glb_rig_ops chỉ chép vật liệu có ảnh; không có thì vật mượn ảnh thân, ra sai màu). Đánh dấu `textured` cho export."""
+    import bpy
+    me = obj.data
+    cols = me.color_attributes.active_color
+    face_col = [tuple(round(c, 3) for c in cols.data[p.loop_indices[0]].color[:3]) for p in me.polygons]
+    palette = sorted(set(face_col))
+    n = len(palette)
+    img = bpy.data.images.new(obj.name + "_palette", width=n, height=1)
+    img.pixels = [v for c in palette for v in (*c, 1.0)]
+    img.pack()
+    uv = me.uv_layers.new(name="UVMap")
+    for p, c in zip(me.polygons, face_col):
+        u = (palette.index(c) + 0.5) / n
+        for li in p.loop_indices:
+            uv.data[li].uv = (u, 0.5)
+    mat = bpy.data.materials.new(obj.name + "_mat")
+    mat.use_nodes = True
+    tex = mat.node_tree.nodes.new("ShaderNodeTexImage")
+    tex.image = img
+    tex.interpolation = "Closest"
+    mat.node_tree.links.new(tex.outputs["Color"], mat.node_tree.nodes["Principled BSDF"].inputs["Base Color"])
+    me.materials.append(mat)
+    obj["textured"] = True
+
+
+BUILDERS = [bones, log, stump, campfire, totem, crystals, mushrooms, flowers, sword]

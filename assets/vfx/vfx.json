@@ -477,30 +477,12 @@
   "parts": [
    {
     "type": "pillar",
-    "radius": 50,
+    "radius": 55,
     "tall": 2.4,
-    "life": 0.8,
-    "color": "#cc7a52",
-    "edge": "#ffe2cf",
-    "alpha": 0.65
-   },
-   {
-    "type": "wisps",
-    "radius": 45,
-    "tall": 1.6,
-    "life": "duration",
-    "color": "#d98450",
-    "edge": "#ffe6d2",
-    "alpha": 0.75
-   },
-   {
-    "type": "aura",
-    "radius": 75,
-    "life": "duration",
-    "width": 0.2,
-    "color": "#cc7a52",
-    "edge": "#ffe2cf",
-    "alpha": 0.5
+    "life": 0.6,
+    "color": "#c8402c",
+    "edge": "#ffd2c2",
+    "alpha": 0.6
    }
   ]
  },

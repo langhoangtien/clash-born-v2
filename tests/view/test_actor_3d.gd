@@ -173,3 +173,33 @@ func test_D_277_corpse_animates_on_its_own() -> void:
 	assert_eq(creep._anim.callback_mode_process, AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_IDLE,
 		"xác không còn được đồng bộ: hoạt ảnh chết tự chạy")
 	creep.free()
+
+
+## D-322: Gorran Cuồng Hóa — đang có hiệu ứng gorran_rage thì da đỏ (ảnh màu `skin`) và đánh bằng hoạt ảnh chém hai kiếm;
+## hết hiệu ứng trả về hình gốc.
+func test_D_322_rage_look_red_skin_and_dual_sword_attack() -> void:
+	var lib: ContentLibrary = ContentLibrary.load_dir()
+	var w: World = World.new(1, BalanceSettings.new())
+	var g: Entity = UnitFactory.hero(w, lib.heroes[&"gorran"], 0, Vector2(500, 500))
+	var cfg: Dictionary = ModelLibrary.unit(g.art_id)
+	assert_true(EffectLook.of(cfg, g).is_empty(), "chưa Cuồng Hóa: hình gốc")
+	var values: Dictionary = {&"bat_cut": 0.3, &"regen": 15.0, &"move_bonus": 30.0, &"rage_damage": 0.0, &"duration": 25.0}
+	Effects.apply(w, g, load("res://content/effects/gorran_rage.tres") as EffectDef, g, values, "25")
+	var look: Dictionary = EffectLook.of(cfg, g)
+	assert_eq(look.get("attack", ""), "attack_rage", "Cuồng Hóa: chém hai kiếm")
+	assert_true(ResourceLoader.exists(ModelLibrary.MODELS + String(look.get("skin", ""))), "có ảnh da đỏ")
+	var a: Actor3D = Actor3D.make(g)
+	assert_true(a._anim.has_animation("attack_rage"), "mô hình có hoạt ảnh chém hai kiếm")
+	var mats: Array[Array] = []
+	for row: Array in a._base:
+		mats.append(row.duplicate())
+	EffectLook.apply_skin(a._meshes, a._base, a._solid, look["skin"], cfg["skin_of"], false)
+	var changed: int = 0
+	var kept: int = 0
+	for k: int in a._base[0].size():
+		changed += int(a._solid[0][k] != a._base[0][k])
+		kept += int(a._solid[0][k] == a._base[0][k])
+	assert_eq([changed, kept], [1, 2], "chỉ thân đổi sang da đỏ, hai kiếm (ảnh riêng) giữ nguyên")
+	EffectLook.apply_skin(a._meshes, a._base, a._solid, "", cfg["skin_of"], false)
+	assert_eq(a._solid[0], a._base[0], "hết hiệu ứng: trả vật liệu gốc")
+	a.free()
