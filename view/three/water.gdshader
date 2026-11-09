@@ -26,9 +26,11 @@ float noise(vec2 p) {  // nhiễu rẻ từ độ sáng ảnh đáy sông
 
 void fragment() {
 	vec2 dd = texture(depth_tex, (xz - mask_origin) / mask_size).ra;
-	float s = dd.y + (noise(xz / 19.0) * 1.4 - noise(xz / 4.3 + 0.37) * 0.6 - 0.25) * 0.7;
-	if (s < 0.5) {
-		discard;  // D-313: bờ lượn
+	if (dd.y < 0.8) {  // D-315: chỉ dải sát bờ mới tính nhiễu (nhiễu ≥ −0,3 → trong lõi sông không bao giờ bị cắt)
+		float s = dd.y + (noise(xz / 13.0) - 0.3) * 2.2;  // một lần đọc ảnh (độ sáng ảnh đáy 0,18…0,42 → ±0,26)
+		if (s < 0.5) {
+			discard;  // D-313: bờ lượn
+		}
 	}
 	float d = dd.x;
 	vec3 bed = texture(bed_tex, xz / bed_m).rgb * shallow_tint;
