@@ -1,12 +1,12 @@
 # Bàn giao — Clashborn v2 (cập nhật 2026-11-09)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-316**). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-317**). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh thì chụp trong game (xvfb) và gửi ảnh JPG.
 
 ## 1. Trạng thái
 
-- **855 test xanh** (`GODOT=... bash tools/run_tests.sh`; soak `--soak` chạy trước khi đóng mốc). APK mới nhất trên
+- **856 test xanh** (`GODOT=... bash tools/run_tests.sh`; soak `--soak` chạy trước khi đóng mốc). APK mới nhất trên
   https://clashborn.quest (xem `curl -s https://clashborn.quest/version.json`); phát hành mục 4.
 - Android: trình vẽ Mobile (Vulkan), đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
   Hiệu năng máy tính bảng ổn (D-261..277, D-285). Tên miền `clashborn.quest` từng bị registry treo (serverHold) — đã
@@ -27,7 +27,9 @@ Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh 
   D-313/314: đá lát base phiến lớn trơn (Codex T14 qua `stone_tint.py`), không vòng viền, rêu quanh chân trụ; rào base /
   fountain = lan can rìa map; hang người đá **một cửa ra sông**, đá chung style_kit cao dần về phía đối diện cửa; sông bờ
   lượn, sóng vệt dài, đáy đứng yên, người lội lún + vòng gợn (`Wading3D`). **Người dùng thích đá Blender (style_kit) hơn
-  Tripo / Codex** — vật đá mới ưu tiên dựng bằng style_kit (cần bpy).
+  Tripo / Codex** — vật đá mới ưu tiên dựng bằng style_kit. **bpy**: `python3 -m venv <scratch>/bpyenv &&
+  <scratch>/bpyenv/bin/pip install bpy` (~10 phút, bpy 5.2, Python 3.13), rồi `<scratch>/bpyenv/bin/python
+  tools/models/style_kit.py [tên…]`. D-317: đồ trại + trang trí rừng (`style_props.py`, `decor_camps.py`).
 - **Màu điện thoại ≠ máy tính** (D-316): máy tính chạy Compatibility (OpenGL, sRGB), APK chạy Mobile (Vulkan, tuyến tính).
   Kiểm màu điện thoại trên máy cloud: `apt-get install -y mesa-vulkan-drivers`, rồi `xvfb-run -a godot --path .
   --rendering-method mobile --rendering-driver vulkan ...` (lavapipe). Màu đỉnh / hằng màu trong shader phải qua

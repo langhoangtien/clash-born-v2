@@ -238,3 +238,21 @@ func test_D_316_water_data_rgb_and_vertex_colors_linearized() -> void:
 	for path: String in ["res://view/three/kit.gdshader", "res://view/three/kit_tex.gdshader", "res://view/three/ground_shapes.gdshader"]:
 		var code: String = FileAccess.get_file_as_string(path)
 		assert_true(code.contains("srgb.gdshaderinc") and not code.contains("ALBEDO = COLOR.rgb"), "%s đổi màu đỉnh sang tuyến tính" % path)
+
+
+## D-317: mỗi loại trại có đồ riêng (pha lê trại lớn, totem + lửa trại trại pháp sư); đồ cao (totem, pha lê) nằm trong
+## vùng chặn (trông chặn thì chặn, D-179); khoảng rừng trống có cụm trang trí thấp (hoa, nấm, gốc cây, gỗ đổ).
+func test_D_317_camp_props_and_open_area_clutter() -> void:
+	var layout: MapLayout = load(MAP_PATH) as MapLayout
+	var seen: Dictionary = {}
+	for it: Array in Terrain3D.items():
+		var kind: String = String(it[0])
+		seen[kind] = int(seen.get(kind, 0)) + 1
+		if kind == "totem" or kind == "crystals":
+			var p: Vector2 = Vector2(float(it[1]), float(it[2]))
+			var inside: bool = false
+			for poly: PackedVector2Array in layout.collision_polygons:
+				inside = inside or Geometry2D.is_point_in_polygon(p, poly)
+			assert_true(inside, "%s tại %s nằm trong vùng chặn" % [kind, p])
+	for kind: String in ["crystals", "totem", "campfire", "bones", "flowers", "stump", "log", "mushrooms"]:
+		assert_true(int(seen.get(kind, 0)) > 3, "có %s (%d)" % [kind, int(seen.get(kind, 0))])

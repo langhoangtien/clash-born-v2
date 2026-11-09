@@ -30,6 +30,7 @@ import decor_place as DP  # noqa: E402
 import arena as AR  # noqa: E402
 import base_decor as BD  # noqa: E402
 import lane_decor as LD  # noqa: E402
+import decor_camps as DC  # noqa: E402
 
 DATA = os.path.join(HERE, "..", "..", "data", "maps")
 MARGIN = 1600.0   # mặt nạ phủ thêm ngoài khung map (px thế giới)
@@ -153,8 +154,11 @@ def main():
     BD.tufts(items, m, rng)
     DP.scatter(items, m, forest, wet, rng)
     LD.edges(items, m, forest, wet, rng)  # D-312: cỏ / dương xỉ / đá nhỏ dọc mép lane
+    solid = unary_union(forest + rocks + [Polygon(c["outer"]).buffer(0) for c in m["render"]["cliffs"]])
+    DC.camps(items, m, solid, rng)  # D-317: đồ riêng từng loại trại
+    DC.open_areas(items, m, solid, wet, paths_world(m), rng)  # D-317: cụm trang trí khoảng rừng trống
     AR.clear_items(items, m)
-    AR.decor_items(items, m, unary_union(forest + rocks + [Polygon(c["outer"]).buffer(0) for c in m["render"]["cliffs"]]))  # D-308, D-313
+    AR.decor_items(items, m, solid)  # D-308, D-313
     abyss, rail = abyss_data(m, edge)
     for r in [rail.exterior] + list(rail.interiors):
         DP.along(items, r, "parapet", PARAPET_STEP)

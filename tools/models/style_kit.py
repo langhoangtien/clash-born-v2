@@ -3,10 +3,10 @@
 (camera cố định → không cần đèn, vẽ unshaded). Mỗi mặt một màu: hướng nắng (trên-trái-sau màn hình) chia 3 dải
 sáng / vừa / tối; tối ngả xanh lạnh, sáng ngả ấm; chân tối dần (giả AO).
 
-  <venv có bpy>/bin/python tools/models/style_kit.py
+  <venv có bpy>/bin/python tools/models/style_kit.py [tên vật…]
 Ghi assets/models/style/*.glb (gốc ở giữa đáy, đơn vị mét = 100 px thế giới).
 """
-import math, os, random
+import math, os, random, sys
 import bpy, bmesh
 from mathutils import Vector
 
@@ -29,6 +29,7 @@ TUFT = (92, 112, 60)
 BUSH = (70, 100, 56)        # bụi cỏ (VIS-06): cùng sắc cỏ nền (98, 113, 71), đậm hơn cho rõ vùng bụi
 BUSH_TIP = (124, 138, 72)
 LILY = (66, 96, 58)
+FERN = (108, 138, 58)    # D-317: khóm dương xỉ xanh ven lane (thay bản tô lại màu đỉnh D-312)
 
 
 def reset():
@@ -118,8 +119,8 @@ def puff_tree(name, color, rng, height=3.2):
     return obj
 
 
-def leaf_plant(name, rng):
-    """Khóm lá cam thấp (lá dày hình thoi tỏa tròn) — điểm màu như concept."""
+def leaf_plant(name, rng, color=None):
+    """Khóm lá thấp (lá dày hình thoi tỏa tròn): cam như concept; D-317 `color` khác (dương xỉ xanh ven lane)."""
     bm = bmesh.new()
     for i in range(7):
         a = 2 * math.pi * i / 7 + rng.uniform(-0.2, 0.2)
@@ -129,7 +130,7 @@ def leaf_plant(name, rng):
         p = [bm.verts.new(q) for q in (Vector((0, 0, 0.12)), d * L * 0.5 + s + Vector((0, 0, 0.32)), d * L + Vector((0, 0, 0.22)), d * L * 0.5 - s + Vector((0, 0, 0.32)))]
         bm.faces.new(p)  # một mặt: shader bộ asset vẽ cả hai phía
     obj = finish(name, bm)
-    paint(obj, lambda c, n: (LEAF_ORANGE, None), rng)
+    paint(obj, lambda c, n: (color or LEAF_ORANGE, None), rng)
     return obj
 
 
@@ -251,14 +252,20 @@ def main():
         lambda: leaf_plant("plant_orange", rng),
         lambda: slab("rock_tall", 1.3, 1.1, 2.4, rng), lambda: slab("rock_wide", 1.9, 1.2, 1.8, rng),
         lambda: slab("rock_low", 1.5, 1.1, 1.1, rng), lambda: slab("rock_small", 0.8, 0.7, 0.5, rng),
-        lambda: W.parapet("parapet", random.Random(57)),  # D-310: rào base / fountain là base_wall (Tripo)
+        lambda: W.parapet("parapet", random.Random(57)),  # D-314: cả rào base / fountain
         lambda: blades("reeds", 15, 1.3, 0.45, REED, REED_TIP, rng, 0.09), lambda: blades("grass_tuft", 8, 0.45, 0.25, TUFT, REED, rng, 0.06),
         lambda: lily("lily", rng), lambda: boulder("boulder_a", rng, 1.0, 0.6), lambda: boulder("boulder_b", rng, 0.7, 0.72),
         lambda: bush("bush_a", rng, 56), lambda: bush("bush_b", rng, 46, 0.65, 0.9), lambda: bush("bush_c", rng, 64, 0.85, 1.1),
     ]
+    import style_props as P  # D-317: vật trang trí rừng + đồ riêng từng loại trại (thêm cuối — rng các vật cũ giữ nguyên)
+    builders.append(lambda: leaf_plant("plant_green", rng, FERN))
+    builders += [lambda b=b: b(b.__name__, rng) for b in P.BUILDERS]
+    only = set(sys.argv[1:])  # `style_kit.py tên…`: chỉ ghi các vật này (vẫn dựng hết để rng như cũ)
     for build in builders:
         reset()
-        export(build())
+        obj = build()
+        if not only or obj.name in only:
+            export(obj)
 
 
 if __name__ == "__main__":
