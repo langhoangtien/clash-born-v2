@@ -502,3 +502,66 @@ người dùng.
 - [x] `noctis_front.png`
 - [x] `noctis_side.png`
 - [x] `noctis_back.png`
+
+
+## Đợt T11 — Người Đá thay rồng + bãi đấu vòng tường đá (2026-11-09)
+
+Người dùng thấy rồng "đánh không có lực" → **thay hai con rồng bằng Người Đá** (boss kiểu Roshan, mạnh dần theo phút,
+cả đội hạ được thì cùng nhận vàng + kinh nghiệm). Hang rồng hiện là vòng đá nhỏ sát bờ sông (ô F5/F6 và chỗ đối xứng
+bên kia sông) → đổi thành **bãi đấu rộng, vòng tường đá thấp bao quanh** như ảnh mẫu.
+
+**Ảnh mẫu chính: `art_inbox/08_style/ref/golem_arena_ref.png`** (người dùng gửi). Phong cách chung: ảnh neo
+`art_inbox/00_style/style_3d_sheet.png` (đá, cỏ, cây). Mọi ảnh vẽ đúng phong cách game: khối mềm vẽ tay, màu đất dịu,
+low-poly vừa phải, **rune / mắt là mảng màu cam phẳng, không quầng sáng tỏa ra**.
+
+Thứ tự làm: **T11a → DỪNG duyệt → T11b + T11c**. Lưu vào `art_inbox/12_golem_arena/`. Xong mỗi bước thì đánh dấu `[x]`,
+commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng.
+
+### T11a — ảnh toàn cảnh để người dùng hình dung (làm trước)
+
+Hai ảnh 1536 × 1024, góc camera như trong game (nhìn chéo từ trên xuống ~46°, như ảnh mẫu), cảnh nằm sát bờ sông:
+
+- [ ] `arena_mockup_moss.png` — bãi đấu **Người Đá Rêu** (bản giống ảnh mẫu): đá xám, rêu vàng xanh, rune cam.
+- [ ] `arena_mockup_lava.png` — cùng bãi, cùng bố cục, **Người Đá Dung Nham**: đá nâu sẫm, vết nứt cam đỏ thay rêu, rune
+  vàng cam. **Cùng hình khối** với bản rêu (game dùng chung một mô hình, chỉ đổi ảnh màu).
+
+Yêu cầu bố cục (game sẽ dựng đúng như vậy):
+
+1. Bãi đất nện **tròn, đường kính ≈ 9 m**; người đá cao ≈ 2,6 m đứng giữa; vẽ 3–4 tướng cao ≈ 1,25 m đang đánh quanh
+   nó để thấy tỉ lệ (tướng chừng một nửa chiều cao người đá).
+2. **Vòng tường đá thấp** (cao ≈ 1 m, ngang hông tướng) bao quanh, ghép từ **6 đoạn cong giống hệt nhau**, chừa
+   **2 cửa rộng ≈ 2,5 m**: một cửa mở ra sông, một cửa mở vào rừng phía đối diện.
+3. Điểm nhấn (ít thôi): 2 trụ đá rune ở hai bên một cửa, 1 cổng vòm đá đổ ở cửa phía rừng, 2 cột cờ vải cam.
+4. Nền trong bãi có **vòng rune cam mờ trên đất** quanh chân người đá (vẽ phẳng trên đất, không phát sáng).
+
+### T11b — Người Đá (3 hướng, để dựng bằng Tripo rồi gắn xương)
+
+- [ ] `golem_boss_front.png`  - [ ] `golem_boss_side.png`  - [ ] `golem_boss_back.png`
+
+- Thiết kế theo người đá trong ảnh mẫu: thân là các **tảng đá to khối**, vai hai tảng lớn nhô cao hơn đầu, đầu nhỏ
+  thụt giữa vai, mắt cam, **rune cam xoắn ở ngực**, rêu vàng xanh phủ đỉnh tảng.
+- **Phải khác rõ golem trại vừa đang có** (`art_inbox/09_units/neutral_buffalo_*.png`, đợt T8c): người đá boss **to
+  và "cổ" hơn** — thêm **vương miện / sừng đá** trên đầu, vài **khối đá khắc rune nhỏ** ở vai và cẳng tay, tảng đá
+  lưng có **rêu dày hơn và vài cây cỏ / hoa nhỏ mọc trên đó**, đế chân to vững. Nhìn là biết boss.
+- Quy tắc vẽ để Tripo dựng tốt: như đợt T8 / T8b (nền xám nhạt trơn, không đĩa đất, không bóng, không chữ; ba hướng
+  **cùng một tư thế**; đứng thẳng, hai tay buông dang ra ngoài ~25° có **khe hở rõ** với thân và chân, nắm đấm ngang
+  gối không chạm đất; miệng ngậm). Ảnh nghiêng nhìn từ **bên phải**. 1024 × 1024 PNG.
+- Chỉ vẽ **bản rêu**; bản dung nham game tự đổi màu ảnh (giữ mảng rêu là mảng màu riêng, rõ ràng để dễ đổi).
+
+### T11c — bộ ghép tường bãi đấu (vật tĩnh, không gắn xương)
+
+Mỗi món 3 ảnh: **nghiêng 3/4 từ trên xuống** (`_front`), **nhìn ngang** (`_side`), **nhìn thẳng từ trên** (`_top`).
+Nền xám nhạt trơn, không đất / cỏ dưới chân (trừ cỏ / rêu mọc **trên** đá), không bóng.
+
+| Xong | Tên file (thêm `_front/_side/_top`) | Nội dung | Tam giác tối đa |
+|---|---|---|---|
+| [ ] | `arena_wall_arc` | **Một đoạn tường cong liền khối** = 1/6 vòng tròn bán kính ≈ 4,8 m (dài ≈ 5 m theo cung), cao ≈ 1 m, dày ≈ 1 m. Trông như nhiều phiến đá xếp nhưng **là một khối liền** (các khe chỉ là nét vẽ / khắc nông, không tách rời). Rêu vàng xanh trên đỉnh vài chỗ. Hai đầu đoạn vát gọn để 6 đoạn đặt nối nhau khít | 600 |
+| [ ] | `arena_rune_stone` | Trụ đá rune đứng (cao ≈ 1,6 m), mặt trước khắc rune cam phẳng | 200 |
+| [ ] | `arena_arch` | Cổng vòm đá đổ một nửa (cao ≈ 2,8 m, rộng ≈ 2,5 m): hai chân cột, nửa vòm còn lại, vài viên rơi sát chân | 500 |
+| [ ] | `arena_banner` | Cột gỗ có thanh ngang treo cờ vải cam (rune phẳng), cờ là **một tấm dày**, không tua rua | 150 |
+
+**Vì sao tường làm đoạn cong liền khối** (người dùng hỏi): ghép từ nhiều viên đá nhỏ thì mỗi viên tốn tam giác riêng
+(25–30 viên × 100–150 = 3 000–4 000 tam giác cho một vòng) và các mặt tiếp xúc giữa viên bị thừa; một đoạn cong liền
+khối ≈ 600 tam giác, đặt lại 4–6 lần quanh vòng ≈ 2 400–3 600 nhưng **đẹp hơn ở cùng số tam giác** (chi tiết nằm ở ảnh
+màu, không ở số mặt) và game vẽ cả vòng bằng **một lệnh vẽ** (MultiMesh cùng một mô hình). Không làm cả vòng thành
+một mô hình duy nhất vì cần chừa cửa và ảnh màu sẽ bị kéo giãn (mờ) trên vòng dài.
