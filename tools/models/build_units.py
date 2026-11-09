@@ -48,11 +48,11 @@ UNITS = {
     # D-321: Gorran dựng lại theo quy trình Brakk (concept T9 bỏ goblin trên lưng — Codex T15 → Tripo multiview → glb_yaw −90 →
     # afk.ai human); W Lọ Độc = ném qua vai, Q Vũng Axit = tung lựu đạn. D-322: giảm mặt + 2 kiếm Blender. D-323: đánh thường
     # = đấm móc; Cuồng Hóa (R) rút hai kiếm sau vai (GS_Draw đối xứng `%`), đánh luân phiên tay phải / tay trái (bản soi
-    # gương `^`) — units_3d.json effect_looks. D-324: chém = SS_Power_Slash (giơ cao qua vai, chém chéo xuống, lao người);
-    # bao kiếm + cán kiếm đeo sau lưng (gắn spine_03), cán ẩn khi đã rút.
+    # gương `^`) — units_3d.json effect_looks. D-325: chém = đòn dựng bằng code `!` (glb_slash.py: giơ cao qua vai phải,
+    # chém chéo xuống hông trái, chân đứng yên). D-324: bao kiếm + cán kiếm đeo sau lưng (gắn spine_03), cán ẩn khi đã rút.
     "gorran": ("gorran/gorran_lo", "heroes/gorran",
                "Fighting Idle=idle,Jog=run,Melee_Hook+Melee_Hook_Rec=attack,"
-               "SS_Power_Slash~@0.5-1.4=attack_rage,SS_Power_Slash~^@0.5-1.4=attack_rage_l,"
+               "Fighting Idle!@0-0.1=attack_rage,Fighting Idle!^@0-0.1=attack_rage_l,"
                "Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
                "Throw_Generic=cast,Grenade_Toss=skill_1,OverhandThrow=skill_2,GS_Draw%@0.2-1.3=skill_3,Sprint=sprint",
                True, False, ["gorran/gorran_sword_r:hand_r", "gorran/gorran_sword_l:hand_l", "gorran/gorran_sheath_r:spine_03",
