@@ -44,6 +44,15 @@ UNITS = {
               "Punch_Cross=cast,NinjaJump_Start@0.2-0.96+NinjaJump_Land@0-0.7=skill_1,Defend=skill_2,Power Up=skill_3,"
               "Sprint=sprint",
               True, False),
+    # D-304: Myra / Vexa bản người lớn (concept_gen.py → split_turnaround.py → Tripo multiview → afk.ai), tay không
+    "myra": ("myra_v2", "heroes/myra",
+             "Idle_A=idle,Run_Female=run,Magic_1H_Attack=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
+             "Magic_1H_Cast=cast,Spell_Simple_Shoot=skill_1,Magic_2H_Cast=skill_2,Spell_Wide=skill_3,Sprint=sprint",
+             True, False),
+    "vexa": ("vexa_v2", "heroes/vexa",
+             "Idle_A=idle,Run_Female=run,Magic_1H_Attack_2=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
+             "Magic_1H_Cast=cast,Fireball=skill_1,Spell_Wide=skill_2,Magic_2H_Attack=skill_3,Sprint=sprint",
+             True, False),
 }
 
 

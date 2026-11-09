@@ -80,7 +80,9 @@ def generate(png, faces, out_dir, multiview=False, use=("front", "side", "back")
     url = o.get("model") or o.get("pbr_model") or o.get("base_model")
     print(name, "url", url, flush=True)
     dst = os.path.join(out_dir, name + ".glb")
-    urllib.request.urlretrieve(url, dst)
+    req = urllib.request.Request(url, headers={"User-Agent": "curl/8"})  # CDN Tripo chặn UA mặc định của urllib (403)
+    with urllib.request.urlopen(req, timeout=300) as r, open(dst, "wb") as f:
+        f.write(r.read())
     return dst
 
 

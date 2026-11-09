@@ -1,6 +1,6 @@
 # Bàn giao — Clashborn v2 (2026-11-05)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-303). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất D-304). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 
 ## 1. Trạng thái
@@ -10,13 +10,14 @@
   Hiệu năng máy tính bảng (D-261..277): tối ưu SIM, sương thành ảnh nhỏ, chia tick (D-273), nạp trước hình / icon;
   Benchmark A/B gần nhất (0.1.470) ổn. Khựng đầu trận đã sửa (D-285).
 - Hero 3D đã làm theo quy trình mới: **Duy Anh** (đạt), **Noctis** (bản T9d không áo choàng, chờ người chơi duyệt),
-  **Brakk** (afk.ai). Myra / Vexa / Gorran còn mô hình KayKit cũ; concept T9 của họ đã có trong `art_inbox/09_units/`.
+  **Brakk** (afk.ai), **Myra / Vexa** (D-304: bản người lớn, concept vẽ bằng `tools/concept_gen.py`, tay không). Gorran còn
+  mô hình KayKit cũ.
 - Hiệu ứng chiêu 3D (D-247..256): Duy Anh W (vệt chém vẽ tay + sóng bụi + tia lóe), Q (vệt tốc độ bám đường chạy).
   Chưa có: Duy Anh R, toàn bộ Noctis, các hero khác.
 
 ## 2. Quy trình hero 3D (D-235, D-242, D-244, D-249)
 
-1. Codex vẽ **tay không** (A-pose, tay tách thân, không áo choàng / vạt dài) + vũ khí vẽ riêng (phiếu
+1. Codex vẽ (hoặc `tools/concept_gen.py` vẽ tờ 3 góc nhìn → `tools/split_turnaround.py`, D-304) **tay không** (A-pose, tay tách thân, không áo choàng / vạt dài) + vũ khí vẽ riêng (phiếu
    `art_inbox/YEU_CAU_STYLE.md`, đợt T9*).
 2. `python3 tools/tripo_gen.py art_inbox/09_units/<tên> --multiview --views front,side,back --faces 2500`
    (ảnh nghiêng nhìn từ trái thì `side_left`); vũ khí `--views front,side --faces 500`.
