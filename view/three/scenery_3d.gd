@@ -20,6 +20,7 @@ func build(layout: MapLayout) -> void:
 	if cfg.is_empty():
 		return
 	_place_decor(Terrain3D.items())
+	_add_fires(Terrain3D.items())
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = SEED + 1
 	var bushes: Array[Array] = []
@@ -32,6 +33,13 @@ func build(layout: MapLayout) -> void:
 	for i: int in layout.shop_points.size():
 		_add_static(cfg["shop"], layout.shop_points[i], 0.0)
 	add_fountains(layout)
+
+
+## D-319: lửa bập bùng + ánh lửa trên đất ở mỗi đống lửa trại.
+func _add_fires(items: Array) -> void:
+	for it: Array in items:
+		if it[0] == "campfire":
+			add_child(CampfireFx.make(Vector3(float(it[1]), 0, float(it[2])) * MatchView3D.S, float(it[4])))
 
 
 ## D-221: fountain mỗi phe ở fountain_point, ảnh màu theo phe, mặt trước (bậc thềm, +Z) quay về nhà chính.

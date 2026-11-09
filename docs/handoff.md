@@ -1,12 +1,12 @@
 # Bàn giao — Clashborn v2 (cập nhật 2026-11-09)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-318**). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-319**). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh thì chụp trong game (xvfb) và gửi ảnh JPG.
 
 ## 1. Trạng thái
 
-- **857 test xanh** (`GODOT=... bash tools/run_tests.sh`; soak `--soak` chạy trước khi đóng mốc). APK mới nhất trên
+- **858 test xanh** (`GODOT=... bash tools/run_tests.sh`; soak `--soak` chạy trước khi đóng mốc). APK mới nhất trên
   https://clashborn.quest (xem `curl -s https://clashborn.quest/version.json`); phát hành mục 4.
 - Android: trình vẽ Mobile (Vulkan), đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
   Hiệu năng máy tính bảng ổn (D-261..277, D-285). Tên miền `clashborn.quest` từng bị registry treo (serverHold) — đã

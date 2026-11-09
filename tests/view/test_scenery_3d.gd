@@ -256,3 +256,20 @@ func test_D_317_camp_props_and_open_area_clutter() -> void:
 			assert_true(inside, "%s tại %s nằm trong vùng chặn" % [kind, p])
 	for kind: String in ["crystals", "totem", "campfire", "bones", "flowers", "stump", "log", "mushrooms"]:
 		assert_true(int(seen.get(kind, 0)) > 3, "có %s (%d)" % [kind, int(seen.get(kind, 0))])
+
+
+## D-319: mỗi đống lửa trại có ngọn lửa động + ánh lửa trên đất (CampfireFx), nấm chỉ một cụm mỗi trại pháp sư.
+func test_D_319_campfires_have_animated_flame_and_mushrooms_sparse() -> void:
+	var s: Scenery3D = Scenery3D.new()
+	s._add_fires(Terrain3D.items())
+	var fires: int = 0
+	var mushrooms: int = 0
+	for it: Array in Terrain3D.items():
+		fires += 1 if String(it[0]) == "campfire" else 0
+		mushrooms += 1 if String(it[0]) == "mushrooms" else 0
+	assert_eq(s.get_child_count(), fires, "mỗi đống lửa một CampfireFx")
+	assert_true(fires > 0)
+	var fx: CampfireFx = s.get_child(0) as CampfireFx
+	assert_true((fx.get_child(0) as MeshInstance3D).material_override.shader.code.contains("TIME"), "lửa đổi theo thời gian")
+	assert_true(mushrooms <= fires, "nấm chỉ một cụm mỗi trại pháp sư (%d)" % mushrooms)
+	s.free()

@@ -11,9 +11,11 @@ from shapely.ops import unary_union
 CAMP_LOW = {
     "small": [("bones", 2, 1.5), ("log", 1, 1.3)],
     "large": [("rock_small", 2, 1.0), ("stump", 1, 1.3)],
-    "medium": [("campfire", 1, 1.4), ("mushrooms", 2, 1.5), ("bones", 1, 1.3)],
+    "medium": [("campfire", 1, 1.4), ("bones", 1, 1.3)],
     "beast": [("stump", 2, 1.4), ("bones", 1, 1.6), ("log", 1, 1.4)],
 }
+# D-319: nấm (người chơi: to, màu nổi) — một cụm nhỏ sát vách hốc trại pháp sư, không rải ở khoảng trống.
+MUSHROOM = ("mushrooms", 0.9)
 # Đồ cao, đặt trong vùng chặn quanh hốc: (mô hình, số lượng, cỡ).
 CAMP_TALL = {"large": [("crystals", 2, 1.4)], "medium": [("totem", 1, 1.2)], "beast": [], "small": []}
 LOW_RING = (190.0, 290.0)    # bán kính đặt đồ thấp quanh tâm trại (quái đứng ở giữa)
@@ -21,7 +23,7 @@ TALL_RING = (250.0, 360.0)   # dò chỗ đặt đồ cao (phải nằm trong v�
 OPEN_SPACING = 520.0         # khoảng cách lưới dò khoảng trống
 PATH_KEEP = 160.0           # cách tim lối rừng ≥ (px): đường đi chính trống
 SOLID_KEEP = 120.0          # cách vật cản ≥ (px)
-OPEN_KINDS = [("flowers", 0.3), ("grass_tuft", 0.2), ("mushrooms", 0.12), ("stump", 0.12), ("log", 0.1),
+OPEN_KINDS = [("flowers", 0.36), ("grass_tuft", 0.26), ("stump", 0.12), ("log", 0.1),
               ("rock_small", 0.08), ("plant_green", 0.08)]
 
 
@@ -38,6 +40,8 @@ def camps(items, m, solid, rng):
                 p = Point(cx + math.cos(a) * d, cy + math.sin(a) * d)
                 if not solid.contains(p):
                     items.append([model, p.x, p.y, rng.uniform(0, math.tau), sc * rng.uniform(0.9, 1.1)])
+        if kind == "medium":
+            _near_wall(items, (cx, cy), solid, MUSHROOM, rng)
         for model, n, sc in CAMP_TALL[kind]:
             placed, start = 0, rng.uniform(0, math.tau)
             for k in range(24):
@@ -49,6 +53,18 @@ def camps(items, m, solid, rng):
                 if inner.contains(p):  # chân vật nằm trong vùng chặn, sát mép hốc
                     items.append([model, p.x, p.y, rng.uniform(0, math.tau), sc * rng.uniform(0.9, 1.1)])
                     placed += 1
+
+
+def _near_wall(items, c, solid, prop, rng):
+    """Một vật ngay chân vách hốc trại: dò 24 hướng, lấy chỗ trống đầu tiên cách vùng chặn < 0,9 m."""
+    start = rng.uniform(0, math.tau)
+    for k in range(24):
+        a = start + k * math.tau / 24
+        for d in (300.0, 260.0, 220.0):
+            p = Point(c[0] + math.cos(a) * d, c[1] + math.sin(a) * d)
+            if not solid.contains(p) and solid.distance(p) < 90.0:
+                items.append([prop[0], p.x, p.y, rng.uniform(0, math.tau), prop[1]])
+                return
 
 
 def open_areas(items, m, solid, wet, paths, rng):

@@ -9,21 +9,22 @@ import style_kit as K
 BONE = (222, 212, 186)
 WOOD = (150, 104, 66)
 WOOD_END = (206, 168, 112)
-EMBER = (255, 168, 60)
-FLAME = (255, 222, 120)
+EMBER = (255, 120, 40)
 TOTEM_RED = (178, 64, 48)
 TOTEM_TEAL = (54, 132, 128)
 CRYSTAL = (86, 150, 214)
 CRYSTAL_LIGHT = (176, 222, 250)
-CAP = (206, 58, 44)
-SPOT = (246, 238, 224)
-STEM = (238, 228, 206)
+CAP = (168, 70, 52)      # D-319: mũ nấm đỏ trầm (người chơi: màu quá nổi)
+SPOT = (226, 216, 196)
+STEM = (214, 204, 182)
+CHAR = (62, 44, 34)      # đầu củi cháy sém
+RING_LIGHT = (164, 126, 84)
+BARK_DARK = (86, 60, 42)
 BARK = (118, 80, 52)
-RING_DARK = (170, 128, 82)
+RING_DARK = (128, 92, 60)
 ROPE = (196, 164, 112)
 RUNE = (96, 214, 250)
 BANNER = (190, 52, 40)
-FLAME_OUT = (255, 132, 36)
 PETAL = (246, 244, 236)
 LEAF = (86, 132, 52)
 
@@ -79,7 +80,7 @@ def bones(name, rng):
 def _rings(c, n, top_z, r):
     """Mặt cắt gỗ: vòng tuổi sáng / sẫm xen theo bán kính."""
     d = Vector((c.x, c.y)).length / r
-    return (WOOD_END if int(d * 5) % 2 == 0 else RING_DARK, WOOD_END)
+    return (RING_LIGHT if int(d * 6) % 2 == 0 else RING_DARK, None)
 
 
 def log(name, rng):
@@ -94,54 +95,60 @@ def log(name, rng):
 
 
 def stump(name, rng):
-    """Gốc cây to: thân 10 cạnh loe chân, mặt cắt vòng tuổi, 5 rễ bò, rêu viền mép."""
+    """Gốc cây: thân 12 cạnh loe chân, mặt cắt hơi lõm, vòng tuổi đậm nhạt (tối hơn thân gỗ mới), 6 rễ dài ngắn / to nhỏ
+    khác nhau bò xuống đất, vỏ nâu sẫm dần xuống chân, rêu viền mép."""
     bm = bmesh.new()
-    res = bmesh.ops.create_cone(bm, cap_ends=True, segments=10, radius1=0.52, radius2=0.4, depth=0.55)
+    res = bmesh.ops.create_cone(bm, cap_ends=True, segments=12, radius1=0.5, radius2=0.38, depth=0.5)
     for v in res["verts"]:
-        v.co.z += 0.275
-    for i in range(5):
-        a = i * math.tau / 5 + rng.uniform(-0.2, 0.2)
-        _box(bm, (math.cos(a) * 0.55, math.sin(a) * 0.55, 0.07), (0.42, 0.14, 0.12), a, 0.0)
+        v.co.z += 0.25
+        v.co.x *= rng.uniform(0.92, 1.06)
+        v.co.y *= rng.uniform(0.92, 1.06)
+    bm.normal_update()
+    top = [f for f in bm.faces if f.normal.z > 0.9 and f.calc_center_median().z > 0.4]
+    for k in range(5):  # mặt cắt chia 5 vòng đồng tâm (tô vòng tuổi), lõm dần vào tâm
+        bmesh.ops.inset_region(bm, faces=top, thickness=0.06, depth=-0.008)
+    for i in range(6):
+        a = i * math.tau / 6 + rng.uniform(-0.3, 0.3)
+        L, t = rng.uniform(0.25, 0.5), rng.uniform(0.08, 0.15)
+        _box(bm, (math.cos(a) * (0.4 + L * 0.4), math.sin(a) * (0.4 + L * 0.4), t * 0.5), (L, t, t), a, 0.0)
     obj = K.finish(name, bm)
-    K.paint(obj, lambda c, n: _rings(c, n, 0.55, 0.4) if n.z > 0.9 and c.z > 0.5 else
-            ((K.MOSS, None) if c.z > 0.42 and rng.random() < 0.5 else (BARK, None)), rng)
+    top = lambda c, n: n.z > 0.85 and c.z > 0.4
+    def zone(c, n):
+        if top(c, n):
+            d = Vector((c.x, c.y)).length / 0.38
+            return ((RING_LIGHT if int(d * 5.5) % 2 == 0 else RING_DARK), None)
+        if c.z > 0.42 and rng.random() < 0.45:
+            return (K.MOSS, None)
+        return ((BARK if c.z > 0.18 else BARK_DARK), None)
+    K.paint(obj, zone, rng)
     return obj
 
 
-def _flame(bm, a, r, h, z0):
-    """Một tấm lửa răng cưa 3 lưỡi (dựng đứng theo hướng a)."""
-    d = Vector((math.cos(a), math.sin(a), 0))
-    pts = [-r, -r * 0.55, -r * 0.2, 0.0, r * 0.25, r * 0.6, r]
-    hs = [0.0, h * 0.7, h * 0.45, h, h * 0.5, h * 0.75, 0.0]
-    vs = [bm.verts.new(d * x + Vector((0, 0, z0 + y))) for x, y in zip(pts, hs)]
-    base = bm.verts.new(Vector((0, 0, z0)))
-    for k in range(len(vs) - 1):
-        bm.faces.new((base, vs[k], vs[k + 1]))
-
-
 def campfire(name, rng):
-    """Lửa trại: vòng 9 viên đá, 4 khúc củi chéo, lửa 3 tấm cam bao lõi 3 tấm vàng (không đèn → luôn rực)."""
+    """Lửa trại: vòng 9 viên đá, 5 khúc củi dựng chéo chụm đầu (kiểu chóp) + 2 khúc nằm, than hồng giữa. D-319: ngọn
+    lửa không còn trong mô hình — VIEW vẽ lửa bập bùng + ánh lửa trên đất (CampfireFx)."""
     bm = bmesh.new()
     for i in range(9):
         a = math.tau * i / 9
         st = bmesh.ops.create_icosphere(bm, subdivisions=1, radius=0.16)
         for v in st["verts"]:
             v.co = Vector((v.co.x * 1.2 + math.cos(a) * 0.55, v.co.y + math.sin(a) * 0.55, max(0.0, v.co.z) * 0.85))
-    for i in range(4):
-        _box(bm, (0, 0, 0.14), (0.75, 0.1, 0.1), i * math.pi / 4, 0.3)
-    for k in range(3):
-        _flame(bm, k * math.pi / 3, 0.3, 0.75, 0.12)
-    for k in range(3):
-        _flame(bm, k * math.pi / 3 + 0.5, 0.17, 0.5, 0.13)
+    for i in range(5):
+        a = math.tau * i / 5 + rng.uniform(-0.15, 0.15)
+        _box(bm, (math.cos(a) * 0.16, math.sin(a) * 0.16, 0.2), (0.07, 0.07, 0.48), a, 0.0)
+        for v in bm.verts[-8:]:  # nghiêng đầu củi vào giữa
+            k = (v.co.z - 0.2) / 0.48
+            v.co.x -= math.cos(a) * 0.3 * k
+            v.co.y -= math.sin(a) * 0.3 * k
+    for a in (0.4, 2.2):
+        _box(bm, (0, 0, 0.06), (0.7, 0.09, 0.09), a)
+    coal = bmesh.ops.create_icosphere(bm, subdivisions=1, radius=0.18)
+    for v in coal["verts"]:
+        v.co = Vector((v.co.x, v.co.y, max(0.0, v.co.z) * 0.35 + 0.02))
     obj = K.finish(name, bm)
     hub = lambda c: Vector((c.x, c.y)).length
-    K.paint(obj, lambda c, n: (K.STONE, K.STONE_TOP) if hub(c) > 0.4 else (WOOD, None), rng)
-    for poly in obj.data.polygons:  # lửa: mỗi tam giác lửa có đỉnh cao > 0,33 m (củi thấp hơn); lõi vàng sát trục
-        vs = [obj.data.vertices[i].co for i in poly.vertices]
-        if max(v.z for v in vs) > 0.33 and max(hub(v) for v in vs) < 0.33:
-            col = FLAME if max(hub(v) for v in vs) < 0.18 else FLAME_OUT
-            for li in poly.loop_indices:
-                obj.data.color_attributes.active_color.data[li].color = tuple(v / 255.0 for v in col) + (1.0,)
+    K.paint(obj, lambda c, n: (K.STONE, K.STONE_TOP) if hub(c) > 0.4 else ((CHAR, None) if c.z > 0.28 else (WOOD, None)), rng)
+    _glow(obj, lambda c: hub(c) < 0.16 and c.z < 0.09, EMBER)
     return obj
 
 
@@ -224,7 +231,7 @@ def mushrooms(name, rng):
         for v in cap["verts"]:
             v.co = Vector((v.co.x + x, v.co.y + y, max(-0.1 * h, v.co.z) * 0.75 + h))
     obj = K.finish(name, bm)
-    K.paint(obj, lambda c, n: ((SPOT, SPOT) if rng.random() < 0.22 else (CAP, None)) if n.z > 0.1 and c.z > 0.18 else (STEM, None), rng)
+    K.paint(obj, lambda c, n: ((SPOT, None) if rng.random() < 0.1 else (CAP, None)) if n.z > 0.1 and c.z > 0.18 else (STEM, None), rng)
     return obj
 
 
