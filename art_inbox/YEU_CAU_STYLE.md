@@ -511,18 +511,22 @@ cả đội hạ được thì cùng nhận vàng + kinh nghiệm). Hang rồng 
 bên kia sông) → đổi thành **bãi đấu rộng, vòng tường đá thấp bao quanh** như ảnh mẫu.
 
 **Ảnh mẫu chính: `art_inbox/08_style/ref/golem_arena_ref.png`** (người dùng gửi). Phong cách chung: ảnh neo
-`art_inbox/00_style/style_3d_sheet.png` (đá, cỏ, cây). Mọi ảnh vẽ đúng phong cách game: khối mềm vẽ tay, màu đất dịu,
+`art_inbox/00_style/style_sheet.png` (đá, cỏ, cây). Mọi ảnh vẽ đúng phong cách game: khối mềm vẽ tay, màu đất dịu,
 low-poly vừa phải, **rune / mắt là mảng màu cam phẳng, không quầng sáng tỏa ra**.
 
-Thứ tự làm: **T11a → DỪNG duyệt → T11b + T11c**. Lưu vào `art_inbox/12_golem_arena/`. Xong mỗi bước thì đánh dấu `[x]`,
+**Cập nhật 2026-11-09 (D-308): Claude đã tự làm T11c và dựng bãi thật trong game** (`art_inbox/12_golem_arena/`, ảnh tờ
++ mô hình `assets/models/style/arena_*.glb`); **T11a bỏ** (xem bãi thật trong game). **Codex chỉ còn làm T11b** (người
+đá) — vẽ cho hợp với bãi đã có: tường đá xám ấm, rêu vàng xanh, rune cam.
+
+Thứ tự làm (cũ): **T11a → DỪNG duyệt → T11b + T11c**. Lưu vào `art_inbox/12_golem_arena/`. Xong mỗi bước thì đánh dấu `[x]`,
 commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng.
 
 ### T11a — ảnh toàn cảnh để người dùng hình dung (làm trước)
 
 Hai ảnh 1536 × 1024, góc camera như trong game (nhìn chéo từ trên xuống ~46°, như ảnh mẫu), cảnh nằm sát bờ sông:
 
-- [ ] `arena_mockup_moss.png` — bãi đấu **Người Đá Rêu** (bản giống ảnh mẫu): đá xám, rêu vàng xanh, rune cam.
-- [ ] `arena_mockup_lava.png` — cùng bãi, cùng bố cục, **Người Đá Dung Nham**: đá nâu sẫm, vết nứt cam đỏ thay rêu, rune
+- [-] (bỏ) `arena_mockup_moss.png` — bãi đấu **Người Đá Rêu** (bản giống ảnh mẫu): đá xám, rêu vàng xanh, rune cam.
+- [-] (bỏ) `arena_mockup_lava.png` — cùng bãi, cùng bố cục, **Người Đá Dung Nham**: đá nâu sẫm, vết nứt cam đỏ thay rêu, rune
   vàng cam. **Cùng hình khối** với bản rêu (game dùng chung một mô hình, chỉ đổi ảnh màu).
 
 Yêu cầu bố cục (game sẽ dựng đúng như vậy):
@@ -555,10 +559,10 @@ Nền xám nhạt trơn, không đất / cỏ dưới chân (trừ cỏ / rêu m
 
 | Xong | Tên file (thêm `_front/_side/_top`) | Nội dung | Tam giác tối đa |
 |---|---|---|---|
-| [ ] | `arena_wall_arc` | **Một đoạn tường cong liền khối** = 1/6 vòng tròn bán kính ≈ 4,8 m (dài ≈ 5 m theo cung), cao ≈ 1 m, dày ≈ 1 m. Trông như nhiều phiến đá xếp nhưng **là một khối liền** (các khe chỉ là nét vẽ / khắc nông, không tách rời). Rêu vàng xanh trên đỉnh vài chỗ. Hai đầu đoạn vát gọn để 6 đoạn đặt nối nhau khít | 600 |
-| [ ] | `arena_rune_stone` | Trụ đá rune đứng (cao ≈ 1,6 m), mặt trước khắc rune cam phẳng | 200 |
-| [ ] | `arena_arch` | Cổng vòm đá đổ một nửa (cao ≈ 2,8 m, rộng ≈ 2,5 m): hai chân cột, nửa vòm còn lại, vài viên rơi sát chân | 500 |
-| [ ] | `arena_banner` | Cột gỗ có thanh ngang treo cờ vải cam (rune phẳng), cờ là **một tấm dày**, không tua rua | 150 |
+| [x] Claude, 600 tam giác | `arena_wall_arc` | **Một đoạn tường cong liền khối** = 1/6 vòng tròn bán kính ≈ 4,8 m (dài ≈ 5 m theo cung), cao ≈ 1 m, dày ≈ 1 m. Trông như nhiều phiến đá xếp nhưng **là một khối liền** (các khe chỉ là nét vẽ / khắc nông, không tách rời). Rêu vàng xanh trên đỉnh vài chỗ. Hai đầu đoạn vát gọn để 6 đoạn đặt nối nhau khít | 600 |
+| [x] Claude, 250 tam giác | `arena_rune_stone` | Trụ đá rune đứng (cao ≈ 1,6 m), mặt trước khắc rune cam phẳng | 200 |
+| [x] Claude, 500 tam giác | `arena_arch` | Cổng vòm đá đổ một nửa (cao ≈ 2,8 m, rộng ≈ 2,5 m): hai chân cột, nửa vòm còn lại, vài viên rơi sát chân | 500 |
+| [x] Claude, 194 tam giác | `arena_banner` | Cột gỗ có thanh ngang treo cờ vải cam (rune phẳng), cờ là **một tấm dày**, không tua rua | 150 |
 
 **Vì sao tường làm đoạn cong liền khối** (người dùng hỏi): ghép từ nhiều viên đá nhỏ thì mỗi viên tốn tam giác riêng
 (25–30 viên × 100–150 = 3 000–4 000 tam giác cho một vòng) và các mặt tiếp xúc giữa viên bị thừa; một đoạn cong liền

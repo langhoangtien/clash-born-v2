@@ -26,6 +26,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import plateau_design as PD  # noqa: E402
 import decor_place as DP  # noqa: E402
+import arena as AR  # noqa: E402
 
 DATA = os.path.join(HERE, "..", "..", "data", "maps")
 MARGIN = 1600.0   # mặt nạ phủ thêm ngoài khung map (px thế giới)
@@ -77,6 +78,9 @@ def mask_images(m, forest, rocks, water, edge):
     for c in m["camps"]:
         x, y = c["pos"]
         dd.ellipse(T([(x - 280, y - 240), (x + 280, y + 240)]), fill=255)
+    for a in m.get("arenas", []):  # D-308: sân bãi đấu đất nện, lõi lát phiến đá
+        (x, y), r = a["pos"], a["r"]
+        dd.ellipse(T([(x - r, y - r), (x + r, y + r)]), fill=255)
     for pts in m["lanes"].values():
         dd.line(T(pts), fill=255, width=int((m["lane_width"] + 140) / MASK_PX), joint="curve")
         dp.line(T(pts), fill=255, width=int((m["lane_width"] - 20) / MASK_PX), joint="curve")
@@ -150,6 +154,8 @@ def main():
     DP.river(items, water, bank, rng)
     DP.base_fences(items, m["render"].get("rock_lines", []))
     DP.scatter(items, m, forest, wet, rng)
+    AR.clear_items(items, m)
+    AR.decor_items(items, m)  # D-308: tường + vật trang trí bãi đấu boss
     abyss, rail = abyss_data(m, edge)
     for r in [rail.exterior] + list(rail.interiors):
         DP.along(items, r, "parapet", PARAPET_STEP)

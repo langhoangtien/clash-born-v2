@@ -130,7 +130,11 @@ static func water(layout: MapLayout) -> MeshInstance3D:
 
 
 ## Vật liệu cho mô hình `model`: có vân ảnh nếu tên bắt đầu bằng một khóa trong `faces`, không thì màu đỉnh.
+## D-308: tên bắt đầu bằng một mục `own_material` (mô hình Tripo có ảnh màu riêng, vd bãi đấu) → null, giữ vật liệu gốc.
 static func material_for(model: String) -> Material:
+	for prefix: String in _style().get("own_material", []):
+		if model.begins_with(prefix):
+			return null
 	var faces: Dictionary = _style()["faces"]
 	for key: String in faces:
 		if model.begins_with(key):

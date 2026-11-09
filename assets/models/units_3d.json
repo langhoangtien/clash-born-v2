@@ -332,7 +332,10 @@
    "water": {
     "bed": "riverbed",
     "bed_m": 6.0
-   }
+   },
+   "own_material": [
+    "arena_"
+   ]
   },
   "fountain": {
    "model": "style/structures/fountain",

@@ -15,13 +15,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "..", "..", "data", "maps", "clashborn_map.json")
 sys.path.insert(0, HERE)
 from symmetry import Sym  # noqa: E402
-import geometry as G, export as X, towers as T, features as F  # noqa: E402
+import geometry as G, export as X, towers as T, features as F, arena as A  # noqa: E402
 
 SRC = json.load(open(os.path.join(HERE, "map_source.json")))
 SYM = Sym(SRC["frame"])
 SCALE = SRC["scale"]
 FX0, FY0, FX1, FY1 = SRC["frame"]
 CENTER = ((FX0 + FX1) / 2, (FY0 + FY1) / 2)
+ARENAS = A.specs(SRC, unary_union([Polygon(p).buffer(0) for p in SRC["river"]]))  # D-308: bãi đấu boss
 
 
 def W(p):  # guide → thế giới
@@ -71,6 +72,8 @@ def obstacles(s):
     cut, gates = _clear(s)
     solid = unary_union([l.buffer(w / 2, **G.FLAT) for l, w, k in lines if k != "fence"])
     cliff = solid.difference(cut).difference(mid_zone).union(unary_union([l.buffer(w / 2, **G.FLAT) for l, w in fence]).difference(gates))
+    water0 = unary_union(river)
+    cliff = unary_union([cliff] + [w for a in ARENAS for w in A.walls(a, water0)])  # D-308: tường bãi đấu
     rocks = unary_union(G.mirrored_polys(SYM, SRC["mountains"]) + [G.border_area(SRC["frame"], SRC["border"])]).difference(cut).difference(cliff).difference(mid_zone)
     water = unary_union(river)
     rocks = unary_union([p for p in G.polys_of(rocks) if 2 * p.area / p.length >= SRC.get("rock_min_thick", 0) or p.distance(water) < 1.0])  # D-172: bỏ vệt đá mảnh sau khi cắt lane / trụ
@@ -89,6 +92,7 @@ def _clear(s):
     spawns = [(p, 7) for t in ("0", "1") for p in s["lane_spawns"][t].values()]
     extra += spawns + [(c["pos"], c["r"]) for c in SRC.get("clear_circles", [])]
     cut = G.clear_zone(SRC, s["lanes"], s["bases"], s["towers"], s["camps"], extra)
+    cut = unary_union([cut] + [A.clear(a) for a in ARENAS])  # D-308: sân + cửa bãi đấu
     gates = unary_union([LineString(l).buffer(SRC["lane_half_width"] + 1, **G.ROUND) for l in s["lanes"].values()]
                         + [Point(p).buffer(r) for p, r in spawns] + [Point(t["pos"]).buffer(SRC["tower_clear_radius"]) for t in s["towers"]])
     return cut, gates
@@ -112,7 +116,7 @@ def main():
     collision = X.collision_pieces(blocked)
     clear = X.clearance(collision, SRC["frame"], SCALE)
     errors, bad = X.validate(clear, s, W, SCALE)
-    for _ in range(4):  # D-307 (MAP-03): hốc kín theo lưới tìm đường + khe mảnh còn sót → lấp thành rừng, lặp tới khi sạch
+    for _ in range(8):  # D-307 (MAP-03): hốc kín theo lưới tìm đường + khe mảnh còn sót → lấp thành rừng, lặp tới khi sạch
         bad = bad | X.nav_pockets(clear, s, W, SCALE, SRC["nav_cell"]) | X.slivers(clear)
         if not bad.any():
             break
@@ -134,6 +138,7 @@ def main():
         "lane_spawns": {t: {k: W(p) for k, p in v.items()} for t, v in s["lane_spawns"].items()},
         "towers": [dict(id=t["id"], team=t["team"], lane=t["lane"], tier=t["tier"], pos=W(t["pos"]), requires=_prereq(t)) for t in s["towers"]],
         "camps": [dict(id=c["id"], side=c["side"], kind=c["kind"], pos=W(c["pos"])) for c in s["camps"]],
+        "arenas": [A.export(a, W, SCALE) for a in ARENAS],
         "bases": [dict(team=b["team"], polygon=[W(p) for p in b["polygon"]]) for b in s["bases"]],
         "bushes": [[W(p) for p in poly] for poly in bushes],
         "shops": _named(SRC["shops"]), "landmarks": _named(SRC.get("landmarks", [])),

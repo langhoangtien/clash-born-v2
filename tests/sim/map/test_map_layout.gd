@@ -271,8 +271,9 @@ func test_MAP_08_every_camp_sits_in_rock_or_forest_hook() -> void:
 	var m: MapLayout = map
 	for i: int in m.camp_ids.size():
 		var wall: int = 0
+		var reach: float = 480.0 if m.camp_sides[i] < 0 else 330.0  # D-308: bãi đấu boss — vòng tường ở bán kính 4,8 m
 		for k: int in 24:
-			var probe: Vector2 = m.camp_points[i] + Vector2.from_angle(TAU * k / 24.0) * 330.0
+			var probe: Vector2 = m.camp_points[i] + Vector2.from_angle(TAU * k / 24.0) * reach
 			wall += 1 if m.clearance_at(probe) < 32.0 else 0
 		assert_true(wall >= 10 and wall < 24, "trại %s nằm trong hốc đá / rừng có cửa (%d/24 hướng chặn)" % [m.camp_ids[i], wall])
 
