@@ -487,7 +487,7 @@ func _wants_secret_shop(world: World, e: Entity) -> bool:
 	if d == null or e.gold < Shop.price(world, e, d) or Shop.buy_problem(world, e, d.id) != Command.Reject.NOT_IN_SHOP:
 		return false
 	var spot: Vector2 = _shop_spot(world, e)
-	return e.position.distance_to(spot) <= 5000.0 and _reach_safe(world, e, spot)
+	return e.position.distance_to(spot) <= world.balance.bot_secret_shop_range and _reach_safe(world, e, spot)
 
 
 func _shop_spot(world: World, e: Entity) -> Vector2:

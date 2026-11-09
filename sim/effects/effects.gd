@@ -146,6 +146,12 @@ static func _start(world: World, owner: Entity, inst: EffectInstance, duration: 
 	_apply_modifiers(owner, inst)
 
 
+## JGL-12 (D-307): đặt thẳng số tầng (tối đa `max_stacks`) rồi tính lại modifier.
+static func set_stacks(owner: Entity, inst: EffectInstance, stacks: int) -> void:
+	inst.stacks = clampi(stacks, 1, maxi(1, inst.def.max_stacks))
+	_apply_modifiers(owner, inst)
+
+
 ## Modifier của bản hiệu ứng (nguồn = serial), theo số tầng (EFF-12).
 static func _apply_modifiers(owner: Entity, inst: EffectInstance) -> void:
 	var ctx: ExprContext = ExprContext.make(owner, owner, inst.values)

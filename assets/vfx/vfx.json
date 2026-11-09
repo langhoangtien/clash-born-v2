@@ -538,6 +538,10 @@
   "frost_blade_slow_ranged": {
    "tint": "#3f7fd8",
    "tint_alpha": 0.42
+  },
+  "dragon_ice_slow": {
+   "tint": "#3f7fd8",
+   "tint_alpha": 0.42
   }
  },
  "_states": {

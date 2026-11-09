@@ -169,6 +169,8 @@ extends Resource
 @export var bot_trade_window: float
 ## BOT-09: đứng sau hàng lính phe mình chừng này.
 @export var bot_lane_offset: float
+## D-94: bot đi shop ẩn khi shop trong chừng này (D-307: 5000 → 5750 theo map lớn thêm 15%).
+@export var bot_secret_shop_range: float
 ## BOT-18: đang hơn khi hơn chừng này mạng hoặc cấp; khi đó lao trụ chỉ cần bot_siege_tanks lính đỡ và máu ≥ bot_siege_min_hp.
 @export var bot_ahead_kills: int
 @export var bot_ahead_levels: int

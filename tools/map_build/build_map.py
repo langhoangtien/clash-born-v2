@@ -107,10 +107,22 @@ def rock_line_data(lines, cuts, frame):
 def main():
     s = semantics(SRC)
     layers, lines, cuts = obstacles(s)
+    layers["forest"] = [p for p in layers["forest"] if p.area >= 3 or 2 * p.area / p.length >= 1]  # D-307: mảnh vụn mép cắt (không dựng được tam giác)
     blocked = unary_union(layers["forest"] + layers["rocks"] + layers["cliffs"])
     collision = X.collision_pieces(blocked)
     clear = X.clearance(collision, SRC["frame"], SCALE)
     errors, bad = X.validate(clear, s, W, SCALE)
+    for _ in range(4):  # D-307 (MAP-03): hốc kín theo lưới tìm đường + khe mảnh còn sót → lấp thành rừng, lặp tới khi sạch
+        bad = bad | X.nav_pockets(clear, s, W, SCALE, SRC["nav_cell"]) | X.slivers(clear)
+        if not bad.any():
+            break
+        holes = unary_union([box(FX0 + x, FY0 + y, FX0 + x + 1, FY0 + y + 1) for y, x in zip(*bad.nonzero())])
+        print(f"MAP-03: lấp thêm {int(bad.sum())} ô hốc kín / khe mảnh")
+        layers["forest"] = G.polys_of(unary_union(layers["forest"] + [holes]).difference(cuts[0]))
+        blocked = unary_union(layers["forest"] + layers["rocks"] + layers["cliffs"])
+        collision = X.collision_pieces(blocked)
+        clear = X.clearance(collision, SRC["frame"], SCALE)
+        errors, bad = X.validate(clear, s, W, SCALE)
     bushes = bush_polygons(SRC)
     data = {
         "version": 3, "generated_by": "tools/map_build/build_map.py", "scale_from_guide": SCALE,

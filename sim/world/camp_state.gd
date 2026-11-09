@@ -14,3 +14,5 @@ var target_id: int = -1
 var aggro_until_tick: int = -1
 ## JGL-02: đang về.
 var returning: bool = false
+## JGL-10: tick trại boss trống (con cuối chết); -1 = chưa trống / trại thường.
+var empty_since_tick: int = -1

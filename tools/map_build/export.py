@@ -8,6 +8,7 @@ from shapely.geometry import Polygon, box
 UP = 4             # siêu mẫu khi raster (ô guide → UP điểm ảnh)
 CLEAR_UNIT = 4.0   # đơn vị thế giới mỗi byte khoảng trống
 HERO_R = 32 + 8    # bán kính hero + lề, khi kiểm tra đi được
+NAV_RADII = (22, 32)  # D-307: thân lính / hero — mỗi cỡ một lưới tìm đường, hốc kín xét theo từng cỡ
 
 
 def split_holes(poly, depth=0):
@@ -49,6 +50,32 @@ def clearance(collision, frame, scale):
     dist = ndi.distance_transform_edt(occ == 0) * (scale / UP)
     pooled = dist.reshape(n, UP, n, UP).min(axis=(1, 3))
     return np.clip(np.floor(pooled / CLEAR_UNIT), 0, 255).astype(np.uint8)
+
+
+def nav_pockets(clear, src, W, scale, nav_cell):
+    """D-307: ô lưới tìm đường (nav_cell, bội số pixel) đi được mà không nối với ô fountain (nối 4 hướng như
+    MapNavigation khi kề vật cản) → mặt nạ pixel cần lấp. Lối hẹp một pixel không đủ cho cả ô."""
+    k = int(round(nav_cell / scale))
+    n = clear.shape[0] // k * k
+    fx, fy = (int(v / nav_cell) for v in W(src["fountains"][0]))
+    out = np.zeros_like(clear, dtype=bool)
+    for r in NAV_RADII:
+        walk = (clear[:n, :n].astype(float) * CLEAR_UNIT >= r).reshape(n // k, k, n // k, k).all(axis=(1, 3))
+        lab = ndi.label(walk)[0]
+        if lab[fy, fx] == 0:
+            continue
+        lost = walk & (lab != lab[fy, fx])
+        out[:n, :n] |= np.repeat(np.repeat(lost, k, axis=0), k, axis=1)
+    return out
+
+
+def slivers(clear, reach=3):
+    """D-307 (MAP-03): pixel trông như lối (khoảng trống ≥ 12) mà hero không đứng được, và không có chỗ đứng được
+    trong `reach` pixel — khe mảnh dễ hiểu nhầm là lối đi."""
+    c = clear.astype(float) * CLEAR_UNIT
+    yy, xx = np.mgrid[-reach:reach + 1, -reach:reach + 1]
+    near = ndi.binary_dilation(c >= 32, structure=(xx * xx + yy * yy) <= reach * reach)
+    return (c >= 12) & (c < 32) & ~near
 
 
 def validate(clear, src, W, scale):
@@ -127,7 +154,7 @@ def preview(path, frame, layers, src, bushes, bad):
     for p in layers["water"]:
         d.polygon(gp(p.exterior.coords), fill=(47, 150, 170))
     for l in src["lanes"].values():
-        d.line(gp(l), fill=(215, 186, 132), width=src["lane_half_width"] * 2 * S, joint="curve")
+        d.line(gp(l), fill=(215, 186, 132), width=round(src["lane_half_width"] * 2 * S), joint="curve")
     for key, col in (("forest", (38, 78, 34)), ("rocks", (120, 125, 140)), ("cliffs", (40, 44, 58))):
         for p in layers[key]:
             d.polygon(gp(p.exterior.coords), fill=col)

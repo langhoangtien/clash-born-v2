@@ -40,6 +40,9 @@ static func unit(world: World, def: UnitDef, kind: Entity.Kind, team: int, posit
 	e.stats = stats_from(world.balance, def.stats)
 	e.bounty_gold = def.bounty_gold
 	e.bounty_xp = def.bounty_xp
+	e.team_gold = def.team_gold  # JGL-11
+	e.team_xp = def.team_xp
+	e.growth = def.growth  # JGL-12
 	return world.add_entity(e)
 
 

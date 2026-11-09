@@ -66,6 +66,10 @@ var true_sight_range: float = 0.0
 ## kẻ gây đòn chết (DamageSystem ghi).
 var bounty_gold: int = 0
 var bounty_xp: int = 0
+## JGL-11 / 12 (D-307): thưởng cả đội khi bị hạ; hiệu ứng mạnh dần theo phút (null = không).
+var team_gold: int = 0
+var team_xp: int = 0
+var growth: EffectDef
 ## Hero (ABL-04): XP trong cấp hiện tại, điểm chưa dùng, số lần đã đổi lấy thuộc tính.
 var xp: float = 0.0
 var skill_points: int = 0

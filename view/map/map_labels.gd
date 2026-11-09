@@ -72,6 +72,8 @@ static func tower_name(id: String) -> String:
 ## "camp_blue_03" → "TX3"; "camp_red_06" → "TĐ6".
 static func camp_name(id: String) -> String:
 	var parts: PackedStringArray = id.split("_")
+	if parts[1] != "blue" and parts[1] != "red":
+		return id.trim_prefix("camp_").to_upper()  # D-307: hang rồng dùng chung
 	return ("TX" if parts[1] == "blue" else "TĐ") + str(int(parts[2]))
 
 

@@ -53,6 +53,12 @@ UNITS = {
              "Idle_A=idle,Run_Female=run,Magic_1H_Attack_2=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
              "Magic_1H_Cast=cast,Fireball=skill_1,Spell_Wide=skill_2,Magic_2H_Attack=skill_3,Sprint=sprint",
              True, False),
+    # D-307: rồng (afk.ai loại dragon) và khủng long (loại kaiju; xoay mặt ra trước rồi gắn xương, fix-stretching)
+    "dragon_ice": ("boss/dragon_ice", "creatures/dragon_ice",
+                   "Idle=idle,Walk=run,Bite=attack,Hit=hit,Death=death", False, False),
+    "dragon_fire": ("boss/dragon_fire", "creatures/dragon_fire",
+                    "Idle=idle,Walk=run,Bite=attack,Hit=hit,Death=death", False, False),
+    "dino": ("boss/dino_afk_fix.glb", "creatures/dino", "Idle=idle,Run=run,Attack=attack,Hit=hit,Death=death", False, False),
 }
 
 

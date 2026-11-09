@@ -51,18 +51,22 @@ func _add_body(p: Vector2, r: float) -> void:
 ## Ô đi được khi MỌI pixel khoảng trống trong ô đủ rộng, nên mọi điểm trong ô đều đứng
 ## được và đi giữa hai ô kề nhau không bao giờ cắt vật cản (MOV-05).
 func _mark_terrain(cells: Vector2i) -> void:
-	var per_cell: int = maxi(1, roundi(cell_size / layout.clearance_pixel))
 	for y: int in range(cells.y):
 		for x: int in range(cells.x):
-			if _cell_min_clearance(Vector2i(x, y), per_cell) < agent_radius:
+			if _cell_min_clearance(Vector2i(x, y)) < agent_radius:
 				grid.set_point_solid(Vector2i(x, y), true)
 
 
-func _cell_min_clearance(cell: Vector2i, per_cell: int) -> float:
+## D-307: mọi pixel khoảng trống chạm vào ô (theo toạ độ thế giới) — ô lưới và pixel không cần chia hết cho nhau
+## (map 10598: pixel 18,4, ô 32).
+func _cell_min_clearance(cell: Vector2i) -> float:
+	var pix: float = layout.clearance_pixel
+	var first: Vector2i = Vector2i(floori(cell.x * cell_size / pix), floori(cell.y * cell_size / pix))
+	var last: Vector2i = Vector2i(ceili((cell.x + 1) * cell_size / pix) - 1, ceili((cell.y + 1) * cell_size / pix) - 1)
 	var lowest: float = INF
-	for py: int in range(per_cell):
-		for px: int in range(per_cell):
-			lowest = minf(lowest, _pixel_clearance(cell * per_cell + Vector2i(px, py)))
+	for py: int in range(first.y, last.y + 1):
+		for px: int in range(first.x, last.x + 1):
+			lowest = minf(lowest, _pixel_clearance(Vector2i(px, py)))
 	return lowest
 
 

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="2_eff"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="3_dmg"]
+
+[sub_resource type="Resource" id="D0"]
+script = ExtResource("3_dmg")
+damage_type = 1
+amount = "10"
+target = 0
+
+[resource]
+script = ExtResource("2_eff")
+duration = "3"
+tags = Array[StringName]([&"debuff"])
+periodic_interval = "0.5"
+periodic_actions = Array[ExtResource("1_act")]([SubResource("D0")])
+id = &"dragon_fire_burn"
+display_name = "Thiêu Đốt"
+art_id = &"dragon_fire_burn"

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CampDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/camp_def.gd" id="1_camp"]
+[ext_resource type="Script" path="res://sim/defs/unit_def.gd" id="2_unit"]
+[ext_resource type="Resource" path="res://content/units/dino_big.tres" id="u_dino_big"]
+[ext_resource type="Resource" path="res://content/units/dino_small.tres" id="u_dino_small"]
+
+[resource]
+script = ExtResource("1_camp")
+kind = &"dino"
+units = Array[ExtResource("2_unit")]([ExtResource("u_dino_big"), ExtResource("u_dino_small"), ExtResource("u_dino_small")])
+id = &"camp_dino"
+display_name = "Trại khủng long"

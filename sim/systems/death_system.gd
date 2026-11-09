@@ -84,6 +84,7 @@ func _reward(world: World, e: Entity) -> void:
 		world.note(&"gold", e.position, e.bounty_gold, killer.id)  # D-240: chữ nổi "+vàng" cho hero này
 	if e.kind == Entity.Kind.NEUTRAL:
 		_share_neutral_xp(world, e, killer)  # JGL-07
+		_team_reward(world, e, killer)
 		return
 	_share_xp(world, e, e.bounty_xp, null)
 
@@ -153,3 +154,15 @@ func _share_neutral_xp(world: World, dead: Entity, killer: Entity) -> void:
 			takers.append(h)
 	for h: Entity in takers:
 		Progression.add_xp(world, h, float(dead.bounty_xp) / takers.size())
+
+
+## JGL-11 (D-307): quái có thưởng đội bị phe 0 / 1 hạ → mỗi hero phe đó (sống hay chết, ở đâu) nhận vàng + XP.
+static func _team_reward(world: World, dead: Entity, killer: Entity) -> void:
+	if killer == null or killer.team > 1 or (dead.team_gold <= 0 and dead.team_xp <= 0):
+		return
+	for h: Entity in world.entities:
+		if h.kind == Entity.Kind.HERO and h.team == killer.team:
+			h.gold += dead.team_gold
+			if dead.team_xp > 0:
+				Progression.add_xp(world, h, float(dead.team_xp))
+			world.emit(&"gold_changed", h.id, dead.id, dead.team_gold)

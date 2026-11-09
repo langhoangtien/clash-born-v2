@@ -1,31 +1,31 @@
 {
- "_comment": "Nguồn vector bản đồ v3 (D-168, D-169): toạ độ guide (1 ô = scale đơn vị thế giới), khung frame. Ghi nửa Blue (y > x); build_map.py sinh nửa Red bằng xoay 180° (MAP-04). river ghi đủ cả sông (tự đối xứng). Chạy: python3 tools/map_build/build_map.py",
- "scale": 16,
+ "_comment": "Nguồn vector bản đồ v3 (D-168, D-169): toạ độ guide (1 ô = scale đơn vị thế giới), khung frame. Ghi nửa Blue (y > x); build_map.py sinh nửa Red bằng xoay 180° (MAP-04). river ghi đủ cả sông (tự đối xứng). Chạy: python3 tools/map_build/build_map.py D-307: map lớn thêm 15% (scale 16 → 18.4) nhưng lane giữ bề rộng thế giới (lane_half_width 9 → 7.826); bề dày đá, rào, độ lệch trụ, bán kính dọn quanh trụ / trại cũng giữ theo thế giới.",
+ "scale": 18.4,
  "frame": [
   36,
   36,
   612,
   612
  ],
- "nav_cell": 32,
- "lane_half_width": 9,
- "gap_min_world": 112,
- "mid_clear_world": 460,
+ "nav_cell": 36.8,
+ "lane_half_width": 7.826,
+ "gap_min_world": 129,
+ "mid_clear_world": 529,
  "tower_layout": {
   "_note": "D-49: khoảng cách (thế giới) từ điểm gặp của lane tới T1 Blue",
-  "TOP": 2000,
-  "MID": 1200,
-  "BOT": 760
+  "TOP": 2300,
+  "MID": 1380,
+  "BOT": 874
  },
- "tower_offset": 12,
+ "tower_offset": 10.435,
  "tower_side": {
   "TOP": "right",
   "MID": "right",
   "BOT": "left"
  },
- "tower_clear_radius": 16,
- "camp_clear_radius": 8,
- "rock_width": 6,
+ "tower_clear_radius": 13.913,
+ "camp_clear_radius": 6.957,
+ "rock_width": 5.217,
  "bases": [
   {
    "team": 0,
@@ -368,10 +368,28 @@
   {
    "id": "camp_blue_08",
    "side": 0,
-   "kind": "small",
+   "kind": "dino",
    "pos": [
     440.0,
     460.0
+   ]
+  },
+  {
+   "id": "camp_dragon_ice",
+   "side": -1,
+   "kind": "dragon_ice",
+   "pos": [
+    255.0,
+    255.0
+   ]
+  },
+  {
+   "id": "camp_dragon_fire",
+   "side": -1,
+   "kind": "dragon_fire",
+   "pos": [
+    393.0,
+    393.0
    ]
   }
  ],
@@ -1393,9 +1411,9 @@
  },
  "fence": {
   "_note": "D-169: rào đá quanh base (MAP-09) và fountain (MAP-10), ô guide",
-  "width": 4,
+  "width": 3.478,
   "base_inset": 2,
-  "fountain_r": 37.5,
+  "fountain_r": 32.609,
   "fountain_gate": 55
  },
  "mountains": [
@@ -2658,5 +2676,5 @@
    ]
   ]
  ],
- "rock_min_thick": 6.0
+ "rock_min_thick": 5.217
 }

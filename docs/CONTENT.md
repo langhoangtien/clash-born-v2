@@ -618,3 +618,18 @@ Thêm hero mới: sao chép một mục ở trên, điền bảng số, ghi rõ:
    (AGENTS mục 3), phải làm trước.
 2. `bot_usage` của từng skill.
 3. Một kịch bản test cho mỗi skill và mỗi talent.
+
+## Quái rừng boss và trại mạnh (D-307)
+
+Luật: GAME_RULES JGL-10..14. Số nằm trong `content/units`, `content/effects`, `content/camps`.
+
+| Quái | Máu | Sát thương | Giáp / kháng phép | Mạnh dần mỗi phút (JGL-12) | Thưởng |
+|---|---|---|---|---|---|
+| Rồng Băng (`dragon_ice`, hang nửa trên sông) | 4500 | 75, đòn đánh làm chậm 30% trong 1,5 s (phủ màu băng) | 8 / 5 | +120 máu, +4 sát thương, +0,3 giáp | mỗi hero phe hạ 160 vàng + 380 XP; kẻ kết liễu thêm 150 vàng |
+| Rồng Lửa (`dragon_fire`, hang nửa dưới sông) | 5000 | 85, đòn đánh đốt 20 sát thương phép / s trong 3 s | 8 / 5 | +140 máu, +5 sát thương, +0,3 giáp | mỗi hero phe hạ 230 vàng + 260 XP; kẻ kết liễu thêm 150 vàng |
+| Khủng long đầu đàn (`dino_big`) | 1500 | 65 | 5 / 0 | — | 120 vàng, 150 XP (JGL-07) |
+| Khủng long con ×2 (`dino_small`) | 550 | 30 | 2 / 0 | — | 45 vàng, 60 XP |
+
+Rồng xuất hiện lần đầu ở phút 5, hạ xong 5 phút sau mới có lại (JGL-10). Trại khủng long thay một trại 2 sói ở
+rừng carry mỗi phe (trại 08, gần sông), hồi như trại thường.
+

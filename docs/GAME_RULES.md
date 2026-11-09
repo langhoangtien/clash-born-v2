@@ -728,6 +728,20 @@ Quái rừng thuộc đội trung lập (đội 2), là **kẻ địch của m�
 - `JGL-08` (D-265) Trại ngủ: trại IDLE (không mục tiêu, không đang về) và không có đơn vị sống phe 0 / 1
   nào trong `jungle_sleep_radius` quanh tâm trại → quái của trại không tự đẩy tách (MOV-04; đơn vị khác
   vẫn đẩy được chúng). Có ai vào bán kính, hoặc trại bị đánh, thì thức ngay tick đó.
+- `JGL-10` (D-307) Trại boss (rồng): CampDef có `first_spawn` (giây) và `respawn` (giây) ≥ 0 thì trại xuất hiện lần
+  đầu ở `first_spawn` (không theo `jungle_first_spawn`), và hồi lại `respawn` giây **sau khi trại trống** (con cuối
+  chết), nếu lúc đó không có đơn vị sống nào trong `camp_spawn_box` (có thì chờ tới tick đầu tiên trống). Không theo
+  chu kỳ `jungle_respawn_check` (JGL-05). Trại boss nằm trên trục sông, `side` = -1 (dùng chung).
+- `JGL-11` (D-307) Thưởng cả đội: quái có `team_gold` / `team_xp` (UnitDef) bị một đơn vị phe 0 / 1 hạ → **mỗi hero
+  của phe đó** (sống hay chết, ở đâu trên map) nhận `team_gold` vàng và `team_xp` XP. Thưởng thường (JGL-07: vàng
+  `bounty_gold` cho hero kết liễu, XP `bounty_xp` chia gần) vẫn tính thêm. Kẻ hạ là quái (đội 2) → không ai được.
+- `JGL-12` (D-307) Mạnh theo thời gian (kiểu Roshan): quái có `growth` (EffectDef, UnitDef) mang hiệu ứng đó với
+  **số tầng = số phút trọn của trận** (`floor(tick / 60 s)`; 0 tầng thì không gắn); số tầng cập nhật lúc sinh và mỗi phút khi còn sống (Modifier × tầng, EFF-12). Máu tối đa tăng thì máu
+  hiện tại tăng đúng phần đó.
+- `JGL-13` (D-307) Hiệu ứng thường trực của quái: UnitDef `passives` (EffectDef) gắn lúc sinh, suốt đời (vd đòn
+  đánh Rồng Băng làm chậm, Rồng Lửa đốt — trigger `attack_landed`). Không bị xua (dispel) như hiệu ứng nội tại.
+- `JGL-14` (D-307) Bot không chủ động đánh trại boss: JUNGLE (BOT-16) chỉ chọn trại `side` của phe bot, trại boss
+  `side` = -1 nên không bao giờ được chọn. Đánh lan trúng (vùng, đạn) thì trại boss vẫn đánh trả theo JGL-01.
 
 ## DTH — Chết và hồi sinh tại chỗ
 
@@ -929,9 +943,10 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   bị lấp thành rừng khi build; vùng trống kín không vào được cũng lấp. Kiểm tra: mọi điểm
   trống rộng ≥ 12 phải cách chỗ hero đứng được không quá 48 — tức không có khe nào
   trông như lối đi mà hero không lọt.
-- `MAP-02` Map 9216 × 9216 (D-172); Blue dưới–trái, Red trên–phải; 3 lane; sông; 11 trụ mỗi đội;
-  8 trại mỗi phe, không có boss (D-171, D-178): rừng phía lane an toàn (rừng carry) 5 trại, rừng phía
-  lane khó 3 trại. Mọi trại cách trụ ≥ 720.
+- `MAP-02` Map 10598 × 10598 (D-172 9216; D-307 lớn thêm 15%, lane giữ bề rộng 288); Blue dưới–trái, Red trên–phải;
+  3 lane; sông; 11 trụ mỗi đội; 8 trại mỗi phe (D-171, D-178): rừng phía lane an toàn (rừng carry) 5 trại (D-307: một
+  trại 2 sói thành trại khủng long), rừng phía lane khó 3 trại. Hai hang rồng dùng chung (D-307, JGL-10..14) trên sông,
+  trên trục đối xứng: Rồng Băng nửa trên, Rồng Lửa nửa dưới. Mọi trại cách trụ ≥ 720.
 - `MAP-06` (D-168) Trụ lane đứng sát mép lane, cùng một bên cho cả lane (TOP, BOT: phía trong
   map; MID: bên phải theo chiều Blue → Red), tâm cách tim lane `tower_offset` (12 ô guide = 192).
   T1 đặt theo MAP-04; T2/T3 giữ khoảng cách dọc lane.
@@ -939,7 +954,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   chạm sông; phần lớn mép sông (ngoài lane và khu mid) bị đá chặn; chỉ xuống sông ở chỗ lối rừng chạm sông (mỗi nửa ít nhất 2 lối), ở lane và khu mid
   cắt sông (MAP-05), và ở **hai đầu sông**: mỗi đầu sông mở thẳng ra lane bên bằng lối rộng 704, loe tròn ở hai đầu (đi từ sông lên
   lane không phải vòng qua trụ, D-200). Không có bậc thang. Sông vẫn đi được.
-- `MAP-08` (D-171, D-178) Mỗi trại nằm trong hốc của bục rừng (hoặc đá): vách bao quanh bãi trại, lối đi
+- `MAP-08` (D-171, D-178) Mỗi trại rừng (trừ hang rồng giữa sông, D-307) nằm trong hốc của bục rừng (hoặc đá): vách bao quanh bãi trại, lối đi
   khoét ra cửa (thường 2: một từ lối chính, một khe ra lane / sông / trại bên). Quanh trại, ở bán kính
   330, ít nhất 10/24 hướng bị chặn và còn ít nhất một hướng mở làm cửa.
 - `MAP-09` (D-169) Base là đất cao có rào đá: vào / ra base chỉ qua 3 cổng ở chỗ 3 lane đi qua (cổng
