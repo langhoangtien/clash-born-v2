@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dujvaqetwxmhs"
-path="res://.godot/imported/Barbarian_Large.glb-e761004a19719303124be423fd18c2dc.scn"
+uid="uid://jo0gvlh5d7mc"
+path="res://.godot/imported/gorran.glb-130c8c9f64c09c810e47a89837d88911.scn"
 
 [deps]
 
-source_file="res://assets/models/kaykit/Barbarian_Large.glb"
-dest_files=["res://.godot/imported/Barbarian_Large.glb-e761004a19719303124be423fd18c2dc.scn"]
+source_file="res://assets/models/style/heroes/gorran.glb"
+dest_files=["res://.godot/imported/gorran.glb-130c8c9f64c09c810e47a89837d88911.scn"]
 
 [params]
 

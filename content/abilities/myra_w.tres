@@ -49,6 +49,7 @@ script = ExtResource("6_q0t3o")
 description = "Vòng băng bán kính 280 tại điểm chọn, sau 0.8 s gây sát thương phép và đóng băng — giữ chân tại chỗ như trói (né được)."
 slot = 2
 targeting = 3
+cast_time = "0.3"
 values = Dictionary[StringName, PackedFloat32Array]({
 &"cast_range": PackedFloat32Array(800, 800, 800, 800, 800),
 &"cooldown": PackedFloat32Array(16, 15, 14, 13, 12),

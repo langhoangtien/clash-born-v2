@@ -52,6 +52,7 @@ script = ExtResource("6_jvac1")
 description = "Mưa sao băng bán kính 400 sau 1 s: sát thương phép lớn và câm lặng."
 slot = 3
 targeting = 3
+cast_time = "0.4"
 values = Dictionary[StringName, PackedFloat32Array]({
 &"cast_range": PackedFloat32Array(900, 900, 900),
 &"cooldown": PackedFloat32Array(80, 70, 60),

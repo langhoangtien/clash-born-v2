@@ -177,7 +177,7 @@ func test_vexa_q_hex_by_rank() -> void:
 	var v: Entity = _vexa(w, [3, 0, 0])
 	var foe: Entity = _foe(w, v.position + _dir() * 400.0)
 	w.submit(Command.cast(v.id, Slot.Q, foe.id))
-	_steps(w, 2)
+	_steps(w, 9 + 2)  # D-321: vung 0,3 s (cast_time)
 	assert_true(Rules.has_state(foe, UnitState.Id.HEXED))
 	var hex: EffectInstance = _has(foe, &"vexa_frog")
 	assert_eq(hex.end_tick - hex.start_tick, 75, "cấp 3: 2.5 s")
@@ -194,7 +194,7 @@ func test_vexa_w_rect_damage_and_push_away() -> void:
 	var tower: Entity = _foe(w, v.position + _dir() * 150.0 + _dir().orthogonal() * 80.0, Entity.Kind.TOWER)
 	var start: Vector2 = near.position
 	w.submit(Command.cast(v.id, Slot.W, -1, Vector2.INF, _dir()))
-	assert_near(_taken(w, near, 14), _magic(w, near, 100.0), 0.01, "cấp 2: 100 phép")
+	assert_near(_taken(w, near, 9 + 14), _magic(w, near, 100.0), 0.01, "cấp 2: 100 phép (D-321: vung 0,3 s)")
 	assert_true(edge.health < edge.stats.get_stat(StatId.Id.MAX_HP), "mép thân chạm vùng rộng 250 thì trúng")
 	assert_near(wide.health, wide.stats.get_stat(StatId.Id.MAX_HP), EPS, "ngoài bề rộng không trúng")
 	assert_near(tower.health, 100000.0, EPS, "không trúng công trình")
@@ -217,7 +217,7 @@ func test_vexa_r_purges_through_bkb_damage_per_buff_then_slow() -> void:
 	Effects.apply(w, foe, _lib.effects[&"magic_immune"], foe, {}, "10")
 	var speed: float = foe.stats.get_stat(StatId.Id.MOVEMENT_SPEED)
 	w.submit(Command.cast(v.id, Slot.R, foe.id))
-	_steps(w, 2)
+	_steps(w, 9 + 2)  # D-321: vung 0,3 s (cast_time)
 	assert_true(_has(foe, &"test_haste") == null and _has(foe, &"test_guard") == null, "tước hiệu ứng có lợi, kể cả đang miễn phép")
 	assert_true(_has(foe, &"magic_immune") != null, "miễn phép (không thanh tẩy được) không bị tước")
 	assert_near(foe.stats.get_stat(StatId.Id.MAX_HP) - foe.health, 2 * _magic(w, foe, 80.0, true), 1.0, "80 phép mỗi hiệu ứng bị tước, xuyên miễn phép")
@@ -231,7 +231,7 @@ func test_vexa_q_ii_hexed_takes_more_damage() -> void:
 	var v: Entity = _vexa20(w, Slot.Q)
 	var foe: Entity = _foe(w, v.position + _dir() * 400.0)
 	w.submit(Command.cast(v.id, Slot.Q, foe.id))
-	_steps(w, 2)
+	_steps(w, 9 + 2)  # D-321: vung 0,3 s (cast_time)
 	assert_near(foe.stats.get_stat(StatId.Id.DAMAGE_TAKEN_MULTIPLIER), 1.2, EPS, "ếch nhận thêm 20%")
 
 
@@ -242,7 +242,7 @@ func test_vexa_w_ii_wider_stronger_further() -> void:
 	var edge: Entity = _foe(w, v.position + _dir() * 500.0 + _dir().orthogonal() * (175.0 + 20.0))
 	var start: Vector2 = near.position
 	w.submit(Command.cast(v.id, Slot.W, -1, Vector2.INF, _dir()))
-	assert_near(_taken(w, near, 20), _magic(w, near, 320.0), 0.01, "cấp 5 + 100")
+	assert_near(_taken(w, near, 9 + 20), _magic(w, near, 320.0), 0.01, "cấp 5 + 100")
 	assert_true(edge.health < edge.stats.get_stat(StatId.Id.MAX_HP), "rộng 350")
 	assert_near(near.position.distance_to(start), 450.0, 3.0, "đẩy 450")
 
@@ -253,7 +253,7 @@ func test_vexa_r_ii_root_instead_of_slow_and_shorter_cooldown() -> void:
 	var foe: Entity = _foe(w, v.position + _dir() * 500.0)
 	var speed: float = foe.stats.get_stat(StatId.Id.MOVEMENT_SPEED)
 	w.submit(Command.cast(v.id, Slot.R, foe.id))
-	_steps(w, 2)
+	_steps(w, 9 + 2)  # D-321: vung 0,3 s (cast_time)
 	assert_true(Rules.has_state(foe, UnitState.Id.ROOTED), "trói")
 	var root: EffectInstance = _has(foe, &"root")
 	assert_eq(root.end_tick - root.start_tick, 60, "2 s")

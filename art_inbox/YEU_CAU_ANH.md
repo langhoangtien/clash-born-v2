@@ -867,3 +867,14 @@ shader; cần ảnh để có **chất liệu vẽ tay** như ảnh mẫu. Quy t
 Xong thì commit + push nhánh `thu-asset-tu-lam`, rồi **DỪNG** báo người dùng (kèm `07_vfx/_preview_v2.png`).
 
 - [x] V2 xong 4 ảnh
+
+## Đợt 16 — Gorran W mới: Lọ Độc (D-321, 2026-11-09)
+
+W Gorran đổi từ Đuôi Rồng sang **ném lọ thuốc độc** (làm chậm + sát thương theo giây). Vẽ lại icon chiêu và thêm icon trạng
+thái. Đúng quy cách các đợt icon trước (256 × 256 PNG, nền trong suốt ngoài vòng tròn, viền theo cột "Màu viền", lề ≥ 8%,
+xem thử ở 64 px). Mẫu style: `04_icons/skill_gorran_q.png`, `04_icons/state_burning.png`. **Không commit / push.**
+
+| Xong | File | Màu viền | Mô tả |
+|---|---|---|---|
+| [x] | `04_icons/skill_gorran_w.png` | xanh độc | Big green hand hurling a round glass flask of bubbling green-purple poison, small trail of droplets, flask about to shatter |
+| [x] | `04_icons/state_gorran_poison.png` | xanh độc (trạng thái) | Green poison bubbles and a small skull-shaped fume rising, dripping toxic droplets — same layout as other `state_*` icons |

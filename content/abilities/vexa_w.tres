@@ -54,6 +54,7 @@ script = ExtResource("5_xhxfl")
 description = "Sóng gió phía trước (dài 700, rộng 250): sát thương phép và đẩy lùi 300."
 slot = 2
 targeting = 4
+cast_time = "0.3"
 values = Dictionary[StringName, PackedFloat32Array]({
 &"cooldown": PackedFloat32Array(14, 13, 12, 11, 10),
 &"damage": PackedFloat32Array(60, 100, 140, 180, 220),

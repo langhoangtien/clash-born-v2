@@ -45,13 +45,21 @@ UNITS = {
               "Sprint=sprint",
               True, False),
     # D-304: Myra / Vexa bản người lớn (concept_gen.py → split_turnaround.py → Tripo multiview → afk.ai), tay không
+    # D-321: Gorran dựng lại theo quy trình Brakk (concept T9 bỏ goblin trên lưng — Codex T15 → Tripo multiview → glb_yaw −90 →
+    # afk.ai human); W Lọ Độc = ném qua vai, Q Vũng Axit = tung lựu đạn, R Cuồng Hóa = gồng sức.
+    "gorran": ("gorran/gorran", "heroes/gorran",
+               "Fighting Idle=idle,Jog=run,Melee_Hook+Melee_Hook_Rec=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
+               "Throw_Generic=cast,Grenade_Toss=skill_1,OverhandThrow=skill_2,Power Up=skill_3,Sprint=sprint",
+               True, False),
     "myra": ("myra_v2", "heroes/myra",
              "Idle_A=idle,Run_Female=run,Magic_1H_Attack=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
-             "Magic_1H_Cast=cast,Spell_Simple_Shoot=skill_1,Magic_2H_Cast=skill_2,Spell_Wide=skill_3,Sprint=sprint",
+             "Magic_1H_Cast=cast,Magic_1H_Cast@0.7-1.5=skill_1,Magic_Area_2@1.2-2.2=skill_2,Magic_Area@0.6-1.8=skill_3,"
+             "Sprint=sprint",  # D-321: đoạn ~1 s quanh lúc ra đòn (đứng vung 0,3–0,4 s, cast_time)
              True, False),
     "vexa": ("vexa_v2", "heroes/vexa",
              "Idle_A=idle,Run_Female=run,Magic_1H_Attack_2=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
-             "Magic_1H_Cast=cast,Fireball=skill_1,Spell_Wide=skill_2,Magic_2H_Attack=skill_3,Sprint=sprint",
+             "Magic_1H_Cast=cast,Magic_2H_Attack_2@0.6-1.6=skill_1,Spell_Wide@1.0-2.2=skill_2,Magic_1H_Cast@0.7-1.5=skill_3,"
+             "Sprint=sprint",  # D-321
              True, False),
     # D-307b: tê giác theo style ảnh mẫu người chơi (concept_gen.py từ ảnh mẫu → split_turnaround.py →
     # Tripo multiview → glb_yaw -90 → afk.ai: dragon / horse → fix-stretching)

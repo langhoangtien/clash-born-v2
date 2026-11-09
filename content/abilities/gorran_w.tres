@@ -1,51 +1,56 @@
 [gd_resource type="Resource" script_class="AbilityDef" format=3]
 
 [ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
-[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="2_dmg"]
-[ext_resource type="Resource" path="res://content/effects/stun.tres" id="3_stun"]
-[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="4_app"]
+[ext_resource type="Resource" path="res://content/effects/gorran_poison.tres" id="2_poison"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_app"]
+[ext_resource type="Script" path="res://sim/actions/area_action.gd" id="4_area"]
 [ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="5_abl"]
 [ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="6_tal"]
 [ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="7_val"]
 
-[sub_resource type="Resource" id="D0"]
-script = ExtResource("2_dmg")
-damage_type = 1
-amount = "damage"
+[sub_resource type="Resource" id="P0"]
+script = ExtResource("3_app")
+effect = ExtResource("2_poison")
+duration = "poison_duration"
 
-[sub_resource type="Resource" id="S0"]
-script = ExtResource("4_app")
-effect = ExtResource("3_stun")
-duration = "stun_duration"
+[sub_resource type="Resource" id="A0"]
+script = ExtResource("4_area")
+radius = "radius"
+delay = "delay"
+actions = Array[ExtResource("1_act")]([SubResource("P0")])
 
 [sub_resource type="Resource" id="V0"]
 script = ExtResource("7_val")
-value_name = &"stun_duration"
-amount = 1.0
+value_name = &"dps"
+amount = 25.0
 
 [sub_resource type="Resource" id="T0"]
 script = ExtResource("6_tal")
 id = &"gorran_w_ii"
-display_name = "Đuôi Rồng Nặng"
-description = "Choáng +1 s"
+display_name = "Độc Đậm"
+description = "+25 sát thương mỗi giây"
 value_changes = Array[ExtResource("7_val")]([SubResource("V0")])
 
 [resource]
 script = ExtResource("5_abl")
-description = "Quất đuôi rồng từ xa 700: sát thương phép và choáng."
+description = "Vung tay 0,3 s rồi ném lọ độc tới điểm chọn (tầm 800): bay 0,4 s rồi vỡ, kẻ địch trong bán kính 250 trúng độc 5 s — chậm 22–30% và sát thương phép mỗi giây."
 slot = 2
-targeting = 2
+targeting = 3
+cast_time = "0.3"
 values = Dictionary[StringName, PackedFloat32Array]({
-&"cast_range": PackedFloat32Array(700, 700, 700, 700, 700),
+&"cast_range": PackedFloat32Array(800, 800, 800, 800, 800),
 &"cooldown": PackedFloat32Array(12, 12, 12, 12, 12),
-&"damage": PackedFloat32Array(80, 100, 120, 140, 160),
-&"mana": PackedFloat32Array(100, 100, 100, 100, 100),
-&"stun_duration": PackedFloat32Array(1.5, 1.8, 2.1, 2.4, 2.7)
+&"delay": PackedFloat32Array(0.4, 0.4, 0.4, 0.4, 0.4),
+&"dps": PackedFloat32Array(30, 40, 50, 60, 70),
+&"mana": PackedFloat32Array(90, 95, 100, 105, 110),
+&"poison_duration": PackedFloat32Array(5, 5, 5, 5, 5),
+&"radius": PackedFloat32Array(250, 250, 250, 250, 250),
+&"slow": PackedFloat32Array(0.22, 0.24, 0.26, 0.28, 0.3)
 })
-on_cast = Array[ExtResource("1_act")]([SubResource("D0"), SubResource("S0")])
+on_cast = Array[ExtResource("1_act")]([SubResource("A0")])
 talent = SubResource("T0")
-bot_usages = Array[int]([0])
-bot_conditions = Array[StringName]([&"enemy_hero_in_range", &"prefer_engaging_enemy"])
+bot_usages = Array[int]([1, 0])
+bot_conditions = Array[StringName]([&"enemy_hero_in_range", &"predict_position"])
 id = &"gorran_w"
-display_name = "Đuôi Rồng"
+display_name = "Lọ Độc"
 art_id = &"gorran_w"

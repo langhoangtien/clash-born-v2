@@ -1,18 +1,13 @@
 extends TestCase
-## D-146: cấu hình hình 3D (assets/models/units_3d.json) trỏ tới tệp có thật — mô hình, bảng màu
-## theo đội, vũ khí, hoạt ảnh của rig; mọi tướng chơi được đều có mô hình.
+## D-146: cấu hình hình 3D (assets/models/units_3d.json) trỏ tới tệp có thật — mô hình + hoạt ảnh của rig; mọi tướng chơi
+## được đều có mô hình. D-321: gỡ KayKit (bảng màu / vũ khí gắn tay của rig dùng chung).
 
 
 func test_D_146_every_entry_resolves() -> void:
 	var units: Dictionary = ModelLibrary.config()["units"]
 	for id: String in units:
 		var cfg: Dictionary = units[id]
-		assert_true(ResourceLoader.exists(ModelLibrary.ROOT + cfg["model"] + ".glb"), "%s: mô hình" % id)
-		for suffix: String in (["", "_blue", "_red"] if cfg.has("tex") else []):  # D-173: mô hình tự mang ảnh màu
-			assert_true(ResourceLoader.exists(ModelLibrary.ROOT + cfg["tex"] + "_texture" + suffix + ".png"), "%s: bảng màu%s" % [id, suffix])
-		for hand: String in ["right", "left"]:
-			if cfg.has(hand):
-				assert_true(ResourceLoader.exists(ModelLibrary.ROOT + cfg[hand] + ".gltf"), "%s: vũ khí %s" % [id, hand])
+		assert_true(ResourceLoader.exists(ModelLibrary.MODELS + cfg["model"] + ".glb"), "%s: mô hình" % id)
 		var lib: AnimationLibrary = ModelLibrary.unit_animations(cfg)
 		var rig: Dictionary = ModelLibrary.rig(cfg["rig"])
 		for key: String in ["idle", "run", "dash", "hit", "death"]:

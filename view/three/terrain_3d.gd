@@ -5,7 +5,7 @@ extends RefCounted
 ## units_3d.json. Đơn vị 3D: mét (1 px thế giới = MatchView3D.S).
 
 const DECOR_PATH: String = "res://data/maps/clashborn_decor.json"
-## Thư mục mô hình bộ asset mới trong ModelLibrary.ROOT.
+## Thư mục mô hình bộ asset mới trong ModelLibrary.MODELS.
 const MODEL_DIR: String = "style/"
 const GROUND_SHADER: Shader = preload("res://view/three/ground.gdshader")
 const WATER_SHADER: Shader = preload("res://view/three/water.gdshader")

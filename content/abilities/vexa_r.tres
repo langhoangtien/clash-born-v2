@@ -53,6 +53,7 @@ script = ExtResource("6_ln5dd")
 description = "Xuyên miễn phép: tước mọi hiệu ứng có lợi của mục tiêu (mỗi hiệu ứng thêm sát thương phép), rồi làm chậm."
 slot = 3
 targeting = 2
+cast_time = "0.3"
 pierces_magic_immunity = true
 values = Dictionary[StringName, PackedFloat32Array]({
 &"cast_range": PackedFloat32Array(700, 700, 700),

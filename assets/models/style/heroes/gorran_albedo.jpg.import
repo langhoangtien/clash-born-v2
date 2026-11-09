@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cgh2sof5krnuw"
-path="res://.godot/imported/Barbarian_Large_barbarian_texture.png-a782f5f53bfa53bd956faf5a6066f2f7.ctex"
+uid="uid://be8gifityb7ci"
+path="res://.godot/imported/gorran_albedo.jpg-4cf06c255ad800d3af4055ebe75f4172.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "7e5fe19d7f7dc17d0a426dc28321729d"
+"md5": "c764c9f19fb7fd241e3239c9b3bf1829"
 }
 
 [deps]
 
-source_file="res://assets/models/kaykit/Barbarian_Large_barbarian_texture.png"
-dest_files=["res://.godot/imported/Barbarian_Large_barbarian_texture.png-a782f5f53bfa53bd956faf5a6066f2f7.ctex"]
+source_file="res://assets/models/style/heroes/gorran_albedo.jpg"
+dest_files=["res://.godot/imported/gorran_albedo.jpg-4cf06c255ad800d3af4055ebe75f4172.ctex"]
 
 [params]
 

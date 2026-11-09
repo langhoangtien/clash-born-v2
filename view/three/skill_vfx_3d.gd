@@ -54,8 +54,10 @@ func advance(delta: float) -> void:
 			_follow(it, delta)
 		elif it[1] in VfxParts.FOLLOW:
 			_stick(it)
+		elif it[1] == "lob":
+			_fly(it)
 		_animate(it)
-	for it: Array in _items.filter(func(x: Array) -> bool: return x[2] >= float(x[3].get("life", 0.3))):
+	for it: Array in _items.filter(func(x: Array) -> bool: return x[2] >= float(x[3].get("life", 0.3)) + float(x[3].get("wait", 0.0))):
 		(it[0] as Node3D).queue_free()
 		_items.erase(it)
 
@@ -102,7 +104,7 @@ func _soft(w: World, e: Entity, a: AbilityInstance, ev: GameEvent, part: Diction
 			at = anchor.position
 	var px: float = _value(e, a, part.get("radius", anchor.radius * 1.6))
 	var size: Variant = px * MatchView3D.S
-	if part["type"] == "glow":
+	if part["type"] in ["glow", "lob"]:
 		size = float(part.get("size", 1.0))
 	elif part["type"] == "wave":
 		size = Vector2(_value(e, a, part.get("width", 200.0)), _value(e, a, part.get("length", 600.0))) * MatchView3D.S
@@ -114,6 +116,9 @@ func _soft(w: World, e: Entity, a: AbilityInstance, ev: GameEvent, part: Diction
 	if dir != Vector2.ZERO:
 		node.rotation.y = atan2(-dir.x, -dir.y)
 	var lift: float = float(part.get("height", VfxParts.GROUND_LIFT))
+	if part["type"] == "lob":
+		live["from_3d"] = _ground(e.position, {"height": 1.3})
+		live["to_3d"] = _ground(ev.point if ev.point.is_finite() else e.position, {"height": 0.2})
 	_add(node, part["type"], live, _ground(at, {"height": lift}), anchor.id if part["type"] in VfxParts.FOLLOW else -1)
 
 
@@ -176,9 +181,19 @@ func _stick(it: Array) -> void:
 	(it[0] as Node3D).position = Vector3(at.x, float(it[3].get("height", VfxParts.GROUND_LIFT)), at.z)
 
 
+## D-321: `lob` — đốm bay vòng cung từ tay chủ chiêu tới điểm chọn trong `life` giây (lọ độc Gorran).
+func _fly(it: Array) -> void:
+	var part: Dictionary = it[3]
+	var k: float = clampf(it[2] / float(part.get("life", 0.4)), 0.0, 1.0)
+	var p: Vector3 = (part["from_3d"] as Vector3).lerp(part["to_3d"], k)
+	(it[0] as Node3D).position = p + Vector3(0, float(part.get("arc", 1.6)) * 4.0 * k * (1.0 - k), 0)
+
+
 func _animate(it: Array) -> void:
 	var part: Dictionary = it[3]
-	var t: float = clampf(it[2] / float(part.get("life", 0.3)), 0.0, 1.0)
+	var wait: float = float(part.get("wait", 0.0))  # D-321: mảnh hiện trễ `wait` giây (vd lọ độc vỡ khi chạm đất)
+	(it[0] as Node3D).visible = it[2] >= wait
+	var t: float = clampf((it[2] - wait) / float(part.get("life", 0.3)), 0.0, 1.0)
 	if it[1] == "hit" or VfxParts.is_soft(it[1]):
 		VfxParts.animate((it[0] as Node3D).get_child(0) as MeshInstance3D, t)
 		return

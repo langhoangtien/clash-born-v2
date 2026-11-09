@@ -1,6 +1,6 @@
 class_name Actor3D
 extends Node3D
-## Một đơn vị trong trận 3D (D-145, D-146): mô hình tự mang xương / KayKit, hoạt ảnh theo trạng thái SIM.
+## Một đơn vị trong trận 3D (D-145, D-146): mô hình tự mang xương + hoạt ảnh (D-321: gỡ KayKit), hoạt ảnh theo trạng thái SIM.
 ## Công trình: mô hình tĩnh (D-158). Đơn vị khác: ảnh đứng quay về camera. Chỉ đọc World.
 ## D-159 cảm giác đòn: điểm chém của hoạt ảnh khớp tick ra đòn của SIM, khựng khung khi trúng, lóe trắng
 ## và giật lùi khi bị đánh, mỗi chiêu một hoạt ảnh (`skills` trong units_3d.json) phát trọn.
@@ -71,11 +71,8 @@ func _make_model(e: Entity, cfg: Dictionary) -> void:
 	add_child(Look3D.blob(height))  # D-150: bóng mờ dưới chân
 	model.scale = Vector3.ONE * (height / float(_rig.get("native", ModelLibrary.bounds(model).size.y)))
 	model.rotation.y = deg_to_rad(cfg.get("yaw", 0.0))
-	if _rig.get("own", false):  # D-173: mô hình tự mang xương + hoạt ảnh (quái rừng Tripo / Blender)
-		_anim = model.find_children("*", "AnimationPlayer", true, false)[0]
-		ModelLibrary.dress_own(model, cfg, e.team)  # D-209 màu phe
-	else:
-		_anim = ModelLibrary.dress_kaykit(model, e.team, cfg)
+	_anim = model.find_children("*", "AnimationPlayer", true, false)[0]  # D-173: mô hình tự mang xương + hoạt ảnh
+	ModelLibrary.dress_own(model, cfg, e.team)  # D-209 màu phe
 	for n: Node in model.find_children("*", "GeometryInstance3D", true, false):
 		_meshes.append(n as GeometryInstance3D)
 		var mats: Array = []

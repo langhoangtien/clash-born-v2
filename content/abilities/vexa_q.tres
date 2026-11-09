@@ -36,6 +36,7 @@ effect_patches = Array[ExtResource("5_i1tak")]([SubResource("Resource_d2mhp")])
 script = ExtResource("4_yoxtj")
 description = "Biến kẻ địch thành ếch: không đánh, không dùng chiêu / đồ, chạy chậm."
 targeting = 2
+cast_time = "0.3"
 values = Dictionary[StringName, PackedFloat32Array]({
 &"cast_range": PackedFloat32Array(600, 600, 600, 600, 600),
 &"cooldown": PackedFloat32Array(20, 18, 16, 14, 12),

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b1c5hn1gspl1x"
-path="res://.godot/imported/barbarian_texture.png-14f2efe8d0bae6c9592a10e0276ec46d.ctex"
+uid="uid://t7wyqbx67f12"
+path="res://.godot/imported/gorran_poison.png-2c91cd8df054153237c43646b7923abc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/models/kaykit/barbarian_texture.png"
-dest_files=["res://.godot/imported/barbarian_texture.png-14f2efe8d0bae6c9592a10e0276ec46d.ctex"]
+source_file="res://assets/art/gorran_poison.png"
+dest_files=["res://.godot/imported/gorran_poison.png-2c91cd8df054153237c43646b7923abc.ctex"]
 
 [params]
 

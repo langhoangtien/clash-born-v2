@@ -140,6 +140,8 @@ sát thương phép (ST-11). Hồi máu chia đều mỗi 0.5 s.
 
 ## Myra · Pháp sư
 
+> D-321: Q / W / R của Myra và Vexa vung 0,3 s trước khi ra đòn (Myra R 0,4 s) — có hoạt ảnh tung chiêu; bị choáng lúc vung thì mất chiêu (ABL-03).
+
 Đánh xa (tầm 550), thuộc tính chính Trí tuệ, BAT 1.7 (D-162). Gây sát thương phép từ xa và khống chế.
 
 ### Nội tại — Băng Giá (D-300, thay Nhịp Phép — người chơi: nữ hoàng băng)
@@ -269,6 +271,8 @@ của địch về sau) và chỉ số `damage_taken_multiplier` tăng.
 
 ## Vexa · Phù Thủy
 
+> D-321: Q / W / R của Myra và Vexa vung 0,3 s trước khi ra đòn (Myra R 0,4 s) — có hoạt ảnh tung chiêu; bị choáng lúc vung thì mất chiêu (ABL-03).
+
 Đánh xa (tầm 550), thuộc tính chính Trí tuệ. Không gây nhiều sát thương, nhưng
 khống chế mạnh và phá các hiệu ứng có lợi của đối thủ. Chỉ số gốc lấy từ mẫu
 `mage_growth` của v1, giảm sát thương phép, tăng mana.
@@ -340,8 +344,10 @@ bị tước gây thêm sát thương phép. Sau đó làm chậm.
 Vùng bán kính 400 trong 10 s, 10 / 20 / 30 / 40 / 50 sát thương phép mỗi giây, không giảm giáp.
 Hồi chiêu 20 s, mana 90–130.
 
-### W — Đuôi Rồng (chọn đơn vị địch, tầm 700)
-80 / 100 / 120 / 140 / 160 sát thương phép, choáng 1.5 / 1.8 / 2.1 / 2.4 / 2.7 s. Hồi chiêu 12 s, mana 100.
+### W — Lọ Độc (chọn điểm, tầm 800) — D-321 (thay Đuôi Rồng, người chơi: quẫy đuôi rồng không hợp nhà giả kim)
+Vung tay 0,3 s (hoạt ảnh ném qua vai, ABL-03: bị choáng lúc vung thì mất chiêu) rồi ném lọ độc tới điểm chọn, bay 0,4 s rồi vỡ: mọi kẻ địch trong bán kính 250 **Trúng Độc** 5 s — chậm
+22 / 24 / 26 / 28 / 30% và 30 / 40 / 50 / 60 / 70 sát thương phép mỗi giây (mỗi 0,5 s một nửa). Ném lại lên
+người đang trúng độc thì làm mới thời gian (không cộng dồn). Hồi chiêu 12 s, mana 90 / 95 / 100 / 105 / 110.
 
 ### R — Cuồng Hóa (ultimate, bản thân)
 25 s: BAT 1.7 → 1.4 / 1.3 / 1.2, hồi máu +15 / 25 / 35 mỗi giây (D-133), tốc chạy +30 / 40 / 50.
@@ -349,7 +355,7 @@ Hồi chiêu 55 s, mana 50 / 100 / 150.
 
 ### Talent cấp 20 (chọn 1)
 - Q: Vũng Axit bán kính +100, +15 sát thương mỗi giây.
-- W: choáng +1 s.
+- W: Độc Đậm — +25 sát thương mỗi giây (D-321).
 - R: BAT giảm thêm 0.1 khi Cuồng Hóa (cấp 3: 1.1); bỏ +50 sát thương (D-133).
 
 ## Thư viện bị động (dành sẵn cho hero sau)

@@ -3,7 +3,6 @@ extends RefCounted
 ## Tra mô hình 3D theo art_id cho bản thử 3D (D-146), từ assets/models/units_3d.json. Nạp một lần:
 ## cảnh nhân vật, vũ khí, thư viện hoạt ảnh theo rig, vật liệu màu đội (dùng chung giữa các đơn vị).
 
-const ROOT: String = "res://assets/models/kaykit/"
 const CONFIG: String = "res://assets/models/units_3d.json"
 ## D-158, D-165: mô hình tĩnh (công trình, cảnh vật) — đường dẫn trong cấu hình tính từ đây.
 const MODELS: String = "res://assets/models/"
@@ -12,7 +11,6 @@ const FADED_ALPHA: float = 0.45
 
 static var _config: Dictionary = {}
 static var _scenes: Dictionary[String, PackedScene] = {}
-static var _libs: Dictionary[String, AnimationLibrary] = {}
 static var _materials: Dictionary[String, Material] = {}
 ## D-161: bản trong suốt của từng vật liệu (theo id vật liệu gốc).
 static var _faded: Dictionary[int, Material] = {}
@@ -35,30 +33,12 @@ static func rig(name: String) -> Dictionary:
 
 static func scene(file: String) -> PackedScene:
 	if not _scenes.has(file):
-		_scenes[file] = load(ROOT + file) as PackedScene
+		_scenes[file] = load(MODELS + file) as PackedScene
 	return _scenes[file]
 
 
-## Mọi hoạt ảnh của rig gộp vào một thư viện (đường dẫn rãnh "Rig_x/Skeleton3D:xương" khớp mọi nhân vật).
-static func animations(rig_name: String) -> AnimationLibrary:
-	if _libs.has(rig_name):
-		return _libs[rig_name]
-	var lib: AnimationLibrary = AnimationLibrary.new()
-	for s: String in rig(rig_name)["sets"]:
-		var holder: Node = scene("%s_%s.glb" % [rig_name, s]).instantiate()
-		var ap: AnimationPlayer = holder.find_children("*", "AnimationPlayer", true, false)[0]
-		for n: StringName in ap.get_animation_list():
-			if not lib.has_animation(n):
-				lib.add_animation(n, ap.get_animation(n))
-		holder.free()
-	_libs[rig_name] = lib
-	return lib
-
-
-## Hoạt ảnh của một đơn vị: rig KayKit dùng chung, hoặc (D-173, rig `own`) hoạt ảnh nằm sẵn trong mô hình.
+## Hoạt ảnh của một đơn vị (D-173, rig `own`: nằm sẵn trong mô hình; D-321 gỡ rig KayKit dùng chung).
 static func unit_animations(cfg: Dictionary) -> AnimationLibrary:
-	if not rig(cfg["rig"]).get("own", false):
-		return animations(cfg["rig"])
 	var holder: Node = scene(cfg["model"] + ".glb").instantiate()
 	var ap: AnimationPlayer = holder.find_children("*", "AnimationPlayer", true, false)[0]
 	var lib: AnimationLibrary = ap.get_animation_library(&"")
@@ -66,25 +46,6 @@ static func unit_animations(cfg: Dictionary) -> AnimationLibrary:
 	return lib
 
 
-## Vật liệu dùng bảng màu `tex` theo đội (0 xanh, 1 đỏ, khác: gốc), sao từ vật liệu gốc `base`.
-static func team_material(base: Material, tex: String, team: int) -> Material:
-	var key: String = "%s_%d" % [tex, team]
-	if _materials.has(key):
-		return _materials[key]
-	var m: StandardMaterial3D = base.duplicate() as StandardMaterial3D
-	if m == null:
-		return base
-	var suffix: String = "_blue" if team == 0 else ("_red" if team == 1 else "")
-	m.albedo_texture = load(ROOT + tex + "_texture" + suffix + ".png") as Texture2D
-	m.rim_enabled = true  # D-150: viền sáng nhẹ cho nhân vật nổi khỏi nền
-	m.rim = 0.25
-	m.rim_tint = 0.4
-	m.roughness = 0.8
-	_materials[key] = m
-	return m
-
-
-## D-158: cấu hình mô hình công trình của `e` (trụ theo bậc), rỗng nếu vẽ bằng ảnh đứng.
 static func structure(e: Entity) -> Dictionary:
 	var key: String = String(e.art_id) + ("_t%d" % e.tier if e.kind == Entity.Kind.TOWER else "")
 	return config().get("structures", {}).get(key, {})
@@ -179,7 +140,7 @@ static func use_vertex_colors(mesh: Mesh) -> void:
 ## (<model>_blue / _red.jpg cạnh file GLB, tạo bằng glb_slim.py --team).
 static func dress_own(model: Node, cfg: Dictionary, team: int) -> void:
 	if cfg.get("team_tex", false):
-		apply_team_texture(model, (ROOT + cfg["model"]).simplify_path().trim_prefix(MODELS), team)
+		apply_team_texture(model, cfg["model"], team)
 
 
 static func use_vertex_colors_in(root: Node) -> void:
@@ -229,39 +190,8 @@ static func dash_hop(cfg: Dictionary, anim: AnimationPlayer) -> float:
 	return hop * sin(PI * clampf(anim.current_animation_position / anim.current_animation_length, 0.0, 1.0))
 
 
-## D-209: tô ảnh màu theo phe cho mọi lưới của mô hình KayKit (trừ vũ khí gắn tay).
-static func paint_team(root: Node, tex: String, team: int) -> void:
-	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
-		if n.get_parent() is BoneAttachment3D or n.get_parent().get_parent() is BoneAttachment3D:
-			continue
-		var mi: MeshInstance3D = n as MeshInstance3D
-		for i: int in mi.mesh.get_surface_count():
-			mi.set_surface_override_material(i, team_material(mi.mesh.surface_get_material(i), tex, team))
-
-
 ## D-249: hoạt ảnh và điểm trúng của đòn thứ `n`: có `attack_alt` thì đòn lẻ dùng nó (`impact_alt`).
 static func attack_pick(cfg: Dictionary, n: int, fallback: float) -> Array:
 	if cfg.has("attack_alt") and n % 2 == 1:
 		return [cfg["attack_alt"], float(cfg.get("impact_alt", cfg.get("impact", fallback)))]
 	return [cfg["attack"], float(cfg.get("impact", fallback))]
-
-
-## Nhân vật KayKit: vũ khí gắn tay, bảng màu theo đội, hoạt ảnh dùng chung của rig; trả về AnimationPlayer mới.
-static func dress_kaykit(model: Node3D, team: int, cfg: Dictionary) -> AnimationPlayer:
-	var skel: Skeleton3D = model.find_children("*", "Skeleton3D", true, false)[0]
-	_attach_weapon(skel, cfg.get("right", ""), "handslot.r")
-	_attach_weapon(skel, cfg.get("left", ""), "handslot.l")
-	paint_team(model, cfg["tex"], team)
-	var anim: AnimationPlayer = AnimationPlayer.new()
-	model.add_child(anim)
-	anim.add_animation_library(&"", animations(cfg["rig"]))
-	return anim
-
-
-static func _attach_weapon(skel: Skeleton3D, weapon: String, bone: String) -> void:
-	if weapon.is_empty():
-		return
-	var slot: BoneAttachment3D = BoneAttachment3D.new()
-	slot.bone_name = bone
-	skel.add_child(slot)
-	slot.add_child(scene(weapon + ".gltf").instantiate())

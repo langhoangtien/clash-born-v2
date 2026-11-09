@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_act"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="3_dmg"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="4_eff"]
+
+[sub_resource type="Resource" id="Slow"]
+script = ExtResource("1_mod")
+stat = &"movement_speed"
+op = 1
+value = "1 - slow"
+
+[sub_resource type="Resource" id="Dot"]
+script = ExtResource("3_dmg")
+damage_type = 1
+amount = "dps * 0.5"
+target = 0
+
+[resource]
+script = ExtResource("4_eff")
+duration = "poison_duration"
+tags = Array[StringName]([&"debuff"])
+modifiers = Array[ExtResource("1_mod")]([SubResource("Slow")])
+periodic_interval = "0.5"
+periodic_actions = Array[ExtResource("2_act")]([SubResource("Dot")])
+id = &"gorran_poison"
+display_name = "Trúng Độc"
+art_id = &"gorran_poison"

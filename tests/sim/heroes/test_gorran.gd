@@ -1,5 +1,5 @@
 extends TestCase
-## D-122: Gorran · Giả Kim — nội tại +sát thương, Q Vũng Axit, W Đuôi Rồng, R Cuồng Hóa, 3 talent.
+## D-122: Gorran · Giả Kim — nội tại +sát thương, Q Vũng Axit, W Lọ Độc (D-321, trước: Đuôi Rồng), R Cuồng Hóa, 3 talent.
 
 const MAP_PATH: String = "res://data/maps/clashborn.tres"
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
@@ -91,17 +91,32 @@ func test_D_122_acid_pool_ticks_damage_for_ten_seconds() -> void:
 	assert_near(after, 0.0, 0.01, "hết 10 s: vũng tan")
 
 
-func test_D_122_dragon_tail_stuns_from_700() -> void:
+## D-321: W Lọ Độc — vung 0,3 s rồi ném tới điểm, bay 0,4 s rồi vỡ: kẻ địch trong 250 trúng độc 5 s (chậm 30%, 70 phép / giây ở cấp 5);
+## ngoài vùng không dính; hết 5 s thì hết.
+func test_D_321_poison_flask_slows_and_ticks_in_area() -> void:
 	var w: World = _world()
 	var g: Entity = _gorran(w, [0, 5, 0])
-	var foe: Entity = _foe(w, g.position + Vector2(650, 0))
-	w.submit(Command.cast(g.id, Slot.W, foe.id))
-	for i: int in range(10):
+	var foe: Entity = _foe(w, g.position + Vector2(600, 0))
+	var out: Entity = _foe(w, foe.position + Vector2(0, 450))
+	w.step()
+	var ms: float = foe.stats.get_stat(StatId.Id.MOVEMENT_SPEED)
+	w.submit(Command.cast(g.id, Slot.W, -1, foe.position))
+	for i: int in range(15):
 		w.step()
-	assert_true(Rules.has_state(foe, UnitState.Id.STUNNED), "choáng ở tầm 650")
-	for i: int in range(30 * 3):
+	assert_false(_poisoned(foe), "vung tay 0,3 s + lọ bay 0,4 s: 0,5 s chưa trúng độc")
+	for i: int in range(9):
 		w.step()
-	assert_false(Rules.has_state(foe, UnitState.Id.STUNNED), "cấp 5: 2.7 s")
+	assert_true(_poisoned(foe), "lọ vỡ: trúng độc")
+	assert_false(_poisoned(out), "ngoài bán kính 250: không dính")
+	assert_near(foe.stats.get_stat(StatId.Id.MOVEMENT_SPEED), ms * 0.7, 0.5, "cấp 5: chậm 30%")
+	var dealt: float = _taken(w, foe, 30 * 2)
+	assert_true(dealt > 70.0 and dealt <= 140.0, "2 s độc: ~140 phép trước kháng (%.0f)" % dealt)
+	_taken(w, foe, 30 * 3)
+	assert_false(_poisoned(foe), "hết 5 s")
+
+
+func _poisoned(e: Entity) -> bool:
+	return e.effects.any(func(i: EffectInstance) -> bool: return i.def.id == &"gorran_poison")
 
 
 func test_D_122_rage_cuts_bat_regen_and_speed() -> void:
@@ -121,7 +136,7 @@ func test_D_122_rage_cuts_bat_regen_and_speed() -> void:
 	assert_near(g.stats.get_stat(StatId.Id.BASE_ATTACK_TIME), 1.7, 0.001, "hết 25 s")
 
 
-func test_D_122_talents_wider_acid_long_stun_rage_bat() -> void:
+func test_D_122_talents_wider_acid_strong_poison_rage_bat() -> void:
 	var w: World = _world()
 	var gq: Entity = _gorran20(w, Slot.Q)
 	assert_near(Abilities.value(gq, Abilities.of(gq, Slot.Q), &"radius"), 500.0, 0.001, "talent Q: bán kính +100")
@@ -136,4 +151,4 @@ func test_D_122_talents_wider_acid_long_stun_rage_bat() -> void:
 	assert_near(gr.stats.get_stat(StatId.Id.PHYSICAL_DAMAGE) - dmg, 0.0, 0.01, "talent R: không còn +sát thương")
 	var w3: World = _world()
 	var gw: Entity = _gorran20(w3, Slot.W)
-	assert_near(Abilities.value(gw, Abilities.of(gw, Slot.W), &"stun_duration"), 3.7, 0.001, "talent W: choáng +1 s")
+	assert_near(Abilities.value(gw, Abilities.of(gw, Slot.W), &"dps"), 95.0, 0.001, "talent W (D-321): +25 độc mỗi giây")

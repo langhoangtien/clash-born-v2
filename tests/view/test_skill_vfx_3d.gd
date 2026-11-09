@@ -241,3 +241,27 @@ func test_D_320_effect_triggered_draws_trigger_recipe() -> void:
 	fx.on_event(w, other)
 	assert_eq(fx.kinds().size(), 3, "hiệu ứng không có công thức: không sinh gì")
 	fx.free()
+
+
+## D-321: W Gorran — lọ độc bay vòng cung từ tay tới điểm chọn (lob), vết vỡ (vành + đĩa + bụi độc) chỉ hiện sau `wait`
+## = thời gian bay; hết thì gỡ.
+func test_D_321_flask_lob_flies_then_splash_appears_after_wait() -> void:
+	var s: Array = _setup()
+	var w: World = s[0]
+	var g: Entity = UnitFactory.hero(w, _lib.heroes[&"gorran"], 0, Vector2(1000, 1000))
+	Abilities.set_rank(w, g, Abilities.of(g, AbilityDef.Slot.W), 1)
+	var fx: SkillVfx3D = SkillVfx3D.new()
+	var ev: GameEvent = GameEvent.make(&"ability_finished", w.tick, g.id, -1, AbilityDef.Slot.W)
+	ev.point = Vector2(1600, 1000)
+	fx.on_event(w, ev)
+	assert_eq(fx.kinds(), ["lob", "disc", "ring", "glow"], "lọ bay + vết vỡ (vùng chờ do ZoneView3D vẽ)")
+	fx.advance(0.2)
+	var nodes: Array = fx.get_children()
+	var lob: Node3D = nodes[0]
+	assert_true(lob.position.y > 1.3, "giữa đường: lọ bay vòng cung cao hơn tay")
+	assert_false((nodes[1] as Node3D).visible, "chưa chạm đất: chưa thấy vết vỡ")
+	fx.advance(0.25)
+	assert_true((nodes[1] as Node3D).visible, "lọ chạm đất: vết vỡ hiện")
+	fx.advance(2.0)
+	assert_eq(fx.kinds(), [], "hết thời gian: gỡ hết")
+	fx.free()

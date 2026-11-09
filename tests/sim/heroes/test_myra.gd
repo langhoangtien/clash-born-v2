@@ -199,7 +199,7 @@ func test_myra_w_freezes_after_delay() -> void:
 	var inside: Entity = _dummy(w, spot + _lane_dir().orthogonal() * (280.0 + 20.0))
 	var outside: Entity = _dummy(w, spot + _lane_dir().orthogonal() * -(280.0 + 30.0))
 	w.submit(Command.cast(m.id, Slot.W, -1, spot))
-	_steps(w, 24)
+	_steps(w, 9 + 24)  # D-321: vung 0,3 s (cast_time) rồi mới đặt vùng
 	assert_near(inside.health, 100000.0, EPS, "chưa tới 0.8 s")
 	w.step()
 	assert_near(inside.health, 100000.0 - _lost(w, inside, 80.0), EPS, "cấp 2: 80 phép (D-162)")
@@ -221,7 +221,7 @@ func test_myra_r_silences_in_400_after_1s() -> void:
 	var creep: Entity = _dummy(w, spot, Entity.Kind.LANE_CREEP)
 	var tower: Entity = _dummy(w, spot + _lane_dir() * 100.0, Entity.Kind.TOWER)
 	w.submit(Command.cast(m.id, Slot.R, -1, spot))
-	_steps(w, 30)
+	_steps(w, 12 + 30)  # D-321: vung 0,4 s
 	assert_near(edge.health, 100000.0, EPS, "chưa tới 1 s")
 	w.step()
 	assert_near(edge.health, 100000.0 - _lost(w, edge, 375.0), EPS, "cấp 2: 375 phép")
@@ -249,7 +249,7 @@ func test_myra_w_ii_faster_and_wider() -> void:
 	var spot: Vector2 = m.position + _lane_dir() * 600.0
 	var foe: Entity = _dummy(w, spot + _lane_dir().orthogonal() * (380.0 + 20.0))
 	w.submit(Command.cast(m.id, Slot.W, -1, spot))
-	_steps(w, 9)
+	_steps(w, 9 + 9)  # D-321: vung 0,3 s
 	assert_near(foe.health, 100000.0, EPS)
 	w.step()
 	assert_true(Rules.has_state(foe, UnitState.Id.ROOTED), "Phong Ấn Tức Thì: 0.3 s, bán kính 380 (đóng băng giữ chân)")

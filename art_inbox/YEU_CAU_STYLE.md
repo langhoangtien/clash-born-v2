@@ -630,3 +630,14 @@ ghép 3 × 3 thu nhỏ không thấy lưới.
 Đã làm lại bằng imagegen: mặt phiến trơn, vân và sáng đều; kiểm ghép 3 × 3 không thấy dải sửa mép.
 Dải mép 0–128 px so với giữa: chênh sáng lớn nhất 0,154%; chênh độ lệch chuẩn cục bộ 32 px lớn nhất 5,760%.
 Chênh mép ngang/dọc (MAE RGB): 0,959 / 1,013; hai cột/hàng kề nhau: 1,134 / 1,280 (thang 0–255).
+
+## Đợt T15 — Gorran bỏ goblin trên lưng (2026-11-09)
+
+Người dùng: dựng 3D Gorran theo quy trình Brakk, **bỏ ông nhà hóa học (goblin) trên lưng**. Sửa ba ảnh concept T9
+`art_inbox/09_units/gorran_front.png`, `gorran_side.png`, `gorran_back.png` (imagegen chế độ sửa ảnh, giữ nguyên style, tư
+thế, tỉ lệ, màu, nền xám phẳng): **bỏ goblin + ba lô / túi trên vai và lưng** (vai, lưng orc lộ ra, dây yếm da nối liền
+ra sau như bình thường); **thêm 3–4 lọ thuốc thủy tinh nhỏ màu xanh lá / tím cài ở thắt lưng** (giả kim, ném lọ độc);
+hai bàn tay nắm, **không cầm gì**, có khe hở rõ với thân. Ba ảnh **cùng một tư thế**. Ảnh nghiêng nhìn từ **bên phải**.
+1024 × 1024 PNG, nền xám nhạt trơn, không bóng, không chữ. Mẫu style thêm: `art_inbox/09_units/brakk_front.png`.
+
+Lưu `art_inbox/17_gorran/gorran_front.png`, `gorran_side.png`, `gorran_back.png`. **Không commit / push.**
