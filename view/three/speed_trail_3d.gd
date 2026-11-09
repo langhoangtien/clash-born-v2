@@ -3,7 +3,8 @@ extends Node3D
 ## D-256: vệt tốc độ kiểu Triệu Vân (Liên Quân) — các dải sáng bám theo **đường đã chạy** (lưu vị trí vài phần mười
 ## giây gần nhất), đầu sáng sát người, đuôi mảnh dần rồi tan; rẽ thì vệt cong theo. D-298: bỏ đốm sáng rơi lại
 ## (hạt — gây giật lúc tạo, L-0009). D-300: vẽ bằng tia gió dịu (vfx_soft dạng 16: đường mảnh uốn lượn trong dải),
-## không dùng ảnh. D-303: `vertical` — dải dựng đứng (tấm khí kéo sau lưng). Chỉ là hình, SkillVfx3D cấp vị trí mỗi khung.
+## không dùng ảnh. D-303: `vertical` — dải dựng đứng (tấm khí kéo sau lưng); D-305: dải đứng quay về camera (rẽ về
+## phía camera không còn bị nhìn cạnh mỏng thành vết cắt). Chỉ là hình, SkillVfx3D cấp vị trí mỗi khung.
 
 const MIN_STEP: float = 0.04  ## hằng số kỹ thuật: khoảng cách tối thiểu (đơn vị 3D) giữa hai điểm lưu
 
@@ -62,12 +63,16 @@ func _build(m: ImmediateMesh, height: float, at: Vector3, tail: float) -> void:
 		return
 	var width: float = float(_part.get("width", 0.15))
 	var up: Vector3 = Vector3(0, height, 0)
+	var cam: Camera3D = get_viewport().get_camera_3d() if is_inside_tree() else null
+	var face: bool = _part.get("vertical", false)
 	m.surface_begin(Mesh.PRIMITIVE_TRIANGLE_STRIP)
 	for i: int in range(_points.size() - 1, -1, -1):
 		var a: Vector3 = _points[mini(i + 1, _points.size() - 1)]
 		var b: Vector3 = _points[maxi(i - 1, 0)]
 		var dir: Vector3 = Vector3(a.x - b.x, 0, a.z - b.z).normalized()
-		var side: Vector3 = Vector3.UP if _part.get("vertical", false) else Vector3(-dir.z, 0, dir.x)  # D-303: tấm khí đứng
+		var side: Vector3 = Vector3(-dir.z, 0, dir.x)
+		if face:  # D-303 tấm khí đứng; D-305 quay về camera
+			side = facing_side(dir, cam.global_position - _points[i]) if cam != null else Vector3.UP
 		var age: float = clampf((_clock - _times[i]) / tail, 0.0, 1.0)
 		var w: float = width * (1.0 - 0.7 * age)
 		m.surface_set_uv(Vector2(age, 0.0))
@@ -76,3 +81,9 @@ func _build(m: ImmediateMesh, height: float, at: Vector3, tail: float) -> void:
 		m.surface_add_vertex(_points[i] + up - side * w)
 	m.surface_end()
 
+
+
+## D-305: cạnh dải quay về mắt — vuông góc với hướng chạy và hướng tới mắt (chạy ngang màn hình: gần như đứng).
+static func facing_side(dir: Vector3, to_eye: Vector3) -> Vector3:
+	var side: Vector3 = dir.cross(to_eye)
+	return side.normalized() if side.length_squared() > 0.000001 else Vector3.UP

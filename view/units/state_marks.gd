@@ -6,10 +6,10 @@ extends RefCounted
 const S := UnitState.Id
 
 
-## Có hiệu ứng debuff làm giảm tốc chạy.
+## Có hiệu ứng debuff làm giảm tốc chạy (D-305: trừ hiệu ứng đã phủ màu lên mô hình — chậm vì băng).
 static func is_slowed(e: Entity) -> bool:
 	for inst: EffectInstance in e.effects:
-		if not inst.def.tags.has(&"debuff"):
+		if not inst.def.tags.has(&"debuff") or EffectVfx3D.tint_of_id(inst.def.id).a > 0.0:
 			continue
 		for m: ModifierDef in inst.def.modifiers:
 			if m.stat == &"movement_speed" and m.op == ModifierDef.Op.MULTIPLY:

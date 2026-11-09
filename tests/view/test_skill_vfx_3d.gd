@@ -193,3 +193,33 @@ func test_D_299_hex_frog_is_3d_model() -> void:
 	f._process(0.3)
 	assert_true(f.position.y > 0.0, "đang nhảy")
 	f.queue_free()
+
+
+## D-305: làn khí đứng (Q Duy Anh) luôn quay về camera — rẽ về phía camera / ra xa không còn bị nhìn cạnh mỏng thành
+## "vết cắt": cạnh dải = hướng chạy × hướng tới mắt.
+func test_D_305_air_ribbon_faces_camera_when_turning() -> void:
+	var eye: Vector3 = Vector3(0, 10, 7)  # camera trận: trên cao, chếch về +Z
+	var sideways: Vector3 = SpeedTrail3D.facing_side(Vector3.RIGHT, eye)
+	assert_true(absf(sideways.y) > 0.5, "chạy ngang màn hình: dải gần như đứng")
+	var toward: Vector3 = SpeedTrail3D.facing_side(Vector3.BACK, eye)
+	assert_near(toward.length(), 1.0, 0.001)
+	assert_true(absf(toward.x) > 0.9, "chạy về phía camera: dải nằm ngang, vẫn thấy bề rộng")
+
+
+## D-305: chậm vì băng (nội tại Myra, Kiếm Băng) phủ lớp màu băng lên người thay vòng tròn dưới chân; chậm khác giữ vòng.
+func test_D_305_frost_slow_tints_body_instead_of_ring() -> void:
+	var s: Array = _setup()
+	var w: World = s[0]
+	var foe: Entity = s[2]
+	assert_eq(EffectVfx3D.tint_of(foe).a, 0.0)
+	var vals: Dictionary = {&"slow_per_stack": 0.03, &"slow_vs_melee": 0.3, &"slow_vs_ranged": 0.2, &"attack_slow": 20.0,
+		&"slow": 0.3}
+	for path: String in ["myra_rhythm_stack", "frost_blade_slow_melee", "frost_blade_slow_ranged", "myra_frost_slow"]:
+		foe.effects.clear()
+		Effects.apply(w, foe, load("res://content/effects/%s.tres" % path) as EffectDef, s[1], vals, "1")
+		assert_true(EffectVfx3D.tint_of(foe).a > 0.0, "%s: phủ màu băng" % path)
+		assert_false(StateMarks.is_slowed(foe), "%s: bỏ vòng chậm 2D" % path)
+	Effects.apply(w, foe, load("res://content/effects/noctis_blade_slow.tres") as EffectDef, s[1], vals, "1")
+	assert_true(StateMarks.is_slowed(foe), "chậm không phải băng: vẫn vòng")
+	foe.effects.clear()
+	assert_eq(EffectVfx3D.tint_of(foe).a, 0.0, "hết hiệu ứng: hết màu")

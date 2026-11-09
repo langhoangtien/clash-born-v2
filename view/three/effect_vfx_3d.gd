@@ -5,6 +5,7 @@ extends Node3D
 ## (t = phần thời gian đã qua). Đơn vị phe kia không thấy thì không vẽ. Thay các vòng tròn 2D tương ứng (StateMarks).
 ## D-299: mục "_states" (khóa = tên trạng thái, vd STUNNED) — hình chung cho trạng thái khi không hiệu ứng nào của nó
 ## có hình riêng (sao choáng 3D trên đầu); hiệu ứng có `lift` / `spin` (lốc xoáy) nhấc hình đơn vị lên và xoay (`pose`).
+## D-305: mục `_effects` có `tint` / `tint_alpha` — phủ màu (băng) lên mô hình đơn vị (Actor3D) thay vòng chậm 2D.
 ## Chỉ đọc World.
 
 ## Vị trí 3D đang vẽ của đơn vị (MatchView3D đặt = vị trí nội suy).
@@ -14,6 +15,22 @@ var _items: Dictionary = {}  # EffectInstance → Node3D
 
 static func parts_of(id: StringName) -> Array:
 	return SkillVfx3D.recipes().get("_effects", {}).get(String(id), {}).get("parts", [])
+
+
+## D-305: màu phủ của hiệu ứng `id` (alpha 0 = không phủ).
+static func tint_of_id(id: StringName) -> Color:
+	var r: Dictionary = SkillVfx3D.recipes().get("_effects", {}).get(String(id), {})
+	return Color(r["tint"], float(r.get("tint_alpha", 0.5))) if r.has("tint") else Color(0, 0, 0, 0)
+
+
+## D-305: màu phủ lên đơn vị — hiệu ứng có `tint` đậm nhất đang có.
+static func tint_of(e: Entity) -> Color:
+	var out: Color = Color(0, 0, 0, 0)
+	for inst: EffectInstance in e.effects:
+		var c: Color = tint_of_id(inst.def.id)
+		if c.a > out.a:
+			out = c
+	return out
 
 
 static func state_parts(state: int) -> Array:

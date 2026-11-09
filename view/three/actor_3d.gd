@@ -43,6 +43,7 @@ var _freeze_until: float = -1.0
 var _flash_until: float = -1.0
 var _lean: float = 0.0
 var _overlay: StandardMaterial3D
+var _tint: Color = Color(0, 0, 0, 0)  # D-305: màu phủ của hiệu ứng (băng), dùng chung lớp lóe
 var _speed: float = 1.0
 var _stunned: bool = false  # D-230
 
@@ -132,6 +133,7 @@ func sync(w: World, e: Entity, at: Vector3, moving: bool, hit_age: int, faded: b
 	if _show_frog(Rules.has_state(e, UnitState.Id.HEXED)):
 		return
 	if e.facing != Vector2.ZERO: rotation.y = atan2(e.facing.x, e.facing.y)
+	_tint = EffectVfx3D.tint_of(e)
 	_feel()
 	_stunned = e.cast == null and not Rules.can_move(e) and not Rules.can_attack(e)
 	if e.reincarnate_tick >= 0:  # DTH-02: nằm chờ tái sinh — ngã rồi nằm yên ở khung cuối
@@ -206,9 +208,9 @@ func _feel() -> void:
 	_lean = move_toward(_lean, 0.0, get_process_delta_time() * LEAN * 8.0) if t >= _freeze_until else _lean
 	_model.position.z = -_lean
 	var flash: float = clampf((_flash_until - t) / FLASH, 0.0, 1.0)
-	if flash > 0.0 or (_overlay != null and _overlay.albedo_color.a > 0.0):
-		_ensure_overlay()
-		_overlay.albedo_color = Color(FLASH_COLOR, flash * FLASH_ALPHA)
+	if flash > 0.0 or _tint.a > 0.0 or (_overlay != null and _overlay.albedo_color.a > 0.0):
+		_ensure_overlay()  # D-305: lóe đè lên màu băng khi mạnh hơn
+		_overlay.albedo_color = Color(FLASH_COLOR, flash * FLASH_ALPHA) if flash * FLASH_ALPHA > _tint.a else _tint
 
 
 ## Lớp lóe trắng phủ lên mô hình (cộng sáng); D-271: màn làm nóng gắn sẵn để Vulkan dựng pipeline từ trước.
