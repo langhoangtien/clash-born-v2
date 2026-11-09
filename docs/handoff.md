@@ -1,12 +1,12 @@
 # Bàn giao — Clashborn v2 (cập nhật 2026-11-09)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-315**). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-316**). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh thì chụp trong game (xvfb) và gửi ảnh JPG.
 
 ## 1. Trạng thái
 
-- **854 test xanh** (`GODOT=... bash tools/run_tests.sh`; soak `--soak` chạy trước khi đóng mốc). APK mới nhất trên
+- **855 test xanh** (`GODOT=... bash tools/run_tests.sh`; soak `--soak` chạy trước khi đóng mốc). APK mới nhất trên
   https://clashborn.quest (xem `curl -s https://clashborn.quest/version.json`); phát hành mục 4.
 - Android: trình vẽ Mobile (Vulkan), đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
   Hiệu năng máy tính bảng ổn (D-261..277, D-285). Tên miền `clashborn.quest` từng bị registry treo (serverHold) — đã
@@ -28,6 +28,10 @@ Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh 
   fountain = lan can rìa map; hang người đá **một cửa ra sông**, đá chung style_kit cao dần về phía đối diện cửa; sông bờ
   lượn, sóng vệt dài, đáy đứng yên, người lội lún + vòng gợn (`Wading3D`). **Người dùng thích đá Blender (style_kit) hơn
   Tripo / Codex** — vật đá mới ưu tiên dựng bằng style_kit (cần bpy).
+- **Màu điện thoại ≠ máy tính** (D-316): máy tính chạy Compatibility (OpenGL, sRGB), APK chạy Mobile (Vulkan, tuyến tính).
+  Kiểm màu điện thoại trên máy cloud: `apt-get install -y mesa-vulkan-drivers`, rồi `xvfb-run -a godot --path .
+  --rendering-method mobile --rendering-driver vulkan ...` (lavapipe). Màu đỉnh / hằng màu trong shader phải qua
+  `srgb_in` hoặc `source_color`; hệ số chỉnh theo sRGB đổi qua `Terrain3D.linear_space()`.
 - **Đất cao (base) kiểu ảnh mẫu A** (D-310..312, chưa phát hành APK): nền cỏ + dải đất nện + đá lát xám lạnh `flagstones`
   (ảnh Codex T12 qua `tools/textures/stone_tint.py`; mặt nạ `base` trong decor.json, `tools/map_build/base_decor.py`), sân lát + vòng đá viền quanh mọi trụ / nhà chính / fountain, tường rào
   `base_wall` + cột đèn cờ `base_pillar_blue/red` (Tripo text-to-model). **API ảnh OpenAI hết credit** — concept_gen

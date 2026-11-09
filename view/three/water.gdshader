@@ -1,6 +1,6 @@
 shader_type spatial;
 // D-178: nước: chỗ nông thấy đáy sông (ảnh), xuống sâu xanh lam sẫm (độ sâu: kênh L ảnh `water` của decor.py, D-180); gợn
-// sáng mảnh trôi chậm (sóng). D-313: lưới nước phủ rộng hơn mép luật, mép nhìn thấy = trường bờ (kênh A, 0,5 = mép luật)
+// sáng mảnh trôi chậm (sóng). D-313: lưới nước phủ rộng hơn mép luật, mép nhìn thấy = trường bờ (kênh G, 0,5 = mép luật)
 // + nhiễu → bờ lượn. D-314 (người chơi): giữ sóng dài như cũ, **đáy sông đứng yên** (đáy đung đưa trông như sông bẩn),
 // không viền bọt, mép bờ chỉ sáng nhẹ. Đục, không đèn. Đơn vị: mét.
 render_mode unshaded;
@@ -11,8 +11,8 @@ uniform vec2 mask_origin = vec2(0.0);
 uniform vec2 mask_size = vec2(1.0);
 uniform float bed_m = 6.0;
 uniform vec3 shallow_tint = vec3(0.75, 1.0, 1.05);
-uniform vec3 deep = vec3(0.10, 0.28, 0.36);
-uniform vec3 glint = vec3(0.45, 0.70, 0.74);
+uniform vec3 deep : source_color = vec3(0.10, 0.28, 0.36);  // D-316: màu (Vulkan tự đổi tuyến tính)
+uniform vec3 glint : source_color = vec3(0.45, 0.70, 0.74);
 
 varying vec2 xz;
 
@@ -25,7 +25,7 @@ float noise(vec2 p) {  // nhiễu rẻ từ độ sáng ảnh đáy sông
 }
 
 void fragment() {
-	vec2 dd = texture(depth_tex, (xz - mask_origin) / mask_size).ra;
+	vec2 dd = texture(depth_tex, (xz - mask_origin) / mask_size).rg;  // D-316: R độ sâu, G trường bờ
 	if (dd.y < 0.8) {  // D-315: chỉ dải sát bờ mới tính nhiễu (nhiễu ≥ −0,3 → trong lõi sông không bao giờ bị cắt)
 		float s = dd.y + (noise(xz / 13.0) - 0.3) * 2.2;  // một lần đọc ảnh (độ sáng ảnh đáy 0,18…0,42 → ±0,26)
 		if (s < 0.5) {

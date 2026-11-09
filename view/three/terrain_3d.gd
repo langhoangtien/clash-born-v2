@@ -74,10 +74,11 @@ static func ground_material() -> ShaderMaterial:
 	for key: String in ["grass_m", "dirt_m", "stones_m"]:
 		m.set_shader_parameter(key, float(cfg[key]))
 	m.set_shader_parameter("dirt_color", Color(cfg["dirt_color"]))  # D-187: đất nện tô màu đất chung
-	m.set_shader_parameter("dirt_luma", float(cfg["dirt_luma"]))
+	m.set_shader_parameter("dirt_luma", _lin(float(cfg["dirt_luma"])))  # D-316: Vulkan đọc ảnh tuyến tính
 	m.set_shader_parameter("base_tex", ImageTexture.create_from_image(base_image()))  # D-310
 	m.set_shader_parameter("flag_tex", texture(cfg["flag"]))
 	m.set_shader_parameter("flag_m", float(cfg["flag_m"]))
+	_linear_factors(m, ["shadow_tint", "grass_warm", "moss_tint"])
 	return m
 
 
@@ -138,6 +139,7 @@ static func water(layout: MapLayout) -> MeshInstance3D:
 	m.set_shader_parameter("depth_tex", ImageTexture.create_from_image(depth_image()))
 	m.set_shader_parameter("bed_tex", texture(_style()["water"]["bed"]))
 	m.set_shader_parameter("bed_m", float(_style()["water"]["bed_m"]))
+	_linear_factors(m, ["shallow_tint"])
 	mi.material_override = m
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mi.add_child(Wading3D.new())  # D-313: vòng gợn chân người lội (Wading3D.update_in)
@@ -187,10 +189,33 @@ static func _masked(shader: Shader) -> ShaderMaterial:
 	return m
 
 
+## D-316: trình vẽ Mobile / Forward+ (Vulkan, điện thoại) tính màu tuyến tính; Compatibility (OpenGL, máy tính) tính
+## thẳng trên giá trị sRGB. Hằng số chỉnh trên máy tính (hệ số nhân màu, độ sáng trung bình ảnh) phải đổi khi chạy Vulkan,
+## không thì điện thoại khác máy tính (sông trắng đục, đất mép lane tối hơn giữa lane).
+static func linear_space() -> bool:
+	return RenderingServer.get_current_rendering_method() != "gl_compatibility"
+
+
+static func _lin(v: float) -> float:
+	return pow(v, 2.2) if linear_space() else v
+
+
+## Hệ số nhân màu khai báo mặc định trong shader (giá trị chỉnh theo sRGB) → bản tuyến tính khi chạy Vulkan.
+static func _linear_factors(m: ShaderMaterial, names: Array[String]) -> void:
+	if not linear_space():
+		return
+	for n: String in names:
+		var v: Vector3 = RenderingServer.shader_get_parameter_default(m.shader.get_rid(), n)
+		m.set_shader_parameter(n, Vector3(pow(v.x, 2.2), pow(v.y, 2.2), pow(v.z, 2.2)))
+
+
 static func _mean(t: Texture2D) -> Vector3:
 	var img: Image = t.get_image()
 	if img.is_compressed():
 		img.decompress()
+	if linear_space():
+		img.convert(Image.FORMAT_RGBA8)
+		img.srgb_to_linear()  # D-316: Vulkan chia ảnh đã tuyến tính → trung bình cũng phải tuyến tính
 	img.resize(1, 1, Image.INTERPOLATE_BILINEAR)
 	var c: Color = img.get_pixel(0, 0)
 	return Vector3(c.r, c.g, c.b)

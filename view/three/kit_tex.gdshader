@@ -3,6 +3,7 @@ shader_type spatial;
 // của mặt (mỗi mặt phẳng một lần đọc ảnh — rẻ, mặt low-poly phẳng nên không lộ mối). Ảnh chia cho màu trung
 // bình của nó: vân chỉ thêm chi tiết, tông theo màu đỉnh. luma_only: chỉ lấy sáng tối (tán cây). Không đèn.
 render_mode unshaded, cull_disabled;
+#include "res://view/three/srgb.gdshaderinc"
 
 uniform sampler2D face_tex : source_color, filter_linear_mipmap, repeat_enable;
 uniform vec3 face_mean = vec3(0.4);
@@ -23,5 +24,5 @@ void fragment() {
 	if (luma_only) {
 		detail = vec3(dot(detail, vec3(0.3, 0.5, 0.2)));
 	}
-	ALBEDO = COLOR.rgb * mix(vec3(1.0), detail, strength);
+	ALBEDO = srgb_in(COLOR.rgb) * mix(vec3(1.0), detail, strength);
 }

@@ -229,3 +229,12 @@ func test_D_313_wading_only_in_river() -> void:
 	var deep: Vector2 = inner[0][0] if not Geometry2D.is_point_in_polygon(c, inner[0]) else c
 	assert_true(Wading3D.wetness(deep) > 0.9, "giữa sông %s là nước" % deep)
 	assert_eq(Wading3D.wetness(layout.tower_points[0]), 0.0, "chân trụ trên cạn")
+
+
+## D-316: ảnh dữ liệu nước là RGB (R sâu, G bờ) — ảnh LA bị Vulkan (điện thoại) đọc khác OpenGL: sông trắng đục.
+## Shader lấy màu đỉnh / màu MultiMesh phải qua srgb_in (Vulkan tuyến tính) — không thì đá / cây bạc màu trên điện thoại.
+func test_D_316_water_data_rgb_and_vertex_colors_linearized() -> void:
+	assert_eq(Terrain3D.depth_image().get_format(), Image.FORMAT_RGB8, "ảnh nước RGB, không LA")
+	for path: String in ["res://view/three/kit.gdshader", "res://view/three/kit_tex.gdshader", "res://view/three/ground_shapes.gdshader"]:
+		var code: String = FileAccess.get_file_as_string(path)
+		assert_true(code.contains("srgb.gdshaderinc") and not code.contains("ALBEDO = COLOR.rgb"), "%s đổi màu đỉnh sang tuyến tính" % path)

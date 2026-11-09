@@ -3,6 +3,7 @@ shader_type spatial;
 // INSTANCE_CUSTOM: x = kiểu (0 chữ nhật đầy, 1 đĩa / vành / quạt, 2 tam giác nửa dưới), y = bán kính trong
 // (tỉ lệ), z = góc đầu, w = độ mở (rad, ≥ 2π là cả vòng). Màu theo COLOR. Không đèn, không ghi chiều sâu.
 render_mode unshaded, blend_mix, cull_disabled, depth_draw_never, shadows_disabled;
+#include "res://view/three/srgb.gdshaderinc"
 
 varying vec2 p;
 varying vec4 shape;
@@ -33,6 +34,6 @@ void fragment() {
 			}
 		}
 	}
-	ALBEDO = COLOR.rgb;
+	ALBEDO = srgb_in(COLOR.rgb);
 	ALPHA = COLOR.a * a;
 }

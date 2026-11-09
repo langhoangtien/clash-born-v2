@@ -6,7 +6,7 @@ data/maps/clashborn_decor.json:
   items   [mô hình, x, z, góc, cỡ, y (m)] — mô hình trong assets/models/style/
   mask    PNG base64 RGBA: R đất nện (đường rừng, sân rìa map), G đất lane vẽ tay có cụm đá thưa (ảnh lane_dirt, D-312), B nền rừng, A bóng vẽ sẵn (nắng tây
           bắc → bóng lệch đông nam) — D-180: gộp một ảnh để shader mặt đất đọc một lần
-  water   PNG base64 LA: L độ sâu nước, A trường bờ mềm (0,5 = mép nước luật, D-313: shader nước lượn bờ, Wading3D lội)
+  water   PNG base64 RGB: R độ sâu nước, G trường bờ mềm (D-316: không dùng LA — Vulkan đọc khác) (0,5 = mép nước luật, D-313: shader nước lượn bờ, Wading3D lội)
   base    PNG base64 RGB: R đá lát đất cao, G rêu quanh chân trụ (D-310, D-313, base_decor.py)
   ground / abyss  tam giác [x1,z1,x2,z2,x3,z3]: mặt đất (khung map trừ rìa MAP-12) / vực ngoài (D-197)
   cliff   vòng mép mặt đất — VIEW dựng vách đổ xuống vực
@@ -94,7 +94,7 @@ def mask_images(m, forest, rocks, water, edge):
     shore = wet.filter(ImageFilter.GaussianBlur(SHORE_BLUR / MASK_PX))  # D-313: 128 = mép nước luật; shader lượn bờ theo nhiễu
     bp, bc = BD.mask(m, n, T, MASK_PX, m["lane_width"])
     base = Image.merge("RGB", [DP.ragged(bp, 1.2, 9).filter(ImageFilter.GaussianBlur(BD.FRINGE_M * 100 / MASK_PX)), DP.ragged(bc, 0.8, 11), Image.new("L", (n, n), 0)])  # D-311: mép mềm cho dải đất
-    return [DP.ragged(dirt, 3, 5), DP.ragged(pave, 1.6, 2), DP.ragged(floor, 6, 7)], Image.merge("LA", [Image.fromarray(depth), shore]), base, n
+    return [DP.ragged(dirt, 3, 5), DP.ragged(pave, 1.6, 2), DP.ragged(floor, 6, 7)], Image.merge("RGB", [Image.fromarray(depth), shore, Image.new("L", (n, n), 0)]), base, n  # D-316: nước RGB, không LA (Vulkan đọc LA khác OpenGL)
 
 
 def shadow_image(items, n, water, edge):

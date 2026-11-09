@@ -1,6 +1,6 @@
 class_name Wading3D
 extends MultiMeshInstance3D
-## D-313: lội sông (chỉ VIEW) — người chơi: "đi trên sông như đi trên băng". Đơn vị đứng trong nước (kênh A ảnh nước
+## D-313: lội sông (chỉ VIEW) — người chơi: "đi trên sông như đi trên băng". Đơn vị đứng trong nước (kênh G ảnh nước
 ## decor.py: mặt nước theo bờ cong) lún xuống tới bắp chân (mặt nước đục che chân) và có vòng gợn nước lan ra quanh chân.
 ## Vòng gợn: MultiMesh các tấm phẳng sát mặt nước, shader vòng tròn lan + mờ dần theo pha riêng từng đơn vị.
 
@@ -49,11 +49,11 @@ func update(actors: Dictionary[int, Actor3D]) -> void:
 	multimesh.visible_instance_count = n
 
 
-## 0 trên cạn → 1 khi đã xuống nước hẳn (theo kênh A ảnh nước: 0,5 là mép bờ).
+## 0 trên cạn → 1 khi đã xuống nước hẳn (theo kênh G ảnh nước: 0,5 là mép bờ).
 static func wetness(p: Vector2) -> float:
 	var img: Image = Terrain3D.depth_image()
 	var r: Rect2 = Terrain3D.mask_rect()
 	var uv: Vector2 = (p - r.position) / r.size * Vector2(img.get_size())
 	if not Rect2(Vector2.ZERO, Vector2(img.get_size())).has_point(uv):
 		return 0.0
-	return smoothstep(0.5, 0.75, img.get_pixelv(Vector2i(uv)).a)
+	return smoothstep(0.5, 0.75, img.get_pixelv(Vector2i(uv)).g)
