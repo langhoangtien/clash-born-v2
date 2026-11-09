@@ -72,10 +72,11 @@ def decor_items(items, m):
             kind, t = WALLS[k % 2]
             mid = ((r - t / 2) * math.cos(h) + (r + t / 2)) / 2  # tâm hộp bao đoạn cung (MultiMesh đặt gốc ở đó)
             _put(items, kind, cx, cz, ang, mid, -math.atan2(math.sin(ang), math.cos(ang)), 1.0)
-            _put(items, rng.choice(("boulder_a", "boulder_b")), cx, cz, ang + h, r + 35, rng.uniform(0, 6.28), rng.uniform(0.45, 0.6))
-        for g in a["gates"]:  # tảng đá cao chặn hai đầu tường bên cửa
+            if k + 1 < len(a["walls"]) and abs(a["walls"][k + 1] - ang - a["step"]) < 1e-3:  # chỗ nối hai đoạn (không ở cửa)
+                _put(items, rng.choice(("boulder_a", "boulder_b")), cx, cz, ang + h - 0.03, r, rng.uniform(0, 6.28), rng.uniform(0.42, 0.5))
+        for g in a["gates"]:  # tảng đá cao trên hai đầu tường bên cửa (nằm trong vùng tường — đá trông chặn thì phải chặn)
             for side in (-1, 1):
-                _put(items, rng.choice(("rock_tall", "rock_wide")), cx, cz, g + side * (h + 0.06), r + 15, rng.uniform(0, 6.28), rng.uniform(0.55, 0.7))
+                _put(items, rng.choice(("rock_tall", "rock_wide")), cx, cz, g + side * (h + 0.09), r, rng.uniform(0, 6.28), rng.uniform(0.42, 0.5))
         river_gate, far_gate = a["gates"]
         for side in (-1, 1):  # trụ rune hai bên cửa sông, phía ngoài tảng đá
             ang = river_gate + side * (h + 0.22)
