@@ -5,7 +5,7 @@ shader_type spatial;
 // D-187: đường đất rừng (kênh R) là đất nện: ảnh dirt chỉ lấy sáng tối, tô dirt_color. D-190, D-191: nền lane /
 // base (kênh G) là ảnh "đất có phiến đá" Codex vẽ tay. D-312: lane = ảnh lane_dirt (Codex T13, đất vẽ tay + cụm đá thưa).
 // Mép cỏ loang theo vân lớn.
-// D-310: đất cao (base) — mặt nạ base_tex (R đá lát ảnh flagstones, G vòng đá viền sân công trình); chỉ đọc ảnh
+// D-310: đất cao (base) — mặt nạ base_tex (R đá lát ảnh flagstones, G rêu quanh chân trụ D-313); chỉ đọc ảnh
 // đá lát khi có. 7–8 lần đọc ảnh mỗi điểm. D-311: mép đá lát chuyển qua dải đất nện rồi mới tới cỏ; đá be ấm. Không đèn. Đơn vị: mét.
 render_mode unshaded, cull_back;
 
@@ -17,7 +17,7 @@ uniform sampler2D stones_tex : source_color, filter_linear_mipmap, repeat_enable
 uniform sampler2D base_tex : filter_linear, repeat_disable;
 uniform sampler2D flag_tex : source_color, filter_linear_mipmap, repeat_enable;
 uniform float flag_m = 5.0;
-uniform vec3 curb_color : source_color = vec3(0.62, 0.6, 0.56);
+uniform vec3 moss_tint = vec3(0.62, 0.74, 0.5);  // D-313: rêu = cỏ sẫm ngả xanh rêu
 uniform vec2 mask_origin = vec2(0.0);
 uniform vec2 mask_size = vec2(1.0);
 uniform float grass_m = 7.0;
@@ -76,9 +76,7 @@ void fragment() {
 		float v = b.r + wobble * 0.35 + patch * 0.1;
 		col = mix(col, dirt, smoothstep(0.06, 0.3, v) * 0.9);  // D-311: dải đất nện giữa cỏ và đá (như ảnh mẫu)
 		col = mix(col, flag, smoothstep(0.42, 0.62, v));
-		float fl = dot(flag, LUMA) / 0.55;  // vòng viền: đá sáng hơn, giữ vân phiến; mạch nhạt hai bên (G ~ 0.43)
-		col *= 1.0 - 0.18 * (smoothstep(0.15, 0.35, b.g) - smoothstep(0.5, 0.7, b.g));
-		col = mix(col, curb_color * fl, smoothstep(0.6, 0.8, b.g));
+		col = mix(col, g * moss_tint, smoothstep(0.35, 0.8, b.g + wobble * 0.6) * 0.85);  // D-313: rêu quanh chân trụ
 	}
 	col *= mix(vec3(1.0), shadow_tint, m.a);
 	ALBEDO = mix(col, fog_color.rgb, fog_color.a * (1.0 - lit(xz)));

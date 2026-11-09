@@ -1,0 +1,53 @@
+{
+  "size": [
+    1024,
+    1024
+  ],
+  "center": {
+    "luminance": 148.56760883992513,
+    "local_std_32": 1.870848188473087
+  },
+  "edges": {
+    "left": {
+      "luminance": 148.79627838897704,
+      "local_std_32": 1.8337396341989858,
+      "brightness_difference_pct": 0.15391615362019273,
+      "std_difference_pct": 1.9835149908335348
+    },
+    "right": {
+      "luminance": 148.76354764556885,
+      "local_std_32": 1.763093677909046,
+      "brightness_difference_pct": 0.1318852791491354,
+      "std_difference_pct": 5.759660844100123
+    },
+    "top": {
+      "luminance": 148.73890175933838,
+      "local_std_32": 1.8021921430465546,
+      "brightness_difference_pct": 0.11529627537978371,
+      "std_difference_pct": 3.669781751910439
+    },
+    "bottom": {
+      "luminance": 148.69208377685547,
+      "local_std_32": 1.9640125687572954,
+      "brightness_difference_pct": 0.08378336159697852,
+      "std_difference_pct": 4.979793703103486
+    },
+    "all_edges": {
+      "luminance": 148.7440901018415,
+      "local_std_32": 1.8621482569321068,
+      "brightness_difference_pct": 0.1187885187722948,
+      "std_difference_pct": 0.46502605580630574
+    }
+  },
+  "seam_mae_rgb": {
+    "horizontal": 0.958984375,
+    "vertical": 1.0130208333333333
+  },
+  "adjacent_mae_rgb": {
+    "horizontal": 1.1337505600358424,
+    "vertical": 1.279776087487781
+  },
+  "method": "Rec.709 luminance, mean local population standard deviation in sliding 32x32 windows with wrap; compare each outer 128px strip and their union against center [128:896,128:896]. Difference percent relative to center. RGB MAE on scale 0\u2013255.",
+  "tool": "built-in imagegen; half-offset cross repair 256 px, imagegen grain refinement, resize 1024, periodic phase shift only; no procedural painting or border smoothing.",
+  "final_prompt": "Refine this seamless neutral gray large irregular flagstone ground texture. Keep identical stone outlines, mortar positions, cracks, moss, colors and overall layout. Reduce fine high-frequency grain contrast across the ENTIRE image by approximately 30 percent, making smooth subtly textured stone. Keep uniform detail level and flat uniform brightness everywhere INCLUDING all four 128px edge strips. No border bands. All stone faces same restrained fine texture, no streaks or patches. Mortar thin pale gray, no shadows. Seamless all opposing edges. Orthographic full bleed square 1024x1024."
+}

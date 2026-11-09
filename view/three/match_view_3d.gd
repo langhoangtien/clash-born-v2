@@ -142,6 +142,7 @@ func update(focus: Vector2) -> void:
 		a.sync(world, e, to_3d(units.display_position(e)), units.is_moving(e), world.tick - units.hit_tick(e), units.faded(e))
 		EffectVfx3D.pose(world, e, a)  # D-299: lốc xoáy nhấc lên, xoay
 		a.visible = _show_actors
+	Wading3D.update_in(_water, _actors)  # D-313: lội sông (lún + vòng gợn)
 	t = prof.lap(&"actors", t)
 	projectiles.sync(world)
 	skill_shots.viewer_team = units.viewer_team

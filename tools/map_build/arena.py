@@ -1,4 +1,4 @@
-"""D-308: bãi đấu boss — sân tròn, vòng tường đá ghép từ các đoạn cung giống hệt nhau (mô hình arena_wall_arc), chừa
+"""D-308: bãi đấu boss — sân tròn, vòng tường đá (D-313: dựng bằng đá chung của map), chừa
 cửa: một cửa quay ra sông (hướng điểm sông gần nhất), một cửa đối diện. Toạ độ guide.
 
 map_source `arenas`: [{"camp": id trại, "pos": [x, y], "r": bán kính tim tường, "thick": bề dày tường, "slots": số
@@ -48,46 +48,57 @@ def export(spec, W, scale):
             "walls": [round(a, 5) for a in spec["walls"]], "gates": [round(spec["gate"], 5), round(spec["gate"] + math.pi, 5)]}
 
 
-# Cỡ mô hình (m) — assets/models/style/arena_*.glb: đoạn tường đã uốn đúng mét (bend_arc.py), vật khác chuẩn hoá cạnh
-# lớn nhất = 1 nên nhân cỡ ở đây. D-308b: hai kiểu tường đá thô to nhỏ lẫn lộn xen kẽ (bề dày theo mô hình, px).
-WALLS = (("arena_wall_a", 98.0), ("arena_wall_b", 120.0))
-RUNE_SCALE, ARCH_SCALE, BANNER_SCALE = 1.5, 2.8, 2.4
+# D-313: vòng tường dựng bằng đá chung của map (bộ style_kit: rock_tall / rock_wide / rock_low / boulder — cùng vân
+# rock_face, cùng tông lạnh D-312), không còn mô hình Tripo riêng (arena_*). Hang cao ở giữa mỗi cung tường, thấp dần
+# về hai cửa; cung quay về camera (nam, +z) giữ thấp cho khỏi che boss. Hàng đá cao phía sau (ngoài vòng, trong vùng chặn).
+ROCK_GAP = 80.0     # khoảng cách hai tảng dọc tim tường (px)
+BACK_OUT = 115.0    # hàng đá sau cách tim tường (px)
+SOUTH_CAP = 0.75    # cung phía nam hạ chiều cao tối đa 75%
 
 
 def _put(items, kind, cx, cz, ang, dist, face, scale):
-    """Vật tại góc `ang`, cách tâm `dist`; `face`: góc Godot của mặt trước (Basis(UP, góc) đưa +Z về hướng đó)."""
+    """Vật tại góc `ang`, cách tâm `dist`; `face`: góc Godot Basis(UP, góc)."""
     items.append((kind, cx + math.cos(ang) * dist, cz + math.sin(ang) * dist, face, scale))
 
 
-def decor_items(items, m):
-    """D-308: đặt mô hình bãi đấu vào danh sách vật của decor.py ([loại, x, z, góc, cỡ]; góc Godot Basis(UP, góc)).
-    D-308b: tường xen hai kiểu; tảng đá lớn của bộ cảnh vật ở đầu tường hai bên cửa và chỗ nối đoạn (phá nét đều);
-    trong sân rải đá vụn, cỏ, hoa sát chân tường."""
+def _level(ang, a):
+    """0 ở mép cửa → 1 xa cửa nhất; hạ ở cung phía nam."""
+    h = a["step"] / 2
+    gd = min(abs(math.remainder(ang - g, math.tau)) for g in a["gates"]) - h
+    return max(0.0, min(1.0, gd / (1.6 * a["step"]))) * (1 - SOUTH_CAP * max(0.0, math.sin(ang)))
+
+
+def _rock(level, rng):
+    if level > 0.62:
+        return "rock_tall", 0.8 + 0.45 * level
+    if level > 0.3:
+        return rng.choice(("rock_wide", "rock_tall")), 0.65 + 0.3 * level
+    return rng.choice(("rock_low", "boulder_a", "boulder_b")), 0.55 + 0.35 * level
+
+
+def decor_items(items, m, solid):
+    """Đá vòng tường + hàng đá sau + cỏ / đá vụn chân tường. `solid`: vùng chặn (hàng sau chỉ đặt trong đó)."""
     for n, a in enumerate(m.get("arenas", [])):
         rng = random.Random(308 + n)
         cx, cz = a["pos"]
         r, h = a["r"], a["step"] / 2
-        out = lambda ang: math.atan2(math.cos(ang), math.sin(ang))  # mặt trước quay ra ngoài
-        for k, ang in enumerate(a["walls"]):
-            kind, t = WALLS[k % 2]
-            mid = ((r - t / 2) * math.cos(h) + (r + t / 2)) / 2  # tâm hộp bao đoạn cung (MultiMesh đặt gốc ở đó)
-            _put(items, kind, cx, cz, ang, mid, -math.atan2(math.sin(ang), math.cos(ang)), 1.0)
-            if k + 1 < len(a["walls"]) and abs(a["walls"][k + 1] - ang - a["step"]) < 1e-3:  # chỗ nối hai đoạn (không ở cửa)
-                _put(items, rng.choice(("boulder_a", "boulder_b")), cx, cz, ang + h - 0.03, r, rng.uniform(0, 6.28), rng.uniform(0.42, 0.5))
-        for g in a["gates"]:  # tảng đá cao trên hai đầu tường bên cửa (nằm trong vùng tường — đá trông chặn thì phải chặn)
-            for side in (-1, 1):
-                _put(items, rng.choice(("rock_tall", "rock_wide")), cx, cz, g + side * (h + 0.09), r, rng.uniform(0, 6.28), rng.uniform(0.42, 0.5))
-        river_gate, far_gate = a["gates"]
-        for side in (-1, 1):  # trụ rune hai bên cửa sông, phía ngoài tảng đá
-            ang = river_gate + side * (h + 0.22)
-            _put(items, "arena_rune_stone", cx, cz, ang, r + 95, out(ang), RUNE_SCALE)
-        _put(items, "arena_arch", cx, cz, far_gate, r + 20, out(far_gate), ARCH_SCALE)
-        for k in (2, 6):  # cột cờ sát tường trong sân, mặt cờ quay vào giữa
-            ang = river_gate + k * a["step"] + h * 0.6
-            _put(items, "arena_banner", cx, cz, ang, r - 110, math.atan2(-math.cos(ang), -math.sin(ang)), BANNER_SCALE)
-        for _ in range(14):  # cỏ, hoa, đá vụn sát chân tường trong sân
+        for ang in a["walls"]:
+            k = max(2, round(2 * h * r / ROCK_GAP))
+            for i in range(k):
+                t = ang - h + 2 * h * (i + 0.5) / k + rng.uniform(-0.02, 0.02)
+                level = _level(t, a)
+                kind, sc = _rock(level, rng)
+                d = r + rng.uniform(-12, 12)
+                if not solid.contains(Point(cx + math.cos(t) * d, cz + math.sin(t) * d)):
+                    continue  # đoạn tường bị sông cắt: không vật cản thì không đặt đá (D-179, D-198)
+                _put(items, kind, cx, cz, t, d, rng.uniform(0, 6.28), sc * rng.uniform(0.92, 1.08))
+                if level > 0.45 and math.sin(t) < 0.35 and i % 2 == 0:
+                    bx, bz = cx + math.cos(t) * (r + BACK_OUT), cz + math.sin(t) * (r + BACK_OUT)
+                    if solid.contains(Point(bx, bz)):
+                        items.append(("rock_tall", bx, bz, rng.uniform(0, 6.28), 1.0 + 0.45 * level))
+        for _ in range(16):  # cỏ, dương xỉ, đá vụn sát chân tường trong sân
             ang = rng.uniform(0, 6.283)
-            kind = rng.choice(("grass_tuft", "grass_tuft", "plant_orange", "rock_small"))
+            kind = rng.choice(("grass_tuft", "grass_tuft", "plant_green", "rock_small"))
             _put(items, kind, cx, cz, ang, r - rng.uniform(70, 130), rng.uniform(0, 6.28), rng.uniform(0.7, 1.0))
 
 
@@ -95,10 +106,10 @@ KEEP_INSIDE = ()  # cỏ / hoa nhỏ được mọc trong sân
 
 
 def clear_items(items, m):
-    """Bỏ vật của decor (cây, đá, lau sậy…) trong sân và trên dải tường — chỗ đó chỉ còn đồ bãi đấu."""
+    """Bỏ vật của decor (cây, đá, lau sậy…) trong sân, trên dải tường và chỗ hàng đá sau — chỗ đó chỉ còn đồ bãi đấu."""
     out = []
     for it in items:
-        inside = any(math.dist(a["pos"], (it[1], it[2])) < a["r"] + a["thick"] / 2 + 40 for a in m.get("arenas", []))
+        inside = any(math.dist(a["pos"], (it[1], it[2])) < a["r"] + BACK_OUT + 90 for a in m.get("arenas", []))
         if not inside or it[0] in KEEP_INSIDE:
             out.append(it)
     items[:] = out

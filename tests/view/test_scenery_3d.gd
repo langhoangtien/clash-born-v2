@@ -167,9 +167,9 @@ func test_D_310_base_walls_pillars_per_team() -> void:
 	assert_true(counts["base_pillar_blue"] > 10, "có cột (%d)" % counts["base_pillar_blue"])
 
 
-## D-310: nền đất cao lát đá (mặt nạ base R) thay đất nện một màu; sân lát kín quanh nhà chính / fountain / trụ, có vòng
-## đá viền (G) ở ranh giới sân; ngoài base không lát (trừ sân quanh trụ).
-func test_D_310_base_ground_paved_with_plaza_rings() -> void:
+## D-310: nền đất cao lát đá (mặt nạ base R) thay đất nện một màu; sân lát kín quanh nhà chính / fountain.
+## D-313: không còn vòng viền sân (người chơi: xấu) — kênh G là rêu loang quanh chân mọi trụ.
+func test_D_310_base_ground_paved_D_313_moss_round_towers() -> void:
 	var layout: MapLayout = load(MAP_PATH) as MapLayout
 	var img: Image = Terrain3D.base_image()
 	var rect: Rect2 = Terrain3D.mask_rect()
@@ -181,9 +181,14 @@ func test_D_310_base_ground_paved_with_plaza_rings() -> void:
 			assert_true(at.call(p).r > 0.9, "sân quanh %s lát đá" % p)
 			assert_true(Terrain3D.mask_image().get_pixelv(Vector2i((p - rect.position) / rect.size * Vector2(img.get_size()))).r < 0.1, "base không còn đất nện tại %s" % p)
 		var ring: bool = false
-		for r: float in range(250, 420, 6):
-			ring = ring or at.call(layout.core_point(team) + Vector2(r, 0)).g > 0.9
-		assert_true(ring, "vòng đá viền quanh nhà chính phe %d" % team)
+		for k: int in 16:  # quanh fountain không có trụ → kênh G phải trống (không còn vòng viền sân)
+			ring = ring or at.call(layout.fountain_point(team) + Vector2(330, 0).rotated(k * TAU / 16)).g > 0.5
+		assert_false(ring, "không còn vòng viền quanh fountain phe %d" % team)
+	for p: Vector2 in layout.tower_points:
+		var moss: bool = false
+		for k: int in 16:
+			moss = moss or at.call(p + Vector2(110, 0).rotated(k * TAU / 16)).g > 0.5
+		assert_true(moss, "có rêu quanh chân trụ %s" % p)
 	assert_true(at.call(layout.world_size() * 0.5).r < 0.1, "giữa map không lát đá base")
 
 
@@ -203,3 +208,18 @@ func test_D_312_lane_edges_have_plants_not_on_lane() -> void:
 				var b: Vector2 = Vector2(pts[i + 1][0], pts[i + 1][1])
 				assert_true(Geometry2D.get_closest_point_to_segment(p, a, b).distance_to(p) > half, "dương xỉ tại %s không nằm trên lane" % p)
 	assert_true(ferns > 50, "mép lane có dương xỉ (%d)" % ferns)
+
+
+## D-313: lội sông — giữa sông là nước hẳn (đơn vị lún + vòng gợn), giữa lane trên cạn thì không.
+func test_D_313_wading_only_in_river() -> void:
+	var layout: MapLayout = load(MAP_PATH) as MapLayout
+	var shape: MapShape = layout.water_shapes[0]
+	var inner: Array[PackedVector2Array] = Geometry2D.offset_polygon(shape.outer, -400.0)
+	assert_true(inner.size() > 0, "sông đủ rộng để có lõi")
+	var c: Vector2 = Vector2.ZERO
+	for p: Vector2 in inner[0]:
+		c += p
+	c /= inner[0].size()
+	var deep: Vector2 = inner[0][0] if not Geometry2D.is_point_in_polygon(c, inner[0]) else c
+	assert_true(Wading3D.wetness(deep) > 0.9, "giữa sông %s là nước" % deep)
+	assert_eq(Wading3D.wetness(layout.tower_points[0]), 0.0, "chân trụ trên cạn")

@@ -604,3 +604,29 @@ Lưu vào `art_inbox/14_lane/`. Xong thì đánh dấu `[x]`, **không commit / 
 
 Kỹ thuật: như mục "Yêu cầu kỹ thuật chung cho ảnh nền" đầu phiếu — 1024 × 1024, **lặp liền mép cả hai chiều** (ghép 3 × 3
 kiểm, sửa mép nếu lộ — có thể vẽ xong rồi dời nửa ảnh và vẽ lại vùng chữ thập giữa), nhìn thẳng từ trên, không bóng đổ.
+
+## Đợt T14 — cỏ + đá lát base giống ảnh mẫu (2026-11-09)
+
+Người dùng: cỏ và nền đá base phải giống ảnh mẫu. Ảnh mẫu: **`art_inbox/08_style/ref/lane_ref.png`** (cỏ) và
+**`art_inbox/08_style/ref/highground_ref_a.png`** (nền đá sân base, ô A). Bảng màu chốt D-312: **đá xám trung tính chỗ sáng,
+ngả xanh lạnh chỗ tối** (như vách đá trong lane_ref), đất vàng ấm, cỏ xanh vàng. Lưu vào `art_inbox/15_ground/`.
+**Không commit / push** (Claude duyệt và commit).
+
+| Xong | Tên | Nội dung | Ảnh 1024 phủ |
+|---|---|---|---|
+| [x] | `grass.png` | Cỏ như ảnh mẫu lane_ref: xanh vàng tươi `#6F8236` (sáng `#8A9A44`, sẫm `#4E6230`), **nét cọ cỏ ngắn vẽ tay** nhiều hướng, mảng sáng / sẫm loang lớn vừa phải, **hoa trắng / tím li ti thưa**, vài khóm cỏ sẫm hơn. Không lá to, không đá | 7 m |
+| [x] | `base_paving.png` | Sân đá base như nền ô A ảnh mẫu highground: **phiến đá lớn phẳng hình không đều** (8–14 phiến mỗi ảnh, to nhỏ lẫn lộn), mặt phiến **trơn mịn ít vân**, mép bo tròn, **mạch mảnh nhạt** (không đen), vài vết nứt mảnh, ít rêu ở mạch. Màu xám trung tính `#9A9A98` – `#A8A7A4`, mạch `#6E7480` hơi lạnh; không ngả be / vàng. Tương phản thấp (đứng xa vẫn đọc là một sân đá phẳng) | 6 m |
+
+Kỹ thuật như đầu phiếu: 1024 × 1024, **lặp liền mép cả hai chiều** — vẽ xong dời nửa ảnh (np.roll 512 hai trục), dùng
+imagegen sửa dải chữ thập giữa (~160 px), dời lại; đo chênh mép / chênh hai cột kề nhau ≤ 1,5 (in số). Nhìn thẳng từ trên,
+không bóng đổ.
+
+**T14 — `base_paving.png` làm lại (Claude, 2026-11-09):** ghép 2 × 2 lộ **dải ô vuông dọc mép ảnh** (~80 px mỗi bên): vùng
+vẽ lại để nối mép **mịn hơn và sáng hơn** phần giữa (mất vân lấm tấm của mặt phiến). Đo chênh ở đúng cột mép thì đạt nhưng
+mắt vẫn thấy lưới. Làm lại: dải sửa rộng hơn (~256 px) và **cùng độ chi tiết / độ sáng** với phần giữa; tự kiểm bằng độ
+lệch chuẩn cục bộ (cửa sổ 32 px) và độ sáng trung bình — trong dải mép và phần giữa chênh nhau **≤ 10%** (in số đo); xem
+ghép 3 × 3 thu nhỏ không thấy lưới.
+
+Đã làm lại bằng imagegen: mặt phiến trơn, vân và sáng đều; kiểm ghép 3 × 3 không thấy dải sửa mép.
+Dải mép 0–128 px so với giữa: chênh sáng lớn nhất 0,154%; chênh độ lệch chuẩn cục bộ 32 px lớn nhất 5,760%.
+Chênh mép ngang/dọc (MAE RGB): 0,959 / 1,013; hai cột/hàng kề nhau: 1,134 / 1,280 (thang 0–255).

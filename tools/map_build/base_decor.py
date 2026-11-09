@@ -2,22 +2,21 @@
 tự nhiên"). Dùng bởi decor.py. Toạ độ thế giới px (100 px = 1 m).
 
 - Mặt nạ `base` (RG): R đá lát (ảnh flagstones) — nền base là cỏ, đá lát phủ phần lớn, chừa mảng cỏ loang và dải
-  cỏ dưới chân tường; lane trong base và sân quanh công trình lát kín. G viền sân: vòng đá quanh chân trụ, nhà
-  chính, fountain (ranh giới công trình / nền) — 255 đá viền sáng, ~110 mạch sẫm hai bên.
+  cỏ dưới chân tường; lane trong base và sân quanh nhà chính / fountain / trụ trong base lát kín. G rêu: D-313 (người
+  chơi: vòng viền quanh công trình xấu → bỏ; quanh trụ có ít rêu xanh) — mảng rêu loang quanh chân mọi trụ.
 - Tường rào base / fountain (MAP-09, MAP-10): đoạn tường đá `base_wall` giữa các cột `base_pillar_<phe>` (đèn vàng +
   cờ màu phe) — cột ở mọi đỉnh đường rào và chia đều đoạn dài.
 """
 import math
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw
 from shapely.geometry import LineString, Point, Polygon
 from shapely.ops import unary_union
 
 M = 100.0
 # Bán kính sân lát quanh công trình (px) — theo cỡ mô hình (trụ ~1,4 m, nhà chính ~3 m, fountain ~3 m bề ngang).
 PLAZA_R = {"tower": 175.0, "core": 340.0, "fountain": 330.0}
-CURB_W = 40.0          # bề rộng vòng đá viền sân (px); G = 255 đá viền sáng
-CURB_EDGE = 10.0       # mạch sẫm hai bên vòng (px); G ≈ 110
+MOSS_R = (35.0, 75.0)  # bán kính đốm rêu quanh chân trụ (px), 5–8 đốm nhỏ lệch tâm mỗi trụ
 FRINGE_M = 0.9         # D-311: độ nhòe mép đá lát (m) — shader vẽ dải đất nện ở phần nhòe
 PAVE_SHARE = 0.78      # phần nền base lát đá (còn lại mảng cỏ)
 PATCH_M = 4.0          # cỡ mảng cỏ / đá (m)
@@ -41,9 +40,9 @@ def plazas(m):
 
 
 def mask(m, n, T, mask_px, lane_width):
-    """Ảnh RG cỡ n×n (lưới mặt nạ decor.py): R đá lát, G viền sân."""
-    curb = Image.new("L", (n, n), 0)
-    dc = ImageDraw.Draw(curb)
+    """Ảnh RG cỡ n×n (lưới mặt nạ decor.py): R đá lát, G rêu quanh trụ."""
+    moss = Image.new("L", (n, n), 0)
+    dm = ImageDraw.Draw(moss)
     inside = Image.new("L", (n, n), 0)
     di = ImageDraw.Draw(inside)
     for b in m["bases"]:
@@ -64,14 +63,21 @@ def mask(m, n, T, mask_px, lane_width):
         ImageDraw.Draw(lanes).line(T(pts), fill=255, width=int((lane_width + 40) / mask_px), joint="curve")
         pave = Image.fromarray(np.maximum(np.array(pave), np.minimum(np.array(lanes), np.array(inside))))
     dp = ImageDraw.Draw(pave)
+    bases = unary_union([Polygon(b["polygon"]) for b in m["bases"]])
     for x, y, r in plazas(m):
-        (x0, y0), (x1, y1) = T([(x - r, y - r), (x + r, y + r)])
-        dp.ellipse([x0, y0, x1, y1], fill=255)
-        w = max(1, int(CURB_W / mask_px))
-        e = max(1, int(CURB_EDGE / mask_px))
-        dc.ellipse([x0 - e, y0 - e, x1 + e, y1 + e], outline=110, width=w + 2 * e)  # mạch sẫm hai bên vòng
-        dc.ellipse([x0, y0, x1, y1], outline=255, width=w)
-    return pave, curb.filter(ImageFilter.GaussianBlur(0.8))  # mép vòng không răng cưa
+        if bases.contains(Point(x, y)):  # sân lát chỉ trong base (ngoài base trụ đứng trên đất / cỏ, có rêu)
+            dp.ellipse(_box(T, x, y, r), fill=255)
+    for t in m["towers"]:
+        x, y = t["pos"]
+        for _ in range(int(rng.integers(5, 9))):
+            a, d = rng.uniform(0, math.tau), rng.uniform(80, 150)
+            dm.ellipse(_box(T, x + math.cos(a) * d, y + math.sin(a) * d, rng.uniform(*MOSS_R)), fill=255)
+    return pave, moss
+
+
+def _box(T, x, y, r):
+    (x0, y0), (x1, y1) = T([(x - r, y - r), (x + r, y + r)])
+    return [x0, y0, x1, y1]
 
 
 def walls(items, m):

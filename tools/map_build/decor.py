@@ -6,8 +6,8 @@ data/maps/clashborn_decor.json:
   items   [mô hình, x, z, góc, cỡ, y (m)] — mô hình trong assets/models/style/
   mask    PNG base64 RGBA: R đất nện (đường rừng, sân rìa map), G đất lane vẽ tay có cụm đá thưa (ảnh lane_dirt, D-312), B nền rừng, A bóng vẽ sẵn (nắng tây
           bắc → bóng lệch đông nam) — D-180: gộp một ảnh để shader mặt đất đọc một lần
-  water   PNG base64 L: độ sâu nước (shader nước)
-  base    PNG base64 RGB: R đá lát đất cao, G vòng viền sân công trình (D-310, base_decor.py)
+  water   PNG base64 LA: L độ sâu nước, A trường bờ mềm (0,5 = mép nước luật, D-313: shader nước lượn bờ, Wading3D lội)
+  base    PNG base64 RGB: R đá lát đất cao, G rêu quanh chân trụ (D-310, D-313, base_decor.py)
   ground / abyss  tam giác [x1,z1,x2,z2,x3,z3]: mặt đất (khung map trừ rìa MAP-12) / vực ngoài (D-197)
   cliff   vòng mép mặt đất — VIEW dựng vách đổ xuống vực
   mask_origin, mask_px: góc trên trái (px thế giới) và số px thế giới mỗi điểm ảnh mặt nạ
@@ -36,6 +36,7 @@ MARGIN = 1600.0   # mặt nạ phủ thêm ngoài khung map (px thế giới)
 MASK_PX = 8.0     # px thế giới mỗi điểm ảnh mặt nạ
 RIM = 60.0        # D-197: dải đất ngoài mép đi được (px) — lan can đứng trên đó, sau là vách đổ xuống vực
 PARAPET_STEP = 190.0  # đoạn lan can 2 m, chồng nhẹ
+SHORE_BLUR = 100.0  # D-313: độ mềm trường bờ (px) — mép nước nhìn thấy lượn ±~1 m quanh mép luật
 ABYSS_REACH = 8000.0  # đáy vực phủ ra ngoài khung (px): sâu 18 m nên tia camera chạm đáy rất xa mép
 
 
@@ -90,9 +91,10 @@ def mask_images(m, forest, rocks, water, edge):
         dw.polygon(T(g.exterior.coords), fill=255)
     depth = np.array(wet.filter(ImageFilter.GaussianBlur(160 / MASK_PX))).astype(float)
     depth = (np.clip((depth - 128) * 2, 0, 255) * (np.array(wet) > 0)).astype(np.uint8)
+    shore = wet.filter(ImageFilter.GaussianBlur(SHORE_BLUR / MASK_PX))  # D-313: 128 = mép nước luật; shader lượn bờ theo nhiễu
     bp, bc = BD.mask(m, n, T, MASK_PX, m["lane_width"])
-    base = Image.merge("RGB", [DP.ragged(bp, 1.2, 9).filter(ImageFilter.GaussianBlur(BD.FRINGE_M * 100 / MASK_PX)), bc, Image.new("L", (n, n), 0)])  # D-311: mép mềm cho dải đất
-    return [DP.ragged(dirt, 3, 5), DP.ragged(pave, 1.6, 2), DP.ragged(floor, 6, 7)], Image.fromarray(depth), base, n
+    base = Image.merge("RGB", [DP.ragged(bp, 1.2, 9).filter(ImageFilter.GaussianBlur(BD.FRINGE_M * 100 / MASK_PX)), DP.ragged(bc, 0.8, 11), Image.new("L", (n, n), 0)])  # D-311: mép mềm cho dải đất
+    return [DP.ragged(dirt, 3, 5), DP.ragged(pave, 1.6, 2), DP.ragged(floor, 6, 7)], Image.merge("LA", [Image.fromarray(depth), shore]), base, n
 
 
 def shadow_image(items, n, water, edge):
@@ -152,7 +154,7 @@ def main():
     DP.scatter(items, m, forest, wet, rng)
     LD.edges(items, m, forest, wet, rng)  # D-312: cỏ / dương xỉ / đá nhỏ dọc mép lane
     AR.clear_items(items, m)
-    AR.decor_items(items, m)  # D-308: tường + vật trang trí bãi đấu boss
+    AR.decor_items(items, m, unary_union(forest + rocks + [Polygon(c["outer"]).buffer(0) for c in m["render"]["cliffs"]]))  # D-308, D-313
     abyss, rail = abyss_data(m, edge)
     for r in [rail.exterior] + list(rail.interiors):
         DP.along(items, r, "parapet", PARAPET_STEP)

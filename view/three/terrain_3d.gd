@@ -16,6 +16,8 @@ const ABYSS_SHADER: Shader = preload("res://view/three/abyss.gdshader")
 const ABYSS_DEPTH: float = 18.0
 ## Mặt nước cao hơn mặt đất (m) cho khỏi chập hình.
 const WATER_Y: float = 0.03
+## D-313: lưới nước phủ ra ngoài mép luật (px thế giới) để shader vẽ bờ lượn hai phía mép.
+const SHORE_PAD: float = 150.0
 
 static var _decor: Dictionary = {}
 static var _mask: Image
@@ -76,7 +78,6 @@ static func ground_material() -> ShaderMaterial:
 	m.set_shader_parameter("base_tex", ImageTexture.create_from_image(base_image()))  # D-310
 	m.set_shader_parameter("flag_tex", texture(cfg["flag"]))
 	m.set_shader_parameter("flag_m", float(cfg["flag_m"]))
-	m.set_shader_parameter("curb_color", Color(cfg["curb_color"]))
 	return m
 
 
@@ -123,13 +124,14 @@ static func _add_tris(st: SurfaceTool, tris: Array, y: float) -> void:
 			st.add_vertex(Vector3(float(t[k]) * MatchView3D.S, y, float(t[k + 1]) * MatchView3D.S))
 
 
-## Mặt nước: một lưới tam giác phủ mọi vùng nước của map.
+## Mặt nước: một lưới tam giác phủ mọi vùng nước của map (nới SHORE_PAD); D-313 thêm vòng gợn chân người lội.
 static func water(layout: MapLayout) -> MeshInstance3D:
 	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for shape: MapShape in layout.water_shapes:
-		for i: int in Geometry2D.triangulate_polygon(shape.outer):
-			st.add_vertex(Vector3(shape.outer[i].x * MatchView3D.S, WATER_Y, shape.outer[i].y * MatchView3D.S))
+		for poly: PackedVector2Array in Geometry2D.offset_polygon(shape.outer, SHORE_PAD):  # D-313: shader cắt mép lượn
+			for i: int in Geometry2D.triangulate_polygon(poly):
+				st.add_vertex(Vector3(poly[i].x * MatchView3D.S, WATER_Y, poly[i].y * MatchView3D.S))
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.mesh = st.commit()
 	var m: ShaderMaterial = _masked(WATER_SHADER)
@@ -138,6 +140,7 @@ static func water(layout: MapLayout) -> MeshInstance3D:
 	m.set_shader_parameter("bed_m", float(_style()["water"]["bed_m"]))
 	mi.material_override = m
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mi.add_child(Wading3D.new())  # D-313: vòng gợn chân người lội (Wading3D.update_in)
 	return mi
 
 
