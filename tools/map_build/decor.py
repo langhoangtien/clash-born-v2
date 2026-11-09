@@ -72,6 +72,7 @@ def mask_images(m, forest, rocks, water, edge):
     T = lambda pts: [((x + MARGIN) / MASK_PX, (y + MARGIN) / MASK_PX) for x, y in pts]
     chan = lambda: (Image.new("L", (n, n), 0),)
     dirt, = chan(); pave, = chan(); floor, = chan(); wet, = chan()
+    pv = []
     dd, dp, df, dw = (ImageDraw.Draw(i) for i in (dirt, pave, floor, wet))
     for line, width in paths_world(m):
         dd.line(T(line.coords), fill=255, width=int(width * 0.42 / MASK_PX), joint="curve")
@@ -81,11 +82,14 @@ def mask_images(m, forest, rocks, water, edge):
     for a in m.get("arenas", []):  # D-308: sân bãi đấu đất nện, lõi lát phiến đá
         (x, y), r = a["pos"], a["r"]
         dd.ellipse(T([(x - r, y - r), (x + r, y + r)]), fill=255)
+        pv.append((x, y))
     for pts in m["lanes"].values():
         dd.line(T(pts), fill=255, width=int((m["lane_width"] + 140) / MASK_PX), joint="curve")
         dp.line(T(pts), fill=255, width=int((m["lane_width"] - 20) / MASK_PX), joint="curve")
     pave = Image.fromarray((np.array(pave) * stone_sections(n)).astype(np.uint8))  # D-194: đoạn có đá / đất trơn
     dp = ImageDraw.Draw(pave)
+    for x, y in pv:  # D-308b: lõi sân bãi đấu lát phiến đá
+        dp.ellipse(T([(x - 210, y - 190), (x + 210, y + 190)]), fill=255)
     for b in m["bases"]:  # D-192: nền base (đất cao) là đất nện trơn, không đá — kể cả đoạn lane đi qua
         dp.polygon(T(b["polygon"]), fill=0)
         dd.polygon(T(b["polygon"]), fill=255)

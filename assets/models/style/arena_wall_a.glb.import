@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c7gf3x3qrpaxc"
-path="res://.godot/imported/arena_wall_arc.glb-d487b65acd21a82cfb2598f8b5fab7e6.scn"
+uid="uid://dir823iqtcv6a"
+path="res://.godot/imported/arena_wall_a.glb-8a926b4c642f4454adc8ecef4368a3e7.scn"
 
 [deps]
 
-source_file="res://assets/models/style/arena_wall_arc.glb"
-dest_files=["res://.godot/imported/arena_wall_arc.glb-d487b65acd21a82cfb2598f8b5fab7e6.scn"]
+source_file="res://assets/models/style/arena_wall_a.glb"
+dest_files=["res://.godot/imported/arena_wall_a.glb-8a926b4c642f4454adc8ecef4368a3e7.scn"]
 
 [params]
 
