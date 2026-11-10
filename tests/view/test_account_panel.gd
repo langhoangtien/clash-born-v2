@@ -91,3 +91,24 @@ func test_D_334_match_history_screen() -> void:
 	var texts: Array = p._box.get_children().filter(func(n: Node) -> bool: return n is Label).map(func(l: Label) -> String: return l.text)
 	assert_true(texts.has("Thắng · Duy Anh · 7/2/5 · 3v3 · 24:10"), str(texts))
 	p.free()
+
+
+## D-339: đổi mật khẩu — có mật khẩu thì hỏi mật khẩu hiện tại; tài khoản chỉ Google thì đặt lần đầu.
+func test_D_339_change_password_screens() -> void:
+	var made: Array = _panel()
+	var p: AccountPanel = made[0]
+	p.set_account({"id": 1, "email": "an@gmail.com", "name": "Lăng", "has_password": true})
+	_press(p, "Đổi mật khẩu")
+	assert_eq(p.screen, "password")
+	p._fields["old"].text = "cu-12345"
+	p._fields["password"].text = "moi-12345"
+	p._fields["password2"].text = "moi-12345"
+	_press(p, "Lưu mật khẩu")
+	assert_eq(made[1][-1], ["password", {"old": "cu-12345", "password": "moi-12345"}])
+	assert_true(p._fields["old"].secret, "che mật khẩu hiện tại")
+	p.on_reply("password", true, "", "", {"id": 1, "email": "an@gmail.com", "name": "Lăng", "has_password": true})
+	assert_eq(p.screen, "profile")
+	p.set_account({"id": 2, "email": "g@gmail.com", "name": "G", "has_password": false})
+	_press(p, "Đổi mật khẩu")
+	assert_eq(p.screen, "password_set", "chỉ Google: không hỏi mật khẩu cũ")
+	p.free()

@@ -43,6 +43,9 @@ func _ready() -> void:
 	HudLayer.make(self, "Panel", _paint_panel, panel_key)
 	HudLayer.make(self, "Bars", _paint_bars, bars_key)
 	HudLayer.make(self, "TopText", _paint_text, text_key)
+	var feed: KillFeed = KillFeed.new()  # D-339: thông báo hạ gục
+	feed.name = "KillFeed"
+	add_child(feed)
 
 
 func _ready_to_draw() -> bool:

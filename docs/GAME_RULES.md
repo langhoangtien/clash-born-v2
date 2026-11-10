@@ -780,7 +780,7 @@ Quái rừng thuộc đội trung lập (đội 2), là **kẻ địch của m�
 - `ECO-04` Hero chết không bị gỡ khỏi trận: nằm chờ (không nhắm được, không đi, không
   chiếm chỗ, mọi lệnh bị từ chối `UNIT_DEAD`), hết khóa mục tiêu. Sau
   `respawn_base + respawn_per_level × cấp` giây hồi sinh tại điểm xuất hiện của ô mình cạnh fountain phe mình (MATCH-03), đầy máu và
-  mana, lệnh IDLE (sự kiện `hero_died`, `hero_respawned`).
+  mana, lệnh IDLE (sự kiện `hero_died`, `hero_respawned`). Bảng tỷ số hiện số giây còn lại tới hồi sinh (D-339).
 - `ECO-05` Chết mất `death_gold_per_level × cấp` vàng.
 - `ECO-09` KDA (M4.0): hero hạ (ECO-08) +1 hạ; nạn nhân +1 chết; mỗi hero phe kia đã gây
   sát thương lên nạn nhân trong `assist_window` (15 s) trước khi chết, trừ kẻ hạ, +1 hỗ trợ.

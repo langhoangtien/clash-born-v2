@@ -245,6 +245,7 @@ class Handler(BaseHTTPRequestHandler):
                   "reset": lambda: accounts.reset(ROOT, body), "reset_finish": lambda: accounts.reset_finish(ROOT, body),
                   "name": lambda: accounts.set_name(ROOT, token, body), "logout": lambda: accounts.logout(ROOT, token),
                   "delete": lambda: accounts.delete_account(ROOT, token),
+                  "password": lambda: accounts.change_password(ROOT, token, body),
                   "google/start": lambda: accounts.google_start(ROOT), "google/poll": lambda: accounts.google_poll(ROOT, body)}
         action = self.path.removeprefix("/api/auth/")
         if action not in routes:
@@ -256,6 +257,7 @@ class Handler(BaseHTTPRequestHandler):
         size = int(self.headers.get("Content-Length", "-1"))
         if size <= 0 or size > stats.MAX_BYTES * (stats.MAX_BATCH if batch else 1):
             return self._send(413, {"error": "kích thước không hợp lệ"})
+        body = None
         try:
             body = stats.load(self.rfile.read(size))
             if batch:
@@ -267,6 +269,12 @@ class Handler(BaseHTTPRequestHandler):
             owner = -1 if batch else accounts.uploader(ROOT, self.headers.get("X-Clashborn-Session"))  # D-334
             self._send(200, stats.save(ROOT, recs, "batch" if batch else "game", owner))
         except ValueError as e:
+            if not batch:  # D-339: lý do từ chối vào nhật ký (không ghi nội dung trận)
+                b = body if isinstance(body, dict) else {}
+                ps = b.get("players")
+                print("match rejected: %s | mode=%r kind=%r version=%r players=%s teams=%s" % (
+                    e, b.get("mode"), b.get("kind"), b.get("version"), len(ps) if isinstance(ps, list) else "?",
+                    [p.get("team") for p in ps if isinstance(p, dict)] if isinstance(ps, list) else "?"), flush=True)
             self._send(400, {"error": str(e)})
         except accounts.AuthError as e:  # tài khoản bị ban: không nhận trận
             self._send(e.status, {"code": e.code, "error": e.message})

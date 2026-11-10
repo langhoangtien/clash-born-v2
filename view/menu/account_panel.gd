@@ -17,12 +17,15 @@ const SCREENS: Dictionary = {
 	"reset2": ["Đặt mật khẩu mới", ["code", "password", "password2"], [["Đặt mật khẩu", "reset_finish"], ["Quay lại", "@login"]]],
 	"google": ["Đăng nhập Google", [], [["Hủy", "google/cancel"]]],
 	"name": ["Tên trong game", ["name"], [["Lưu tên", "name"]]],
-	"profile": ["Tài khoản", [], [["Lịch sử trận", "history"], ["Đổi tên", "@name"], ["Đăng xuất", "logout"],
-		["Xóa tài khoản", "@delete"]]],
+	"profile": ["Tài khoản", [], [["Lịch sử trận", "history"], ["Đổi tên", "@name"], ["Đổi mật khẩu", "@password"],
+		["Đăng xuất", "logout"], ["Xóa tài khoản", "@delete"]]],
+	"password": ["Đổi mật khẩu", ["old", "password", "password2"], [["Lưu mật khẩu", "password"], ["Quay lại", "@profile"]]],
+	"password_set": ["Đặt mật khẩu", ["password", "password2"], [["Lưu mật khẩu", "password"], ["Quay lại", "@profile"]]],
 	"history": ["Lịch sử trận", [], [["Xem trên web", "open_web"], ["Quay lại", "@profile"]]],
 	"delete": ["Xóa tài khoản?", [], [["Xóa vĩnh viễn", "delete"], ["Quay lại", "@profile"]]],
 }
 const HINTS: Dictionary = {"email": "Email", "password": "Mật khẩu (ít nhất 8 ký tự)", "password2": "Nhập lại mật khẩu",
+	"old": "Mật khẩu hiện tại",
 	"code": "Mã 6 số trong mail", "name": "3–16 ký tự, không trùng người khác"}
 const BOX: Vector2 = Vector2(760, 820)
 
@@ -57,6 +60,8 @@ func set_account(a: Dictionary) -> void:
 
 
 func show_screen(s: String, message: String = "", error: bool = false) -> void:
+	if s == "password" and not account.get("has_password", true):
+		s = "password_set"  # D-339: tài khoản chỉ đăng nhập Google — đặt mật khẩu lần đầu
 	screen = s
 	_build()
 	_say(message, error)
@@ -78,6 +83,9 @@ func on_reply(action: String, ok: bool, code: String, message: String, data: Dic
 			show_screen("reset2", "Nếu email có tài khoản, mã đã được gửi tới " + email)
 		"google/start":
 			show_screen("google", "Đã mở trình duyệt — đăng nhập Google rồi quay lại đây")
+		"password":
+			account = data if data.has("id") else account
+			show_screen("profile", "Đã đổi mật khẩu — các máy khác đã bị đăng xuất")
 		"history":
 			_matches = data.get("matches", [])
 			show_screen("history", "" if not _matches.is_empty() else "Chưa có trận nào (trận khi đã đăng nhập, có đội thắng, không phải trận thử)")
@@ -89,7 +97,7 @@ func _submit(action: String) -> void:
 		return
 	var body: Dictionary = {}
 	for key: String in _fields:
-		body[key] = _fields[key].text.strip_edges() if key != "password" and key != "password2" else _fields[key].text
+		body[key] = _fields[key].text.strip_edges() if not key in ["password", "password2", "old"] else _fields[key].text
 	if body.has("password2"):
 		if body["password2"] != body["password"]:
 			_say("Hai mật khẩu không giống nhau", true)
@@ -155,7 +163,7 @@ func _say(text: String, error: bool) -> void:
 func _line(key: String) -> LineEdit:
 	var e: LineEdit = LineEdit.new()
 	e.placeholder_text = HINTS[key]
-	e.secret = key.begins_with("password")
+	e.secret = key.begins_with("password") or key == "old"
 	e.custom_minimum_size = Vector2(0, 64)
 	e.add_theme_font_size_override("font_size", 28)
 	e.virtual_keyboard_type = {"email": LineEdit.KEYBOARD_TYPE_EMAIL_ADDRESS, "code": LineEdit.KEYBOARD_TYPE_NUMBER}.get(

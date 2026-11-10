@@ -160,7 +160,7 @@ func _show_result() -> void:
 	result = ResultPanel.new()
 	$Hud.add_child(result)
 	result.show_result(world, hero)
-	MatchUpload.send(self, MatchRecord.of(world, config, Updater.current_name()))  # ST.1: Clashborn Stats
+	MatchUpload.send(self, MatchRecord.of(world, config, Updater.current_name()), result.set_stats_note)  # ST.1, D-339
 	result.replay_pressed.connect(func() -> void: get_tree().reload_current_scene())
 	result.menu_pressed.connect(func() -> void: get_tree().change_scene_to_file(MENU_SCENE))
 

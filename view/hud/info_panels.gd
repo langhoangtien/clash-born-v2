@@ -245,7 +245,8 @@ static func num(v: float) -> String:
 	return str(roundi(v)) if is_equal_approx(v, roundf(v)) else ("%.2f" % v).rstrip("0").rstrip(".")
 
 
-## Dòng tỷ số: mỗi hero [đội, tên, cấp, K/D/A, LH, giá trị đồ, tên tắt 6 ô, art_id 6 ô (D-115), id ảnh chân dung (D-223)].
+## Dòng tỷ số: mỗi hero [đội, tên, cấp, K/D/A, LH, giá trị đồ, tên tắt 6 ô, art_id 6 ô (D-115), id ảnh chân dung (D-223),
+## giây còn lại tới hồi sinh (-1 = đang sống, D-339)].
 static func score_rows(w: World) -> Array:
 	var out: Array = []
 	for team: int in range(2):
@@ -261,5 +262,6 @@ static func score_rows(w: World) -> Array:
 				arts.append(it.def.art_id if it != null else &"")
 			out.append([team, e.hero_def.display_name if e.hero_def != null else "Hero", e.stats.level(),
 				"%d/%d/%d" % [e.kills, e.deaths, e.assists], e.last_hits, worth, slots, arts,
-				StringName(String(e.hero_def.id) + "_portrait") if e.hero_def != null else &""])
+				StringName(String(e.hero_def.id) + "_portrait") if e.hero_def != null else &"",
+				-1 if e.alive or e.respawn_tick < 0 else ceili(maxi(0, e.respawn_tick - w.tick) * SimClock.TICK_SECONDS)])
 	return out

@@ -11,6 +11,9 @@ static func title_for(winner: int, my_team: int) -> String:
 	return "CHIẾN THẮNG" if winner == my_team else "THẤT BẠI"
 
 
+var _stats: Label
+
+
 func show_result(world: World, hero: Entity) -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var shade: ColorRect = ColorRect.new()
@@ -26,8 +29,17 @@ func show_result(world: World, hero: Entity) -> void:
 	var won: bool = world.winner == hero.team
 	_label(box, title_for(world.winner, hero.team), 72, Color(1, 0.85, 0.3) if won else Color(1, 0.4, 0.4))
 	_label(box, "Thời gian %s · Vàng %d · Last hit %d" % [MatchHud.clock_text(world.tick), hero.gold, hero.last_hits], 32, Color.WHITE)
+	_label(box, "", 24, Color(0.7, 0.75, 0.85))
+	_stats = box.get_child(box.get_child_count() - 1)
 	_button(box, "ReplayButton", "Chơi lại", replay_pressed)
 	_button(box, "MenuButton", "Về menu", menu_pressed)
+
+
+## D-339: dòng trạng thái gửi biên bản trận lên Clashborn Stats (APP đặt khi máy chủ trả lời).
+func set_stats_note(text: String, ok: bool) -> void:
+	if _stats != null:
+		_stats.text = text
+		_stats.add_theme_color_override("font_color", Color(0.55, 0.9, 0.6) if ok else Color(1, 0.55, 0.45))
 
 
 func _label(box: Container, text: String, font_size: int, color: Color) -> void:

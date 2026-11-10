@@ -101,7 +101,7 @@ func _finish(ok: bool, code: String, message: String, data: Dictionary) -> void:
 	_action = ""
 	if ok and data.has("token"):
 		_save(String(data["token"]))
-	if ok and (data.has("account") or action == "me" or action == "name"):
+	if ok and (data.has("account") or action in ["me", "name", "password"]):
 		account = data.get("account", data)
 		changed.emit()
 	if action == "logout" or (action == "delete" and ok) or code == "NO_SESSION":

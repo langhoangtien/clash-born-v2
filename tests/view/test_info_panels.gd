@@ -56,6 +56,19 @@ func test_D_100_score_rows_items_and_kda() -> void:
 	assert_eq(rows[1][5], 2400, "giá trị đồ")
 	assert_eq(rows[1][6][0], "BC", "ô đồ: tên tắt")
 	assert_eq(rows[1][7][0], &"stun_hammer", "D-115: ô đồ có icon")
+	assert_eq(rows[1][9], -1, "đang sống: không có số hồi sinh")
+	p.free()
+
+
+## D-339: bảng tỷ số hiện số giây hồi sinh của hero đang chết (mình và địch).
+func test_D_339_score_rows_respawn_countdown() -> void:
+	var p: InfoPanels = _setup()
+	var foe: Entity = p.world.entities.filter(func(e: Entity) -> bool: return e.kind == Entity.Kind.HERO and e != p.hero)[0]
+	foe.alive = false
+	foe.respawn_tick = p.world.tick + 12 * 30 + 1
+	var rows: Array = InfoPanels.score_rows(p.world)
+	var mine: Array = rows.filter(func(r: Array) -> bool: return r[0] == foe.team)
+	assert_eq(mine[0][9], 13, "còn 12,03 s → hiện 13")
 	p.free()
 
 

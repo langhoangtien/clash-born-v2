@@ -110,6 +110,23 @@ class AccountTest(AccountCase):
         with urllib.request.urlopen(self.url + "/api/auth/google/callback?code=x&state=gia-mao") as r:
             self.assertIn("Chưa đăng nhập được", r.read().decode())
 
+    def test_D_339_change_password(self) -> None:
+        token = self.signup("g@x.vn")
+        other = self.auth("login", {"email": "g@x.vn", "password": "matkhau123"})[1]["token"]
+        code, got = self.auth("password", {"old": "sai-roi-1", "password": "moi-12345"}, session=token)
+        self.assertEqual((code, got["code"]), (403, "BAD_OLD"))
+        self.assertEqual(self.auth("password", {"old": "matkhau123", "password": "ngan"}, session=token)[1]["code"], "BAD_PASSWORD")
+        self.assertEqual(self.auth("password", {"old": "matkhau123", "password": "moi-12345"}, session=token)[0], 200)
+        self.assertEqual(self.auth("me", session=token, method="GET")[0], 200, "giữ phiên đang dùng")
+        self.assertEqual(self.auth("me", session=other, method="GET")[0], 401, "đăng xuất máy khác")
+        self.assertEqual(self.auth("login", {"email": "g@x.vn", "password": "moi-12345"})[0], 200)
+        self.google_user = {"sub": "g-9", "email": "chi-google@gmail.com", "email_verified": True}
+        sid = self.auth("google/start")[1]["sid"]
+        urllib.request.urlopen(self.url + "/api/auth/google/callback?code=x&state=" + sid).read()
+        g = self.auth("google/poll", {"sid": sid})[1]["token"]
+        got = self.auth("password", {"password": "dat-lan-dau"}, session=g)[1]
+        self.assertTrue(got["has_password"], "tài khoản chỉ Google đặt mật khẩu lần đầu không cần mật khẩu cũ")
+
     def test_D_333_delete_account(self) -> None:
         token = self.signup("f@x.vn")
         self.assertEqual(self.auth("delete")[0], 401, "cần phiên")

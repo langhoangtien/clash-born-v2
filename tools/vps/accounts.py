@@ -12,6 +12,8 @@ Google (trình duyệt, không plugin): POST /api/auth/google/start → {sid, ur
   GET /api/auth/google/callback?code&state → trang "đã đăng nhập"; game hỏi POST /api/auth/google/poll {sid} → phiên.
 Phiên (header X-Clashborn-Session: <token>): GET /api/auth/me, POST /api/auth/name {name}, POST /api/auth/logout,
   POST /api/auth/delete → xóa vĩnh viễn tài khoản + mọi phiên (Google Play bắt buộc có trong app).
+  POST /api/auth/password {old, password} → đổi mật khẩu (D-339; tài khoản chỉ Google: đặt lần đầu, không cần old) —
+       đăng xuất mọi máy khác, giữ phiên đang dùng.
 
 An toàn: mật khẩu băm scrypt + muối riêng; mã 6 số chỉ lưu dạng băm, hết hạn 15 phút, tối đa 5 lần thử; sai mật khẩu
 10 lần → khóa 15 phút; token phiên 32 byte ngẫu nhiên, chỉ lưu SHA-256, hạn 90 ngày. Bí mật (mật khẩu ứng dụng
@@ -327,6 +329,20 @@ def logout(root: str, token) -> dict:
     def go(con):
         con.execute("DELETE FROM sessions WHERE token_hash = ?", (_sha(str(token)),))
         return {"ok": True}
+    return _run(root, go)
+
+
+def change_password(root: str, token, body: dict) -> dict:
+    password = _password(body.get("password"))
+
+    def go(con):
+        row = _account_of(con, token)
+        old = body.get("old")
+        if row[2] and (not isinstance(old, str) or not _check_pw(old, row[2])):
+            raise AuthError("BAD_OLD", "Mật khẩu hiện tại không đúng", 403)
+        con.execute("UPDATE accounts SET pw_hash = ?, fails = 0, locked_until = 0 WHERE id = ?", (_hash_pw(password), row[0]))
+        con.execute("DELETE FROM sessions WHERE account_id = ? AND token_hash != ?", (row[0], _sha(str(token))))
+        return _public(_account(con, "id = ?", row[0]))
     return _run(root, go)
 
 
