@@ -330,7 +330,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   mới bị ngắt (vd đang lướt, ABL-08) thì mana / hồi chiêu đã tính.
 - `ABL-04` Lên cấp hero nhận 1 điểm. Điểm dùng để: nâng Q/W / nội tại thêm một bậc **bất cứ lúc nào còn điểm**
   (D-318, người chơi: không cần cấp hero — cấp 5 có thể max một chiêu); nâng R lên cấp 1/2/3 khi hero đạt cấp 6/11/16; hoặc đổi lấy
-  `attribute_bonus` mọi thuộc tính (tối đa `attribute_bonus_max` lần). Điểm chưa
+  `attribute_bonus` mọi thuộc tính (tối đa `attribute_bonus_max` = 3 lần, D-340: 20 điểm cấp 1–20, max chiêu cần 18 —
+  cộng thuộc tính là đánh đổi, đủ 3 lần thì có một chiêu thiếu một bậc). Điểm chưa
   dùng được giữ lại. Cấp 1 có sẵn 1 điểm; cộng điểm được cả khi chờ hồi sinh (lệnh
   `LEVEL_UP`, không đổi lệnh đang làm). Lên cấp / cộng thuộc tính: máu và mana hiện tại
   cộng đúng phần tối đa tăng thêm.
@@ -768,7 +769,8 @@ Quái rừng thuộc đội trung lập (đội 2), là **kẻ địch của m�
   Vàng khởi đầu: mỗi hero có `starting_gold` (400, D-106) lúc vào trận.
   Vàng thụ động: cứ `passive_gold_interval` giây (tính từ tick 0) mỗi hero được
   `passive_gold` vàng, kể cả khi đang chờ hồi sinh.
-- `ECO-07` Trụ đổ (ai phá cũng vậy): mọi hero đội kia nhận `bounty_gold` của trụ.
+- `ECO-07` Trụ đổ (ai phá cũng vậy): mọi hero đội kia nhận `bounty_gold` của trụ. Hero đội kia kết liễu trụ nhận
+  thêm `tower_last_hit_gold` (D-340; không tính last hit). Lính / trụ kết liễu thì không ai được thêm.
 - `ECO-02` ~~Chặn (deny)~~ — bỏ (D-60): không đánh được lính phe mình.
 - `ECO-03` Đơn vị chết → `bounty_xp` (hero: `hero_kill_xp_base + hero_kill_xp_per_level ×
   cấp nạn nhân`) chia đều cho hero **phe kia, còn sống**, trong `xp_share_range` quanh nơi
@@ -782,6 +784,9 @@ Quái rừng thuộc đội trung lập (đội 2), là **kẻ địch của m�
   `respawn_base + respawn_per_level × cấp` giây hồi sinh tại điểm xuất hiện của ô mình cạnh fountain phe mình (MATCH-03), đầy máu và
   mana, lệnh IDLE (sự kiện `hero_died`, `hero_respawned`). Bảng tỷ số hiện số giây còn lại tới hồi sinh (D-339).
 - `ECO-05` Chết mất `death_gold_per_level × cấp` vàng.
+- `ECO-10` Hạ gục đầu tiên (D-340): mạng hero đầu tiên của trận do hero đội kia hạ → kẻ hạ nhận thêm
+  `first_blood_gold` (cộng vào vàng hạ hero ECO-08: cùng sự kiện `kill_credited`, một chữ nổi). Mạng đầu do trụ / lính / quái hạ thì mất luôn,
+  không ai được. Đếm theo số chết của mọi hero trước mạng này (ECO-09).
 - `ECO-09` KDA (M4.0): hero hạ (ECO-08) +1 hạ; nạn nhân +1 chết; mỗi hero phe kia đã gây
   sát thương lên nạn nhân trong `assist_window` (15 s) trước khi chết, trừ kẻ hạ, +1 hỗ trợ.
   Tỷ số đội = tổng số lần hero đội kia chết (kể cả bị trụ/lính hạ).
@@ -1067,9 +1072,10 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | xp_share_range | 1200 | | bot_chase_leash | 1200 |
 | respawn_base / per_level | 5 / 2 s | | bot_trade_window | 3 s |
 | death_gold_per_level | 25 | | bot_lane_offset | 350 |
+| tower_last_hit_gold / first_blood_gold | 100 / 150 (D-340) | | | |
 | attack_search_bonus / lock_break_range | 100 / 1400 | | tower_tank_creeps / dive_min_hp | 2 / 0.6 |
 | ghost_magic_amp | 0.4 | | talent_level | 20 |
-| attribute_bonus | +2 mọi thuộc tính | | attribute_bonus_max | 7 lần |
+| attribute_bonus | +2 mọi thuộc tính | | attribute_bonus_max | 3 lần (D-340) |
 | hex_move_speed | 140 | | bush_reveal_time | 1 s |
 | shop_radius | 600 | | sell_ratio / sell_full_refund_time | 0.5 / 10 s |
 | reincarnate_delay | 3 s | | match_target_minutes | 20–30 (D-97) |

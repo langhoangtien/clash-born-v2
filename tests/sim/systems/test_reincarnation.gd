@@ -164,7 +164,7 @@ func test_DTH_03_counts_as_kill_without_respawn_or_gold_loss() -> void:
 	w.step()
 	assert_eq(_events(w, &"kill_credited"), 1)
 	var b: BalanceSettings = w.balance
-	assert_eq(foe.gold, b.hero_kill_gold_base + b.hero_kill_gold_per_level * king.stats.level(), "kẻ hạ nhận vàng")
+	assert_eq(foe.gold, b.hero_kill_gold_base + b.hero_kill_gold_per_level * king.stats.level() + b.first_blood_gold, "kẻ hạ nhận vàng (mạng đầu, ECO-10)")
 	assert_true(foe.xp > xp, "kẻ hạ nhận XP")
 	assert_eq(foe.kills, 1)
 	assert_eq(king.deaths, 1)

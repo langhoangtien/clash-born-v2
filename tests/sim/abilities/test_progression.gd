@@ -126,12 +126,12 @@ func test_ABL_04_attribute_bonus_limit_and_effect() -> void:
 	var b: Entity = _brakk(w, 0, _center())
 	var strength: float = b.stats.get_stat(StatId.Id.STRENGTH)
 	b.skill_points = 10
-	for i: int in range(8):
+	for i: int in range(4):
 		w.submit(Command.level_up(b.id, Command.ATTRIBUTES))
 	w.step()
-	assert_eq(b.attribute_bonus_count, 7, "tối đa 7 lần")
+	assert_eq(b.attribute_bonus_count, 3, "D-340: tối đa 3 lần")
 	assert_eq(w.rejected_commands.size(), 1)
-	assert_near(b.stats.get_stat(StatId.Id.STRENGTH), strength + 14.0, EPS)
+	assert_near(b.stats.get_stat(StatId.Id.STRENGTH), strength + 6.0, EPS)
 
 
 func test_ECO_03_xp_from_enemy_deaths_nearby_split() -> void:
@@ -170,9 +170,9 @@ func test_ECO_hero_kill_gold_xp_and_death_loss() -> void:
 	for ev: GameEvent in w.events:
 		seen.append(ev.type)
 	assert_true(seen.has(&"kill_credited"))
-	assert_eq(a.gold, 200 + 10 * 3, "vàng hạ hero")  # D-125
+	assert_eq(a.gold, 200 + 10 * 3 + 150, "vàng hạ hero + Hạ gục đầu tiên (ECO-10)")  # D-125, D-340
 	var gold: Array = w.recent_notes.filter(func(n: Array) -> bool: return n[0] == &"gold")
-	assert_eq(gold.map(func(n: Array) -> Array: return [int(n[2]), n[4]]), [[230, a.id]], "D-241: chữ nổi +vàng cho kẻ hạ")
+	assert_eq(gold.map(func(n: Array) -> Array: return [int(n[2]), n[4]]), [[380, a.id]], "D-241: chữ nổi +vàng cho kẻ hạ")
 	assert_eq(a.stats.level(), 2, "XP hạ hero 60 + 30 × 3 = 150 → lên cấp 2")
 	assert_near(a.xp, 150.0 - 120.0, EPS)
 	assert_eq(b.gold, 500 - 25 * 3, "ECO-05")

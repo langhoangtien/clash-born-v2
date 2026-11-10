@@ -60,19 +60,24 @@ func _respawn(world: World, e: Entity) -> void:
 
 
 ## ECO-01: last hit của hero lấy vàng lính/quái. ECO-07: trụ đổ → mọi hero đội kia nhận
-## vàng trụ. STR-05: nhà chính đổ → đội kia thắng.
+## vàng trụ, hero kết liễu thêm `tower_last_hit_gold`. STR-05: nhà chính đổ → đội kia thắng.
 func _reward(world: World, e: Entity) -> void:
 	if e.kind == Entity.Kind.CORE:
 		if world.winner < 0:
 			world.winner = 1 - e.team
 			world.emit(&"match_ended", -1, e.id)
 		return
+	var killer: Entity = world.find_entity(e.killer_id)
 	if e.kind == Entity.Kind.TOWER:
 		for hero: Entity in world.entities:
 			if hero.kind == Entity.Kind.HERO and hero.team != e.team:
 				hero.gold += e.bounty_gold
+		if killer != null and killer.kind == Entity.Kind.HERO and killer.team != e.team:
+			var bonus: int = world.balance.tower_last_hit_gold  # ECO-07 (D-340): thưởng kết liễu trụ
+			killer.gold += bonus
+			world.emit(&"gold_changed", killer.id, e.id, bonus)
+			world.note(&"gold", e.position, e.bounty_gold + bonus, killer.id)
 		return
-	var killer: Entity = world.find_entity(e.killer_id)
 	if e.kind == Entity.Kind.WARD:
 		if killer != null and killer.kind == Entity.Kind.HERO and killer.team != e.team:
 			killer.gold += e.bounty_gold  # WRD-05
@@ -114,6 +119,8 @@ static func hero_kill_rewards(world: World, e: Entity, lose_gold: bool = true) -
 		killer = null
 	var takers: Array[Entity] = _share_xp(world, e, b.hero_kill_xp_base + b.hero_kill_xp_per_level * level, killer)
 	var gold: int = b.hero_kill_gold_base + b.hero_kill_gold_per_level * level
+	if killer != null and _first_death(world):
+		gold += b.first_blood_gold  # ECO-10 (D-340)
 	var paid: Array[Entity] = takers
 	if killer != null:
 		paid = [killer]
@@ -125,6 +132,14 @@ static func hero_kill_rewards(world: World, e: Entity, lose_gold: bool = true) -
 	_count_kda(world, e, killer)
 	if lose_gold:
 		e.gold = maxi(0, e.gold - b.death_gold_per_level * level)
+
+
+## ECO-10: chưa hero nào chết trong trận (đếm trước khi ghi mạng này, ECO-09).
+static func _first_death(world: World) -> bool:
+	for h: Entity in world.entities:
+		if h.kind == Entity.Kind.HERO and h.deaths > 0:
+			return false
+	return true
 
 
 ## ECO-09: kẻ hạ (hero) +1 hạ; nạn nhân +1 chết; hero địch khác đã gây sát thương trong

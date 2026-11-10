@@ -1,5 +1,5 @@
 extends TestCase
-## M2.5: STR-05 (phá nhà chính → thua, trận dừng), ECO-01 (last hit, vàng thụ động), ECO-07 (vàng trụ).
+## M2.5: STR-05 (phá nhà chính → thua, trận dừng), ECO-01 (last hit, vàng thụ động), ECO-07 (vàng trụ, thưởng kết liễu trụ D-340), ECO-10 (Hạ gục đầu tiên D-340).
 
 const MAP_PATH: String = "res://data/maps/clashborn.tres"
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
@@ -136,3 +136,42 @@ func test_D_53_bounties_from_content() -> void:
 	assert_eq(_lib.units[&"creep_siege"].bounty_gold, 84)  # D-125
 	assert_eq(_lib.units[&"tower_t4"].bounty_gold, 250)
 	assert_eq(_lib.units[&"core"].bounty_gold, 0)
+
+
+func test_ECO_07_tower_last_hit_hero_gets_extra_gold() -> void:
+	var w: World = _world(true)
+	var blue: Entity = _brakk(w, 0, _center())
+	var ally: Entity = _brakk(w, 0, _center() + Vector2(300, 0))
+	var red: Entity = _brakk(w, 1, _center() + Vector2(300, -300))
+	_hit(w, blue.id, _structure(w, &"red_mid_t1"))
+	w.step()
+	assert_eq(blue.gold, 150 + w.balance.tower_last_hit_gold, "kết liễu trụ: vàng trụ + thưởng kết liễu")
+	assert_eq(ally.gold, 150, "đồng đội chỉ nhận vàng trụ")
+	assert_eq(red.gold, 0)
+
+
+func test_ECO_10_first_blood_bonus_only_first_hero_death() -> void:
+	var w: World = _world()
+	var a: Entity = _brakk(w, 0, _center())
+	var b: Entity = _brakk(w, 1, _center() + Vector2(150, 0))
+	var c: Entity = _brakk(w, 1, _center() + Vector2(-150, 0))
+	var base: int = w.balance.hero_kill_gold_base + w.balance.hero_kill_gold_per_level
+	_hit(w, a.id, b)
+	w.step()
+	assert_eq(a.gold, base + w.balance.first_blood_gold, "Hạ gục đầu tiên: thêm first_blood_gold")
+	_hit(w, a.id, c)
+	w.step()
+	assert_eq(a.gold, 2 * base + w.balance.first_blood_gold, "mạng thứ hai không thêm")
+
+
+func test_ECO_10_first_death_by_tower_uses_up_first_blood() -> void:
+	var w: World = _world()
+	var a: Entity = _brakk(w, 0, _center())
+	var b: Entity = _brakk(w, 1, _center() + Vector2(150, 0))
+	var c: Entity = _brakk(w, 1, _center() + Vector2(-150, 0))
+	_hit(w, -1, b)
+	w.step()
+	_hit(w, a.id, c)
+	w.step()
+	assert_eq(a.gold, 2 * (w.balance.hero_kill_gold_base + w.balance.hero_kill_gold_per_level),
+		"mạng đầu không do hero hạ: vàng chia như ECO-08, mất luôn Hạ gục đầu tiên")

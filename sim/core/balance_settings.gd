@@ -134,6 +134,10 @@ extends Resource
 @export var hero_kill_gold_per_level: int
 ## ECO-05: chết mất death_gold_per_level × cấp vàng.
 @export var death_gold_per_level: int
+## ECO-07 (D-340): hero kết liễu trụ địch nhận thêm chừng này vàng (ngoài vàng trụ cả đội).
+@export var tower_last_hit_gold: int
+## ECO-10 (D-340): hero hạ mạng hero đầu tiên của trận nhận thêm chừng này vàng.
+@export var first_blood_gold: int
 ## ECO-09: hero gây sát thương lên hero địch trong chừng này giây trước khi nó chết được tính hỗ trợ.
 @export var assist_window: float
 
