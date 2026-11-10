@@ -779,7 +779,7 @@ Quái rừng thuộc đội trung lập (đội 2), là **kẻ địch của m�
   phe kia nhận XP (ECO-03).
 - `ECO-04` Hero chết không bị gỡ khỏi trận: nằm chờ (không nhắm được, không đi, không
   chiếm chỗ, mọi lệnh bị từ chối `UNIT_DEAD`), hết khóa mục tiêu. Sau
-  `respawn_base + respawn_per_level × cấp` giây hồi sinh tại fountain phe mình, đầy máu và
+  `respawn_base + respawn_per_level × cấp` giây hồi sinh tại điểm xuất hiện của ô mình cạnh fountain phe mình (MATCH-03), đầy máu và
   mana, lệnh IDLE (sự kiện `hero_died`, `hero_respawned`).
 - `ECO-05` Chết mất `death_gold_per_level × cấp` vàng.
 - `ECO-09` KDA (M4.0): hero hạ (ECO-08) +1 hạ; nạn nhân +1 chết; mỗi hero phe kia đã gây
@@ -845,6 +845,21 @@ chơi và bot (`Rules.pick_attack_target`), nút trên màn hình chỉ gọi h�
   thì đứng yên tick đó. Lệnh không tự xong; dừng khi có lệnh khác (`STOP`).
 - `MOV-08` (D-274) Lính đường tự xét đẩy tách (MOV-04, lính là bên id nhỏ hơn của cặp) mỗi
   `creep_separation_ticks` tick (2); cặp có hero vẫn đẩy mỗi tick. Lính có thể chồng nhau thêm tối đa chừng đó tick.
+
+## MATCH — Thiết lập trận (D-328, M9.1)
+
+Trận được dựng từ một cấu hình (MatchConfig): số ô mỗi đội, từng ô, seed. Offline và online dùng chung.
+- `MATCH-01` Trận có 2 đội, mỗi đội `team_size` ô (1–5). Mỗi ô: một tướng, do **người** hoặc **bot** (kèm độ
+  khó) điều khiển. Hero được tạo theo thứ tự ô (đội 0 ô 0…n−1, rồi đội 1) nên id cố định theo cấu hình.
+  Cấu hình sai không dựng trận, kèm lý do: `TEAM_SIZE` (ngoài 1–5), `SLOT_COUNT` (số ô ≠ 2 × team_size).
+- `MATCH-02` Mỗi tướng xuất hiện **tối đa một lần trong cả trận** (cả hai đội — D-328): trùng → `DUPLICATE_HERO`;
+  tướng không có trong content → `UNKNOWN_HERO`.
+- `MATCH-03` Ô k của mỗi đội có điểm xuất hiện riêng — lúc vào trận và khi hồi sinh (ECO): ô 0 ở đúng fountain,
+  ô k ≥ 1 cách fountain `hero_spawn_spread` theo các góc chia đều (đẩy vào chỗ đứng được gần nhất) — không đứng chồng.
+- `MATCH-04` Bot ở ô k đi đường `bot_lane_order[k]` (MID, TOP, BOT, BOT, TOP): 1v1 bot đi giữa; 3v3 giữa / trên /
+  dưới. Ô người không bị gán đường.
+- `MATCH-05` Seed của World lấy từ cấu hình (offline: ngẫu nhiên mỗi trận; online: máy chủ chọn). Cùng cấu hình +
+  cùng nhật ký lệnh → cùng trận (CMD-04).
 
 ## CMD — Lệnh (Command)
 

@@ -4,12 +4,8 @@ extends Node2D
 ## (giữ là đánh liên tục); PC chuột phải → đi tới / khóa địch; chạm vào địch → khóa (D-45).
 
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
-## Tướng của người chơi; màn khởi động đặt trước khi vào trận (tạm, tới khi có màn chọn tướng M8).
-static var hero_id: StringName = &"brakk"
-## D-94: hero và độ khó của bot đối thủ (màn khởi động đặt; "" = không có bot).
-static var bot_hero_id: StringName = &"myra"
-static var bot_difficulty: int = BotState.Difficulty.NORMAL
-const SEED: int = 1
+## MATCH-01..05 (D-328): cấu hình trận (màn chọn tướng đặt trước khi vào trận); người chơi điều khiển ô người đầu tiên.
+static var config: MatchConfig = MatchConfig.make(1, [&"brakk", &"myra"] as Array[StringName], [0], BotState.Difficulty.NORMAL, 1)
 ## CTL-02: phím PC giả lập nút ĐÁNH / đánh lính / đánh trụ (theo Rules.AttackMode).
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
 const SPEEDS: Array[int] = [1, 2, 4, 8]
@@ -31,7 +27,7 @@ const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm the
 var world: World
 var runner: SimRunner
 var hero: Entity
-## Hero bot của trận (null nếu không có), cho nút Test (D-138).
+## Hero đầu tiên của đội địch (null nếu không có), cho nút Test (D-138).
 var bot_unit: Entity
 var input: MatchInput = MatchInput.new()
 var result: ResultPanel
@@ -51,7 +47,7 @@ var settings: SettingsControl
 
 func _ready() -> void:
 	UnitSprite.clear_cache()  # D-149: id đơn vị dùng lại giữa các trận
-	world = World.new(SEED, load(BALANCE_PATH) as BalanceSettings)
+	world = World.new(config.seed, load(BALANCE_PATH) as BalanceSettings)  # MATCH-05
 	world.map = map_view.layout
 	world.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
 	var library: ContentLibrary = ContentLibrary.load_dir()
@@ -60,15 +56,15 @@ func _ready() -> void:
 	MatchSetup.add_jungle(world, library)
 	MatchSetup.add_shop(world, library)
 	MatchSetup.add_lane_creeps(world, library, true)
-	hero_def = library.heroes[hero_id]
 	for def: GameDef in library.units.values() + library.heroes.values():
 		ArtLibrary.texture(def.art_id)  # nạp sẵn hình lúc vào trận, không để lần xuất hiện đầu bị giật
 	ArtLibrary.load_ahead(ArtLibrary.content_ids(library))  # D-269: icon đồ / chiêu / buff nạp ngầm
-	hero = UnitFactory.hero(world, hero_def, 0, world.map.fountain_point(0))
-	if bot_hero_id != &"":
-		var foe: Entity = UnitFactory.hero(world, library.heroes[bot_hero_id], 1, world.map.fountain_point(1))
-		MatchSetup.add_bot(world, foe, bot_difficulty as BotState.Difficulty)
-		bot_unit = foe
+	for e: Entity in MatchSetup.spawn_heroes(world, library, config):
+		if hero == null and e.bot == null:
+			hero = e
+		elif bot_unit == null and e.team == 1:
+			bot_unit = e
+	hero_def = hero.hero_def
 	units_view.world = world
 	units_view.viewer_team = hero.team
 	minimap = Minimap.new()
@@ -104,8 +100,8 @@ func _ready() -> void:
 	shop.hero = hero
 	shop.buy_pressed.connect(func(id: StringName) -> void: world.submit(Command.buy(hero.id, id)))  # SHOP-01
 	shop.sell_pressed.connect(func(i: int) -> void: world.submit(Command.sell(hero.id, i)))  # SHOP-05
-	shop.build = BuildPresets.load_build(hero_id)  # D-120: bộ đồ soạn sẵn của tướng này
-	shop.build_changed.connect(func(b: Array[StringName]) -> void: BuildPresets.save_build(hero_id, _build_done + b))
+	shop.build = BuildPresets.load_build(hero_def.id)  # D-120: bộ đồ soạn sẵn của tướng này
+	shop.build_changed.connect(func(b: Array[StringName]) -> void: BuildPresets.save_build(hero_def.id, _build_done + b))
 	var info: InfoPanels = InfoPanels.new()
 	info.name = "InfoPanels"
 	$Hud.add_child(info)

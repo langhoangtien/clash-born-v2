@@ -269,3 +269,5 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | D-168 | Chơi thử | 2026-10-26 | Bản đồ v3 vector + đá Tripo (vách, bậc thang, cột, cụm đá), trụ sát mép lane, hốc đá trại, bờ sông kín. Việc sau: đo FPS trên máy (số mảnh đá + cây), góc vách (rock_wall_b) ở chỗ rẽ gắt, tường đá base |
 | D-169 | Chơi thử | 2026-10-26 | Núi đá viền map, ổ quái vòng đá / vòng cây, rào base 3 cổng, rào fountain, núi ngoài map. Việc sau: đo FPS (núi ngoài map ~400 tảng), có thể thay rào bằng mô hình tường riêng |
 | D-170 | Chơi thử | 2026-10-26 | Đá xanh đồng bộ, bậc thang vẽ nền, bỏ nền base / fountain, cổ thụ, núi liền, bờ sông dải đất liền. Việc sau: đo FPS |
+| M9.1 | Xong (chờ chơi thử) | 2026-11-10 | 869 test xanh; MatchConfig / MatchSlot + MATCH-01..05 (không trùng tướng cả trận); điểm xuất hiện / hồi sinh theo ô; bot chia đường MID / TOP / BOT; màn chọn tướng có 1 vs 1 / 3 vs 3 (3v3: đồng đội + đối thủ bot ngẫu nhiên) |
+| M9.2 | Một phần | 2026-11-10 | Soak 3v3 toàn bot 10 phút × 3 seed xanh + INV-08; SIM 3v3 ~3 ms/tick (máy cloud). Còn: FPS 3v3 trên điện thoại thật (log perf khi người chơi thử) |

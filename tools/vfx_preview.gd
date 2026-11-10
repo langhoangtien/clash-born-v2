@@ -26,8 +26,7 @@ func _initialize() -> void:
 		elif kv[0] == "delay":
 			_delay = float(kv[1])
 	var script: GDScript = load(SCENE.get_basename() + ".gd") as GDScript
-	script.set("hero_id", &"duy_anh")
-	script.set("bot_hero_id", &"noctis")
+	script.set("config", MatchConfig.duel(&"duy_anh", &"noctis"))
 	_scene = (load(SCENE) as PackedScene).instantiate()
 	root.add_child(_scene)
 

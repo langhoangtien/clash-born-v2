@@ -10,6 +10,12 @@ static var _lib: ContentLibrary
 
 
 func _world(seed: int, a: StringName, b: StringName) -> World:
+	return team_world(MatchConfig.make(1, [a, b] as Array[StringName], [], BotState.Difficulty.NORMAL, seed))
+
+
+## Trận đầy đủ (công trình, tầm nhìn, rừng, shop, lính) dựng theo cấu hình trận (MATCH-01..05).
+func team_world(cfg: MatchConfig) -> World:
+	var seed: int = cfg.seed
 	if _map == null:
 		_map = load(MAP_PATH) as MapLayout
 		_lib = ContentLibrary.load_dir()
@@ -21,9 +27,7 @@ func _world(seed: int, a: StringName, b: StringName) -> World:
 	MatchSetup.add_jungle(w, _lib)
 	MatchSetup.add_shop(w, _lib)
 	MatchSetup.add_lane_creeps(w, _lib, true)
-	for team: int in range(2):
-		var h: Entity = UnitFactory.hero(w, _lib.heroes[a if team == 0 else b], team, _map.fountain_point(team))
-		MatchSetup.add_bot(w, h)
+	MatchSetup.spawn_heroes(w, _lib, cfg)
 	return w
 
 

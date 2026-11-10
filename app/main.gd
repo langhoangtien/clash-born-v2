@@ -29,7 +29,7 @@ func _ready() -> void:
 	var settings: SettingsControl = SettingsControl.attach(self, false, audio)  # D-183
 	settings.start_bench = func() -> void:  # D-272: Benchmark A/B — cảnh cố định, hai tướng do bot
 		BenchSession.requested = true
-		_start(BenchSession.HERO, BenchSession.FOE, BotState.Difficulty.NORMAL)
+		_open(MatchConfig.duel(BenchSession.HERO, BenchSession.FOE))  # seed cố định: cảnh so sánh được
 	select.settings_pressed.connect(func() -> void:
 		settings.panel.open = true
 		settings.panel.queue_redraw())
@@ -40,9 +40,25 @@ func _ready() -> void:
 	print(VERSION_TEXT + " ready")
 
 
-func _start(id: StringName, bot_id: StringName, difficulty: int) -> void:
+## MATCH (D-328): 1v1 — đối thủ bot người chơi chọn; 3v3 — đồng đội và đối thủ là bot, tướng ngẫu nhiên không trùng
+## (MATCH-02). Seed ngẫu nhiên mỗi trận (MATCH-05).
+func _start(id: StringName, bot_id: StringName, difficulty: int, team_size: int) -> void:
+	var seed_value: int = randi()
+	if team_size <= 1:
+		_open(MatchConfig.duel(id, bot_id, difficulty as BotState.Difficulty, seed_value))
+		return
+	var others: Array[StringName] = PLAYABLE.filter(func(h: StringName) -> bool: return h != id)
+	others.shuffle()
+	var heroes: Array[StringName] = [id]
+	heroes.append_array(others.slice(0, 2 * team_size - 1))
+	_open(MatchConfig.make(team_size, heroes, [0], difficulty as BotState.Difficulty, seed_value))
+
+
+func _open(config: MatchConfig) -> void:
+	var problem: String = config.validate(ContentLibrary.load_dir())
+	if problem != "":
+		push_error("MATCH: cấu hình trận không hợp lệ: " + problem)
+		return
 	var scene: GDScript = preload("res://app/match_scene.gd")
-	scene.hero_id = id
-	scene.bot_hero_id = bot_id
-	scene.bot_difficulty = difficulty
+	scene.config = config
 	get_tree().change_scene_to_file(MATCH_SCENE)

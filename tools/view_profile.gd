@@ -23,8 +23,7 @@ func _initialize() -> void:
 	_every = SimClock.seconds_to_ticks(float(args.get("every", "30")))
 	_speed = int(args.get("speed", "1"))
 	var script: GDScript = load(SCENE.get_basename() + ".gd") as GDScript
-	script.set("hero_id", StringName(args.get("hero", "duy_anh")))
-	script.set("bot_hero_id", StringName(args.get("foe", "noctis")))
+	script.set("config", MatchConfig.duel(StringName(args.get("hero", "duy_anh")), StringName(args.get("foe", "noctis"))))
 	_scene = (load(SCENE) as PackedScene).instantiate()
 	root.add_child(_scene)
 
@@ -37,7 +36,7 @@ func _process(_delta: float) -> bool:
 		_started = true
 		MatchSetup.add_bot(w, _scene.get("hero"))  # người chơi cũng là bot: đi đường, đánh nhau, camera theo
 		(_scene.get("runner") as SimRunner).speed = _speed
-		print("== view_profile: %s vs %s, %.0f phút, ×%d ==" % [_scene.get("hero_id"), _scene.get("bot_hero_id"), _minutes, _speed])
+		print("== view_profile: %s vs %s, %.0f phút, ×%d ==" % [args.get("hero", "duy_anh"), args.get("foe", "noctis"), _minutes, _speed])
 	if w.tick >= _next_report and FrameProfile.shared.frames > 0:
 		_next_report = w.tick + _every
 		_report(w)

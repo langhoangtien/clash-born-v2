@@ -1,6 +1,7 @@
 extends SceneTree
 ## D-152: đo SIM không giao diện — thời gian mỗi tick, tách theo hệ thống, trận N bot mỗi đội.
-## godot --headless -s tools/sim_profile.gd -- [--per_team=5] [--minutes=12] [--seed=1]
+## godot --headless -s tools/sim_profile.gd -- [--per_team=3] [--minutes=12] [--seed=1]
+## (5 mỗi đội cần ≥ 10 tướng — MATCH-02; tạm thời dựng trùng tướng để đo)
 
 const HEROES: Array[StringName] = [&"brakk", &"myra", &"noctis", &"vexa", &"gorran", &"duy_anh"]
 const MAP_PATH: String = "res://data/maps/clashborn_map.json"
@@ -11,7 +12,7 @@ func _initialize() -> void:
 	for a: String in OS.get_cmdline_user_args():
 		var kv: PackedStringArray = a.trim_prefix("--").split("=")
 		args[kv[0]] = kv[1] if kv.size() > 1 else "1"
-	var per_team: int = int(args.get("per_team", "5"))
+	var per_team: int = int(args.get("per_team", "3"))
 	var minutes: float = float(args.get("minutes", "12"))
 	var w: World = _world(int(args.get("seed", "1")), per_team)
 	_run(w, minutes, per_team)
@@ -29,10 +30,13 @@ func _world(seed: int, per_team: int) -> World:
 	MatchSetup.add_jungle(w, lib)
 	MatchSetup.add_shop(w, lib)
 	MatchSetup.add_lane_creeps(w, lib, true)
-	for team: int in 2:
-		for i: int in per_team:
-			var id: StringName = HEROES[(i + team) % HEROES.size()]
-			MatchSetup.add_bot(w, UnitFactory.hero(w, lib.heroes[id], team, map.fountain_point(team)))
+	var picks: Array[StringName] = []
+	for i: int in 2 * per_team:
+		picks.append(HEROES[i % HEROES.size()])
+	var cfg: MatchConfig = MatchConfig.make(per_team, picks, [], BotState.Difficulty.NORMAL, seed)
+	if cfg.validate(lib) != "":
+		print("MATCH: ", cfg.validate(lib), " (MATCH-02: %d tướng, cần %d)" % [HEROES.size(), 2 * per_team])
+	MatchSetup.spawn_heroes(w, lib, cfg)  # MATCH-03/04: chỗ xuất hiện + đường theo ô
 	return w
 
 

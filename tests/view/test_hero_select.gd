@@ -14,14 +14,29 @@ func _select() -> HeroSelect:
 func test_D_123_pick_hero_bot_difficulty_then_start() -> void:
 	var s: HeroSelect = _select()
 	var got: Array = []
-	s.start_pressed.connect(func(h: StringName, b: StringName, d: int) -> void: got.append([h, b, d]))
+	s.start_pressed.connect(func(h: StringName, b: StringName, d: int, n: int) -> void: got.append([h, b, d, n]))
 	s.press_at(s.card_rect(2).get_center())
 	s.press_at(s.bot_rect(0).get_center())
 	s.press_at(s.diff_rect(2).get_center())
 	s.press_at(s.tab_rect(1).get_center())
 	assert_eq(s.tab, HeroDetail.Tab.STATS)
 	s.press_at(HeroSelect.START.get_center())
-	assert_eq(got, [[&"gorran", &"brakk", 2]])
+	assert_eq(got, [[&"gorran", &"brakk", 2, 1]], "mặc định 1 vs 1")
+	s.free()
+
+
+## MATCH (D-328): nút 3 vs 3 → báo số người mỗi đội 3; MATCH-02: bot 1v1 không bao giờ trùng tướng người chơi.
+func test_MATCH_02_mode_3v3_and_bot_never_same_hero() -> void:
+	var s: HeroSelect = _select()
+	var got: Array = []
+	s.start_pressed.connect(func(h: StringName, b: StringName, _d: int, n: int) -> void: got.append([h, b, n]))
+	s.press_at(s.bot_rect(2).get_center())
+	s.press_at(s.card_rect(2).get_center())
+	assert_ne(s.bot, s.selected, "chọn đúng tướng của bot → bot đổi sang tướng khác")
+	s.press_at(s.mode_rect(1).get_center())
+	s.press_at(HeroSelect.START.get_center())
+	assert_eq(got[0][2], 3, "3 vs 3")
+	assert_ne(got[0][0], got[0][1])
 	s.free()
 
 

@@ -177,6 +177,12 @@ extends Resource
 @export var bot_siege_tanks: int
 @export var bot_siege_min_hp: float
 
+@export_group("Trận (MATCH)")
+## MATCH-03: ô k ≥ 1 xuất hiện cách fountain chừng này (px), góc chia đều.
+@export var hero_spawn_spread: float
+## MATCH-04: đường của bot ở ô k (MID / TOP / BOT).
+@export var bot_lane_order: PackedStringArray
+
 @export_group("Fountain (STR-04)")
 @export var fountain_radius: float
 ## RCL-01: thời gian kênh về thành (giây).

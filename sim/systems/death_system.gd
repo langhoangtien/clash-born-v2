@@ -52,7 +52,7 @@ func _respawn(world: World, e: Entity) -> void:
 	e.respawn_tick = -1
 	e.alive = true
 	if world.map != null:
-		e.position = world.map.fountain_point(e.team)
+		e.position = e.spawn_point if e.spawn_point.is_finite() else world.map.fountain_point(e.team)  # MATCH-03
 	e.health = e.stats.get_stat(StatId.Id.MAX_HP)
 	e.mana = e.stats.get_stat(StatId.Id.MAX_MANA)
 	e.order = Order.idle()

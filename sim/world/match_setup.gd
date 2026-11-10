@@ -63,6 +63,29 @@ static func add_jungle(world: World, library: ContentLibrary) -> void:
 
 
 ## BOT: hero `e` do bot điều khiển (thêm BotController một lần cho trận).
+## MATCH-01/03/04: tạo hero theo thứ tự ô — điểm xuất hiện riêng mỗi ô, ô bot nhận bộ não + đường. Cấu hình phải
+## hợp lệ (MatchConfig.validate).
+static func spawn_heroes(world: World, library: ContentLibrary, config: MatchConfig) -> Array[Entity]:
+	var out: Array[Entity] = []
+	for s: MatchSlot in config.slots:
+		var def: HeroDef = library.heroes[s.hero_id]
+		var at: Vector2 = spawn_point(world, s.team, s.index, config.team_size, def.stats.collision_radius)
+		var e: Entity = UnitFactory.hero(world, def, s.team, at)
+		e.spawn_point = at
+		if s.is_bot:
+			add_bot(world, e, s.difficulty).lane = world.balance.bot_lane_order[s.index % world.balance.bot_lane_order.size()]
+		out.append(e)
+	return out
+
+
+## MATCH-03: ô 0 ở fountain; ô k ≥ 1 cách `hero_spawn_spread` theo góc chia đều, đẩy vào chỗ đứng được gần nhất.
+static func spawn_point(world: World, team: int, index: int, team_size: int, radius: float) -> Vector2:
+	var at: Vector2 = world.map.fountain_point(team)
+	if index > 0:
+		at += Vector2.from_angle(TAU * float(index - 1) / float(maxi(team_size - 1, 1))) * world.balance.hero_spawn_spread
+	return world.navigation(radius).nearest_clear(at)
+
+
 static func add_bot(world: World, e: Entity, difficulty: BotState.Difficulty = BotState.Difficulty.NORMAL) -> BotState:
 	if not world.has_system(BotController):
 		world.add_system(BotController.new(), World.Phase.CONTROLLER)
