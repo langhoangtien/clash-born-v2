@@ -236,6 +236,7 @@ class Handler(BaseHTTPRequestHandler):
                   "resend": lambda: accounts.resend(ROOT, body), "login": lambda: accounts.login(ROOT, body),
                   "reset": lambda: accounts.reset(ROOT, body), "reset_finish": lambda: accounts.reset_finish(ROOT, body),
                   "name": lambda: accounts.set_name(ROOT, token, body), "logout": lambda: accounts.logout(ROOT, token),
+                  "delete": lambda: accounts.delete_account(ROOT, token),
                   "google/start": lambda: accounts.google_start(ROOT), "google/poll": lambda: accounts.google_poll(ROOT, body)}
         action = self.path.removeprefix("/api/auth/")
         if action not in routes:

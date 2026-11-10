@@ -8,6 +8,8 @@ signal start_pressed(hero_id: StringName, bot_id: StringName, difficulty: int, t
 signal map_pressed
 ## D-183: nút Cài đặt (APP mở SettingsPanel).
 signal settings_pressed
+## D-333: nút Tài khoản (APP mở AccountPanel).
+signal account_pressed
 
 const CARD: Vector2 = Vector2(192, 262)
 const CARD_GAP: float = 14.0
@@ -27,6 +29,8 @@ const MODE_AT: Vector2 = Vector2(1480, 28)
 const MODE_SIZE: Vector2 = Vector2(184, 64)
 ## MATCH-06 (D-332): trận thử (Test, chẩn đoán, log hiệu năng — không tính thống kê), chọn trước khi vào trận.
 const PRACTICE: Rect2 = Rect2(1196, 34, 270, 64)
+## D-333: tài khoản — tên trong game khi đã đăng nhập.
+const ACCOUNT_BUTTON: Rect2 = Rect2(880, 34, 300, 64)
 
 var previews: Array[HeroPreview] = []
 var selected: int = 0
@@ -34,6 +38,8 @@ var bot: int = 1
 var difficulty: int = 1
 var mode: int = 0
 var practice: bool = false
+## D-333: tên tài khoản đang đăng nhập ("" = chưa đăng nhập; APP đặt).
+var account_name: String = ""
 var tab: HeroDetail.Tab = HeroDetail.Tab.SKILLS
 
 
@@ -72,6 +78,8 @@ func press_at(at: Vector2) -> void:
 			mode = i
 	if PRACTICE.has_point(at):
 		practice = not practice
+	if ACCOUNT_BUTTON.has_point(at):
+		account_pressed.emit()
 	for i: int in range(previews.size()):
 		if card_rect(i).has_point(at):
 			selected = i
@@ -109,6 +117,7 @@ func _draw() -> void:  # D-130: giao diện theo UiStyle
 	for i: int in MODES.size():
 		UiStyle.button(self, mode_rect(i), &"gold" if i == mode else &"ghost", "%d vs %d" % [MODES[i], MODES[i]], "", 28)
 	UiStyle.button(self, PRACTICE, &"blue" if practice else &"ghost", "Trận thử ✓" if practice else "Trận thử", "", 26)
+	UiStyle.button(self, ACCOUNT_BUTTON, &"ghost", account_name if account_name != "" else "Đăng nhập", "", 26)
 	UiStyle.panel(self, Rect2(Vector2(40, 116), Vector2(DETAIL.position.x - 60, 784)))
 	for i: int in range(previews.size()):
 		_card(i)

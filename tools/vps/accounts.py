@@ -10,7 +10,8 @@ Email + mật khẩu:
   POST /api/auth/reset_finish {email, code, password} → mật khẩu mới, đăng xuất mọi máy khác, phiên mới
 Google (trình duyệt, không plugin): POST /api/auth/google/start → {sid, url}; game mở url; Google trả về
   GET /api/auth/google/callback?code&state → trang "đã đăng nhập"; game hỏi POST /api/auth/google/poll {sid} → phiên.
-Phiên (header X-Clashborn-Session: <token>): GET /api/auth/me, POST /api/auth/name {name}, POST /api/auth/logout.
+Phiên (header X-Clashborn-Session: <token>): GET /api/auth/me, POST /api/auth/name {name}, POST /api/auth/logout,
+  POST /api/auth/delete → xóa vĩnh viễn tài khoản + mọi phiên (Google Play bắt buộc có trong app).
 
 An toàn: mật khẩu băm scrypt + muối riêng; mã 6 số chỉ lưu dạng băm, hết hạn 15 phút, tối đa 5 lần thử; sai mật khẩu
 10 lần → khóa 15 phút; token phiên 32 byte ngẫu nhiên, chỉ lưu SHA-256, hạn 90 ngày. Bí mật (mật khẩu ứng dụng
@@ -301,6 +302,16 @@ def logout(root: str, token) -> dict:
     def go(con):
         con.execute("DELETE FROM sessions WHERE token_hash = ?", (_sha(str(token)),))
         return {"ok": True}
+    return _run(root, go)
+
+
+def delete_account(root: str, token) -> dict:
+    def go(con):
+        row = _account_of(con, token)
+        con.execute("DELETE FROM sessions WHERE account_id = ?", (row[0],))
+        con.execute("DELETE FROM codes WHERE email = ?", (row[1],))
+        con.execute("DELETE FROM accounts WHERE id = ?", (row[0],))
+        return {"deleted": True}
     return _run(root, go)
 
 

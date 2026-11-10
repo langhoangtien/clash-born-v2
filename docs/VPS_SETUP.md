@@ -158,6 +158,10 @@ Báo lại cho người dùng: domain chạy HTTPS, `/api/health` ok, mã đã t
 - **Clashborn Stats (D-331)**: game gửi biên bản trận `POST /api/match` (không cần mã, nginx 12 lần / phút / IP, máy chủ
   kiểm dạng — `tools/vps/stats.py`), lưu SQLite `/srv/clashborn/stats/stats.db`; hàng loạt `POST /api/matches` (cần mã);
   đọc công khai `GET /api/stats/summary|heroes|items|hero/<id>?mode=&kind=&version=` cho trang `/stats/`.
+- **Tài khoản (D-333)**: `/api/auth/*` (`tools/vps/accounts.py`, bảng trong `stats/stats.db`). Bí mật chỉ ở VPS:
+  `/etc/clashborn/smtp.json` (Gmail + mật khẩu ứng dụng) và `/etc/clashborn/google_oauth.json` (OAuth client loại *Web
+  application*, redirect `https://clashborn.quest/api/auth/google/callback`), `root:clashborn 640`. nginx giới hạn 30 lần /
+  phút / IP. Trang `privacy.html` là URL chính sách cho màn đồng ý Google.
 - **Cập nhật VPS bằng một lệnh (D-288)**: `sudo bash /srv/clashborn/repo/tools/vps/update.sh` — kéo code, chạy test máy
   chủ, tạo thư mục, cài service / nginx khi đổi (sao lưu, `nginx -t` lỗi thì trả lại), khởi động lại, ghi commit vào
   `/srv/clashborn/deployed` (hiện ở `/api/health`). Việc riêng từng đợt: `docs/VPS_TASKS.md`.

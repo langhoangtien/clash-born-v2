@@ -301,3 +301,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M9.2 | Một phần | 2026-11-10 | Soak 3v3 toàn bot 10 phút × 3 seed xanh + INV-08; SIM 3v3 ~3 ms/tick (máy cloud). Còn: FPS 3v3 trên điện thoại thật (log perf khi người chơi thử) |
 | ST.1–ST.3 | Xong | 2026-11-10 | Biên bản trận + gửi khi trận xong (trận thử không gửi — MATCH-06); máy chủ SQLite + API (VPS V-002); trang clashborn.quest/stats/ |
 | ST.4 | Đang chạy | 2026-11-10 | 15 trận bot vs bot đã lên trang; lô tiếp (3v3 seed 6–15, 21–30; 1v1 seed 7–30) |
+| ACC.1–ACC.3 | Xong (chờ V-003) | 2026-11-10 | Máy chủ tài khoản + Google + xóa tài khoản (17 test máy chủ); màn Tài khoản trong game; trang quyền riêng tư |

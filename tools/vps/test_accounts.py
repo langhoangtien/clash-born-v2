@@ -107,6 +107,14 @@ class AccountTest(ServerCase):
         with urllib.request.urlopen(self.url + "/api/auth/google/callback?code=x&state=gia-mao") as r:
             self.assertIn("Chưa đăng nhập được", r.read().decode())
 
+    def test_D_333_delete_account(self) -> None:
+        token = self.signup("f@x.vn")
+        self.assertEqual(self.auth("delete")[0], 401, "cần phiên")
+        self.assertEqual(self.auth("delete", session=token)[1], {"deleted": True})
+        self.assertEqual(self.auth("me", session=token, method="GET")[0], 401)
+        self.assertEqual(self.auth("login", {"email": "f@x.vn", "password": "matkhau123"})[1]["code"], "BAD_LOGIN")
+        self.signup("f@x.vn")  # đăng ký lại được bằng email đó
+
     def test_D_333_secrets_never_stored_plain(self) -> None:
         token = self.signup("e@x.vn", "bi-mat-123")
         db = open(os.path.join(self.tmp.name, "stats", "stats.db"), "rb").read()

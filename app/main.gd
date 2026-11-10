@@ -22,6 +22,7 @@ func _ready() -> void:
 	select.setup(heroes, load(BALANCE_PATH) as BalanceSettings)
 	select.start_pressed.connect(_start)
 	select.map_pressed.connect(func() -> void: get_tree().change_scene_to_file(MAP_VIEWER))
+	_setup_account(select)
 	var audio: AudioView = AudioView.new()  # D-114: nhạc menu (Safari phát sau lần chạm đầu tiên)
 	audio.name = "Audio"
 	add_child(audio)
@@ -44,6 +45,37 @@ func _ready() -> void:
 
 ## MATCH (D-328): 1v1 — đối thủ bot người chơi chọn; 3v3 — đồng đội và đối thủ là bot, tướng ngẫu nhiên không trùng
 ## (MATCH-02). Seed ngẫu nhiên mỗi trận (MATCH-05). MATCH-06: trận thử khi bấm "Trận thử" hoặc đang bật ghi log hiệu năng.
+## D-333: tài khoản — AccountClient (mạng, lưu phiên) + AccountPanel (form) nối qua tín hiệu.
+func _setup_account(select: HeroSelect) -> void:
+	var client: AccountClient = AccountClient.new()
+	client.name = "Account"
+	add_child(client)
+	var panel: AccountPanel = AccountPanel.new()
+	panel.name = "AccountPanel"
+	panel.visible = false
+	add_child(panel)
+	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var show_account: Callable = func() -> void:
+		select.account_name = String(AccountClient.account.get("name", "")) if AccountClient.signed_in() else ""
+		if AccountClient.signed_in() and select.account_name == "":
+			select.account_name = "Đặt tên"
+		select.queue_redraw()
+		panel.set_account(AccountClient.account)
+	client.changed.connect(show_account)
+	client.replied.connect(func(action: String, ok: bool, code: String, message: String, _d: Dictionary) -> void:
+		panel.on_reply(action, ok, code, message))
+	panel.request.connect(func(action: String, body: Dictionary) -> void:
+		if action == "google/cancel":
+			client.cancel_google()
+		elif action == "google/start":
+			client.google()
+		else:
+			client.send(action, body))
+	panel.closed.connect(func() -> void: panel.visible = false)
+	select.account_pressed.connect(func() -> void: panel.visible = true)
+	show_account.call()
+
+
 func _start(id: StringName, bot_id: StringName, difficulty: int, team_size: int, practice: bool) -> void:
 	var seed_value: int = randi()
 	var cfg: MatchConfig
