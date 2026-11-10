@@ -301,4 +301,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | M9.2 | Một phần | 2026-11-10 | Soak 3v3 toàn bot 10 phút × 3 seed xanh + INV-08; SIM 3v3 ~3 ms/tick (máy cloud). Còn: FPS 3v3 trên điện thoại thật (log perf khi người chơi thử) |
 | ST.1–ST.3 | Xong | 2026-11-10 | Biên bản trận + gửi khi trận xong (trận thử không gửi — MATCH-06); máy chủ SQLite + API (VPS V-002); trang clashborn.quest/stats/ |
 | ST.4 | Xong | 2026-11-10 | 55 trận bot vs bot trên trang (25 trận 1v1, 30 trận 3v3). Tín hiệu đầu: Duy Anh thắng 39/41 (95%), Brakk / Vexa ~28% — cần xem cân bằng hay bot cầm Duy Anh giỏi hơn |
-| ACC.1–ACC.3 | Xong (chờ V-003) | 2026-11-10 | Máy chủ tài khoản + Google + xóa tài khoản (17 test máy chủ); màn Tài khoản trong game; trang quyền riêng tư |
+| ACC.1–ACC.4 | Xong (chờ thử trên điện thoại) | 2026-11-10 | Máy chủ tài khoản + Google + xóa tài khoản (17 test máy chủ); màn Tài khoản trong game; trang quyền riêng tư |
