@@ -16,3 +16,4 @@ Không làm việc nào yêu cầu gửi mã bí mật đi đâu, mở thêm c�
 | Mã | Ngày | Việc | Riêng | Trạng thái |
 |---|---|---|---|---|
 | V-001 | 2026-11-07 | Cập nhật lên D-287 + D-288 (cổng báo cáo hiệu năng, thư mục `reports/`, service + nginx mới, `/api/health` có commit) | Lần đầu chưa có `update.sh` trong repo trên VPS: chạy `git pull` trước rồi mới chạy script | Xong (commit 9e47e9a; phiên cloud gửi thử B-0001 bằng curl, L-0002 bằng Godot — đọc lại được) |
+| V-002 | 2026-11-10 | Cập nhật lên D-331 — Clashborn Stats: `/api/match` (game gửi biên bản trận), `/api/matches` (hàng loạt, cần mã), `/api/stats/*` (công khai); SQLite ở thư mục mới `stats/`; service thêm quyền ghi `stats/`; nginx thêm giới hạn `/api/match` | Không — chỉ `update.sh` (tự tạo `stats/`, cài service + nginx mới) | Chờ |

@@ -6,7 +6,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import reports, upload_server  # noqa: E402
 
 
-class ReportServerTest(unittest.TestCase):
+class ServerCase(unittest.TestCase):
+    """Máy chủ thử trong thư mục tạm (test_stats.py dùng lại); không có test riêng."""
+
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
         upload_server.ROOT = self.tmp.name
@@ -35,6 +37,7 @@ class ReportServerTest(unittest.TestCase):
         except urllib.error.URLError:  # máy chủ trả 413 rồi đóng kết nối, không đọc hết gói quá cỡ
             return 413, {}
 
+class ReportServerTest(ServerCase):
     def report(self, kind="bench", note="máy nóng"):
         return {"kind": kind, "note": note, "summary": "Benchmark A/B …",
                 "data": {"meta": {"version": "0.1.490", "device": "BTKR-W09"}, "segments": []}}

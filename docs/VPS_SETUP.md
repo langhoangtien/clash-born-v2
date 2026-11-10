@@ -155,6 +155,9 @@ Báo lại cho người dùng: domain chạy HTTPS, `/api/health` ok, mã đã t
   chủ kiểm cỡ + dạng, giữ 200 bản mới nhất trong `/srv/clashborn/reports/` — ngoài `www/`, không ai xem được qua
   web). Đọc: `GET /api/reports`, `GET /api/reports/<mã|latest>` (cần mã bí mật; phía cloud dùng
   `tools/fetch_reports.sh`). Không lưu IP. Test: `python3 -m unittest discover -s tools/vps -p 'test_*.py'`.
+- **Clashborn Stats (D-331)**: game gửi biên bản trận `POST /api/match` (không cần mã, nginx 12 lần / phút / IP, máy chủ
+  kiểm dạng — `tools/vps/stats.py`), lưu SQLite `/srv/clashborn/stats/stats.db`; hàng loạt `POST /api/matches` (cần mã);
+  đọc công khai `GET /api/stats/summary|heroes|items|hero/<id>?mode=&kind=&version=` cho trang `/stats/`.
 - **Cập nhật VPS bằng một lệnh (D-288)**: `sudo bash /srv/clashborn/repo/tools/vps/update.sh` — kéo code, chạy test máy
   chủ, tạo thư mục, cài service / nginx khi đổi (sao lưu, `nginx -t` lỗi thì trả lại), khởi động lại, ghi commit vào
   `/srv/clashborn/deployed` (hiện ở `/api/health`). Việc riêng từng đợt: `docs/VPS_TASKS.md`.

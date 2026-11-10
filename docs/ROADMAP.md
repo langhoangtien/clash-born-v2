@@ -161,6 +161,20 @@ offline với bot trước (M9.1–M9.2), chứng minh SIM tất định giữa 
 | M9.7 Rớt mạng: bot đánh thay hero của người rớt (lệnh đổi quyền điều khiển trong luồng lệnh — mọi máy giống nhau); lệch mã băm → báo lỗi kèm nhật ký lên máy chủ | Test; chơi thử rút mạng giữa trận |
 | M9.8 (sau) Vào lại trận đang đánh: ảnh chụp World hoặc tua nhanh nhật ký; tìm trận tự động; 5v5 | — |
 
+## ST — Clashborn Stats (kiểu Dotabuff) — D-331
+
+Người chơi chọn (D-331): làm giai đoạn 1–2 ngay; ghi **mọi trận, gắn nhãn loại** (người vs người `pvp`, người vs bot
+`pvb`, bot vs bot `bvb`); trang stats lọc theo loại / chế độ / phiên bản. Rank làm sau khi có online + tài khoản.
+
+| Việc | Xong khi |
+|---|---|
+| ST.1 Biên bản trận `MatchRecord` (thuần, đọc World + MatchConfig): phiên bản, chế độ, loại, thời lượng, đội thắng; mỗi hero: tướng, đội, ô, bot?, K/D/A, cấp, vàng, last hit, đồ cuối trận, lịch sử mua (giây, món). Trận xong → game gửi `POST /api/match` | Test biên bản; gửi thử từ máy thật |
+| ST.2 Máy chủ: kiểm dạng biên bản, lưu SQLite (`<root>/stats/stats.db`), API đọc công khai `GET /api/stats/{summary,heroes,items,hero/<id>}` (lọc mode / kind / version); gửi hàng loạt có mã (`POST /api/matches`, cho bot vs bot) | Test unittest máy chủ; VPS chạy update.sh |
+| ST.3 Trang `clashborn.quest/stats/`: bảng tướng (tỉ lệ thắng / chọn, KDA), bảng đồ (tỉ lệ thắng, số lần), trang tướng (đồ hay lên + tỉ lệ thắng, khắc chế / hợp với tướng nào, món mua đầu) | Mở được trên điện thoại + máy tính |
+| ST.4 Trận bot vs bot hàng loạt (không giao diện, nhiều seed, 1v1 + 3v3) → số liệu cân bằng ban đầu | ≥ 100 trận trên trang |
+| ST.5 (cùng M9) Máy chủ trận ghi biên bản trận online (tin được — máy chủ chạy SIM); lịch sử trận từng người | — |
+| ST.6 (sau online) Tài khoản + rank (MMR → bậc) → tỉ lệ thắng theo rank | — |
+
 ## Tiến độ
 
 Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việc).

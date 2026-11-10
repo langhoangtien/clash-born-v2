@@ -10,12 +10,16 @@ API (mọi lệnh ghi cần header  Authorization: Bearer <mã trong /etc/clashb
   POST /api/site                      → giải nén incoming/site.tar.gz thành trang web (không đụng releases/,
                                          version.json, download/, play/).
 Báo cáo hiệu năng (D-287, xem reports.py): POST /api/report (game gửi, KHÔNG cần mã), GET /api/reports[/<id>] (cần mã).
+Clashborn Stats (D-331, xem stats.py): POST /api/match (game gửi, KHÔNG cần mã), POST /api/matches (cần mã, hàng loạt),
+GET /api/stats/summary|heroes|items|hero/<id>?mode=&kind=&version= (công khai).
 Chạy:  python3 upload_server.py --root /srv/clashborn --port 8787
 """
 import argparse, errno, hashlib, hmac, json, os, re, shutil, tarfile, tempfile
+from urllib.parse import parse_qs, urlsplit
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import reports
+import stats
 
 APK_NAME = re.compile(r"^clashborn-0\.1\.\d{1,6}\.apk$")
 UPLOAD_NAMES = re.compile(r"^(clashborn-0\.1\.\d{1,6}\.apk|site\.tar\.gz)$")
@@ -151,6 +155,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         if self.path == "/api/health":
             return self._send(200, health())
+        if self.path.startswith("/api/stats/"):
+            return self._stats()
         if not self.path.startswith("/api/reports"):
             return self._send(404, {"error": "không có"})
         if not self._authorized():
@@ -169,6 +175,41 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(413, {"error": "kích thước không hợp lệ"})
         try:
             self._send(200, reports.save(ROOT, reports.parse(self.rfile.read(size))))
+        except ValueError as e:
+            self._send(400, {"error": str(e)})
+
+    def _stats(self) -> None:
+        """D-331: số liệu công khai cho trang clashborn.quest/stats/."""
+        url = urlsplit(self.path)
+        f = stats.filters({k: v[0] for k, v in parse_qs(url.query).items()})
+        what = url.path.removeprefix("/api/stats/")
+        try:
+            if what == "summary":
+                return self._send(200, stats.summary(ROOT, f))
+            if what == "heroes":
+                return self._send(200, {"heroes": stats.heroes(ROOT, f)})
+            if what == "items":
+                return self._send(200, {"items": stats.items(ROOT, f)})
+            if what.startswith("hero/"):
+                return self._send(200, stats.hero(ROOT, what.removeprefix("hero/"), f))
+        except KeyError:
+            pass
+        self._send(404, {"error": "không có"})
+
+    def _matches(self, batch: bool) -> None:
+        """D-331: biên bản trận — một trận từ game (không cần mã) hoặc hàng loạt {"matches": […]} (cần mã)."""
+        size = int(self.headers.get("Content-Length", "-1"))
+        if size <= 0 or size > stats.MAX_BYTES * (stats.MAX_BATCH if batch else 1):
+            return self._send(413, {"error": "kích thước không hợp lệ"})
+        try:
+            body = stats.load(self.rfile.read(size))
+            if batch:
+                if not isinstance(body, dict) or not isinstance(body.get("matches"), list) or len(body["matches"]) > stats.MAX_BATCH:
+                    raise ValueError("cần {\"matches\": [...]}")
+                recs = [stats.check(r) for r in body["matches"]]
+            else:
+                recs = [stats.check(body)]
+            self._send(200, stats.save(ROOT, recs, "batch" if batch else "game"))
         except ValueError as e:
             self._send(400, {"error": str(e)})
 
@@ -201,8 +242,12 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self) -> None:
         if self.path == "/api/report":
             return self._report()
+        if self.path == "/api/match":
+            return self._matches(False)
         if not self._authorized():
             return self._send(401, {"error": "sai mã"})
+        if self.path == "/api/matches":
+            return self._matches(True)
         try:
             if self.path == "/api/publish":
                 length = min(int(self.headers.get("Content-Length", "0")), 64 * 1024)

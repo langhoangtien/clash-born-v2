@@ -1,0 +1,225 @@
+"""Clashborn Stats (D-331, ROADMAP ST.2) — kho biên bản trận + số liệu kiểu Dotabuff. Thư viện chuẩn (sqlite3);
+upload_server.py gọi.
+
+Ghi:
+  POST /api/match    (game gửi, KHÔNG cần mã — nginx giới hạn / IP) một biên bản MatchRecord (sim/world/match_record.gd)
+  POST /api/matches  (cần mã) {"matches": [biên bản…]} — trận bot vs bot chạy hàng loạt (tools/stats/sim_matches.gd)
+Đọc (công khai, trang clashborn.quest/stats/):
+  GET /api/stats/summary | heroes | items | hero/<id>   ?mode=3v3&kind=pvb&version=0.1.560   (bỏ trống / all = tất cả)
+Biên bản là dữ liệu người ngoài gửi: chỉ json.loads, kiểm từng trường (kiểu, khoảng, tên id), không tin gì khác (như
+D-288). Trận dùng nút Test (cheats), chưa có đội thắng, quá ngắn → bỏ. Không lưu IP / thiết bị. Lưu <root>/stats/stats.db.
+"""
+import json, os, re, sqlite3, threading, time
+
+SCHEMA = 1
+MAX_BYTES = 64 * 1024        # một biên bản 3v3 ~3 KB
+MAX_BATCH = 500
+MIN_DURATION_S = 60.0
+MAX_DURATION_S = 4 * 3600.0
+START_S = 90.0              # "đồ khởi đầu" = mua trong 90 giây đầu (kiểu Dotabuff)
+NAME = re.compile(r"^[a-z0-9_]{1,40}$")
+VERSION = re.compile(r"^\d{1,3}\.\d{1,3}\.\d{1,6}$")
+MODES = {"%dv%d" % (n, n): n for n in range(1, 6)}
+KINDS = {"pvp", "pvb", "bvb"}
+_lock = threading.Lock()
+
+TABLES = """
+CREATE TABLE IF NOT EXISTS matches (id INTEGER PRIMARY KEY, received TEXT, source TEXT, version TEXT, mode TEXT,
+  kind TEXT, duration_s REAL, winner INTEGER);
+CREATE TABLE IF NOT EXISTS players (match_id INTEGER, team INTEGER, slot INTEGER, hero TEXT, bot INTEGER, won INTEGER,
+  kills INTEGER, deaths INTEGER, assists INTEGER, level INTEGER, gold INTEGER, last_hits INTEGER);
+CREATE TABLE IF NOT EXISTS items (match_id INTEGER, team INTEGER, slot INTEGER, hero TEXT, item TEXT, won INTEGER);
+CREATE TABLE IF NOT EXISTS buys (match_id INTEGER, team INTEGER, slot INTEGER, hero TEXT, item TEXT, t REAL, ord INTEGER,
+  won INTEGER);
+CREATE INDEX IF NOT EXISTS players_match ON players (match_id);
+CREATE INDEX IF NOT EXISTS items_match ON items (match_id);
+CREATE INDEX IF NOT EXISTS buys_match ON buys (match_id);
+"""
+
+
+def _db(root: str) -> sqlite3.Connection:
+    d = os.path.join(root, "stats")
+    os.makedirs(d, exist_ok=True)
+    con = sqlite3.connect(os.path.join(d, "stats.db"))
+    con.executescript(TABLES)
+    return con
+
+
+def _int(v, lo: int, hi: int, what: str) -> int:
+    if isinstance(v, bool) or not isinstance(v, (int, float)) or v != int(v) or not lo <= v <= hi:
+        raise ValueError(what + " không hợp lệ")
+    return int(v)
+
+
+def _num(v, lo: float, hi: float, what: str) -> float:
+    if isinstance(v, bool) or not isinstance(v, (int, float)) or not lo <= v <= hi:
+        raise ValueError(what + " không hợp lệ")
+    return float(v)
+
+
+def _name(v, what: str) -> str:
+    if not isinstance(v, str) or not NAME.match(v):
+        raise ValueError(what + " không hợp lệ")
+    return v
+
+
+def check(rec) -> dict:
+    """Biên bản hợp lệ (đã chuẩn hóa) hoặc ValueError."""
+    if not isinstance(rec, dict) or rec.get("schema") != SCHEMA:
+        raise ValueError("schema không hợp lệ")
+    if rec.get("cheats") is not False:
+        raise ValueError("trận dùng nút Test — không tính")
+    version, mode, kind = rec.get("version"), rec.get("mode"), rec.get("kind")
+    if not isinstance(version, str) or not VERSION.match(version) or mode not in MODES or kind not in KINDS:
+        raise ValueError("version / mode / kind không hợp lệ")
+    winner = _int(rec.get("winner"), 0, 1, "winner")
+    out = {"version": version, "mode": mode, "kind": kind, "winner": winner,
+           "duration_s": _num(rec.get("duration_s"), MIN_DURATION_S, MAX_DURATION_S, "duration_s"), "players": []}
+    players = rec.get("players")
+    n = MODES[mode]
+    if not isinstance(players, list) or len(players) != 2 * n:
+        raise ValueError("số người không khớp chế độ")
+    for p in players:
+        out["players"].append(_player(p, winner, n))
+    if sorted(p["team"] for p in out["players"]) != [0] * n + [1] * n:
+        raise ValueError("mỗi đội phải đủ người")
+    if len({p["hero"] for p in out["players"]}) != 2 * n:
+        raise ValueError("trùng tướng (MATCH-02)")
+    return out
+
+
+def _player(p, winner: int, n: int) -> dict:
+    if not isinstance(p, dict):
+        raise ValueError("người chơi không hợp lệ")
+    team = _int(p.get("team"), 0, 1, "team")
+    out = {"hero": _name(p.get("hero"), "hero"), "team": team, "slot": _int(p.get("slot"), 0, n - 1, "slot"),
+           "bot": bool(p.get("bot") is True), "won": team == winner}
+    for key in ("kills", "deaths", "assists", "last_hits"):
+        out[key] = _int(p.get(key), 0, 100000, key)
+    out["level"] = _int(p.get("level"), 1, 100, "level")
+    out["gold"] = _int(p.get("gold"), -100000, 10000000, "gold")
+    items, buys = p.get("items"), p.get("buys")
+    if not isinstance(items, list) or len(items) > 6 or not isinstance(buys, list) or len(buys) > 200:
+        raise ValueError("đồ không hợp lệ")
+    out["items"] = [_name(i, "item") for i in items]
+    out["buys"] = []
+    for b in buys:
+        if not isinstance(b, list) or len(b) != 2:
+            raise ValueError("lịch sử mua không hợp lệ")
+        out["buys"].append([_num(b[0], 0.0, MAX_DURATION_S, "giây mua"), _name(b[1], "item")])
+    return out
+
+
+def load(body: bytes):
+    try:
+        return json.loads(body)
+    except (ValueError, UnicodeDecodeError, RecursionError):  # D-288: lồng quá sâu cũng là JSON hỏng
+        raise ValueError("không phải JSON")
+
+
+def save(root: str, recs: list, source: str) -> dict:
+    """Ghi các biên bản đã kiểm (check); trả {"ids": […]}."""
+    ids = []
+    with _lock:
+        con = _db(root)
+        try:
+            for r in recs:
+                ids.append(_insert(con, r, source))
+            con.commit()
+        finally:
+            con.close()
+    return {"ids": ids}
+
+
+def _insert(con: sqlite3.Connection, r: dict, source: str) -> int:
+    cur = con.execute("INSERT INTO matches (received, source, version, mode, kind, duration_s, winner) VALUES (?,?,?,?,?,?,?)",
+                      (time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), source, r["version"], r["mode"], r["kind"],
+                       r["duration_s"], r["winner"]))
+    mid = cur.lastrowid
+    for p in r["players"]:
+        key = (mid, p["team"], p["slot"], p["hero"])
+        con.execute("INSERT INTO players VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", key + (int(p["bot"]), int(p["won"]), p["kills"],
+                    p["deaths"], p["assists"], p["level"], p["gold"], p["last_hits"]))
+        for item in p["items"]:
+            con.execute("INSERT INTO items VALUES (?,?,?,?,?,?)", key + (item, int(p["won"])))
+        for order, (t, item) in enumerate(p["buys"]):
+            con.execute("INSERT INTO buys VALUES (?,?,?,?,?,?,?,?)", key + (item, t, order, int(p["won"])))
+    return mid
+
+
+# ---- Đọc ---------------------------------------------------------------------------------------------------------
+
+def filters(query: dict) -> dict:
+    """Bộ lọc từ query string: mode / kind / version; giá trị lạ → bỏ qua (coi như tất cả)."""
+    f = {}
+    if query.get("mode") in MODES:
+        f["mode"] = query["mode"]
+    if query.get("kind") in KINDS:
+        f["kind"] = query["kind"]
+    if isinstance(query.get("version"), str) and VERSION.match(query["version"]):
+        f["version"] = query["version"]
+    return f
+
+
+def _where(f: dict) -> tuple:
+    cond = ["m.%s = ?" % k for k in ("mode", "kind", "version") if k in f]
+    return (" WHERE " + " AND ".join(cond)) if cond else "", [f[k] for k in ("mode", "kind", "version") if k in f]
+
+
+def _read(root: str, sql: str, args: list) -> list:
+    con = _db(root)
+    try:
+        return con.execute(sql, args).fetchall()
+    finally:
+        con.close()
+
+
+def summary(root: str, f: dict) -> dict:
+    where, args = _where(f)
+    total, avg = _read(root, "SELECT COUNT(*), AVG(duration_s) FROM matches m" + where, args)[0]
+    versions = [v for (v,) in _read(root, "SELECT DISTINCT version FROM matches ORDER BY id DESC", [])]
+    kinds = dict(_read(root, "SELECT kind, COUNT(*) FROM matches m%s GROUP BY kind" % where, args))
+    modes = dict(_read(root, "SELECT mode, COUNT(*) FROM matches m%s GROUP BY mode" % where, args))
+    return {"matches": total, "avg_duration_s": round(avg or 0.0, 1), "versions": versions, "kinds": kinds, "modes": modes}
+
+
+def heroes(root: str, f: dict) -> list:
+    where, args = _where(f)
+    total = _read(root, "SELECT COUNT(*) FROM matches m" + where, args)[0][0] or 1
+    rows = _read(root, "SELECT p.hero, COUNT(*), SUM(p.won), AVG(p.kills), AVG(p.deaths), AVG(p.assists), AVG(p.level), "
+                 "AVG(p.last_hits) FROM players p JOIN matches m ON m.id = p.match_id%s GROUP BY p.hero" % where, args)
+    return [{"hero": h, "games": g, "wins": w, "winrate": round(w / g, 4), "pickrate": round(g / total, 4),
+             "kills": round(k, 2), "deaths": round(d, 2), "assists": round(a, 2), "level": round(lv, 2),
+             "last_hits": round(lh, 1)} for h, g, w, k, d, a, lv, lh in sorted(rows, key=lambda r: -r[1])]
+
+
+def items(root: str, f: dict, hero: str = "") -> list:
+    """Đồ cuối trận: số lần có, tỉ lệ thắng; giây mua đầu tiên trung bình (theo buys)."""
+    where, args = _where(f)
+    extra = (" AND " if where else " WHERE ") + "x.hero = ?" if hero else ""
+    args2 = args + ([hero] if hero else [])
+    rows = _read(root, "SELECT x.item, COUNT(*), SUM(x.won) FROM items x JOIN matches m ON m.id = x.match_id%s%s "
+                 "GROUP BY x.item" % (where, extra), args2)
+    times = dict(_read(root, "SELECT item, AVG(t) FROM (SELECT x.item, MIN(x.t) AS t FROM buys x JOIN matches m ON "
+                       "m.id = x.match_id%s%s GROUP BY x.match_id, x.team, x.slot, x.item) GROUP BY item" % (where, extra), args2))
+    return [{"item": i, "games": g, "wins": w, "winrate": round(w / g, 4), "first_buy_s": round(times.get(i) or 0.0, 1)}
+            for i, g, w in sorted(rows, key=lambda r: -r[1])]
+
+
+def hero(root: str, hid: str, f: dict) -> dict:
+    if not NAME.match(hid):
+        raise KeyError(hid)
+    where, args = _where(f)
+    cond = (" AND " if where else " WHERE ")
+    pair = ("SELECT q.hero, COUNT(*), SUM(p.won) FROM players p JOIN players q ON q.match_id = p.match_id AND %s "
+            "JOIN matches m ON m.id = p.match_id%s%sp.hero = ? GROUP BY q.hero")
+    vs = _read(root, pair % ("q.team != p.team", where, cond), args + [hid])
+    allies = _read(root, pair % ("q.team = p.team AND q.slot != p.slot", where, cond), args + [hid])
+    starts = _read(root, "SELECT x.item, COUNT(*), SUM(x.won) FROM buys x JOIN matches m ON m.id = x.match_id%s%s"
+                   "x.hero = ? AND x.t <= ? GROUP BY x.item" % (where, cond), args + [hid, START_S])
+    return {"hero": hid, "items": items(root, f, hid), "vs": _rate(vs, "hero"), "with": _rate(allies, "hero"),
+            "start_items": _rate(starts, "item")}
+
+
+def _rate(rows: list, key: str) -> list:
+    return [{key: k, "games": g, "wins": w, "winrate": round(w / g, 4)} for k, g, w in sorted(rows, key=lambda r: -r[1])]

@@ -11,7 +11,7 @@ Restart=on-failure
 NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/srv/clashborn/www /srv/clashborn/incoming /srv/clashborn/reports
+ReadWritePaths=/srv/clashborn/www /srv/clashborn/incoming /srv/clashborn/reports /srv/clashborn/stats
 PrivateTmp=true
 
 [Install]
