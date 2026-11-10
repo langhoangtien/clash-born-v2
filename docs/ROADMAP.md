@@ -305,3 +305,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | ACC.1–ACC.4 | Xong (chờ thử trên điện thoại) | 2026-11-10 | Máy chủ tài khoản + Google + xóa tài khoản (17 test máy chủ); màn Tài khoản trong game; trang quyền riêng tư |
 | M9.3 | Xong | 2026-11-10 | S-0016: điện thoại Android arm64 khớp x86_64 300/300 giây (trận 3v3 bot 5 phút) — SIM tất định giữa máy |
 | M9.4 | Xong | 2026-11-10 | `app/net/`: LockstepClient / LockstepRoom / NetCodec / LoopbackNet; 7 test NET + soak mạng 4 mức: không lệch, đứng hình 1–4 % khung, trễ bấm → hiệu lực 120–310 ms ở RTT 20–100 ms (D-337) |
+| M9.5 | Code xong, chờ VPS | 2026-11-10 | Máy chủ phòng (server/), sảnh NET-07..10, WebSocket, dấu vân tay SIM; test qua socket thật; chờ V-007 (cài Godot trên VPS) rồi thử 2 máy khách bot qua wss (D-338) |

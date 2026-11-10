@@ -14,6 +14,8 @@ Không ai tác động lên người cùng cấp hay cao hơn mình, không tự
   POST /api/admin/delete_match {match}           → xóa một trận
   GET  /api/admin/whoami                         → người đang thao tác + quyền (D-335)
   POST /api/admin/set_role {id, role: ""|"mod"|"admin"} → chỉ admin / mã quản trị (D-335)
+  POST /api/admin/test_session {name} → chỉ mã quản trị (D-338): phiên cho tài khoản thử bot-<name> (email
+       bot-<name>@clashborn.invalid — không đăng nhập thường được), để công cụ tools/net_client.gd thử máy chủ phòng
 Mọi thao tác ghi vào bảng admin_log (lúc nào, ai làm, việc gì, tài khoản / trận, ghi chú).
 """
 import sqlite3, time
@@ -120,6 +122,26 @@ def log(root: str, who: dict) -> list:
     rows = _run(root, lambda con: con.execute("SELECT at, actor, action, target, detail FROM admin_log ORDER BY id DESC "
                                               "LIMIT 100").fetchall())
     return [{"at": a, "actor": w or "", "action": b, "target": c, "detail": d} for a, w, b, c, d in rows]
+
+
+def test_session(root: str, who: dict, body: dict) -> dict:
+    """D-338: phiên cho tài khoản thử (máy khách bot thử máy chủ phòng trên VPS) — chỉ mã quản trị."""
+    _need(who, "master")
+    tag = str(body.get("name", ""))
+    if not tag.isalnum() or not 1 <= len(tag) <= 8:
+        raise AdminError("tên thử 1–8 chữ / số")
+    email, name = "bot-%s@clashborn.invalid" % tag.lower(), "bot-%s" % tag.lower()
+
+    def go(con):
+        row = con.execute("SELECT id FROM accounts WHERE email = ?", (email,)).fetchone()
+        if row is None:
+            con.execute("INSERT INTO accounts (email, verified, name, name_key, created) VALUES (?,1,?,?,?)",
+                        (email, name, name, time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())))
+            row = con.execute("SELECT id FROM accounts WHERE email = ?", (email,)).fetchone()
+        out = accounts._session(con, row[0])
+        _log(con, who, "test_session", row[0], name)
+        return out
+    return _run(root, go)
 
 
 def set_role(root: str, who: dict, body: dict) -> dict:

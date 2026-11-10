@@ -1,0 +1,23 @@
+# /etc/systemd/system/clashborn-rooms.service — D-338 (M9.5): máy chủ phòng online (Godot không giao diện, chỉ 127.0.0.1:8790;
+# nginx đưa wss://clashborn.quest/play vào). Code chạy từ bản sao /srv/clashborn/rooms (update.sh chép từ repo, import).
+[Unit]
+Description=Clashborn room server (online lockstep, chỉ 127.0.0.1:8790)
+After=network.target clashborn-upload.service
+
+[Service]
+User=clashborn
+Group=clashborn
+WorkingDirectory=/srv/clashborn/rooms
+Environment=HOME=/srv/clashborn/rooms/home
+Environment=XDG_DATA_HOME=/srv/clashborn/rooms/home/.local/share
+ExecStart=/opt/godot/godot --headless --path /srv/clashborn/rooms -s server/main.gd -- --port=8790 --api=http://127.0.0.1:8787
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/clashborn/rooms
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

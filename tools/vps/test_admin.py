@@ -103,6 +103,18 @@ class AdminTest(AccountCase):
         self.req("POST", "/api/admin/set_role", {"id": ids["mod"], "role": ""}, session=boss)
         self.assertEqual(self.req("GET", "/api/admin/accounts?q=", session=mod)[0], 403, "thu quyền → hết vào được")
 
+    def test_D_338_test_session_master_only(self) -> None:
+        boss = self.signup("boss@x.vn")
+        bid = self.auth("me", session=boss, method="GET")[1]["id"]
+        self.req("POST", "/api/admin/set_role", {"id": bid, "role": "admin"}, token="bi-mat")
+        self.assertEqual(self.req("POST", "/api/admin/test_session", {"name": "a1"}, session=boss)[0], 403, "admin không tạo được")
+        code, got = self.req("POST", "/api/admin/test_session", {"name": "a1"}, token="bi-mat")
+        self.assertEqual((code, got["account"]["name"]), (200, "bot-a1"))
+        self.assertEqual(self.auth("me", session=got["token"], method="GET")[1]["email"], "bot-a1@clashborn.invalid")
+        again = self.req("POST", "/api/admin/test_session", {"name": "a1"}, token="bi-mat")[1]
+        self.assertEqual(again["account"]["id"], got["account"]["id"], "dùng lại tài khoản thử")
+        self.assertEqual(self.req("POST", "/api/admin/test_session", {"name": "../x"}, token="bi-mat")[0], 400)
+
     def test_D_334_old_database_upgraded(self) -> None:
         path = os.path.join(self.tmp.name, "stats")
         os.makedirs(path, exist_ok=True)

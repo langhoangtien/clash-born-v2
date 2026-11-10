@@ -290,7 +290,7 @@ class Handler(BaseHTTPRequestHandler):
             size = int(self.headers.get("Content-Length", "0"))
             body = json.loads(self.rfile.read(min(max(size, 0), 4096)) or b"{}")
             acts = {"ban": admin.ban, "unban": admin.unban, "rename": admin.rename, "delete_matches": admin.delete_matches,
-                    "delete_match": admin.delete_match, "set_role": admin.set_role}
+                    "delete_match": admin.delete_match, "set_role": admin.set_role, "test_session": admin.test_session}
             if what not in acts or not isinstance(body, dict):
                 return self._send(404, {"error": "không có"})
             self._send(200, acts[what](ROOT, who, body))

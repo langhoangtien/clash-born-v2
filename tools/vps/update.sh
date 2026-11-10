@@ -54,6 +54,34 @@ for i in 1 2 3 4 5; do
   [ "$i" -eq 5 ] && { echo "Máy chủ không lên:"; journalctl -u clashborn-upload -n 30 --no-pager; exit 1; }
 done
 
+echo "== 6b. Máy chủ phòng online (D-338) — cần Godot ở /opt/godot/godot (docs/VPS_TASKS.md V-007)"
+GODOT_BIN=/opt/godot/godot
+ROOMS="$ROOT/rooms"
+ROOMS_SERVICE=/etc/systemd/system/clashborn-rooms.service
+if [ -x "$GODOT_BIN" ]; then
+  install -d -o clashborn -g clashborn "$ROOMS" "$ROOMS/home"
+  # Bản sao riêng (repo chỉ đọc; Godot cần ghi .godot/): giữ .godot cũ để import nhanh, bỏ ảnh / tài liệu không cần.
+  rsync -a --delete --exclude .git --exclude .godot --exclude home --exclude art_inbox --exclude build --exclude docs \
+    "$REPO"/ "$ROOMS"/
+  chown -R clashborn:clashborn "$ROOMS"
+  sudo -u clashborn env HOME="$ROOMS/home" "$GODOT_BIN" --headless --path "$ROOMS" --import >/dev/null 2>&1 || true
+  if ! cmp -s "$REPO/tools/vps/clashborn-rooms.service" "$ROOMS_SERVICE"; then
+    install -m 644 "$REPO/tools/vps/clashborn-rooms.service" "$ROOMS_SERVICE"
+    systemctl daemon-reload
+    systemctl enable clashborn-rooms
+    echo "   đã cài service máy chủ phòng"
+  fi
+  systemctl restart clashborn-rooms
+  for i in $(seq 1 20); do
+    sleep 1
+    if ss -ltn | grep -q '127.0.0.1:8790'; then echo "   máy chủ phòng nghe 127.0.0.1:8790"; break; fi
+    [ "$i" -eq 20 ] && { echo "Máy chủ phòng không lên:"; journalctl -u clashborn-rooms -n 40 --no-pager; exit 1; }
+  done
+  journalctl -u clashborn-rooms -n 3 --no-pager | grep room_server || true
+else
+  echo "   chưa có $GODOT_BIN — bỏ qua máy chủ phòng"
+fi
+
 echo "== 7. Kiểm tra từ ngoài"
 curl -fsS https://clashborn.quest/api/health; echo
 curl -sS -X POST https://clashborn.quest/api/report -d '{}'; echo "   ← mong: lỗi 'thiếu kind' (cổng báo cáo đã mở)"

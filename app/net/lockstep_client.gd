@@ -63,20 +63,8 @@ func pump(now: float) -> Array[Dictionary]:
 	clock = now
 	var other: Array[Dictionary] = []
 	for msg: Dictionary in transport.receive():
-		match String(msg.get("t", "")):
-			"tick":
-				var n: int = int(msg.get("n", 0))
-				_bundles[n] = msg.get("c", [])
-				last_tick = maxi(last_tick, n)
-			"pong":
-				var r: float = (clock - float(msg.get("at", clock))) * 1000.0
-				jitter_ms = lerpf(jitter_ms, absf(r - rtt_ms), 0.2) if rtt_ms > 0.0 else 0.0
-				rtt_ms = r if rtt_ms == 0.0 else lerpf(rtt_ms, r, 0.2)
-			"desync":
-				if desync_tick < 0:
-					desync_tick = int(msg.get("n", -1))
-			_:
-				other.append(msg)
+		if not handle(msg):
+			other.append(msg)
 	_ping_in -= dt
 	if _ping_in <= 0.0 and transport.is_open():
 		_ping_in = PING_EVERY_S
@@ -84,6 +72,26 @@ func pump(now: float) -> Array[Dictionary]:
 	if world != null:
 		max_backlog = maxi(max_backlog, last_tick - world.tick)
 	return other
+
+
+## Một tin của lockstep (gói lệnh, pong, báo lệch); false = không phải (APP xử lý). APP gọi thẳng cho các tin đến cùng đợt
+## với lời chào (trước khi có LockstepClient).
+func handle(msg: Dictionary) -> bool:
+	match String(msg.get("t", "")):
+		"tick":
+			var n: int = int(msg.get("n", 0))
+			_bundles[n] = msg.get("c", [])
+			last_tick = maxi(last_tick, n)
+		"pong":
+			var r: float = (clock - float(msg.get("at", clock))) * 1000.0
+			jitter_ms = lerpf(jitter_ms, absf(r - rtt_ms), 0.2) if rtt_ms > 0.0 else 0.0
+			rtt_ms = r if rtt_ms == 0.0 else lerpf(rtt_ms, r, 0.2)
+		"desync":
+			if desync_tick < 0:
+				desync_tick = int(msg.get("n", -1))
+		_:
+			return false
+	return true
 
 
 func ready_to_step() -> bool:

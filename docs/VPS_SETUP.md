@@ -180,7 +180,15 @@ Báo lại cho người dùng: domain chạy HTTPS, `/api/health` ok, mã đã t
 5. Trang giới thiệu: mã nguồn trong repo (`web/site/`); `bash tools/site/publish_site.sh` dựng (thêm dữ liệu tướng,
    ảnh) rồi `PUT /api/upload/site.tar.gz` + `POST /api/site` (D-284).
 
-## 9. Sau này: máy chủ trận online (chưa làm)
+## 9. Máy chủ phòng online (D-338, M9.5)
+
+`server/main.gd` (Godot 4.7.2 không giao diện ở `/opt/godot/godot`, đúng bản game) chạy bằng service `clashborn-rooms`
+(`tools/vps/clashborn-rooms.service`, người dùng `clashborn`, chỉ nghe `127.0.0.1:8790`) từ bản sao `/srv/clashborn/rooms`
+(`update.sh` chép repo + import — repo chỉ đọc, Godot cần ghi `.godot/`). nginx: `location = /play` → WebSocket. Kiểm phiên
+đăng nhập qua `http://127.0.0.1:8787/api/auth/me`. Thử từ ngoài: `tools/net_client.gd` với hai phiên thử
+(`POST /api/admin/test_session`, mã quản trị). Nhật ký: `journalctl -u clashborn-rooms`.
+
+## 9b. (cũ) Ghi chú trước khi làm
 
 Máy chủ trận sẽ chạy SIM của game không giao diện (`godot --headless` + script máy chủ trong repo), lệnh của người
 chơi qua mạng (D-30: cùng seed + cùng nhật ký Command → cùng trận). Khi làm: dành một cổng riêng (UDP / WebSocket)
