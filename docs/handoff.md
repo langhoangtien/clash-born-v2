@@ -1,12 +1,12 @@
 # Bàn giao — Clashborn v2 (cập nhật 2026-11-09)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-333**). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-334**). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh thì chụp trong game (xvfb) và gửi ảnh JPG.
 
 ## 1. Trạng thái
 
-- **880 test xanh** (`GODOT=... bash tools/run_tests.sh`; soak `--soak` chạy trước khi đóng mốc). APK mới nhất trên
+- **881 test xanh** (`GODOT=... bash tools/run_tests.sh`; soak `--soak` chạy trước khi đóng mốc). APK mới nhất trên
   https://clashborn.quest (xem `curl -s https://clashborn.quest/version.json`); phát hành mục 4.
 - Android: trình vẽ Mobile (Vulkan), đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
   Hiệu năng máy tính bảng ổn (D-261..277, D-285). Tên miền `clashborn.quest` từng bị registry treo (serverHold) — đã
@@ -70,7 +70,7 @@ Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh 
    Chỉnh số trong `content/` theo góp ý.
 1. ~~Hiệu ứng dậm đất~~ — xong D-320 (sự kiện `effect_triggered`, mục `_triggers` trong vfx.json, mảnh `quake`).
 2. Người Đá Rêu: mảnh đá thừa ở tay đã bỏ (D-318, `drop_loose.py` đọc đúng GLB xen kẽ của afk.ai).
-3. Tài khoản (D-333, ROADMAP ACC): `/api/auth/*`, `app/account/account_client.gd`, `view/menu/account_panel.gd`; bí mật mail / Google ở VPS (V-003).
+3. Tài khoản (D-333, ROADMAP ACC): `/api/auth/*`, `app/account/account_client.gd`, `view/menu/account_panel.gd`; bí mật mail / Google ở VPS (V-003); D-334 quản trị `/admin/` (`tools/vps/admin.py`), lịch sử trận, trang người chơi.
 4. Clashborn Stats (D-331, ROADMAP ST): trang `clashborn.quest/stats/`, biên bản trận `/api/match`; bot vs bot hàng loạt `tools/stats/sim_matches.gd`.
 5. Hướng lớn: **đang làm M9 — 3v3 online** (D-328, ROADMAP M9; M9.1 xong — 3v3 offline với bot, D-329; tiếp M9.3 tất định Android ↔ VPS); còn lại: âm thanh (ElevenLabs), đổi tên game.
 4. ~~Gorran KayKit~~ — xong D-321 (Gorran afk.ai, W Lọ Độc ném; KayKit đã gỡ hẳn).

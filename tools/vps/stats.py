@@ -11,6 +11,8 @@ D-288). Trận thử (practice — MATCH-06: có nút Test), chưa có đội th
 """
 import json, os, re, sqlite3, threading, time
 
+import accounts
+
 SCHEMA = 1
 MAX_BYTES = 64 * 1024        # một biên bản 3v3 ~3 KB
 MAX_BATCH = 500
@@ -35,13 +37,19 @@ CREATE INDEX IF NOT EXISTS players_match ON players (match_id);
 CREATE INDEX IF NOT EXISTS items_match ON items (match_id);
 CREATE INDEX IF NOT EXISTS buys_match ON buys (match_id);
 """
+# D-334: ô người chơi gắn tài khoản (lịch sử trận, ban → xóa trận); cột thêm sau khi VPS đã có dữ liệu.
+COLUMNS = {"players": [("account_id", "INTEGER")]}
+HISTORY = 20
 
 
 def _db(root: str) -> sqlite3.Connection:
     d = os.path.join(root, "stats")
     os.makedirs(d, exist_ok=True)
-    con = sqlite3.connect(os.path.join(d, "stats.db"))
-    con.executescript(TABLES)
+    con = sqlite3.connect(os.path.join(d, "stats.db"), timeout=10)
+    con.executescript(TABLES + accounts.TABLES)
+    accounts.migrate(con, COLUMNS)
+    accounts.migrate(con, accounts.COLUMNS)
+    con.execute("CREATE INDEX IF NOT EXISTS players_account ON players (account_id)")
     return con
 
 
@@ -117,29 +125,31 @@ def load(body: bytes):
         raise ValueError("không phải JSON")
 
 
-def save(root: str, recs: list, source: str) -> dict:
-    """Ghi các biên bản đã kiểm (check); trả {"ids": […]}."""
+def save(root: str, recs: list, source: str, account: int = -1) -> dict:
+    """Ghi các biên bản đã kiểm (check); `account` ≥ 0: tài khoản gửi trận (gắn vào ô người). Trả {"ids": […]}."""
     ids = []
     with _lock:
         con = _db(root)
         try:
             for r in recs:
-                ids.append(_insert(con, r, source))
+                ids.append(_insert(con, r, source, account))
             con.commit()
         finally:
             con.close()
     return {"ids": ids}
 
 
-def _insert(con: sqlite3.Connection, r: dict, source: str) -> int:
+def _insert(con: sqlite3.Connection, r: dict, source: str, account: int) -> int:
     cur = con.execute("INSERT INTO matches (received, source, version, mode, kind, duration_s, winner) VALUES (?,?,?,?,?,?,?)",
                       (time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), source, r["version"], r["mode"], r["kind"],
                        r["duration_s"], r["winner"]))
     mid = cur.lastrowid
     for p in r["players"]:
         key = (mid, p["team"], p["slot"], p["hero"])
-        con.execute("INSERT INTO players VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", key + (int(p["bot"]), int(p["won"]), p["kills"],
-                    p["deaths"], p["assists"], p["level"], p["gold"], p["last_hits"]))
+        owner = account if account >= 0 and not p["bot"] else None
+        con.execute("INSERT INTO players (match_id, team, slot, hero, bot, won, kills, deaths, assists, level, gold, last_hits, "
+                    "account_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", key + (int(p["bot"]), int(p["won"]), p["kills"],
+                    p["deaths"], p["assists"], p["level"], p["gold"], p["last_hits"], owner))
         for item in p["items"]:
             con.execute("INSERT INTO items VALUES (?,?,?,?,?,?)", key + (item, int(p["won"])))
         for order, (t, item) in enumerate(p["buys"]):
@@ -223,3 +233,36 @@ def hero(root: str, hid: str, f: dict) -> dict:
 
 def _rate(rows: list, key: str) -> list:
     return [{key: k, "games": g, "wins": w, "winrate": round(w / g, 4)} for k, g, w in sorted(rows, key=lambda r: -r[1])]
+
+
+# ---- Người chơi (D-334) --------------------------------------------------------------------------------------------
+
+def history(root: str, account: int, limit: int = HISTORY) -> list:
+    """Trận gần nhất của tài khoản: tướng, kết quả, K/D/A, cấp, đồ cuối trận."""
+    rows = _read(root, "SELECT m.id, m.received, m.version, m.mode, m.kind, m.duration_s, p.team, p.slot, p.hero, p.won, "
+                 "p.kills, p.deaths, p.assists, p.level, p.last_hits FROM players p JOIN matches m ON m.id = p.match_id "
+                 "WHERE p.account_id = ? ORDER BY m.id DESC LIMIT ?", [account, limit])
+    out = []
+    for mid, at, ver, mode, kind, dur, team, slot, hero_id, won, k, d, a, lv, lh in rows:
+        its = [i for (i,) in _read(root, "SELECT item FROM items WHERE match_id = ? AND team = ? AND slot = ?", [mid, team, slot])]
+        out.append({"match": mid, "at": at, "version": ver, "mode": mode, "kind": kind, "duration_s": round(dur, 1),
+                    "hero": hero_id, "won": bool(won), "kills": k, "deaths": d, "assists": a, "level": lv, "last_hits": lh,
+                    "items": its})
+    return out
+
+
+def player(root: str, name: str) -> dict:
+    """Trang người chơi công khai theo tên (không có email); tài khoản bị ban / không có → KeyError."""
+    rows = _read(root, "SELECT id, name, banned FROM accounts WHERE name_key = ?", [name.strip().casefold()])
+    if not rows or rows[0][2]:
+        raise KeyError(name)
+    aid, shown = rows[0][0], rows[0][1]
+    per = _read(root, "SELECT hero, COUNT(*), SUM(won), AVG(kills), AVG(deaths), AVG(assists) FROM players WHERE "
+                "account_id = ? GROUP BY hero", [aid])
+    heroes_played = [{"hero": h, "games": g, "wins": w, "winrate": round(w / g, 4), "kills": round(k, 1),
+                      "deaths": round(d, 1), "assists": round(a, 1)} for h, g, w, k, d, a in sorted(per, key=lambda r: -r[1])]
+    games = sum(h["games"] for h in heroes_played)
+    wins = sum(h["wins"] for h in heroes_played)
+    return {"name": shown, "games": games, "wins": wins, "winrate": round(wins / games, 4) if games else 0.0,
+            "heroes": heroes_played, "matches": history(root, aid)}
+

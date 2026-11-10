@@ -21,6 +21,8 @@ static func send(parent: Node, record: Dictionary) -> bool:
 	up.add_child(http)
 	http.request_completed.connect(func(_r: int, _c: int, _h: PackedStringArray, _b: PackedByteArray) -> void: up.queue_free())
 	var headers: PackedStringArray = PackedStringArray(["Content-Type: application/json"])
+	if AccountClient.token != "":  # D-334: đã đăng nhập → trận gắn tài khoản (lịch sử trận)
+		headers.append("%s: %s" % [AccountClient.HEADER, AccountClient.token])
 	if http.request(Updater.SITES[0] + PATH, headers, HTTPClient.METHOD_POST, JSON.stringify(record)) != OK:
 		up.queue_free()
 		return false

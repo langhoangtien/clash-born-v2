@@ -173,7 +173,8 @@ Người chơi chốt (D-333): **email + mật khẩu** (xác minh email bằng 
 | ACC.2 Google: `start` → mở trình duyệt → `callback` (đổi mã lấy email Google) → game hỏi `poll` lấy phiên; cùng email đã xác minh → gộp một tài khoản | unittest (Google giả) |
 | ACC.3 Game: màn Tài khoản ở menu (đăng nhập / đăng ký / xác minh / quên mật khẩu / Google / đặt tên / đăng xuất), lưu phiên trong máy | Test + chơi thử trên điện thoại |
 | ACC.4 VPS: người dùng tạo mật khẩu ứng dụng Gmail + OAuth client Google (hướng dẫn), phiên vps ghi bí mật vào `/etc/clashborn/` (không qua chat, không vào git); trang chính sách quyền riêng tư (Google bắt buộc) | Đăng ký + đăng nhập Google được từ máy thật |
-| ACC.5 Biên bản trận gắn tài khoản (lịch sử trận), dùng cho online + rank | — |
+| ACC.5 Biên bản trận gắn tài khoản (lịch sử trận trong game + trang người chơi trên web) — D-334 | Test máy chủ + game |
+| ACC.6 Quản trị `/admin/`: tìm, ban / bỏ ban, đổi tên, xóa trận, nhật ký thao tác — D-334 | Test máy chủ; VPS V-004 |
 
 ## ST — Clashborn Stats (kiểu Dotabuff) — D-331
 

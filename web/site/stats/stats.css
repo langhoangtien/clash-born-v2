@@ -69,3 +69,10 @@ nav a.active { color: var(--gold); }
   .rate .bar { display: none; }
   .filters select { min-width: 0; }
 }
+
+/* D-334: trang người chơi + ô tìm người chơi */
+.find { background: var(--panel-2); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px;
+  font-size: 15px; min-width: 220px; }
+.sub { font-size: 20px; color: var(--gold); margin: 24px 0 10px; }
+.mini-item { width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--line); display: inline-block; margin-right: 3px; }
+td.win { color: #6fd08c; } td.loss { color: #e07a6a; }

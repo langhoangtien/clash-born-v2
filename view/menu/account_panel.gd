@@ -17,7 +17,9 @@ const SCREENS: Dictionary = {
 	"reset2": ["Đặt mật khẩu mới", ["code", "password", "password2"], [["Đặt mật khẩu", "reset_finish"], ["Quay lại", "@login"]]],
 	"google": ["Đăng nhập Google", [], [["Hủy", "google/cancel"]]],
 	"name": ["Tên trong game", ["name"], [["Lưu tên", "name"]]],
-	"profile": ["Tài khoản", [], [["Đổi tên", "@name"], ["Đăng xuất", "logout"], ["Xóa tài khoản", "@delete"]]],
+	"profile": ["Tài khoản", [], [["Lịch sử trận", "history"], ["Đổi tên", "@name"], ["Đăng xuất", "logout"],
+		["Xóa tài khoản", "@delete"]]],
+	"history": ["Lịch sử trận", [], [["Xem trên web", "open_web"], ["Quay lại", "@profile"]]],
 	"delete": ["Xóa tài khoản?", [], [["Xóa vĩnh viễn", "delete"], ["Quay lại", "@profile"]]],
 }
 const HINTS: Dictionary = {"email": "Email", "password": "Mật khẩu (ít nhất 8 ký tự)", "password2": "Nhập lại mật khẩu",
@@ -31,6 +33,8 @@ var _fields: Dictionary[String, LineEdit] = {}
 var _box: VBoxContainer
 var _center: CenterContainer
 var _message: Label
+var _matches: Array = []        ## D-334: trận gần nhất (màn Lịch sử trận)
+const HISTORY_ROWS: int = 8
 
 
 func _ready() -> void:
@@ -59,7 +63,7 @@ func show_screen(s: String, message: String = "", error: bool = false) -> void:
 
 
 ## Trả lời của máy chủ cho `action` → chuyển màn / báo lỗi.
-func on_reply(action: String, ok: bool, code: String, message: String) -> void:
+func on_reply(action: String, ok: bool, code: String, message: String, data: Dictionary = {}) -> void:
 	if not ok:
 		if code == "NOT_VERIFIED":
 			request.emit("resend", {"email": email})
@@ -74,6 +78,9 @@ func on_reply(action: String, ok: bool, code: String, message: String) -> void:
 			show_screen("reset2", "Nếu email có tài khoản, mã đã được gửi tới " + email)
 		"google/start":
 			show_screen("google", "Đã mở trình duyệt — đăng nhập Google rồi quay lại đây")
+		"history":
+			_matches = data.get("matches", [])
+			show_screen("history", "" if not _matches.is_empty() else "Chưa có trận nào (trận khi đã đăng nhập, có đội thắng, không phải trận thử)")
 
 
 func _submit(action: String) -> void:
@@ -115,6 +122,11 @@ func _build() -> void:
 	_box.add_child(_label(spec[0], 40, UiStyle.GOLD, true))
 	if screen == "profile":
 		_box.add_child(_label("%s\n%s" % [account.get("name", ""), account.get("email", "")], 28, UiStyle.TEXT, false))
+	if screen == "history":
+		for m: Dictionary in _matches.slice(0, HISTORY_ROWS):
+			_box.add_child(_label("%s · %s · %d/%d/%d · %s · %d:%02d" % ["Thắng" if m.get("won") else "Thua", String(m.get("hero", "")).capitalize(),
+				m.get("kills", 0), m.get("deaths", 0), m.get("assists", 0), m.get("mode", ""), int(m.get("duration_s", 0)) / 60,
+				int(m.get("duration_s", 0)) % 60], 22, UiStyle.GREEN if m.get("won") else UiStyle.RED_TEXT, false))
 	if screen == "delete":
 		var warn: Label = _label("Xóa vĩnh viễn tài khoản %s (tên, email, đăng nhập Google). Không hoàn tác được." % account.get("email", ""),
 			24, UiStyle.RED_TEXT, false)

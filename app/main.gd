@@ -62,11 +62,13 @@ func _setup_account(select: HeroSelect) -> void:
 		select.queue_redraw()
 		panel.set_account(AccountClient.account)
 	client.changed.connect(show_account)
-	client.replied.connect(func(action: String, ok: bool, code: String, message: String, _d: Dictionary) -> void:
-		panel.on_reply(action, ok, code, message))
+	client.replied.connect(func(action: String, ok: bool, code: String, message: String, data: Dictionary) -> void:
+		panel.on_reply(action, ok, code, message, data))
 	panel.request.connect(func(action: String, body: Dictionary) -> void:
 		if action == "google/cancel":
 			client.cancel_google()
+		elif action == "open_web":  # D-334: trang người chơi trên clashborn.quest/stats/
+			OS.shell_open(Updater.SITES[0] + "stats/player.html?name=" + String(AccountClient.account.get("name", "")).uri_encode())
 		elif action == "google/start":
 			client.google()
 		else:

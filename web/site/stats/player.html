@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Người chơi · Clashborn Stats</title>
+<meta name="description" content="Lịch sử trận và tướng của một người chơi Clashborn.">
+<link rel="icon" href="../img/icon.png">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="stats.css">
+</head>
+<body>
+<!-- D-334: trang người chơi công khai (tên, tướng hay chơi, 20 trận gần nhất — không có email), đọc /api/stats/player/<tên>. -->
+<header class="top"><a class="brand" href="../">CLASHBORN</a><nav><a href="./">Thống kê</a></nav></header>
+<main class="stats">
+  <form id="find" class="filters"><label>Tìm người chơi<input name="name" class="find" placeholder="Tên trong game"></label></form>
+  <div class="stats-head"><h1 id="who">Người chơi</h1><p id="summary" class="muted"></p></div>
+  <div class="card"><table class="grid" id="heroes"><thead><tr><th>Tướng</th><th class="num">Trận</th>
+    <th class="num">Tỉ lệ thắng</th><th class="num">K / D / A</th></tr></thead><tbody></tbody></table></div>
+  <h2 class="sub">Trận gần nhất</h2>
+  <div class="card"><table class="grid" id="matches"><thead><tr><th>Tướng</th><th>Kết quả</th><th class="num">K / D / A</th>
+    <th class="wide">Đồ</th><th class="num wide">Thời lượng</th><th class="num">Chế độ</th></tr></thead><tbody></tbody></table></div>
+</main>
+<script src="player.js"></script>
+</body>
+</html>

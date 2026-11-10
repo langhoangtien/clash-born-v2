@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Clashborn Admin</title>
+<link rel="icon" href="../img/icon.png">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../stats/stats.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<!-- D-334: quản trị tài khoản — mọi lệnh cần mã quản trị (lưu trong trình duyệt này), gọi /api/admin/*. -->
+<header class="top"><a class="brand" href="../">CLASHBORN</a><nav><a href="../stats/">Thống kê</a></nav></header>
+<main class="stats">
+  <h1>Quản trị</h1>
+  <form id="login" class="row" hidden>
+    <input id="token" type="password" placeholder="Mã quản trị" autocomplete="off">
+    <button>Vào</button>
+  </form>
+  <div id="app" hidden>
+    <form id="search" class="row">
+      <input id="q" placeholder="Tìm email hoặc tên (trống = mới nhất)">
+      <button>Tìm</button>
+      <button type="button" id="logout" class="ghost">Thoát</button>
+    </form>
+    <div class="card"><table class="grid" id="accounts"><thead><tr>
+      <th>#</th><th>Tên</th><th>Email</th><th class="num">Trận</th><th>Trạng thái</th></tr></thead><tbody></tbody></table></div>
+    <div id="detail" class="card detail" hidden></div>
+    <h2 class="sub">Nhật ký thao tác</h2>
+    <div class="card"><table class="grid" id="log"><tbody></tbody></table></div>
+  </div>
+  <p id="msg" class="muted"></p>
+</main>
+<script src="admin.js"></script>
+</body>
+</html>

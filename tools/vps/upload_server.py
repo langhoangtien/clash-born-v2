@@ -12,14 +12,16 @@ API (mọi lệnh ghi cần header  Authorization: Bearer <mã trong /etc/clashb
 Báo cáo hiệu năng (D-287, xem reports.py): POST /api/report (game gửi, KHÔNG cần mã), GET /api/reports[/<id>] (cần mã).
 Clashborn Stats (D-331, xem stats.py): POST /api/match (game gửi, KHÔNG cần mã), POST /api/matches (cần mã, hàng loạt),
 GET /api/stats/summary|heroes|items|hero/<id>?mode=&kind=&version= (công khai).
-Tài khoản (D-333, xem accounts.py): /api/auth/* — phiên qua header X-Clashborn-Session.
+Tài khoản (D-333, xem accounts.py): /api/auth/* — phiên qua header X-Clashborn-Session; GET /api/auth/history (D-334).
+Người chơi công khai: GET /api/stats/player/<tên>. Quản trị (D-334, xem admin.py, cần mã): /api/admin/*.
 Chạy:  python3 upload_server.py --root /srv/clashborn --port 8787
 """
 import argparse, errno, hashlib, hmac, json, os, re, shutil, tarfile, tempfile
-from urllib.parse import parse_qs, urlsplit
+from urllib.parse import parse_qs, unquote, urlsplit
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import accounts
+import admin
 import reports
 import stats
 
@@ -161,6 +163,10 @@ class Handler(BaseHTTPRequestHandler):
             return self._stats()
         if self.path == "/api/auth/me":
             return self._auth(lambda: accounts.me(ROOT, self.headers.get("X-Clashborn-Session")))
+        if self.path == "/api/auth/history":  # D-334: lịch sử trận của chính mình (trong game)
+            return self._auth(lambda: {"matches": stats.history(ROOT, accounts.me(ROOT, self.headers.get("X-Clashborn-Session"))["id"])})
+        if self.path.startswith("/api/admin/"):
+            return self._admin("GET")
         if self.path.startswith("/api/auth/google/callback"):
             query = {k: v[0] for k, v in parse_qs(urlsplit(self.path).query).items()}
             return self._html(accounts.google_callback(ROOT, query))
@@ -199,6 +205,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, {"items": stats.items(ROOT, f)})
             if what.startswith("hero/"):
                 return self._send(200, stats.hero(ROOT, what.removeprefix("hero/"), f))
+            if what.startswith("player/"):  # D-334: trang người chơi công khai (không email)
+                return self._send(200, stats.player(ROOT, unquote(what.removeprefix("player/"))))
         except KeyError:
             pass
         self._send(404, {"error": "không có"})
@@ -256,9 +264,39 @@ class Handler(BaseHTTPRequestHandler):
                 recs = [stats.check(r) for r in body["matches"]]
             else:
                 recs = [stats.check(body)]
-            self._send(200, stats.save(ROOT, recs, "batch" if batch else "game"))
+            owner = -1 if batch else accounts.uploader(ROOT, self.headers.get("X-Clashborn-Session"))  # D-334
+            self._send(200, stats.save(ROOT, recs, "batch" if batch else "game", owner))
         except ValueError as e:
             self._send(400, {"error": str(e)})
+        except accounts.AuthError as e:  # tài khoản bị ban: không nhận trận
+            self._send(e.status, {"code": e.code, "error": e.message})
+
+    def _admin(self, method: str) -> None:
+        """D-334: quản trị tài khoản — cần mã quản trị."""
+        if not self._authorized():
+            return self._send(401, {"error": "sai mã"})
+        url = urlsplit(self.path)
+        what = url.path.removeprefix("/api/admin/")
+        try:
+            if method == "GET":
+                if what == "accounts":
+                    return self._send(200, {"accounts": admin.search(ROOT, parse_qs(url.query).get("q", [""])[0])})
+                if what == "log":
+                    return self._send(200, {"log": admin.log(ROOT)})
+                if what.startswith("account/") and what.removeprefix("account/").isdigit():
+                    return self._send(200, admin.account(ROOT, int(what.removeprefix("account/"))))
+                return self._send(404, {"error": "không có"})
+            size = int(self.headers.get("Content-Length", "0"))
+            body = json.loads(self.rfile.read(min(max(size, 0), 4096)) or b"{}")
+            acts = {"ban": admin.ban, "unban": admin.unban, "rename": admin.rename, "delete_matches": admin.delete_matches,
+                    "delete_match": admin.delete_match}
+            if what not in acts or not isinstance(body, dict):
+                return self._send(404, {"error": "không có"})
+            self._send(200, acts[what](ROOT, body))
+        except admin.AdminError as e:
+            self._send(e.status, {"error": e.message})
+        except ValueError:
+            self._send(400, {"error": "không phải JSON"})
 
     def do_PUT(self) -> None:
         if not self._authorized():
@@ -293,6 +331,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._matches(False)
         if self.path.startswith("/api/auth/"):
             return self._auth_post()
+        if self.path.startswith("/api/admin/"):
+            return self._admin("POST")
         if not self._authorized():
             return self._send(401, {"error": "sai mã"})
         if self.path == "/api/matches":

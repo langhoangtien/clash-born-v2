@@ -7,7 +7,9 @@ import accounts  # noqa: E402
 from test_reports import ServerCase  # noqa: E402
 
 
-class AccountTest(ServerCase):
+class AccountCase(ServerCase):
+    """Máy chủ thử + mail / Google giả + gọi /api/auth (test_admin.py dùng lại); không có test riêng."""
+
     def setUp(self) -> None:
         super().setUp()
         self.mails = []
@@ -39,6 +41,7 @@ class AccountTest(ServerCase):
         self.assertEqual(self.auth("register", {"email": email, "password": password})[0], 200)
         return self.auth("verify", {"email": email, "code": self.code()})[1]["token"]
 
+class AccountTest(AccountCase):
     def test_D_333_register_verify_login_name_logout(self) -> None:
         self.assertEqual(self.auth("register", {"email": "An@Gmail.com ", "password": "matkhau123"})[0], 200)
         self.assertEqual(self.mails[-1][0], "an@gmail.com", "email chuẩn hóa")
@@ -117,7 +120,8 @@ class AccountTest(ServerCase):
 
     def test_D_333_secrets_never_stored_plain(self) -> None:
         token = self.signup("e@x.vn", "bi-mat-123")
-        db = open(os.path.join(self.tmp.name, "stats", "stats.db"), "rb").read()
+        with open(os.path.join(self.tmp.name, "stats", "stats.db"), "rb") as f:
+            db = f.read()
         self.assertNotIn(b"bi-mat-123", db)
         self.assertNotIn(token.encode(), db)
 

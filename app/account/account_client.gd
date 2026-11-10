@@ -52,9 +52,10 @@ func send(action: String, body: Dictionary) -> void:
 	var headers: PackedStringArray = PackedStringArray(["Content-Type: application/json"])
 	if token != "":
 		headers.append("%s: %s" % [HEADER, token])
-	var method: HTTPClient.Method = HTTPClient.METHOD_GET if action == "me" else HTTPClient.METHOD_POST
+	var get: bool = action == "me" or action == "history"  # D-334: lịch sử trận
+	var method: HTTPClient.Method = HTTPClient.METHOD_GET if get else HTTPClient.METHOD_POST
 	_action = action
-	if _http.request(Updater.SITES[0] + "api/auth/" + action, headers, method, "" if action == "me" else JSON.stringify(body)) != OK:
+	if _http.request(Updater.SITES[0] + "api/auth/" + action, headers, method, "" if get else JSON.stringify(body)) != OK:
 		_finish(false, "NETWORK", "Không gửi được — kiểm tra mạng", {})
 
 

@@ -76,3 +76,18 @@ func test_D_333_account_state_picks_screen() -> void:
 	p.set_account({})
 	assert_eq(p.screen, "login", "đăng xuất / đã xóa → màn đăng nhập")
 	p.free()
+
+
+## D-334: Lịch sử trận — bấm từ màn Tài khoản (gửi yêu cầu), trả lời có trận thì hiện từng dòng thắng / thua.
+func test_D_334_match_history_screen() -> void:
+	var made: Array = _panel()
+	var p: AccountPanel = made[0]
+	p.set_account({"id": 1, "email": "an@gmail.com", "name": "Lăng"})
+	_press(p, "Lịch sử trận")
+	assert_eq(made[1][-1], ["history", {}])
+	p.on_reply("history", true, "", "", {"matches": [{"won": true, "hero": "duy_anh", "kills": 7, "deaths": 2, "assists": 5,
+		"mode": "3v3", "duration_s": 1450.8}]})
+	assert_eq(p.screen, "history")
+	var texts: Array = p._box.get_children().filter(func(n: Node) -> bool: return n is Label).map(func(l: Label) -> String: return l.text)
+	assert_true(texts.has("Thắng · Duy Anh · 7/2/5 · 3v3 · 24:10"), str(texts))
+	p.free()

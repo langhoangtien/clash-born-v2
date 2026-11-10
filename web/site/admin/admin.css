@@ -1,0 +1,21 @@
+/* D-334: trang quản trị — dùng lại bảng của trang stats. */
+.row { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+.row input {
+  flex: 1 1 240px; background: var(--panel-2); color: var(--text); border: 1px solid var(--line);
+  border-radius: 8px; padding: 10px 12px; font-size: 16px;
+}
+button {
+  background: var(--gold); color: var(--bg); border: 0; border-radius: 8px; padding: 10px 18px; font-size: 15px;
+  font-weight: 600; cursor: pointer;
+}
+button.ghost { background: var(--panel-2); color: var(--text); border: 1px solid var(--line); }
+button.danger { background: #c4553f; color: #fff; }
+.sub { font-size: 20px; color: var(--gold); margin: 24px 0 10px; }
+.banned { color: #e07a6a; font-weight: 600; }
+.ok { color: #6fd08c; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+#accounts tbody tr { cursor: pointer; }
+.detail h2 { margin-bottom: 4px; }
+.facts { color: var(--muted); font-size: 14px; margin-bottom: 8px; }
+.grid td.wrap { white-space: normal; }
+[hidden] { display: none !important; }  /* .row đặt display: flex sẽ đè thuộc tính hidden */

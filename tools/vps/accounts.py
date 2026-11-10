@@ -42,6 +42,8 @@ CREATE TABLE IF NOT EXISTS codes (email TEXT, purpose TEXT, code_hash TEXT, expi
 CREATE TABLE IF NOT EXISTS sessions (token_hash TEXT PRIMARY KEY, account_id INTEGER, expires REAL);
 CREATE TABLE IF NOT EXISTS google_logins (sid TEXT PRIMARY KEY, expires REAL, token TEXT);
 """
+# D-334: cột thêm sau khi VPS đã có dữ liệu — ALTER TABLE nếu thiếu (migrate()).
+COLUMNS = {"accounts": [("banned", "INTEGER DEFAULT 0"), ("ban_reason", "TEXT")]}
 
 
 class AuthError(Exception):
@@ -91,9 +93,19 @@ google_cfg = _google_cfg
 def _db(root: str) -> sqlite3.Connection:
     d = os.path.join(root, "stats")
     os.makedirs(d, exist_ok=True)
-    con = sqlite3.connect(os.path.join(d, "stats.db"))
+    con = sqlite3.connect(os.path.join(d, "stats.db"), timeout=10)
     con.executescript(TABLES)
+    migrate(con, COLUMNS)
     return con
+
+
+def migrate(con: sqlite3.Connection, columns: dict) -> None:
+    """Thêm cột còn thiếu (bảng cũ trên VPS); chạy lại bao nhiêu lần cũng được."""
+    for table, cols in columns.items():
+        have = {r[1] for r in con.execute("PRAGMA table_info(%s)" % table)}
+        for name, kind in cols:
+            if name not in have:
+                con.execute("ALTER TABLE %s ADD COLUMN %s %s" % (table, name, kind))
 
 
 def _run(root: str, fn):
@@ -137,8 +149,15 @@ def _password(v) -> str:
 
 
 def _account(con, where: str, arg) -> tuple:
-    return con.execute("SELECT id, email, pw_hash, verified, name, google_sub, fails, locked_until FROM accounts WHERE "
-                       + where, (arg,)).fetchone()
+    return con.execute("SELECT id, email, pw_hash, verified, name, google_sub, fails, locked_until, banned, ban_reason "
+                       "FROM accounts WHERE " + where, (arg,)).fetchone()
+
+
+def _not_banned(row: tuple) -> tuple:
+    """D-334: tài khoản bị ban không đăng nhập / dùng phiên được (mọi đường đăng nhập đi qua _session / _account_of)."""
+    if row is not None and row[8]:
+        raise AuthError("BANNED", "Tài khoản đã bị khóa" + (": " + row[9] if row[9] else ""), 403)
+    return row
 
 
 def _public(row: tuple) -> dict:
@@ -146,6 +165,7 @@ def _public(row: tuple) -> dict:
 
 
 def _session(con, account_id: int) -> dict:
+    _not_banned(_account(con, "id = ?", account_id))
     token = secrets.token_urlsafe(32)
     con.execute("INSERT INTO sessions VALUES (?,?,?)", (_sha(token), account_id, time.time() + SESSION_S))
     return {"token": token, "account": _public(_account(con, "id = ?", account_id))}
@@ -267,18 +287,22 @@ def _account_of(con, token) -> tuple:
     row = con.execute("SELECT account_id, expires FROM sessions WHERE token_hash = ?", (_sha(token),)).fetchone()
     if row is None or row[1] < time.time():
         raise AuthError("NO_SESSION", "Phiên đăng nhập hết hạn — đăng nhập lại", 401)
-    return _account(con, "id = ?", row[0])
+    return _not_banned(_account(con, "id = ?", row[0]))
 
 
 def me(root: str, token) -> dict:
     return _run(root, lambda con: _public(_account_of(con, token)))
 
 
-def account_id(root: str, token) -> int:
-    """Tài khoản của phiên, -1 nếu không có / hết hạn (biên bản trận, phòng online)."""
+def uploader(root: str, token) -> int:
+    """D-334: tài khoản gửi biên bản trận — -1 khi không đăng nhập / phiên hết hạn; bị ban → AuthError BANNED."""
+    if not token:
+        return -1
     try:
         return me(root, token)["id"]
-    except AuthError:
+    except AuthError as e:
+        if e.code == "BANNED":
+            raise
         return -1
 
 
