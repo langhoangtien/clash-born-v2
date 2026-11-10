@@ -141,8 +141,25 @@ không làm hình thật cho thứ lối chơi còn đang đổi.
 - Hero mới: mỗi hero = mục mới trong CONTENT.md + dữ liệu + test kịch bản. Cơ chế
   chưa có thì làm trước theo quy trình cơ chế mới.
 - Boss pit, chống backdoor (STR-03), thêm đồ chủ động.
-- Online 1v1 (D-30): Command đã sẵn để gửi qua mạng, SIM đã xác định và có test phát
-  lại. Việc còn lại: chọn mô hình mạng, máy chủ/ghép trận, xử lý trễ.
+- ~~Online 1v1 (D-30)~~ → thay bằng M9 (3v3 online, D-328).
+
+## M9 — 3v3 online (L) — D-328
+
+Người chơi chốt (D-328): **3v3 trước** (số người mỗi đội là cấu hình 1–5, sau lên 5v5 chỉ cần thêm tướng + đo FPS);
+**đồng bộ khung qua máy chủ** (lockstep kiểu Liên Quân: máy chủ gom lệnh theo tick rồi phát lại, mỗi máy tự chạy SIM;
+máy chủ chạy SIM để so mã băm); **chỗ trống bot đánh thay**; ghép trận bằng **mã phòng**. Thứ tự: chơi được 3v3
+offline với bot trước (M9.1–M9.2), chứng minh SIM tất định giữa Android và máy chủ (M9.3), rồi mới tới mạng.
+
+| Việc | Xong khi |
+|---|---|
+| M9.1 Cấu hình trận (MATCH-01..05): số người mỗi đội, ô (người / bot, tướng), seed thay chỗ cứng trong match_scene; điểm xuất hiện theo ô quanh fountain; không trùng tướng trong trận; bot được chia đường (3v3: TOP / MID / BOT) | Test từng luật; menu chọn 1v1 / 3v3 với bot; **chơi thử 3v3 offline** |
+| M9.2 Bot đánh đội: chia đường, về đường sau khi hồi; soak 3v3 bot đấu bot × 3 seed × 10 phút; đo FPS 3v3 trên điện thoại (log perf) | Mọi INV xanh; FPS trung bình ≥ 55 trên máy thật |
+| M9.3 Tất định giữa máy: file phát lại (cấu hình + nhật ký lệnh), chạy headless in chuỗi mã băm; so Android ↔ PC/VPS; lệch thì thay phép tính gây lệch (vd sin/cos/sqrt) bằng bản tất định | Trận 3v3 bot 10 phút: mã băm từng giây trùng nhau trên điện thoại và VPS |
+| M9.4 Máy khách lockstep (NET-01..05): lệnh gửi lên máy chủ gắn tick đích (tick + độ trễ lệnh), World chỉ chạy tick T khi có gói lệnh tick T; gửi mã băm định kỳ | Test với máy chủ giả trong tiến trình: 2 World cùng gói lệnh → cùng mã băm; mất gói → chờ, không chạy lệch |
+| M9.5 Máy chủ phòng (Godot headless trên VPS, WebSocket sau nginx `wss://clashborn.quest/play`): tạo / vào phòng bằng mã, gom lệnh theo tick, phát gói, chạy SIM so mã băm | 2 máy khách thật chơi được với nhau qua VPS |
+| M9.6 Sảnh: tạo phòng → mã, vào phòng, chọn ô / tướng, chủ phòng bắt đầu, ô trống = bot | **Chơi thử 3v3 online** với điện thoại thật |
+| M9.7 Rớt mạng: bot đánh thay hero của người rớt (lệnh đổi quyền điều khiển trong luồng lệnh — mọi máy giống nhau); lệch mã băm → báo lỗi kèm nhật ký lên máy chủ | Test; chơi thử rút mạng giữa trận |
+| M9.8 (sau) Vào lại trận đang đánh: ảnh chụp World hoặc tua nhanh nhật ký; tìm trận tự động; 5v5 | — |
 
 ## Tiến độ
 

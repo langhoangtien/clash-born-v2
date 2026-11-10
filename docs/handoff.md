@@ -1,6 +1,6 @@
 # Bàn giao — Clashborn v2 (cập nhật 2026-11-09)
 
-Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-327**). Nhánh làm việc: **`thu-asset-tu-lam`**
+Đọc AGENTS.md trước. Quyết định chi tiết: `docs/DECISIONS.md` (mới nhất **D-328**). Nhánh làm việc: **`thu-asset-tu-lam`**
 (commit + push thẳng lên nhánh này; Codex cũng đẩy lên đây — `git pull --rebase` trước khi push).
 Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh thì chụp trong game (xvfb) và gửi ảnh JPG.
 
@@ -70,7 +70,7 @@ Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh 
    Chỉnh số trong `content/` theo góp ý.
 1. ~~Hiệu ứng dậm đất~~ — xong D-320 (sự kiện `effect_triggered`, mục `_triggers` trong vfx.json, mảnh `quake`).
 2. Người Đá Rêu: mảnh đá thừa ở tay đã bỏ (D-318, `drop_loose.py` đọc đúng GLB xen kẽ của afk.ai).
-3. Hướng lớn (người dùng chọn): 5v5 / âm thanh (ElevenLabs) / 1v1 trực tuyến / đổi tên game.
+3. Hướng lớn: **đang làm M9 — 3v3 online** (D-328, ROADMAP M9); còn lại: âm thanh (ElevenLabs), đổi tên game.
 4. ~~Gorran KayKit~~ — xong D-321 (Gorran afk.ai, W Lọ Độc ném; KayKit đã gỡ hẳn).
 
 ## 4. Công cụ
