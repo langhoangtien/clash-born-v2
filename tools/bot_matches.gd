@@ -23,7 +23,8 @@ func _initialize() -> void:
 	else:
 		for a: StringName in HEROES:
 			for b: StringName in HEROES:
-				pairs.append([a, b])
+				if a != b:  # MATCH-02: không trùng tướng
+					pairs.append([a, b])
 	var bad: int = 0
 	for pair: Array in pairs:
 		for seed: int in seeds:

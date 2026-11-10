@@ -1,0 +1,58 @@
+/* Clashborn Stats (D-331) — dùng biến màu của ../style.css (xanh than + vàng). */
+.stats { max-width: 1100px; margin: 0 auto; padding: 28px 16px 60px; }
+.stats-head h1 { font-size: 34px; color: var(--gold); }
+.muted { color: var(--muted); }
+.note { font-size: 14px; margin-top: 18px; }
+nav a.active { color: var(--gold); }
+
+.filters { display: flex; flex-wrap: wrap; gap: 12px 18px; margin: 18px 0; }
+.filters label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+.filters select {
+  background: var(--panel-2); color: var(--text); border: 1px solid var(--line); border-radius: 8px;
+  padding: 8px 10px; font-size: 15px; min-width: 150px;
+}
+
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow-x: auto; }
+.grid { width: 100%; border-collapse: collapse; font-size: 15px; }
+.grid th {
+  text-align: left; font-weight: 600; color: var(--muted); font-size: 13px; padding: 12px 14px;
+  border-bottom: 1px solid var(--line); cursor: pointer; white-space: nowrap; user-select: none;
+}
+.grid th:hover { color: var(--gold); }
+.grid td { padding: 10px 14px; border-bottom: 1px solid rgba(42, 54, 88, 0.55); white-space: nowrap; }
+.grid tbody tr:last-child td { border-bottom: 0; }
+.grid tbody tr[data-hero] { cursor: pointer; }
+.grid tbody tr:hover, .grid tbody tr.on { background: var(--panel-2); }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.grid th.num { text-align: right; }
+.empty { text-align: center; color: var(--muted); padding: 28px; }
+
+.who { display: inline-flex; align-items: center; gap: 10px; }
+.who img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; border: 1px solid var(--line); }
+.who img.item { width: 30px; height: 30px; border-radius: 6px; }
+
+.rate { display: inline-flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.rate .bar { width: 64px; height: 6px; background: var(--panel-2); border-radius: 3px; overflow: hidden; }
+.rate .bar i { display: block; height: 100%; background: var(--muted); }
+.rate.up { color: #6fd08c; } .rate.up .bar i { background: #6fd08c; }
+.rate.down { color: #e07a6a; } .rate.down .bar i { background: #e07a6a; }
+.rate.few { opacity: 0.45; }
+
+.detail { margin-top: 16px; padding: 18px; overflow: visible; }
+.detail h2 { font-size: 22px; margin-bottom: 12px; }
+.detail h2 img { width: 48px; height: 48px; }
+.minis { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.mini h3 { font-size: 15px; color: var(--gold); margin-bottom: 8px; font-family: var(--sans); }
+.mini ul { list-style: none; margin: 0; padding: 0; }
+.mini li { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; padding: 6px 0;
+  border-bottom: 1px solid rgba(42, 54, 88, 0.55); font-size: 14px; }
+.mini .n { color: var(--muted); font-size: 12px; }
+.mini .rate .bar { width: 40px; }
+
+@media (max-width: 640px) {
+  .stats-head h1 { font-size: 26px; }
+  .grid td, .grid th { padding: 9px 8px; }
+  .grid .wide { display: none; }
+  .rate .bar { display: none; }
+  .filters select { min-width: 0; }
+}

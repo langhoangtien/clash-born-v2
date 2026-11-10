@@ -63,6 +63,17 @@ static func add_jungle(world: World, library: ContentLibrary) -> void:
 
 
 ## BOT: hero `e` do bot điều khiển (thêm BotController một lần cho trận).
+## Trận đầy đủ theo cấu hình (MATCH-01..05): công trình, tầm nhìn, rừng, cửa hàng, lính đường, hero. World đã có map +
+## MovementSystem. Dùng chung: màn trận, test, công cụ không giao diện (sim_profile, sim_matches).
+static func build(world: World, library: ContentLibrary, config: MatchConfig) -> Array[Entity]:
+	spawn_structures(world, library)
+	add_vision(world)
+	add_jungle(world, library)
+	add_shop(world, library)
+	add_lane_creeps(world, library, true)
+	return spawn_heroes(world, library, config)
+
+
 ## MATCH-01/03/04: tạo hero theo thứ tự ô — điểm xuất hiện riêng mỗi ô, ô bot nhận bộ não + đường. Cấu hình phải
 ## hợp lệ (MatchConfig.validate).
 static func spawn_heroes(world: World, library: ContentLibrary, config: MatchConfig) -> Array[Entity]:

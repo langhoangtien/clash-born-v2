@@ -54,7 +54,7 @@ clashborn_v2/
     core/                  công thức (mang từ v1): stat, sát thương, trúng/né
     rules.gd               Rules: khoảng cách mép–mép, trong tầm, nhắm được (DEF, ST)
     world/                 World (pha tick, events, damage_requests, projectiles, state_hash), Entity,
-                           GameEvent, DamageRequest, Projectile, UnitFactory, MatchSetup (+ MatchConfig / MatchSlot: cấu hình trận MATCH-01..05, D-328), Objectives (STR-02),
+                           GameEvent, DamageRequest, Projectile, UnitFactory, MatchSetup (+ MatchConfig / MatchSlot: cấu hình trận MATCH-01..05, D-328; MatchRecord: biên bản trận cho Clashborn Stats, D-331), Objectives (STR-02),
                            SpatialGrid (tra đơn vị gần), StatBlock, StatModifier, StatId,
                            UnitState; EffectContainer ở M3
     systems/               mỗi file một hệ thống, chạy theo thứ tự cố định

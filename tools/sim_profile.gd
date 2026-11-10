@@ -25,18 +25,13 @@ func _world(seed: int, per_team: int) -> World:
 	var w: World = World.new(seed, load("res://content/balance/balance_settings.tres") as BalanceSettings)
 	w.map = map
 	w.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
-	MatchSetup.spawn_structures(w, lib)
-	MatchSetup.add_vision(w)
-	MatchSetup.add_jungle(w, lib)
-	MatchSetup.add_shop(w, lib)
-	MatchSetup.add_lane_creeps(w, lib, true)
 	var picks: Array[StringName] = []
 	for i: int in 2 * per_team:
 		picks.append(HEROES[i % HEROES.size()])
 	var cfg: MatchConfig = MatchConfig.make(per_team, picks, [], BotState.Difficulty.NORMAL, seed)
 	if cfg.validate(lib) != "":
 		print("MATCH: ", cfg.validate(lib), " (MATCH-02: %d tướng, cần %d)" % [HEROES.size(), 2 * per_team])
-	MatchSetup.spawn_heroes(w, lib, cfg)  # MATCH-03/04: chỗ xuất hiện + đường theo ô
+	MatchSetup.build(w, lib, cfg)  # MATCH-03/04: chỗ xuất hiện + đường theo ô
 	return w
 
 

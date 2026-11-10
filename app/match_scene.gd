@@ -51,15 +51,10 @@ func _ready() -> void:
 	world.map = map_view.layout
 	world.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
 	var library: ContentLibrary = ContentLibrary.load_dir()
-	MatchSetup.spawn_structures(world, library)
-	MatchSetup.add_vision(world)
-	MatchSetup.add_jungle(world, library)
-	MatchSetup.add_shop(world, library)
-	MatchSetup.add_lane_creeps(world, library, true)
 	for def: GameDef in library.units.values() + library.heroes.values():
 		ArtLibrary.texture(def.art_id)  # nạp sẵn hình lúc vào trận, không để lần xuất hiện đầu bị giật
 	ArtLibrary.load_ahead(ArtLibrary.content_ids(library))  # D-269: icon đồ / chiêu / buff nạp ngầm
-	for e: Entity in MatchSetup.spawn_heroes(world, library, config):
+	for e: Entity in MatchSetup.build(world, library, config):
 		if hero == null and e.bot == null:
 			hero = e
 		elif bot_unit == null and e.team == 1:

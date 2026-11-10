@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clashborn Stats</title>
+<meta name="description" content="Thống kê Clashborn: tỉ lệ thắng tướng, đồ, khắc chế — theo chế độ, loại trận, phiên bản.">
+<link rel="icon" href="../img/icon.png">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="stats.css">
+</head>
+<body>
+<!-- D-331 (ROADMAP ST.3): trang thống kê kiểu Dotabuff, đọc /api/stats/*. -->
+<header class="top">
+  <a class="brand" href="../">CLASHBORN</a>
+  <nav>
+    <a href="../">Trang chủ</a>
+    <a href="#" data-tab="heroes">Tướng</a>
+    <a href="#" data-tab="items">Đồ</a>
+    <a class="nav-cta" href="../#tai-game">Tải game</a>
+  </nav>
+</header>
+
+<main class="stats">
+  <div class="stats-head">
+    <h1>Clashborn Stats</h1>
+    <p id="summary" class="muted">Đang tải…</p>
+  </div>
+
+  <form id="filters" class="filters">
+    <label>Chế độ
+      <select name="mode"><option value="">Tất cả</option><option value="1v1">1 vs 1</option><option value="3v3">3 vs 3</option></select>
+    </label>
+    <label>Loại trận
+      <select name="kind">
+        <option value="">Tất cả</option>
+        <option value="pvp">Người vs người</option>
+        <option value="pvb">Người vs bot</option>
+        <option value="bvb">Bot vs bot</option>
+      </select>
+    </label>
+    <label>Phiên bản
+      <select name="version"><option value="">Tất cả</option></select>
+    </label>
+  </form>
+
+  <section id="tab-heroes" class="tab">
+    <div class="card">
+      <table class="grid" id="heroes">
+        <thead><tr>
+          <th data-sort="name">Tướng</th><th data-sort="games" class="num">Trận</th>
+          <th data-sort="winrate" class="num">Tỉ lệ thắng</th><th data-sort="pickrate" class="num">Tỉ lệ chọn</th>
+          <th data-sort="kda" class="num">K / D / A</th><th data-sort="level" class="num wide">Cấp TB</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="hero-detail" class="card detail" hidden></div>
+  </section>
+
+  <section id="tab-items" class="tab" hidden>
+    <div class="card">
+      <table class="grid" id="items">
+        <thead><tr>
+          <th data-sort="name">Đồ</th><th data-sort="games" class="num">Số lần</th>
+          <th data-sort="winrate" class="num">Tỉ lệ thắng</th><th data-sort="first_buy_s" class="num">Mua lúc (TB)</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="muted note">Số liệu từ biên bản trận game gửi lên khi trận có đội thắng (trận dùng nút Test không tính).
+    Tỉ lệ thắng của mục có dưới <b>10 trận</b> hiện mờ — chưa đủ để tin. Theo rank: sau khi có đấu online + tài khoản.</p>
+</main>
+
+<script src="stats.js"></script>
+</body>
+</html>

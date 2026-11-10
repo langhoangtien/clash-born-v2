@@ -22,12 +22,7 @@ func team_world(cfg: MatchConfig) -> World:
 	var w: World = World.new(seed, load("res://content/balance/balance_settings.tres") as BalanceSettings)
 	w.map = _map
 	w.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
-	MatchSetup.spawn_structures(w, _lib)
-	MatchSetup.add_vision(w)
-	MatchSetup.add_jungle(w, _lib)
-	MatchSetup.add_shop(w, _lib)
-	MatchSetup.add_lane_creeps(w, _lib, true)
-	MatchSetup.spawn_heroes(w, _lib, cfg)
+	MatchSetup.build(w, _lib, cfg)
 	return w
 
 
