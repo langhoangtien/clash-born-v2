@@ -86,7 +86,7 @@ func test_D_290_hud_layers_draw_in_tree() -> void:
 	var names: Array[String] = []
 	for c: Node in h.get_children():
 		names.append(c.name)
-	assert_eq(names, ["Banner", "Panel", "Bars", "TopText"] as Array[String], "thứ tự vẽ: chữ đè lên băng rôn")
+	assert_eq(names, ["Banner", "Panel", "Bars", "TopText", "KillFeed"] as Array[String], "thứ tự vẽ: chữ đè lên băng rôn; D-339 thông báo hạ gục trên cùng")
 	h.queue_free()
 
 

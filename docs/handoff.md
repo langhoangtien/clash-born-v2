@@ -6,7 +6,7 @@ Người dùng hay theo dõi trên **điện thoại**: kết quả hình ảnh 
 
 ## 1. Trạng thái
 
-- **898 test xanh** (`GODOT=... bash tools/run_tests.sh`; soak `--soak` chạy trước khi đóng mốc). APK mới nhất trên
+- **897 test xanh** (`GODOT=... bash tools/run_tests.sh`; soak `--soak` chạy trước khi đóng mốc). APK mới nhất trên
   https://clashborn.quest (xem `curl -s https://clashborn.quest/version.json`); phát hành mục 4.
 - Android: trình vẽ Mobile (Vulkan), đồ họa mặc định Cao 100% (D-259); làm nóng shader lúc vào trận (D-260).
   Hiệu năng máy tính bảng ổn (D-261..277, D-285). Tên miền `clashborn.quest` từng bị registry treo (serverHold) — đã
