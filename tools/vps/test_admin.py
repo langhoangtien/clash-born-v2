@@ -78,6 +78,31 @@ class AdminTest(AccountCase):
                          "Người Chơi 1")
         self.assertEqual(self.req("POST", "/api/admin/rename", {"id": aid, "name": "x"}, token="bi-mat")[0], 400)
 
+    def test_D_335_roles_admin_grants_mod_acts(self) -> None:
+        boss = self.signup("boss@x.vn")
+        mod = self.signup("mod@x.vn")
+        user = self.signup("user@x.vn")
+        ids = {k: self.auth("me", session=t, method="GET")[1]["id"] for k, t in (("boss", boss), ("mod", mod), ("user", user))}
+        self.assertEqual(self.req("GET", "/api/admin/accounts?q=", session=user)[0], 403, "người chơi thường không vào được")
+        self.assertEqual(self.req("POST", "/api/admin/set_role", {"id": ids["boss"], "role": "admin"}, token="bi-mat")[0], 200,
+                         "mã quản trị cấp admin đầu tiên")
+        self.assertEqual(self.req("GET", "/api/admin/whoami", session=boss)[1], {"name": "", "role": "admin"})
+        self.assertEqual(self.req("POST", "/api/admin/set_role", {"id": ids["mod"], "role": "mod"}, session=boss)[1]["role"], "mod")
+        self.assertEqual(self.auth("me", session=mod, method="GET")[1]["role"], "mod")
+        self.assertEqual(self.req("POST", "/api/admin/ban", {"id": ids["user"], "reason": "spam"}, session=mod)[0], 200,
+                         "mod ban được người chơi")
+        self.assertEqual(self.req("POST", "/api/admin/ban", {"id": ids["boss"]}, session=mod)[0], 403, "mod không ban được admin")
+        self.assertEqual(self.req("POST", "/api/admin/set_role", {"id": ids["user"], "role": "mod"}, session=mod)[0], 403,
+                         "mod không cấp quyền")
+        self.assertEqual(self.req("POST", "/api/admin/set_role", {"id": ids["boss"], "role": ""}, session=boss)[0], 403,
+                         "không tự đổi quyền mình")
+        log = self.req("GET", "/api/admin/log", session=boss)[1]["log"]
+        self.assertEqual([(e["action"], e["actor"].split(" ")[0]) for e in log][:3],
+                         [("ban", "#%d" % ids["mod"]), ("set_role", "#%d" % ids["boss"]), ("set_role", "mã")],
+                         "nhật ký ghi ai làm")
+        self.req("POST", "/api/admin/set_role", {"id": ids["mod"], "role": ""}, session=boss)
+        self.assertEqual(self.req("GET", "/api/admin/accounts?q=", session=mod)[0], 403, "thu quyền → hết vào được")
+
     def test_D_334_old_database_upgraded(self) -> None:
         path = os.path.join(self.tmp.name, "stats")
         os.makedirs(path, exist_ok=True)

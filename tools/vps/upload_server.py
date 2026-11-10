@@ -272,27 +272,28 @@ class Handler(BaseHTTPRequestHandler):
             self._send(e.status, {"code": e.code, "error": e.message})
 
     def _admin(self, method: str) -> None:
-        """D-334: quản trị tài khoản — cần mã quản trị."""
-        if not self._authorized():
-            return self._send(401, {"error": "sai mã"})
+        """D-334 / D-335: quản trị — mã quản trị hoặc phiên tài khoản có quyền mod / admin."""
         url = urlsplit(self.path)
         what = url.path.removeprefix("/api/admin/")
         try:
+            who = admin.actor(ROOT, self._authorized(), self.headers.get("X-Clashborn-Session"))
             if method == "GET":
+                if what == "whoami":
+                    return self._send(200, {"name": who["name"], "role": who["role"]})
                 if what == "accounts":
-                    return self._send(200, {"accounts": admin.search(ROOT, parse_qs(url.query).get("q", [""])[0])})
+                    return self._send(200, {"accounts": admin.search(ROOT, who, parse_qs(url.query).get("q", [""])[0])})
                 if what == "log":
-                    return self._send(200, {"log": admin.log(ROOT)})
+                    return self._send(200, {"log": admin.log(ROOT, who)})
                 if what.startswith("account/") and what.removeprefix("account/").isdigit():
-                    return self._send(200, admin.account(ROOT, int(what.removeprefix("account/"))))
+                    return self._send(200, admin.account(ROOT, who, int(what.removeprefix("account/"))))
                 return self._send(404, {"error": "không có"})
             size = int(self.headers.get("Content-Length", "0"))
             body = json.loads(self.rfile.read(min(max(size, 0), 4096)) or b"{}")
             acts = {"ban": admin.ban, "unban": admin.unban, "rename": admin.rename, "delete_matches": admin.delete_matches,
-                    "delete_match": admin.delete_match}
+                    "delete_match": admin.delete_match, "set_role": admin.set_role}
             if what not in acts or not isinstance(body, dict):
                 return self._send(404, {"error": "không có"})
-            self._send(200, acts[what](ROOT, body))
+            self._send(200, acts[what](ROOT, who, body))
         except admin.AdminError as e:
             self._send(e.status, {"error": e.message})
         except ValueError:

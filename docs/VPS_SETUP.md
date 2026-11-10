@@ -162,8 +162,9 @@ Báo lại cho người dùng: domain chạy HTTPS, `/api/health` ok, mã đã t
   `/etc/clashborn/smtp.json` (Gmail + mật khẩu ứng dụng) và `/etc/clashborn/google_oauth.json` (OAuth client loại *Web
   application*, redirect `https://clashborn.quest/api/auth/google/callback`), `root:clashborn 640`. nginx giới hạn 30 lần /
   phút / IP. Trang `privacy.html` là URL chính sách cho màn đồng ý Google.
-- **Quản trị (D-334)**: `/api/admin/*` (`tools/vps/admin.py`, cần mã quản trị) + trang `clashborn.quest/admin/`: tìm
-  tài khoản, ban / bỏ ban, đổi tên, xóa trận; mọi thao tác ghi bảng `admin_log`.
+- **Quản trị (D-334, D-335)**: `/api/admin/*` (`tools/vps/admin.py`) + trang `clashborn.quest/admin/`: đăng nhập bằng tài
+  khoản game có quyền mod / admin (mã quản trị là chìa dự phòng); tìm tài khoản, ban / bỏ ban, đổi tên, xóa trận, cấp
+  quyền; mọi thao tác ghi bảng `admin_log` kèm người làm.
 - **Cập nhật VPS bằng một lệnh (D-288)**: `sudo bash /srv/clashborn/repo/tools/vps/update.sh` — kéo code, chạy test máy
   chủ, tạo thư mục, cài service / nginx khi đổi (sao lưu, `nginx -t` lỗi thì trả lại), khởi động lại, ghi commit vào
   `/srv/clashborn/deployed` (hiện ở `/api/health`). Việc riêng từng đợt: `docs/VPS_TASKS.md`.

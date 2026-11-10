@@ -11,22 +11,31 @@
 <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-<!-- D-334: quản trị tài khoản — mọi lệnh cần mã quản trị (lưu trong trình duyệt này), gọi /api/admin/*. -->
+<!-- D-334 / D-335: quản trị — đăng nhập tài khoản có quyền mod / admin (hoặc mã quản trị dự phòng), gọi /api/admin/*. -->
 <header class="top"><a class="brand" href="../">CLASHBORN</a><nav><a href="../stats/">Thống kê</a></nav></header>
 <main class="stats">
   <h1>Quản trị</h1>
-  <form id="login" class="row" hidden>
-    <input id="token" type="password" placeholder="Mã quản trị" autocomplete="off">
-    <button>Vào</button>
-  </form>
+  <div id="login" hidden>
+    <p class="muted">Đăng nhập bằng tài khoản game có quyền Điều hành / Quản trị.</p>
+    <form id="pw" class="row">
+      <input id="email" type="email" placeholder="Email" autocomplete="username">
+      <input id="password" type="password" placeholder="Mật khẩu" autocomplete="current-password">
+      <button>Đăng nhập</button>
+    </form>
+    <div class="row"><button type="button" id="google" class="ghost">Đăng nhập bằng Google</button></div>
+    <details class="muted"><summary>Dùng mã quản trị (dự phòng)</summary>
+      <form id="master" class="row"><input id="token" type="password" placeholder="Mã quản trị" autocomplete="off"><button>Vào</button></form>
+    </details>
+  </div>
   <div id="app" hidden>
     <form id="search" class="row">
       <input id="q" placeholder="Tìm email hoặc tên (trống = mới nhất)">
       <button>Tìm</button>
       <button type="button" id="logout" class="ghost">Thoát</button>
     </form>
+    <p id="whoami" class="muted"></p>
     <div class="card"><table class="grid" id="accounts"><thead><tr>
-      <th>#</th><th>Tên</th><th>Email</th><th class="num">Trận</th><th>Trạng thái</th></tr></thead><tbody></tbody></table></div>
+      <th>#</th><th>Tên</th><th>Email</th><th>Quyền</th><th class="num">Trận</th><th>Trạng thái</th></tr></thead><tbody></tbody></table></div>
     <div id="detail" class="card detail" hidden></div>
     <h2 class="sub">Nhật ký thao tác</h2>
     <div class="card"><table class="grid" id="log"><tbody></tbody></table></div>

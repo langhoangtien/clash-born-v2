@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS sessions (token_hash TEXT PRIMARY KEY, account_id INT
 CREATE TABLE IF NOT EXISTS google_logins (sid TEXT PRIMARY KEY, expires REAL, token TEXT);
 """
 # D-334: cột thêm sau khi VPS đã có dữ liệu — ALTER TABLE nếu thiếu (migrate()).
-COLUMNS = {"accounts": [("banned", "INTEGER DEFAULT 0"), ("ban_reason", "TEXT")]}
+COLUMNS = {"accounts": [("banned", "INTEGER DEFAULT 0"), ("ban_reason", "TEXT"), ("role", "TEXT")]}  # D-335: role mod / admin
 
 
 class AuthError(Exception):
@@ -149,8 +149,8 @@ def _password(v) -> str:
 
 
 def _account(con, where: str, arg) -> tuple:
-    return con.execute("SELECT id, email, pw_hash, verified, name, google_sub, fails, locked_until, banned, ban_reason "
-                       "FROM accounts WHERE " + where, (arg,)).fetchone()
+    return con.execute("SELECT id, email, pw_hash, verified, name, google_sub, fails, locked_until, banned, ban_reason, "
+                       "role FROM accounts WHERE " + where, (arg,)).fetchone()
 
 
 def _not_banned(row: tuple) -> tuple:
@@ -161,7 +161,8 @@ def _not_banned(row: tuple) -> tuple:
 
 
 def _public(row: tuple) -> dict:
-    return {"id": row[0], "email": row[1], "name": row[4] or "", "google": row[5] is not None, "has_password": bool(row[2])}
+    return {"id": row[0], "email": row[1], "name": row[4] or "", "google": row[5] is not None, "has_password": bool(row[2]),
+            "role": row[10] or ""}
 
 
 def _session(con, account_id: int) -> dict:
