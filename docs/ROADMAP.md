@@ -161,6 +161,20 @@ offline với bot trước (M9.1–M9.2), chứng minh SIM tất định giữa 
 | M9.7 Rớt mạng: bot đánh thay hero của người rớt (lệnh đổi quyền điều khiển trong luồng lệnh — mọi máy giống nhau); lệch mã băm → báo lỗi kèm nhật ký lên máy chủ | Test; chơi thử rút mạng giữa trận |
 | M9.8 (sau) Vào lại trận đang đánh: ảnh chụp World hoặc tua nhanh nhật ký; tìm trận tự động; 5v5 | — |
 
+## ACC — Tài khoản (trước bản online) — D-333
+
+Người chơi chốt (D-333): **email + mật khẩu** (xác minh email bằng mã 6 số, quên thì đặt lại qua mail), mail gửi qua
+**Gmail SMTP** (mật khẩu ứng dụng — chỉ nằm trên VPS), **đăng nhập Google qua trình duyệt** (không plugin Android),
+**tên trong game tự đặt, không trùng**. Chơi offline không cần tài khoản; online (M9.4+) bắt buộc đăng nhập.
+
+| Việc | Xong khi |
+|---|---|
+| ACC.1 Máy chủ `tools/vps/accounts.py` (SQLite chung `stats/`): đăng ký / xác minh / đăng nhập / quên mật khẩu (scrypt, mã 6 số hết hạn 15 phút, 5 lần thử), khóa tạm khi sai mật khẩu nhiều lần, phiên đăng nhập (token ngẫu nhiên, lưu dạng băm, 90 ngày), đặt tên không trùng, `me`, đăng xuất | unittest (mail giả) |
+| ACC.2 Google: `start` → mở trình duyệt → `callback` (đổi mã lấy email Google) → game hỏi `poll` lấy phiên; cùng email đã xác minh → gộp một tài khoản | unittest (Google giả) |
+| ACC.3 Game: màn Tài khoản ở menu (đăng nhập / đăng ký / xác minh / quên mật khẩu / Google / đặt tên / đăng xuất), lưu phiên trong máy | Test + chơi thử trên điện thoại |
+| ACC.4 VPS: người dùng tạo mật khẩu ứng dụng Gmail + OAuth client Google (hướng dẫn), phiên vps ghi bí mật vào `/etc/clashborn/` (không qua chat, không vào git); trang chính sách quyền riêng tư (Google bắt buộc) | Đăng ký + đăng nhập Google được từ máy thật |
+| ACC.5 Biên bản trận gắn tài khoản (lịch sử trận), dùng cho online + rank | — |
+
 ## ST — Clashborn Stats (kiểu Dotabuff) — D-331
 
 Người chơi chọn (D-331): làm giai đoạn 1–2 ngay; ghi **mọi trận, gắn nhãn loại** (người vs người `pvp`, người vs bot

@@ -12,12 +12,14 @@ API (mọi lệnh ghi cần header  Authorization: Bearer <mã trong /etc/clashb
 Báo cáo hiệu năng (D-287, xem reports.py): POST /api/report (game gửi, KHÔNG cần mã), GET /api/reports[/<id>] (cần mã).
 Clashborn Stats (D-331, xem stats.py): POST /api/match (game gửi, KHÔNG cần mã), POST /api/matches (cần mã, hàng loạt),
 GET /api/stats/summary|heroes|items|hero/<id>?mode=&kind=&version= (công khai).
+Tài khoản (D-333, xem accounts.py): /api/auth/* — phiên qua header X-Clashborn-Session.
 Chạy:  python3 upload_server.py --root /srv/clashborn --port 8787
 """
 import argparse, errno, hashlib, hmac, json, os, re, shutil, tarfile, tempfile
 from urllib.parse import parse_qs, urlsplit
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
+import accounts
 import reports
 import stats
 
@@ -157,6 +159,11 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, health())
         if self.path.startswith("/api/stats/"):
             return self._stats()
+        if self.path == "/api/auth/me":
+            return self._auth(lambda: accounts.me(ROOT, self.headers.get("X-Clashborn-Session")))
+        if self.path.startswith("/api/auth/google/callback"):
+            query = {k: v[0] for k, v in parse_qs(urlsplit(self.path).query).items()}
+            return self._html(accounts.google_callback(ROOT, query))
         if not self.path.startswith("/api/reports"):
             return self._send(404, {"error": "không có"})
         if not self._authorized():
@@ -195,6 +202,45 @@ class Handler(BaseHTTPRequestHandler):
         except KeyError:
             pass
         self._send(404, {"error": "không có"})
+
+    def _html(self, page: str) -> None:
+        data = page.encode()
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
+
+    def _auth(self, fn) -> None:
+        """D-333: lỗi tài khoản → {code, error} kèm mã HTTP của lỗi."""
+        try:
+            self._send(200, fn())
+        except accounts.AuthError as e:
+            self._send(e.status, {"code": e.code, "error": e.message})
+        except (OSError, KeyError, ValueError) as e:  # máy chủ mail / Google lỗi, thiếu cấu hình
+            print("auth: %s %s" % (type(e).__name__, e), flush=True)
+            self._send(503, {"code": "UNAVAILABLE", "error": "Máy chủ tạm lỗi — thử lại sau"})
+
+    def _auth_post(self) -> None:
+        size = int(self.headers.get("Content-Length", "0"))
+        if size < 0 or size > accounts.MAX_BODY:
+            return self._send(413, {"error": "kích thước không hợp lệ"})
+        try:
+            body = json.loads(self.rfile.read(size) or b"{}")
+        except (ValueError, UnicodeDecodeError, RecursionError):
+            body = None
+        if not isinstance(body, dict):
+            return self._send(400, {"code": "BAD_JSON", "error": "không phải JSON"})
+        token = self.headers.get("X-Clashborn-Session")
+        routes = {"register": lambda: accounts.register(ROOT, body), "verify": lambda: accounts.verify(ROOT, body),
+                  "resend": lambda: accounts.resend(ROOT, body), "login": lambda: accounts.login(ROOT, body),
+                  "reset": lambda: accounts.reset(ROOT, body), "reset_finish": lambda: accounts.reset_finish(ROOT, body),
+                  "name": lambda: accounts.set_name(ROOT, token, body), "logout": lambda: accounts.logout(ROOT, token),
+                  "google/start": lambda: accounts.google_start(ROOT), "google/poll": lambda: accounts.google_poll(ROOT, body)}
+        action = self.path.removeprefix("/api/auth/")
+        if action not in routes:
+            return self._send(404, {"error": "không có"})
+        self._auth(routes[action])
 
     def _matches(self, batch: bool) -> None:
         """D-331: biên bản trận — một trận từ game (không cần mã) hoặc hàng loạt {"matches": […]} (cần mã)."""
@@ -244,6 +290,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._report()
         if self.path == "/api/match":
             return self._matches(False)
+        if self.path.startswith("/api/auth/"):
+            return self._auth_post()
         if not self._authorized():
             return self._send(401, {"error": "sai mã"})
         if self.path == "/api/matches":
