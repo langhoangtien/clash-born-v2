@@ -26,6 +26,8 @@ var _clock: float = 0.0       ## giây khung hình đã chạy (tuổi các mẫ
 var _anim: AnimationPlayer
 var _anims: Array = []
 var _window: Vector2 = Vector2(0, 1)
+var _prime: int = 0           ## > 0: còn vẽ thử chừng này khung (ShaderWarmup — Vulkan dựng đường vẽ trước)
+static var _material: StandardMaterial3D  ## dùng chung mọi vệt (L-0015: tạo mới mỗi lần → khựng khi bật R)
 
 
 ## Gắn (spec có bones) hoặc gỡ (spec rỗng) vệt chém trên bộ xương của lưới đầu tiên.
@@ -67,18 +69,36 @@ func _setup(skel: Skeleton3D, spec: Dictionary) -> void:
 	_color.a = float(spec.get("alpha", 0.6))
 	mesh = _im
 	cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	var m: StandardMaterial3D = StandardMaterial3D.new()
-	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	m.cull_mode = BaseMaterial3D.CULL_DISABLED
-	m.vertex_color_use_as_albedo = true
-	material_override = m
+	if _material == null:
+		_material = StandardMaterial3D.new()
+		_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+		_material.vertex_color_use_as_albedo = true
+	material_override = _material
+
+
+## D-330 (L-0015): ShaderWarmup vẽ thử vệt vài khung (dải trong suốt) để Vulkan dựng đường vẽ trước khi vào trận.
+static func prime(meshes: Array[GeometryInstance3D], frames: int) -> void:
+	var mi: MeshInstance3D = meshes[0] as MeshInstance3D if not meshes.is_empty() else null
+	var skel: Skeleton3D = mi.get_node_or_null(mi.skeleton) as Skeleton3D if mi != null else null
+	var t: SwordTrail3D = skel.get_node_or_null(NodePath(NAME)) as SwordTrail3D if skel != null else null
+	if t != null:
+		t._prime = frames
 
 
 func _process(delta: float) -> void:
 	_clock += delta
 	var now: float = _clock
 	_im.clear_surfaces()
+	if _prime > 0:
+		_prime -= 1
+		_im.surface_begin(Mesh.PRIMITIVE_TRIANGLE_STRIP)
+		for v: Vector3 in [Vector3.ZERO, Vector3.UP * 0.1, Vector3.RIGHT * 0.1, Vector3(0.1, 0.1, 0)]:
+			_im.surface_set_color(Color(_color, 0.01))
+			_im.surface_add_vertex(v)
+		_im.surface_end()
+		return
 	for k: int in _bones.size():
 		var pose: Transform3D = _skel.get_bone_global_pose(_bones[k])
 		var dir: Vector3 = (pose.basis * _axis[k]).normalized()

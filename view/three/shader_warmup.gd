@@ -29,6 +29,7 @@ static func make(projectiles: Projectiles3D, focus: Vector3) -> ShaderWarmup:
 			w._place(faded)
 			faded._set_faded(true)  # bản mờ (bụi, tàng hình phe mình)
 			faded.prime_flash()
+	w._looks()
 	for cfg: Dictionary in ModelLibrary.config()["units"].values():
 		if cfg.has("projectile"):
 			w._projectile(projectiles, cfg["projectile"])
@@ -45,6 +46,25 @@ static func make(projectiles: Projectiles3D, focus: Vector3) -> ShaderWarmup:
 		for part: Dictionary in recipe.get("parts", []):
 			w._vfx(part)
 	return w
+
+
+## D-330 (L-0015: khựng 186 ms lần đầu bot Gorran bật R): mỗi hình theo hiệu ứng (effect_looks — ảnh da thay, kiếm
+## rút ra, vệt chém) và hình chưa rút (vật liệu ẩn) vẽ thử trước; ảnh da nạp luôn lúc này.
+func _looks() -> void:
+	var units: Dictionary = ModelLibrary.config()["units"]
+	for art: String in units:
+		var cfg: Dictionary = units[art]
+		if not cfg.has("props_drawn") and cfg.get("effect_looks", {}).is_empty():
+			continue
+		var looks: Array = [{"drawn": false}]
+		for look: Dictionary in cfg.get("effect_looks", {}).values():
+			looks.append(look.merged({"drawn": true}, true))
+		for look: Dictionary in looks:
+			var a: Actor3D = Actor3D.make(_entity(StringName(art), Entity.Kind.HERO, 0, 0))
+			_place(a)
+			EffectLook.apply(a._meshes, a._base, a._solid, look, cfg, false)
+			a.prime_flash()  # lớp lóe trên da đổi màu
+			SwordTrail3D.prime(a._meshes, FRAMES)
 
 
 ## Mỗi loại đơn vị theo các phe nó có thể thuộc, mỗi bậc trụ và nhà chính theo hai phe.
