@@ -12,6 +12,13 @@ nav a.active { color: var(--gold); }
   padding: 8px 10px; font-size: 15px; min-width: 150px;
 }
 
+.tabs { display: flex; gap: 8px; margin: 0 0 14px; }
+.tabs button {
+  background: var(--panel-2); color: var(--muted); border: 1px solid var(--line); border-radius: 999px;
+  padding: 8px 20px; font-size: 15px; cursor: pointer;
+}
+.tabs button.active { color: var(--bg); background: var(--gold); border-color: var(--gold); font-weight: 600; }
+
 .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow-x: auto; }
 .grid { width: 100%; border-collapse: collapse; font-size: 15px; }
 .grid th {
@@ -41,11 +48,14 @@ nav a.active { color: var(--gold); }
 .detail { margin-top: 16px; padding: 18px; overflow: visible; }
 .detail h2 { font-size: 22px; margin-bottom: 12px; }
 .detail h2 img { width: 48px; height: 48px; }
-.minis { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.minis { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px 24px; }
 .mini h3 { font-size: 15px; color: var(--gold); margin-bottom: 8px; font-family: var(--sans); }
 .mini ul { list-style: none; margin: 0; padding: 0; }
-.mini li { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; padding: 6px 0;
+.mini li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 6px 0;
   border-bottom: 1px solid rgba(42, 54, 88, 0.55); font-size: 14px; }
+.mini .who { min-width: 0; }
+.mini .who, .grid .who { white-space: nowrap; }
+.mini .who { overflow: hidden; text-overflow: ellipsis; display: flex; }
 .mini .n { color: var(--muted); font-size: 12px; }
 .mini .rate .bar { width: 40px; }
 
@@ -53,6 +63,9 @@ nav a.active { color: var(--gold); }
   .stats-head h1 { font-size: 26px; }
   .grid td, .grid th { padding: 9px 8px; }
   .grid .wide { display: none; }
+  .grid { font-size: 14px; }
+  #items td:first-child { white-space: normal; }
+  .who img { width: 30px; height: 30px; }
   .rate .bar { display: none; }
   .filters select { min-width: 0; }
 }

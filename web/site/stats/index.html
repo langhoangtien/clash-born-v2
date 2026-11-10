@@ -44,12 +44,17 @@
     </label>
   </form>
 
+  <div class="tabs" role="tablist">
+    <button type="button" data-tab="heroes">Tướng</button>
+    <button type="button" data-tab="items">Đồ</button>
+  </div>
+
   <section id="tab-heroes" class="tab">
     <div class="card">
       <table class="grid" id="heroes">
         <thead><tr>
           <th data-sort="name">Tướng</th><th data-sort="games" class="num">Trận</th>
-          <th data-sort="winrate" class="num">Tỉ lệ thắng</th><th data-sort="pickrate" class="num">Tỉ lệ chọn</th>
+          <th data-sort="winrate" class="num">Tỉ lệ thắng</th><th data-sort="pickrate" class="num wide">Tỉ lệ chọn</th>
           <th data-sort="kda" class="num">K / D / A</th><th data-sort="level" class="num wide">Cấp TB</th>
         </tr></thead>
         <tbody></tbody>
@@ -63,7 +68,7 @@
       <table class="grid" id="items">
         <thead><tr>
           <th data-sort="name">Đồ</th><th data-sort="games" class="num">Số lần</th>
-          <th data-sort="winrate" class="num">Tỉ lệ thắng</th><th data-sort="first_buy_s" class="num">Mua lúc (TB)</th>
+          <th data-sort="winrate" class="num">Tỉ lệ thắng</th><th data-sort="first_buy_s" class="num wide">Mua lúc (TB)</th>
         </tr></thead>
         <tbody></tbody>
       </table>

@@ -52,7 +52,7 @@ function drawHeroes() {
   if (!state.heroes.length) { body.innerHTML = `<tr><td colspan="6" class="empty">Chưa có trận nào với bộ lọc này.</td></tr>`; return; }
   body.innerHTML = sorted(state.heroes, "heroes").map((r) => `<tr data-hero="${esc(r.hero)}" class="${r.hero === state.open ? "on" : ""}">
     <td>${heroCell(r.hero)}</td><td class="num">${r.games}</td><td class="num">${rate(r)}</td>
-    <td class="num">${pct(r.pickrate)}</td><td class="num">${r.kills.toFixed(1)} / ${r.deaths.toFixed(1)} / ${r.assists.toFixed(1)}</td>
+    <td class="num wide">${pct(r.pickrate)}</td><td class="num">${r.kills.toFixed(1)}/${r.deaths.toFixed(1)}/${r.assists.toFixed(1)}</td>
     <td class="num wide">${r.level.toFixed(1)}</td></tr>`).join("");
 }
 
@@ -60,7 +60,7 @@ function drawItems() {
   const body = $("#items tbody");
   if (!state.items.length) { body.innerHTML = `<tr><td colspan="4" class="empty">Chưa có trận nào với bộ lọc này.</td></tr>`; return; }
   body.innerHTML = sorted(state.items, "items").map((r) => `<tr><td>${itemCell(r.item)}</td><td class="num">${r.games}</td>
-    <td class="num">${rate(r)}</td><td class="num">${r.first_buy_s ? clock(r.first_buy_s) : "—"}</td></tr>`).join("");
+    <td class="num">${rate(r)}</td><td class="num wide">${r.first_buy_s ? clock(r.first_buy_s) : "—"}</td></tr>`).join("");
 }
 
 function mini(title, rows, cell) {
