@@ -22,7 +22,7 @@ static func make() -> BalanceSettings:
 	b.status_resistance_cap = 0.6
 	b.minimum_movement_speed = 100.0
 	b.separation_speed = 400.0
-	b.attribute_bonus = 2.0
+	b.attribute_bonus = 3.0
 	b.hero_structure_damage = 0.5
 	b.creep_structure_damage = 0.65
 	b.siege_structure_damage = 1.25
@@ -40,7 +40,7 @@ static func make() -> BalanceSettings:
 	b.tower_body_radius = 52.0
 	b.core_body_radius = 80.0
 	b.respawn_base = 5.0
-	b.attribute_bonus_max = 3
+	b.attribute_bonus_max = 2
 	b.talent_level = 20
 	b.hero_max_level = 20
 	b.xp_base = 120

@@ -10,7 +10,7 @@ const TIMEOUT_S: float = 30.0
 const FAILED_FILE: String = "user://last_failed_match.json"
 
 
-## Gửi (tự gỡ khi xong); trả false nếu biên bản không được gửi. `done(ok: bool, câu: String)` khi máy chủ trả lời.
+## Gửi (tự gỡ khi xong); trả false nếu là trận không tính (trận thử, Benchmark). `done(ok: bool, câu: String)` khi máy chủ trả lời.
 static func send(parent: Node, record: Dictionary, done: Callable = Callable()) -> bool:
 	if record.get("practice", false) or BenchSession.requested:
 		return false
@@ -33,7 +33,9 @@ static func send(parent: Node, record: Dictionary, done: Callable = Callable()) 
 		headers.append("%s: %s" % [AccountClient.HEADER, AccountClient.token])
 	if http.request(Updater.SITES[0] + PATH, headers, HTTPClient.METHOD_POST, JSON.stringify(record)) != OK:
 		up.queue_free()
-		return false
+		_keep(record, "request failed")
+		if done.is_valid():
+			done.call(false, "Thống kê: không gửi được (mạng)")
 	return true
 
 

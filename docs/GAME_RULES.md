@@ -330,8 +330,8 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   mới bị ngắt (vd đang lướt, ABL-08) thì mana / hồi chiêu đã tính.
 - `ABL-04` Lên cấp hero nhận 1 điểm. Điểm dùng để: nâng Q/W / nội tại thêm một bậc **bất cứ lúc nào còn điểm**
   (D-318, người chơi: không cần cấp hero — cấp 5 có thể max một chiêu); nâng R lên cấp 1/2/3 khi hero đạt cấp 6/11/16; hoặc đổi lấy
-  `attribute_bonus` mọi thuộc tính (tối đa `attribute_bonus_max` = 3 lần, D-340: 20 điểm cấp 1–20, max chiêu cần 18 —
-  cộng thuộc tính là đánh đổi, đủ 3 lần thì có một chiêu thiếu một bậc). Điểm chưa
+  `attribute_bonus` (+3) mọi thuộc tính (tối đa `attribute_bonus_max` = 2 lần, D-341: 20 điểm cấp 1–20 = 18 max chiêu + 2
+  lần thuộc tính). Điểm chưa
   dùng được giữ lại. Cấp 1 có sẵn 1 điểm; cộng điểm được cả khi chờ hồi sinh (lệnh
   `LEVEL_UP`, không đổi lệnh đang làm). Lên cấp / cộng thuộc tính: máu và mana hiện tại
   cộng đúng phần tối đa tăng thêm.
@@ -1075,7 +1075,7 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 | tower_last_hit_gold / first_blood_gold | 100 / 150 (D-340) | | | |
 | attack_search_bonus / lock_break_range | 100 / 1400 | | tower_tank_creeps / dive_min_hp | 2 / 0.6 |
 | ghost_magic_amp | 0.4 | | talent_level | 20 |
-| attribute_bonus | +2 mọi thuộc tính | | attribute_bonus_max | 3 lần (D-340) |
+| attribute_bonus | +3 mọi thuộc tính (D-341) | | attribute_bonus_max | 2 lần (D-341) |
 | hex_move_speed | 140 | | bush_reveal_time | 1 s |
 | shop_radius | 600 | | sell_ratio / sell_full_refund_time | 0.5 / 10 s |
 | reincarnate_delay | 3 s | | match_target_minutes | 20–30 (D-97) |

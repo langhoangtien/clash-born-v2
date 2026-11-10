@@ -126,12 +126,12 @@ func test_ABL_04_attribute_bonus_limit_and_effect() -> void:
 	var b: Entity = _brakk(w, 0, _center())
 	var strength: float = b.stats.get_stat(StatId.Id.STRENGTH)
 	b.skill_points = 10
-	for i: int in range(4):
+	for i: int in range(3):
 		w.submit(Command.level_up(b.id, Command.ATTRIBUTES))
 	w.step()
-	assert_eq(b.attribute_bonus_count, 3, "D-340: tối đa 3 lần")
+	assert_eq(b.attribute_bonus_count, 2, "D-341: tối đa 2 lần")
 	assert_eq(w.rejected_commands.size(), 1)
-	assert_near(b.stats.get_stat(StatId.Id.STRENGTH), strength + 6.0, EPS)
+	assert_near(b.stats.get_stat(StatId.Id.STRENGTH), strength + 6.0, EPS, "mỗi lần +3 mọi thuộc tính")
 
 
 func test_ECO_03_xp_from_enemy_deaths_nearby_split() -> void:

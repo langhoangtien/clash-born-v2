@@ -65,7 +65,7 @@ def actor(root: str, master: bool, token) -> dict:
     return {"id": me["id"], "role": me["role"], "label": "#%d %s" % (me["id"], me["name"]), "name": me["name"]}
 
 
-def _need(who: dict, role: str) -> None:
+def need(who: dict, role: str) -> None:
     if RANK[who["role"]] < RANK[role]:
         raise AdminError("Cần quyền %s" % ROLE_NAMES[role], 403)
 
@@ -100,7 +100,7 @@ def _card(con, row: tuple) -> dict:
 
 
 def search(root: str, who: dict, q: str) -> list:
-    _need(who, "mod")
+    need(who, "mod")
     like = "%" + q.strip().casefold().replace("%", "").replace("_", "\\_") + "%"
 
     def go(con):
@@ -111,14 +111,14 @@ def search(root: str, who: dict, q: str) -> list:
 
 
 def account(root: str, who: dict, aid) -> dict:
-    _need(who, "mod")
+    need(who, "mod")
     out = _run(root, lambda con: _card(con, _row(con, _id(aid))))
     out["matches"] = stats.history(root, out["id"])
     return out
 
 
 def log(root: str, who: dict) -> list:
-    _need(who, "mod")
+    need(who, "mod")
     rows = _run(root, lambda con: con.execute("SELECT at, actor, action, target, detail FROM admin_log ORDER BY id DESC "
                                               "LIMIT 100").fetchall())
     return [{"at": a, "actor": w or "", "action": b, "target": c, "detail": d} for a, w, b, c, d in rows]
@@ -126,7 +126,7 @@ def log(root: str, who: dict) -> list:
 
 def test_session(root: str, who: dict, body: dict) -> dict:
     """D-338: phiên cho tài khoản thử (máy khách bot thử máy chủ phòng trên VPS) — chỉ mã quản trị."""
-    _need(who, "master")
+    need(who, "master")
     tag = str(body.get("name", ""))
     if not tag.isalnum() or not 1 <= len(tag) <= 8:
         raise AdminError("tên thử 1–8 chữ / số")
@@ -146,7 +146,7 @@ def test_session(root: str, who: dict, body: dict) -> dict:
 
 def set_role(root: str, who: dict, body: dict) -> dict:
     """D-335: cấp / thu quyền — chỉ admin / mã quản trị; cấp tới đúng cấp của mình."""
-    _need(who, "admin")
+    need(who, "admin")
     aid, role = _id(body.get("id")), body.get("role")
     if role not in ("", "mod", "admin") or RANK[role] > RANK[who["role"]]:
         raise AdminError("quyền không hợp lệ")
@@ -160,7 +160,7 @@ def set_role(root: str, who: dict, body: dict) -> dict:
 
 
 def ban(root: str, who: dict, body: dict) -> dict:
-    _need(who, "mod")
+    need(who, "mod")
     aid, reason = _id(body.get("id")), str(body.get("reason", "")).strip()[:200]
 
     def go(con):
@@ -173,7 +173,7 @@ def ban(root: str, who: dict, body: dict) -> dict:
 
 
 def unban(root: str, who: dict, body: dict) -> dict:
-    _need(who, "mod")
+    need(who, "mod")
     aid = _id(body.get("id"))
 
     def go(con):
@@ -185,7 +185,7 @@ def unban(root: str, who: dict, body: dict) -> dict:
 
 
 def rename(root: str, who: dict, body: dict) -> dict:
-    _need(who, "mod")
+    need(who, "mod")
     aid, name = _id(body.get("id")), body.get("name")
     if not isinstance(name, str) or not accounts.NAME.match(name.strip()) or "  " in name:
         raise AdminError("tên không hợp lệ (3–16 ký tự)")
@@ -209,7 +209,7 @@ def _drop(con, ids: list) -> int:
 
 
 def delete_matches(root: str, who: dict, body: dict) -> dict:
-    _need(who, "mod")
+    need(who, "mod")
     aid = _id(body.get("id"))
 
     def go(con):
@@ -222,7 +222,7 @@ def delete_matches(root: str, who: dict, body: dict) -> dict:
 
 
 def delete_match(root: str, who: dict, body: dict) -> dict:
-    _need(who, "mod")
+    need(who, "mod")
     mid = _id(body.get("match"))
 
     def go(con):

@@ -160,7 +160,9 @@ func _show_result() -> void:
 	result = ResultPanel.new()
 	$Hud.add_child(result)
 	result.show_result(world, hero)
-	MatchUpload.send(self, MatchRecord.of(world, config, Updater.current_name()), result.set_stats_note)  # ST.1, D-339
+	# ST.1, D-339; D-341: gắn vào gốc cây — bấm về menu ngay không hủy yêu cầu gửi
+	if not MatchUpload.send(get_tree().root, MatchRecord.of(world, config, Updater.current_name()), result.set_stats_note):
+		result.set_stats_note("Thống kê: trận thử / đo hiệu năng — không tính", false)
 	result.replay_pressed.connect(func() -> void: get_tree().reload_current_scene())
 	result.menu_pressed.connect(func() -> void: get_tree().change_scene_to_file(MENU_SCENE))
 

@@ -133,6 +133,17 @@ class AdminTest(AccountCase):
         con.close()
 
 
+    def test_D_341_rejected_match_kept_for_admin(self) -> None:
+        bad = record(0)
+        bad["players"] = bad["players"][:1]
+        self.assertEqual(self.req("POST", "/api/match", bad)[0], 400)
+        self.assertEqual(self.req("GET", "/api/admin/rejects")[0], 401, "không mã / phiên: không đọc được")
+        code, got = self.req("GET", "/api/admin/rejects", token="bi-mat")
+        self.assertEqual(code, 200)
+        self.assertEqual([(r["reason"], r["account"], len(r["record"]["players"])) for r in got["rejects"]],
+                         [("số người không khớp chế độ", -1, 1)])
+
+
 if __name__ == "__main__":
     import unittest
     unittest.main()

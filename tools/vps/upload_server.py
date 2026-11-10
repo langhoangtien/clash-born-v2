@@ -23,6 +23,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import accounts
 import admin
 import reports
+import rejects
 import stats
 
 APK_NAME = re.compile(r"^clashborn-0\.1\.\d{1,6}\.apk$")
@@ -269,15 +270,17 @@ class Handler(BaseHTTPRequestHandler):
             owner = -1 if batch else accounts.uploader(ROOT, self.headers.get("X-Clashborn-Session"))  # D-334
             self._send(200, stats.save(ROOT, recs, "batch" if batch else "game", owner))
         except ValueError as e:
-            if not batch:  # D-339: lý do từ chối vào nhật ký (không ghi nội dung trận)
-                b = body if isinstance(body, dict) else {}
-                ps = b.get("players")
-                print("match rejected: %s | mode=%r kind=%r version=%r players=%s teams=%s" % (
-                    e, b.get("mode"), b.get("kind"), b.get("version"), len(ps) if isinstance(ps, list) else "?",
-                    [p.get("team") for p in ps if isinstance(p, dict)] if isinstance(ps, list) else "?"), flush=True)
+            if not batch:  # D-339 nhật ký, D-341 giữ biên bản bị từ chối cho quản trị đọc
+                rejects.keep(ROOT, body, str(e), self._uploader())
             self._send(400, {"error": str(e)})
         except accounts.AuthError as e:  # tài khoản bị ban: không nhận trận
             self._send(e.status, {"code": e.code, "error": e.message})
+
+    def _uploader(self) -> int:
+        try:
+            return accounts.uploader(ROOT, self.headers.get("X-Clashborn-Session"))
+        except accounts.AuthError:
+            return -2  # bị ban
 
     def _admin(self, method: str) -> None:
         """D-334 / D-335: quản trị — mã quản trị hoặc phiên tài khoản có quyền mod / admin."""
@@ -290,6 +293,9 @@ class Handler(BaseHTTPRequestHandler):
                     return self._send(200, {"name": who["name"], "role": who["role"]})
                 if what == "accounts":
                     return self._send(200, {"accounts": admin.search(ROOT, who, parse_qs(url.query).get("q", [""])[0])})
+                if what == "rejects":  # D-341
+                    admin.need(who, "admin")
+                    return self._send(200, {"rejects": rejects.listing(ROOT)})
                 if what == "log":
                     return self._send(200, {"log": admin.log(ROOT, who)})
                 if what.startswith("account/") and what.removeprefix("account/").isdigit():
