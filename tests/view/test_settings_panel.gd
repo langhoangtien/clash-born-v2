@@ -32,8 +32,8 @@ func test_D_183_rows_in_match_and_menu() -> void:
 	assert_eq(m.rows(), [&"sound", &"graphics", &"fps", &"test", &"diag", &"perf_export", &"quit"] as Array[StringName],
 		"trận thử: bảng Test, chẩn đoán, xuất log")
 	var menu: SettingsPanel = _panel(false)
-	assert_eq(menu.rows(), [&"sound", &"graphics", &"fps", &"perf_log", &"bench"] as Array[StringName],
-		"menu không có công cụ thử / thoát trận; D-272: có đo hiệu năng tự động")
+	assert_eq(menu.rows(), [&"sound", &"graphics", &"fps", &"perf_log", &"bench", &"sync"] as Array[StringName],
+		"menu không có công cụ thử / thoát trận; D-272: đo hiệu năng tự động; D-336: kiểm tra đồng bộ")
 	assert_false(menu.gear_rect().has_area(), "menu tự có nút Cài đặt, không vẽ bánh răng")
 	m.free()
 	menu.free()

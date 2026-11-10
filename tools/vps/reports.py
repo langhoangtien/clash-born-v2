@@ -1,8 +1,8 @@
 """Clashborn — kho báo cáo hiệu năng game gửi lên (D-287). Chỉ dùng thư viện chuẩn; upload_server.py gọi.
 
 Game gửi (không cần mã bí mật — mã nhét trong APK thì ai cũng lấy được):
-  POST /api/report  {kind: "bench"|"log", note?: str, summary?: str, data: object}
-    → {"id": "B-0042"}   (B = Benchmark A/B, L = log trận)
+  POST /api/report  {kind: "bench"|"log"|"sync", note?: str, summary?: str, data: object}
+    → {"id": "B-0042"}   (B = Benchmark A/B, L = log trận, S = kiểm tra tất định D-336)
 Đọc (cần mã bí mật):
   GET /api/reports              → [{id, received, kind, version, device, note}] mới nhất trước
   GET /api/reports/<id|latest>  → cả báo cáo
@@ -16,8 +16,8 @@ MAX_BYTES = 4 * 1024 * 1024  # log trận 15 phút (mẫu 0,5 s) ~1 MB
 KEEP = 200
 NOTE_MAX = 500
 SUMMARY_MAX = 20000
-PREFIX = {"bench": "B", "log": "L"}
-REPORT_ID = re.compile(r"^[BL]-\d{4,6}$")
+PREFIX = {"bench": "B", "log": "L", "sync": "S"}  # D-336: S = kiểm tra tất định (M9.3)
+REPORT_ID = re.compile(r"^[BLS]-\d{4,6}$")
 _lock = threading.Lock()
 
 
@@ -43,7 +43,7 @@ def parse(body: bytes) -> dict:
     except (ValueError, UnicodeDecodeError, RecursionError):  # D-288: lồng quá sâu cũng là JSON hỏng
         raise ValueError("không phải JSON")
     if not isinstance(info, dict) or info.get("kind") not in PREFIX or not isinstance(info.get("data"), dict):
-        raise ValueError("thiếu kind (bench | log) hoặc data")
+        raise ValueError("thiếu kind (bench | log | sync) hoặc data")
     note, summary = info.get("note", ""), info.get("summary", "")
     if not isinstance(note, str) or not isinstance(summary, str):
         raise ValueError("note / summary phải là chữ")

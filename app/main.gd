@@ -28,6 +28,7 @@ func _ready() -> void:
 	add_child(audio)
 	audio.play_music(&"music_menu")
 	var settings: SettingsControl = SettingsControl.attach(self, false, audio)  # D-183
+	settings.start_sync = func() -> void: SyncSession.open(self)  # D-336: M9.3 tất định điện thoại ↔ máy chủ
 	settings.start_bench = func() -> void:  # D-272: Benchmark A/B — cảnh cố định, hai tướng do bot
 		BenchSession.requested = true
 		var bench: MatchConfig = MatchConfig.duel(BenchSession.HERO, BenchSession.FOE)  # seed cố định: so sánh được

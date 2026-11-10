@@ -240,32 +240,7 @@ func state_hash() -> PackedByteArray:
 	ctx.start(HashingContext.HASH_SHA256)
 	ctx.update(PackedInt64Array([tick, rng.seed, rng.state, entities.size(), winner]).to_byte_array())
 	for e: Entity in entities:
-		ctx.update(PackedInt64Array([e.id, e.team, e.kind, e.order.type, int(e.order.finished), e.order.target_id,
-			int(e.alive), int(e.locked), int(e.returning), int(e.has_origin), e.aggro_target_id, e.aggro_until_tick, e.attack_phase, e.attack_target_id, e.attack_start_tick, e.attack_release_tick, e.next_attack_tick,
-			e.lock_target_id, e.respawn_tick, e.gold, e.last_hits, e.skill_points, e.attribute_bonus_count, e.talent_slot, e.kills, e.deaths, e.assists, e.last_attack_target_id, e.visible_mask, e.bush_id, e.reveal_until_tick, e.camp_index, e.reincarnate_tick, e.expire_tick, e.creep_tier, e.recall_until_tick, e.recall_start_tick]).to_byte_array())
-		ctx.update(PackedFloat64Array([e.position.x, e.position.y, e.radius, e.health, e.mana,
-			e.order.point.x, e.order.point.y, e.order.direction.x, e.order.direction.y,
-			e.chase_origin.x, e.chase_origin.y, e.xp, e.duel_damage]).to_byte_array())
-		if e.duel != null:
-			ctx.update(PackedInt64Array([e.duel.knight_id, e.duel.foe_id, e.duel.end_tick]).to_byte_array())
-		if e.stats != null:
-			ctx.update(e.stats.values().to_byte_array())
-		for a: AbilityInstance in e.abilities:
-			ctx.update(PackedInt64Array([a.slot, a.rank, a.ready_tick]).to_byte_array())
-		for it: ItemInstance in e.items:
-			if it != null:
-				ctx.update(PackedInt64Array([it.index, it.def.id.hash(), it.charges, it.ability.ready_tick if it.ability != null else -1]).to_byte_array())
-		if e.knockback != null:
-			ctx.update(PackedFloat64Array([e.knockback.direction.x, e.knockback.direction.y, e.knockback.per_tick, e.knockback.end_tick]).to_byte_array())
-		if e.dash != null:
-			ctx.update(PackedFloat64Array([e.dash.target_id, e.dash.speed, e.dash.source_id]).to_byte_array())
-		if e.bot != null:
-			ctx.update(PackedFloat64Array([e.bot.mode, e.bot.target_id, e.bot.goal.x, e.bot.goal.y, e.bot.chase_origin.x, e.bot.chase_origin.y, e.bot.trade_until_tick, e.bot.last_hurt_tick, e.bot.upgrades_done, e.bot.last_pos.x, e.bot.last_pos.y, e.bot.last_pos_tick, int(e.bot.ahead)]).to_byte_array())
-		if e.cast != null:
-			ctx.update(PackedInt64Array([e.cast.ability.slot, e.cast.release_tick, e.cast.target_id]).to_byte_array())
-		for inst: EffectInstance in e.effects:
-			ctx.update(PackedInt64Array([inst.serial, inst.def.id.hash(), inst.source_id, inst.stacks, inst.end_tick, inst.next_period_tick, inst.active_tick, inst.source_team]).to_byte_array())
-			ctx.update(PackedFloat64Array([inst.absorb_left]).to_byte_array())
+		_hash_entity(ctx, e)
 	for t: int in range(shop_stock.size()):
 		var ids: Array = shop_stock[t].keys()
 		ids.sort()
@@ -286,3 +261,39 @@ func state_hash() -> PackedByteArray:
 	for p: Projectile in projectiles:
 		ctx.update(PackedFloat64Array([p.source_id, p.target_id, p.position.x, p.position.y, p.request.raw]).to_byte_array())
 	return ctx.finish()
+
+## M9.3 (D-336): mã băm riêng một đơn vị (16 byte đầu SHA-256) — so tất định giữa máy, chỉ ra đơn vị lệch.
+func entity_digest(e: Entity) -> PackedByteArray:
+	var ctx: HashingContext = HashingContext.new()
+	ctx.start(HashingContext.HASH_SHA256)
+	_hash_entity(ctx, e)
+	return ctx.finish().slice(0, 16)
+
+
+func _hash_entity(ctx: HashingContext, e: Entity) -> void:
+	ctx.update(PackedInt64Array([e.id, e.team, e.kind, e.order.type, int(e.order.finished), e.order.target_id,
+		int(e.alive), int(e.locked), int(e.returning), int(e.has_origin), e.aggro_target_id, e.aggro_until_tick, e.attack_phase, e.attack_target_id, e.attack_start_tick, e.attack_release_tick, e.next_attack_tick,
+		e.lock_target_id, e.respawn_tick, e.gold, e.last_hits, e.skill_points, e.attribute_bonus_count, e.talent_slot, e.kills, e.deaths, e.assists, e.last_attack_target_id, e.visible_mask, e.bush_id, e.reveal_until_tick, e.camp_index, e.reincarnate_tick, e.expire_tick, e.creep_tier, e.recall_until_tick, e.recall_start_tick]).to_byte_array())
+	ctx.update(PackedFloat64Array([e.position.x, e.position.y, e.radius, e.health, e.mana,
+		e.order.point.x, e.order.point.y, e.order.direction.x, e.order.direction.y,
+		e.chase_origin.x, e.chase_origin.y, e.xp, e.duel_damage]).to_byte_array())
+	if e.duel != null:
+		ctx.update(PackedInt64Array([e.duel.knight_id, e.duel.foe_id, e.duel.end_tick]).to_byte_array())
+	if e.stats != null:
+		ctx.update(e.stats.values().to_byte_array())
+	for a: AbilityInstance in e.abilities:
+		ctx.update(PackedInt64Array([a.slot, a.rank, a.ready_tick]).to_byte_array())
+	for it: ItemInstance in e.items:
+		if it != null:
+			ctx.update(PackedInt64Array([it.index, it.def.id.hash(), it.charges, it.ability.ready_tick if it.ability != null else -1]).to_byte_array())
+	if e.knockback != null:
+		ctx.update(PackedFloat64Array([e.knockback.direction.x, e.knockback.direction.y, e.knockback.per_tick, e.knockback.end_tick]).to_byte_array())
+	if e.dash != null:
+		ctx.update(PackedFloat64Array([e.dash.target_id, e.dash.speed, e.dash.source_id]).to_byte_array())
+	if e.bot != null:
+		ctx.update(PackedFloat64Array([e.bot.mode, e.bot.target_id, e.bot.goal.x, e.bot.goal.y, e.bot.chase_origin.x, e.bot.chase_origin.y, e.bot.trade_until_tick, e.bot.last_hurt_tick, e.bot.upgrades_done, e.bot.last_pos.x, e.bot.last_pos.y, e.bot.last_pos_tick, int(e.bot.ahead)]).to_byte_array())
+	if e.cast != null:
+		ctx.update(PackedInt64Array([e.cast.ability.slot, e.cast.release_tick, e.cast.target_id]).to_byte_array())
+	for inst: EffectInstance in e.effects:
+		ctx.update(PackedInt64Array([inst.serial, inst.def.id.hash(), inst.source_id, inst.stacks, inst.end_tick, inst.next_period_tick, inst.active_tick, inst.source_team]).to_byte_array())
+		ctx.update(PackedFloat64Array([inst.absorb_left]).to_byte_array())

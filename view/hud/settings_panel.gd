@@ -15,7 +15,7 @@ const VERSION_H: float = 44.0
 const LABELS: Dictionary[StringName, String] = {
 	&"sound": "Âm thanh", &"graphics": "Đồ họa", &"fps": "Hiện FPS", &"test": "Bảng Test (thử)",
 	&"diag": "Chẩn đoán FPS (thử)", &"quit": "Thoát trận", &"perf_log": "Ghi log hiệu năng",
-	&"perf_export": "Xuất log hiệu năng", &"bench": "Đo hiệu năng tự động",
+	&"perf_export": "Xuất log hiệu năng", &"bench": "Đo hiệu năng tự động", &"sync": "Kiểm tra đồng bộ (online)",
 }
 
 var open: bool = false
@@ -36,7 +36,7 @@ func rows() -> Array[StringName]:
 			out.append_array([&"test", &"diag", &"perf_export"] as Array[StringName])
 		out.append(&"quit")
 	else:
-		out.append_array([&"perf_log", &"bench"] as Array[StringName])  # D-268 / D-272: chọn trước khi vào trận
+		out.append_array([&"perf_log", &"bench", &"sync"] as Array[StringName])  # D-268 / D-272 / D-336: ở menu
 	return out
 
 

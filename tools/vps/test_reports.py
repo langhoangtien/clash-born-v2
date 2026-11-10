@@ -56,6 +56,11 @@ class ReportServerTest(ServerCase):
         self.assertEqual(got["id"], "L-0002")
         self.assertFalse(os.path.exists(os.path.join(self.tmp.name, "www", "reports")), "không nằm trong www/")
 
+    def test_D_336_sync_report_kind(self) -> None:
+        code, got = self.call("POST", "/api/report", {"kind": "sync", "data": {"meta": {"version": "0.1.580"}, "seconds": []}})
+        self.assertEqual((code, got["id"]), (200, "S-0001"))
+        self.assertEqual(self.call("GET", "/api/reports/S-0001", token="bi-mat")[1]["kind"], "sync")
+
     def test_D_287_reading_needs_token(self) -> None:
         self.call("POST", "/api/report", self.report())
         self.assertEqual(self.call("GET", "/api/reports")[0], 401)

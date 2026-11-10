@@ -14,6 +14,8 @@ var tools: Dictionary[StringName, Control] = {}
 var perf: PerfSession
 ## D-272: menu — mở trận Benchmark A/B.
 var start_bench: Callable = Callable()
+## D-336: menu — chạy Kiểm tra đồng bộ (M9.3).
+var start_sync: Callable = Callable()
 var quit: Callable
 
 
@@ -48,6 +50,11 @@ func apply(what: StringName) -> void:
 		&"perf_export":
 			if perf != null:
 				perf.export_now()
+		&"sync":
+			if start_sync.is_valid():
+				panel.open = false
+				start_sync.call()
+				return
 		&"bench":
 			if start_bench.is_valid():
 				panel.open = false
@@ -69,6 +76,7 @@ func refresh() -> void:
 		&"perf_log": "Bật" if PerfSettings.enabled() else "Tắt",
 		&"perf_export": "Xuất",
 		&"bench": "Bắt đầu",
+		&"sync": "Bắt đầu",
 	}
 	for key: StringName in tools:
 		panel.values[key] = "Đang hiện" if tools[key].visible else "Ẩn"
