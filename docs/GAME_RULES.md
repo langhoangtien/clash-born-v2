@@ -864,6 +864,27 @@ Trận được dựng từ một cấu hình (MatchConfig): số ô mỗi độ
 - `MATCH-05` Seed của World lấy từ cấu hình (offline: ngẫu nhiên mỗi trận; online: máy chủ chọn). Cùng cấu hình +
   cùng nhật ký lệnh → cùng trận (CMD-04).
 
+## NET — Trận online (D-337, M9.4)
+
+Trận online là lockstep **máy chủ giữ nhịp** (kiểu Liên Quân): mọi máy chạy cùng SIM tất định (M9.3), chỉ lệnh người
+chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, giới hạn lệnh) là hằng kỹ thuật trong `app/net/`.
+- `NET-01` Máy chủ tự chạy tick 30 / giây theo đồng hồ của nó, **không chờ máy nào**. Mỗi tick T máy chủ phát **gói lệnh
+  T** (danh sách lệnh, thứ tự cố định); mọi máy — kể cả bản SIM của máy chủ — đưa đúng các lệnh đó vào rồi chạy tick T.
+  Máy chưa có gói T thì đứng chờ (không đoán); có nhiều gói thì chạy bù cho kịp. Một máy chậm / rớt mạng chỉ máy đó
+  đứng, trận không dừng.
+- `NET-02` Lệnh người chơi không áp ngay: gửi lên máy chủ kèm tick mong muốn = tick mới nhất đã nhận + `input_delay`.
+  Máy chủ đặt tick thực thi = max(tick mong muốn, tick hiện tại của máy chủ + 1): đến muộn thì sang tick kế, không bỏ.
+  Lệnh SIM sinh trong tick (bot, controller) không gửi đi — mọi máy tự tính giống nhau. Phản hồi hình ảnh khi bấm (nút,
+  vòng ngắm, điểm đích) hiện ngay; hiệu lực (sát thương, lướt, hoạt ảnh chiêu) theo tick thật — không đoán trước.
+- `NET-03` Máy chủ chỉ nhận lệnh cho đơn vị người gửi đang điều khiển (ô của tài khoản đó), đúng dạng, không quá
+  `MAX_COMMANDS_PER_S` lệnh / giây — sai thì bỏ (không vào trận). Hợp lệ theo luật game (hồi chiêu, mana, vàng…) vẫn
+  do SIM kiểm (CMD-02) trên mọi máy — một bộ luật duy nhất.
+- `NET-04` Mỗi `HASH_EVERY` tick mỗi máy gửi mã băm World (WorldHash: gồm trạng thái RNG); máy chủ so với bản của mình.
+  Lệch → ghi tick lệch đầu tiên, báo máy đó (báo cáo lệch kèm mã băm từng đơn vị, D-336).
+- `NET-05` `input_delay` máy chủ chọn lúc vào trận (mặc định 3 tick, cấu hình được), gửi trong lời chào.
+- `NET-06` Máy khác phiên bản game với máy chủ không vào được phòng; phải đăng nhập, tài khoản bị ban không vào được.
+- (M9.7) Rớt mạng quá lâu → bot đánh thay bằng lệnh đổi quyền điều khiển trong luồng lệnh (luật viết khi làm).
+
 ## CMD — Lệnh (Command)
 
 Người chơi, bot và controller (lính, trụ, quái) đều điều khiển đơn vị bằng lệnh.

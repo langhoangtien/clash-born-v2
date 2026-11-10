@@ -100,6 +100,8 @@ clashborn_v2/
                            Updater: tự kiểm tra / tải / cài bản Android mới (D-148);
                            AccountClient: tài khoản — gọi /api/auth/*, giữ phiên trong máy (D-333; form ở view/menu/AccountPanel);
                            MatchUpload: gửi biên bản trận cho Clashborn Stats (D-331);
+                           net/: trận online lockstep máy chủ giữ nhịp (NET-01..06, D-337) — NetTransport (kênh: WebSocket / LoopbackNet giả),
+                           NetCodec (Command / MatchConfig ↔ JSON), LockstepClient (máy khách), LockstepRoom (lõi phòng ở máy chủ);
                            SettingsControl: áp lựa chọn của bảng Cài đặt (âm thanh, đồ họa, FPS, công cụ thử, D-183);
                            FrameProbe: mốc đầu / cuối _process, trước / sau vẽ cho FrameProfile (D-261);
     perf/                  Log hiệu năng (D-268, v2 D-269): FrameHistogram (thời gian từng khung → 1% low, P95…), PerfRecorder

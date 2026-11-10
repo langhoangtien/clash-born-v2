@@ -304,3 +304,4 @@ Cập nhật mỗi khi một việc xong (agent ghi trong báo cáo cuối việ
 | ST.4 | Xong | 2026-11-10 | 55 trận bot vs bot trên trang (25 trận 1v1, 30 trận 3v3). Tín hiệu đầu: Duy Anh thắng 39/41 (95%), Brakk / Vexa ~28% — cần xem cân bằng hay bot cầm Duy Anh giỏi hơn |
 | ACC.1–ACC.4 | Xong (chờ thử trên điện thoại) | 2026-11-10 | Máy chủ tài khoản + Google + xóa tài khoản (17 test máy chủ); màn Tài khoản trong game; trang quyền riêng tư |
 | M9.3 | Xong | 2026-11-10 | S-0016: điện thoại Android arm64 khớp x86_64 300/300 giây (trận 3v3 bot 5 phút) — SIM tất định giữa máy |
+| M9.4 | Xong | 2026-11-10 | `app/net/`: LockstepClient / LockstepRoom / NetCodec / LoopbackNet; 7 test NET + soak mạng 4 mức: không lệch, đứng hình 1–4 % khung, trễ bấm → hiệu lực 120–310 ms ở RTT 20–100 ms (D-337) |

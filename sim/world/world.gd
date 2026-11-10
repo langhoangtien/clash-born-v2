@@ -73,6 +73,9 @@ var prd_counters: Dictionary[int, int] = {}
 var _pending: Array[Command] = []
 ## D-273: đã chạy nửa đầu tick hiện tại, chưa chạy nửa sau (VIEW chưa đọc sự kiện của tick này).
 var mid_tick: bool = false
+## NET-02 (D-337): trận online — nơi nhận lệnh người chơi (bộ mạng); trống = trận offline. `_in_tick`: đang chạy hệ thống.
+var remote_sink: Callable = Callable()
+var _in_tick: bool = false
 var _systems: Array[Array] = []  # [phase, thứ tự đăng ký, SimSystem]
 
 
@@ -147,7 +150,17 @@ func previous_hero_fights() -> Array[GameEvent]:
 
 
 ## Gửi lệnh; áp ở pha COMMAND của tick kế tiếp (CMD-01).
+## NET-02 (D-337): trận online — lệnh gửi từ ngoài tick (giao diện người chơi) chuyển cho `remote_sink` (bộ mạng gửi lên
+## máy chủ) thay vì vào hàng chờ; lệnh sinh trong tick (bot, controller) vẫn vào thẳng — mọi máy tự tính giống nhau.
 func submit(command: Command) -> void:
+	if remote_sink.is_valid() and not _in_tick:
+		remote_sink.call(command)
+		return
+	_pending.append(command)
+
+
+## NET-01: lệnh trong gói lệnh của máy chủ (đã có tick thực thi) — vào hàng chờ của tick kế tiếp, không qua remote_sink.
+func enqueue(command: Command) -> void:
 	_pending.append(command)
 
 
@@ -229,71 +242,18 @@ func step_second_half() -> void:
 
 
 func _run_systems(first_half: bool) -> void:
+	_in_tick = true
 	for entry: Array in _systems:
 		if (int(entry[0]) <= Phase.CONTROLLER) == first_half:
 			(entry[2] as SimSystem).run(self)
+	_in_tick = false
 
 
-## Băm toàn bộ trạng thái để so hai lần chạy (test phát lại, D-30).
+## Băm toàn bộ trạng thái để so hai lần chạy (test phát lại, D-30) — WorldHash.
 func state_hash() -> PackedByteArray:
-	var ctx: HashingContext = HashingContext.new()
-	ctx.start(HashingContext.HASH_SHA256)
-	ctx.update(PackedInt64Array([tick, rng.seed, rng.state, entities.size(), winner]).to_byte_array())
-	for e: Entity in entities:
-		_hash_entity(ctx, e)
-	for t: int in range(shop_stock.size()):
-		var ids: Array = shop_stock[t].keys()
-		ids.sort()
-		for id: StringName in ids:
-			ctx.update(PackedInt64Array([t, id.hash(), shop_stock[t][id][0], shop_stock[t][id][1]]).to_byte_array())
-	var keys: Array = prd_counters.keys()
-	keys.sort()
-	for k: int in keys:
-		ctx.update(PackedInt64Array([k, prd_counters[k]]).to_byte_array())
-	for c: CampState in camps:
-		ctx.update(PackedInt64Array([c.index, c.unit_ids.size(), c.target_id, c.aggro_until_tick, int(c.returning)]).to_byte_array())
-	for a: PendingArea in pending_areas:
-		ctx.update(PackedFloat64Array([a.source_id, a.due_tick, a.center.x, a.center.y]).to_byte_array())
-	for z: ActiveZone in zones:
-		ctx.update(PackedFloat64Array([z.source_id, z.next_tick, z.end_tick, z.interval_ticks, z.center.x, z.center.y, z.radius]).to_byte_array())
-	for s: SkillShot in skill_shots:
-		ctx.update(PackedFloat64Array([s.source_id, s.position.x, s.position.y, s.direction.x, s.direction.y, s.travelled, s.hit_ids.size()]).to_byte_array())
-	for p: Projectile in projectiles:
-		ctx.update(PackedFloat64Array([p.source_id, p.target_id, p.position.x, p.position.y, p.request.raw]).to_byte_array())
-	return ctx.finish()
+	return WorldHash.of(self)
 
-## M9.3 (D-336): mã băm riêng một đơn vị (16 byte đầu SHA-256) — so tất định giữa máy, chỉ ra đơn vị lệch.
+
+## M9.3 (D-336): mã băm riêng một đơn vị — WorldHash.
 func entity_digest(e: Entity) -> PackedByteArray:
-	var ctx: HashingContext = HashingContext.new()
-	ctx.start(HashingContext.HASH_SHA256)
-	_hash_entity(ctx, e)
-	return ctx.finish().slice(0, 16)
-
-
-func _hash_entity(ctx: HashingContext, e: Entity) -> void:
-	ctx.update(PackedInt64Array([e.id, e.team, e.kind, e.order.type, int(e.order.finished), e.order.target_id,
-		int(e.alive), int(e.locked), int(e.returning), int(e.has_origin), e.aggro_target_id, e.aggro_until_tick, e.attack_phase, e.attack_target_id, e.attack_start_tick, e.attack_release_tick, e.next_attack_tick,
-		e.lock_target_id, e.respawn_tick, e.gold, e.last_hits, e.skill_points, e.attribute_bonus_count, e.talent_slot, e.kills, e.deaths, e.assists, e.last_attack_target_id, e.visible_mask, e.bush_id, e.reveal_until_tick, e.camp_index, e.reincarnate_tick, e.expire_tick, e.creep_tier, e.recall_until_tick, e.recall_start_tick]).to_byte_array())
-	ctx.update(PackedFloat64Array([e.position.x, e.position.y, e.radius, e.health, e.mana,
-		e.order.point.x, e.order.point.y, e.order.direction.x, e.order.direction.y,
-		e.chase_origin.x, e.chase_origin.y, e.xp, e.duel_damage]).to_byte_array())
-	if e.duel != null:
-		ctx.update(PackedInt64Array([e.duel.knight_id, e.duel.foe_id, e.duel.end_tick]).to_byte_array())
-	if e.stats != null:
-		ctx.update(e.stats.values().to_byte_array())
-	for a: AbilityInstance in e.abilities:
-		ctx.update(PackedInt64Array([a.slot, a.rank, a.ready_tick]).to_byte_array())
-	for it: ItemInstance in e.items:
-		if it != null:
-			ctx.update(PackedInt64Array([it.index, it.def.id.hash(), it.charges, it.ability.ready_tick if it.ability != null else -1]).to_byte_array())
-	if e.knockback != null:
-		ctx.update(PackedFloat64Array([e.knockback.direction.x, e.knockback.direction.y, e.knockback.per_tick, e.knockback.end_tick]).to_byte_array())
-	if e.dash != null:
-		ctx.update(PackedFloat64Array([e.dash.target_id, e.dash.speed, e.dash.source_id]).to_byte_array())
-	if e.bot != null:
-		ctx.update(PackedFloat64Array([e.bot.mode, e.bot.target_id, e.bot.goal.x, e.bot.goal.y, e.bot.chase_origin.x, e.bot.chase_origin.y, e.bot.trade_until_tick, e.bot.last_hurt_tick, e.bot.upgrades_done, e.bot.last_pos.x, e.bot.last_pos.y, e.bot.last_pos_tick, int(e.bot.ahead)]).to_byte_array())
-	if e.cast != null:
-		ctx.update(PackedInt64Array([e.cast.ability.slot, e.cast.release_tick, e.cast.target_id]).to_byte_array())
-	for inst: EffectInstance in e.effects:
-		ctx.update(PackedInt64Array([inst.serial, inst.def.id.hash(), inst.source_id, inst.stacks, inst.end_tick, inst.next_period_tick, inst.active_tick, inst.source_team]).to_byte_array())
-		ctx.update(PackedFloat64Array([inst.absorb_left]).to_byte_array())
+	return WorldHash.entity(e)

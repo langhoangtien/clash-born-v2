@@ -1,0 +1,135 @@
+class_name LockstepClient
+extends RefCounted
+## D-337 (NET-01, NET-02, NET-04): máy khách lockstep — lệnh người chơi (World.remote_sink) gửi lên máy chủ kèm tick
+## mong muốn; World chỉ chạy tick T khi đã có gói lệnh T của máy chủ (`ready_to_step` / `feed`); mỗi HASH_EVERY tick gửi
+## mã băm. Đo: RTT, trễ bấm → hiệu lực, số khung chờ mạng, hàng gói chờ, lệch. Không đụng SIM ngoài remote_sink / enqueue.
+
+const HASH_EVERY: int = 30
+const PING_EVERY_S: float = 1.0
+const MAX_STEPS_PER_FRAME: int = 5
+## Hàng gói chờ quá chừng này (máy tụt lại) → chạy bù không chờ nhịp.
+const CATCH_UP_BACKLOG: int = 6
+
+var world: World
+var transport: NetTransport
+var input_delay: int = 3
+## Mã của máy này trong phòng (máy chủ báo lúc chào) — nhận ra lệnh của mình trong gói (đo trễ).
+var peer_id: int = -1
+## Tick mới nhất đã có gói lệnh.
+var last_tick: int = 0
+var _bundles: Dictionary[int, Array] = {}
+var _seq: int = 0
+var _sent_at: Dictionary[int, float] = {}
+var _ping_in: float = 0.0
+var clock: float = 0.0           ## giây (APP / test đặt — thời gian thật hoặc đồng hồ ảo)
+
+# Số đo (D-337 mục 9)
+var rtt_ms: float = 0.0
+var jitter_ms: float = 0.0
+var input_latency_ms: float = 0.0
+var stalls: int = 0               ## số khung tới hạn chạy tick mà hết sạch gói (đứng hình vì mạng)
+var holds: int = 0                ## số khung chờ cho đầy đệm (chậm lại chút, chưa đứng hình)
+## Đệm gói giữ lại (tick) để dao động mạng không làm đứng hình: tự chỉnh theo dao động đo được (1–6).
+var buffer_target: int = 1
+var _acc: float = 0.0             ## thời gian đã trôi chưa chạy thành tick
+var max_backlog: int = 0
+var desync_tick: int = -1         ## tick lệch đầu tiên máy chủ báo (-1 = chưa)
+var hashes: Dictionary[int, String] = {}  ## mã băm đã gửi (chẩn đoán)
+
+
+func _init(t: NetTransport) -> void:
+	transport = t
+
+
+## Gắn World đã dựng theo cấu hình máy chủ gửi; lệnh người chơi từ nay đi qua mạng.
+func attach(w: World, delay: int, peer: int) -> void:
+	world = w
+	input_delay = delay
+	peer_id = peer
+	w.remote_sink = _send_command
+
+
+func _send_command(c: Command) -> void:
+	if not transport.is_open():
+		return
+	_seq += 1
+	_sent_at[_seq] = clock
+	transport.send({"t": "cmd", "want": last_tick + input_delay, "s": _seq, "c": NetCodec.command_to(c)})
+
+
+## Nhận tin (gọi mỗi khung). Trả các tin không phải của lockstep (vd sảnh) cho APP xử lý.
+func pump(now: float) -> Array[Dictionary]:
+	var dt: float = now - clock
+	clock = now
+	var other: Array[Dictionary] = []
+	for msg: Dictionary in transport.receive():
+		match String(msg.get("t", "")):
+			"tick":
+				var n: int = int(msg.get("n", 0))
+				_bundles[n] = msg.get("c", [])
+				last_tick = maxi(last_tick, n)
+			"pong":
+				var r: float = (clock - float(msg.get("at", clock))) * 1000.0
+				jitter_ms = lerpf(jitter_ms, absf(r - rtt_ms), 0.2) if rtt_ms > 0.0 else 0.0
+				rtt_ms = r if rtt_ms == 0.0 else lerpf(rtt_ms, r, 0.2)
+			"desync":
+				if desync_tick < 0:
+					desync_tick = int(msg.get("n", -1))
+			_:
+				other.append(msg)
+	_ping_in -= dt
+	if _ping_in <= 0.0 and transport.is_open():
+		_ping_in = PING_EVERY_S
+		transport.send({"t": "ping", "at": clock})
+	if world != null:
+		max_backlog = maxi(max_backlog, last_tick - world.tick)
+	return other
+
+
+func ready_to_step() -> bool:
+	return world != null and world.winner < 0 and _bundles.has(world.tick + 1)
+
+
+## Nhịp chạy mỗi khung (APP / test): 30 tick / giây theo thời gian trôi, chỉ khi đã có gói (NET-01), giữ `buffer_target`
+## gói làm đệm chống dao động; hết sạch gói lúc tới hạn → một khung đứng hình (stalls); tụt sau máy chủ nhiều → chạy bù.
+func advance(dt: float) -> int:
+	_acc += dt
+	buffer_target = clampi(ceili(jitter_ms / (SimClock.TICK_SECONDS * 1000.0)) + 1, 1, 6)
+	var n: int = 0
+	while n < MAX_STEPS_PER_FRAME and ready_to_step() and (
+			(_acc >= SimClock.TICK_SECONDS and backlog() >= buffer_target) or backlog() > buffer_target + CATCH_UP_BACKLOG):
+		step()
+		_acc = maxf(0.0, _acc - SimClock.TICK_SECONDS)
+		n += 1
+	if _acc >= SimClock.TICK_SECONDS and transport.is_open():
+		if not ready_to_step():
+			stalls += 1
+		else:
+			holds += 1
+		_acc = minf(_acc, SimClock.TICK_SECONDS * 2.0)  # không dồn: đệm đầy lại thì chạy đều tiếp
+	return n
+
+
+## Đưa gói lệnh của tick kế vào World rồi chạy tick đó (NET-01); gửi mã băm định kỳ (NET-04).
+func step() -> void:
+	var bundle: Array = _bundles[world.tick + 1]
+	_bundles.erase(world.tick + 1)
+	for entry: Variant in bundle:
+		var c: Command = NetCodec.command_from(entry.get("c") if entry is Dictionary else null)
+		if c == null:
+			continue
+		world.enqueue(c)
+		var s: int = int(entry.get("s", -1))
+		if int(entry.get("p", -2)) == peer_id and _sent_at.has(s):
+			input_latency_ms = lerpf(input_latency_ms, (clock - _sent_at[s]) * 1000.0, 0.2) if input_latency_ms > 0.0 \
+				else (clock - _sent_at[s]) * 1000.0
+			_sent_at.erase(s)
+	world.step()
+	if world.tick % HASH_EVERY == 0:
+		hashes[world.tick] = world.state_hash().hex_encode()
+		transport.send({"t": "hash", "n": world.tick, "h": hashes[world.tick]})
+
+
+## Số gói đã đến mà chưa chạy.
+func backlog() -> int:
+	return last_tick - (world.tick if world != null else 0)
