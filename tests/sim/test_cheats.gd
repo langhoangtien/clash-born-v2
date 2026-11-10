@@ -5,6 +5,7 @@ extends TestCase
 func _setup() -> Array:
 	var lib: ContentLibrary = ContentLibrary.load_dir()
 	var w: World = World.new(1, load("res://content/balance/balance_settings.tres") as BalanceSettings)
+	w.practice = true  # MATCH-06: lệnh thử chỉ có trong trận thử
 	var me: Entity = UnitFactory.hero(w, lib.heroes[&"brakk"], 0, Vector2(1000, 1000))
 	var bot: Entity = UnitFactory.hero(w, lib.heroes[&"myra"], 1, Vector2(3000, 3000))
 	return [w, me, bot]
@@ -52,3 +53,18 @@ func test_CMD_06_cheat_works_while_dead_and_keeps_order() -> void:
 	w.submit(Command.cheat_level(me.id, 1))
 	w.step()
 	assert_eq(me.stats.level(), 2, "chờ hồi sinh vẫn lên cấp được")
+
+
+## MATCH-06 (D-332): trận thường từ chối lệnh thử — không cộng vàng / cấp được, kể cả gửi lệnh thẳng (online sau này).
+func test_MATCH_06_cheats_rejected_outside_practice() -> void:
+	var lib: ContentLibrary = ContentLibrary.load_dir()
+	var w: World = World.new(1, load("res://content/balance/balance_settings.tres") as BalanceSettings)
+	var me: Entity = UnitFactory.hero(w, lib.heroes[&"brakk"], 0, Vector2(1000, 1000))
+	var gold: int = me.gold
+	w.submit(Command.cheat_gold(me.id, 10000))
+	w.submit(Command.cheat_level(me.id, 5))
+	w.step()
+	assert_eq(me.gold, gold, "không cộng vàng")
+	assert_eq(me.stats.level(), 1, "không lên cấp")
+	assert_eq(w.rejected_commands.map(func(c: Command) -> Command.Reject: return c.reject_reason),
+		[Command.Reject.PRACTICE_ONLY, Command.Reject.PRACTICE_ONLY])

@@ -29,7 +29,9 @@ func _ready() -> void:
 	var settings: SettingsControl = SettingsControl.attach(self, false, audio)  # D-183
 	settings.start_bench = func() -> void:  # D-272: Benchmark A/B — cảnh cố định, hai tướng do bot
 		BenchSession.requested = true
-		_open(MatchConfig.duel(BenchSession.HERO, BenchSession.FOE))  # seed cố định: cảnh so sánh được
+		var bench: MatchConfig = MatchConfig.duel(BenchSession.HERO, BenchSession.FOE)  # seed cố định: so sánh được
+		bench.practice = true  # MATCH-06: đo hiệu năng — không tính thống kê
+		_open(bench)
 	select.settings_pressed.connect(func() -> void:
 		settings.panel.open = true
 		settings.panel.queue_redraw())
@@ -41,17 +43,25 @@ func _ready() -> void:
 
 
 ## MATCH (D-328): 1v1 — đối thủ bot người chơi chọn; 3v3 — đồng đội và đối thủ là bot, tướng ngẫu nhiên không trùng
-## (MATCH-02). Seed ngẫu nhiên mỗi trận (MATCH-05).
-func _start(id: StringName, bot_id: StringName, difficulty: int, team_size: int) -> void:
+## (MATCH-02). Seed ngẫu nhiên mỗi trận (MATCH-05). MATCH-06: trận thử khi bấm "Trận thử" hoặc đang bật ghi log hiệu năng.
+func _start(id: StringName, bot_id: StringName, difficulty: int, team_size: int, practice: bool) -> void:
 	var seed_value: int = randi()
+	var cfg: MatchConfig
 	if team_size <= 1:
-		_open(MatchConfig.duel(id, bot_id, difficulty as BotState.Difficulty, seed_value))
-		return
+		cfg = MatchConfig.duel(id, bot_id, difficulty as BotState.Difficulty, seed_value)
+	else:
+		cfg = MatchConfig.make(team_size, _team_picks(id, team_size), [0], difficulty as BotState.Difficulty, seed_value)
+	cfg.practice = practice or PerfSettings.enabled()
+	_open(cfg)
+
+
+## Người chơi cầm `id`; các ô còn lại tướng ngẫu nhiên không trùng (MATCH-02).
+func _team_picks(id: StringName, team_size: int) -> Array[StringName]:
 	var others: Array[StringName] = PLAYABLE.filter(func(h: StringName) -> bool: return h != id)
 	others.shuffle()
 	var heroes: Array[StringName] = [id]
 	heroes.append_array(others.slice(0, 2 * team_size - 1))
-	_open(MatchConfig.make(team_size, heroes, [0], difficulty as BotState.Difficulty, seed_value))
+	return heroes
 
 
 func _open(config: MatchConfig) -> void:

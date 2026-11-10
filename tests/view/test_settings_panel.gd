@@ -26,8 +26,11 @@ func test_D_183_gear_opens_and_rows_report_action() -> void:
 
 func test_D_183_rows_in_match_and_menu() -> void:
 	var m: SettingsPanel = _panel(true)
-	assert_eq(m.rows(), [&"sound", &"graphics", &"fps", &"perf_log", &"test", &"diag", &"perf_export", &"quit"] as Array[StringName],
-		"D-268: ghi log hiệu năng + xuất log trong trận")
+	assert_eq(m.rows(), [&"sound", &"graphics", &"fps", &"quit"] as Array[StringName],
+		"MATCH-06: trận thường không có công cụ thử")
+	m.practice = true
+	assert_eq(m.rows(), [&"sound", &"graphics", &"fps", &"test", &"diag", &"perf_export", &"quit"] as Array[StringName],
+		"trận thử: bảng Test, chẩn đoán, xuất log")
 	var menu: SettingsPanel = _panel(false)
 	assert_eq(menu.rows(), [&"sound", &"graphics", &"fps", &"perf_log", &"bench"] as Array[StringName],
 		"menu không có công cụ thử / thoát trận; D-272: có đo hiệu năng tự động")

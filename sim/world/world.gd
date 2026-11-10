@@ -9,6 +9,8 @@ enum Phase { COMMAND, EFFECT, STATE, VISION, CONTROLLER, MOVEMENT, ABILITY, ATTA
 var tick: int = 0
 ## Đội thắng (STR-05), -1 khi trận chưa xong. Đã có đội thắng thì step() không chạy nữa.
 var winner: int = -1
+## MATCH-06 (D-332): trận thử — chỉ khi đó lệnh thử (CMD-06) được nhận.
+var practice: bool = false
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var balance: BalanceSettings
 ## Map của trận; null trong test không cần map.

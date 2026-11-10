@@ -18,15 +18,7 @@ static func of(world: World, config: MatchConfig, version: String) -> Dictionary
 		players.append(_player(world, heroes[i], slot))
 	return {"schema": SCHEMA, "version": version, "mode": "%dv%d" % [config.team_size, config.team_size],
 		"kind": kind_of(config), "duration_s": world.tick * SimClock.TICK_SECONDS, "winner": world.winner,
-		"seed": config.seed, "cheats": used_cheats(world), "players": players}
-
-
-## CMD-06: trận có dùng nút Test (cộng vàng / cấp) — không tính vào thống kê.
-static func used_cheats(world: World) -> bool:
-	for c: Command in world.command_log:
-		if c.type == Command.Type.CHEAT_GOLD or c.type == Command.Type.CHEAT_LEVEL:
-			return true
-	return false
+		"seed": config.seed, "practice": config.practice, "players": players}
 
 
 ## ST (D-331): pvp = cả hai đội có người; pvb = có người nhưng không đủ hai đội; bvb = toàn bot.

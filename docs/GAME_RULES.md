@@ -858,6 +858,9 @@ Trận được dựng từ một cấu hình (MatchConfig): số ô mỗi độ
   ô k ≥ 1 cách fountain `hero_spawn_spread` theo các góc chia đều (đẩy vào chỗ đứng được gần nhất) — không đứng chồng.
 - `MATCH-04` Bot ở ô k đi đường `bot_lane_order[k]` (MID, TOP, BOT, BOT, TOP): 1v1 bot đi giữa; 3v3 giữa / trên /
   dưới. Ô người không bị gán đường.
+- `MATCH-06` (D-332) **Trận thử** chọn trước khi vào trận (màn chọn tướng; bật ghi log hiệu năng ở menu cũng là trận thử),
+  không đổi được giữa trận: chỉ trận thử có bảng Test (lệnh CMD-06), chẩn đoán FPS, xuất log hiệu năng; trận thử
+  **không bao giờ tính vào thống kê** (Clashborn Stats).
 - `MATCH-05` Seed của World lấy từ cấu hình (offline: ngẫu nhiên mỗi trận; online: máy chủ chọn). Cùng cấu hình +
   cùng nhật ký lệnh → cùng trận (CMD-04).
 
@@ -884,7 +887,7 @@ Người chơi, bot và controller (lính, trụ, quái) đều điều khiển 
   ABL-15). Đánh, dùng chiêu, mua đồ thêm ở
   mốc của chúng.
 
-- `CMD-06` (D-138) Lệnh thử nghiệm (nút **Test** trong trận, kiểu chế độ luyện tập Liên Quân):
+- `CMD-06` (D-138; D-332: **chỉ trong trận thử** MATCH-06 — trận thường từ chối `PRACTICE_ONLY`) Lệnh thử nghiệm (nút **Test** trong trận, kiểu chế độ luyện tập Liên Quân):
   `CHEAT_GOLD(hero, vàng)` cộng vàng; `CHEAT_LEVEL(hero, số cấp)` cộng đúng lượng XP từng cấp (điểm
   kỹ năng, nội tại như lên cấp thường), dừng ở cấp tối đa (đã tối đa → `CANNOT_LEVEL`). Chỉ cho hero
   (không thì `BAD_TARGET`), cả hero bot; được cả khi chờ hồi sinh; không đổi lệnh đang làm; ghi nhật

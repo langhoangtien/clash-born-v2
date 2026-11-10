@@ -91,3 +91,14 @@ func test_MATCH_05_seed_from_config_same_config_same_match() -> void:
 			w.step()
 		hashes.append(w.state_hash())
 	assert_eq(hashes[0], hashes[1], "cùng cấu hình → cùng trận")
+
+
+## MATCH-06 (D-332): trận thử theo cấu hình — World biết để cho / chặn lệnh thử (CMD-06).
+func test_MATCH_06_practice_flag_from_config() -> void:
+	var lib: ContentLibrary = ContentLibrary.load_dir()
+	for practice: bool in [false, true]:
+		var cfg: MatchConfig = MatchConfig.duel(&"brakk", &"myra")
+		cfg.practice = practice
+		var w: World = _world(cfg)
+		MatchSetup.build(w, lib, cfg)
+		assert_eq(w.practice, practice)

@@ -15,7 +15,7 @@ def record(winner=0, heroes=("gorran", "myra"), kind="pvb", items0=("iron_branch
                         "items": list(items0) if i == 0 else ["boots"], "buys": [[12.5, "iron_branch"], [300.0, "boots"]]})
     n = len(heroes) // 2
     return {"schema": 1, "version": "0.1.560", "mode": "%dv%d" % (n, n), "kind": kind, "duration_s": 1500.0,
-            "winner": winner, "seed": 1, "cheats": False, "players": players}
+            "winner": winner, "seed": 1, "practice": False, "players": players}
 
 
 class StatsTest(ServerCase):
@@ -48,7 +48,7 @@ class StatsTest(ServerCase):
 
     def test_D_331_bad_records_rejected(self) -> None:
         bad = []
-        r = record(); r["cheats"] = True; bad.append(r)
+        r = record(); r["practice"] = True; bad.append(r)
         r = record(heroes=("gorran", "gorran")); bad.append(r)
         r = record(); r["mode"] = "9v9"; bad.append(r)
         r = record(); r["duration_s"] = 5.0; bad.append(r)

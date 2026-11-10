@@ -7,6 +7,9 @@ const SCENE: String = "res://app/match_scene.tscn"
 
 func _scene(on: bool) -> Node:
 	PerfSettings.save_enabled(on)
+	var cfg: MatchConfig = MatchConfig.duel(&"brakk", &"myra")
+	cfg.practice = on  # MATCH-06: main.gd — bật ghi log hiệu năng thì trận là trận thử
+	(load(SCENE.get_basename() + ".gd") as GDScript).set("config", cfg)
 	var scene: Node = (load(SCENE) as PackedScene).instantiate()
 	(Engine.get_main_loop() as SceneTree).root.add_child(scene)
 	scene.set_process(false)

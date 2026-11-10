@@ -64,6 +64,9 @@ func test_D_272_csv_and_json() -> void:
 
 func _bench_scene() -> Node:
 	BenchSession.requested = true
+	var cfg: MatchConfig = MatchConfig.duel(BenchSession.HERO, BenchSession.FOE)
+	cfg.practice = true  # MATCH-06: main.gd mở Benchmark là trận thử
+	(load("res://app/match_scene.gd") as GDScript).set("config", cfg)
 	var scene: Node = (load("res://app/match_scene.tscn") as PackedScene).instantiate()
 	(Engine.get_main_loop() as SceneTree).root.add_child(scene)
 	scene.set_process(false)

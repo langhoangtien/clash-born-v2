@@ -7,7 +7,7 @@ Ghi:
 Đọc (công khai, trang clashborn.quest/stats/):
   GET /api/stats/summary | heroes | items | hero/<id>   ?mode=3v3&kind=pvb&version=0.1.560   (bỏ trống / all = tất cả)
 Biên bản là dữ liệu người ngoài gửi: chỉ json.loads, kiểm từng trường (kiểu, khoảng, tên id), không tin gì khác (như
-D-288). Trận dùng nút Test (cheats), chưa có đội thắng, quá ngắn → bỏ. Không lưu IP / thiết bị. Lưu <root>/stats/stats.db.
+D-288). Trận thử (practice — MATCH-06: có nút Test), chưa có đội thắng, quá ngắn → bỏ. Không lưu IP / thiết bị. Lưu <root>/stats/stats.db.
 """
 import json, os, re, sqlite3, threading, time
 
@@ -67,8 +67,8 @@ def check(rec) -> dict:
     """Biên bản hợp lệ (đã chuẩn hóa) hoặc ValueError."""
     if not isinstance(rec, dict) or rec.get("schema") != SCHEMA:
         raise ValueError("schema không hợp lệ")
-    if rec.get("cheats") is not False:
-        raise ValueError("trận dùng nút Test — không tính")
+    if rec.get("practice") is not False:
+        raise ValueError("trận thử — không tính")
     version, mode, kind = rec.get("version"), rec.get("mode"), rec.get("kind")
     if not isinstance(version, str) or not VERSION.match(version) or mode not in MODES or kind not in KINDS:
         raise ValueError("version / mode / kind không hợp lệ")

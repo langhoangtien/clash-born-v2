@@ -21,6 +21,8 @@ const LABELS: Dictionary[StringName, String] = {
 var open: bool = false
 ## true: trong trận (có bánh răng, công cụ thử, thoát trận).
 var in_match: bool = true
+## MATCH-06 (D-332): trận thử — mới có công cụ thử (Test, Chẩn đoán, xuất log).
+var practice: bool = false
 ## Chữ giá trị bên phải mỗi hàng (APP đặt), vd {&"sound": "Bật"}.
 var values: Dictionary[StringName, String] = {}
 ## D-267: tên bản đang chạy (APP đặt, vd "0.1.449"); rỗng = chạy từ editor.
@@ -28,11 +30,13 @@ var version_text: String = ""
 
 
 func rows() -> Array[StringName]:
-	var out: Array[StringName] = [&"sound", &"graphics", &"fps", &"perf_log"]  # D-268
+	var out: Array[StringName] = [&"sound", &"graphics", &"fps"]
 	if in_match:
-		out.append_array([&"test", &"diag", &"perf_export", &"quit"] as Array[StringName])
+		if practice:  # MATCH-06: công cụ thử chỉ trong trận thử
+			out.append_array([&"test", &"diag", &"perf_export"] as Array[StringName])
+		out.append(&"quit")
 	else:
-		out.append(&"bench")  # D-272: trận đo riêng, chỉ mở từ menu
+		out.append_array([&"perf_log", &"bench"] as Array[StringName])  # D-268 / D-272: chọn trước khi vào trận
 	return out
 
 

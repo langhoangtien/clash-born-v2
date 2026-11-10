@@ -242,24 +242,28 @@ func _world_point(screen: Vector2) -> Vector2:
 
 
 ## D-138: nút Test — cộng vàng / lên cấp cho mình hoặc bot qua lệnh CHEAT_* (CMD-06); D-179 bảng Chẩn đoán.
-## D-183: cả hai ẩn, mở trong bảng Cài đặt (bánh răng góc trên phải).
+## D-183: cả hai ẩn, mở trong bảng Cài đặt (bánh răng góc trên phải). MATCH-06 (D-332): chỉ có trong trận thử.
 func _setup_test_panel() -> void:
-	var panel: TestPanel = TestPanel.new()
-	panel.name = "TestPanel"
-	panel.has_bot = bot_unit != null
-	panel.action.connect(_on_test_action)
-	var diag: DiagPanel = DiagPanel.new()
-	diag.name = "DiagPanel"
-	diag.view_3d = view_3d
-	for c: Control in [panel, diag]:
-		c.visible = false
-		$Hud.add_child(c)
-		c.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	diag.read_viewport(get_viewport())
+	var diag: DiagPanel = null
+	var tools: Dictionary[StringName, Control] = {}
+	if config.practice:
+		var panel: TestPanel = TestPanel.new()
+		panel.name = "TestPanel"
+		panel.has_bot = bot_unit != null
+		panel.action.connect(_on_test_action)
+		diag = DiagPanel.new()
+		diag.name = "DiagPanel"
+		diag.view_3d = view_3d
+		tools = {&"test": panel, &"diag": diag}
+		for c: Control in tools.values():
+			c.visible = false
+			$Hud.add_child(c)
+			c.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		diag.read_viewport(get_viewport())
 	FrameProbe.attach(self, world, view_3d)  # D-261: đo thời gian từng phần mỗi khung
-	settings = SettingsControl.attach($Hud, true, audio)
+	settings = SettingsControl.attach($Hud, true, audio, config.practice)
 	settings.hud = match_hud
-	settings.tools = {&"test": panel, &"diag": diag}
+	settings.tools = tools
 	settings.quit = func() -> void: get_tree().change_scene_to_file(MENU_SCENE)
 	settings.perf = PerfSession.attach(self, world, view_3d, hero, diag)  # D-268
 	settings.refresh()

@@ -1,8 +1,8 @@
 class_name SettingsControl
 extends RefCounted
 ## D-183: nối bảng Cài đặt với nơi áp — tầng APP, dùng chung cho menu và trận. Âm thanh (AudioView, lưu
-## settings.cfg), đồ họa (GraphicsSetting, áp ngay vào khung nhìn), hiện FPS (MatchHud); trong trận thêm mở /
-## tắt bảng Test, bảng Chẩn đoán và thoát trận. Không dừng trận.
+## settings.cfg), đồ họa (GraphicsSetting, áp ngay vào khung nhìn), hiện FPS (MatchHud); trong trận thêm thoát trận,
+## và chỉ trận thử (MATCH-06) có mở / tắt bảng Test, bảng Chẩn đoán, xuất log. Không dừng trận.
 
 var panel: SettingsPanel
 var audio: AudioView
@@ -17,12 +17,13 @@ var start_bench: Callable = Callable()
 var quit: Callable
 
 
-static func attach(layer: Node, in_match: bool, audio_view: AudioView) -> SettingsControl:
+static func attach(layer: Node, in_match: bool, audio_view: AudioView, practice: bool = false) -> SettingsControl:
 	var s: SettingsControl = SettingsControl.new()
 	s.audio = audio_view
 	s.panel = SettingsPanel.new()
 	s.panel.name = "SettingsPanel"
 	s.panel.in_match = in_match
+	s.panel.practice = practice
 	s.panel.version_text = Updater.current_name()  # D-267
 	layer.add_child(s.panel)
 	s.panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -42,10 +43,8 @@ func apply(what: StringName) -> void:
 			GraphicsSetting.save_show_fps(not GraphicsSetting.load_show_fps())
 		&"test", &"diag":
 			tools[what].visible = not tools[what].visible
-		&"perf_log":
+		&"perf_log":  # MATCH-06: chỉ ở menu — bật thì các trận sau là trận thử
 			PerfSettings.save_enabled(not PerfSettings.enabled())
-			if perf != null:
-				perf.set_recording(PerfSettings.enabled())
 		&"perf_export":
 			if perf != null:
 				perf.export_now()

@@ -79,6 +79,8 @@ func _check(world: World, command: Command, unit: Entity) -> Command.Reject:
 			Command.Type.CHEAT_GOLD, Command.Type.CHEAT_LEVEL]:
 		return Command.Reject.UNIT_DEAD  # cộng điểm được cả khi đang chờ hồi sinh
 	if command.type == Command.Type.CHEAT_GOLD or command.type == Command.Type.CHEAT_LEVEL:
+		if not world.practice:
+			return Command.Reject.PRACTICE_ONLY  # MATCH-06
 		return Progression.cheat_problem(world, unit, command)
 	if unit.duel != null and command.type in [Command.Type.MOVE_TO, Command.Type.MOVE_DIR, Command.Type.STOP,
 			Command.Type.ATTACK, Command.Type.ATTACK_AUTO, Command.Type.CAST, Command.Type.RECALL]:

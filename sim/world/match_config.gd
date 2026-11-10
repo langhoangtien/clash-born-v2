@@ -8,6 +8,8 @@ const MAX_TEAM_SIZE: int = 5  ## MATCH-01
 var team_size: int = 1
 var seed: int = 1
 var slots: Array[MatchSlot] = []
+## MATCH-06 (D-332): trận thử — có bảng Test (CMD-06), chẩn đoán, log hiệu năng; không tính thống kê.
+var practice: bool = false
 
 
 ## `heroes` theo thứ tự ô; `humans` = chỉ số ô do người điều khiển, còn lại là bot độ khó `difficulty`.

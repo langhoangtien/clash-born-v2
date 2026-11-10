@@ -66,6 +66,7 @@ static func add_jungle(world: World, library: ContentLibrary) -> void:
 ## Trận đầy đủ theo cấu hình (MATCH-01..05): công trình, tầm nhìn, rừng, cửa hàng, lính đường, hero. World đã có map +
 ## MovementSystem. Dùng chung: màn trận, test, công cụ không giao diện (sim_profile, sim_matches).
 static func build(world: World, library: ContentLibrary, config: MatchConfig) -> Array[Entity]:
+	world.practice = config.practice  # MATCH-06
 	spawn_structures(world, library)
 	add_vision(world)
 	add_jungle(world, library)

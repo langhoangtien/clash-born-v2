@@ -4,7 +4,7 @@ extends Control
 ## chi tiết (Chiêu / Chỉ số / Talent) bên phải, hàng dưới chọn tướng bot, độ khó, Xem map và
 ## BẮT ĐẦU. Chỉ báo lựa chọn qua tín hiệu; APP mở trận.
 
-signal start_pressed(hero_id: StringName, bot_id: StringName, difficulty: int, team_size: int)
+signal start_pressed(hero_id: StringName, bot_id: StringName, difficulty: int, team_size: int, practice: bool)
 signal map_pressed
 ## D-183: nút Cài đặt (APP mở SettingsPanel).
 signal settings_pressed
@@ -25,12 +25,15 @@ const SETTINGS_BUTTON: Rect2 = Rect2(1336, 954, 130, 72)
 const MODES: Array[int] = [1, 3]
 const MODE_AT: Vector2 = Vector2(1480, 28)
 const MODE_SIZE: Vector2 = Vector2(184, 64)
+## MATCH-06 (D-332): trận thử (Test, chẩn đoán, log hiệu năng — không tính thống kê), chọn trước khi vào trận.
+const PRACTICE: Rect2 = Rect2(1196, 34, 270, 64)
 
 var previews: Array[HeroPreview] = []
 var selected: int = 0
 var bot: int = 1
 var difficulty: int = 1
 var mode: int = 0
+var practice: bool = false
 var tab: HeroDetail.Tab = HeroDetail.Tab.SKILLS
 
 
@@ -67,6 +70,8 @@ func press_at(at: Vector2) -> void:
 	for i: int in MODES.size():
 		if mode_rect(i).has_point(at):
 			mode = i
+	if PRACTICE.has_point(at):
+		practice = not practice
 	for i: int in range(previews.size()):
 		if card_rect(i).has_point(at):
 			selected = i
@@ -81,7 +86,7 @@ func press_at(at: Vector2) -> void:
 	if bot == selected and previews.size() > 1:  # MATCH-02: không trùng tướng với đối thủ
 		bot = (selected + 1) % previews.size()
 	if START.has_point(at) and not previews.is_empty():
-		start_pressed.emit(previews[selected].def.id, previews[bot].def.id, difficulty, MODES[mode])
+		start_pressed.emit(previews[selected].def.id, previews[bot].def.id, difficulty, MODES[mode], practice)
 	if MAP_BUTTON.has_point(at):
 		map_pressed.emit()
 	if SETTINGS_BUTTON.has_point(at):
@@ -103,6 +108,7 @@ func _draw() -> void:  # D-130: giao diện theo UiStyle
 	draw_string(UiStyle.serif(), Vector2(456, 66), "Chọn tướng", HORIZONTAL_ALIGNMENT_LEFT, -1, 34, UiStyle.DIM)
 	for i: int in MODES.size():
 		UiStyle.button(self, mode_rect(i), &"gold" if i == mode else &"ghost", "%d vs %d" % [MODES[i], MODES[i]], "", 28)
+	UiStyle.button(self, PRACTICE, &"blue" if practice else &"ghost", "Trận thử ✓" if practice else "Trận thử", "", 26)
 	UiStyle.panel(self, Rect2(Vector2(40, 116), Vector2(DETAIL.position.x - 60, 784)))
 	for i: int in range(previews.size()):
 		_card(i)

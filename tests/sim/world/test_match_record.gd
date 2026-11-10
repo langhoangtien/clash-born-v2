@@ -40,12 +40,9 @@ func test_ST_1_record_has_match_players_items_and_buys() -> void:
 	assert_eq(p[0]["buys"].size(), 1, "lịch sử mua")
 	assert_eq(p[0]["buys"][0][1], "iron_branch")
 	assert_near(p[0]["buys"][0][0], 1.5, 0.1, "giây mua")
-	assert_false(r["cheats"])
-	w.winner = -1  # trận xong thì World.step() không chạy nữa
-	w.submit(Command.cheat_gold(me.id, 500))
-	w.step()
-	w.winner = 0
-	assert_true(MatchRecord.of(w, cfg, "0.1.999")["cheats"], "CMD-06: dùng nút Test → đánh dấu, không tính thống kê")
+	assert_false(r["practice"])
+	cfg.practice = true
+	assert_true(MatchRecord.of(w, cfg, "0.1.999")["practice"], "MATCH-06: trận thử → đánh dấu, không tính thống kê")
 
 
 func test_ST_1_kind_from_slots() -> void:
