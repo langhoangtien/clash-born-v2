@@ -20,7 +20,7 @@ echo "== 2. Test máy chủ (trước khi đổi gì)"
 rm -rf "$REPO/tools/vps/__pycache__"
 
 echo "== 3. Thư mục"
-install -d -o clashborn -g clashborn "$ROOT/www" "$ROOT/incoming" "$ROOT/reports" "$ROOT/stats"
+install -d -o clashborn -g clashborn "$ROOT/www" "$ROOT/incoming" "$ROOT/reports" "$ROOT/stats" "$ROOT/rejected"
 
 echo "== 4. Service"
 if ! cmp -s "$REPO/tools/vps/clashborn-upload.service" "$SERVICE"; then

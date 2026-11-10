@@ -144,6 +144,15 @@ class AdminTest(AccountCase):
                          [("số người không khớp chế độ", -1, 1)])
 
 
+    def test_D_342_reject_store_unwritable_still_400(self) -> None:
+        with open(os.path.join(self.tmp.name, "rejected"), "w") as f:
+            f.write("không phải thư mục")  # như ProtectSystem=strict: ghi hỏng
+        bad = record(0)
+        bad["version"] = ""
+        code, got = self.req("POST", "/api/match", bad)
+        self.assertEqual((code, got["error"]), (400, "version / mode / kind không hợp lệ"))
+
+
 if __name__ == "__main__":
     import unittest
     unittest.main()

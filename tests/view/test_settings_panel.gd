@@ -66,3 +66,9 @@ func test_D_267_version_line_below_rows() -> void:
 func test_D_267_version_name_read_from_build_info() -> void:
 	assert_eq(Updater.version_name_from({"code": 449, "name": "0.1.449"}), "0.1.449")
 	assert_eq(Updater.version_name_from({}), "")
+
+
+func test_D_342_pc_run_without_build_json_uses_export_presets_version() -> void:
+	var name: String = Updater.presets_name(Updater.PRESETS)
+	assert_true(RegEx.create_from_string("^\\d+\\.\\d+\\.\\d+$").search(name) != null, "dạng 0.1.N (máy chủ thống kê nhận): " + name)
+	assert_eq(Updater.presets_name("res://khong_co.cfg"), "")

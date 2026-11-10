@@ -8,6 +8,7 @@ extends Node
 ## D-281: hỏi VPS clashborn.quest trước (D-278); không trả lời thì GitHub Pages (dự phòng thời gian chuyển).
 const SITES: Array[String] = ["https://clashborn.quest/", "https://langhoangtien.github.io/clash-born-v2/"]
 const BUILD_INFO: String = "res://app/build.json"
+const PRESETS: String = "res://export_presets.cfg"
 
 var button: Button
 var _http: HTTPRequest
@@ -25,11 +26,23 @@ static func current_code() -> int:
 	return int(data.get("code", 0)) if data is Dictionary else 0
 
 
-## D-267: tên bản đang chạy (vd "0.1.449"), rỗng nếu không rõ (chạy từ editor).
+## D-267: tên bản đang chạy (vd "0.1.449"). D-342: chạy từ mã nguồn (PC, `run_game.ps1`) không có build.json → tên bản Android
+## mới nhất ghi trong export_presets.cfg (cùng mã) — trước đây rỗng, máy chủ thống kê từ chối mọi trận chơi trên PC.
 static func current_name() -> String:
-	if not FileAccess.file_exists(BUILD_INFO):
+	if FileAccess.file_exists(BUILD_INFO):
+		return version_name_from(JSON.parse_string(FileAccess.get_file_as_string(BUILD_INFO)))
+	return presets_name(PRESETS)
+
+
+## D-342: `version/name` của preset đầu tiên có nó; rỗng nếu không đọc được.
+static func presets_name(path: String) -> String:
+	var cfg: ConfigFile = ConfigFile.new()
+	if cfg.load(path) != OK:
 		return ""
-	return version_name_from(JSON.parse_string(FileAccess.get_file_as_string(BUILD_INFO)))
+	for section: String in cfg.get_sections():
+		if section.ends_with(".options") and cfg.has_section_key(section, "version/name"):
+			return String(cfg.get_value(section, "version/name"))
+	return ""
 
 
 static func version_name_from(data: Variant) -> String:

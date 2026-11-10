@@ -16,14 +16,17 @@ def keep(root: str, body, reason: str, account: int) -> None:
     print("match rejected: %s | mode=%r kind=%r version=%r players=%s teams=%s" % (
         reason, b.get("mode"), b.get("kind"), b.get("version"), len(ps) if isinstance(ps, list) else "?",
         [p.get("team") for p in ps if isinstance(p, dict)] if isinstance(ps, list) else "?"), flush=True)
-    d = _dir(root)
-    os.makedirs(d, exist_ok=True)
-    name = "%d-%06d.json" % (int(time.time()), time.monotonic_ns() % 1000000)
-    with open(os.path.join(d, name), "w", encoding="utf-8") as f:
-        json.dump({"at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "reason": reason, "account": account,
-                   "record": body}, f, ensure_ascii=False)
-    for old in sorted(os.listdir(d))[:-KEEP]:
-        os.remove(os.path.join(d, old))
+    try:  # D-342: ghi hỏng (thư mục thiếu / chỉ đọc trong sandbox systemd) không được làm hỏng câu trả lời 400
+        d = _dir(root)
+        os.makedirs(d, exist_ok=True)
+        name = "%d-%06d.json" % (int(time.time()), time.monotonic_ns() % 1000000)
+        with open(os.path.join(d, name), "w", encoding="utf-8") as f:
+            json.dump({"at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "reason": reason, "account": account,
+                       "record": body}, f, ensure_ascii=False)
+        for old in sorted(os.listdir(d))[:-KEEP]:
+            os.remove(os.path.join(d, old))
+    except OSError as e:
+        print("rejects: không ghi được (%s)" % e, flush=True)
 
 
 def listing(root: str) -> list:
