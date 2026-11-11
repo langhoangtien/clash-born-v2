@@ -1,0 +1,25 @@
+# /etc/systemd/system/clashborn-rooms.service trên VPS Singapore — D-352: máy chủ phòng online thứ hai (gần người chơi VN).
+# Chỉ chạy phòng; phiên đăng nhập kiểm qua máy chủ chính (--api=https://clashborn.quest, server/api_auth.gd).
+# Code chạy từ bản sao /srv/clashborn/rooms (tools/vps/update_rooms.sh chép từ repo, import).
+[Unit]
+Description=Clashborn room server SG (online lockstep, chỉ 127.0.0.1:8790)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=clashborn
+Group=clashborn
+WorkingDirectory=/srv/clashborn/rooms
+Environment=HOME=/srv/clashborn/rooms/home
+Environment=XDG_DATA_HOME=/srv/clashborn/rooms/home/.local/share
+ExecStart=/opt/godot/godot --headless --path /srv/clashborn/rooms -s server/main.gd -- --port=8790 --api=https://clashborn.quest
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/clashborn/rooms
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

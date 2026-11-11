@@ -6,7 +6,8 @@
 
 - `A+B=tên`: nối hoạt ảnh A rồi B thành một (D-209, vd vung + thu tay của afk.ai); --join-gap: giây nội suy ở chỗ nối; `A@0.5`: chỉ lấy A tới 0,5 s; `A@1.05-2.4`: chỉ lấy đoạn đó; `A~`: giữ tại chỗ (bỏ dời của xương gốc, D-229);
   `A^`: soi gương trái ↔ phải, `A%`: nửa trái làm theo nửa phải (D-323, glb_mirror.py);
-  `A!`: đòn chém kiếm tay phải dựng bằng code, A cho tư thế đứng (D-325, glb_slash.py).
+  `A!`: đòn chém kiếm tay phải dựng bằng code, A cho tư thế đứng (D-325, glb_slash.py);
+  `A&B#xương`: nhánh xương đó (vd `clavicle_l` = cả tay trái) lấy theo hoạt ảnh B, phần còn lại theo A (D-351, glb_overlay.py).
 - --drop-bones: bỏ xương có tên khớp REGEX (ngón tay…), trọng số dồn về xương cha (D-209).
 
 - Chỉ giữ các hoạt ảnh trong --keep, đổi sang tên game (rig `Creature`: idle / run / attack / hit / death);
@@ -22,6 +23,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import glb_rig_ops as R  # noqa: E402
 import glb_mirror as M  # noqa: E402
 import glb_slash as S  # noqa: E402
+import glb_overlay as O  # noqa: E402
 
 COMP = {5126: np.float32, 5125: np.uint32, 5123: np.uint16, 5121: np.uint8}
 SIZE = {"SCALAR": 1, "VEC2": 2, "VEC3": 3, "VEC4": 4, "MAT4": 16}
@@ -167,7 +169,7 @@ def write(path, g, blob):
 
 
 def _bare(n):
-    return n.replace("~", "").replace("^", "").replace("%", "").replace("!", "")
+    return n.split("&")[0].replace("~", "").replace("^", "").replace("%", "").replace("!", "")
 
 
 def main():
@@ -183,12 +185,15 @@ def main():
     keep = dict(pairs)
     g, binc = read(a.src)
     have = {an.get("name") for an in g.get("animations", [])}
-    missing = {_bare(n).split("@")[0] for src in keep for n in src.split("+")} - have
+    missing = {_bare(n).split("@")[0] for src in keep for n in src.split("&")[0].split("+")} - have
+    missing |= {src.split("&")[1].split("@")[0].split("#")[0] for src in keep if "&" in src} - have
     assert not missing, f"không có hoạt ảnh: {missing}; có: {sorted(have)}"
     R.bake_root(g, binc, array)  # D-238: gốc FBX (Mixamo) xoay / tỉ lệ 0,01 → đơn vị
-    special = {src: name for src, name in keep.items() if any(ch in src for ch in "+@~^%!")}
-    joined = [R.concat(g, binc, array, [_bare(n) for n in src.split("+")], name, a.join_gap) for src, name in special.items()]
+    special = {src: name for src, name in keep.items() if any(ch in src for ch in "+@~^%!&")}
+    joined = [R.concat(g, binc, array, [_bare(n) for n in src.split("&")[0].split("+")], name, a.join_gap) for src, name in special.items()]
     for an, src in zip(joined, special):
+        if "&" in src:
+            O.overlay(g, binc, array, an, src.split("&")[1])
         if "~" in src:
             R.in_place(g, binc, array, an)
         if "!" in src:
