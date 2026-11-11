@@ -58,7 +58,7 @@ Chạy nhiều luồng song song (`&` … `wait`), mỗi ảnh khoảng 2–4 ph
 
 ## 4. Việc tiếp theo (theo thứ tự)
 
-1. **Ảnh toàn thân 4 tướng đợt 1, duyệt trước khi làm 3D.**
+1. **Ảnh toàn thân 4 tướng đợt 1, duyệt trước khi làm 3D.** Phong Tiễn ĐÃ XONG 3D (chuẩn D-348); còn Huyết Cự Nhân, Thợ Săn, Thạch Giáp — làm y quy trình mục 5.
    - Người chơi yêu cầu: *gửi ảnh thân để duyệt trước lúc làm 3D*.
    - Ảnh ở `art_inbox/concepts/body/<id>_body.png`; nếu thiếu thì vẽ lại bằng Codex, theo đúng chân dung đã duyệt, mặt trước, tư thế chữ A, nền trắng.
    - Gửi người chơi duyệt (SendUserFile, ghép bảng như `art_inbox/concepts/_bang_duyet.png`). Sửa theo ý họ.
@@ -92,7 +92,13 @@ Chạy nhiều luồng song song (`&` … `wait`), mỗi ảnh khoảng 2–4 ph
    - ST.5: máy chủ tự ghi trận online.
    - Cân bằng Duy Anh.
 
-## 5. Hình (mẫu lệnh Codex đã chạy tốt)
+## 5. Quy trình 3D tướng mới — CHUẨN = Phong Tiễn (D-348, đọc kỹ dòng D-348 trong DECISIONS)
+
+Tờ 3 góc tay không + vũ khí riêng (người chơi duyệt) → Tripo → afk.ai → gắn vũ khí → chọn hoạt ảnh bằng ảnh dải → build_units →
+video xem trước gửi người chơi. Tránh áo choàng / vạt dài (khó dựng). Công cụ: `tools/tripo_gen.py`, `tools/split_turnaround.py`,
+`tools/models/{glb_yaw,place_prop,glb_anims,build_units}.py`, `npx afk-rig`, `.local/{glbshot,animreel,ptrec}.gd`.
+
+## 6. Hình (mẫu lệnh Codex đã chạy tốt)
 
 - **Chân dung:**
   - Ảnh chuẩn DUY NHẤT `assets/art/brakk_portrait.png`.
