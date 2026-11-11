@@ -21,7 +21,7 @@ def key():
 
 
 def call(path, data=None, headers=None, raw=None):
-    h = {"Authorization": "Bearer " + key()} | (headers or {})
+    h = {"Authorization": "Bearer " + key(), "User-Agent": "curl/8"} | (headers or {})  # D-347: API cũng chặn UA urllib (403)
     body = raw if raw is not None else (json.dumps(data).encode() if data is not None else None)
     if data is not None:
         h["Content-Type"] = "application/json"
