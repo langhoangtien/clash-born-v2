@@ -70,6 +70,7 @@ UNITS = {
     # D-347: Phong Tiễn (chuẩn quy trình tướng mới): Codex tờ 3 góc khăn choàng NGẮN, tay không → split_turnaround → Tripo
     # multiview 2500 + cung riêng → glb_yaw −90 → afk.ai human (593 hoạt ảnh) → cung gắn cứng tay trái (place_prop --rot 90,0,0).
     # Đánh = kéo dây + buông (bỏ đoạn hạ cung); Q né xoay người; W kéo nhanh + buông (tung 0,3 s); R bị động.
+    # D-350: chạy — `afk-rig adjust … --move hand_l=0.12,0,0 --space root -a Run_Female` (cung không cắm vào chân), đã ghi đè _afk.glb.
     "phong_tien": ("phong_tien/phong_tien", "heroes/phong_tien",
                    "Bow_Casual=idle,Run_Female=run,Bow Pull Back@0.5-1.25+Bow Release=attack,Hit_Chest=hit,Death_B=death,"
                    "Idle_Dizzy=stun,Bow Pull Back@0.75-1.25+Bow Release=cast,Dodge_left=skill_1,"
