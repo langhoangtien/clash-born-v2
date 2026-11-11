@@ -221,3 +221,22 @@ func _surfaces(a: Actor3D) -> Array[int]:
 		var m: Material = a._solid[0][k]
 		out[0 if m == a._base[0][k] else 2 if m is ShaderMaterial else 1] += 1
 	return out
+
+
+## CRP-12 (D-346): lính siêu cấp / siêu lính to hơn lính thường trong cảnh 3D (người chơi: "không thấy to lên").
+func test_CRP_12_super_and_mega_creeps_look_bigger() -> void:
+	var w: World = World.new(1, Fixture.make())
+	var heights: Array[float] = []
+	for tier: int in 3:
+		var e: Entity = Entity.new()
+		e.kind = Entity.Kind.LANE_CREEP
+		e.art_id = &"creep_melee"
+		e.creep_tier = tier
+		e.stats = StatBlock.new(w.balance)
+		w.add_entity(e)
+		var a: Actor3D = Actor3D.make(e)
+		heights.append(a.height)
+		a.free()
+	assert_near(heights[1] / heights[0], ModelLibrary.tier_scale(1), 0.001)
+	assert_near(heights[2] / heights[0], ModelLibrary.tier_scale(2), 0.001)
+	assert_true(heights[0] < heights[1] and heights[1] < heights[2], str(heights))

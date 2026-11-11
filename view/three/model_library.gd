@@ -195,3 +195,9 @@ static func attack_pick(cfg: Dictionary, n: int, fallback: float) -> Array:
 	if cfg.has("attack_alt") and n % 2 == 1:
 		return [cfg["attack_alt"], float(cfg.get("impact_alt", cfg.get("impact", fallback)))]
 	return [cfg["attack"], float(cfg.get("impact", fallback))]
+
+
+## CRP-12 (D-346): lính siêu cấp (1) / siêu lính (2) to hơn — hệ số trong units_3d.json `creep_tier_scale`.
+static func tier_scale(tier: int) -> float:
+	var k: Array = config().get("creep_tier_scale", [1.0, 1.15, 1.3])
+	return float(k[clampi(tier, 0, k.size() - 1)])

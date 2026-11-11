@@ -674,7 +674,7 @@ Bảng ưu tiên (dòng trên thắng):
   có thêm máu × `super_creep_hp`, sát thương × `super_creep_damage`. Cả 3 trụ 3 của địch đã đổ →
   siêu lính ở mọi lane: máu × `mega_creep_hp`, sát thương × `mega_creep_damage` (thay cho hệ số
   siêu cấp), thêm `mega_extra_melee` lính cận chiến mỗi đợt, vàng × `mega_creep_bounty`.
-  Nhân với hệ số CRP-11.
+  Nhân với hệ số CRP-11. Hình (D-346): lính siêu cấp to ×1,15, siêu lính ×1,3 (cảnh 3D, `units_3d.json` `creep_tier_scale`).
 - `CRP-14` (D-274) Lính **đứng đánh** (mục tiêu đã trong tầm đánh) nghĩ lại mỗi `creep_fight_think_time` giây
   (0,13 s), so le theo id; lính **đang đuổi** (mục tiêu ngoài tầm) giữ nhịp 2 tick (D-108) để kịp giữ leash và mép
   trước (INV-03/04). Bị đánh / nhận hero gây sự / xong lệnh: nghĩ ngay.

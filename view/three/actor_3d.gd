@@ -66,7 +66,7 @@ static func make(e: Entity) -> Actor3D:
 func _make_model(e: Entity, cfg: Dictionary) -> void:
 	_cfg = cfg
 	_rig = ModelLibrary.rig(cfg["rig"])
-	height = cfg["height"]
+	height = float(cfg["height"]) * ModelLibrary.tier_scale(e.creep_tier)  # CRP-12 (D-346)
 	var model: Node3D = ModelLibrary.scene(cfg["model"] + ".glb").instantiate() as Node3D
 	add_child(model)
 	_model = model
