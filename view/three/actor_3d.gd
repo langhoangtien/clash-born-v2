@@ -75,6 +75,7 @@ func _make_model(e: Entity, cfg: Dictionary) -> void:
 	model.rotation.y = deg_to_rad(cfg.get("yaw", 0.0))
 	_anim = model.find_children("*", "AnimationPlayer", true, false)[0]  # D-173: mô hình tự mang xương + hoạt ảnh
 	ModelLibrary.dress_own(model, cfg, e.team)  # D-209 màu phe
+	if cfg.has("bow_string"): BowString3D.attach(model, cfg["bow_string"])  # D-349: dây cung kéo được
 	for n: Node in model.find_children("*", "GeometryInstance3D", true, false):
 		_meshes.append(n as GeometryInstance3D)
 		var mats: Array = []

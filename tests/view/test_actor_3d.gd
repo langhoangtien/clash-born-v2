@@ -240,3 +240,32 @@ func test_CRP_12_super_and_mega_creeps_look_bigger() -> void:
 	assert_near(heights[1] / heights[0], ModelLibrary.tier_scale(1), 0.001)
 	assert_near(heights[2] / heights[0], ModelLibrary.tier_scale(2), 0.001)
 	assert_true(heights[0] < heights[1] and heights[1] < heights[2], str(heights))
+
+
+## D-349: dây cung vẽ bằng code — hai đầu bám đầu cung theo xương tay; pha kéo của đòn bắn: giữa dây ở tay kéo (V căng);
+## sau điểm buông / lúc đứng: dây thẳng.
+func test_D_349_bow_string_pulled_while_drawing_straight_after_release() -> void:
+	var w: World = World.new(1, Fixture.make())
+	var e: Entity = Entity.new()
+	e.kind = Entity.Kind.HERO
+	e.art_id = &"phong_tien"
+	e.stats = StatBlock.new(w.balance)
+	w.add_entity(e)
+	var a: Actor3D = Actor3D.make(e)
+	(Engine.get_main_loop() as SceneTree).root.add_child(a)
+	var s: BowString3D = a.find_children("*", "BowString3D", true, false)[0]
+	var anim: AnimationPlayer = a.find_children("*", "AnimationPlayer", true, false)[0]
+	anim.play("idle")
+	anim.advance(0.0)
+	var p: PackedVector3Array = s.points()
+	assert_false(s.pulling())
+	assert_true(p[1].is_equal_approx((p[0] + p[2]) * 0.5), "đứng: dây thẳng")
+	assert_near(p[0].distance_to(p[2]), 0.6 * a.height / 1.0, 0.25 * a.height, "dây dài gần bằng cây cung")
+	anim.play("attack")
+	anim.seek(anim.current_animation_length * 0.45, true)
+	p = s.points()
+	assert_true(s.pulling(), "trước điểm buông 0,6: đang kéo")
+	assert_true(p[1].distance_to((p[0] + p[2]) * 0.5) > 0.02 * a.height, "giữa dây bị kéo về tay")
+	anim.seek(anim.current_animation_length * 0.8, true)
+	assert_false(s.pulling(), "sau điểm buông: dây thẳng lại")
+	a.queue_free()
