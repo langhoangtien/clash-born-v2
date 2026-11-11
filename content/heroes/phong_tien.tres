@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="HeroDef" format=3]
+
+[ext_resource type="Resource" path="res://content/abilities/phong_tien_innate.tres" id="1_x"]
+[ext_resource type="Resource" path="res://content/abilities/phong_tien_q.tres" id="2_x"]
+[ext_resource type="Resource" path="res://content/abilities/phong_tien_w.tres" id="3_x"]
+[ext_resource type="Resource" path="res://content/abilities/phong_tien_r.tres" id="4_x"]
+[ext_resource type="Script" path="res://sim/defs/combat_stats_def.gd" id="5_x"]
+[ext_resource type="Script" path="res://sim/defs/hero_def.gd" id="6_x"]
+
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("5_x")
+base_hp = 100.0
+base_mana = 250.0
+base_hp_regen = 0.5
+base_damage = 40.0
+physical_armor = 0.0
+base_attack_time = 1.6
+attack_point = 0.35
+attack_range = 600.0
+projectile_speed = 1250.0
+movement_speed = 290.0
+vision_range = 1200.0
+collision_radius = 32.0
+
+[resource]
+script = ExtResource("6_x")
+primary_attribute = 2
+base_strength = 17.0
+base_agility = 24.0
+base_intelligence = 17.0
+strength_growth = 1.8
+agility_growth = 3.4
+intelligence_growth = 1.6
+stats = SubResource("S1")
+innate = ExtResource("1_x")
+q = ExtResource("2_x")
+w = ExtResource("3_x")
+r = ExtResource("4_x")
+bot_skill_order = Array[int]([0, 4, 0, 1, 0, 2, 0, 1, 0, 1, 2, 1, 1, 4, 4, 2, 4, 4, 3, 3])
+bot_talent_priority = Array[int]([2, 3, 1])
+bot_item_build = Array[StringName]([&"wraith_band", &"boots_haste", &"wind_bow", &"crit_blade", &"butterfly", &"desolator", &"satanic", &"moon_shard"])
+id = &"phong_tien"
+display_name = "Phong Tiễn · Cung Gió"
+art_id = &"phong_tien"

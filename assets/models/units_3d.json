@@ -255,6 +255,82 @@
    "attack": "attack",
    "impact": 0.5,
    "height": 3.1
+  },
+  "huyet_cu_nhan": {
+   "model": "style/heroes/brakk",
+   "rig": "Creature",
+   "attack": "attack",
+   "cast": "cast",
+   "impact": 0.39,
+   "height": 1.5,
+   "skills": {
+    "1": "skill_1",
+    "2": "skill_2",
+    "3": "skill_3"
+   },
+   "skill_impact": {
+    "1": 0.6
+   },
+   "_tam": "D-347: mô hình tạm mượn của brakk (chờ mô hình riêng)"
+  },
+  "thach_giap": {
+   "model": "style/heroes/brakk",
+   "rig": "Creature",
+   "attack": "attack",
+   "cast": "cast",
+   "impact": 0.39,
+   "height": 1.35,
+   "skills": {
+    "1": "skill_1",
+    "2": "skill_2",
+    "3": "skill_3"
+   },
+   "skill_impact": {
+    "1": 0.6
+   },
+   "_tam": "D-347: mô hình tạm mượn của brakk (chờ mô hình riêng)"
+  },
+  "phong_tien": {
+   "model": "style/heroes/myra",
+   "rig": "Creature",
+   "attack": "attack",
+   "cast": "cast",
+   "impact": 0.45,
+   "height": 1.3,
+   "skills": {
+    "1": "skill_1",
+    "2": "skill_2",
+    "3": "skill_3"
+   },
+   "projectile": {
+    "shape": "arrow",
+    "color": "#bff2e6",
+    "size": 0.55
+   },
+   "skill_impact": {
+    "1": 0.5,
+    "2": 0.45,
+    "3": 0.58
+   },
+   "_tam": "D-347: mô hình tạm mượn của myra (chờ mô hình riêng)"
+  },
+  "tho_san": {
+   "model": "style/heroes/duy_anh",
+   "rig": "Creature",
+   "attack": "attack",
+   "cast": "cast",
+   "impact": 0.32,
+   "height": 1.25,
+   "skills": {
+    "1": "skill_1",
+    "2": "skill_2"
+   },
+   "skill_impact": {
+    "2": 0.49
+   },
+   "dash": "dash",
+   "dash_hop": 0.6,
+   "_tam": "D-347: mô hình tạm mượn của duy_anh (chờ mô hình riêng)"
   }
  },
  "_ghi_chu_cong_trinh": "D-158, D-218…D-228: công trình 3D Tripo theo concept người dùng (assets/models/style/structures/). Đường dẫn model tính từ assets/models/. structures: theo art_id (trụ thêm _t<bậc>), ảnh màu theo đội <model>_blue / _red.jpg, height: chiều cao trên sân (đơn vị 3D). scenery: bụi cỏ (bushes, spacing px thế giới, scale [nhỏ nhất, lớn nhất]), shop ẩn, đống đổ nát chỗ trụ đã đổ, fountain; style: cảnh vật + mặt đất + nước D-178.",
@@ -376,7 +452,11 @@
   }
  },
  "sprite_scale": 0.75,
- "creep_tier_scale": [1.0, 1.15, 1.3],
+ "creep_tier_scale": [
+  1.0,
+  1.15,
+  1.3
+ ],
  "projectiles": {
   "_ghi_chu": "D-219: đạn đánh thường 3D (view/three/projectiles_3d.gd). Mỗi đơn vị / công trình có `projectile`: shape orb | bolt | arrow (hoặc model = GLB trong assets/models/, đổi ảnh màu theo phe), color mã màu hoặc team, size (đơn vị 3D), arc (độ cao vòng cung / quãng bay, chỉ là hình).",
   "team_colors": [

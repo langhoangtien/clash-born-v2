@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_x"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="2_x"]
+
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("1_x")
+stat = &"movement_speed"
+op = 2
+value = "speed"
+
+[resource]
+script = ExtResource("2_x")
+tags = Array[StringName]([&"buff"])
+modifiers = Array[ExtResource("1_x")]([SubResource("S1")])
+id = &"thach_giap_stampede"
+display_name = "Bôn Thạch"
+art_id = &"thach_giap_r"

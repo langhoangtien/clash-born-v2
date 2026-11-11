@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Resource" path="res://content/effects/phong_tien_r_agility.tres" id="1_x"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_x"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="3_x"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="4_x"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="5_x"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="6_x"]
+
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("4_x")
+effect = ExtResource("1_x")
+target = 0
+
+[sub_resource type="Resource" id="S2"]
+script = ExtResource("3_x")
+value_name = &"bonus"
+amount = 15.0
+
+[sub_resource type="Resource" id="S3"]
+script = ExtResource("5_x")
+id = &"phong_tien_r_ii"
+display_name = "Thần Gió"
+description = "+15 Nhanh nhẹn"
+value_changes = Array[ExtResource("3_x")]([SubResource("S2")])
+
+[resource]
+script = ExtResource("6_x")
+description = "Bị động (chiêu cuối): +25 / 35 / 45 Nhanh nhẹn thường trực."
+slot = 3
+targeting = 0
+values = Dictionary[StringName, PackedFloat32Array]({
+&"bonus": PackedFloat32Array(25, 35, 45)
+})
+on_learn = Array[ExtResource("2_x")]([SubResource("S1")])
+talent = SubResource("S3")
+id = &"phong_tien_r"
+display_name = "Phong Thần"
+art_id = &"phong_tien_r"

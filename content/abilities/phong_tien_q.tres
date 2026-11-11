@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Resource" path="res://content/effects/phong_tien_windwalk.tres" id="1_x"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_x"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="3_x"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="4_x"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="5_x"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="6_x"]
+
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("4_x")
+effect = ExtResource("1_x")
+duration = "duration"
+target = 0
+
+[sub_resource type="Resource" id="S2"]
+script = ExtResource("3_x")
+value_name = &"duration"
+amount = 1.5
+
+[sub_resource type="Resource" id="S3"]
+script = ExtResource("5_x")
+id = &"phong_tien_q_ii"
+display_name = "Gió Dài"
+description = "Thời gian +1.5 s"
+value_changes = Array[ExtResource("3_x")]([SubResource("S2")])
+
+[resource]
+script = ExtResource("6_x")
+description = "Bản thân: +25% tốc chạy và né 100% đòn đánh thường trong 3 s."
+slot = 1
+targeting = 1
+target_team = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cooldown": PackedFloat32Array(16, 15, 14, 13, 12),
+&"duration": PackedFloat32Array(3, 3, 3, 3, 3),
+&"evasion": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0),
+&"mana": PackedFloat32Array(60, 65, 70, 75, 80),
+&"speed": PackedFloat32Array(0.25, 0.25, 0.25, 0.25, 0.25)
+})
+on_cast = Array[ExtResource("2_x")]([SubResource("S1")])
+talent = SubResource("S3")
+bot_usages = Array[int]([5, 4])
+bot_conditions = Array[StringName]([&"taking_damage", &"hp_below_30"])
+id = &"phong_tien_q"
+display_name = "Lướt Gió"
+art_id = &"phong_tien_q"

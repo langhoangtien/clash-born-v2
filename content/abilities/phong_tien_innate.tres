@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Resource" path="res://content/effects/phong_tien_wind_speed.tres" id="1_x"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_x"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_x"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_x"]
+
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("3_x")
+effect = ExtResource("1_x")
+target = 0
+
+[resource]
+script = ExtResource("4_x")
+description = "Bị động: tốc đánh thêm bằng 20 / 30 / 40 / 50 / 60% Nhanh nhẹn (ngoài tốc đánh có sẵn từ Nhanh nhẹn), theo Nhanh nhẹn hiện tại."
+slot = 0
+targeting = 0
+values = Dictionary[StringName, PackedFloat32Array]({
+&"as_per_agi": PackedFloat32Array(0.001, 0.0015, 0.002, 0.0025, 0.003)
+})
+on_learn = Array[ExtResource("2_x")]([SubResource("S1")])
+id = &"phong_tien_innate"
+display_name = "Phong Tiễn"
+art_id = &"phong_tien_innate"

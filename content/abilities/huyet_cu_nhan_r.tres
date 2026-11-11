@@ -1,0 +1,58 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_act"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="2_dmg"]
+[ext_resource type="Resource" path="res://content/effects/stun.tres" id="3_stun"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="4_app"]
+[ext_resource type="Script" path="res://sim/actions/area_action.gd" id="5_area"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="6_abl"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="7_tal"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="8_vc"]
+
+[sub_resource type="Resource" id="D0"]
+script = ExtResource("2_dmg")
+amount = "damage + self.strength"
+
+[sub_resource type="Resource" id="S0"]
+script = ExtResource("4_app")
+effect = ExtResource("3_stun")
+duration = "stun_duration"
+
+[sub_resource type="Resource" id="AR"]
+script = ExtResource("5_area")
+radius = "radius"
+delay = "delay"
+actions = Array[ExtResource("1_act")]([SubResource("D0"), SubResource("S0")])
+target = 0
+
+[sub_resource type="Resource" id="VC0"]
+script = ExtResource("8_vc")
+value_name = &"stun_duration"
+amount = 0.5
+
+[sub_resource type="Resource" id="TAL"]
+script = ExtResource("7_tal")
+id = &"huyet_cu_nhan_r_ii"
+display_name = "Địa Chấn Kéo Dài"
+description = "Choáng +0.5 s"
+value_changes = Array[ExtResource("8_vc")]([SubResource("VC0")])
+
+[resource]
+script = ExtResource("6_abl")
+description = "Dậm đất: sau 0.6 s (có cảnh báo trên mặt đất) kẻ địch trong bán kính 550 quanh chỗ dậm bị choáng và nhận sát thương vật lý lớn (+100% Sức mạnh)."
+slot = 3
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cooldown": PackedFloat32Array(90, 80, 70),
+&"damage": PackedFloat32Array(150, 250, 350),
+&"delay": PackedFloat32Array(0.6, 0.6, 0.6),
+&"mana": PackedFloat32Array(150, 200, 250),
+&"radius": PackedFloat32Array(550, 550, 550),
+&"stun_duration": PackedFloat32Array(1.5, 2, 2.5)
+})
+on_cast = Array[ExtResource("1_act")]([SubResource("AR")])
+talent = SubResource("TAL")
+bot_usages = Array[int]([6, 0])
+bot_conditions = Array[StringName]([&"two_enemies_in_area", &"enemy_hero_in_radius"])
+id = &"huyet_cu_nhan_r"
+display_name = "Đại Địa Chấn"
+art_id = &"huyet_cu_nhan_r"

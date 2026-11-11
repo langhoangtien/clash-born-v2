@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Resource" path="res://content/effects/tho_san_instinct.tres" id="1_x"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_x"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_x"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_x"]
+
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("3_x")
+effect = ExtResource("1_x")
+target = 0
+
+[resource]
+script = ExtResource("4_x")
+description = "Không có nội tại riêng: mỗi bậc +2 mọi thuộc tính (bậc 5: +10)."
+slot = 0
+targeting = 0
+values = Dictionary[StringName, PackedFloat32Array]({
+&"bonus": PackedFloat32Array(2, 4, 6, 8, 10)
+})
+on_learn = Array[ExtResource("2_x")]([SubResource("S1")])
+id = &"tho_san_innate"
+display_name = "Bản Năng Săn Mồi"
+art_id = &"tho_san_innate"

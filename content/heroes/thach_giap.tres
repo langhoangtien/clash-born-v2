@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="HeroDef" format=3]
+
+[ext_resource type="Resource" path="res://content/abilities/thach_giap_innate.tres" id="1_x"]
+[ext_resource type="Resource" path="res://content/abilities/thach_giap_q.tres" id="2_x"]
+[ext_resource type="Resource" path="res://content/abilities/thach_giap_w.tres" id="3_x"]
+[ext_resource type="Resource" path="res://content/abilities/thach_giap_r.tres" id="4_x"]
+[ext_resource type="Script" path="res://sim/defs/combat_stats_def.gd" id="5_x"]
+[ext_resource type="Script" path="res://sim/defs/hero_def.gd" id="6_x"]
+
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("5_x")
+base_hp = 70.0
+base_mana = 220.0
+base_hp_regen = 0.75
+base_damage = 62.0
+physical_armor = 2.5
+base_attack_time = 1.7
+attack_point = 0.4
+attack_range = 150.0
+movement_speed = 280.0
+vision_range = 1200.0
+collision_radius = 34.0
+
+[resource]
+script = ExtResource("6_x")
+base_strength = 26.0
+base_agility = 14.0
+base_intelligence = 16.0
+strength_growth = 3.6
+agility_growth = 1.6
+intelligence_growth = 1.8
+stats = SubResource("S1")
+innate = ExtResource("1_x")
+q = ExtResource("2_x")
+w = ExtResource("3_x")
+r = ExtResource("4_x")
+bot_skill_order = Array[int]([0, 4, 0, 1, 0, 2, 0, 1, 0, 1, 2, 1, 1, 4, 4, 2, 4, 4, 3, 3])
+bot_talent_priority = Array[int]([1, 2, 3])
+bot_item_build = Array[StringName]([&"bracer", &"boots_guard", &"giant_heart", &"assault_plate", &"black_king_bar", &"resolute_armor", &"satanic", &"battle_axe"])
+id = &"thach_giap"
+display_name = "Thạch Giáp · Khiên Đá"
+art_id = &"thach_giap"

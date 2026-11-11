@@ -1,0 +1,60 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Resource" path="res://content/effects/thach_giap_rockslide.tres" id="1_x"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_x"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="3_x"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="4_x"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="5_x"]
+[ext_resource type="Script" path="res://sim/actions/area_action.gd" id="6_x"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="7_x"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="8_x"]
+
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("4_x")
+damage_type = 1
+amount = "damage"
+
+[sub_resource type="Resource" id="S2"]
+script = ExtResource("5_x")
+effect = ExtResource("1_x")
+duration = "duration"
+
+[sub_resource type="Resource" id="S3"]
+script = ExtResource("6_x")
+radius = "radius"
+target = 0
+actions = Array[ExtResource("2_x")]([SubResource("S1"), SubResource("S2")])
+
+[sub_resource type="Resource" id="S4"]
+script = ExtResource("3_x")
+value_name = &"weaken"
+amount = 0.15
+
+[sub_resource type="Resource" id="S5"]
+script = ExtResource("7_x")
+id = &"thach_giap_w_ii"
+display_name = "Đá Nặng"
+description = "Giảm sát thương địch thêm 15%"
+value_changes = Array[ExtResource("3_x")]([SubResource("S4")])
+
+[resource]
+script = ExtResource("8_x")
+description = "Kẻ địch trong bán kính 350 nhận sát thương phép, bị chậm 25% và giảm sát thương đòn đánh trong 4 s."
+slot = 2
+targeting = 1
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cooldown": PackedFloat32Array(14, 13, 12, 11, 10),
+&"damage": PackedFloat32Array(50, 80, 110, 140, 170),
+&"duration": PackedFloat32Array(4, 4, 4, 4, 4),
+&"mana": PackedFloat32Array(80, 85, 90, 95, 100),
+&"radius": PackedFloat32Array(350, 350, 350, 350, 350),
+&"slow": PackedFloat32Array(0.25, 0.25, 0.25, 0.25, 0.25),
+&"weaken": PackedFloat32Array(0.15, 0.2, 0.25, 0.3, 0.35)
+})
+on_cast = Array[ExtResource("2_x")]([SubResource("S3")])
+talent = SubResource("S5")
+bot_usages = Array[int]([6, 5])
+bot_conditions = Array[StringName]([&"two_enemies_in_area", &"taking_damage"])
+id = &"thach_giap_w"
+display_name = "Đá Lở"
+art_id = &"thach_giap_w"
