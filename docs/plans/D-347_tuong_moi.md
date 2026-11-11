@@ -80,3 +80,14 @@ Mỗi đợt: số liệu vào CONTENT.md → test kịch bản từng chiêu �
 4. Tướng 8, W: **(b)** nội tại có tỉ lệ bắn 2 phát liên tiếp (cơ chế mới: đòn đánh phụ ngay sau đòn chính).
 
 Hình: người chơi muốn **Codex CLI tạo ảnh (chân dung / ý tưởng nhân vật) để duyệt** trước khi làm mô hình 3D.
+
+## Tiến độ
+
+- **Đợt 1 xong** (D-347):
+  - Huyết Cự Nhân (4), Phong Tiễn (3), Thợ Săn (5), Thạch Giáp (7), Gậy Đẩy.
+  - Cơ chế mới STAT-06 (modifier theo thuộc tính) cho nội tại 3 và 4.
+  - Mô hình 3D còn tạm mượn tướng cũ.
+- Tướng 8 (Pháo Thủ): người chơi chọn nội tại bắn 2 phát = cơ chế mới → **đợt 2** cùng tướng 1 (TAUNTED, bộ đếm đòn)
+  và Thương rồng (modifier điều kiện đánh xa).
+- Đợt 3: tướng 2, tướng 6.
+- Còn lại cho mỗi tướng: mô hình 3D riêng (Tripo / Mixamo theo chân dung), hoạt ảnh chiêu.
