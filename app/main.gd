@@ -7,7 +7,8 @@ const MAP_VIEWER: String = "res://app/map_viewer.tscn"
 const MATCH_SCENE: String = "res://app/match_scene.tscn"
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
 ## Tướng chơi được, theo thứ tự hiện trên màn chọn.
-const PLAYABLE: Array[StringName] = [&"brakk", &"myra", &"noctis", &"vexa", &"gorran", &"duy_anh"]
+const PLAYABLE: Array[StringName] = [&"brakk", &"myra", &"noctis", &"vexa", &"gorran", &"duy_anh", &"huyet_cu_nhan",
+	&"phong_tien", &"tho_san", &"thach_giap"]  # D-347: đợt 1 tướng mới
 
 
 func _ready() -> void:

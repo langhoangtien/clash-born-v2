@@ -14,7 +14,7 @@ target = 0
 
 [sub_resource type="Resource" id="S2"]
 script = ExtResource("3_x")
-value_name = &"bonus"
+value_name = &"agility_bonus"
 amount = 15.0
 
 [sub_resource type="Resource" id="S3"]
@@ -30,7 +30,7 @@ description = "Bị động (chiêu cuối): +25 / 35 / 45 Nhanh nhẹn thườn
 slot = 3
 targeting = 0
 values = Dictionary[StringName, PackedFloat32Array]({
-&"bonus": PackedFloat32Array(25, 35, 45)
+&"agility_bonus": PackedFloat32Array(25, 35, 45)
 })
 on_learn = Array[ExtResource("2_x")]([SubResource("S1")])
 talent = SubResource("S3")

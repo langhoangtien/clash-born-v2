@@ -13,13 +13,15 @@ signal account_pressed
 ## M9.6 (D-344): nút Online (APP mở OnlinePanel).
 signal online_pressed
 
-const CARD: Vector2 = Vector2(192, 262)
-const CARD_GAP: float = 14.0
-const CARDS_AT: Vector2 = Vector2(64, 140)
+## D-347: 10 tướng — lưới 4 cột × 3 hàng.
+const CARD: Vector2 = Vector2(148, 244)
+const CARD_GAP: float = 12.0
+const CARD_COLUMNS: int = 4
+const CARDS_AT: Vector2 = Vector2(58, 132)
 const DETAIL: Rect2 = Rect2(720, 110, 1140, 790)
 const TAB_SIZE: Vector2 = Vector2(200, 56)
 const BOT_AT: Vector2 = Vector2(80, 964)
-const BOT_SIZE: float = 84.0
+const BOT_SIZE: float = 56.0
 const DIFF_NAMES: Array[String] = ["Dễ", "Thường", "Khó"]
 const START: Rect2 = Rect2(1480, 934, 380, 112)
 const MAP_BUTTON: Rect2 = Rect2(1196, 954, 130, 72)
@@ -55,7 +57,7 @@ func setup(heroes: Array[HeroDef], balance: BalanceSettings) -> void:
 
 
 func card_rect(i: int) -> Rect2:
-	return Rect2(CARDS_AT + Vector2((i % 3) * (CARD.x + CARD_GAP), (i / 3) * (CARD.y + CARD_GAP)), CARD)
+	return Rect2(CARDS_AT + Vector2((i % CARD_COLUMNS) * (CARD.x + CARD_GAP), (i / CARD_COLUMNS) * (CARD.y + CARD_GAP)), CARD)
 
 
 func tab_rect(i: int) -> Rect2:
@@ -63,12 +65,12 @@ func tab_rect(i: int) -> Rect2:
 
 
 func bot_rect(i: int) -> Rect2:
-	return Rect2(BOT_AT + Vector2(150 + i * (BOT_SIZE + 10), -BOT_SIZE * 0.5 + 10), Vector2(BOT_SIZE, BOT_SIZE))
+	return Rect2(BOT_AT + Vector2(150 + i * (BOT_SIZE + 6), -BOT_SIZE * 0.5 + 10), Vector2(BOT_SIZE, BOT_SIZE))
 
 
 func diff_rect(i: int) -> Rect2:
 	var x0: float = bot_rect(previews.size()).position.x + 40.0
-	return Rect2(Vector2(x0 + i * 112, 958), Vector2(104, 64))
+	return Rect2(Vector2(x0 + i * 100, 958), Vector2(92, 64))
 
 
 func mode_rect(i: int) -> Rect2:
@@ -138,8 +140,8 @@ func _card(i: int) -> void:
 	var on: bool = i == selected
 	UiStyle.card(self, r, on)
 	HeroDetail.portrait(self, p, Rect2(r.position + Vector2(10, 10), Vector2(r.size.x - 20, r.size.x - 20)), on)
-	UiStyle.text_center(self, UiStyle.serif(true), Vector2(r.get_center().x, r.end.y - 38), p.def.display_name.get_slice(" · ", 0), 28, UiStyle.TEXT)
-	UiStyle.text_center(self, UiStyle.serif(), Vector2(r.get_center().x, r.end.y - 12), p.primary_name(), 18, UiStyle.DIM)
+	UiStyle.text_center(self, UiStyle.serif(true), Vector2(r.get_center().x, r.end.y - 40), p.def.display_name.get_slice(" · ", 0), 21, UiStyle.TEXT)
+	UiStyle.text_center(self, UiStyle.serif(), Vector2(r.get_center().x, r.end.y - 14), p.primary_name(), 16, UiStyle.DIM)
 
 
 func _detail() -> void:

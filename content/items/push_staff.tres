@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_x"]
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="2_x"]
+[ext_resource type="Script" path="res://sim/actions/push_action.gd" id="3_x"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_x"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="5_x"]
+
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("3_x")
+distance = "distance"
+duration = "push_time"
+
+[sub_resource type="Resource" id="S2"]
+script = ExtResource("4_x")
+slot = 4
+targeting = 2
+target_team = 3
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cast_range": PackedFloat32Array(750),
+&"cooldown": PackedFloat32Array(19),
+&"distance": PackedFloat32Array(600),
+&"push_time": PackedFloat32Array(0.4)
+})
+on_cast = Array[ExtResource("1_x")]([SubResource("S1")])
+bot_usages = Array[int]([4])
+bot_conditions = Array[StringName]([&"hp_below_30"])
+id = &"push_staff_active"
+art_id = &"push_staff_active"
+
+[sub_resource type="Resource" id="S3"]
+script = ExtResource("2_x")
+stat = &"intelligence"
+value = "10"
+
+[sub_resource type="Resource" id="S4"]
+script = ExtResource("2_x")
+stat = &"hp_regen"
+value = "2"
+
+[resource]
+script = ExtResource("5_x")
+category = 3
+description = "Chủ động (hồi 19 s, tầm 750): đẩy một đơn vị 600 trong 0,4 s (bị đẩy thì choáng trong lúc dời, ABL-10). Dùng lên bản thân: lao theo hướng đang nhìn để thoát thân / áp sát; lên người khác: đẩy họ ra xa mình (kéo đồng đội khỏi giao tranh, hất địch ra). Không đẩy được địch đang kháng phép."
+cost = 2200
+components = Array[StringName]([&"staff_wizardry", &"ring_regen"])
+modifiers = Array[ExtResource("2_x")]([SubResource("S3"), SubResource("S4")])
+ability = SubResource("S2")
+id = &"push_staff"
+display_name = "Gậy Đẩy"
+art_id = &"push_staff"

@@ -6,7 +6,7 @@
 [sub_resource type="Resource" id="S1"]
 script = ExtResource("1_x")
 stat = &"agility"
-value = "bonus"
+value = "agility_bonus"
 
 [resource]
 script = ExtResource("2_x")

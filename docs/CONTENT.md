@@ -642,3 +642,70 @@ bằng **Người Đá** (người chơi thấy rồng đánh không có lực).
 
 Người đá xuất hiện lần đầu ở phút 5, hạ xong 5 phút sau mới có lại (JGL-10); mỗi con một bãi đấu vòng tường đá sát bờ sông.
 Trại tê giác (1 to + 2 con) thay một trại 2 sói ở rừng carry mỗi phe (trại 08, gần sông), hồi như trại thường.
+
+---
+
+## Đợt 1 tướng mới (D-347)
+
+Ý tưởng của người chơi, phân loại theo `docs/plans/D-347_tuong_moi.md`. Chân dung do Codex vẽ theo chuẩn Brakk
+(`art_inbox/concepts/`). Mô hình 3D còn tạm mượn của tướng cũ (`units_3d.json`, trường `_tam`). Sát thương chiêu được
+nhân khuếch đại phép từ INT (CMB-13).
+
+### Huyết Cự Nhân · Khổng Lồ (tank STR, cận chiến 150)
+
+STR 28 (+4,2), AGI 12 (+1,2), INT 14 (+1,5), giáp 1, tốc chạy 250.
+
+| Chiêu | Hiệu lực | Bậc |
+|---|---|---|
+| Nội tại — Huyết Mạch Khổng Lồ | +máu mỗi STR (STAT-06, theo STR hiện tại) | 4 / 5 / 7 / 9 / 11 |
+| Q — Huyết Chấn | vùng 325 quanh mình, vật lý `damage + str_ratio × STR`; tự mất `self_damage` máu (thuần); tung 0,3 s | sát thương 50–170, STR 0,6–1,0, tự mất 30–70, hồi 9–5, mana 60–80 |
+| W — Phản Huyết (bị động) | mỗi đòn đánh trúng mình (không phải công trình) phản vật lý `fraction × STR` vào kẻ đánh | 10 / 14 / 17 / 21 / 25% |
+| R — Đại Địa Chấn | vùng 550 quanh chỗ dậm, nổ sau 0,6 s (cảnh báo mặt đất): choáng + vật lý `damage + 100% STR` | sát thương 150 / 250 / 350, choáng 1,5 / 2 / 2,5 s, hồi 90 / 80 / 70, mana 150–250 |
+
+Talent: Q II không tự mất máu, bán kính +100 · W II phản thêm 15% STR · R II choáng +0,5 s.
+Bot: Q POKE / TEAMFIGHT khi có hero địch trong bán kính / trúng nhiều; R TEAMFIGHT ≥ 2 địch trong vùng, DISABLE.
+
+### Phong Tiễn · Cung Gió (AGI, đánh xa 600)
+
+STR 17 (+1,8), AGI 24 (+3,4), INT 17 (+1,6), BAT 1,6, tốc chạy 290.
+
+| Chiêu | Hiệu lực | Bậc |
+|---|---|---|
+| Nội tại — Phong Tiễn | tốc đánh thêm = 20–60% phần tốc đánh mà AGI cho (STAT-06: `0,001–0,003` mỗi AGI) | 20 / 30 / 40 / 50 / 60% |
+| Q — Lướt Gió | bản thân 3 s: +25% tốc chạy, né 100% đòn đánh thường | hồi 16–12, mana 60–80 |
+| W — Gió Độc | điểm (tầm 800), vùng 300: phép + chậm 25% + câm; tung 0,3 s | sát thương 60–220, chậm / câm 1–3 s, hồi 18–14 |
+| R — Phong Thần (bị động) | +AGI thường trực | 25 / 35 / 45 |
+
+Talent: Q II +1,5 s · W II bán kính +100 · R II +15 AGI.
+
+### Thợ Săn · Bắt Lẻ (ganker STR, cận chiến 150)
+
+STR 24 (+3,0), AGI 20 (+2,4), INT 16 (+1,6), giáp 2, tốc chạy 300. Mạnh khi bắt lẻ một người, yếu khi đối đầu cả đội.
+
+| Chiêu | Hiệu lực | Bậc |
+|---|---|---|
+| Nội tại — Bản Năng Săn Mồi | không có nội tại riêng: mỗi bậc +2 mọi thuộc tính | +2 / 4 / 6 / 8 / 10 |
+| Q — Truy Kích | một kẻ địch (tầm 600): vật lý + chậm 30% 2 s | 80–240, hồi 10–6, mana 70–90 |
+| W — Phong Ấn | một **hero** địch (tầm 700): câm | 1,5–3,5 s, hồi 16–12 |
+| R — Cuồng Săn | bản thân 6 s: tốc chạy, tốc đánh, sát thương | +20 / 25 / 30%, +0,4 / 0,6 / 0,8, +30 / 50 / 70; hồi 60 / 50 / 40 |
+
+Talent: Q II chậm +20% · W II câm +1 s · R II +3 s.
+
+### Thạch Giáp · Khiên Đá (tank STR, cận chiến 150)
+
+STR 26 (+3,6), AGI 14 (+1,6), INT 16 (+1,8), giáp 2,5, tốc chạy 280.
+
+| Chiêu | Hiệu lực | Bậc |
+|---|---|---|
+| Nội tại — Da Đá | giảm sát thương vật lý nhận vào sau giáp (CMB-16) | 6 / 8 / 10 / 12 / 14% |
+| Q — Dậm Đá | vùng 300 quanh mình: phép + choáng; tung 0,4 s | 60–220, choáng 1–1,8 s, hồi 13–9 |
+| W — Đá Lở | vùng 350 quanh mình: phép + chậm 25% + giảm sát thương đòn đánh của địch, 4 s | 50–170, giảm 15–35%, hồi 14–10 |
+| R — Bôn Thạch | bản thân 3 s: tốc chạy đặt cứng 550, bỏ qua làm chậm (OVERRIDE) | hồi 70 / 60 / 50 |
+
+Talent: Q II bán kính +100 · W II giảm thêm 15% · R II +1,5 s.
+
+### Gậy Đẩy (đồ, D-347 — kiểu Force Staff, chỉ ghép PushAction ABL-10)
+
+2200 vàng = Gậy Phù Thủy + Nhẫn Hồi Phục + công ghép. +10 INT, +2 hồi máu. Chủ động (hồi 19 s, tầm 750): đẩy một đơn vị
+600 trong 0,4 s (bị dời thì choáng, dừng khi chạm vách / rừng / thân trụ). Lên bản thân: lao theo hướng đang nhìn. Lên người
+khác: đẩy ra xa người dùng. Địch kháng phép không bị đẩy. Bot: ESCAPE khi máu < 30% (tự đẩy).

@@ -16,7 +16,7 @@ description = "Không có nội tại riêng: mỗi bậc +2 mọi thuộc tính
 slot = 0
 targeting = 0
 values = Dictionary[StringName, PackedFloat32Array]({
-&"bonus": PackedFloat32Array(2, 4, 6, 8, 10)
+&"attribute_bonus": PackedFloat32Array(2, 4, 6, 8, 10)
 })
 on_learn = Array[ExtResource("2_x")]([SubResource("S1")])
 id = &"tho_san_innate"

@@ -147,3 +147,17 @@ func test_NET_10_fingerprint_covers_balance_numbers() -> void:
 	assert_true(before.contains("first_blood_gold=150"), before.left(200))
 	b.first_blood_gold += 1
 	assert_ne(NetVersion.balance_text(b), before)
+
+
+## NET-10 (D-347): dấu vân tay gồm dữ liệu nội dung — đổi một số của chiêu thì khác dấu; cùng dữ liệu thì cùng chữ.
+func test_NET_10_fingerprint_covers_content() -> void:
+	var lib: ContentLibrary = ContentLibrary.load_dir()
+	var before: String = NetVersion.content_text(lib)
+	assert_eq(NetVersion.content_text(ContentLibrary.load_dir()), before, "ổn định")
+	assert_true(before.contains("huyet_cu_nhan"), "có tướng mới")
+	var q: AbilityDef = lib.heroes[&"brakk"].q
+	q.values[&"damage"][0] += 1.0
+	var changed: String = NetVersion.content_text(lib)
+	q.values[&"damage"][0] -= 1.0  # resource nạp bằng load() dùng chung cả lần chạy test: trả lại
+	assert_ne(changed, before, "đổi sát thương Q → khác dấu")
+	assert_eq(NetVersion.content_text(lib), before)

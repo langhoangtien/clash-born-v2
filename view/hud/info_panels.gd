@@ -32,6 +32,10 @@ const VALUE_NAMES: Dictionary = {
 	&"deflect": "Hất lại", &"deflect_chance": "Tỉ lệ hất", &"reflect_heal": "Hồi theo phản", &"angle": "Góc quạt", &"speed_bonus": "Tốc chạy +",
 	&"attack_speed_bonus": "Tốc đánh +", &"reflect": "Phản sát thương", &"strike": "Cú bổ",
 	&"win_damage": "Thắng: sát thương +", &"lose_damage": "Thua: sát thương −", &"win_gold": "Vàng khi thắng",
+	&"hp_per_str": "Máu / STR", &"fraction": "Phản (× STR)", &"self_damage": "Tự mất máu", &"str_ratio": "Theo STR ×",
+	&"as_per_agi": "Tốc đánh / AGI", &"agility_bonus": "Nhanh nhẹn +", &"attribute_bonus": "Mọi thuộc tính +", &"speed": "Tốc chạy",
+	&"evasion": "Né", &"attack_speed": "Tốc đánh +", &"weaken": "Giảm sát thương địch", &"reduction": "Giảm sát thương vật lý",
+	&"push_time": "Thời gian đẩy (s)", &"distance": "Khoảng đẩy",
 }
 
 var world: World
