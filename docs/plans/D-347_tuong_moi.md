@@ -69,3 +69,14 @@ Mỗi đợt: số liệu vào CONTENT.md → test kịch bản từng chiêu �
 2. Tướng 6, nội tại: (a) lấy 2 thuộc tính chính → 2 AGI, hay (b) 1 mỗi loại → 3 AGI? Phần lấy được giữ **tạm thời** (kiểu Slark, mất sau vài chục giây) hay **vĩnh viễn**?
 3. Tướng 6, R: tàng hình không gì lộ được thì không có cách bắt. Đề xuất: không bị trụ / mắt / bụi lộ, nhưng **lộ khi đánh hoặc trúng sát thương**, thời gian ngắn (2–4 s). Đồng ý không?
 4. Tướng 8, W: (a) bật bắn giảm giáp + thêm sát thương, hay (b) nội tại có tỉ lệ bắn 2 phát?
+
+## Trả lời của người chơi (2026-11-11) — đã chốt
+
+1. Tướng 1, nội tại: **(b)** mỗi đòn đánh trúng −2% sát thương nhận + hồi 0,1% máu, 16 tầng, mỗi tầng 2 s.
+2. Tướng 6, nội tại: mỗi đòn đánh lấy của địch **2 thuộc tính chính + 1 mỗi thuộc tính phụ** → mình **+4 AGI**. **Tạm thời**: thời lượng
+   10–50 s (tăng theo bậc nội tại 1→5: 10/20/30/40/50 s — Claude đề xuất, chốt khi làm), mỗi lần lấy hết hạn riêng.
+3. Tướng 6, R: **như Slark** — tàng hình **không gì lộ được** (trụ, mắt xanh, bụi, đánh). Thêm bị động: khi **không nằm trong tầm nhìn
+   của địch** thì tăng hồi máu + tốc chạy. (Cơ chế mới: tàng hình tuyệt đối + điều kiện "không bị địch nhìn thấy" theo VIS.)
+4. Tướng 8, W: **(b)** nội tại có tỉ lệ bắn 2 phát liên tiếp (cơ chế mới: đòn đánh phụ ngay sau đòn chính).
+
+Hình: người chơi muốn **Codex CLI tạo ảnh (chân dung / ý tưởng nhân vật) để duyệt** trước khi làm mô hình 3D.
