@@ -149,7 +149,7 @@ func _combine(stat: int, base: float, active: Array[StatModifier]) -> float:
 			continue
 		match m.op:
 			ModifierDef.Op.ADD:
-				adds.append(m.value)
+				adds.append(m.value * (_final[m.per_attribute] if m.per_attribute >= 0 else 1.0))  # STAT-06
 			ModifierDef.Op.MULTIPLY:
 				factor += m.value - 1.0  # D-40: phần trăm cộng với nhau
 			ModifierDef.Op.OVERRIDE:

@@ -43,7 +43,9 @@ static func give(world: World, e: Entity, def: ItemDef) -> int:
 	list[index] = it
 	for m: ModifierDef in def.modifiers:
 		var ctx: ExprContext = ExprContext.make(e, e, {})
-		e.stats.add_modifier(StatModifier.make(StatId.from_name(m.stat), m.op, ExprEval.evaluate(m.value, ctx), it.serial, m.unique_group, index + 1))
+		var sm: StatModifier = StatModifier.make(StatId.from_name(m.stat), m.op, ExprEval.evaluate(m.value, ctx), it.serial, m.unique_group, index + 1)
+		sm.per_attribute = StatId.from_name(m.per_attribute) if m.per_attribute != &"" else -1  # STAT-06
+		e.stats.add_modifier(sm)
 	refresh_passives(world, e)
 	return index
 

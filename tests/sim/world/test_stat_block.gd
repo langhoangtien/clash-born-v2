@@ -210,3 +210,53 @@ func test_STAT_01_stat_ids_match_rule_catalog() -> void:
 	for i: int in range(RuleCatalog.STATS.size()):
 		assert_eq(StatId.from_name(RuleCatalog.STATS[i]), i, RuleCatalog.STATS[i])
 	assert_eq(StatId.from_name("speed"), -1)
+
+
+## STAT-06 (D-347): modifier theo thuộc tính — giá trị × thuộc tính HIỆN TẠI, tính lại mỗi lần (lên cấp / thêm đồ đổi theo).
+func test_STAT_06_per_attribute_modifier_follows_current_attribute() -> void:
+	var b: StatBlock = _block()
+	b.set_attributes(StatFormulas.Attribute.STRENGTH, Vector3(20, 10, 10), Vector3(2, 1, 1))
+	b.recompute()
+	var hp0: float = b.get_stat(StatId.Id.MAX_HP)
+	var m: StatModifier = _mod(StatId.Id.MAX_HP, ModifierDef.Op.ADD, 5.0, 1)
+	m.per_attribute = StatId.Id.STRENGTH
+	b.add_modifier(m)
+	b.recompute()
+	assert_near(b.get_stat(StatId.Id.MAX_HP) - hp0, 5.0 * 20, EPS, "5 máu mỗi STR × 20 STR")
+	b.set_level(11, 0, 2.0)
+	b.recompute()
+	var strength: float = b.get_stat(StatId.Id.STRENGTH)
+	assert_near(strength, 20 + 2 * 10, EPS)
+	b.add_modifier(_mod(StatId.Id.STRENGTH, ModifierDef.Op.ADD, 10, 2))
+	b.recompute()
+	var expect: float = hp0 + (strength + 10 - 20) * bal.hp_per_strength + 5.0 * (strength + 10)
+	assert_near(b.get_stat(StatId.Id.MAX_HP), expect, EPS, "lên cấp + đồ STR: phần theo STR tính lại")
+
+
+func test_STAT_06_per_attribute_from_content_and_validator() -> void:
+	var e: EffectDef = EffectDef.new()
+	var md: ModifierDef = ModifierDef.new()
+	md.stat = &"attack_speed"
+	md.value = "0.003"
+	md.per_attribute = &"agility"
+	e.modifiers = [md]
+	e.duration = "0"
+	var w: World = World.new(1, bal)
+	var u: Entity = Entity.new()
+	u.stats = _block()
+	u.stats.set_attributes(StatFormulas.Attribute.AGILITY, Vector3(10, 100, 10), Vector3.ZERO)
+	w.add_entity(u)
+	u.stats.recompute()
+	var before: float = u.stats.get_stat(StatId.Id.ATTACK_SPEED)
+	Effects.apply(w, u, e, u, {})
+	u.stats.recompute()
+	assert_near(u.stats.get_stat(StatId.Id.ATTACK_SPEED) - before, 0.3, EPS, "0,003 × 100 AGI")
+	assert_true(ContentValidator.per_attribute_error(md) == "")
+	md.per_attribute = &"max_hp"
+	assert_ne(ContentValidator.per_attribute_error(md), "", "chỉ strength / agility / intelligence")
+	md.per_attribute = &"agility"
+	md.stat = &"agility"
+	assert_ne(ContentValidator.per_attribute_error(md), "", "không theo thuộc tính lên chính thuộc tính")
+	md.stat = &"attack_speed"
+	md.op = ModifierDef.Op.MULTIPLY
+	assert_ne(ContentValidator.per_attribute_error(md), "", "chỉ ADD")

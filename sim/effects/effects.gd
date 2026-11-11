@@ -163,4 +163,6 @@ static func _apply_modifiers(owner: Entity, inst: EffectInstance) -> void:
 			value *= inst.stacks
 		elif m.op == ModifierDef.Op.MULTIPLY:
 			value = 1.0 + (value - 1.0) * inst.stacks
-		owner.stats.add_modifier(StatModifier.make(stat, m.op, value, inst.serial, m.unique_group, inst.item_slot))
+		var sm: StatModifier = StatModifier.make(stat, m.op, value, inst.serial, m.unique_group, inst.item_slot)
+		sm.per_attribute = StatId.from_name(m.per_attribute) if m.per_attribute != &"" else -1  # STAT-06
+		owner.stats.add_modifier(sm)

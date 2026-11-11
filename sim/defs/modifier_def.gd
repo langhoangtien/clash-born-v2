@@ -9,3 +9,6 @@ enum Op { ADD, MULTIPLY, OVERRIDE }
 @export var op: Op = Op.ADD
 @export var value: String
 @export var unique_group: StringName
+## STAT-06 (D-347): "" = số cố định; strength / agility / intelligence = `value` là lượng MỖI điểm thuộc tính đó, nhân với
+## thuộc tính hiện tại mỗi lần tính lại chỉ số (lên cấp, thêm đồ đổi theo). Chỉ ADD, không lên chính thuộc tính.
+@export var per_attribute: StringName

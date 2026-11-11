@@ -104,6 +104,13 @@ Kỹ năng và trang bị **khác nhóm** vẫn kết hợp bình thường (vd 
 cùng chiêu làm chậm theo EFF-03). Riêng chí mạng không cần nhóm vì CMB-07 không bao
 giờ nhân hệ số với nhau.
 
+
+`STAT-06` (D-347) **Modifier theo thuộc tính** (`per_attribute` = `strength` / `agility` / `intelligence`): `value` là lượng
+**mỗi điểm** thuộc tính đó (biểu thức chụp lúc áp như EFF-09, vd theo bậc nội tại), chỉ số nhận được = value × thuộc tính
+**hiện tại** — tính lại mỗi lần StatBlock tính lại (lên cấp, mua đồ STR, hút chỉ số… đều đổi theo). Thuộc tính tính xong
+trước (STAT-04) rồi mới tới chỉ số dẫn xuất nên không vòng. Chỉ dùng với ADD; không áp lên chính thuộc tính (dữ liệu kiểm).
+Ví dụ: "+7 máu mỗi STR" (`max_hp`, ADD, 7, strength), "tốc đánh thêm = 60% AGI" (`attack_speed`, ADD, 0,6 ×
+`attack_speed_per_agility`, agility).
 ---
 
 ## ST — Trạng thái

@@ -10,6 +10,8 @@ var source_id: int
 var unique_group: StringName
 ## STAT-05 (D-55): ô đồ của nguồn (1–6), 0 nếu không phải đồ (skill, nội tại, hiệu ứng).
 var item_slot: int
+## STAT-06: -1 = số cố định; STRENGTH / AGILITY / INTELLIGENCE = `value` mỗi điểm thuộc tính đó (StatBlock nhân lúc tính lại).
+var per_attribute: int = -1
 
 
 static func make(p_stat: StatId.Id, p_op: ModifierDef.Op, p_value: float, p_source: int,

@@ -117,6 +117,8 @@ func _check_expr(expr: String, where: String, names: Variant) -> void:
 func _check_names(res: Resource, where: String) -> void:
 	if res is ModifierDef and not RuleCatalog.STATS.has(String(res.stat)):
 		_fail(where, "chỉ số '%s' không có trong STAT-01" % res.stat)
+	if res is ModifierDef and per_attribute_error(res) != "":
+		_fail(where, per_attribute_error(res))
 	elif res is TriggerDef:
 		if not RuleCatalog.EVENTS.has(String(res.event)):
 			_fail(where, "sự kiện '%s' không có trong EVT" % res.event)
@@ -160,3 +162,16 @@ func _check_bot_order(hero: HeroDef, where: String) -> void:
 	talents.sort()
 	if talents != [AbilityDef.Slot.Q, AbilityDef.Slot.W, AbilityDef.Slot.R]:
 		_fail(where, "bot_talent_priority phải gồm Q, W, R mỗi ô một lần")
+
+
+## STAT-06: modifier theo thuộc tính chỉ ADD, theo strength / agility / intelligence, không lên chính thuộc tính.
+static func per_attribute_error(m: ModifierDef) -> String:
+	if m.per_attribute == &"":
+		return ""
+	if not [&"strength", &"agility", &"intelligence"].has(m.per_attribute):
+		return "per_attribute '%s' phải là strength / agility / intelligence (STAT-06)" % m.per_attribute
+	if [&"strength", &"agility", &"intelligence"].has(m.stat):
+		return "per_attribute không áp lên thuộc tính (STAT-06)"
+	if m.op != ModifierDef.Op.ADD:
+		return "per_attribute chỉ dùng với ADD (STAT-06)"
+	return ""
