@@ -67,6 +67,14 @@ UNITS = {
              "Magic_1H_Cast=cast,Magic_2H_Attack_2@0.6-1.6=skill_1,Spell_Wide@1.0-2.2=skill_2,Magic_1H_Cast@0.7-1.5=skill_3,"
              "Sprint=sprint",  # D-321
              True, False),
+    # D-347: Phong Tiễn (chuẩn quy trình tướng mới): Codex tờ 3 góc khăn choàng NGẮN, tay không → split_turnaround → Tripo
+    # multiview 2500 + cung riêng → glb_yaw −90 → afk.ai human (593 hoạt ảnh) → cung gắn cứng tay trái (place_prop --rot 90,0,0).
+    # Đánh = kéo dây + buông (bỏ đoạn hạ cung); Q né xoay người; W kéo nhanh + buông (tung 0,3 s); R bị động.
+    "phong_tien": ("phong_tien/phong_tien", "heroes/phong_tien",
+                   "Bow_Casual=idle,Run_Female=run,Bow Pull Back@0.5-1.25+Bow Release=attack,Hit_Chest=hit,Death_B=death,"
+                   "Idle_Dizzy=stun,Bow Pull Back@0.75-1.25+Bow Release=cast,Dodge_left=skill_1,"
+                   "Bow_Draw@1.3-2.07+Bow Release=skill_2,Sprint=sprint",
+                   True, False, ["phong_tien/phong_tien_bow_hand:hand_l"]),
     # D-307b: tê giác theo style ảnh mẫu người chơi (concept_gen.py từ ảnh mẫu → split_turnaround.py →
     # Tripo multiview → glb_yaw -90 → afk.ai: dragon / horse → fix-stretching)
     # D-309: Người Đá thay rồng (concept_gen theo ảnh mẫu bãi đấu → Tripo → afk.ai human); fix-stretching + drop_loose (tam giác lẻ kéo dài); đòn đánh = đấm móc (đấm đất kéo méo nắm tay)
