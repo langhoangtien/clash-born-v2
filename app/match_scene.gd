@@ -6,6 +6,8 @@ extends Node2D
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
 ## MATCH-01..05 (D-328): cấu hình trận (màn chọn tướng đặt trước khi vào trận); người chơi điều khiển ô người đầu tiên.
 static var config: MatchConfig = MatchConfig.make(1, [&"brakk", &"myra"] as Array[StringName], [0], BotState.Difficulty.NORMAL, 1)
+## M9.6 (D-344): trận online — phiên đã nhận lời chào của máy chủ phòng (null = trận với bot trong máy).
+static var online: OnlineSession
 ## CTL-02: phím PC giả lập nút ĐÁNH / đánh lính / đánh trụ (theo Rules.AttackMode).
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
 const SPEEDS: Array[int] = [1, 2, 4, 8]
@@ -47,6 +49,8 @@ var settings: SettingsControl
 
 func _ready() -> void:
 	UnitSprite.clear_cache()  # D-149: id đơn vị dùng lại giữa các trận
+	if online != null:
+		config = online.config  # NET-08: cấu hình máy chủ gửi — mọi máy dựng cùng một World
 	world = World.new(config.seed, load(BALANCE_PATH) as BalanceSettings)  # MATCH-05
 	world.map = map_view.layout
 	world.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
@@ -55,7 +59,7 @@ func _ready() -> void:
 		ArtLibrary.texture(def.art_id)  # nạp sẵn hình lúc vào trận, không để lần xuất hiện đầu bị giật
 	ArtLibrary.load_ahead(ArtLibrary.content_ids(library))  # D-269: icon đồ / chiêu / buff nạp ngầm
 	for e: Entity in MatchSetup.build(world, library, config):
-		if hero == null and e.bot == null:
+		if hero == null and e.bot == null and (online == null or e.id == online.entity_id):
 			hero = e
 		elif bot_unit == null and e.team == 1:
 			bot_unit = e
@@ -70,6 +74,8 @@ func _ready() -> void:
 	input.hero = hero
 	runner = SimRunner.new(world, true)  # D-273: chia tick qua hai khung
 	runner.before_step.connect(_before_step)
+	if online != null:
+		OnlineMatch.attach($Hud, world, runner, online)
 	_setup_audio()
 	_setup_quick_buy()
 	camera.position = hero.position
@@ -116,7 +122,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	input.set_direction(_held_direction())
+	input.set_direction(MatchInput.held_direction(joystick))
 	for mode: int in range(ATTACK_KEYS.size()):
 		input.set_attack_held(mode, attack_buttons.is_held(mode) or Input.is_physical_key_pressed(ATTACK_KEYS[mode]))
 	var t: int = FrameProfile.now()
@@ -128,8 +134,10 @@ func _process(delta: float) -> void:
 func tick_frame(delta: float) -> void:
 	if loading == null or not loading.busy():
 		runner.advance(delta)
+	elif online != null:
+		runner.receive(delta)  # online: vẫn nhận gói lệnh lúc đang nạp màn
 	units_view.alpha = runner.alpha()
-	var follow: Vector2 = death_cam.update(hero.alive, units_view.display_position(hero), _held_direction(), delta, _map_bounds())  # CAM-01
+	var follow: Vector2 = death_cam.update(hero.alive, units_view.display_position(hero), MatchInput.held_direction(joystick), delta, _map_bounds())  # CAM-01
 	if minimap.peeking and death_cam.active():
 		death_cam.jump(minimap.peek_point, _map_bounds())  # CAM-01b
 	camera.position = minimap.peek_point if minimap.peeking else follow
@@ -161,14 +169,20 @@ func _show_result() -> void:
 	$Hud.add_child(result)
 	result.show_result(world, hero)
 	# ST.1, D-339; D-341: gắn vào gốc cây — bấm về menu ngay không hủy yêu cầu gửi
-	if not MatchUpload.send(get_tree().root, MatchRecord.of(world, config, Updater.current_name()), result.set_stats_note):
+	var record: Dictionary = MatchRecord.of(world, config, Updater.current_name())
+	if online != null:
+		OnlineMatch.tag(record, online)  # NET-12
+	if not MatchUpload.send(get_tree().root, record, result.set_stats_note):
 		result.set_stats_note("Thống kê: trận thử / đo hiệu năng — không tính", false)
-	result.replay_pressed.connect(func() -> void: get_tree().reload_current_scene())
+	result.replay_pressed.connect(func() -> void:
+		get_tree().change_scene_to_file(MENU_SCENE) if online != null else get_tree().reload_current_scene())
 	result.menu_pressed.connect(func() -> void: get_tree().change_scene_to_file(MENU_SCENE))
 
 
 ## D-53: phím F đổi tốc độ chơi thử ×1 → ×2 → ×4 → ×8 → ×1.
 func cycle_speed() -> void:
+	if online != null:
+		return  # NET-01: máy chủ giữ nhịp
 	var i: int = SPEEDS.find(runner.speed)
 	runner.speed = SPEEDS[(i + 1) % SPEEDS.size()]
 
@@ -176,22 +190,6 @@ func cycle_speed() -> void:
 func _before_step() -> void:
 	units_view.capture_previous()
 	input.flush()
-
-
-## Joystick ảo ưu tiên; không chạm thì đọc WASD / mũi tên.
-func _held_direction() -> Vector2:
-	if joystick.active:
-		return joystick.direction
-	var dir: Vector2 = Vector2.ZERO
-	if Input.is_physical_key_pressed(KEY_A) or Input.is_physical_key_pressed(KEY_LEFT):
-		dir.x -= 1
-	if Input.is_physical_key_pressed(KEY_D) or Input.is_physical_key_pressed(KEY_RIGHT):
-		dir.x += 1
-	if Input.is_physical_key_pressed(KEY_W) or Input.is_physical_key_pressed(KEY_UP):
-		dir.y -= 1
-	if Input.is_physical_key_pressed(KEY_S) or Input.is_physical_key_pressed(KEY_DOWN):
-		dir.y += 1
-	return dir
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -295,3 +293,8 @@ func _drop_finished_build() -> void:
 				_build_done.append(id)
 		shop.build = left
 		shop.queue_redraw()
+
+
+func _exit_tree() -> void:
+	OnlineMatch.leave(online)  # M9.6: rời màn trận online = rời trận
+	online = null

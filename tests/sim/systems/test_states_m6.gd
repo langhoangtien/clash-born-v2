@@ -1,5 +1,5 @@
 extends TestCase
-## M6.1: INVULNERABLE, MAGIC_IMMUNE, HEXED và kết hợp state (ST-07, ST-15..17, PRI-05, D-78).
+## M6.1: INVULNERABLE, MAGIC_IMMUNE, HEXED và kết hợp state (NET-12, ST-15..17, PRI-05, D-78).
 
 const MAP_PATH: String = "res://data/maps/clashborn.tres"
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
@@ -85,7 +85,7 @@ func _steps(w: World, n: int) -> void:
 		w.step()
 
 
-func test_ST_07_invulnerable_blocks_all_damage_and_enemy_debuffs() -> void:
+func test_NET_12_invulnerable_blocks_all_damage_and_enemy_debuffs() -> void:
 	var w: World = _world()
 	var me: Entity = _unit(w, 0, _center())
 	var foe: Entity = _unit(w, 1, _center() + Vector2(200, 0))

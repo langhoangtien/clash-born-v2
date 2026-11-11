@@ -10,6 +10,8 @@ signal map_pressed
 signal settings_pressed
 ## D-333: nút Tài khoản (APP mở AccountPanel).
 signal account_pressed
+## M9.6 (D-344): nút Online (APP mở OnlinePanel).
+signal online_pressed
 
 const CARD: Vector2 = Vector2(192, 262)
 const CARD_GAP: float = 14.0
@@ -31,6 +33,7 @@ const MODE_SIZE: Vector2 = Vector2(184, 64)
 const PRACTICE: Rect2 = Rect2(1196, 34, 270, 64)
 ## D-333: tài khoản — tên trong game khi đã đăng nhập.
 const ACCOUNT_BUTTON: Rect2 = Rect2(880, 34, 300, 64)
+const ONLINE_BUTTON: Rect2 = Rect2(690, 34, 176, 64)
 
 var previews: Array[HeroPreview] = []
 var selected: int = 0
@@ -80,6 +83,8 @@ func press_at(at: Vector2) -> void:
 		practice = not practice
 	if ACCOUNT_BUTTON.has_point(at):
 		account_pressed.emit()
+	if ONLINE_BUTTON.has_point(at):
+		online_pressed.emit()
 	for i: int in range(previews.size()):
 		if card_rect(i).has_point(at):
 			selected = i
@@ -118,6 +123,7 @@ func _draw() -> void:  # D-130: giao diện theo UiStyle
 		UiStyle.button(self, mode_rect(i), &"gold" if i == mode else &"ghost", "%d vs %d" % [MODES[i], MODES[i]], "", 28)
 	UiStyle.button(self, PRACTICE, &"blue" if practice else &"ghost", "Trận thử ✓" if practice else "Trận thử", "", 26)
 	UiStyle.button(self, ACCOUNT_BUTTON, &"ghost", account_name if account_name != "" else "Đăng nhập", "", 26)
+	UiStyle.button(self, ONLINE_BUTTON, &"gold", "Online", "", 28)
 	UiStyle.panel(self, Rect2(Vector2(40, 116), Vector2(DETAIL.position.x - 60, 784)))
 	for i: int in range(previews.size()):
 		_card(i)

@@ -38,7 +38,8 @@ CREATE INDEX IF NOT EXISTS items_match ON items (match_id);
 CREATE INDEX IF NOT EXISTS buys_match ON buys (match_id);
 """
 # D-334: ô người chơi gắn tài khoản (lịch sử trận, ban → xóa trận); cột thêm sau khi VPS đã có dữ liệu.
-COLUMNS = {"players": [("account_id", "INTEGER")]}
+COLUMNS = {"players": [("account_id", "INTEGER")], "matches": [("match_key", "TEXT")]}  # D-344: khóa trận online
+MATCH_KEY = re.compile(r"^[A-Z0-9]{5}-\d{1,10}$")
 HISTORY = 20
 
 
@@ -50,6 +51,7 @@ def _db(root: str) -> sqlite3.Connection:
     accounts.migrate(con, COLUMNS)
     accounts.migrate(con, accounts.COLUMNS)
     con.execute("CREATE INDEX IF NOT EXISTS players_account ON players (account_id)")
+    con.execute("CREATE INDEX IF NOT EXISTS matches_key ON matches (match_key)")
     return con
 
 
@@ -93,6 +95,20 @@ def check(rec) -> dict:
         raise ValueError("mỗi đội phải đủ người")
     if len({p["hero"] for p in out["players"]}) != 2 * n:
         raise ValueError("trùng tướng (MATCH-02)")
+    return _online(rec, out)
+
+
+def _online(rec: dict, out: dict) -> dict:
+    """NET-12 (D-344): trận online — `match_key` (mã phòng-seed) để gộp biên bản các máy, `you` = ô của máy gửi."""
+    key, you = rec.get("match_key"), rec.get("you")
+    if key is None and you is None:
+        return out
+    if not isinstance(key, str) or not MATCH_KEY.match(key):
+        raise ValueError("match_key không hợp lệ")
+    you = _int(you, 0, len(out["players"]) - 1, "you")
+    if out["players"][you]["bot"]:
+        raise ValueError("you không hợp lệ")
+    out["match_key"], out["you"] = key, you
     return out
 
 
@@ -140,13 +156,22 @@ def save(root: str, recs: list, source: str, account: int = -1) -> dict:
 
 
 def _insert(con: sqlite3.Connection, r: dict, source: str, account: int) -> int:
-    cur = con.execute("INSERT INTO matches (received, source, version, mode, kind, duration_s, winner) VALUES (?,?,?,?,?,?,?)",
-                      (time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), source, r["version"], r["mode"], r["kind"],
-                       r["duration_s"], r["winner"]))
+    if "match_key" in r:  # NET-12: máy thứ hai gửi cùng trận online → chỉ gắn tài khoản vào ô của nó, không đếm lại
+        row = con.execute("SELECT id FROM matches WHERE match_key = ?", (r["match_key"],)).fetchone()
+        if row is not None:
+            me = r["players"][r["you"]]
+            if account >= 0:
+                con.execute("UPDATE players SET account_id = ? WHERE match_id = ? AND team = ? AND slot = ? AND bot = 0 "
+                            "AND account_id IS NULL", (account, row[0], me["team"], me["slot"]))
+            return row[0]
+    cur = con.execute("INSERT INTO matches (received, source, version, mode, kind, duration_s, winner, match_key) "
+                      "VALUES (?,?,?,?,?,?,?,?)", (time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), source, r["version"],
+                                                   r["mode"], r["kind"], r["duration_s"], r["winner"], r.get("match_key")))
     mid = cur.lastrowid
-    for p in r["players"]:
+    for i, p in enumerate(r["players"]):
         key = (mid, p["team"], p["slot"], p["hero"])
-        owner = account if account >= 0 and not p["bot"] else None
+        mine = not p["bot"] and r.get("you", i) == i  # trận online: chỉ ô của máy gửi
+        owner = account if account >= 0 and mine else None
         con.execute("INSERT INTO players (match_id, team, slot, hero, bot, won, kills, deaths, assists, level, gold, last_hits, "
                     "account_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", key + (int(p["bot"]), int(p["won"]), p["kills"],
                     p["deaths"], p["assists"], p["level"], p["gold"], p["last_hits"], owner))

@@ -11,6 +11,7 @@ var peer: WebSocketPeer
 static func dial(url: String) -> WsTransport:
 	var t: WsTransport = WsTransport.new()
 	t.peer = WebSocketPeer.new()
+	t.peer.inbound_buffer_size = 1 << 20  # M9.6: gói lệnh dồn lại lúc màn trận đang nạp
 	t.peer.connect_to_url(url)
 	return t
 

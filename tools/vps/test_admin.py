@@ -168,6 +168,27 @@ class AdminTest(AccountCase):
         self.assertEqual(len(page["matches"][0]["allies"]), 3, "trang công khai cũng có cả hai đội")
 
 
+    def test_NET_12_online_match_two_uploads_one_match(self) -> None:
+        a = self.signup("an@gmail.com")
+        self.auth("name", {"name": "Anh"}, session=a)
+        b = self.signup("binh@gmail.com")
+        self.auth("name", {"name": "Binh"}, session=b)
+        rec = record(0, heroes=("gorran", "myra"), kind="pvp")
+        rec["players"][1]["bot"] = False
+        rec["match_key"] = "QP33Z-12345"
+        for who, you in ((a, 0), (b, 1)):
+            sent = dict(rec, you=you)
+            self.assertEqual(self.req("POST", "/api/match", sent, session=who)[0], 200)
+        self.assertEqual(self.req("GET", "/api/stats/summary")[1]["matches"], 1, "hai máy gửi cùng trận: đếm một")
+        ha = self.req("GET", "/api/auth/history", session=a)[1]["matches"]
+        hb = self.req("GET", "/api/auth/history", session=b)[1]["matches"]
+        self.assertEqual((ha[0]["hero"], ha[0]["won"], hb[0]["hero"], hb[0]["won"]), ("gorran", True, "myra", False))
+        self.assertEqual([p["name"] for p in hb[0]["enemies"]], ["Anh"], "đối thủ là người: hiện tên")
+        bad = dict(rec, you=5)
+        self.assertEqual(self.req("POST", "/api/match", bad)[0], 400)
+        self.assertEqual(self.req("POST", "/api/match", dict(rec, you=0, match_key="x"))[0], 400)
+
+
 if __name__ == "__main__":
     import unittest
     unittest.main()

@@ -23,6 +23,7 @@ func _ready() -> void:
 	select.start_pressed.connect(_start)
 	select.map_pressed.connect(func() -> void: get_tree().change_scene_to_file(MAP_VIEWER))
 	_setup_account(select)
+	_setup_online(select)
 	var audio: AudioView = AudioView.new()  # D-114: nhạc menu (Safari phát sau lần chạm đầu tiên)
 	audio.name = "Audio"
 	add_child(audio)
@@ -77,6 +78,24 @@ func _setup_account(select: HeroSelect) -> void:
 	panel.closed.connect(func() -> void: panel.visible = false)
 	select.account_pressed.connect(func() -> void: panel.visible = true)
 	show_account.call()
+
+
+## M9.6 (D-344): Chơi online — bảng phòng (OnlinePanel) + phiên mạng (OnlineMenu); máy chủ chào vào trận → màn trận online.
+func _setup_online(select: HeroSelect) -> void:
+	var panel: OnlinePanel = OnlinePanel.new()
+	panel.name = "OnlinePanel"
+	panel.visible = false
+	add_child(panel)
+	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var menu: OnlineMenu = OnlineMenu.new()
+	menu.name = "Online"
+	add_child(menu)
+	menu.attach(panel)
+	select.online_pressed.connect(menu.open)
+	menu.match_ready.connect(func(s: OnlineSession) -> void:
+		var scene: GDScript = preload("res://app/match_scene.gd")
+		scene.online = s
+		get_tree().change_scene_to_file(MATCH_SCENE))
 
 
 func _start(id: StringName, bot_id: StringName, difficulty: int, team_size: int, practice: bool) -> void:

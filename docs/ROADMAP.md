@@ -157,7 +157,7 @@ offline với bot trước (M9.1–M9.2), chứng minh SIM tất định giữa 
 | M9.3 Tất định giữa máy: file phát lại (cấu hình + nhật ký lệnh), chạy headless in chuỗi mã băm; so Android ↔ PC/VPS; lệch thì thay phép tính gây lệch (vd sin/cos/sqrt) bằng bản tất định | Trận 3v3 bot 10 phút: mã băm từng giây trùng nhau trên điện thoại và VPS |
 | M9.4 Máy khách lockstep (NET-01..05): lệnh gửi lên máy chủ gắn tick đích (tick + độ trễ lệnh), World chỉ chạy tick T khi có gói lệnh tick T; gửi mã băm định kỳ | Test với máy chủ giả trong tiến trình: 2 World cùng gói lệnh → cùng mã băm; mất gói → chờ, không chạy lệch |
 | M9.5 Máy chủ phòng (Godot headless trên VPS, WebSocket sau nginx `wss://clashborn.quest/play`): tạo / vào phòng bằng mã, gom lệnh theo tick, phát gói, chạy SIM so mã băm | 2 máy khách thật chơi được với nhau qua VPS |
-| M9.6 Sảnh: tạo phòng → mã, vào phòng, chọn ô / tướng, chủ phòng bắt đầu, ô trống = bot | **Chơi thử 3v3 online** với điện thoại thật |
+| M9.6 Sảnh: tạo phòng → mã, vào phòng, chọn ô / tướng, chủ phòng bắt đầu, ô trống = bot | **Chơi thử 3v3 online** với điện thoại thật — code xong D-344 (nút Online ở menu), chờ chơi thử PC ↔ máy tính bảng |
 | M9.7 Rớt mạng: bot đánh thay hero của người rớt (lệnh đổi quyền điều khiển trong luồng lệnh — mọi máy giống nhau); lệch mã băm → báo lỗi kèm nhật ký lên máy chủ | Test; chơi thử rút mạng giữa trận |
 | M9.8 (sau) Vào lại trận đang đánh: ảnh chụp World hoặc tua nhanh nhật ký; tìm trận tự động; 5v5 | — |
 

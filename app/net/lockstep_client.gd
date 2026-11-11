@@ -35,6 +35,9 @@ var _acc: float = 0.0             ## thời gian đã trôi chưa chạy thành 
 var max_backlog: int = 0
 var desync_tick: int = -1         ## tick lệch đầu tiên máy chủ báo (-1 = chưa)
 var hashes: Dictionary[int, String] = {}  ## mã băm đã gửi (chẩn đoán)
+## M9.6: APP móc vào trước / sau mỗi tick (màn trận: chụp vị trí nội suy, gửi lệnh đang giữ; âm thanh).
+var on_before: Callable = Callable()
+var on_after: Callable = Callable()
 
 
 func _init(t: NetTransport) -> void:
@@ -120,6 +123,8 @@ func advance(dt: float) -> int:
 
 ## Đưa gói lệnh của tick kế vào World rồi chạy tick đó (NET-01); gửi mã băm định kỳ (NET-04).
 func step() -> void:
+	if on_before.is_valid():
+		on_before.call()
 	var bundle: Array = _bundles[world.tick + 1]
 	_bundles.erase(world.tick + 1)
 	for entry: Variant in bundle:
@@ -133,6 +138,8 @@ func step() -> void:
 				else (clock - _sent_at[s]) * 1000.0
 			_sent_at.erase(s)
 	world.step()
+	if on_after.is_valid():
+		on_after.call()
 	if world.tick % HASH_EVERY == 0:
 		hashes[world.tick] = world.state_hash().hex_encode()
 		transport.send({"t": "hash", "n": world.tick, "h": hashes[world.tick]})
@@ -141,3 +148,8 @@ func step() -> void:
 ## Số gói đã đến mà chưa chạy.
 func backlog() -> int:
 	return last_tick - (world.tick if world != null else 0)
+
+
+## Phần đã trôi của tick kế (0..1) — VIEW nội suy.
+func phase() -> float:
+	return clampf(_acc / SimClock.TICK_SECONDS, 0.0, 0.999)

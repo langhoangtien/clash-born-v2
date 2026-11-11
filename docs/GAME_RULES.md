@@ -896,6 +896,15 @@ chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, 
   chủ; phòng trống → xóa. Phòng đã vào trận không nhận thêm người (vào lại trận: M9.8).
 - `NET-10` Phiên bản: lúc bắt tay mỗi bên tính **dấu vân tay SIM** (mã băm World của một trận cố định sau 3 giây trận, kèm số
   hiệu giao thức) — khác máy chủ → không vào được (NET-06), báo cập nhật game.
+- `NET-11` (M9.6, D-344) **Chơi online** từ menu (nút Online): phải đăng nhập và có tên trong game. Bảng online nối máy chủ
+  phòng, tạo phòng (1v1 / 2v2 / 3v3) hoặc nhập mã; trong phòng hiện hai đội (người + "bot" cho ô trống), đổi đội, chọn
+  tướng (tướng người khác đã chọn bị khóa), chủ phòng đổi số người và bắt đầu. Vào trận: màn trận dựng World từ cấu hình
+  máy chủ gửi, điều khiển đơn vị máy chủ giao; tick chạy theo gói lệnh (NET-01), không tăng tốc, không có nút Test (không
+  phải trận thử). HUD hiện "Online <RTT> ms", đứng chờ gói ≥ 0,5 s thì "đang chờ mạng…", mất kết nối / lệch thì báo. Rời màn
+  trận (Esc, Thoát, về menu) = ngắt kết nối; người rời đứng yên tới khi có M9.7.
+- `NET-12` (D-344) Trận online: mọi máy có người gửi biên bản (Clashborn Stats) kèm `match_key` = mã phòng + seed và `you`
+  = ô của máy gửi. Máy chủ thống kê: khóa đã có → chỉ gắn tài khoản vào ô `you` (ô người, chưa ai nhận), không đếm thêm
+  trận; chưa có → ghi trận, chỉ ô `you` gắn tài khoản người gửi. Lịch sử mỗi người có trận đó, đối thủ là người hiện tên.
 - (M9.7) Rớt mạng quá lâu → bot đánh thay bằng lệnh đổi quyền điều khiển trong luồng lệnh (luật viết khi làm).
 
 ## CMD — Lệnh (Command)

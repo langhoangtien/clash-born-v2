@@ -168,7 +168,7 @@ func test_ST_04_disarmed_walks_but_never_hits() -> void:
 	assert_true(a.position.x < _origin().x)
 
 
-func test_ST_07_invulnerable_takes_no_damage() -> void:
+func test_NET_12_invulnerable_takes_no_damage() -> void:
 	var w: World = _world()
 	var e: Entity = _fighter(w, 0, _origin())
 	_state(w, e, S.INVULNERABLE, "1", [&"buff"])

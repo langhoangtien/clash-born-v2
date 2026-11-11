@@ -130,3 +130,19 @@ func _attack_idle() -> bool:
 		return false
 	var busy: bool = hero.order.type == Order.Type.ATTACK or hero.order.type == Order.Type.SWING
 	return not busy or hero.order.finished
+
+
+## Joystick ảo ưu tiên; không chạm thì đọc WASD / mũi tên (chuyển từ match_scene.gd — giới hạn 300 dòng).
+static func held_direction(joystick: TouchJoystick) -> Vector2:
+	if joystick.active:
+		return joystick.direction
+	var dir: Vector2 = Vector2.ZERO
+	if Input.is_physical_key_pressed(KEY_A) or Input.is_physical_key_pressed(KEY_LEFT):
+		dir.x -= 1
+	if Input.is_physical_key_pressed(KEY_D) or Input.is_physical_key_pressed(KEY_RIGHT):
+		dir.x += 1
+	if Input.is_physical_key_pressed(KEY_W) or Input.is_physical_key_pressed(KEY_UP):
+		dir.y -= 1
+	if Input.is_physical_key_pressed(KEY_S) or Input.is_physical_key_pressed(KEY_DOWN):
+		dir.y += 1
+	return dir

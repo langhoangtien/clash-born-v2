@@ -28,6 +28,9 @@ var split_ticks: bool = false
 
 ## D-108: ms SIM mỗi tick (trung bình trượt).
 var step_ms: float = 0.0
+## M9.6 (D-344): trận online — tick chạy theo gói lệnh máy chủ (LockstepClient), không theo đồng hồ máy này; không tăng tốc.
+var lockstep: LockstepClient
+var _clock: float = 0.0
 
 
 func _init(p_world: World, p_split: bool = false) -> void:
@@ -37,6 +40,8 @@ func _init(p_world: World, p_split: bool = false) -> void:
 
 ## Chạy số tick tương ứng `delta` giây; trả về số tick đã chạy.
 func advance(delta: float) -> int:
+	if lockstep != null:
+		return _advance_online(delta)
 	if paused:
 		return 0
 	_accumulator += maxf(0.0, delta) * speed
@@ -74,4 +79,28 @@ func advance(delta: float) -> int:
 
 ## Phần đã trôi của tick kế tiếp (0..1), để VIEW nội suy vị trí.
 func alpha() -> float:
+	if lockstep != null:
+		return lockstep.phase()
 	return clampf(_accumulator / SimClock.TICK_SECONDS, 0.0, 0.999)
+
+
+## M9.6: chỉ nhận tin (màn trận đang nạp) — gói lệnh xếp hàng, nạp xong chạy bù.
+func receive(delta: float) -> void:
+	_clock += maxf(0.0, delta)
+	lockstep.pump(_clock)
+
+
+## M9.6: nhận tin rồi chạy các tick đã có gói (NET-01).
+func _advance_online(delta: float) -> int:
+	receive(delta)
+	if paused:
+		return 0
+	if lockstep.on_before.is_null():
+		lockstep.on_before = before_step.emit
+		lockstep.on_after = stepped.emit
+	var t0: int = Time.get_ticks_usec()
+	var steps: int = lockstep.advance(delta)
+	if steps > 0:
+		step_ms = lerpf(step_ms, (Time.get_ticks_usec() - t0) / 1000.0 / steps, 0.1)
+	FrameProfile.shared.add(&"sim", t0)
+	return steps
