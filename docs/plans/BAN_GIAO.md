@@ -58,6 +58,14 @@ Chạy nhiều luồng song song (`&` … `wait`), mỗi ảnh khoảng 2–4 ph
 
 ## 4. Việc tiếp theo (theo thứ tự)
 
+0. **Phong Tiễn — việc còn mở (người chơi báo):**
+   - Lúc **chạy**, cung lệch vào chân. Lúc đứng thì đẹp, **giữ nguyên tư thế đứng**.
+   - Đã thử và đã hoàn tác (D-350): đẩy tay cung ra 12 cm bằng `afk-rig adjust`; người chơi thấy không đẹp bằng, vẫn vào chân.
+   - Hướng thử tiếp, gửi video cho người chơi so trước khi chốt:
+     - (a) đổi hoạt ảnh chạy khác trong bộ 593 có tay trái giơ / co lên (xem `Run_Anime`, `Jog`, `Bow_Walk` tăng tốc, `Sprint`);
+     - (b) chỉnh xoay tay `hand_l` thay vì dời: `--set armsUp`, hoặc `--move hand_l` có thành phần ra trước + lên;
+     - (c) lúc chạy giấu cung ở lưng / đổi góc cầm (cần cơ chế hiện / ẩn đạo cụ theo hoạt ảnh — giống kiếm Gorran D-324).
+   - Đã làm xong cho Phong Tiễn: mô hình 3D thật (D-348), dây cung vẽ bằng code (D-349), bản game 0.1.6xx.
 1. **Ảnh toàn thân 4 tướng đợt 1, duyệt trước khi làm 3D.** Phong Tiễn ĐÃ XONG 3D (chuẩn D-348); còn Huyết Cự Nhân, Thợ Săn, Thạch Giáp — làm y quy trình mục 5.
    - Người chơi yêu cầu: *gửi ảnh thân để duyệt trước lúc làm 3D*.
    - Ảnh ở `art_inbox/concepts/body/<id>_body.png`; nếu thiếu thì vẽ lại bằng Codex, theo đúng chân dung đã duyệt, mặt trước, tư thế chữ A, nền trắng.
