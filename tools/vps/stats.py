@@ -39,7 +39,7 @@ CREATE INDEX IF NOT EXISTS buys_match ON buys (match_id);
 """
 # D-334: ô người chơi gắn tài khoản (lịch sử trận, ban → xóa trận); cột thêm sau khi VPS đã có dữ liệu.
 COLUMNS = {"players": [("account_id", "INTEGER")], "matches": [("match_key", "TEXT")]}  # D-344: khóa trận online
-MATCH_KEY = re.compile(r"^[A-Z0-9]{5}-\d{1,10}$")
+MATCH_KEY = re.compile(r"^[A-Z0-9]{5}-\d{1,10}$")  # mã phòng: chữ + số (cũ) hoặc chỉ số (D-345)
 HISTORY = 20
 
 

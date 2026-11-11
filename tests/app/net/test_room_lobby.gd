@@ -8,8 +8,7 @@ func test_NET_07_code_and_join_rules() -> void:
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	var code: String = RoomLobby.new_code(rng)
 	assert_eq(code.length(), 5)
-	for ch: String in code:
-		assert_true(RoomLobby.CODE_CHARS.contains(ch) and not "O0I1".contains(ch))
+	assert_true(code.is_valid_int(), "D-345: mã chỉ có số (nhập nhanh bằng bàn phím số): " + code)
 	var r: RoomLobby = RoomLobby.new(code, 1)
 	assert_eq(r.join(10, 1, "An"), "")
 	assert_eq(r.host, 10, "người tạo là chủ phòng")

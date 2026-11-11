@@ -178,3 +178,16 @@ func test_NET_codec_round_trip_and_config() -> void:
 	var cfg: MatchConfig = MatchConfig.make(3, SIX, HUMANS, BotState.Difficulty.HARD, 99)
 	var cfg2: MatchConfig = NetCodec.config_from(JSON.parse_string(JSON.stringify(NetCodec.config_to(cfg))))
 	assert_eq(NetCodec.config_to(cfg2), NetCodec.config_to(cfg))
+
+
+## D-345: lệnh chiêu không có điểm nhắm (`point` = INF — chiêu chỉ hướng / chọn đơn vị / không nhắm) đi qua mạng nguyên vẹn.
+## Trước: bộ mã coi INF là hỏng → máy chủ bỏ mọi lệnh tung chiêu (người chơi: "cả hai máy không dùng được skill").
+func test_NET_02_cast_without_point_survives_wire() -> void:
+	for c: Command in [Command.cast(7, AbilityDef.Slot.Q, -1, Vector2.INF, Vector2(0.6, -0.8)), Command.cast(7, AbilityDef.Slot.R),
+			Command.cast(7, AbilityDef.Slot.W, 12)]:
+		var back: Command = NetCodec.command_from(JSON.parse_string(JSON.stringify(NetCodec.command_to(c))))
+		assert_true(back != null, "lệnh chiêu không bị bỏ")
+		if back != null:
+			assert_eq([back.type, back.slot, back.target_id, back.point, back.direction], [c.type, c.slot, c.target_id, c.point, c.direction])
+	assert_true(NetCodec.command_from({"k": int(Command.Type.CAST), "e": 1, "p": [1e400, 0], "d": [0, 0], "t": -1, "l": false,
+		"m": 0, "s": 0, "i": ""}) == null, "số hỏng thật vẫn bị bỏ")

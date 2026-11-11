@@ -46,8 +46,9 @@ func show_home(player: String) -> void:
 		row.add_child(_button("%d vs %d" % [n, n], {"t": "create", "size": n}, true))
 	_box.add_child(_label("Vào phòng của bạn bè", 22, UiStyle.DIM, false))
 	_code = LineEdit.new()
-	_code.placeholder_text = "Mã phòng (5 ký tự)"
+	_code.placeholder_text = "Mã phòng (5 số)"
 	_code.max_length = RoomLobby.CODE_LEN
+	_code.virtual_keyboard_type = LineEdit.KEYBOARD_TYPE_NUMBER  # D-345
 	_code.custom_minimum_size = Vector2(0, 64)
 	_code.add_theme_font_size_override("font_size", 30)
 	_box.add_child(_code)

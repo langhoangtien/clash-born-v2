@@ -17,6 +17,7 @@ func _initialize() -> void:
 			api = a.trim_prefix("--api=")
 		elif a == "--dev-auth":
 			dev = true
+	Engine.max_fps = 240  # D-345: vòng ~4 ms — đủ mịn cho nhịp 30 tick / giây, không quay hết một nhân CPU của VPS
 	_server = RoomServer.new()
 	root.add_child(_server)
 	if dev:

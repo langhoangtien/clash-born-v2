@@ -888,7 +888,7 @@ chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, 
   Lệch → ghi tick lệch đầu tiên, báo máy đó (báo cáo lệch kèm mã băm từng đơn vị, D-336).
 - `NET-05` `input_delay` máy chủ chọn lúc vào trận (mặc định 3 tick, cấu hình được), gửi trong lời chào.
 - `NET-06` Máy khác phiên bản game với máy chủ không vào được phòng; phải đăng nhập, tài khoản bị ban không vào được.
-- `NET-07` (M9.5) **Phòng** có mã 5 ký tự (chữ in hoa + số, không lẫn O/0, I/1). Người tạo là chủ phòng, chọn số người mỗi
+- `NET-07` (M9.5) **Phòng** có mã 5 chữ số (D-345: chỉ số, nhập bằng bàn phím số; trước là chữ + số). Người tạo là chủ phòng, chọn số người mỗi
   đội (1–3 khi còn 6 tướng — MATCH-02). Tối đa 2 × số người mỗi đội người trong phòng.
 - `NET-08` Trong phòng mỗi người chọn đội (đội còn chỗ) và tướng chưa ai trong phòng chọn (MATCH-02). Chủ phòng bấm bắt đầu
   khi mọi người đã chọn tướng; ô trống → bot độ khó Thường, tướng ngẫu nhiên trong số còn lại. Máy chủ chọn seed.

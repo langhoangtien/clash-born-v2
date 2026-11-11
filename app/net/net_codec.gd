@@ -5,7 +5,7 @@ extends RefCounted
 
 
 static func command_to(c: Command) -> Dictionary:
-	return {"k": int(c.type), "e": c.entity_id, "p": [c.point.x, c.point.y], "d": [c.direction.x, c.direction.y],
+	return {"k": int(c.type), "e": c.entity_id, "p": _vec_to(c.point), "d": _vec_to(c.direction),
 		"t": c.target_id, "l": c.lock, "m": c.mode, "s": c.slot, "i": String(c.item_id)}
 
 
@@ -15,14 +15,14 @@ static func command_from(d: Variant) -> Command:
 	var k: Variant = d.get("k")
 	if not _int(k) or int(k) < 0 or int(k) >= Command.Type.size():
 		return null
-	if not (_int(d.get("e")) and _int(d.get("t")) and _int(d.get("m")) and _int(d.get("s")) and _pair(d.get("p"))
-			and _pair(d.get("d")) and d.get("l") is bool and d.get("i") is String and String(d.get("i")).length() <= 64):
+	if not (_int(d.get("e")) and _int(d.get("t")) and _int(d.get("m")) and _int(d.get("s")) and _vec_ok(d.get("p"))
+			and _vec_ok(d.get("d")) and d.get("l") is bool and d.get("i") is String and String(d.get("i")).length() <= 64):
 		return null
 	var c: Command = Command.new()
 	c.type = int(k) as Command.Type
 	c.entity_id = int(d["e"])
-	c.point = Vector2(float(d["p"][0]), float(d["p"][1]))
-	c.direction = Vector2(float(d["d"][0]), float(d["d"][1]))
+	c.point = _vec_from(d["p"])
+	c.direction = _vec_from(d["d"])
 	c.target_id = int(d["t"])
 	c.lock = d["l"]
 	c.mode = int(d["m"])
@@ -54,6 +54,19 @@ static func config_from(d: Dictionary) -> MatchConfig:
 
 static func _int(v: Variant) -> bool:
 	return (v is int or v is float) and float(v) == floorf(float(v)) and absf(float(v)) < 1e9
+
+
+## D-345: điểm "không có" (Vector2.INF — Command.cast mặc định) đi trên dây là null (JSON không chở được vô hạn).
+static func _vec_to(v: Vector2) -> Variant:
+	return [v.x, v.y] if v.is_finite() else null
+
+
+static func _vec_from(a: Variant) -> Vector2:
+	return Vector2.INF if a == null else Vector2(float(a[0]), float(a[1]))
+
+
+static func _vec_ok(v: Variant) -> bool:
+	return v == null or _pair(v)
 
 
 static func _pair(v: Variant) -> bool:

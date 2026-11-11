@@ -47,6 +47,8 @@ static func status(lock: LockstepClient, open: bool, waiting_s: float) -> String
 		return "Online %d ms — lệch trận ở tick %d (báo lỗi giúp)" % [roundi(lock.rtt_ms), lock.desync_tick]
 	if waiting_s >= STALL_SHOW_S:
 		return "Online %d ms — đang chờ mạng…" % roundi(lock.rtt_ms)
+	if lock.input_latency_ms > 0.0:  # D-345: bấm → có hiệu lực (gồm RTT + đệm), để người chơi / mình biết trễ ở đâu
+		return "Online %d ms · bấm %d ms" % [roundi(lock.rtt_ms), roundi(lock.input_latency_ms)]
 	return "Online %d ms" % roundi(lock.rtt_ms)
 
 

@@ -4,7 +4,7 @@ extends RefCounted
 ## MatchConfig (người ở ô đầu mỗi đội theo thứ tự vào phòng, ô trống bot độ khó Thường, tướng ngẫu nhiên còn lại, seed máy
 ## chủ chọn). Chỉ logic — máy chủ phòng (server/room_server.gd) nối với mạng.
 
-const CODE_CHARS: String = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  ## không O / 0, I / 1
+const CODE_CHARS: String = "0123456789"  ## D-345: chỉ số — nhập nhanh bằng bàn phím số
 const CODE_LEN: int = 5
 const MAX_TEAM_SIZE: int = 3  ## NET-07: 6 tướng, không trùng (MATCH-02)
 

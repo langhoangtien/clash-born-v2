@@ -4,7 +4,7 @@ extends RefCounted
 ## giao thức. Khác code / nội dung SIM giữa máy khách và máy chủ → khác dấu → không vào phòng (lockstep sẽ lệch).
 ## Tính một lần (~0,5–1 s trên điện thoại), nhớ lại.
 
-const PROTOCOL: int = 1
+const PROTOCOL: int = 2  ## D-345: điểm "không có" = null trên dây
 const TICKS: int = 90
 
 static var _cached: String = ""

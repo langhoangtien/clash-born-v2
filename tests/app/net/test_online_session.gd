@@ -86,6 +86,14 @@ func test_NET_11_online_session_room_to_lockstep_match() -> void:
 	assert_true(rb.world.find_entity(a.entity_id).position.distance_to(hero.position) < 1.0 or ra.world.tick != rb.world.tick,
 		"máy B thấy hero của A đi cùng chỗ")
 	assert_true(hero.position.distance_to(to) < 300.0, "lệnh qua mạng có hiệu lực")
+	ra.world.submit(Command.level_up(a.entity_id, AbilityDef.Slot.Q))
+	_pump(s, [a, b], runners, 1.0)
+	ra.world.submit(QuickCast.command(ra.world, hero, AbilityDef.Slot.Q))  # D-345: chiêu không có điểm nhắm (INF)
+	_pump(s, [a, b], runners, 1.5)
+	for r: SimRunner in [ra, rb]:
+		var q: AbilityInstance = Abilities.of(r.world.find_entity(a.entity_id), AbilityDef.Slot.Q)
+		assert_eq(q.rank, 1, "nâng chiêu qua mạng")
+		assert_true(q.ready_tick > r.world.tick, "tung chiêu qua mạng: đang hồi chiêu ở cả hai máy (D-345)")
 	var room: LockstepRoom = s._games[key]["room"]
 	assert_eq(room.desyncs.size(), 0, "không lệch")
 	assert_true(OnlineMatch.status(a.lockstep, true, 0.0).begins_with("Online "), OnlineMatch.status(a.lockstep, true, 0.0))

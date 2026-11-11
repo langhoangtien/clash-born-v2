@@ -60,6 +60,7 @@ func _accept() -> void:
 		if _conns.size() >= MAX_CONNECTIONS:
 			stream.disconnect_from_host()
 			continue
+		stream.set_no_delay(true)  # D-345: tắt Nagle — gói lệnh mỗi tick đi ngay, không bị gom chờ
 		var ws: WebSocketPeer = WebSocketPeer.new()
 		ws.accept_stream(stream)
 		_conns[_next] = {"ws": WsTransport.wrap(ws), "stage": "hello", "account": -1, "name": "", "code": "", "age": 0.0}
