@@ -130,3 +130,12 @@ func test_NET_11_panel_room_screen() -> void:
 	p.show_room(room, 1, [&"gorran", &"myra"] as Array[StringName])
 	assert_true(p.find_children("*", "Button", true, false).any(func(b: Node) -> bool: return (b as Button).text == "BẮT ĐẦU"), "chủ phòng")
 	p.free()
+
+
+## NET-10 (D-344): dấu vân tay gồm cả số cân bằng — đổi một số (vd vàng Hạ gục đầu tiên) thì khác dấu.
+func test_NET_10_fingerprint_covers_balance_numbers() -> void:
+	var b: BalanceSettings = (load(BALANCE_PATH) as BalanceSettings).duplicate()
+	var before: String = NetVersion.balance_text(b)
+	assert_true(before.contains("first_blood_gold=150"), before.left(200))
+	b.first_blood_gold += 1
+	assert_ne(NetVersion.balance_text(b), before)

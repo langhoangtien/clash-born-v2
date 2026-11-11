@@ -15,5 +15,20 @@ static func fingerprint() -> String:
 		var s: SyncCheck = SyncCheck.new(TICKS / SimClock.TICKS_PER_SECOND)
 		while not s.done():
 			s.advance(TICKS)
-		_cached = "%d-%s" % [PROTOCOL, s.world.state_hash().hex_encode().left(16)]
+		var ctx: HashingContext = HashingContext.new()
+		ctx.start(HashingContext.HASH_SHA256)
+		ctx.update(s.world.state_hash())
+		ctx.update(balance_text(s.world.balance).to_utf8_buffer())  # D-344: số cân bằng khác → khác dấu
+		_cached = "%d-%s" % [PROTOCOL, ctx.finish().hex_encode().left(16)]
 	return _cached
+
+
+## D-344: mọi số trong BalanceSettings (theo tên, thứ tự cố định) — trận 3 giây của SyncCheck không chạm tới hết (vd vàng
+## Hạ gục đầu tiên D-340), máy chủ cũ vẫn khớp dấu rồi lệch giữa trận.
+static func balance_text(b: BalanceSettings) -> String:
+	var parts: PackedStringArray = []
+	for p: Dictionary in b.get_property_list():
+		if int(p["usage"]) & PROPERTY_USAGE_SCRIPT_VARIABLE:
+			parts.append("%s=%s" % [p["name"], var_to_str(b.get(p["name"]))])
+	parts.sort()
+	return ";".join(parts)
