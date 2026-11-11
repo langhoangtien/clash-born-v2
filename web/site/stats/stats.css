@@ -76,3 +76,8 @@ nav a.active { color: var(--gold); }
 .sub { font-size: 20px; color: var(--gold); margin: 24px 0 10px; }
 .mini-item { width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--line); display: inline-block; margin-right: 3px; }
 td.win { color: #6fd08c; } td.loss { color: #e07a6a; }
+/* D-343: hai đội trong lịch sử trận */
+.lineup { display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; }
+.mini-hero { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); object-fit: cover; }
+.mini-hero.me { border: 2px solid var(--gold, #e6b84a); }
+.lineup .vs { margin: 0 6px; font-size: 12px; opacity: .6; }

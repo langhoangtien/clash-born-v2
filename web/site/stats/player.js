@@ -6,6 +6,10 @@ const pct = (x) => (x * 100).toFixed(1) + "%";
 const clock = (s) => Math.floor(s / 60) + ":" + String(Math.round(s % 60)).padStart(2, "0");
 const names = { heroes: {}, items: {} };
 const hero = (id) => `<span class="who"><img src="../img/heroes/${esc(id)}.webp" alt="" onerror="this.remove()">${esc((names.heroes[id] || { name: id }).name.split(" · ")[0])}</span>`;
+// D-343: hai đội — chân dung nhỏ, rê chuột xem tên / bot / K/D/A; ô của người chơi này có viền.
+const face = (p) => `<img class="mini-hero${p.me ? " me" : ""}" title="${esc((names.heroes[p.hero] || { name: p.hero }).name.split(" · ")[0] +
+  (p.bot ? " (bot)" : p.name ? " — " + p.name : "") + " · " + p.kills + "/" + p.deaths + "/" + p.assists)}" src="../img/heroes/${esc(p.hero)}.webp" alt="${esc(p.hero)}">`;
+const teams = (m) => m.allies ? `<span class="lineup">${m.allies.map(face).join("")}<span class="vs">vs</span>${m.enemies.map(face).join("")}</span>` : "";
 const item = (id) => `<img class="mini-item" title="${esc((names.items[id] || { name: id }).name)}" src="../img/items/${esc(id)}.webp" alt="" onerror="this.remove()">`;
 
 async function load(name) {
@@ -22,8 +26,8 @@ async function load(name) {
     || `<tr><td colspan="4" class="empty">Chưa có trận nào.</td></tr>`;
   $("#matches tbody").innerHTML = p.matches.map((m) => `<tr><td>${hero(m.hero)}</td>
     <td class="${m.won ? "win" : "loss"}">${m.won ? "Thắng" : "Thua"}</td><td class="num">${m.kills}/${m.deaths}/${m.assists}</td>
-    <td class="wide">${m.items.map(item).join("")}</td><td class="num wide">${clock(m.duration_s)}</td><td class="num">${esc(m.mode)}</td></tr>`).join("")
-    || `<tr><td colspan="6" class="empty">Chưa có trận nào.</td></tr>`;
+    <td>${teams(m)}</td><td class="wide">${m.items.map(item).join("")}</td><td class="num wide">${clock(m.duration_s)}</td><td class="num">${esc(m.mode)}</td></tr>`).join("")
+    || `<tr><td colspan="7" class="empty">Chưa có trận nào.</td></tr>`;
 }
 
 async function init() {

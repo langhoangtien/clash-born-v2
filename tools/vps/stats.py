@@ -245,10 +245,25 @@ def history(root: str, account: int, limit: int = HISTORY) -> list:
     out = []
     for mid, at, ver, mode, kind, dur, team, slot, hero_id, won, k, d, a, lv, lh in rows:
         its = [i for (i,) in _read(root, "SELECT item FROM items WHERE match_id = ? AND team = ? AND slot = ?", [mid, team, slot])]
-        out.append({"match": mid, "at": at, "version": ver, "mode": mode, "kind": kind, "duration_s": round(dur, 1),
-                    "hero": hero_id, "won": bool(won), "kills": k, "deaths": d, "assists": a, "level": lv, "last_hits": lh,
-                    "items": its})
+        row = {"match": mid, "at": at, "version": ver, "mode": mode, "kind": kind, "duration_s": round(dur, 1),
+               "hero": hero_id, "won": bool(won), "kills": k, "deaths": d, "assists": a, "level": lv, "last_hits": lh,
+               "items": its, "allies": [], "enemies": []}
+        for p in _lineup(root, mid, team, slot):  # D-343: cả hai đội
+            row["allies" if p.pop("team") == team else "enemies"].append(p)
+        out.append(row)
     return out
+
+
+def _lineup(root: str, mid: int, my_team: int, my_slot: int) -> list:
+    """Mọi ô của trận theo đội / ô: tướng, bot, tên trong game (không email; bị ban thì ẩn), K/D/A, cấp, đồ cuối trận."""
+    rows = _read(root, "SELECT p.team, p.slot, p.hero, p.bot, p.kills, p.deaths, p.assists, p.level, a.name, a.banned "
+                 "FROM players p LEFT JOIN accounts a ON a.id = p.account_id WHERE p.match_id = ? ORDER BY p.team, p.slot", [mid])
+    items = {}
+    for t, sl, it in _read(root, "SELECT team, slot, item FROM items WHERE match_id = ?", [mid]):
+        items.setdefault((t, sl), []).append(it)
+    return [{"team": t, "hero": h, "bot": bool(b), "name": (n or "") if not banned else "", "me": (t, sl) == (my_team, my_slot),
+             "kills": k, "deaths": d, "assists": a, "level": lv, "items": items.get((t, sl), [])}
+            for t, sl, h, b, k, d, a, lv, n, banned in rows]
 
 
 def player(root: str, name: str) -> dict:

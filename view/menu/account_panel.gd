@@ -37,7 +37,6 @@ var _box: VBoxContainer
 var _center: CenterContainer
 var _message: Label
 var _matches: Array = []        ## D-334: trận gần nhất (màn Lịch sử trận)
-const HISTORY_ROWS: int = 8
 
 
 func _ready() -> void:
@@ -131,10 +130,9 @@ func _build() -> void:
 	if screen == "profile":
 		_box.add_child(_label("%s\n%s" % [account.get("name", ""), account.get("email", "")], 28, UiStyle.TEXT, false))
 	if screen == "history":
-		for m: Dictionary in _matches.slice(0, HISTORY_ROWS):
-			_box.add_child(_label("%s · %s · %d/%d/%d · %s · %d:%02d" % ["Thắng" if m.get("won") else "Thua", String(m.get("hero", "")).capitalize(),
-				m.get("kills", 0), m.get("deaths", 0), m.get("assists", 0), m.get("mode", ""), int(m.get("duration_s", 0)) / 60,
-				int(m.get("duration_s", 0)) % 60], 22, UiStyle.GREEN if m.get("won") else UiStyle.RED_TEXT, false))
+		var list: MatchHistoryList = MatchHistoryList.new()  # D-343: cả hai đội, cuộn được
+		_box.add_child(list)
+		list.show_matches(_matches)
 	if screen == "delete":
 		var warn: Label = _label("Xóa vĩnh viễn tài khoản %s (tên, email, đăng nhập Google). Không hoàn tác được." % account.get("email", ""),
 			24, UiStyle.RED_TEXT, false)

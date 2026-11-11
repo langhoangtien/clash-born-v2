@@ -153,6 +153,21 @@ class AdminTest(AccountCase):
         self.assertEqual((code, got["error"]), (400, "version / mode / kind không hợp lệ"))
 
 
+    def test_D_343_history_shows_both_teams(self) -> None:
+        token = self.signup("an@gmail.com")
+        self.auth("name", {"name": "Lăng"}, session=token)
+        rec = record(0, heroes=("gorran", "myra", "brakk", "vexa", "noctis", "duy_anh"))
+        self.assertEqual(self.req("POST", "/api/match", rec, session=token)[0], 200)
+        m = self.req("GET", "/api/auth/history", session=token)[1]["matches"][0]
+        self.assertEqual([(p["hero"], p["bot"], p["name"], p["me"]) for p in m["allies"]],
+                         [("gorran", False, "Lăng", True), ("myra", True, "", False), ("brakk", True, "", False)])
+        self.assertEqual([p["hero"] for p in m["enemies"]], ["vexa", "noctis", "duy_anh"])
+        self.assertEqual((m["enemies"][0]["kills"], m["enemies"][0]["items"]), (2, ["boots"]))
+        self.assertNotIn("an@gmail.com", json.dumps(m), "không lộ email")
+        page = self.req("GET", "/api/stats/player/" + urllib.parse.quote("lăng"))[1]
+        self.assertEqual(len(page["matches"][0]["allies"]), 3, "trang công khai cũng có cả hai đội")
+
+
 if __name__ == "__main__":
     import unittest
     unittest.main()

@@ -88,9 +88,19 @@ func test_D_334_match_history_screen() -> void:
 	p.on_reply("history", true, "", "", {"matches": [{"won": true, "hero": "duy_anh", "kills": 7, "deaths": 2, "assists": 5,
 		"mode": "3v3", "duration_s": 1450.8}]})
 	assert_eq(p.screen, "history")
-	var texts: Array = p._box.get_children().filter(func(n: Node) -> bool: return n is Label).map(func(l: Label) -> String: return l.text)
-	assert_true(texts.has("Thắng · Duy Anh · 7/2/5 · 3v3 · 24:10"), str(texts))
+	var lists: Array = p._box.get_children().filter(func(n: Node) -> bool: return n is MatchHistoryList)
+	assert_eq(lists.size(), 1)
+	assert_eq(MatchHistoryList.lines(p._matches[0]), ["Thắng · Duy Anh · 7/2/5 · 3v3 · 24:10"] as Array[String])
 	p.free()
+
+
+## D-343: lịch sử có cả hai đội — mình (★), người (tên trong game), bot.
+func test_D_343_history_lines_both_teams() -> void:
+	var m: Dictionary = {"won": false, "hero": "gorran", "kills": 1, "deaths": 2, "assists": 3, "mode": "3v3", "duration_s": 61,
+		"allies": [{"hero": "gorran", "me": true, "kills": 1, "deaths": 2, "assists": 3}, {"hero": "myra", "bot": true, "kills": 0, "deaths": 1, "assists": 0}],
+		"enemies": [{"hero": "duy_anh", "name": "Lăng", "kills": 4, "deaths": 0, "assists": 1}]}
+	assert_eq(MatchHistoryList.lines(m), ["Thua · Gorran · 1/2/3 · 3v3 · 1:01", "Đội mình: ★ Gorran 1/2/3 · Myra (bot) 0/1/0",
+		"Đội địch: Duy Anh (Lăng) 4/0/1"] as Array[String])
 
 
 ## D-339: đổi mật khẩu — có mật khẩu thì hỏi mật khẩu hiện tại; tài khoản chỉ Google thì đặt lần đầu.
