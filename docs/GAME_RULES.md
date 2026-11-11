@@ -966,7 +966,8 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   Không kéo lính.
 - `BOT-11` Không đứng yên ngoài RECOVER, DEAD và lúc kênh về thành. (D-96) Có lệnh đi mà 1 s không nhích quá 20 →
   bước sang ngang 160 rồi đi tiếp; không đánh được (biến hình, tước vũ khí) mà đang có mục tiêu
-  → lùi ra xa mục tiêu 300 (điểm an toàn).
+  → lùi ra xa mục tiêu 300 (điểm an toàn). (D-353) Đứng chờ ở RALLY: cứ 1,5 s đổi giữa điểm chờ và điểm lùi 150 dọc lane; điểm chờ đã ở
+  đầu lane (không lùi dọc lane được) thì lùi 150 về phía hồ máu.
 - `BOT-18` (D-99) Đang hơn: hơn hero địch ≥ `bot_ahead_kills` mạng hoặc ≥ `bot_ahead_levels` cấp, hoặc
   mọi hero địch đang chết; và máu ≥ `bot_siege_min_hp`. Khi đó: PUSH xếp trước FARM, DEF-10 nới
   còn `bot_siege_tanks` lính đỡ và máu ≥ `bot_siege_min_hp`, đứng sau lính chỉ nửa

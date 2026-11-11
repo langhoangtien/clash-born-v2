@@ -312,13 +312,20 @@ func escape_point(world: World, e: Entity) -> Vector2:
 ## BOT-11: đứng chờ thì cứ chừng này giây đổi chỗ một lần. Phải nhỏ hơn hẳn ngưỡng 2 s của
 ## BOT-11 (trước là đúng 2 s, lệch một tick là vi phạm — lộ ra khi map đổi, D-127).
 const RALLY_STEP_SECONDS: float = 1.5
+## Khoảng đổi chỗ khi đứng chờ (hằng kỹ thuật của bước đi qua lại, không phải số cân bằng).
+const RALLY_STEP_BACK: float = 150.0
 
 
 func rally_point(world: World, e: Entity) -> Vector2:
 	var route: LaneRoute = LaneRoute.of(world, e.bot.lane, e.team)
 	var q: Vector2 = _safe_along(world, e, route, _rally_progress(world, e, route))
 	if (world.tick / SimClock.seconds_to_ticks(RALLY_STEP_SECONDS)) % 2 == 1:
-		q = _safe_along(world, e, route, route.progress_of(q) - 150.0)  # lùi 150 từ điểm an toàn (BOT-11)
+		var back: Vector2 = _safe_along(world, e, route, route.progress_of(q) - RALLY_STEP_BACK)  # lùi từ điểm an toàn (BOT-11)
+		if back.distance_to(q) < ARRIVE:  # D-353: đã ở đầu lane, không lùi dọc lane được → lùi về phía hồ máu
+			var home: Vector2 = world.map.fountain_point(e.team)
+			var alt: Vector2 = world.navigation(e.radius).nearest_clear(q + (home - q).normalized() * RALLY_STEP_BACK)
+			back = alt if safe(world, e, alt) else back
+		q = back
 	return q
 
 

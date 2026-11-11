@@ -98,3 +98,19 @@ func test_BOT_21_recalls_when_far_and_quiet() -> void:
 		started = started or bot.recall_until_tick >= 0
 	assert_true(started, "xa nhà, yên tĩnh: về thành")
 	assert_true(bot.position.distance_to(_map.fountain_point(1)) < 700.0, "đã về fountain")
+
+
+## Lỗi (D-353): lính phe mình bị ép về đầu lane (tiến độ 0) thì hai điểm đứng chờ trùng nhau → bot đứng im.
+func test_BOT_11_rally_at_lane_start_still_alternates() -> void:
+	var w: World = _world()
+	var bot: Entity = _bot(w, _map.fountain_point(1))
+	var route: LaneRoute = LaneRoute.of(w, bot.bot.lane, bot.team)
+	var creep: Entity = UnitFactory.unit(w, _lib.units[&"creep_melee"], Entity.Kind.LANE_CREEP, 1, route.point_at(0.0))
+	creep.lane = bot.bot.lane
+	var c: BotController = BotController.new()
+	w.tick = 0
+	var a: Vector2 = c.rally_point(w, bot)
+	w.tick = SimClock.seconds_to_ticks(BotController.RALLY_STEP_SECONDS)
+	var b: Vector2 = c.rally_point(w, bot)
+	assert_true(a.distance_to(b) > 20.0, "hai điểm đứng chờ phải khác nhau: %s / %s" % [a, b])
+	assert_true(BotController.safe(w, bot, a) and BotController.safe(w, bot, b), "BOT-10: cả hai điểm an toàn")

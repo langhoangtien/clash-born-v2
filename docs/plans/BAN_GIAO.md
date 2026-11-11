@@ -58,15 +58,16 @@ Chạy nhiều luồng song song (`&` … `wait`), mỗi ảnh khoảng 2–4 ph
 
 ## 4. Việc tiếp theo (theo thứ tự)
 
-0. **Phong Tiễn — việc còn mở (người chơi báo):**
-   - Lúc **chạy**, cung lệch vào chân. Lúc đứng thì đẹp, **giữ nguyên tư thế đứng**.
-   - Đã thử và đã hoàn tác (D-350): đẩy tay cung ra 12 cm bằng `afk-rig adjust`; người chơi thấy không đẹp bằng, vẫn vào chân.
-   - Hướng thử tiếp, gửi video cho người chơi so trước khi chốt:
-     - (a) đổi hoạt ảnh chạy khác trong bộ 593 có tay trái giơ / co lên (xem `Run_Anime`, `Jog`, `Bow_Walk` tăng tốc, `Sprint`);
-     - (b) chỉnh xoay tay `hand_l` thay vì dời: `--set armsUp`, hoặc `--move hand_l` có thành phần ra trước + lên;
-     - (c) lúc chạy giấu cung ở lưng / đổi góc cầm (cần cơ chế hiện / ẩn đạo cụ theo hoạt ảnh — giống kiếm Gorran D-324).
-   - Đã làm xong cho Phong Tiễn: mô hình 3D thật (D-348), dây cung vẽ bằng code (D-349), bản game 0.1.6xx.
-1. **Ảnh toàn thân 4 tướng đợt 1, duyệt trước khi làm 3D.** Phong Tiễn ĐÃ XONG 3D (chuẩn D-348); còn Huyết Cự Nhân, Thợ Săn, Thạch Giáp — làm y quy trình mục 5.
+0. **Phong Tiễn chạy, cung lệch vào chân — CHỜ NGƯỜI CHƠI CHỌN (D-351):**
+   - Đã gửi video `art_inbox/3d/phong_tien/preview/phong_tien_run_options.mp4` (A hiện tại / B giơ cung ngang vai / C cung sát
+     người / D tay ngắm; ba góc nhìn). Tư thế đứng không đổi. Game chưa đổi.
+   - Người chơi chọn xong: sửa dòng `phong_tien` trong `tools/models/build_units.py`, `Run_Female=run` thành
+     B `Run_Female&Bow_Walk#clavicle_l=run` / C `Run_Female&Idle_Torch#clavicle_l=run` / D `Run_Female&Bow_Aim_Idle#clavicle_l=run`
+     → `python3 -I tools/models/build_units.py phong_tien` → quay trong trận → bản Android mới.
+   - Công cụ: `tools/models/glb_overlay.py` (ghép nhánh xương), `tools/models/preview/anim_compare.gd` (quay cạnh nhau),
+     `tools/models/preview/bow_clearance.gd` (đo hở cung ↔ chân). Các script `.local/` cũ đã mất theo máy — đừng tìm.
+     GLB 593 hoạt ảnh nạp thẳng vào Godot rất chậm (> 10 phút): luôn lọc bằng `glb_anims.py --keep` trước.
+1. **Ảnh toàn thân 4 tướng đợt 1 — ĐÃ GỬI bảng `_bang_duyet_than.png`, CHỜ DUYỆT** (kèm `thach_giap_body_v2.png`: Thạch Giáp bỏ áo choàng dài cho dễ dựng 3D; Thợ Săn còn rìu đeo hông + mũ sói — hỏi người chơi có giữ không). Phong Tiễn ĐÃ XONG 3D (chuẩn D-348); còn Huyết Cự Nhân, Thợ Săn, Thạch Giáp — làm y quy trình mục 5.
    - Người chơi yêu cầu: *gửi ảnh thân để duyệt trước lúc làm 3D*.
    - Ảnh ở `art_inbox/concepts/body/<id>_body.png`; nếu thiếu thì vẽ lại bằng Codex, theo đúng chân dung đã duyệt, mặt trước, tư thế chữ A, nền trắng.
    - Gửi người chơi duyệt (SendUserFile, ghép bảng như `art_inbox/concepts/_bang_duyet.png`). Sửa theo ý họ.
@@ -74,18 +75,19 @@ Chạy nhiều luồng song song (`&` … `wait`), mỗi ảnh khoảng 2–4 ph
      - Tripo (`TRIPO_API_KEY` trong biến môi trường) → retarget xương Creature như các tướng cũ;
      - xem `tools/models/` và ART.md; hoạt ảnh qua Mixamo (`mixamo_pack.py`, `retarget.py`).
    - Thay mục `_tam` trong `units_3d.json`.
-2. **Máy chủ phòng ở Singapore** (giảm lag online):
-   - **DNS:** bản ghi A `sg.clashborn.quest` → IP VPS Singapore (người chơi làm ở nơi mua tên miền, hoặc nhờ phiên VPS).
-   - **Trên VPS Singapore** (một việc V-0xx mới, viết kỹ từng lệnh như V-007):
-     - cài Godot 4.7.2 đúng bản (kiểm SHA512);
-     - clone repo, chỉ chạy `clashborn-rooms` (xem `tools/vps/clashborn-rooms.service`, `server/main.gd`) với `--api=https://clashborn.quest` (kiểm phiên đăng nhập qua máy chủ chính, `server/api_auth.gd`);
-     - nginx + certbot cho `sg.clashborn.quest`, `location = /play` → `127.0.0.1:8790` (giống nginx của VPS chính).
-     - Nên có script cập nhật riêng chỉ cho máy chủ phòng (vd `tools/vps/update_rooms.sh`).
-   - **Game:** `app/net/online_session.gd` hằng `URL` → `wss://sg.clashborn.quest/play`. Chỉ đổi khi SG đã chạy và đúng dấu vân tay; có thể giữ máy cũ làm dự phòng.
-   - Thống kê, tài khoản, web vẫn ở VPS chính.
-3. **Cân bằng + lỗi bot.** Trận bot đấu bot (`tools/bot_matches.gd --full --pairs=…`):
-   - Phong Tiễn có vẻ quá mạnh: thắng Brakk ở phút 18 / 32, thắng Noctis ở phút 13.
-   - Có lỗi **BOT-11** (bot đứng yên > 2 s ở chế độ RALLY) ở vài trận, cả với Brakk / Noctis. Xem có xảy ra ở cặp tướng cũ không (vd `brakk:noctis`) để biết lỗi do tướng mới hay có từ trước.
+2. **Máy chủ phòng ở Singapore — đã viết xong phần repo (D-352), chờ người chơi:**
+   - Người chơi: tạo bản ghi A `sg.clashborn.quest` → IP VPS Singapore; mở phiên Claude Code trên VPS đó, bảo *"làm V-015 trong
+     docs/VPS_TASKS.md"* (cài lần đầu, từng lệnh).
+   - Kiểm từ phiên cloud: `curl -s https://sg.clashborn.quest/rooms-health` (commit + dấu vân tay). Đúng dấu vân tay bản game
+     thì mới đổi hằng `URL` trong `app/net/online_session.gd` → `wss://sg.clashborn.quest/play` + ra bản Android.
+   - Mỗi lần SIM / nội dung đổi phải cập nhật CẢ HAI máy: VPS chính `update.sh`, VPS SG `update_rooms.sh`.
+3. **Cân bằng + lỗi bot (D-353):**
+   - BOT-11 ở RALLY: **đã sửa** (lỗi có từ trước, không do tướng mới). BOT-11 ở ESCAPE_TOWER: chưa sửa, cách tái hiện trong
+     ROADMAP mục "Sau M8".
+   - Phong Tiễn: số liệu trong ROADMAP; chờ người chơi chọn hướng giảm (đề xuất: tốc chạy 290 → 270, hoặc Q né 100% → 3 s còn
+     2 s). Sửa trong `content/`, chạy lại `tools/bot_matches.gd --full --pairs=phong_tien:noctis,phong_tien:brakk,myra:phong_tien`
+     (mỗi trận 3–10 phút máy; chạy nền nhiều tiến trình).
+   - Bản game chưa ra lại sau D-353 (SIM đổi) — ra bản Android + `update.sh` VPS khi gom đủ thay đổi.
 4. **Đợt 2** (cơ chế mới, theo AGENTS mục 3: luật → DECISIONS → code một chỗ → test từng dòng):
    - tướng 1 Thiết Vệ: trạng thái TAUNTED, bộ đếm "cứ 4 đòn bị đánh";
    - tướng 8 Pháo Thủ: nội tại bắn 2 phát;
