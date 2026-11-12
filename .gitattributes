@@ -4,3 +4,4 @@
 *.ogg binary
 *.wav binary
 *.tgz binary
+docs/DECISIONS.md merge=union

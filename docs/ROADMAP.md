@@ -141,9 +141,10 @@ không làm hình thật cho thứ lối chơi còn đang đổi.
 - Hero mới: mỗi hero = mục mới trong CONTENT.md + dữ liệu + test kịch bản. Cơ chế
   chưa có thì làm trước theo quy trình cơ chế mới.
 - Boss pit, chống backdoor (STR-03), thêm đồ chủ động.
-- **BOT-11 ở ESCAPE_TOWER (chưa sửa, D-353):** `tools/bot_matches.gd --full --seeds=2 --pairs=brakk:noctis` phút 27:02 — Brakk ở
-  (8956, 2406) trong vùng trụ địch, lệnh đi tới điểm thoát cách 294 kết thúc ngay (order MOVE, finished) mà không nhích,
-  không có đơn vị nào trong 120. Nghi tìm đường thất bại từ chỗ đứng. Cần: xác định luật (NAV / BOT-01), test tái hiện, sửa.
+- ~~BOT-11 ở ESCAPE_TOWER~~ — đã sửa (D-380, CB-2). Còn mở, chờ duyệt luật **MOV-09**: `MapNavigation.path` trả rỗng cho điểm
+  đứng được nhưng không có đường tới đúng điểm → lệnh MOVE xong ngay, đơn vị không nhích (cả khi người chơi bấm sát mép vách).
+- M9.5–M9.6: dấu vân tay SIM không ổn định (xếp StringName theo địa chỉ bộ nhớ) đã sửa ở D-400 (CB-3); cùng loại lỗi trong
+  `sim/world/world_hash.gd` đang giao CB-2.
 - **Cân bằng Phong Tiễn (chờ người chơi chọn hướng, D-353):** bot đấu bot trọn trận — thắng Brakk 3/3 (21–32 phút), thắng
   Noctis 5/5 (11–13 phút, áp đảo), thắng Vexa 1/1 (12:43), thua Myra 2/3. Tốc chạy 290 so với tướng cũ 255–270.
 - ~~Online 1v1 (D-30)~~ → thay bằng M9 (3v3 online, D-328).
