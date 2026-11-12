@@ -3,7 +3,7 @@ extends SceneTree
 ## một hoạt ảnh, góc trận hoặc góc cận; dây cung D-349 theo `--strings` (JSON: tên file không đuôi → cấu hình bow_string).
 ## xvfb-run -a godot --path . --rendering-method mobile --rendering-driver vulkan --resolution 1280x720 --fixed-fps 30
 ##   --write-movie out.avi --quit-after 90 -s tools/models/preview/so_tam_giac.gd --
-##   --models=a.glb,b.glb --labels=A,B --anim=run --view=game|near [--strings=x.json] [--height=1.3] [--yaw=-20] [--follow]
+##   --models=a.glb,b.glb --labels=A,B --anim=run --view=game|near [--strings=x.json] [--height=1.3] [--yaw=-20] [--follow] [--cam=x,y,z --look=x,y,z]
 
 var _labels: PackedStringArray = []
 var _cam: Camera3D
@@ -51,6 +51,11 @@ func _go() -> void:
 		cam.fov = 30.0
 		cam.position = Vector3(0, 1.0, (maxf(w, 1.7) * 0.5 + 0.6) / tan(deg_to_rad(25.5)))  # nửa góc ngang ở khung 16:9, fov dọc 30
 		cam.look_at(Vector3(0, 0.75, 0))
+	if o.has("cam"):  # đặt camera tay: --cam=x,y,z --look=x,y,z (soi mặt, bàn tay)
+		var c: PackedFloat64Array = String(o["cam"]).split_floats(",")
+		var t: PackedFloat64Array = String(o.get("look", "0,0.9,0")).split_floats(",")
+		cam.position = Vector3(c[0], c[1], c[2])
+		cam.look_at(Vector3(t[0], t[1], t[2]))
 	if o.has("follow"):
 		_follow = world.find_children("*", "Skeleton3D", true, false)[0]
 		_cam_offset = cam.position
@@ -62,12 +67,16 @@ func _place(world: Node3D, path: String, i: int, n: int, gap: float, h: float, a
 	doc.append_from_file(path, st)
 	var m: Node3D = doc.generate_scene(st)
 	world.add_child(m)
-	m.scale = Vector3.ONE * (h / ModelLibrary.bounds(m).size.y)
+	var box: AABB = ModelLibrary.bounds(m)
+	m.scale = Vector3.ONE * (h / box.size.y)
+	m.position.y = -box.position.y * m.scale.y  # lưới Tripo gốc ở giữa thân: đặt chân lên sàn
 	m.position.x = (i - (n - 1) / 2.0) * gap
 	m.rotation_degrees.y = yaw
-	var ap: AnimationPlayer = m.find_children("*", "AnimationPlayer", true, false)[0]
-	ap.get_animation(anim).loop_mode = Animation.LOOP_LINEAR
-	ap.play(anim)
+	var aps: Array[Node] = m.find_children("*", "AnimationPlayer", true, false)
+	if not aps.is_empty():  # lưới tĩnh (Tripo chưa gắn xương): chỉ đứng yên
+		var ap: AnimationPlayer = aps[0]
+		ap.get_animation(anim).loop_mode = Animation.LOOP_LINEAR
+		ap.play(anim)
 	var key: String = path.get_file().get_basename()
 	if strings.has(key):
 		BowString3D.attach(m, strings[key])

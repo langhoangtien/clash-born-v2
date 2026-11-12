@@ -7,6 +7,8 @@ Mỗi ảnh → <out>/<tên>.glb; in số credit trước và sau.
 --multiview: mỗi tham số là tên chung của bộ ảnh 3 hướng (phiếu T8, <tên>_front/_side/_back.png; _side là
 nghiêng phải) → một mô hình <out>/<tên>.glb dựng từ cả ba ảnh; --views front,back: bỏ hướng có ảnh lệch tư thế; side_left: ảnh _side là nhìn từ bên trái (mũi vật quay sang trái ảnh — D-224).
 --prompt "mô tả" (D-299): tham số là tên file ra, dựng từ câu mô tả (text_to_model) thay vì ảnh.
+--model-version / --detailed (D-378): chọn đời mô hình Tripo và hình + ảnh màu chi tiết; --faces 0 = không giới hạn (giảm
+tam giác sau bằng tools/models/decimate.py — giữ mặt / ngón tay tốt hơn face_limit của Tripo).
 """
 import argparse, json, os, sys, time, urllib.request
 
@@ -66,13 +68,15 @@ def wait(task):
     return d
 
 
-def generate(png, faces, out_dir, multiview=False, use=("front", "side", "back"), prompt=None):
+def generate(png, faces, out_dir, multiview=False, use=("front", "side", "back"), prompt=None, extra=None):
     name = os.path.splitext(os.path.basename(png))[0]
     note = os.path.join(out_dir, name + ".task")
     if os.path.exists(note):  # đã gửi trước đó: chỉ chờ / tải lại, không tốn credit
         task = open(note).read().strip()
     else:
-        body = request(png, faces, multiview, use, prompt) | {"face_limit": faces, "texture": True, "pbr": False}
+        body = request(png, faces, multiview, use, prompt) | {"texture": True, "pbr": False} | (extra or {})
+        if faces > 0:
+            body["face_limit"] = faces
         task = call("/task", body)["task_id"]
         open(note, "w").write(task)
     print(name, "task", task, flush=True)
@@ -94,11 +98,16 @@ def main():
     ap.add_argument("--multiview", action="store_true")
     ap.add_argument("--views", default="front,side,back", help="hướng dùng khi --multiview (vd front,back)")
     ap.add_argument("--prompt", default=None, help="dựng từ câu mô tả; tham số đầu là tên file ra")
+    ap.add_argument("--model-version", default=None, help="vd v3.0-20250812")
+    ap.add_argument("--detailed", action="store_true", help="geometry_quality + texture_quality = detailed")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     print("credit trước:", call("/user/balance")["balance"])
     for png in a.images:
-        print("→", generate(png, a.faces, a.out, a.multiview, a.views.split(","), a.prompt), flush=True)
+        extra = {"model_version": a.model_version} if a.model_version else {}
+        if a.detailed:
+            extra |= {"geometry_quality": "detailed", "texture_quality": "detailed"}
+        print("→", generate(png, a.faces, a.out, a.multiview, a.views.split(","), a.prompt, extra), flush=True)
     print("credit sau:", call("/user/balance")["balance"])
 
 
