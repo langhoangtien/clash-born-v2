@@ -45,7 +45,7 @@ func _go() -> void:
 		cam.look_at(Vector3(0, 0.6, 0))
 	else:
 		cam.fov = 30.0
-		cam.position = Vector3(0, 1.0, (w * 0.5 + 0.6) / tan(deg_to_rad(25.5)))  # nửa góc ngang ở khung 16:9, fov dọc 30
+		cam.position = Vector3(0, 1.0, (maxf(w, 2.4) * 0.5 + 0.6) / tan(deg_to_rad(25.5)))  # nửa góc ngang ở khung 16:9, fov dọc 30
 		cam.look_at(Vector3(0, 0.75, 0))
 
 

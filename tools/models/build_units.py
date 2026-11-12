@@ -100,6 +100,14 @@ UNITS = {
                          "Idle_Dizzy=stun,Bow Pull Back@0.75-1.25+Bow Release=cast,Dodge_left=skill_1,"
                          "Bow_Draw@1.3-2.07+Bow Release=skill_2,Sprint=sprint",
                          "_leaf", False, ["phong_tien_v3/phong_tien_v3_bow_nostring_hand:hand_l"]),
+    # D-373: Phong Tiễn mới + hoạt ảnh Mixamo Pro Longbow (người chơi tải): dựng thẳng từ rig Mixamo (ngón trỏ + cái
+    # nắm cán cung), cung đặt theo khung ngắm (bow_grip.py); bỏ xương đầu mút (_End, ngón đốt 4)
+    "phong_tien_v3_mx": ("phong_tien_v3/phong_tien_v3_mx.glb", "heroes/phong_tien",
+                         "standing idle 01=idle,standing run forward~=run,standing draw arrow+standing aim recoil=attack,"
+                         "standing react small from front=hit,standing death backward 01=death,standing idle 02 looking=stun,"
+                         "standing draw arrow@0-1.07+standing aim recoil@0-0.73=cast,standing dodge left~=skill_1,"
+                         "standing aim overdraw@1.2-2.6+standing aim recoil@0-0.72=skill_2,standing run forward@0-0.9~=sprint",
+                         "_End$|4$", False, ["phong_tien_v3/phong_tien_v3_bow_grip:mixamorig:LeftHand"]),
     # D-307b: tê giác theo style ảnh mẫu người chơi (concept_gen.py từ ảnh mẫu → split_turnaround.py →
     # Tripo multiview → glb_yaw -90 → afk.ai: dragon / horse → fix-stretching)
     # D-309: Người Đá thay rồng (concept_gen theo ảnh mẫu bãi đấu → Tripo → afk.ai human); fix-stretching + drop_loose (tam giác lẻ kéo dài); đòn đánh = đấm móc (đấm đất kéo méo nắm tay)
