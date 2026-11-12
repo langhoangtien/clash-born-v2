@@ -309,8 +309,8 @@
     "color": "#bff2e6",
     "size": 0.55
    },
-   "_ghi_chu": "D-347: chuẩn tướng mới — Tripo 3 góc + cung riêng gắn tay trái, afk.ai human; đánh = kéo + buông cung (điểm buông 0,6). D-379: lưới Tripo v3.0 chi tiết 6k mặt đầy (D-378) + hoạt ảnh Mixamo Pro Longbow (rig 1 ngón, cung đặt theo khung ngắm) — để người chơi xem ở thẻ Mô hình",
-   "bow_string": {"bone": "mixamorig_LeftHand", "tips": [[-12.1119, -22.6335, -3.5198], [16.994, 26.1886, 9.2596]], "pull_bone": "mixamorig_RightHand", "release": {"attack": 0.6, "skill_2": 0.6, "cast": 0.6}, "max_pull": 1.1, "color": "#efe6cf"}
+   "_ghi_chu": "D-347: chuẩn tướng mới — Tripo 3 góc + cung riêng gắn tay trái, afk.ai human; đánh = kéo + buông cung (điểm buông 0,6). D-379b: lưới Tripo v3.0 chi tiết 6k mặt đầy (D-378) + afk.ai (giữ ngón), cung đặt theo khung Bow Pull Back — để người chơi xem ở thẻ Mô hình",
+   "bow_string": {"bone": "hand_l", "tips": [[0.0361, 0.0568, 0.2871], [0.0464, 0.0168, -0.294]], "pull_bone": "hand_r", "release": {"attack": 0.6, "skill_2": 0.6, "cast": 0.6}, "max_pull": 1.1, "color": "#efe6cf"}
   },
   "tho_san": {
    "model": "style/heroes/duy_anh",
@@ -366,7 +366,7 @@
     "color": "#bff2e6",
     "size": 0.55
    },
-   "_ghi_chu": "D-347: chuẩn tướng mới — Tripo 3 góc + cung riêng gắn tay trái, afk.ai human; đánh = kéo + buông cung (điểm buông 0,6). D-379: lưới Tripo v3.0 chi tiết 6k mặt đầy (D-378) + hoạt ảnh Mixamo Pro Longbow (rig 1 ngón, cung đặt theo khung ngắm) — để người chơi xem ở thẻ Mô hình",
+   "_ghi_chu": "D-347: chuẩn tướng mới — Tripo 3 góc + cung riêng gắn tay trái, afk.ai human; đánh = kéo + buông cung (điểm buông 0,6). D-379b: lưới Tripo v3.0 chi tiết 6k mặt đầy (D-378) + afk.ai (giữ ngón), cung đặt theo khung Bow Pull Back — để người chơi xem ở thẻ Mô hình",
    "bow_string": {
     "bone": "hand_l",
     "tips": [
