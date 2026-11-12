@@ -91,6 +91,9 @@ func _check(world: World, command: Command, unit: Entity) -> Command.Reject:
 	if unit.duel != null and command.type in [Command.Type.MOVE_TO, Command.Type.MOVE_DIR, Command.Type.STOP,
 			Command.Type.ATTACK, Command.Type.ATTACK_AUTO, Command.Type.CAST, Command.Type.RECALL]:
 		return Command.Reject.IN_DUEL  # ST-19
+	if command.type in [Command.Type.MOVE_TO, Command.Type.MOVE_DIR, Command.Type.STOP, Command.Type.ATTACK,
+			Command.Type.ATTACK_AUTO, Command.Type.CAST, Command.Type.RECALL] and Rules.is_taunted(world, unit):
+		return Command.Reject.TAUNTED  # ST-20
 	if command.type == Command.Type.MOVE_TO:
 		if not command.point.is_finite():
 			return Command.Reject.POINT_OUTSIDE_MAP

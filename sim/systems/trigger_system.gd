@@ -98,12 +98,24 @@ func _fire_instance(world: World, ev: GameEvent, owner: Entity, other: Entity, i
 		if world.tick < inst.trigger_ready.get(index, 0) or not _group_winner(owner, inst, t):
 			continue
 		var ctx: ExprContext = _context(world, ev, owner, other, inst)
+		if not t.every.is_empty() and not _count_reached(inst, index, ExprEval.evaluate(t.every, ctx)):
+			continue  # EFF-16
 		if not t.chance.is_empty() and not Prd.roll(world, Prd.key(owner.id, inst.serial * 16 + index), ExprEval.evaluate(t.chance, ctx)):
 			continue  # RNG-01
 		if not t.cooldown.is_empty():
 			inst.trigger_ready[index] = world.tick + SimClock.seconds_to_ticks(ExprEval.evaluate(t.cooldown, ctx))
 		world.emit(&"effect_triggered", owner.id, other.id if other != null else -1).effect = inst  # EVT (D-320): cho VIEW
 		ActionRunner.run(world, t.actions, ctx, owner.id)
+
+
+## EFF-16: tăng bộ đếm của trigger; đủ `n` thì đếm lại từ 0 và cho chạy.
+static func _count_reached(inst: EffectInstance, index: int, n: float) -> bool:
+	var c: int = inst.trigger_counts.get(index, 0) + 1
+	if c < roundi(n):
+		inst.trigger_counts[index] = c
+		return false
+	inst.trigger_counts[index] = 0
+	return true
 
 
 ## EFF-08: điều kiện có tên. this_effect_* chỉ đúng với chính bản vừa bị gỡ.

@@ -26,3 +26,5 @@ var item_slot: int = 0
 ## EFF-05: số thứ tự sự kiện lúc áp; trigger: tick sẵn sàng lại theo chỉ số trigger.
 var applied_seq: int = 0
 var trigger_ready: Dictionary[int, int] = {}
+## EFF-16 (D-384): bộ đếm "cứ N lần" theo chỉ số trigger.
+var trigger_counts: Dictionary[int, int] = {}

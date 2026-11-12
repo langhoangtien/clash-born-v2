@@ -86,6 +86,8 @@ static func check(world: World, e: Entity, a: AbilityInstance, name: StringName,
 			return _hp(e) < 0.3
 		&"hp_below_30_or_tower_targeted":
 			return _hp(e) < 0.3 or e.bot.mode == Mode.ESCAPE_TOWER
+		&"attacked_by_enemy_hero":  # D-392
+			return world.tick - e.bot.last_hero_hit_tick <= 30
 		&"taking_damage":
 			return world.tick - e.bot.last_hurt_tick <= 30
 		&"target_hp_below_50":

@@ -117,6 +117,8 @@ func _check_expr(expr: String, where: String, names: Variant) -> void:
 func _check_names(res: Resource, where: String) -> void:
 	if res is ModifierDef and not RuleCatalog.STATS.has(String(res.stat)):
 		_fail(where, "chỉ số '%s' không có trong STAT-01" % res.stat)
+	if res is ModifierDef and not RuleCatalog.MODIFIER_CONDITIONS.has(String(res.condition)):
+		_fail(where, "điều kiện modifier '%s' không có (STAT-07)" % res.condition)
 	if res is ModifierDef and per_attribute_error(res) != "":
 		_fail(where, per_attribute_error(res))
 	elif res is TriggerDef:
@@ -124,6 +126,8 @@ func _check_names(res: Resource, where: String) -> void:
 			_fail(where, "sự kiện '%s' không có trong EVT" % res.event)
 		if not RuleCatalog.TRIGGER_CONDITIONS.has(String(res.condition)):
 			_fail(where, "điều kiện '%s' không có" % res.condition)
+		if not res.every.is_empty() and (not res.chance.is_empty() or not res.cooldown.is_empty()):
+			_fail(where, "every không dùng chung với chance / cooldown (EFF-16)")
 	elif res is EffectDef:
 		for event: StringName in res.removed_by:
 			if not RuleCatalog.EVENTS.has(String(event)):

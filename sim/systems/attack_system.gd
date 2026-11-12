@@ -10,7 +10,10 @@ extends SimSystem
 func run(world: World) -> void:
 	for e: Entity in world.entities:
 		if e.alive and e.stats != null:
+			_update_pending(world, e)
 			_update_attacker(world, e)
+		elif e.pending_attack != null:
+			e.pending_attack = null  # CMB-18: chết thì hủy
 	_update_projectiles(world)
 
 
@@ -94,9 +97,53 @@ func _finish_attack(e: Entity) -> void:
 
 func _release(world: World, e: Entity, target: Entity) -> void:
 	_finish_attack(e)
+	_deliver(world, e, target, e.attack_crit)
+	_roll_extra(world, e, target)
+
+
+## CMB-18: đang chờ đòn phụ — hủy khi kẻ đánh không đánh được, mục tiêu chết / không nhắm được / ra quá tầm + đệm (T4);
+## tới giờ thì đánh (né / chí mạng riêng, không tốn hồi đòn).
+func _update_pending(world: World, e: Entity) -> void:
+	var p: PendingAttack = e.pending_attack
+	if p == null:
+		return
+	var t: Entity = world.find_entity(p.target_id)
+	if not Rules.can_attack(e) or not Rules.is_attackable(e, t) or not Rules.in_attack_range(e, t, world.balance.attack_range_buffer):
+		e.pending_attack = null
+		return
+	if world.tick < p.tick:
+		return
+	e.pending_attack = null
+	world.emit(&"extra_attack", e.id, t.id)
+	_deliver(world, e, t, _roll_crit(world, e, t))
+
+
+## CMB-18: mỗi nguồn tung PRD riêng; nguồn trúng có tỉ lệ cao nhất cho một đòn phụ sau độ trễ của nó.
+func _roll_extra(world: World, e: Entity, target: Entity) -> void:
+	if e.pending_attack != null:
+		return
+	var best: float = -1.0
+	var delay: float = 0.0
+	for inst: EffectInstance in e.effects:
+		if inst.def.extra_attack_chance.is_empty():
+			continue
+		var ctx: ExprContext = Effects.context(world, e, inst)
+		var chance: float = ExprEval.evaluate(inst.def.extra_attack_chance, ctx)
+		if Prd.roll(world, Prd.key(e.id, inst.serial * 16 + 14), chance) and chance > best:
+			best = chance
+			delay = ExprEval.evaluate(inst.def.extra_attack_delay, ctx)
+	if best < 0.0:
+		return
+	e.pending_attack = PendingAttack.new()
+	e.pending_attack.tick = world.tick + maxi(1, SimClock.seconds_to_ticks(delay))
+	e.pending_attack.target_id = target.id
+
+
+## Đòn ra: cận chiến tạo DamageRequest ngay, đánh xa bắn đạn bay.
+func _deliver(world: World, e: Entity, target: Entity, crit: float) -> void:
 	var request: DamageRequest = DamageRequest.attack(e, target.id)
-	request.raw *= e.attack_crit
-	request.crit = e.attack_crit > 1.0
+	request.raw *= crit
+	request.crit = crit > 1.0
 	if e.projectile_speed <= 0.0:
 		world.damage_requests.append(request)
 		return

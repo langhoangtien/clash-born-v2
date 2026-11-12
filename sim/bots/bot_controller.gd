@@ -13,6 +13,8 @@ const FARM_RANGE: float = 1100.0
 const AHEAD: Array[float] = [0.3, 0.15, 0.05]
 ## D-94: chỉ đi farm trại rừng trong chừng này.
 const JUNGLE_RANGE: float = 1600.0
+## BOT-23: lọc thô đơn vị quanh chỗ đứng — hằng kỹ thuật, lớn hơn tầm đánh lính xa nhất + bán kính.
+const CREEP_SCAN: float = 800.0
 
 
 func run(world: World) -> void:
@@ -20,8 +22,8 @@ func run(world: World) -> void:
 		if e.kind != Entity.Kind.HERO or e.bot == null or not e.alive or e.reincarnate_tick >= 0:
 			continue
 		_note_fights(world, e)  # mỗi tick, để không lỡ sự kiện giữa hai lần nghĩ
-		if (world.tick + e.id) % e.bot.think_ticks() != 0:
-			continue
+		if (world.tick + e.id) % e.bot.think_ticks() != 0 or Rules.is_taunted(world, e):
+			continue  # ST-20: bị khiêu khích thì không ra lệnh
 		think(world, e)
 
 
@@ -87,12 +89,13 @@ func choose(world: World, e: Entity) -> Mode:
 		return Mode.RETREAT  # BOT-02
 	var foe: Entity = _enemy_hero(world, e)
 	if foe != null and _may_chase(world, e, foe):
-		if world.tick <= b.trade_until_tick:
+		var covered: bool = not creep_exposed(world, e, _stand_point(e, foe))  # BOT-23: chỉ TRADE, không KILL
+		if world.tick <= b.trade_until_tick and covered:
 			return Mode.TRADE  # BOT-04
 		var near: bool = e.position.distance_to(foe.position) <= world.balance.bot_kill_range
 		if near and (_hp(foe) < world.balance.bot_kill_hp or _hp(foe) < hp - AHEAD[b.difficulty] * 2.0):
 			return Mode.KILL  # BOT-05 (D-96: cả khi máu mình hơn hẳn)
-		if _wants_trade(e, foe):
+		if covered and _wants_trade(e, foe):
 			b.trade_until_tick = world.tick + SimClock.seconds_to_ticks(world.balance.bot_trade_window)
 			return Mode.TRADE  # D-96: chủ động cấu
 	if _base_invader(world, e) != null:
@@ -122,7 +125,29 @@ func _note_fights(world: World, e: Entity) -> void:
 	for ev: GameEvent in world.previous_events:
 		if ev.type == &"damage_taken" and ev.target_id == e.id and ev.amount > 0.0:
 			e.bot.last_hurt_tick = world.tick - 1
-			break
+		elif ev.type == &"attack_landed" and ev.target_id == e.id and _is_enemy_hero(world, e, ev.source_id):
+			e.bot.last_hero_hit_tick = world.tick - 1  # D-392
+
+
+static func _is_enemy_hero(world: World, e: Entity, id: int) -> bool:
+	var s: Entity = world.find_entity(id)
+	return s != null and s.kind == Entity.Kind.HERO and s.team != e.team
+
+
+## BOT-23 (D-393): chỗ `p` trong tầm một lính đường địch đang thấy (+ margin) mà lính phe bot quanh đó ít hơn bot_creep_cover.
+func creep_exposed(world: World, e: Entity, p: Vector2) -> bool:
+	var bal: BalanceSettings = world.balance
+	var exposed: bool = false
+	var cover: int = 0
+	for c: Entity in world.spatial_near(p, maxf(bal.bot_creep_cover_radius, CREEP_SCAN), World.Phase.CONTROLLER, true):
+		if c.kind != Entity.Kind.LANE_CREEP or not c.alive:
+			continue
+		if c.team == e.team:
+			cover += 1 if c.position.distance_to(p) <= bal.bot_creep_cover_radius else 0
+		elif Rules.is_visible(e.team, c):
+			var reach: float = c.stats.get_stat(StatId.Id.ATTACK_RANGE) + c.radius + e.radius + bal.bot_creep_danger_margin
+			exposed = exposed or c.position.distance_to(p) <= reach
+	return exposed and cover < bal.bot_creep_cover
 
 
 ## D-96: chủ động cấu — địch trong tầm đánh + 250, máu mình ≥ 50% và hơn địch AHEAD.
@@ -198,6 +223,8 @@ func farm_target(world: World, e: Entity) -> Entity:
 			continue
 		if (c.position.distance_to(near) > FARM_RANGE and c.position.distance_to(e.position) > FARM_RANGE * 0.7) or not _reach_safe(world, e, _stand_point(e, c)):
 			continue
+		if creep_exposed(world, e, _stand_point(e, c)):
+			continue  # BOT-23
 		if c.health <= hit * _last_hit_margin(e) and (kill == null or c.health < kill.health):
 			kill = c
 		if best == null or (e.bot.difficulty == BotState.Difficulty.EASY and e.position.distance_to(c.position) < e.position.distance_to(best.position)) \

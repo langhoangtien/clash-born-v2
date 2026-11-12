@@ -111,6 +111,12 @@ giờ nhân hệ số với nhau.
 trước (STAT-04) rồi mới tới chỉ số dẫn xuất nên không vòng. Chỉ dùng với ADD; không áp lên chính thuộc tính (dữ liệu kiểm).
 Ví dụ: "+7 máu mỗi STR" (`max_hp`, ADD, 7, strength), "tốc đánh thêm = 60% AGI" (`attack_speed`, ADD, 0,6 ×
 `attack_speed_per_agility`, agility).
+
+`STAT-07` (D-382) **Modifier có điều kiện kiểu đánh** (`condition` = rỗng / `owner_is_melee` / `owner_is_ranged`): không thoả
+điều kiện thì modifier **không được thêm** vào chỉ số của đơn vị; các modifier khác của cùng món đồ / hiệu ứng vẫn áp. Kiểu
+đánh phân như ITM-05 (không có đạn bay = cận chiến). Xét lúc thêm (mua đồ, áp hiệu ứng) vì kiểu đánh không đổi trong trận —
+có cơ chế đổi kiểu đánh sau này thì phải sửa luật này. Tên điều kiện: RuleCatalog.MODIFIER_CONDITIONS; tên lạ thì dữ liệu sai.
+Ví dụ Thương Rồng: +140 tầm đánh `owner_is_ranged` — tướng cận mua được, nhận STR / AGI nhưng không nhận tầm.
 ---
 
 ## ST — Trạng thái
@@ -132,6 +138,7 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 | ST-15 | MAGIC_IMMUNE | ✓ | ✓ | ✓ | đánh thường ✓; chiêu/đồ địch chỉ khi xuyên miễn phép | phép ✗ (trừ nguồn xuyên miễn phép); vật lý ✓; pure ✓ |
 | ST-16 | HEXED | ✓ (tốc cố định `hex_move_speed`) | ✗ | ✗ (kể cả đồ) | ✓ | ✓ |
 | ST-19 | DUELING | chỉ tự đuổi đối thủ (DUL-03) | chỉ đối thủ | ✗ (kể cả đồ) | ✓ | ✓ |
+| ST-20 | TAUNTED | chỉ tự đuổi kẻ khiêu khích | chỉ kẻ khiêu khích | ✗ (kể cả đồ) | ✓ | ✓ |
 
 `ST-09` Kháng hiệu ứng (`status_resistance`) giảm thời lượng các hiệu ứng có tag
 `debuff` (v1 chỉ giảm choáng). Nhiều nguồn **nhân dồn** như Dota (D-167): 1 − Π(1 − vᵢ), vd 10% và
@@ -196,6 +203,26 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 | Lệnh / đạn đang nhắm | Lệnh cũ bị thay bằng đánh đối thủ; đạn đã bay vẫn trúng |
 | Với state khác | Khống chế vẫn tác dụng; đối thủ không đánh được (tàng hình, GHOST…) thì đứng chờ |
 | Mất khi | Một bên chết, hết giờ |
+
+`ST-20` (D-383) TAUNTED (khiêu khích): kẻ khiêu khích là **nguồn** của hiệu ứng mang state này; có nhiều bản thì bản áp
+  sau cùng thắng. Mỗi tick (pha STATE, sau Quyết Đấu) đơn vị bị đặt lệnh đánh kẻ khiêu khích (ngoài tầm thì tự đi tới); không
+  nhận lệnh đi / đánh / chiêu / đồ / về thành (từ chối `TAUNTED`); đang tung chiêu bị hủy (ABL-03), đang về thành bị hủy, lệnh
+  chờ bị bỏ. Công trình và quái boss (JGL-10) không bị khiêu khích (mang hiệu ứng cũng không bị ép). Đang Quyết Đấu thì Quyết
+  Đấu thắng (không ép theo TAUNTED). Là debuff: kháng hiệu ứng rút ngắn (ST-09); thanh tẩy cơ bản không gỡ, chỉ thanh tẩy
+  mạnh gỡ (hiệu ứng khai báo `dispel = STRONG`); chiêu khiêu khích khai báo xuyên miễn phép thì trúng cả đơn vị miễn phép
+  (ST-15). Kẻ khiêu khích chết hoặc rời trận → hiệu ứng bị gỡ (lý do `source_died`). Bot đang bị khiêu khích không ra lệnh
+  (BOT-11 không tính lúc đó vì đơn vị đang đuổi / đánh). Bảng tương tác:
+
+| Hỏi | TAUNTED |
+|---|---|
+| Đi / đánh / chiêu | Chỉ tự đuổi và đánh kẻ khiêu khích; không chiêu, không đồ, không về thành |
+| Địch / đồng minh nhắm được | Như thường |
+| Lệnh / đạn đang nhắm | Lệnh cũ bị thay bằng đánh kẻ khiêu khích; đạn đã bay vẫn trúng mục tiêu cũ |
+| Trụ, lính, quái, bot | Lính, quái thường, hero bị ép; công trình và boss không; bot không ra lệnh |
+| Kỹ năng vùng | Áp bằng chiêu vùng thì trúng như mọi debuff (tàng hình vẫn trúng, ABL-05) |
+| Hiển thị | Biểu tượng hiệu ứng (art_id của hiệu ứng); VIEW không cần sự kiện mới (`effect_applied`) |
+| Với state khác | STUNNED / ROOTED / DISARMED vẫn tác dụng (ST-17); kẻ khiêu khích không đánh được (tàng hình, GHOST, UNTARGETABLE) thì đứng chờ; DUELING thắng TAUNTED; hai khiêu khích → bản áp sau cùng |
+| Mất khi | Hết giờ, kẻ khiêu khích chết, chủ chết, thanh tẩy mạnh |
 
 `ST-17` Kết hợp state: mỗi state áp độc lập, không state nào "đè" state khác trừ khi
   ghi rõ. Ví dụ GHOST + MAGIC_IMMUNE → chỉ còn nhận sát thương pure. INVULNERABLE
@@ -271,6 +298,27 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `CMB-17` (D-206) Tầm đệm khi vung: bắt đầu vung tay cần mục tiêu trong tầm đánh (CMB-01); đã vung
   thì chỉ hủy khi khoảng cách mép > tầm đánh + `attack_range_buffer` (150). Mục tiêu vừa chạy ra khỏi
   tầm vẫn ăn đòn đang vung. Áp cho mọi đơn vị (hero, lính, quái, trụ).
+- `CMB-18` (D-386) **Đòn đánh phụ** (kiểu "bắn 2 phát"): hiệu ứng khai báo `extra_attack_chance` (biểu thức, PRD RNG-01,
+  mỗi nguồn một bộ PRD) và `extra_attack_delay` (giây). Khi một đòn đánh **chính** ra (hết vung tay, CMB-06), xét các nguồn:
+  nguồn nào trúng thì lấy nguồn có tỉ lệ cao nhất (như chí mạng CMB-07) — mỗi đòn chính tối đa **một** đòn phụ. Sau `delay`
+  giây đánh thêm một đòn đánh thường đầy đủ vào **cùng mục tiêu**: tính né / chí mạng riêng, có hiệu ứng đòn đánh (bash, hút
+  máu, `attack_landed`…), đánh xa thì bắn đạn bay; không cần vung tay, không tốn hồi đòn; đòn phụ không sinh đòn phụ. Phát
+  sự kiện `extra_attack` (kẻ đánh, mục tiêu) lúc đánh để VIEW diễn hoạt. Đang chờ thì (T4) **hủy** khi: kẻ đánh chết hoặc không
+  đánh được (STUNNED, DISARMED, HEXED, GHOST…; ST-01/04/11/16), mục tiêu chết hoặc không nhắm được nữa, khoảng cách mép > tầm
+  đánh + `attack_range_buffer` (CMB-17). Đổi lệnh trong lúc chờ thì vẫn đánh (đòn chính đã ra). Lên công trình: có (CMB-04).
+  Bảng tương tác:
+
+| Hỏi | Đòn đánh phụ |
+|---|---|
+| Kẻ đánh bị khống chế / chết trong lúc chờ | Hủy (T4) |
+| Mục tiêu chết / không nhắm được / ra quá tầm + đệm | Hủy (T4) |
+| Đổi lệnh trong lúc chờ | Vẫn đánh |
+| Né, chí mạng, hiệu ứng đòn đánh | Tính riêng như đòn thường |
+| Hồi đòn, vung tay | Không tốn, không cần |
+| Nhiều nguồn | Một đòn phụ, tỉ lệ cao nhất trong các nguồn trúng |
+| Đòn phụ sinh đòn phụ | Không |
+| Công trình | Có (hệ số CMB-04) |
+| Hiển thị | Sự kiện `extra_attack` |
 - `CMB-07` Chí mạng là **thay đổi đòn đánh**, không phải sát thương thêm: tung xúc xắc
   khi bắt đầu vung tay (để hoạt ảnh biết trước); nếu nhiều nguồn cùng trúng, lấy hệ
   số cao nhất; chỉ nhân sát thương vật lý của chính đòn đánh, không nhân sát thương
@@ -599,6 +647,11 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   bán kính), tối thiểu ở mép (f = 1 → mép nhận 0).
 - `EFF-13` Chủ hiệu ứng chết → mọi hiệu ứng bị gỡ (lý do `owner_died`), trừ hiệu ứng có tag
   `passive` (D-56).
+- `EFF-16` (D-384) Trigger **"cứ N lần"** (`every`, biểu thức như EFF-09; rỗng = mỗi lần): mỗi sự kiện khớp vai và điều kiện
+  của trigger (EFF-08) tăng bộ đếm riêng của bản hiệu ứng đó (mỗi trigger một bộ đếm); đủ N thì chạy hành động và đếm lại từ
+  0. Sự kiện không khớp điều kiện không tính; đòn trượt / bị hất (CMB-11, CMB-15) không phải `attack_landed` nên không tính;
+  bị động đang tắt vì HEXED (ST-16) không đếm. Bộ đếm mất cùng bản hiệu ứng (gỡ rồi áp lại thì đếm lại từ 0). Không dùng chung
+  với `chance` hoặc `cooldown` (dữ liệu sai). Bộ đếm nằm trong mã băm World (D-30).
 
 ## DUL — Quyết Đấu (D-135)
 
@@ -639,8 +692,9 @@ kill_credited, structure_destroyed, unit_spawned, gold_changed, level_up,
 skill_leveled, talent_chosen, dash_finished, projectile_hit, item_used,
 knockback_finished, dispelled, attack_target_changed, mana_burned,
 lethal_damage, reincarnated, recall_started, recall_cancelled, recall_finished, duel_started,
-duel_ended, attack_deflected, teleported, effect_triggered`. `gold_changed` (D-240): hero last hit lính / quái (ECO-01), kẻ gây = hero, đối tượng = con bị hạ, lượng = vàng. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
-`effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `removed` (hành động RemoveEffect), `dispelled`, `owner_died`.
+duel_ended, attack_deflected, teleported, effect_triggered, extra_attack`. `gold_changed` (D-240): hero last hit lính / quái (ECO-01), kẻ gây = hero, đối tượng = con bị hạ, lượng = vàng. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
+`effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `removed` (hành động RemoveEffect), `dispelled`, `owner_died`,
+`source_died` (D-383: kẻ khiêu khích chết, ST-20).
 `ability_finished` (D-296) mang điểm chọn `point` (không chọn điểm thì INF) và hướng `direction` của lần tung — chỉ để
 VIEW vẽ hiệu ứng chiêu đúng chỗ, không luật nào đọc.
 `effect_triggered` (D-320): một trigger của hiệu ứng vừa chạy hành động (qua điều kiện, tỉ lệ, hồi chiêu trigger) — kẻ gây =
@@ -1059,6 +1113,14 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   i đi với loại thứ i; một loại thì mọi điều kiện phải đúng (`predict_position`,
   `prefer_engaging_enemy`, `prefer_same_target` chỉ là gợi ý). Tên điều kiện: RuleCatalog
   .BOT_CONDITIONS. SELF_DEFENSE luôn cần vừa bị trúng sát thương trong 2 s; POKE giữ ≥ 40% mana.
+  (D-392) Điều kiện `attacked_by_enemy_hero`: vừa bị **hero địch đánh thường trúng** (sự kiện `attack_landed`, kẻ đánh là
+  hero phe khác) trong 1 s — sát thương phép, độc, lính, trụ không tính. Dùng cho chiêu chỉ có ích trước đòn đánh thường
+  (né đòn).
+- `BOT-23` (D-393) Không đứng trước lính địch khi không có lính đỡ: ở FARM và TRADE (cả đánh trả BOT-04 lẫn chủ động cấu
+  BOT-17), chỗ đứng đánh `p` bị **lộ** khi có ít nhất một lính đường địch đang thấy (BOT-12) mà `p` cách nó không quá tầm
+  đánh của nó + bán kính hai bên + `bot_creep_danger_margin`, trong khi số lính đường phe bot còn sống trong
+  `bot_creep_cover_radius` quanh `p` ít hơn `bot_creep_cover`. Chỗ lộ: FARM bỏ mục tiêu đó, TRADE không vào (bot chọn state
+  kế tiếp theo bảng). Không áp KILL, DEFEND_BASE, PUSH, JUNGLE, ESCAPE_TOWER, RETREAT.
 - `BOT-22` (D-164) Bán đồ đầu trận khi đầy ô: cả 6 ô có đồ và món kế tiếp theo `bot_item_build`
   (SHOP-10) chưa có, mua nó bị từ chối chỉ vì hết ô (INVENTORY_FULL) hoặc thiếu vàng (NOT_ENOUGH_GOLD).
   Món được bán: giá (`cost`) < `bot_sell_max_cost`, không phải thành phần (kể cả sâu) của món kế

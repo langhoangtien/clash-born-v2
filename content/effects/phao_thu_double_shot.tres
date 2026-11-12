@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="1_x"]
+
+[resource]
+script = ExtResource("1_x")
+duration = "0"
+tags = Array[StringName]([&"passive"])
+dispel = 2
+extra_attack_chance = "chance"
+extra_attack_delay = "delay"
+id = &"phao_thu_double_shot"
+art_id = &"phao_thu_w"

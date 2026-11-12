@@ -402,6 +402,7 @@ liệu, bot chỉ có logic cho từng **loại** (GAME_RULES BOT-13):
 | Vexa Q | DISABLE | Hero địch trong tầm, ưu tiên khi nó đang áp sát |
 | Vexa W | ESCAPE / POKE | Hero địch quá gần, hoặc trúng được nhiều kẻ địch |
 | Vexa R | DISABLE | Hero địch có ≥ 1 hiệu ứng có lợi gỡ được, hoặc đang bỏ chạy (`enemy_has_purgeable_buff_or_fleeing`) |
+| Phong Tiễn Q | SELF_DEFENSE / ESCAPE | (D-392) Vừa bị hero địch **đánh thường** trúng (`attacked_by_enemy_hero` — phép, lính, trụ không tính), hoặc máu < 30% |
 | Đồ (D-95) | theo món | Gậy Hồn Ma, Giáp Bất Khuất: máu < 70% và đang nhận sát thương; Bùa Thanh Tẩy: có debuff gỡ được; Gậy Lốc Xoáy: ESCAPE khi máu < 30% / DISABLE khi hero địch trong tầm; Lưỡi Hái: hero địch trong tầm; Lưỡi Ẩn Thân: ENGAGE khi chuẩn bị áp sát / ESCAPE khi máu < 30% |
 
 Thứ tự lên đồ của bot (`bot_item_build`, D-95; dữ liệu trong `content/heroes/*.tres` là bản đúng). D-164: mỗi tướng thêm 2 món cuối trận sau 6 món chính — Brakk: Giáp Thần Công, Trượng Hắc Vương; Duy Anh: Kiếm Huyết Ma, Giáp Thần Công; Gorran: Kiếm Huyết Ma, Trượng Hắc Vương; Myra: Ngọc Thời Không, Áo Choàng Hiền Giả; Vexa: Hoa Câm Lặng, Ngọc Thời Không; Noctis: Đại Đao Thần, Kiếm Huyết Ma. Đầy ô thì bot bán món đầu trận (< 1000 vàng) để mua tiếp (BOT-22).
@@ -709,3 +710,39 @@ Talent: Q II bán kính +100 · W II giảm thêm 15% · R II +1,5 s.
 2200 vàng = Gậy Phù Thủy + Nhẫn Hồi Phục + công ghép. +10 INT, +2 hồi máu. Chủ động (hồi 19 s, tầm 750): đẩy một đơn vị
 600 trong 0,4 s (bị dời thì choáng, dừng khi chạm vách / rừng / thân trụ). Lên bản thân: lao theo hướng đang nhìn. Lên người
 khác: đẩy ra xa người dùng. Địch kháng phép không bị đẩy. Bot: ESCAPE khi máu < 30% (tự đẩy).
+
+### Thương Rồng (đồ, D-382 — kiểu Dragon Lance, cơ chế STAT-07)
+
+1900 vàng = Rìu Khổng Lồ (900) + Lưỡi Nhanh (900) + phí ghép 100. +12 AGI, +10 STR; **chỉ tướng đánh xa**: +140 tầm đánh
+(modifier `condition = owner_is_ranged`). Tướng cận chiến mua được, nhận STR / AGI nhưng không nhận tầm. Bot: chưa tướng nào
+lên món này (`bot_item_build` không đổi). Biểu tượng: `dragon_lance.png` là bản chép tạm của Rìu Khổng Lồ (CB-1 thay).
+
+### Thiết Vệ · Khiên Sắt (tank STR, cận chiến 150 — D-385, đợt 2)
+
+STR 27 (+3,8), AGI 14 (+1,6), INT 15 (+1,8), giáp 2, tốc chạy 265 (chỉ số gốc khác lấy theo Thạch Giáp).
+
+| Chiêu | Hiệu lực | Bậc |
+|---|---|---|
+| Nội tại — Ý Chí Sắt | mỗi đòn đánh trúng +1 tầng (tối đa 16; 2 s, đánh tiếp thì làm mới cả chồng — EFF-01 STACK): mỗi tầng −2% sát thương nhận (cộng dồn qua `damage_taken_multiplier`) và +0,1% máu tối đa hồi mỗi giây | như nhau ở mọi bậc (T3) |
+| Q — Khiêu Khích | vùng 300 quanh mình, tung 0,3 s: khiêu khích (ST-20) — xuyên miễn phép, chỉ thanh tẩy mạnh gỡ, kháng hiệu ứng rút ngắn | 1,6–2,4 s, hồi 16–12, mana 80–100 |
+| W — Gồng Sắt | bản thân: +30% tốc chạy, +giáp | +6 / 8 / 10 / 12 / 14 giáp, 3–5 s, hồi 18–14, mana 50–70 |
+| R — Phản Kích (bị động) | cứ 4 đòn đánh trúng mình (không tính công trình, EFF-16) → vật lý `damage + 40% STR` lên kẻ địch trong 300 | 80 / 130 / 180 |
+
+Talent: Q II khiêu khích +0,5 s · W II +4 giáp · R II cứ 3 đòn (thay vì 4).
+Bot: Q DISABLE khi có hero địch trong bán kính / TEAMFIGHT khi trúng ≥ 2; W ESCAPE khi máu < 30% / ENGAGE trước khi áp sát.
+Lên đồ như Thạch Giáp. Hình (icon, chân dung, mô hình, VFX): bản mượn Thạch Giáp (danh sách cuối `docs/plans/D-382_dot_2.md`), CB-1 thay.
+
+### Pháo Thủ · Súng Bom (AGI, đánh xa 500 — D-387, đợt 2)
+
+STR 16 (+1,8), AGI 22 (+3,0), INT 16 (+1,6), BAT 1,7, đạn 1400, tốc chạy 265.
+
+| Chiêu | Hiệu lực | Bậc |
+|---|---|---|
+| Nội tại — Nòng Dài | +tầm đánh | +30 / 60 / 90 / 120 / 150 |
+| Q — Lựu Đạn | điểm (tầm 700), vùng 275, tung 0,3 s: phép + chậm 25% trong 3 s | 70–230, hồi 12–8, mana 70–90 |
+| W — Bắn Kép (bị động) | mỗi đòn đánh có tỉ lệ (PRD) bắn thêm một phát sau 0,15 s vào cùng mục tiêu (CMB-18) | 20 / 25 / 30 / 35 / 40% |
+| R — Phát Bắn Tỉa | một kẻ địch (tầm 1600 / 1900 / 2200), ngắm 2 s (bị ngắt thì hủy, ABL-03): vật lý | 300 / 475 / 650, hồi 60 / 50 / 40, mana 100–150 |
+
+Talent: Q II bán kính +100 · W II tỉ lệ +10% · R II sát thương +200.
+Bot: Q POKE khi hero địch trong tầm (dự đoán vị trí); R FINISH khi máu hero địch < sát thương chiêu.
+Lên đồ như Phong Tiễn. Hình (icon, chân dung, mô hình, VFX): bản mượn Phong Tiễn (danh sách cuối `docs/plans/D-382_dot_2.md`), CB-1 thay.

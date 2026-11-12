@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Resource" path="res://content/effects/thiet_ve_taunt.tres" id="1_x"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_x"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="3_x"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="4_x"]
+[ext_resource type="Script" path="res://sim/actions/area_action.gd" id="5_x"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="6_x"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="7_x"]
+
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("4_x")
+effect = ExtResource("1_x")
+duration = "duration"
+
+[sub_resource type="Resource" id="S2"]
+script = ExtResource("5_x")
+radius = "radius"
+target = 0
+actions = Array[ExtResource("2_x")]([SubResource("S1")])
+
+[sub_resource type="Resource" id="S3"]
+script = ExtResource("3_x")
+value_name = &"duration"
+amount = 0.5
+
+[sub_resource type="Resource" id="S4"]
+script = ExtResource("6_x")
+id = &"thiet_ve_q_ii"
+display_name = "Gầm Vang"
+description = "Khiêu khích +0,5 s"
+value_changes = Array[ExtResource("3_x")]([SubResource("S3")])
+
+[resource]
+script = ExtResource("7_x")
+description = "Gầm lên: kẻ địch trong bán kính 300 bị khiêu khích — buộc đánh Thiết Vệ, không dùng chiêu / đồ (ST-20). Xuyên miễn phép; chỉ thanh tẩy mạnh gỡ."
+slot = 1
+targeting = 1
+pierces_magic_immunity = true
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cooldown": PackedFloat32Array(16, 15, 14, 13, 12),
+&"duration": PackedFloat32Array(1.6, 1.8, 2, 2.2, 2.4),
+&"mana": PackedFloat32Array(80, 85, 90, 95, 100),
+&"radius": PackedFloat32Array(300, 300, 300, 300, 300)
+})
+cast_time = "0.3"
+on_cast = Array[ExtResource("2_x")]([SubResource("S2")])
+talent = SubResource("S4")
+bot_usages = Array[int]([0, 6])
+bot_conditions = Array[StringName]([&"enemy_hero_in_radius", &"two_enemies_in_area"])
+id = &"thiet_ve_q"
+display_name = "Khiêu Khích"
+art_id = &"thiet_ve_q"

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_x"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="2_x"]
+
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("1_x")
+stat = &"movement_speed"
+op = 1
+value = "1 + speed"
+
+[sub_resource type="Resource" id="S2"]
+script = ExtResource("1_x")
+stat = &"physical_armor"
+value = "armor"
+
+[resource]
+script = ExtResource("2_x")
+tags = Array[StringName]([&"buff"])
+modifiers = Array[ExtResource("1_x")]([SubResource("S1"), SubResource("S2")])
+id = &"thiet_ve_iron_guard"
+display_name = "Gồng Sắt"
+art_id = &"thiet_ve_iron_guard"

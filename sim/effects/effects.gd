@@ -46,7 +46,7 @@ static func apply(world: World, owner: Entity, def: EffectDef, source: Entity, v
 	return inst
 
 
-## Gỡ một bản hiệu ứng; `reason` theo EVT: expired, depleted, removed_by_event, dispelled, owner_died.
+## Gỡ một bản hiệu ứng; `reason` theo EVT: expired, depleted, removed_by_event, dispelled, owner_died, source_died.
 static func remove(world: World, owner: Entity, inst: EffectInstance, reason: StringName) -> void:
 	if not owner.effects.has(inst):
 		return
@@ -157,6 +157,8 @@ static func _apply_modifiers(owner: Entity, inst: EffectInstance) -> void:
 	var ctx: ExprContext = ExprContext.make(owner, owner, inst.values)
 	owner.stats.remove_source(inst.serial)
 	for m: ModifierDef in inst.def.modifiers:
+		if not Rules.modifier_applies(m, owner):
+			continue  # STAT-07
 		var stat: int = StatId.from_name(m.stat)
 		var value: float = ExprEval.evaluate(m.value, ctx)
 		if m.op == ModifierDef.Op.ADD:

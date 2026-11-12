@@ -30,3 +30,6 @@ enum Dispel { BASIC, STRONG, NONE }  # EFF-07
 ## Chí mạng của đòn đánh (CMB-07). Rỗng = không chí mạng.
 @export var crit_chance: String
 @export var crit_multiplier: String
+## CMB-18 (D-386): đòn đánh phụ — xác suất (PRD) mỗi đòn chính và độ trễ (giây). Rỗng = không có.
+@export var extra_attack_chance: String
+@export var extra_attack_delay: String

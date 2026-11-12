@@ -59,6 +59,8 @@ var reincarnate_tick: int = -1
 var recall_until_tick: int = -1
 var recall_start_tick: int = -1
 ## BOT: hero do bot điều khiển (null = người chơi / không phải hero).
+## CMB-18 (D-386): đòn đánh phụ đang chờ (null = không có). AttackSystem ghi.
+var pending_attack: PendingAttack
 var bot: BotState
 ## Hero: dữ liệu gốc (BOT-14 thứ tự nâng điểm, lên đồ).
 var hero_def: HeroDef

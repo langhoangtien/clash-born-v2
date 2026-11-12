@@ -161,6 +161,10 @@ extends Resource
 @export var dive_min_hp: float
 ## BOT-22: bot chỉ bán món có giá dưới mức này (đồ đầu trận) khi đầy ô.
 @export var bot_sell_max_cost: int
+## BOT-23 (D-393): FARM / TRADE không đứng trong tầm lính địch (+ margin) khi lính phe mình trong bán kính ít hơn số này.
+@export var bot_creep_cover: int
+@export var bot_creep_cover_radius: float
+@export var bot_creep_danger_margin: float
 ## BOT-02/03: rút khi máu < bot_retreat_hp, đứng hồi tới bot_recover_hp (phần máu tối đa).
 @export var bot_retreat_hp: float
 @export var bot_recover_hp: float
