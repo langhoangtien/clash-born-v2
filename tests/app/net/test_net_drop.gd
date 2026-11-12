@@ -25,7 +25,7 @@ func _setup() -> Dictionary:
 	var cfg: MatchConfig = MatchConfig.make(1, [&"gorran", &"myra"] as Array[StringName], [0, 1], BotState.Difficulty.NORMAL, 31)
 	var net: LoopbackNet = LoopbackNet.new(5)
 	var room: LockstepRoom = LockstepRoom.new(_world(cfg))
-	var h: Dictionary = {"net": net, "room": room, "clients": [], "heroes": [], "ends": [], "drops": [], "silent": []}
+	var h: Dictionary = {"net": net, "room": room, "clients": [], "heroes": [], "ends": [], "drops": [], "silent": [], "cfg": cfg}
 	room.on_drop = func(peer: int, entity: int, reason: String) -> void: h["drops"].append([peer, entity, reason, room.tick])
 	for k: int in 2:
 		var w: World = _world(cfg)
@@ -160,7 +160,7 @@ func test_NET_19_empty_match_kept_then_cancelled() -> void:
 	var room: LockstepRoom = h["room"]
 	var s: RoomServer = RoomServer.new()
 	s.empty_keep_s = 1.0
-	s._games["111111"] = {"room": room, "acc": 0.0}
+	s._games["111111"] = RoomGame.new("111111", room, null)
 	s.tick(0.5)
 	assert_true(s._games.has("111111"), "còn người")
 	room.drop_peer(0, "closed")
@@ -251,7 +251,11 @@ func test_NET_12_room_server_reports_win_not_cancel() -> void:
 		s.empty_keep_s = 0.2
 		s.report = func(p: Dictionary) -> void: sent.append(p)
 		var cfg: MatchConfig = MatchConfig.make(1, [&"gorran", &"myra"] as Array[StringName], [0, 1], BotState.Difficulty.NORMAL, 31)
-		s._games["123456"] = {"room": room, "acc": 0.0, "cfg": cfg, "accounts": {0: 11, 1: 12}, "slots": {0: 0, 1: 1}, "app": "0.1.700"}
+		var g: RoomGame = RoomGame.new("123456", room, cfg)
+		g.accounts = {0: 11, 1: 12}
+		g.slots = {0: 0, 1: 1}
+		g.app = "0.1.700"
+		s._games["123456"] = g
 		room.drop_peer(0, "closed")  # không có kết nối thật trong test này
 		room.drop_peer(1, "closed")
 		if winner >= 0:
@@ -263,3 +267,49 @@ func test_NET_12_room_server_reports_win_not_cancel() -> void:
 	assert_eq(sent.size(), 1, "chỉ trận có đội thắng")
 	if not sent.is_empty():
 		assert_eq(sent[0]["match_key"], "123456-31")
+
+
+
+## NET-22 / NET-18 (mạng giả): người rớt vào lại bằng kết nối mới — nhật ký gửi theo phần nhỏ, tua tới tick máy chủ, gửi
+## caught_up → máy chủ trả hero cho người; lệnh của người đó trước lúc kịp bị bỏ; ba bản SIM cùng mã băm.
+func test_NET_22_rejoin_replays_history_and_returns_control() -> void:
+	var h: Dictionary = _setup()
+	var room: LockstepRoom = h["room"]
+	room.takeover = Command.set_control
+	room.history_chunk = 3
+	h["silent"] = [1]
+	var c0: LockstepClient = h["clients"][0]
+	var hero0: int = h["heroes"][0]
+	var hero1: int = h["heroes"][1]
+	for i: int in 30:
+		var e: Entity = c0.world.find_entity(hero0)
+		c0.world.submit(Command.move_to(hero0, e.position.move_toward(c0.world.find_entity(hero1).position, 150.0)))
+		_run(h, 0.5)
+	assert_true(room.log.size() > room.history_chunk * 2, "nhật ký nhiều phần (%d gói)" % room.log.size())
+	var ends: Array = (h["net"] as LoopbackNet).link(60.0, 0.0, 0.0)
+	var c2: LockstepClient = LockstepClient.new(ends[0])
+	c2.attach(_world(h["cfg"]), room.input_delay, 7)
+	c2.resume_to = room.tick
+	room.rejoin_peer(7, ends[1], hero1)
+	c2.transport.send({"t": "cmd", "want": room.tick + 3, "s": 1, "c": NetCodec.command_to(Command.move_to(hero1, Vector2(5000, 5000)))})
+	var dropped: int = room.dropped
+	h["clients"][1] = c2
+	h["silent"] = []
+	for i: int in 40:
+		if c2.resume_to < 0:
+			break
+		_run(h, 0.5)
+	assert_eq(c2.resume_to, -1, "tua kịp")
+	assert_eq(room.dropped, dropped + 1, "lệnh trước lúc kịp bị bỏ")
+	_run(h, 2.0)
+	for w: World in [room.world, c0.world, c2.world]:
+		assert_true(w.find_entity(hero1).bot == null, "trả quyền cho người")
+	var checked: int = 0
+	for n: int in room._hashes:
+		for c: LockstepClient in [c0, c2]:
+			if c.hashes.has(n):
+				assert_eq(c.hashes[n], room._hashes[n], "tick %d" % n)
+				checked += 1
+	assert_true(checked > 10)
+	assert_eq(room.desyncs, {})
+	assert_false(room.gone.has(7))

@@ -57,6 +57,8 @@ func _process(delta: float) -> void:
 static func status(lock: LockstepClient, open: bool, waiting_s: float) -> String:
 	if lock.world != null and lock.world.winner >= 0:
 		return ""
+	if lock.resume_to >= 0 and lock.world != null:  # NET-22: đang tua sau khi vào lại
+		return "Đang vào lại trận… %d%%" % clampi(lock.world.tick * 100 / maxi(1, lock.resume_to), 0, 99)
 	if lock.desync_tick >= 0:  # NET-20: trước "mất kết nối" — máy chủ đóng kết nối máy lệch ngay sau đó
 		return "Online — lệch trận ở tick %d" % lock.desync_tick
 	if not open:
@@ -73,6 +75,8 @@ static func notice_text(n: Dictionary) -> String:
 	match String(n.get("kind", "")):
 		"dropped":
 			return "%s mất kết nối — bot đánh thay" % n.get("name", "?")
+		"back":
+			return "%s đã vào lại" % n.get("name", "?")
 	return String(n.get("name", ""))
 
 

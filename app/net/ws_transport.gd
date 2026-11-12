@@ -54,3 +54,7 @@ func closed() -> bool:
 
 func close() -> void:
 	peer.close()
+
+
+func buffered() -> int:
+	return peer.get_current_outbound_buffered_amount()

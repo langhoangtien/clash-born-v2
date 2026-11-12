@@ -35,6 +35,9 @@ var _acc: float = 0.0             ## thời gian đã trôi chưa chạy thành 
 var max_backlog: int = 0
 var desync_tick: int = -1         ## tick lệch đầu tiên máy chủ báo (-1 = chưa)
 var hashes: Dictionary[int, String] = {}  ## mã băm đã gửi (chẩn đoán)
+## NET-22 (M9.8): đang tua tới tick này sau khi vào lại (-1 = không tua); thời gian chạy SIM tối đa mỗi khung khi tua.
+var resume_to: int = -1
+var catch_up_ms: float = 24.0
 ## NET-16 (D-402): tin `notice` của máy chủ (người rớt…) chờ HUD hiện.
 var notices: Array[Dictionary] = []
 ## M9.6: APP móc vào trước / sau mỗi tick (màn trận: chụp vị trí nội suy, gửi lệnh đang giữ; âm thanh).
@@ -96,6 +99,16 @@ func handle(msg: Dictionary) -> bool:
 				desync_tick = int(msg.get("n", -1))
 		"notice":
 			notices.append(msg)
+		"history":  # NET-22: gói tick from..to (không liệt kê = rỗng)
+			var listed: Dictionary = {}
+			for e: Variant in msg.get("c", []):
+				if e is Array and (e as Array).size() == 2:
+					listed[int(e[0])] = e[1]
+			var done_tick: int = world.tick if world != null else 0
+			for t: int in range(maxi(int(msg.get("from", 1)), done_tick + 1), int(msg.get("to", 0)) + 1):
+				if not _bundles.has(t):
+					_bundles[t] = listed.get(t, [])
+			last_tick = maxi(last_tick, int(msg.get("to", 0)))
 		_:
 			return false
 	return true
@@ -108,6 +121,8 @@ func ready_to_step() -> bool:
 ## Nhịp chạy mỗi khung (APP / test): 30 tick / giây theo thời gian trôi, chỉ khi đã có gói (NET-01), giữ `buffer_target`
 ## gói làm đệm chống dao động; hết sạch gói lúc tới hạn → một khung đứng hình (stalls); tụt sau máy chủ nhiều → chạy bù.
 func advance(dt: float) -> int:
+	if resume_to >= 0:
+		return _fast_forward()
 	_acc += dt
 	buffer_target = clampi(ceili(jitter_ms / (SimClock.TICK_SECONDS * 1000.0)) + 1, 1, 6)
 	var n: int = 0
@@ -157,3 +172,18 @@ func backlog() -> int:
 ## Phần đã trôi của tick kế (0..1) — VIEW nội suy.
 func phase() -> float:
 	return clampf(_acc / SimClock.TICK_SECONDS, 0.0, 0.999)
+
+
+## NET-22: tua — chạy tick có gói tới hết `catch_up_ms` mỗi khung (không chờ nhịp); tới tick vào lại và hàng gói ngắn lại
+## thì báo máy chủ `caught_up` (NET-18).
+func _fast_forward() -> int:
+	var start: int = Time.get_ticks_usec()
+	var n: int = 0
+	while ready_to_step() and (Time.get_ticks_usec() - start) < catch_up_ms * 1000.0:
+		step()
+		n += 1
+	if world != null and world.tick >= resume_to and backlog() <= buffer_target + 2:
+		resume_to = -1
+		_acc = 0.0
+		transport.send({"t": "caught_up"})
+	return n

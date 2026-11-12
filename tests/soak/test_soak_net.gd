@@ -43,3 +43,37 @@ func test_NET_17_drop_mid_match_soak_no_desync() -> void:
 		assert_true(c0.world.find_entity(h["heroes"][1]).bot != null, "seed %d: bot đánh thay trên máy còn lại" % k)
 		assert_true(room.tick - c0.world.tick <= 15, "theo kịp máy chủ")
 		print("  seed %d: rớt ở tick %d (%s), trận tới tick %d, không lệch" % [k, drops[0][2], drops[0][1], room.tick])
+
+
+## M9.8 soak (D-406, NET-22 / NET-18): 3v3 mạng giả (RTT 80 ± 20 ms, mất 2 %), 3 seed: một người mất mạng ở giây 60, vào lại
+## bằng kết nối mới sau 20 giây (tua nhật ký), chạy tới phút thứ 4 — không lệch, người vào lại cầm lại hero.
+func test_NET_22_rejoin_soak_no_desync() -> void:
+	var lock: Object = Lock.new()
+	for k: int in 3:
+		var h: Dictionary = lock._setup(80.0, 20.0, 0.02, 400 + k)
+		var room: LockstepRoom = h["room"]
+		room.takeover = Command.set_control
+		lock._run(h, 60.0)
+		var old: LockstepClient = h["clients"][1]
+		old.transport.close()
+		lock._run(h, 20.0)
+		var cfg: MatchConfig = MatchConfig.make(3, Lock.SIX, Lock.HUMANS, BotState.Difficulty.NORMAL, 31)
+		var ends: Array = (h["net"] as LoopbackNet).link(80.0, 20.0, 0.02)
+		var c: LockstepClient = LockstepClient.new(ends[0])
+		c.attach(lock._world(cfg), room.input_delay, 9)
+		c.resume_to = room.tick
+		room.rejoin_peer(9, ends[1], h["heroes"][1])
+		h["clients"][1] = c
+		var t0: int = room.tick
+		for i: int in 120:
+			if c.resume_to < 0:
+				break
+			lock._run(h, 0.5)
+		assert_eq(c.resume_to, -1, "seed %d: tua kịp" % k)
+		var caught: int = room.tick - t0
+		lock._run(h, 240.0 - room.tick / 30.0)
+		assert_eq(room.desyncs.size(), 0, "seed %d: không lệch" % k)
+		assert_true(lock._same_hashes(h) >= 30)
+		assert_true(c.world.find_entity(h["heroes"][1]).bot == null, "seed %d: cầm lại hero" % k)
+		assert_true(room.tick - c.world.tick <= 15, "theo kịp máy chủ")
+		print("  seed %d: vào lại ở tick %d, kịp sau %d tick máy chủ, trận tới tick %d, không lệch" % [k, t0, caught, room.tick])

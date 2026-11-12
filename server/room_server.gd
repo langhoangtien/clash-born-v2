@@ -4,7 +4,7 @@ extends Node
 ## vân tay SIM NET-10 + phiên tài khoản NET-06), sảnh (RoomLobby, NET-07..09), vào trận → LockstepRoom giữ nhịp 30 tick
 ## mỗi giây (NET-01..04). Chạy: server/main.gd. Tin nhắn (máy khách → máy chủ): probe (trước bắt tay, NET-14 — trả
 ## probe_ok {v, server}); hello {v, token}; create {size};
-## join {code}; team {team}; pick {hero}; size {size}; start; leave. Máy chủ → máy khách: hello_ok {peer, name, heroes};
+## join {code}; team {team}; pick {hero}; size {size}; start; leave; rejoin (M9.8). Máy chủ → máy khách: hello_ok {peer, name, heroes};
 ## lobby {room}; error {code, for}; welcome {config, peer, slot, entity, delay}; rồi tin lockstep (tick, pong, desync); end.
 
 const HELLO_TIMEOUT_S: float = 10.0
@@ -12,8 +12,6 @@ const CLOSE_AFTER_S: float = 0.5  ## đóng sau khi báo lỗi — để tin l�
 const MAX_CONNECTIONS: int = 200
 const EMPTY_KEEP_S: float = 60.0  ## NET-19: trận không còn người chạy tiếp chừng này giây (cho vào lại) rồi hủy
 const MAX_PROBES: int = 5  ## NET-14: tin probe tối đa mỗi kết nối (máy khách gửi ServerProbe.PROBE_ROUNDS)
-const MAP_PATH: String = "res://data/maps/clashborn.tres"
-const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
 
 ## Kiểm phiên: func(token: String, done: Callable) — done({id, name}) hoặc done({}) khi phiên sai / bị khóa.
 var auth: Callable
@@ -30,7 +28,7 @@ var _lib: ContentLibrary
 var _next: int = 1
 var _conns: Dictionary[int, Dictionary] = {}    ## mã → {ws, stage (hello / auth / lobby / game), account, name, code, age}
 var _lobbies: Dictionary[String, RoomLobby] = {}
-var _games: Dictionary[String, Dictionary] = {}  ## mã phòng → {room, acc}
+var _games: Dictionary[String, RoomGame] = {}  ## mã phòng → trận đang chạy
 
 
 func start(port: int) -> Error:
@@ -143,10 +141,14 @@ func _authed(id: int, account: Dictionary) -> void:
 		_close_soon(id)
 		return
 	_conns[id].merge({"stage": "lobby", "account": int(account["id"]), "name": String(account["name"])}, true)
-	_send(id, {"t": "hello_ok", "peer": id, "name": account["name"], "heroes": heroes.map(func(h: StringName) -> String: return String(h))})
+	_send(id, {"t": "hello_ok", "peer": id, "name": account["name"], "live": _live(int(account["id"])),  # NET-21
+		"heroes": heroes.map(func(h: StringName) -> String: return String(h))})
 
 
 func _lobby_message(id: int, t: String, msg: Dictionary) -> void:
+	if t == "rejoin":
+		_rejoin(id)
+		return
 	if t == "create" or t == "join":
 		var e: String = _create_or_join(id, t, msg)
 		if e != "":
@@ -187,6 +189,8 @@ func _lobby_message(id: int, t: String, msg: Dictionary) -> void:
 func _create_or_join(id: int, t: String, msg: Dictionary) -> String:
 	if _lobbies.has(String(_conns[id]["code"])):
 		return "IN_ROOM"
+	if _live(int(_conns[id]["account"])) != "":  # NET-21 (R2): còn trận đang đánh → chỉ được vào lại trận đó
+		return "IN_MATCH"
 	if t == "create":
 		var lobby: RoomLobby = RoomLobby.new(_new_code(), int(msg.get("size", 3)))
 		_lobbies[lobby.code] = lobby
@@ -233,62 +237,57 @@ func _broadcast_lobby(lobby: RoomLobby) -> void:
 ## NET-08: dựng trận (bản SIM của máy chủ), gắn từng người với hero của ô mình, gửi lời chào; từ đây LockstepRoom giữ nhịp.
 func _start_game(lobby: RoomLobby) -> void:
 	var made: Dictionary = lobby.build(heroes, rng)
-	var cfg: MatchConfig = made["config"]
-	var world: World = World.new(cfg.seed, load(BALANCE_PATH) as BalanceSettings)
-	world.map = load(MAP_PATH) as MapLayout
-	world.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
-	var units: Array[Entity] = MatchSetup.build(world, _lib, cfg)
-	var room: LockstepRoom = LockstepRoom.new(world)
-	room.on_drop = _on_drop.bind(lobby.code)
-	room.takeover = Command.set_control  # NET-17: bot Thường đánh thay người rớt (CMD-07)
-	var wire: Dictionary = NetCodec.config_to(cfg)
-	var accounts: Dictionary = {}
+	var g: RoomGame = RoomGame.create(lobby.code, made["config"], _lib)
+	g.app = String(_conns[lobby.host].get("app", ""))
+	g.close_peer = func(peer: int) -> void:
+		if _conns.has(peer):
+			_close_soon(peer)
 	for peer: int in made["seats"]:
 		var slot: int = int(made["seats"][peer])
-		accounts[slot] = int(_conns[peer]["account"])
-		room.add_peer(peer, _conns[peer]["ws"], units[slot].id)
-		_conns[peer]["stage"] = "game"
-		_send(peer, {"t": "welcome", "config": wire, "peer": peer, "slot": slot, "entity": units[slot].id,
-			"delay": room.input_delay})
+		g.seat(peer, _conns[peer]["ws"], slot, int(_conns[peer]["account"]), String(_conns[peer]["name"]))
+		_welcome(peer, g, slot, false)
 	_lobbies.erase(lobby.code)
-	_games[lobby.code] = {"room": room, "acc": 0.0, "cfg": cfg, "accounts": accounts, "slots": made["seats"],
-		"app": String(_conns[lobby.host].get("app", ""))}
+	_games[lobby.code] = g
+
+
+func _welcome(peer: int, g: RoomGame, slot: int, resume: bool) -> void:
+	_conns[peer].merge({"stage": "game", "code": g.code}, true)
+	_send(peer, g.welcome(peer, slot, resume))
 
 
 func _run_game(code: String, delta: float) -> void:
-	var g: Dictionary = _games[code]
-	var room: LockstepRoom = g["room"]
-	room.pump()
-	g["acc"] = float(g["acc"]) + delta
-	var steps: int = 0
-	while float(g["acc"]) >= SimClock.TICK_SECONDS and steps < LockstepClient.MAX_STEPS_PER_FRAME:
-		g["acc"] = float(g["acc"]) - SimClock.TICK_SECONDS
-		room.step_tick()
-		steps += 1
-	g["empty"] = float(g.get("empty", 0.0)) + delta if room.peers.is_empty() else 0.0
-	if room.world.winner >= 0:
+	var g: RoomGame = _games[code]
+	var state: String = g.advance(delta, empty_keep_s)
+	if state == "won":
 		if report.is_valid():  # NET-12 (ST.5): máy chủ ghi trận
-			report.call(MatchReport.payload(room, g["cfg"], code, g["accounts"], g["slots"], g["app"]))
-		for id: int in room.peers:
-			_send(id, {"t": "end", "winner": room.world.winner})
+			report.call(g.payload())
+		for id: int in g.room.peers:
+			_send(id, {"t": "end", "winner": g.room.world.winner})
 			_conns[id].merge({"stage": "lobby", "code": ""}, true)
 		_games.erase(code)
-	elif float(g["empty"]) >= empty_keep_s:  # NET-19: không ai vào lại → hủy, không tính thống kê
-		print("room_server: phòng %s hủy — không còn người chơi (tick %d)" % [code, room.tick])
+	elif state == "cancel":  # NET-19: không ai vào lại → hủy, không tính thống kê
+		print("room_server: phòng %s hủy — không còn người chơi (tick %d)" % [code, g.room.tick])
 		_games.erase(code)
 
 
-## NET-16 / NET-20: báo người còn lại; im lặng / lệch thì đóng kết nối (đóng rồi thì thôi).
-func _on_drop(peer: int, _entity: int, reason: String, code: String) -> void:
-	var room: LockstepRoom = _games[code]["room"] if _games.has(code) else null
-	var c: Dictionary = _conns.get(peer, {})
-	print("room_server: phòng %s — %s (tài khoản %d) rớt: %s, tick %d" % [code, c.get("name", "?"), int(c.get("account", -1)),
-		reason, room.tick if room != null else -1])
-	if room != null:
-		for id: int in room.peers:
-			_send(id, {"t": "notice", "kind": "dropped", "name": String(c.get("name", "?"))})
-	if reason != "closed" and not c.is_empty():
-		_close_soon(peer)
+## NET-21: mã trận chưa kết thúc mà tài khoản có ô ("" = không có).
+func _live(account: int) -> String:
+	for code: String in _games:
+		if _games[code].slot_of(account) >= 0:
+			return code
+	return ""
+
+
+## NET-22 / NET-23: vào lại trận đang đánh của tài khoản.
+func _rejoin(id: int) -> void:
+	var code: String = _live(int(_conns[id]["account"]))
+	if code == "":
+		_error(id, "NO_ROOM", "rejoin")
+		return
+	var g: RoomGame = _games[code]
+	var slot: int = g.slot_of(int(_conns[id]["account"]))
+	g.rejoin(id, _conns[id]["ws"], slot, String(_conns[id]["name"]))
+	_welcome(id, g, slot, true)
 
 
 func _drop(id: int) -> void:
@@ -296,5 +295,5 @@ func _drop(id: int) -> void:
 	if _lobbies.has(code):
 		_leave(id)
 	if _games.has(code):
-		(_games[code]["room"] as LockstepRoom).drop_peer(id, "closed")
+		_games[code].room.drop_peer(id, "closed")
 	_conns.erase(id)

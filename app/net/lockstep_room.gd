@@ -12,6 +12,7 @@ const HASH_KEEP: int = 40          ## số mốc mã băm giữ lại để so (
 const DROP_AFTER_S: int = 5        ## NET-16: im lặng chừng này giây = rớt (máy khách ping mỗi giây)
 ## NET-17: lệnh chỉ máy chủ phát — máy khách gửi lên thì bỏ (NET-03).
 const SERVER_ONLY: Array[Command.Type] = [Command.Type.SET_CONTROL]
+const BACKFILL_BUFFER: int = 32 * 1024  ## NET-22: chỉ gửi thêm phần nhật ký khi hàng gửi của kết nối dưới chừng này byte
 
 var world: World
 var tick: int = 0
@@ -28,6 +29,13 @@ var gone: Dictionary[int, int] = {}
 var on_drop: Callable = Callable()
 ## NET-17: func(entity: int, bot: bool) -> Command — lệnh đổi quyền điều khiển máy chủ chèn vào gói lệnh (null = không chèn).
 var takeover: Callable = Callable()
+## NET-22 (M9.8): nhật ký gói lệnh khác rỗng [[tick, gói]] để người vào lại tua; số gói khác rỗng mỗi phần gửi lại.
+var log: Array = []
+var history_chunk: int = 100
+## NET-18: người vào lại chưa đuổi kịp (lệnh của họ bị bỏ, bot vẫn đánh); `on_return`: func(peer) khi đã kịp.
+var returning: Dictionary[int, bool] = {}
+var on_return: Callable = Callable()
+var _backfill: Dictionary[int, Array] = {}  ## mã → [chỉ số log kế, tick đầu phần kế, tick cuối T]
 var _heard: Dictionary[int, int] = {}  ## mã → tick máy chủ nhận tin gần nhất (NET-16)
 var _pending: Dictionary[int, Array] = {}
 var _hashes: Dictionary[int, String] = {}
@@ -51,12 +59,21 @@ func drop_peer(id: int, reason: String) -> void:
 	if not peers.has(id):
 		return
 	peers.erase(id)
+	returning.erase(id)
+	_backfill.erase(id)
 	gone[id] = tick
 	var c: Command = takeover.call(seats[id], true) if takeover.is_valid() and seats.has(id) else null
 	if c != null:
 		_queue(tick + 1, {"c": NetCodec.command_to(c), "p": -1, "s": -1})
 	if on_drop.is_valid():
 		on_drop.call(id, seats.get(id, -1), reason)
+
+
+## NET-22: người vào lại (kết nối mới) — gửi lại gói tick 1..tick hiện tại theo từng phần, gói trực tiếp từ tick kế.
+func rejoin_peer(id: int, t: NetTransport, entity_id: int) -> void:
+	add_peer(id, t, entity_id)
+	returning[id] = true
+	_backfill[id] = [0, 1, tick]  # gửi từ tick kế — sau lời chào `welcome` (gửi trước thì máy khách chưa có lockstep, bỏ mất)
 
 
 ## Đọc tin của mọi người chơi (gọi mỗi vòng của máy chủ).
@@ -81,12 +98,19 @@ func _handle(id: int, msg: Dictionary) -> void:
 				drop_peer(id, "desync")  # NET-20
 		"ping":
 			peers[id].send({"t": "pong", "at": msg.get("at", 0.0)})
+		"caught_up":  # NET-18: đã tua kịp → trả hero cho người ở tick kế
+			if returning.erase(id):
+				var c: Command = takeover.call(seats[id], false) if takeover.is_valid() else null
+				if c != null:
+					_queue(tick + 1, {"c": NetCodec.command_to(c), "p": -1, "s": -1})
+				if on_return.is_valid():
+					on_return.call(id)
 
 
 ## NET-02 / NET-03: kiểm quyền + dạng + nhịp, rồi xếp vào tick thực thi.
 func _command(id: int, msg: Dictionary) -> void:
 	var c: Command = NetCodec.command_from(msg.get("c"))
-	if c == null or c.entity_id != seats.get(id, -1) or c.type in SERVER_ONLY or not _allow(id):
+	if c == null or c.entity_id != seats.get(id, -1) or c.type in SERVER_ONLY or returning.has(id) or not _allow(id):
 		dropped += 1
 		return
 	var want: Variant = msg.get("want")
@@ -121,9 +145,32 @@ func step_tick() -> void:
 	_pending.erase(tick)
 	for id: int in peers:
 		peers[id].send({"t": "tick", "n": tick, "c": bundle})
+	if not bundle.is_empty():
+		log.append([tick, bundle])
+	_send_backfill()
 	for entry: Dictionary in bundle:
 		world.enqueue(NetCodec.command_from(entry["c"]))
 	world.step()
 	if tick % LockstepClient.HASH_EVERY == 0:
 		_hashes[tick] = world.state_hash().hex_encode()
 		_hashes.erase(tick - HASH_KEEP * LockstepClient.HASH_EVERY)
+
+
+## NET-22: gửi tiếp nhật ký cho người vào lại khi hàng gửi còn chỗ: {history, from, to, c: [[tick, gói]…]} — tick trong
+## from..to không có trong c là gói rỗng.
+func _send_backfill() -> void:
+	for id: int in _backfill.keys():
+		var b: Array = _backfill[id]
+		while int(b[1]) <= int(b[2]) and peers[id].buffered() < BACKFILL_BUFFER:
+			var part: Array = []
+			var i: int = b[0]
+			while i < log.size() and int(log[i][0]) <= int(b[2]) and part.size() < history_chunk:
+				part.append(log[i])
+				i += 1
+			var more: bool = i < log.size() and int(log[i][0]) <= int(b[2])
+			var to: int = int(part[-1][0]) if more else int(b[2])
+			peers[id].send({"t": "history", "from": b[1], "to": to, "c": part})
+			b[0] = i
+			b[1] = to + 1
+		if int(b[1]) > int(b[2]):
+			_backfill.erase(id)
