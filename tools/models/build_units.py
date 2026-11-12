@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Dựng lại mọi mô hình đơn vị afk.ai cho game (D-216): chọn hoạt ảnh (glb_anims.py) rồi thu ảnh (glb_slim.py).
 
-  python3 -I tools/models/build_units.py [tên …]     # không tên: dựng tất cả
+  python3 -I tools/models/build_units.py [tên …] [--out thư_mục]     # không tên: dựng tất cả
+--out (D-367): ghi <thư_mục>/<tên>.glb thay vì assets/models/style/<đích>.glb — bản thử chưa vào game.
 Nguồn: art_inbox/3d/<nguồn>_afk.glb (afk.ai, đủ hoạt ảnh — giữ để sau đổi / thêm hoạt ảnh không phải rig lại), hoặc
 tên file `.glb` trong art_inbox/3d (vd bản Mixamo gộp bằng mixamo_pack.py, D-238).
 Tên hoạt ảnh game theo rig `Creature` (units_3d.json): idle / run / attack / hit / death, `stun` tùy chọn (ST-01).
@@ -76,6 +77,18 @@ UNITS = {
                    "Idle_Dizzy=stun,Bow Pull Back@0.75-1.25+Bow Release=cast,Dodge_left=skill_1,"
                    "Bow_Draw@1.3-2.07+Bow Release=skill_2,Sprint=sprint",
                    True, False, ["phong_tien/phong_tien_bow_hand:hand_l"]),
+    # D-367: Phong Tiễn PA3 (D-364, D-366) — bản thử số tam giác (A2), chỉ dựng với --out art_inbox/3d/phong_tien_v2;
+    # 6k GIỮ xương ngón tay (fingers = False), 3k = giảm tam giác chính lưới 6k (decimate.py) rồi gắn xương lại, bỏ ngón
+    "phong_tien_v2_3k": ("phong_tien_v2/f3000/phong_tien_v2", "heroes/phong_tien",
+                         "Bow_Casual=idle,Run_Female=run,Bow Pull Back@0.5-1.25+Bow Release=attack,Hit_Chest=hit,Death_B=death,"
+                         "Idle_Dizzy=stun,Bow Pull Back@0.75-1.25+Bow Release=cast,Dodge_left=skill_1,"
+                         "Bow_Draw@1.3-2.07+Bow Release=skill_2,Sprint=sprint",
+                         True, False, ["phong_tien_v2/f3000/phong_tien_v2_bow_nostring_hand:hand_l"]),
+    "phong_tien_v2_6k": ("phong_tien_v2/f6000/phong_tien_v2", "heroes/phong_tien",
+                         "Bow_Casual=idle,Run_Female=run,Bow Pull Back@0.5-1.25+Bow Release=attack,Hit_Chest=hit,Death_B=death,"
+                         "Idle_Dizzy=stun,Bow Pull Back@0.75-1.25+Bow Release=cast,Dodge_left=skill_1,"
+                         "Bow_Draw@1.3-2.07+Bow Release=skill_2,Sprint=sprint",
+                         "_leaf", False, ["phong_tien_v2/f6000/phong_tien_v2_bow_nostring_hand:hand_l"]),
     # D-307b: tê giác theo style ảnh mẫu người chơi (concept_gen.py từ ảnh mẫu → split_turnaround.py →
     # Tripo multiview → glb_yaw -90 → afk.ai: dragon / horse → fix-stretching)
     # D-309: Người Đá thay rồng (concept_gen theo ảnh mẫu bãi đấu → Tripo → afk.ai human); fix-stretching + drop_loose (tam giác lẻ kéo dài); đòn đánh = đấm móc (đấm đất kéo méo nắm tay)
@@ -91,7 +104,7 @@ UNITS = {
 }
 
 
-def build(name):
+def build(name, out_dir=None):
     src, dst, keep, fingers, team = UNITS[name][:5]
     attach = UNITS[name][5] if len(UNITS[name]) > 5 else []
     slim = UNITS[name][6] if len(UNITS[name]) > 6 else []  # D-307c: tham số thêm cho glb_slim (vd --tint)
@@ -104,14 +117,20 @@ def build(name):
             f, bone = spec.split(":", 1)
             cmd += ["--attach", os.path.join(ROOT, "art_inbox", "3d", f + ".glb") + ":" + bone]
         subprocess.run(cmd + (["--drop-bones", fingers if isinstance(fingers, str) else FINGERS] if fingers else []), check=True)
-        out = os.path.join(ROOT, "assets", "models", "style", dst + ".glb")
+        out = os.path.join(out_dir, name + ".glb") if out_dir else os.path.join(ROOT, "assets", "models", "style", dst + ".glb")
         subprocess.run([sys.executable, "-I", os.path.join(HERE, "glb_slim.py"), mid, out, "--size", "1024"]
                        + (TEAM if team else []) + slim, check=True)
 
 
 def main():
-    for name in sys.argv[1:] or UNITS:
-        build(name)
+    args = sys.argv[1:]
+    out_dir = None
+    if "--out" in args:
+        i = args.index("--out")
+        out_dir = args[i + 1]
+        del args[i:i + 2]
+    for name in args or [n for n in UNITS if not n.startswith("phong_tien_v2")]:  # bản thử chỉ dựng khi gọi tên
+        build(name, out_dir)
 
 
 if __name__ == "__main__":

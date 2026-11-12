@@ -1,0 +1,6 @@
+Make a CHARACTER TURNAROUND SHEET, landscape 1536x1024, plain flat light grey background (#e6e6e8), no text, no labels, no shadow on the floor. Three full-body views of the SAME character side by side with clear empty space between them, all the same height and the same scale, feet on the same baseline, whole body visible including both feet:
+1) LEFT: front view, A-pose (arms straight, angled down about 35 degrees away from the body), hands empty and open, palms facing the thighs.
+2) MIDDLE: side view facing LEFT (true 90-degree profile), same A-pose, hands empty.
+3) RIGHT: back view, same A-pose, hands empty — show the quiver on her back and the ponytail from behind.
+Every detail must match across the three views (hair, feathers, capelet, belt, armor pieces, quiver, boots). She holds NOTHING: no bow in this image. Keep clothing close to the body: no cape tails, no long flaps, no loose ribbons below the waist.
+Output: art_inbox/3d/phong_tien_v2/phong_tien_v2_sheet.png
