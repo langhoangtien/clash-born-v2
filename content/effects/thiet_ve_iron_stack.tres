@@ -15,7 +15,7 @@ value = "heal * self.max_hp"
 
 [resource]
 script = ExtResource("2_x")
-stacking = 1
+stacking = 2
 max_stacks = 16
 tags = Array[StringName]([&"buff"])
 modifiers = Array[ExtResource("1_x")]([SubResource("S1"), SubResource("S2")])

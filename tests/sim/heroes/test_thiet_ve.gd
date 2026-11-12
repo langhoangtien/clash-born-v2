@@ -17,27 +17,47 @@ func _attacks(w: World, from: Entity, to: Entity, n: int) -> void:
 		w.step()
 
 
+## EFF-17: số bản (tầng độc lập) của hiệu ứng `id`.
 func _stacks(h: Entity, id: StringName) -> int:
-	for inst: EffectInstance in h.effects:
-		if inst.def.id == id:
-			return inst.stacks
-	return 0
+	return h.effects.filter(func(i: EffectInstance) -> bool: return i.def.id == id).size()
 
 
 func test_D_385_thiet_ve_innate_stacks_reduce_damage_and_heal() -> void:
 	var w: World = K.world()
-	var h: Entity = K.hero(w, ID, [1, 0, 0, 0])
+	var h: Entity = K.hero(w, ID, [5, 0, 0, 0])
 	var foe: Entity = K.dummy(w, h.position + Vector2(100, 0))
 	var regen: float = h.stats.get_stat(StatId.Id.HP_REGEN)
 	_attacks(w, h, foe, 20)
 	h.stats.recompute()
 	assert_eq(_stacks(h, &"thiet_ve_iron_stack"), 16, "tối đa 16 tầng")
-	assert_near(h.stats.get_stat(StatId.Id.DAMAGE_TAKEN_MULTIPLIER), 0.68, EPS, "T3: 16 × −2% = −32% (cộng dồn)")
+	assert_near(h.stats.get_stat(StatId.Id.DAMAGE_TAKEN_MULTIPLIER), 0.68, EPS, "bậc 5: 16 × −2% = −32% (cộng dồn)")
 	assert_near(h.stats.get_stat(StatId.Id.HP_REGEN) - regen, 0.016 * h.stats.get_stat(StatId.Id.MAX_HP), 0.5, "T3: 16 × 0,1% máu tối đa / s")
 	K.steps(w, 61)
 	h.stats.recompute()
 	assert_eq(_stacks(h, &"thiet_ve_iron_stack"), 0, "2 s không đánh thì hết tầng")
 	assert_near(h.stats.get_stat(StatId.Id.DAMAGE_TAKEN_MULTIPLIER), 1.0, EPS)
+
+
+func test_D_395_thiet_ve_innate_reduction_by_rank() -> void:
+	var w: World = K.world()
+	var h: Entity = K.hero(w, ID, [1, 0, 0, 0])
+	var foe: Entity = K.dummy(w, h.position + Vector2(100, 0))
+	_attacks(w, h, foe, 16)
+	h.stats.recompute()
+	assert_near(h.stats.get_stat(StatId.Id.DAMAGE_TAKEN_MULTIPLIER), 1.0 - 16 * 0.012, EPS, "TV2 bậc 1: −1,2% mỗi tầng")
+
+
+func test_D_395_thiet_ve_innate_layers_expire_one_by_one() -> void:
+	var w: World = K.world()
+	var h: Entity = K.hero(w, ID, [1, 0, 0, 0])
+	var foe: Entity = K.dummy(w, h.position + Vector2(100, 0))
+	for i: int in 4:
+		_attacks(w, h, foe, 1)
+		K.steps(w, 9)
+	assert_eq(_stacks(h, &"thiet_ve_iron_stack"), 4, "4 đòn cách 10 tick: 4 tầng")
+	K.steps(w, 25)
+	var left: int = _stacks(h, &"thiet_ve_iron_stack")
+	assert_true(left > 0 and left < 4, "TV1: tầng hết hạn riêng, rơi dần (còn %d)" % left)
 
 
 func test_D_385_thiet_ve_q_taunts_enemies_in_radius() -> void:
