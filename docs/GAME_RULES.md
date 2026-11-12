@@ -975,7 +975,8 @@ chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, 
   (mọi ô người lúc bắt đầu trận, kể cả người đã rớt) và danh sách ô `left` (người đã rớt lúc kết thúc), gửi máy chủ thống
   kê bằng mã bí mật riêng của máy chủ phòng (`rooms_token`, chỉ có quyền ghi trận). Lỗi mạng / máy chủ → thử lại 3 lần (sau
   1 / 5 / 30 giây), vẫn hỏng → ghi nguyên biên bản vào nhật ký máy chủ phòng. Trùng `match_key` → không đếm lại. Ô người đã
-  rớt (bot đánh thay — NET-17) vẫn tính thắng / thua cho tài khoản đó; trang lịch sử ghi "(đã rời)". Trận hủy (NET-19) không
+  rớt (bot đánh thay — NET-17) vẫn là ô người trong biên bản (`bot: false` — D-409) và tính thắng / thua cho tài khoản đó;
+  trang lịch sử ghi "(đã rời)". Trận hủy (NET-19) không
   gửi. Số bản game trong biên bản = số bản người tạo phòng gửi trong `hello` (`app`; không có → `0.0.0`). Máy khách không gửi
   biên bản trận online; `/api/match` nhận biên bản có `match_key` (bản game cũ) → trả `ignored`, không ghi.
 - `NET-21` (M9.8, D-406) **Trận đang đánh.** Tài khoản có ô trong một trận chưa kết thúc ở máy chủ này: lời chào `hello_ok`
@@ -991,6 +992,10 @@ chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, 
   chờ ngắn lại thì gửi `caught_up` → NET-18. Vào lại được tới hết trận (hoặc hủy — NET-19).
 - `NET-23` (M9.8, D-406) **Một kết nối mỗi tài khoản trong trận.** Tài khoản vào lại trong khi kết nối cũ của nó vẫn ở
   trận (chưa bị coi là rớt) → máy chủ coi kết nối cũ là rớt (lý do `replaced`), đóng nó, rồi cho kết nối mới vào lại.
+- `NET-24` (D-409) **Trận kết thúc.** Bản SIM của máy chủ có đội thắng ở tick T → máy chủ ghi trận (NET-12), gửi nốt nhật ký
+  cho người đang vào lại (NET-22, bất kể hàng gửi), gửi `end` {winner} cho mọi người còn kết nối rồi ngừng gửi gói tick.
+  Máy khách nhận `end` → không chờ đệm chống dao động nữa, chạy ngay mọi gói đã có (gói tới sau `end` cũng chạy ngay) tới
+  tick T; màn trận thấy đội thắng như trận thường. Trận hủy (NET-19) không gửi `end` — không còn ai kết nối.
 - `NET-13` (D-401) **Nhiều máy chủ phòng.** Danh sách là dữ liệu (`app/net/room_servers.json`): mỗi máy một id 1–9 (một
   chữ số, không trùng), tên hiện cho người chơi, địa chỉ `wss://…/play`. Hiện: 1 = Singapore, 2 = máy chính. Thêm máy = thêm
   một dòng; quá 9 máy là việc sau (mã phòng phải dài hơn — NET-15).

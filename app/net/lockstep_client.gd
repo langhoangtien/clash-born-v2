@@ -40,6 +40,8 @@ var resume_to: int = -1
 var catch_up_ms: float = 24.0
 ## NET-16 (D-402): tin `notice` của máy chủ (người rớt…) chờ HUD hiện.
 var notices: Array[Dictionary] = []
+## NET-24 (D-409): máy chủ đã báo `end` (trận có đội thắng, không còn gói tick mới) → chạy hết gói đã nhận, bỏ đệm.
+var ended: bool = false
 ## M9.6: APP móc vào trước / sau mỗi tick (màn trận: chụp vị trí nội suy, gửi lệnh đang giữ; âm thanh).
 var on_before: Callable = Callable()
 var on_after: Callable = Callable()
@@ -99,6 +101,8 @@ func handle(msg: Dictionary) -> bool:
 				desync_tick = int(msg.get("n", -1))
 		"notice":
 			notices.append(msg)
+		"end":  # NET-24
+			ended = true
 		"history":  # NET-22: gói tick from..to (không liệt kê = rỗng)
 			var listed: Dictionary = {}
 			for e: Variant in msg.get("c", []):
@@ -120,18 +124,19 @@ func ready_to_step() -> bool:
 
 ## Nhịp chạy mỗi khung (APP / test): 30 tick / giây theo thời gian trôi, chỉ khi đã có gói (NET-01), giữ `buffer_target`
 ## gói làm đệm chống dao động; hết sạch gói lúc tới hạn → một khung đứng hình (stalls); tụt sau máy chủ nhiều → chạy bù.
+## NET-24: máy chủ đã báo `end` → không còn gói mới để chờ, chạy ngay mọi gói đã có (tới tick thắng).
 func advance(dt: float) -> int:
 	if resume_to >= 0:
 		return _fast_forward()
 	_acc += dt
 	buffer_target = clampi(ceili(jitter_ms / (SimClock.TICK_SECONDS * 1000.0)) + 1, 1, 6)
 	var n: int = 0
-	while n < MAX_STEPS_PER_FRAME and ready_to_step() and (
+	while n < MAX_STEPS_PER_FRAME and ready_to_step() and (ended or
 			(_acc >= SimClock.TICK_SECONDS and backlog() >= buffer_target) or backlog() > buffer_target + CATCH_UP_BACKLOG):
 		step()
 		_acc = maxf(0.0, _acc - SimClock.TICK_SECONDS)
 		n += 1
-	if _acc >= SimClock.TICK_SECONDS and transport.is_open():
+	if _acc >= SimClock.TICK_SECONDS and transport.is_open() and not ended:
 		if not ready_to_step():
 			stalls += 1
 		else:
