@@ -51,7 +51,7 @@ func _process(delta: float) -> bool:
 		if s != null and s.lockstep != null and s.lockstep.world != null:
 			s.lockstep.pump(now)
 			s.lockstep.advance(delta)
-	var limit: float = float(_args.get("max-wait", "1800")) if _phase in ["wait_end", "finish"] else 60.0
+	var limit: float = float(_args.get("max-wait", "1800")) if _phase in ["wait_end", "finish", "catch"] else 60.0
 	if _t > limit:
 		return _fail("hết giờ ở bước %s" % _phase)
 	return call("_" + _phase, now)
@@ -200,6 +200,12 @@ func _rejoin(_now: float) -> bool:
 
 
 func _catch(_now: float) -> bool:
+	if _a.lockstep.world.winner >= 0:  # trận kết thúc khi B còn đang tua — B tua tới hết (NET-24), không trả quyền nữa
+		print("e2e: trận kết thúc khi B đang tua (B tick %d / %d)" % [_b.lockstep.world.tick, _b.lockstep.resume_to])
+		_go("finish")
+		return false
+	if int(_t) % 15 == 0 and _t - floorf(_t) < 0.02:
+		print("e2e: đang tua — B tick %d / %d" % [_b.lockstep.world.tick, _b.lockstep.resume_to])
 	if _b.lockstep.resume_to >= 0 or _a.lockstep.world.find_entity(_hero_b).bot != null:
 		return false
 	if _mark == 0.0:
