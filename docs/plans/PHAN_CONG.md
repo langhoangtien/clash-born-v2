@@ -28,3 +28,7 @@
    rồi `godot --headless --path . --import`. Test: `GODOT=godot bash tools/run_tests.sh`. Codex phải đăng nhập lại
    (`codex login --device-auth`, đưa link + mã cho người chơi).
 8. Không commit / dán khóa bí mật; không đưa email người chơi ra ngoài.
+9. **Đổi `sim/`, `content/`, `data/maps/` hoặc `app/net/net_codec.gd` (D-403):** chạy `godot --headless --path . -s tools/vps/sim_source.gd`
+   rồi commit `app/net/sim_source.json` cùng thay đổi (test `test_NET_10_sim_source_file_is_current` đỏ nếu quên). Gộp nhánh mà file
+   này xung đột → chạy lại lệnh đó. Dấu vân tay NET-10 giờ đổi theo mọi thay đổi code luật / nội dung.
+
