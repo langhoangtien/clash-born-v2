@@ -3,7 +3,8 @@ extends SceneTree
 ## (mã bắt đầu bằng id máy — NET-15), B đang chọn tay máy khác vào bằng mã (OnlineMenu nối thẳng máy của mã), đánh
 ## `--play` giây, B rớt → bot đánh thay (NET-16/17), B vào lại (NET-21/22: live, IN_MATCH, tua, trả quyền), so mã băm A/B,
 ## B rớt hẳn → chờ trận kết thúc (A đứng im, bot B đánh) → máy chủ ghi trận (NET-12, kiểm bằng curl ngoài script).
-## `--stay`: nhà chính A còn dưới `--stay-hp` (mặc định 0,35) → B vào lại lần nữa, đánh thẳng nhà chính A tới hết trận;
+## `--stay`: nhà chính A còn dưới `--stay-hp` (mặc định 0,35) hoặc tới tick `--stay-tick` → B vào lại lần nữa, đánh công
+## trình gần nhất của đội A (trụ → nhà chính) tới hết trận;
 ## cả hai máy khách phải thấy đội thắng ở cùng tick với nhau (NET-24).
 ##   godot --headless --path . -s tools/vps/online_e2e.gd -- --a=<phiên A> --b=<phiên B> [--host-server=1] [--b-server=2]
 ##       [--play=20] [--max-wait=1800] [--stay] [--stay-hp=0.35] [--servers=<json như app/net/room_servers.json — thử với máy chủ nội bộ>]
@@ -237,7 +238,7 @@ func _wait_end(_now: float) -> bool:
 	var w: World = _a.lockstep.world
 	if int(_t) % 60 == 0 and _t - floorf(_t) < 0.02:
 		print("e2e: chờ hết trận — tick %d" % w.tick)
-	if _args.has("stay") and _core_hp(w) < float(_args.get("stay-hp", "0.35")):
+	if _args.has("stay") and (_core_hp(w) < float(_args.get("stay-hp", "0.35")) or w.tick >= int(_args.get("stay-tick", "1000000"))):
 		print("e2e: nhà chính A còn %.0f%% (tick %d) — B vào lại, ở tới hết trận" % [_core_hp(w) * 100.0, w.tick])
 		_final = true
 		_mark = 0.0
@@ -267,7 +268,7 @@ func _finish(_now: float) -> bool:
 	var wb: World = _b.lockstep.world
 	if _t - _mark >= 2.0 and wb.find_entity(_b.entity_id) != null:
 		_mark = _t
-		wb.submit(Command.attack(_b.entity_id, _core_a, true))
+		wb.submit(Command.attack(_b.entity_id, _nearest_structure(wb), true))
 	if int(_t) % 30 == 0 and _t - floorf(_t) < 0.02:
 		print("e2e: chờ hết trận — tick A %d, B %d, nhà chính A %.0f%%" % [wa.tick, wb.tick, _core_hp(wa) * 100.0])
 	if wa.winner < 0 or wb.winner < 0:
@@ -278,3 +279,15 @@ func _finish(_now: float) -> bool:
 	_a.close()
 	_b.close()
 	return true
+
+
+## Công trình còn đứng của đội A gần hero B nhất (nhà chính khi hết trụ).
+func _nearest_structure(w: World) -> int:
+	var me: Entity = w.find_entity(_b.entity_id)
+	var best: int = _core_a
+	var best_d: float = INF
+	for e: Entity in w.entities:
+		if e.alive and Rules.is_structure(e) and e.team != me.team and not Rules.lock_holds(w, e) and me.position.distance_to(e.position) < best_d:
+			best_d = me.position.distance_to(e.position)
+			best = e.id
+	return best
