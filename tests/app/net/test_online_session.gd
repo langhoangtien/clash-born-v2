@@ -200,3 +200,24 @@ func test_NET_11_unreachable_server_reports_closed() -> void:
 	assert_eq(String(seen[0].get("t", "")) if not seen.is_empty() else "", "closed")
 	assert_eq(o.stage, "closed")
 	assert_true(o.poll().is_empty(), "chỉ báo một lần")
+
+
+## NET-10 (D-403): dấu vân tay phải đổi khi CODE SIM đổi — mã băm mã nguồn ghi trong app/net/sim_source.json phải khớp mã
+## nguồn hiện tại. Đỏ → chạy `godot --headless --path . -s tools/vps/sim_source.gd` rồi commit file đó.
+func test_NET_10_sim_source_file_is_current() -> void:
+	assert_eq(SimSource.recorded(), SimSource.compute(), "sim_source.json cũ — chạy tools/vps/sim_source.gd")
+	assert_eq(SimSource.compute().length(), 16)
+
+
+## NET-10 (D-403): đổi một file SIM (kể cả chỉ \r của Windows) — mã băm đổi theo nội dung, không theo kiểu xuống dòng.
+func test_NET_10_sim_source_hash_follows_content_not_line_endings() -> void:
+	var p: String = "res://sim/zz_fingerprint_probe.gd"
+	var before: String = SimSource.compute()
+	FileAccess.open(p, FileAccess.WRITE).store_string("# a\n")
+	var with_file: String = SimSource.compute()
+	FileAccess.open(p, FileAccess.WRITE).store_string("# a\r\n")
+	var crlf: String = SimSource.compute()
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(p))
+	assert_ne(with_file, before, "thêm / đổi file SIM → khác")
+	assert_eq(crlf, with_file, "CRLF giống LF")
+	assert_eq(SimSource.compute(), before)

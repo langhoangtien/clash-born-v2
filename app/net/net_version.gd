@@ -20,6 +20,7 @@ static func fingerprint() -> String:
 		ctx.update(s.world.state_hash())
 		ctx.update(balance_text(s.world.balance).to_utf8_buffer())  # D-344: số cân bằng khác → khác dấu
 		ctx.update(content_text(ContentLibrary.load_dir()).to_utf8_buffer())  # D-347: tướng / chiêu / đồ khác → khác dấu
+		ctx.update(("src:" + SimSource.recorded()).to_utf8_buffer())  # D-403: code SIM khác → khác dấu (kể cả khi 3 giây trận giống)
 		_cached = "%d-%s" % [PROTOCOL, ctx.finish().hex_encode().left(16)]
 	return _cached
 
