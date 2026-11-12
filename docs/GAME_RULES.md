@@ -652,6 +652,22 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   0. Sự kiện không khớp điều kiện không tính; đòn trượt / bị hất (CMB-11, CMB-15) không phải `attack_landed` nên không tính;
   bị động đang tắt vì HEXED (ST-16) không đếm. Bộ đếm mất cùng bản hiệu ứng (gỡ rồi áp lại thì đếm lại từ 0). Không dùng chung
   với `chance` hoặc `cooldown` (dữ liệu sai). Bộ đếm nằm trong mã băm World (D-30).
+- `EFF-17` (D-395) **Tầng độc lập có trần**: hiệu ứng INDEPENDENT có `max_stacks` > 1 thì mỗi đơn vị giữ tối đa chừng đó bản
+  của cùng hiệu ứng **từ cùng một nguồn** (EFF-02: nguồn khác đếm riêng); mỗi bản hết hạn riêng. Đã đủ trần mà áp thêm thì
+  bản **cũ nhất** (áp sớm nhất) bị gỡ (lý do `replaced`) rồi bản mới được thêm — như Dota, chồng giữ đầy khi cứ áp liên
+  tục và rơi dần từng tầng khi ngừng. `max_stacks` ≤ 1 (mặc định) = không trần như cũ. Mỗi bản là một hiệu ứng riêng: thanh
+  tẩy gỡ từng bản theo `dispel` của nó, chết thì gỡ hết (EFF-13), biến hình không ảnh hưởng (không phải bị động). Mỗi bản
+  nằm trong mã băm World như mọi hiệu ứng.
+
+| Hỏi | Tầng độc lập có trần |
+|---|---|
+| Áp khi chưa đủ trần | Thêm một bản, thời hạn riêng |
+| Áp khi đủ trần | Gỡ bản cũ nhất (`replaced`), thêm bản mới |
+| Nguồn khác | Đếm trần riêng theo nguồn (EFF-02) |
+| Hết hạn | Từng bản một, theo thời điểm áp |
+| Thanh tẩy / chết | Gỡ từng bản theo `dispel`; chết gỡ hết |
+| Modifier | Mỗi bản cộng riêng (STAT-02) |
+| Hiển thị | Mỗi bản phát `effect_applied` / `effect_removed`; VIEW gộp theo id nếu muốn |
 
 ## DUL — Quyết Đấu (D-135)
 
@@ -694,7 +710,7 @@ knockback_finished, dispelled, attack_target_changed, mana_burned,
 lethal_damage, reincarnated, recall_started, recall_cancelled, recall_finished, duel_started,
 duel_ended, attack_deflected, teleported, effect_triggered, extra_attack`. `gold_changed` (D-240): hero last hit lính / quái (ECO-01), kẻ gây = hero, đối tượng = con bị hạ, lượng = vàng. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
 `effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `removed` (hành động RemoveEffect), `dispelled`, `owner_died`,
-`source_died` (D-383: kẻ khiêu khích chết, ST-20).
+`source_died` (D-383: kẻ khiêu khích chết, ST-20), `replaced` (D-395: bản cũ nhất bị thay khi đủ trần, EFF-17).
 `ability_finished` (D-296) mang điểm chọn `point` (không chọn điểm thì INF) và hướng `direction` của lần tung — chỉ để
 VIEW vẽ hiệu ứng chiêu đúng chỗ, không luật nào đọc.
 `effect_triggered` (D-320): một trigger của hiệu ứng vừa chạy hành động (qua điều kiện, tỉ lệ, hồi chiêu trigger) — kẻ gây =
@@ -988,7 +1004,9 @@ chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, 
 - `NET-22` (M9.8, D-406) **Vào lại.** Máy khách gửi `rejoin` → máy chủ gửi `welcome` như lúc bắt đầu kèm `resume` và tick hiện
   tại T, rồi gửi lại toàn bộ gói lệnh tick 1..T theo từng phần (`history`, mỗi phần tối đa `HISTORY_CHUNK` gói khác rỗng,
   chỉ gửi khi hàng gửi của kết nối còn chỗ), song song với gói lệnh trực tiếp từ T+1. Máy khách dựng World từ cấu hình rồi
-  tua (chạy tick không chờ nhịp, giới hạn thời gian mỗi khung), HUD hiện "Đang vào lại trận… N%"; tới tick T và hàng gói
+  tua (chạy tick không chờ nhịp, giới hạn thời gian mỗi khung — D-410), màn trận che cảnh trận (không vẽ / không cập nhật
+  3D, 2D, HUD; chỉ còn "Đang vào lại trận… N%" và nút Cài đặt — D-411), tua xong hiện lại đúng theo World lúc đó (không
+  nội suy từ vị trí cũ, không có xác của đơn vị chết lúc tua); tới tick T và hàng gói
   chờ ngắn lại thì gửi `caught_up` → NET-18. Vào lại được tới hết trận (hoặc hủy — NET-19).
 - `NET-23` (M9.8, D-406) **Một kết nối mỗi tài khoản trong trận.** Tài khoản vào lại trong khi kết nối cũ của nó vẫn ở
   trận (chưa bị coi là rớt) → máy chủ coi kết nối cũ là rớt (lý do `replaced`), đóng nó, rồi cho kết nối mới vào lại.
@@ -1094,7 +1112,8 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   không ra lệnh được; vd đối thủ đang GHOST thì đứng chờ đúng luật). (D-96) Có lệnh đi mà 1 s không nhích quá 20 →
   bước sang ngang 160 rồi đi tiếp; không đánh được (biến hình, tước vũ khí) mà đang có mục tiêu
   → lùi ra xa mục tiêu 300 (điểm an toàn). (D-353) Đứng chờ ở RALLY: cứ 1,5 s đổi giữa điểm chờ và điểm lùi 150 dọc lane; điểm chờ đã ở
-  đầu lane (không lùi dọc lane được) thì lùi 150 về phía hồ máu. (D-380) ESCAPE_TOWER: điểm thoát phải đi thẳng
+  đầu lane (không lùi dọc lane được) thì lùi 150 về phía hồ máu. (D-397) Điểm của nhịp mới trùng (≤ 30) chỗ bot đứng lúc
+  nhịp bắt đầu (lính dời đúng một bước) thì đi điểm kia của cặp. (D-380) ESCAPE_TOWER: điểm thoát phải đi thẳng
   tới được từ chỗ bot đứng (không vách / thân công trình chắn); không có điểm nào như vậy thì đi về hồ máu theo đường tìm được.
   (D-391) Bước sang ngang 160 cũng áp khi lệnh **đánh** còn đang đi tới mục tiêu (chưa vào tầm, chưa vung tay) mà 1 s không
   nhích quá 20 (vd lính phe mình đi ngược chiều thẳng hàng trên đường tới trụ).
@@ -1199,7 +1218,9 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 3. `INV-03` Không lính đường nào vượt mép trước của lane quá 200.
 4. `INV-04` Không đơn vị nào đang đuổi ở xa origin leash quá leash + 100 (D-169: lúc đã quay về mà đường về phải vòng qua vật cản thì không tính).
 5. `INV-05` Không đơn vị nào (trừ state cho phép) đứng yên > 2 s khi không có mục tiêu.
-6. `INV-06` Bot không ở vị trí không an toàn > 1 s (trừ ESCAPE_TOWER, RETREAT).
+6. `INV-06` Bot không ở vị trí không an toàn > 1 s (trừ ESCAPE_TOWER, RETREAT và — D-396 — lúc bị Quyết Đấu /
+   khiêu khích ép, ST-19 / ST-20: lệnh của bot bị từ chối; đồng hồ đếm lại từ 0 khi hết ép, nên hết ép mà còn ở chỗ
+   không an toàn thì phải ra trong 1 s).
 7. `INV-07` Không đơn vị nào nhắm một đơn vị mà đội nó không thấy.
 8. `INV-08` Cùng seed + cùng Command → cùng kết quả.
 

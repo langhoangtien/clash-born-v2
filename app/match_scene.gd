@@ -45,6 +45,7 @@ var shop: ShopPanel
 var view_3d: MatchView3D
 var loading: MatchLoading  # D-260: làm nóng shader lúc vào trận
 var settings: SettingsControl
+var replay: ReplayScreen  # NET-22 (D-411): che cảnh trận lúc tua vào lại
 
 
 func _ready() -> void:
@@ -119,6 +120,9 @@ func _ready() -> void:
 	match_hud.hero = hero
 	hud.text = HELP
 	hud.visible = not OS.has_feature("mobile")  # D-144: phím tắt chỉ có ích trên máy tính
+	if online != null:
+		replay = ReplayScreen.make($Hud, [map_view, units_view, view_3d, aim_indicator], [$Hud/OnlineStatus, settings.panel],
+			units_view, view_3d, hero)
 
 
 func _process(delta: float) -> void:
@@ -134,6 +138,8 @@ func _process(delta: float) -> void:
 func tick_frame(delta: float) -> void:
 	if loading == null or not loading.busy():
 		runner.advance(delta)
+		if replay != null and replay.hold(OnlineMatch.replaying(online)):
+			return
 	elif online != null:
 		runner.receive(delta)  # online: vẫn nhận gói lệnh lúc đang nạp màn
 	units_view.alpha = runner.alpha()
@@ -161,21 +167,7 @@ func tick_frame(delta: float) -> void:
 	buff_bar.bottom_y = origin.y + zone.position.y - 10.0
 	buff_bar.right_limit = skill_buttons.global_position.x - buff_bar.global_position.x + skill_buttons.skill_center(0).x - SkillButtons.SKILL_RADIUS
 	if world.winner >= 0 and result == null:
-		_show_result()
-
-
-func _show_result() -> void:
-	result = ResultPanel.new()
-	$Hud.add_child(result)
-	result.show_result(world, hero)
-	# ST.1, D-339; D-341: gắn vào gốc cây — bấm về menu ngay không hủy yêu cầu gửi
-	if online != null:
-		result.set_stats_note("Thống kê: máy chủ phòng ghi trận online", false)  # NET-12 (ST.5, D-405)
-	elif not MatchUpload.send(get_tree().root, MatchRecord.of(world, config, Updater.current_name()), result.set_stats_note):
-		result.set_stats_note("Thống kê: trận thử / đo hiệu năng — không tính", false)
-	result.replay_pressed.connect(func() -> void:
-		get_tree().change_scene_to_file(MENU_SCENE) if online != null else get_tree().reload_current_scene())
-	result.menu_pressed.connect(func() -> void: get_tree().change_scene_to_file(MENU_SCENE))
+		result = MatchEnd.show($Hud, world, hero, config, online, MENU_SCENE)
 
 
 ## D-53: phím F đổi tốc độ chơi thử ×1 → ×2 → ×4 → ×8 → ×1.

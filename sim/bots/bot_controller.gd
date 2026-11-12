@@ -348,16 +348,29 @@ const RALLY_STEP_BACK: float = 150.0
 
 
 func rally_point(world: World, e: Entity) -> Vector2:
-	var route: LaneRoute = LaneRoute.of(world, e.bot.lane, e.team)
+	var b: BotState = e.bot
+	var phase: int = world.tick / SimClock.seconds_to_ticks(RALLY_STEP_SECONDS)
+	if phase != b.rally_phase:
+		b.rally_phase = phase
+		b.rally_from = e.position
+	var route: LaneRoute = LaneRoute.of(world, b.lane, e.team)
 	var q: Vector2 = _safe_along(world, e, route, _rally_progress(world, e, route))
-	if (world.tick / SimClock.seconds_to_ticks(RALLY_STEP_SECONDS)) % 2 == 1:
-		var back: Vector2 = _safe_along(world, e, route, route.progress_of(q) - RALLY_STEP_BACK)  # lùi từ điểm an toàn (BOT-11)
-		if back.distance_to(q) < ARRIVE:  # D-353: đã ở đầu lane, không lùi dọc lane được → lùi về phía hồ máu
-			var home: Vector2 = world.map.fountain_point(e.team)
-			var alt: Vector2 = world.navigation(e.radius).nearest_clear(q + (home - q).normalized() * RALLY_STEP_BACK)
-			back = alt if safe(world, e, alt) else back
-		q = back
-	return q
+	var back: Vector2 = _rally_back(world, e, route, q)
+	var pick: Vector2 = back if phase % 2 == 1 else q
+	var other: Vector2 = q if phase % 2 == 1 else back
+	if pick.distance_to(b.rally_from) <= ARRIVE * 0.5 and other.distance_to(b.rally_from) > ARRIVE * 0.5:
+		return other  # D-397: điểm của nhịp này trùng chỗ đứng đầu nhịp (lính dời đúng một bước) → đi điểm kia
+	return pick
+
+
+## Điểm lùi của nhịp đi qua lại: lùi dọc lane từ điểm an toàn `q` (BOT-11).
+func _rally_back(world: World, e: Entity, route: LaneRoute, q: Vector2) -> Vector2:
+	var back: Vector2 = _safe_along(world, e, route, route.progress_of(q) - RALLY_STEP_BACK)
+	if back.distance_to(q) < ARRIVE:  # D-353: đã ở đầu lane, không lùi dọc lane được → lùi về phía hồ máu
+		var home: Vector2 = world.map.fountain_point(e.team)
+		var alt: Vector2 = world.navigation(e.radius).nearest_clear(q + (home - q).normalized() * RALLY_STEP_BACK)
+		back = alt if safe(world, e, alt) else back
+	return back
 
 
 ## Điểm neo của lane (chỗ đứng chờ) — dùng để biết lính nào thuộc lane của bot.

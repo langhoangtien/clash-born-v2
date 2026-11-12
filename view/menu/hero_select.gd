@@ -46,6 +46,8 @@ var practice: bool = false
 ## D-333: tên tài khoản đang đăng nhập ("" = chưa đăng nhập; APP đặt).
 var account_name: String = ""
 var tab: HeroDetail.Tab = HeroDetail.Tab.SKILLS
+## D-412: khung xem mô hình 3D — chỉ dựng mô hình khi đang mở thẻ Mô hình.
+var model_view: HeroModelView
 
 
 func setup(heroes: Array[HeroDef], balance: BalanceSettings) -> void:
@@ -53,6 +55,11 @@ func setup(heroes: Array[HeroDef], balance: BalanceSettings) -> void:
 	for d: HeroDef in heroes:
 		previews.append(HeroPreview.of(d, balance))
 	bot = mini(1, previews.size() - 1)
+	if model_view == null:
+		model_view = HeroModelView.new()
+		model_view.name = "HeroModelView"
+		add_child(model_view)
+	_sync_model()
 	queue_redraw()
 
 
@@ -75,6 +82,25 @@ func diff_rect(i: int) -> Rect2:
 
 func mode_rect(i: int) -> Rect2:
 	return Rect2(MODE_AT + Vector2(i * (MODE_SIZE.x + 12), 0), MODE_SIZE)
+
+
+func tab_area() -> Rect2:
+	return Rect2(DETAIL.position + Vector2(24, 272), DETAIL.size - Vector2(48, 292))
+
+
+## D-412: thẻ Mô hình đang mở → khung 3D hiện tướng đang chọn; thẻ khác → ẩn và gỡ mô hình.
+func _sync_model() -> void:
+	if model_view == null:
+		return
+	var on: bool = tab == HeroDetail.Tab.MODEL and not previews.is_empty()
+	model_view.visible = on
+	if not on:
+		model_view.clear()
+		return
+	var r: Rect2 = tab_area()
+	model_view.position = r.position
+	model_view.size = r.size
+	model_view.show_hero(previews[selected])
 
 
 func press_at(at: Vector2) -> void:
@@ -106,6 +132,7 @@ func press_at(at: Vector2) -> void:
 		map_pressed.emit()
 	if SETTINGS_BUTTON.has_point(at):
 		settings_pressed.emit()
+	_sync_model()
 	queue_redraw()
 
 
@@ -152,8 +179,7 @@ func _detail() -> void:
 		var r: Rect2 = tab_rect(i)
 		UiStyle.tab(self, r, HeroDetail.TAB_NAMES[i], i == tab)
 	UiStyle.divider(self, Vector2(tab_rect(0).position.x, tab_rect(0).end.y + 8), Vector2(DETAIL.end.x - 24, tab_rect(0).end.y + 8))
-	var area: Rect2 = Rect2(DETAIL.position + Vector2(24, 272), DETAIL.size - Vector2(48, 292))
-	HeroDetail.draw_tab(self, p, tab, area)
+	HeroDetail.draw_tab(self, p, tab, tab_area())
 
 
 func _bottom() -> void:

@@ -12,12 +12,12 @@ target = 0
 
 [resource]
 script = ExtResource("4_x")
-description = "Bị động: mỗi đòn đánh trúng cho 1 tầng (tối đa 16, 2 s, đánh tiếp thì làm mới): mỗi tầng −2% sát thương nhận và hồi 0,1% máu tối đa mỗi giây."
+description = "Bị động: mỗi đòn đánh trúng cho 1 tầng (tối đa 16, mỗi tầng hết hạn riêng sau 2 s): mỗi tầng −1,2 / 1,4 / 1,6 / 1,8 / 2% sát thương nhận và hồi 0,1% máu tối đa mỗi giây."
 slot = 0
 targeting = 0
 values = Dictionary[StringName, PackedFloat32Array]({
 &"heal": PackedFloat32Array(0.001, 0.001, 0.001, 0.001, 0.001),
-&"reduction": PackedFloat32Array(0.02, 0.02, 0.02, 0.02, 0.02),
+&"reduction": PackedFloat32Array(0.012, 0.014, 0.016, 0.018, 0.02),
 &"stack_time": PackedFloat32Array(2, 2, 2, 2, 2)
 })
 on_learn = Array[ExtResource("2_x")]([SubResource("S1")])
