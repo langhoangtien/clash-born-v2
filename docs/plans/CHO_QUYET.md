@@ -56,3 +56,10 @@ Trả lời gọn theo mã, vd `N1 ok, N2 B, M1 ok`. "Đề nghị" = phương �
 | TV4 | Talent chưa có: Q II khiêu khích +0,5 s; W II +4 giáp; R II cứ 3 đòn thay vì 4 | Duyệt | |
 | PH1 | Pháo Thủ — số đặt tạm (D-387): mana Q 70–90, mana R 100 / 125 / 150; talent Q II +100 bán kính, W II +10% tỉ lệ bắn kép, R II +200 sát thương; lên đồ như Phong Tiễn | Duyệt | |
 
+## Concept chờ duyệt (CB-1, D-364 / D-365) — ảnh ở `art_inbox/concepts/chuan_brakk/` và trang kiểm kê
+
+| Mã | Câu hỏi | Đề nghị | Trả lời |
+|---|---|---|---|
+| C1 | Phong Tiễn theo chuẩn Brakk: **PA1** ~3 đầu (đầu to, mặt hơi trẻ con) / **PA2** ~4 đầu (tay chân dài, dễ diễn kéo cung) / **PA3** ~3,5 đầu + giáp vai, tay, gối viền vàng kiểu Brakk / ghép | PA3, hoặc dáng PA2 + giáp PA3 | |
+| C2 | Cây / bụi / lá: **hướng 1** khối lá vẽ tay có mảng sáng tối (cần mô hình + ảnh màu mới) / **hướng 2** giữ phẳng, tông trầm + viền đậm (rẻ nhất) / **hướng 3** khối tròn mượt (nhẹ, hơi trơn) | Hướng 1; làm mẫu 1 cây + 1 bụi trong trận để duyệt trước khi thay hàng loạt | |
+
