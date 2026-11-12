@@ -105,11 +105,11 @@ video xem trước gửi người chơi. Tránh áo choàng / vạt dài (khó d
 
 ## 6. Hình (mẫu lệnh Codex đã chạy tốt)
 
+- **Khung icon (D-362):** icon chiêu / trạng thái / chân dung mới lưu ảnh CHƯA KHUNG vào `art_inbox/icons/goc/<art_id>.png` rồi chạy
+  `python3 tools/icons/dong_khung.py` — KHÔNG chép thẳng vào `assets/art`. Icon đồ không đóng khung.
 - **Chân dung:**
-  - Ảnh chuẩn DUY NHẤT `assets/art/brakk_portrait.png`.
+  - Ảnh chuẩn DUY NHẤT `art_inbox/icons/goc/brakk_portrait.png` (bản trong `assets/art` đã có khung).
   - Chỉ đầu + vai, đầu khoảng 40–45% khung, nhìn 3/4 sang phải, viền đậm, nền trong suốt.
-  - Người chơi chê "đầu to quá" ở bản đầu.
-- **Icon chiêu:**
-  - Mẫu `assets/art/brakk_q.png`: huy hiệu tròn, viền vàng cho chiêu chủ động, viền bạc cho nội tại.
-  - Lưu vào `art_inbox/icons/`, rồi thu 256×256 vào `assets/art/<art_id>.png`.
-- **Ảnh toàn thân:** theo chân dung đã duyệt, mặt trước, tư thế chữ A, thấy cả bàn chân, nền trắng (để Tripo dựng 3D).
+- **Icon chiêu:** vẽ phần hình tròn, không tự vẽ khung (công cụ đóng: nội tại viền bạc, Q / W viền vàng, R viền vàng đôi).
+- **Tướng mới / vẽ lại (D-354, người chơi 2026-11-12):** chuẩn style = Brakk; Codex vẽ concept trước → người chơi duyệt → mới dựng 3D;
+  từng tướng một. Ảnh toàn thân: mặt trước, chữ A, thấy cả bàn chân, nền trắng.
