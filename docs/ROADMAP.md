@@ -151,8 +151,9 @@ không làm hình thật cho thứ lối chơi còn đang đổi.
   Ba phương án giảm (tốc 270 / Q né 2 s / cả hai, 54 trận mỗi bản): 27/18/9 · 26/17/11 · 28/16/10 — không đổi bên thắng ở cặp nào
   → CB-2 đề nghị giữ nguyên. Điều tra diễn biến 5 trận: cả bốn cặp 6/0 là khắc chế theo bộ chiêu (Gorran: độc tầm 800–900 + R hồi máu;
   Duy Anh: W chém quạt không né được + Quyết Đấu, lăn cầu tuyết từ sớm; Noctis cận chiến bị thả diều; Vexa tầm 550, farm kém, chết vì
-  lính). Hai thử nghiệm sửa cách bot dùng chiêu (Q Phong Tiễn, Q Noctis) không đổi bên thắng. Đang chạy ma trận Duy Anh × mọi tướng
-  (việc "Cân bằng Duy Anh").
+  lính). Hai thử nghiệm sửa cách bot dùng chiêu (Q Phong Tiễn, Q Noctis) không đổi bên thắng. Ma trận Duy Anh × 9 tướng (54 trận, SIM 96060d4): **Duy Anh thắng 52, thua 0** (2 trận dừng vì lỗi BOT-11 đã sửa ở D-391) —
+  hạ gục trước phút 2 ở 21 / 54 trận, dẫn 2–3 cấp ở phút 6, 4–7 cấp ở phút 12. Nguồn: W chém quạt bậc đầu, STR +4,5 / cấp, hồi máu
+  Quyết Đấu. CB-2 đang chạy ba phương án số (W yếu bậc đầu / STR +3,5 / cả hai) → câu D1.
 - ~~MOV-09~~ đã làm (D-388, kèm D-389 sửa `has_line_of_walk` ở mép pixel).
 - ~~Online 1v1 (D-30)~~ → thay bằng M9 (3v3 online, D-328).
 
