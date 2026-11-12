@@ -67,3 +67,10 @@ func test_INV_06_BOT_11_three_minutes_bot_vs_bot() -> void:
 		if e.bot != null:
 			lh += e.last_hits
 	assert_true(lh > 0, "bot có farm được lính")
+
+
+## Lỗi (D-391): bot đi tới đánh trụ, lính phe mình đi ngược chiều thẳng hàng trên đường → hai bên đẩy nhau, hero chỉ
+## trôi ~0,3 / tick > 2 s (BOT-11). Hai trận thật, chạy quá mốc lỗi (1:29 và 1:59).
+func test_BOT_11_attack_approach_blocked_head_on_by_own_creep() -> void:
+	assert_eq(run_checks(_world(1, &"duy_anh", &"tho_san"), 2.0), "", "duy_anh:tho_san seed 1")
+	assert_eq(run_checks(_world(1, &"duy_anh", &"vexa"), 2.5), "", "duy_anh:vexa seed 1")
