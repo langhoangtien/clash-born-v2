@@ -3,9 +3,10 @@ extends RefCounted
 ## Màn chọn tướng (D-123, giao diện D-130): đầu khung (chân dung, tên, thuộc tính, chỉ số mỗi
 ## cấp) và ba thẻ Chiêu / Chỉ số / Talent, vẽ bằng UiStyle. Chỉ vẽ lên `c`, không giữ trạng thái.
 
-enum Tab { SKILLS, STATS, TALENTS }
+## D-412: MODEL — khung xem mô hình 3D (HeroModelView, nút con của HeroSelect; thẻ này không vẽ gì thêm).
+enum Tab { SKILLS, STATS, TALENTS, MODEL }
 
-const TAB_NAMES: Array[String] = ["Chiêu", "Chỉ số", "Talent"]
+const TAB_NAMES: Array[String] = ["Chiêu", "Chỉ số", "Talent", "Mô hình"]
 const GOLD: Color = UiStyle.GOLD
 const DIM: Color = UiStyle.DIM
 const TEXT: Color = UiStyle.TEXT
