@@ -197,3 +197,21 @@ func test_NET_24_history_flushed_before_end() -> void:
 	assert_eq(int(parts[-1]["to"]), target, "tới tick lúc vào lại")
 	room.flush_backfill()
 	assert_eq(pipe.sent.filter(func(m: Dictionary) -> bool: return m["t"] == "history").size(), parts.size(), "không gửi lại")
+
+
+## NET-12 + NET-17: người rời tới hết trận (bot đánh thay ô đó) — biên bản vẫn ghi ô đó là ô người (`bot: false`, có tài
+## khoản, trong `left`); máy chính từ chối ô bot có tài khoản (stats.check_room) nên trước đây trận mất. Lỗi gặp ở e2e thật.
+func test_NET_12_left_player_slot_stays_human_in_report() -> void:
+	var h: Dictionary = _setup(0.0)
+	var room: LockstepRoom = h["room"]
+	room.takeover = Command.set_control
+	_run(h, 1.0)
+	room.drop_peer(1, "closed")
+	_run(h, 1.0)
+	assert_true(room.world.find_entity(h["heroes"][1]).bot != null, "bot đang đánh thay ô 1")
+	room.world.winner = 0
+	var p: Dictionary = MatchReport.payload(room, h["cfg"], "148203", {0: 11, 1: 12}, {0: 0, 1: 1}, "0.1.689")
+	assert_eq((p["record"]["players"] as Array).map(func(x: Dictionary) -> bool: return x["bot"]), [false, false],
+		"ô có tài khoản là ô người")
+	assert_eq(p["left"], [1])
+	assert_eq(p["accounts"], [[0, 11], [1, 12]])

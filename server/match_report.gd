@@ -34,8 +34,10 @@ static func payload(room: LockstepRoom, cfg: MatchConfig, code: String, accounts
 		if slots.has(peer):
 			left.append(int(slots[peer]))
 	left.sort()
-	return {"record": MatchRecord.of(room.world, cfg, app if re.search(app) != null else "0.0.0"),
-		"match_key": "%s-%d" % [code, cfg.seed], "accounts": owners, "left": left}
+	var record: Dictionary = MatchRecord.of(room.world, cfg, app if re.search(app) != null else "0.0.0")
+	for pair: Array in owners:  # NET-12: ô người đã rời (bot đánh thay — NET-17) vẫn là ô người của tài khoản đó
+		record["players"][pair[0]]["bot"] = false
+	return {"record": record, "match_key": "%s-%d" % [code, cfg.seed], "accounts": owners, "left": left}
 
 
 func send(p: Dictionary, done: Callable = Callable()) -> void:
