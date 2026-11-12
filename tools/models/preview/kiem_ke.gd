@@ -167,7 +167,7 @@ func _kit(item: Dictionary) -> Node3D:
 	var n: Node3D = ModelLibrary.static_scene("style/" + id).instantiate() as Node3D
 	var scales: Array = _decor_scale.get(id, [1.0])
 	scales.sort()
-	var k: float = scales[scales.size() / 2]
+	var k: float = scales[scales.size() / 2] * float(ModelLibrary.scenery()["style"].get("decor_scale", {}).get(id, 1.0))  # D-362
 	for mi: MeshInstance3D in n.find_children("*", "MeshInstance3D", true, false):
 		ModelLibrary.use_vertex_colors(mi.mesh)
 		var trial: Material = Trial.material_for(id, _variant)

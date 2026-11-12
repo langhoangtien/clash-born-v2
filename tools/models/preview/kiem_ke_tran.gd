@@ -3,7 +3,7 @@ extends SceneTree
 ##   mặc định: trận 3v3 bot tự đánh, chụp ở các giây trận `--at=25,75,150` (tốc độ `--speed`);
 ##   `--lineup`: dừng SIM, xếp cả 10 tướng thành hàng giữa map rồi chụp một ảnh.
 ## xvfb-run -a godot --path . --rendering-method mobile --rendering-driver vulkan --resolution 1920x1080
-##   -s tools/models/preview/kiem_ke_tran.gd -- --out=art_inbox/kiem_ke/tran [--lineup] [--variant=A|B] [--tag=_a]
+##   -s tools/models/preview/kiem_ke_tran.gd -- --out=art_inbox/kiem_ke/tran [--lineup] [--variant=A|B] [--tag=_a] [--first=brakk]
 ## D-361: `--variant` thay vật liệu cảnh vật bằng bản thử (thu_vat_lieu.gd); `--tag` nối vào tên ảnh; hàng tướng có thêm 4 lính.
 
 const Trial: GDScript = preload("res://tools/models/preview/thu_vat_lieu.gd")
@@ -19,6 +19,7 @@ var _out: String = ""
 var _lineup: bool = false
 var _variant: String = ""
 var _tag: String = ""
+var _first: StringName = &""  ## tướng người chơi (ô 0); đổi chỗ với tướng đang ở ô đó
 var _speed: int = 4
 var _at: Array[int] = []
 var _started: bool = false
@@ -34,13 +35,18 @@ func _initialize() -> void:
 			"lineup": _lineup = true
 			"variant": _variant = kv[1]
 			"tag": _tag = kv[1]
+			"first": _first = StringName(kv[1])
 			"speed": _speed = int(kv[1])
 			"at": at = kv[1]
 	for s: String in at.split(","):
 		_at.append(SimClock.seconds_to_ticks(float(s)))
 	DirAccess.make_dir_recursive_absolute(_out)
 	var script: GDScript = load(SCENE.get_basename() + ".gd") as GDScript
-	script.set("config", MatchConfig.make(3, TEAMS, [0], BotState.Difficulty.NORMAL, 3))
+	var teams: Array[StringName] = TEAMS.duplicate()
+	if _first != &"" and teams.has(_first):
+		teams[teams.find(_first)] = teams[0]
+		teams[0] = _first
+	script.set("config", MatchConfig.make(3, teams, [0], BotState.Difficulty.NORMAL, 3))
 	_scene = (load(SCENE) as PackedScene).instantiate()
 	root.add_child(_scene)
 
