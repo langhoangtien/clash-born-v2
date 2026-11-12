@@ -287,7 +287,7 @@ func _nearest_structure(w: World) -> int:
 	var best: int = _core_a
 	var best_d: float = INF
 	for e: Entity in w.entities:
-		if e.alive and Rules.is_structure(e) and e.team != me.team and not Rules.lock_holds(w, e) and me.position.distance_to(e.position) < best_d:
+		if e.alive and Rules.is_structure(e) and e.team != me.team and not e.locked and me.position.distance_to(e.position) < best_d:
 			best_d = me.position.distance_to(e.position)
 			best = e.id
 	return best
