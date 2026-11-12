@@ -24,6 +24,11 @@ rsync -a --delete --exclude .git --exclude .godot --exclude home --exclude art_i
 chown -R clashborn:clashborn "$ROOMS"
 sudo -u clashborn env HOME="$ROOMS/home" "$GODOT_BIN" --headless --path "$ROOMS" --import >/dev/null 2>&1 || true
 
+# D-405 (ST.5): mã ghi trận online — phải giống /etc/clashborn/rooms_token của máy chính (không in, không qua chat).
+if [ ! -s /etc/clashborn/rooms_token ]; then
+  echo "   CHÚ Ý: thiếu /etc/clashborn/rooms_token — máy này KHÔNG ghi trận online (xem docs/VPS_TASKS.md)"
+fi
+
 echo "== 3. Service"
 if ! cmp -s "$REPO/tools/vps/clashborn-rooms-sg.service" "$SERVICE"; then
   install -m 644 "$REPO/tools/vps/clashborn-rooms-sg.service" "$SERVICE"

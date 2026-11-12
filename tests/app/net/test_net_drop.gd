@@ -203,3 +203,63 @@ func test_NET_17_client_cannot_send_set_control() -> void:
 	assert_eq(room.dropped, 1, "bị bỏ")
 	assert_true(room.world.find_entity(h["heroes"][0]).bot == null)
 	assert_true(c0.world.find_entity(h["heroes"][0]).bot == null)
+
+
+## NET-12 (ST.5, D-405): biên bản máy chủ phòng — SIM của máy chủ, khóa mã phòng-seed, ô → tài khoản (cả người đã rớt),
+## ô đã rời, số bản của người tạo phòng.
+func test_NET_12_room_report_payload() -> void:
+	var h: Dictionary = _setup()
+	var room: LockstepRoom = h["room"]
+	_run(h, 1.0)
+	room.drop_peer(1, "closed")
+	room.world.winner = 0
+	var cfg: MatchConfig = MatchConfig.make(1, [&"gorran", &"myra"] as Array[StringName], [0, 1], BotState.Difficulty.NORMAL, 31)
+	var p: Dictionary = MatchReport.payload(room, cfg, "148203", {0: 11, 1: 12}, {0: 0, 1: 1}, "0.1.700")
+	assert_eq(p["match_key"], "148203-31")
+	assert_eq(p["accounts"], [[0, 11], [1, 12]], "mọi ô người, kể cả đã rớt")
+	assert_eq(p["left"], [1])
+	assert_eq(p["record"]["version"], "0.1.700")
+	assert_eq(p["record"]["winner"], 0)
+	assert_eq((p["record"]["players"] as Array).map(func(x: Dictionary) -> String: return x["hero"]), ["gorran", "myra"])
+	assert_eq(MatchReport.payload(room, cfg, "148203", {}, {}, "bản lạ")["record"]["version"], "0.0.0", "số bản lạ → 0.0.0")
+
+
+## NET-12: gửi lỗi mạng / 5xx → thử lại (tối đa 3 lần nữa); 4xx (biên bản sai / sai mã) → không thử lại.
+func test_NET_12_room_report_retries_only_on_transient_errors() -> void:
+	for c: Array in [[[502, 0, 200], 3, true], [[502, 502, 502, 502], 4, false], [[400], 1, false], [[200], 1, true]]:
+		var codes: Array = (c[0] as Array).duplicate()
+		var calls: Array[int] = [0]
+		var r: MatchReport = MatchReport.new()
+		r.fetch = func(_body: String, got: Callable) -> void:
+			calls[0] += 1
+			var code: int = int(codes.pop_front())
+			got.call(HTTPRequest.RESULT_SUCCESS if code > 0 else HTTPRequest.RESULT_CANT_CONNECT, code)
+		r.wait = func(_s: float, then: Callable) -> void: then.call()
+		var out: Array = []
+		r.send({"match_key": "148203-1"}, func(ok: bool) -> void: out.append(ok))
+		assert_eq([calls[0], out], [c[1], [c[2]]], str(c[0]))
+		r.free()
+
+
+## NET-12 / NET-19: máy chủ phòng gửi biên bản khi trận có đội thắng; trận hủy (không còn người) thì không.
+func test_NET_12_room_server_reports_win_not_cancel() -> void:
+	var sent: Array = []
+	for winner: int in [1, -1]:
+		var h: Dictionary = _setup()
+		var room: LockstepRoom = h["room"]
+		var s: RoomServer = RoomServer.new()
+		s.empty_keep_s = 0.2
+		s.report = func(p: Dictionary) -> void: sent.append(p)
+		var cfg: MatchConfig = MatchConfig.make(1, [&"gorran", &"myra"] as Array[StringName], [0, 1], BotState.Difficulty.NORMAL, 31)
+		s._games["123456"] = {"room": room, "acc": 0.0, "cfg": cfg, "accounts": {0: 11, 1: 12}, "slots": {0: 0, 1: 1}, "app": "0.1.700"}
+		room.drop_peer(0, "closed")  # không có kết nối thật trong test này
+		room.drop_peer(1, "closed")
+		if winner >= 0:
+			room.world.winner = winner
+		s.tick(0.1)
+		s.tick(0.3)
+		assert_false(s._games.has("123456"))
+		s.free()
+	assert_eq(sent.size(), 1, "chỉ trận có đội thắng")
+	if not sent.is_empty():
+		assert_eq(sent[0]["match_key"], "123456-31")

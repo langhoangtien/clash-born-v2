@@ -2,6 +2,7 @@ extends SceneTree
 ## D-338 (M9.5): điểm chạy máy chủ phòng trên VPS (systemd clashborn-rooms, xem docs/VPS_SETUP.md):
 ##   godot --headless --path <repo> -s server/main.gd -- --server-id=<1–9> [--port=8790] [--api=http://127.0.0.1:8787] [--dev-auth]
 ## --server-id (bắt buộc, D-401 NET-15): id máy này trong app/net/room_servers.json — chữ số đầu mọi mã phòng nó phát.
+## --rooms-token=<file> (D-405 NET-12): mã riêng để gửi biên bản trận online lên --api; không có file → không ghi trận.
 ## --dev-auth (chỉ thử ở máy mình): token "name:<tên>" là tài khoản giả — KHÔNG dùng trên VPS.
 
 var _server: RoomServer
@@ -12,8 +13,11 @@ func _initialize() -> void:
 	var api: String = "http://127.0.0.1:8787"
 	var dev: bool = false
 	var server_id: int = 0
+	var token_file: String = ""
 	for a: String in OS.get_cmdline_user_args():
-		if a.begins_with("--server-id="):
+		if a.begins_with("--rooms-token="):
+			token_file = a.trim_prefix("--rooms-token=")
+		elif a.begins_with("--server-id="):
 			server_id = int(a.trim_prefix("--server-id="))
 		elif a.begins_with("--port="):
 			port = int(a.trim_prefix("--port="))
@@ -36,8 +40,23 @@ func _initialize() -> void:
 		a.api = api
 		_server.add_child(a)
 		_server.auth = a.check
+	var recording: String = _recorder(api, token_file)
 	var err: Error = _server.start(port)
 	print("room_server: %s cổng %d, máy %d, dấu vân tay SIM %s, %s" % ["nghe" if err == OK else "LỖI %d" % err, port,
 		server_id, _server.fingerprint, "tài khoản giả (dev)" if dev else "tài khoản qua " + api])
+	print("room_server: " + recording)
 	if err != OK:
 		quit(1)
+
+
+## NET-12 (ST.5): gửi biên bản trận online lên máy chủ thống kê — chỉ khi có mã (không in mã).
+func _recorder(api: String, token_file: String) -> String:
+	var token: String = FileAccess.get_file_as_string(token_file).strip_edges() if token_file != "" else ""
+	if token == "":
+		return "KHÔNG ghi trận online (thiếu --rooms-token hoặc file trống / không đọc được)"
+	var r: MatchReport = MatchReport.new()
+	r.api = api
+	r.token = token
+	_server.add_child(r)
+	_server.report = r.send
+	return "ghi trận online qua " + api + "/api/room_match"

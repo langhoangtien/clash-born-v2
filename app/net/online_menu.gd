@@ -113,7 +113,7 @@ func _connect(id: int, t: NetTransport = null) -> void:
 	_error_shown = false
 	if t == null:
 		t = dial.call(String(RoomServers.by_id(servers, id).get("url", "")))
-	session = OnlineSession.new(t, AccountClient.token, _fingerprint)
+	session = OnlineSession.new(t, AccountClient.token, _fingerprint, Updater.current_name())
 	_status("Đang vào máy chủ %s…" % _name(id), false)
 
 

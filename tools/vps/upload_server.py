@@ -33,11 +33,7 @@ KEEP = 5
 PROTECTED = {"releases", "version.json", "download", "play"}  # trang web không được ghi đè các mục này
 ROOT = "/srv/clashborn"
 TOKEN_FILE = "/etc/clashborn/upload_token"
-
-
-def token() -> str:
-    with open(TOKEN_FILE, encoding="utf-8") as f:
-        return f.read().strip()
+ROOMS_TOKEN_FILE = "/etc/clashborn/rooms_token"  # ST.5 (D-405): mã riêng của máy chủ phòng — chỉ ghi được trận online
 
 
 def sha256_of(path: str) -> str:
@@ -153,9 +149,29 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
-    def _authorized(self) -> bool:
+    def _authorized(self, path: str = "") -> bool:
         got = self.headers.get("Authorization", "")
-        return got.startswith("Bearer ") and hmac.compare_digest(got[7:].strip(), token())
+        if not got.startswith("Bearer "):
+            return False
+        try:
+            with open(path or TOKEN_FILE, encoding="utf-8") as f:
+                want = f.read().strip()
+        except OSError:
+            return False
+        return bool(want) and hmac.compare_digest(got[7:].strip(), want)
+
+    def _room_match(self) -> None:
+        """NET-12 (ST.5, D-405): biên bản trận online từ máy chủ phòng (mã rooms_token)."""
+        if not self._authorized(ROOMS_TOKEN_FILE):
+            return self._send(401, {"error": "sai mã"})
+        size = int(self.headers.get("Content-Length", "-1"))
+        if size <= 0 or size > stats.MAX_BYTES:
+            return self._send(413, {"error": "kích thước không hợp lệ"})
+        try:
+            self._send(200, stats.save_room(ROOT, stats.check_room(stats.load(self.rfile.read(size)))))
+        except ValueError as e:
+            print("room_match rejected: %s" % e, flush=True)
+            self._send(400, {"error": str(e)})
 
     def do_GET(self) -> None:
         if self.path == "/api/health":
@@ -265,6 +281,8 @@ class Handler(BaseHTTPRequestHandler):
                 if not isinstance(body, dict) or not isinstance(body.get("matches"), list) or len(body["matches"]) > stats.MAX_BATCH:
                     raise ValueError("cần {\"matches\": [...]}")
                 recs = [stats.check(r) for r in body["matches"]]
+            elif stats.online_from_game(body):  # NET-12 (D-405): máy chủ phòng đã ghi trận online
+                return self._send(200, {"ignored": True})
             else:
                 recs = [stats.check(body)]
             owner = -1 if batch else accounts.uploader(ROOT, self.headers.get("X-Clashborn-Session"))  # D-334
@@ -344,6 +362,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._report()
         if self.path == "/api/match":
             return self._matches(False)
+        if self.path == "/api/room_match":
+            return self._room_match()
         if self.path.startswith("/api/auth/"):
             return self._auth_post()
         if self.path.startswith("/api/admin/"):
@@ -368,13 +388,14 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main() -> None:
-    global ROOT, TOKEN_FILE
+    global ROOT, TOKEN_FILE, ROOMS_TOKEN_FILE
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=ROOT)
     ap.add_argument("--token-file", default=TOKEN_FILE)
+    ap.add_argument("--rooms-token-file", default=ROOMS_TOKEN_FILE)
     ap.add_argument("--port", type=int, default=8787)
     a = ap.parse_args()
-    ROOT, TOKEN_FILE = a.root, a.token_file
+    ROOT, TOKEN_FILE, ROOMS_TOKEN_FILE = a.root, a.token_file, a.rooms_token_file
     ThreadingHTTPServer(("127.0.0.1", a.port), Handler).serve_forever()
 
 
