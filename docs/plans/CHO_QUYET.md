@@ -50,17 +50,17 @@ Trả lời gọn theo mã, vd `N1 ok, N2 B, M1 ok`. "Đề nghị" = phương �
 
 | Mã | Câu hỏi | Đề nghị | Trả lời |
 |---|---|---|---|
-| TV1 | Nội tại "mỗi tầng 2 s": đang làm là đánh tiếp thì làm mới CẢ chồng 2 s, ngừng đánh 2 s thì mất hết 16 tầng. Muốn mỗi tầng hết hạn riêng thì là cơ chế mới | Giữ cách đang làm | |
-| TV2 | Nội tại đang có số cố định nên 5 điểm nâng nội tại không có tác dụng. Cho tăng theo bậc: giảm sát thương mỗi tầng 1,2 / 1,4 / 1,6 / 1,8 / 2,0% (chỉ là số), hoặc trần tầng 8 / 10 / 12 / 14 / 16 (cần cơ chế mới) | Theo % mỗi tầng | |
-| TV3 | W chưa có số hồi chiêu / mana: đặt hồi 18–14 s, mana 50–70 | Duyệt | |
-| TV4 | Talent chưa có: Q II khiêu khích +0,5 s; W II +4 giáp; R II cứ 3 đòn thay vì 4 | Duyệt | |
+| TV1 | Nội tại "mỗi tầng 2 s": đang làm là đánh tiếp thì làm mới CẢ chồng 2 s, ngừng đánh 2 s thì mất hết 16 tầng. Muốn mỗi tầng hết hạn riêng thì là cơ chế mới | Giữ cách đang làm | **Mỗi tầng hết hạn riêng** (cơ chế mới: tầng độc lập có trần 16) |
+| TV2 | Nội tại đang có số cố định nên 5 điểm nâng nội tại không có tác dụng. Cho tăng theo bậc: giảm sát thương mỗi tầng 1,2 / 1,4 / 1,6 / 1,8 / 2,0% (chỉ là số), hoặc trần tầng 8 / 10 / 12 / 14 / 16 (cần cơ chế mới) | Theo % mỗi tầng | Duyệt — theo % mỗi tầng 1,2 / 1,4 / 1,6 / 1,8 / 2,0 |
+| TV3 | W chưa có số hồi chiêu / mana: đặt hồi 18–14 s, mana 50–70 | Duyệt | Duyệt |
+| TV4 | Talent chưa có: Q II khiêu khích +0,5 s; W II +4 giáp; R II cứ 3 đòn thay vì 4 | Duyệt | Duyệt |
 | PH1 | Pháo Thủ — số đặt tạm (D-387): mana Q 70–90, mana R 100 / 125 / 150; talent Q II +100 bán kính, W II +10% tỉ lệ bắn kép, R II +200 sát thương; lên đồ như Phong Tiễn | Duyệt | |
 
 ## Concept chờ duyệt (CB-1, D-364 / D-365) — ảnh ở `art_inbox/concepts/chuan_brakk/` và trang kiểm kê
 
 | Mã | Câu hỏi | Đề nghị | Trả lời |
 |---|---|---|---|
-| C1 | Phong Tiễn theo chuẩn Brakk: **PA1** ~3 đầu (đầu to, mặt hơi trẻ con) / **PA2** ~4 đầu (tay chân dài, dễ diễn kéo cung) / **PA3** ~3,5 đầu + giáp vai, tay, gối viền vàng kiểu Brakk / ghép | PA3, hoặc dáng PA2 + giáp PA3 | |
-| C2 | Cây / bụi / lá: **hướng 1** khối lá vẽ tay có mảng sáng tối (cần mô hình + ảnh màu mới) / **hướng 2** giữ phẳng, tông trầm + viền đậm (rẻ nhất) / **hướng 3** khối tròn mượt (nhẹ, hơi trơn) | Hướng 1; làm mẫu 1 cây + 1 bụi trong trận để duyệt trước khi thay hàng loạt | |
+| C1 | Phong Tiễn theo chuẩn Brakk: **PA1** ~3 đầu (đầu to, mặt hơi trẻ con) / **PA2** ~4 đầu (tay chân dài, dễ diễn kéo cung) / **PA3** ~3,5 đầu + giáp vai, tay, gối viền vàng kiểu Brakk / ghép | PA3, hoặc dáng PA2 + giáp PA3 | Theo đề nghị: **PA3** (giáp nhẹ kiểu Brakk) |
+| C2 | Cây / bụi / lá: **hướng 1** khối lá vẽ tay có mảng sáng tối (cần mô hình + ảnh màu mới) / **hướng 2** giữ phẳng, tông trầm + viền đậm (rẻ nhất) / **hướng 3** khối tròn mượt (nhẹ, hơi trơn) | Hướng 1; làm mẫu 1 cây + 1 bụi trong trận để duyệt trước khi thay hàng loạt | Theo đề nghị: **hướng 1**, làm mẫu 1 cây + 1 bụi trong trận trước |
 | B2 | Luật bot mới: bot không dùng chiêu ép đánh tay đôi (Quyết Đấu của Duy Anh) lên tướng đang ở dạng hồn ma / không đánh thường được — hiện bot Duy Anh Quyết Đấu một Brakk đang bật Gậy Hồn Ma, hai bên đứng nhìn nhau vài giây | Duyệt | |
 
