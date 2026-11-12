@@ -6,8 +6,8 @@ const SIX: Array[StringName] = [&"brakk", &"myra", &"vexa", &"noctis", &"gorran"
 
 func test_NET_07_code_and_join_rules() -> void:
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
-	var code: String = RoomLobby.new_code(rng)
-	assert_eq(code.length(), 5)
+	var code: String = RoomLobby.new_code(rng, 1)
+	assert_eq(code.length(), 6, "NET-15 (D-401): 6 chữ số")
 	assert_true(code.is_valid_int(), "D-345: mã chỉ có số (nhập nhanh bằng bàn phím số): " + code)
 	var r: RoomLobby = RoomLobby.new(code, 1)
 	assert_eq(r.join(10, 1, "An"), "")
