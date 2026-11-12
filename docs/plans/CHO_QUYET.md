@@ -29,7 +29,7 @@ Trả lời gọn theo mã, vd `N1 ok, N2 B, M1 ok`. "Đề nghị" = phương �
 | R3 | Trận mà mọi người đều rớt: chạy tiếp bằng bot rồi hủy; có tính thống kê không | Không tính | |
 | R4 | Ô do bot đánh thay lúc kết thúc có tính thắng / thua cho tài khoản đó | Có, kèm cờ "đã rời" | |
 | R5 | Máy bị lệch trận: bot đánh thay người đó ở các máy còn lại + tự gửi báo lỗi | Duyệt | |
-| R6 | Vào lại trận bằng cách tua lại toàn bộ lệnh (1–3 phút trên điện thoại, đang đo); chỉ làm "ảnh chụp trạng thái" nếu quá chậm | Duyệt | |
+| R6 | Vào lại trận bằng cách tua lại toàn bộ lệnh (đo trên máy tính bảng Android BTKR-W09: trận đã đánh 5 phút ≈ 1 phút chờ, 10 phút ≈ 2–2,5 phút, 20 phút ≈ 4–5 phút; điện thoại yếu hơn sẽ lâu hơn); chỉ làm "ảnh chụp trạng thái" nếu quá chậm | Duyệt | |
 | R7 | Tách "tìm trận tự động" và "5v5" khỏi M9.8 thành việc riêng | Duyệt | |
 
 ## Đợt 2 tướng mới (kế hoạch CB-2, `docs/plans/D-382_dot_2.md`) — chưa gấp
