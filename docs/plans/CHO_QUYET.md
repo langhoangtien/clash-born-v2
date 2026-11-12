@@ -62,4 +62,5 @@ Trả lời gọn theo mã, vd `N1 ok, N2 B, M1 ok`. "Đề nghị" = phương �
 |---|---|---|---|
 | C1 | Phong Tiễn theo chuẩn Brakk: **PA1** ~3 đầu (đầu to, mặt hơi trẻ con) / **PA2** ~4 đầu (tay chân dài, dễ diễn kéo cung) / **PA3** ~3,5 đầu + giáp vai, tay, gối viền vàng kiểu Brakk / ghép | PA3, hoặc dáng PA2 + giáp PA3 | |
 | C2 | Cây / bụi / lá: **hướng 1** khối lá vẽ tay có mảng sáng tối (cần mô hình + ảnh màu mới) / **hướng 2** giữ phẳng, tông trầm + viền đậm (rẻ nhất) / **hướng 3** khối tròn mượt (nhẹ, hơi trơn) | Hướng 1; làm mẫu 1 cây + 1 bụi trong trận để duyệt trước khi thay hàng loạt | |
+| B2 | Luật bot mới: bot không dùng chiêu ép đánh tay đôi (Quyết Đấu của Duy Anh) lên tướng đang ở dạng hồn ma / không đánh thường được — hiện bot Duy Anh Quyết Đấu một Brakk đang bật Gậy Hồn Ma, hai bên đứng nhìn nhau vài giây | Duyệt | |
 
