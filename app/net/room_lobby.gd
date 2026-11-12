@@ -5,7 +5,7 @@ extends RefCounted
 ## chủ chọn). Chỉ logic — máy chủ phòng (server/room_server.gd) nối với mạng.
 
 const CODE_CHARS: String = "0123456789"  ## D-345: chỉ số — nhập nhanh bằng bàn phím số
-const CODE_LEN: int = 5
+const CODE_LEN: int = 6  ## NET-15 (D-401): chữ số đầu = id máy chủ tạo phòng
 const MAX_TEAM_SIZE: int = 3  ## NET-07: 6 tướng, không trùng (MATCH-02)
 
 var code: String
@@ -16,9 +16,9 @@ var info: Dictionary[int, Dictionary] = {}   ## mã → {account, name, team, he
 var started: bool = false
 
 
-static func new_code(rng: RandomNumberGenerator) -> String:
-	var s: String = ""
-	for i: int in CODE_LEN:
+static func new_code(rng: RandomNumberGenerator, server_id: int) -> String:
+	var s: String = str(server_id)  # NET-15
+	for i: int in CODE_LEN - 1:
 		s += CODE_CHARS[rng.randi_range(0, CODE_CHARS.length() - 1)]
 	return s
 

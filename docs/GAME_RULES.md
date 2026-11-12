@@ -895,14 +895,17 @@ chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, 
   Lệch → ghi tick lệch đầu tiên, báo máy đó (báo cáo lệch kèm mã băm từng đơn vị, D-336).
 - `NET-05` `input_delay` máy chủ chọn lúc vào trận (mặc định 3 tick, cấu hình được), gửi trong lời chào.
 - `NET-06` Máy khác phiên bản game với máy chủ không vào được phòng; phải đăng nhập, tài khoản bị ban không vào được.
-- `NET-07` (M9.5) **Phòng** có mã 5 chữ số (D-345: chỉ số, nhập bằng bàn phím số; trước là chữ + số). Người tạo là chủ phòng, chọn số người mỗi
+  (D-401) Máy chủ phòng kiểm phiên qua API tài khoản: API trả 401 / 403, hoặc trả lời không có tài khoản → `AUTH`
+  ("phiên hết hạn"); API trả 429 / 5xx, không nối được hoặc quá hạn → thử lại 2 lần cách 1 giây, vẫn hỏng → `BUSY` ("Máy
+  chủ đang bận — thử lại sau"; không phải lỗi phiên, máy khách không đăng xuất).
+- `NET-07` (M9.5) **Phòng** có mã 6 chữ số (NET-15; D-345: chỉ số, nhập bằng bàn phím số; trước D-401 là 5 chữ số). Người tạo là chủ phòng, chọn số người mỗi
   đội (1–3 khi còn 6 tướng — MATCH-02). Tối đa 2 × số người mỗi đội người trong phòng.
 - `NET-08` Trong phòng mỗi người chọn đội (đội còn chỗ) và tướng chưa ai trong phòng chọn (MATCH-02). Chủ phòng bấm bắt đầu
   khi mọi người đã chọn tướng; ô trống → bot độ khó Thường, tướng ngẫu nhiên trong số còn lại. Máy chủ chọn seed.
 - `NET-09` Trước khi trận bắt đầu: người rời phòng thì giải phóng ô / tướng; chủ phòng rời → người vào sớm nhất còn lại làm
   chủ; phòng trống → xóa. Phòng đã vào trận không nhận thêm người (vào lại trận: M9.8).
 - `NET-10` Phiên bản: lúc bắt tay mỗi bên tính **dấu vân tay SIM** (mã băm World của một trận cố định sau 3 giây trận, kèm số
-  hiệu giao thức) — khác máy chủ → không vào được (NET-06), báo cập nhật game.
+  hiệu giao thức) — khác máy chủ → không vào được (NET-06), báo cập nhật game. Số hiệu giao thức hiện tại: 3 (D-401).
 - `NET-11` (M9.6, D-344) **Chơi online** từ menu (nút Online): phải đăng nhập và có tên trong game. Bảng online nối máy chủ
   phòng, tạo phòng (1v1 / 2v2 / 3v3) hoặc nhập mã; trong phòng hiện hai đội (người + "bot" cho ô trống), đổi đội, chọn
   tướng (tướng người khác đã chọn bị khóa), chủ phòng đổi số người và bắt đầu. Vào trận: màn trận dựng World từ cấu hình
@@ -912,6 +915,26 @@ chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, 
 - `NET-12` (D-344) Trận online: mọi máy có người gửi biên bản (Clashborn Stats) kèm `match_key` = mã phòng + seed và `you`
   = ô của máy gửi. Máy chủ thống kê: khóa đã có → chỉ gắn tài khoản vào ô `you` (ô người, chưa ai nhận), không đếm thêm
   trận; chưa có → ghi trận, chỉ ô `you` gắn tài khoản người gửi. Lịch sử mỗi người có trận đó, đối thủ là người hiện tên.
+- `NET-13` (D-401) **Nhiều máy chủ phòng.** Danh sách là dữ liệu (`app/net/room_servers.json`): mỗi máy một id 1–9 (một
+  chữ số, không trùng), tên hiện cho người chơi, địa chỉ `wss://…/play`. Hiện: 1 = Singapore, 2 = máy chính. Thêm máy = thêm
+  một dòng; quá 9 máy là việc sau (mã phòng phải dài hơn — NET-15).
+- `NET-14` (D-401) **Chọn máy chủ.** Mở bảng Online → nối song song mọi máy; mỗi máy nhận tối đa `PROBE_ROUNDS` (3) tin
+  `probe` nối tiếp, trước bắt tay (không cần tài khoản, máy chủ không gọi API tài khoản); máy chủ trả `probe_ok` kèm dấu vân
+  tay (NET-10) và id của nó. Độ trễ một máy = trung vị các lượt đã trả lời. Hạn đo `PROBE_TIMEOUT_S` (4 giây) tính từ lúc
+  mở bảng: hết hạn mà đã có ít nhất một lượt → máy ổn; chưa có lượt nào hoặc kết nối đóng → "không nối được"; dấu vân tay
+  khác → "khác phiên bản". Bảng hiện từng máy: độ trễ / "đang đo…" / "khác phiên bản" / "không nối được".
+  - **Tự động** (mặc định): vào máy ổn có độ trễ thấp nhất (bằng nhau → id nhỏ hơn). Bắt tay ở đó trả `BUSY` → thử máy ổn
+    kế tiếp theo độ trễ. Không còn máy nào: có máy khác phiên bản → "Khác phiên bản với máy chủ — cập nhật game"; không
+    → "Không nối được máy chủ phòng nào". `AUTH` / `NO_NAME` / `VERSION` khi bắt tay → báo luôn, không thử máy khác.
+  - **Chọn tay**: người chơi chọn "Tự động" hoặc một máy trong bảng; lựa chọn được nhớ giữa các lần mở game. Máy chọn tay
+    không nối được / khác phiên bản / bận → báo tên máy + lý do, **không** tự sang máy khác.
+  - Đổi lựa chọn → ngắt máy đang nối, đo lại, nối theo lựa chọn mới. Chỉ đổi được khi chưa ở trong phòng.
+  - Sảnh hiện máy đang dùng và độ trễ đo được.
+- `NET-15` (D-401) **Mã phòng mang máy chủ.** Mã 6 chữ số; chữ số đầu = id máy chủ tạo phòng (máy chủ chạy với
+  `--server-id=<id>` và chỉ phát mã bắt đầu bằng id đó). Nhập mã ở máy khách: không đủ 6 chữ số, hoặc chữ số đầu không thuộc
+  máy nào trong danh sách → "Không có phòng này", không nối đi đâu. Chữ số đầu là máy đang nối → vào phòng như cũ. Là máy
+  khác → rời máy đang nối, nối thẳng máy đó (bỏ qua đo, kể cả khi đang chọn tay máy khác; lựa chọn đã nhớ không đổi), bắt tay
+  xong thì vào phòng; máy đó không nối được / lỗi bắt tay → báo kèm tên máy.
 - (M9.7) Rớt mạng quá lâu → bot đánh thay bằng lệnh đổi quyền điều khiển trong luồng lệnh (luật viết khi làm).
 
 ## CMD — Lệnh (Command)

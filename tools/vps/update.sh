@@ -9,6 +9,7 @@ ROOT=/srv/clashborn
 REPO="$ROOT/repo"
 NGINX_SITE=/etc/nginx/sites-available/clashborn.quest
 SERVICE=/etc/systemd/system/clashborn-upload.service
+ROOM_PEER_HOSTS="sg.clashborn.quest"  # D-401: máy chủ phòng khác kiểm phiên qua máy này (cách nhau bằng dấu cách)
 [ "$(id -u)" -eq 0 ] || { echo "Cần chạy bằng root (sudo)."; exit 1; }
 
 echo "== 1. Kéo code"
@@ -30,6 +31,23 @@ if ! cmp -s "$REPO/tools/vps/clashborn-upload.service" "$SERVICE"; then
 fi
 
 echo "== 5. nginx"
+# D-401: IP các máy chủ phòng khác (miễn giới hạn /api/auth/me — nginx-clashborn.conf). Phân giải lúc cập nhật; không
+# phân giải được thì giữ file cũ. Đổi IP máy chủ phòng → chạy lại update.sh.
+PEERS=/etc/nginx/clashborn-rooms-peers.conf
+PEERS_NEW="$(for h in $ROOM_PEER_HOSTS; do getent ahostsv4 "$h" | awk 'NR==1 {print $1 " 1;  # '"$h"'"}'; done)"
+PEERS_CHANGED=0
+if [ -n "$PEERS_NEW" ] && [ "$PEERS_NEW" != "$(cat "$PEERS" 2>/dev/null)" ]; then
+  printf '%s\n' "$PEERS_NEW" > "$PEERS"
+  PEERS_CHANGED=1
+  echo "   máy chủ phòng khác: $PEERS_NEW"
+elif [ ! -f "$PEERS" ]; then
+  : > "$PEERS"
+  PEERS_CHANGED=1
+  echo "   CHÚ Ý: không phân giải được $ROOM_PEER_HOSTS — /api/auth/me của máy chủ phòng vẫn bị giới hạn"
+fi
+if [ "$PEERS_CHANGED" -eq 1 ] && cmp -s "$REPO/tools/vps/nginx-clashborn.conf" "$NGINX_SITE"; then
+  if nginx -t; then systemctl reload nginx; else echo "nginx -t lỗi sau khi ghi $PEERS"; exit 1; fi
+fi
 if ! cmp -s "$REPO/tools/vps/nginx-clashborn.conf" "$NGINX_SITE"; then
   BACKUP="$NGINX_SITE.bak-$(date +%Y%m%d-%H%M%S)"
   cp "$NGINX_SITE" "$BACKUP"

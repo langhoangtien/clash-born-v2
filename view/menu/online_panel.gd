@@ -2,7 +2,8 @@ class_name OnlinePanel
 extends Control
 ## M9.6 (D-344, NET-11): bảng Chơi online ở menu — tạo phòng (1v1 / 2v2 / 3v3) hoặc nhập mã, phòng chờ (hai đội, chọn đội
 ## và tướng, chủ phòng đổi số người / bắt đầu). Chỉ hiện và báo yêu cầu qua `request(tin)` (đúng tin của máy chủ phòng:
-## create / join / team / pick / size / start / leave); APP (OnlineMenu) gửi đi rồi gọi show_*.
+## create / join / team / pick / size / start / leave) hoặc tin riêng của APP: `server {id}` (NET-14: 0 = Tự động); APP
+## (OnlineMenu) gửi đi rồi gọi show_*. Hàng máy chủ (độ trễ từng máy, lựa chọn) đọc từ `servers` / `choice` / `current`.
 
 signal request(msg: Dictionary)
 signal closed
@@ -12,6 +13,10 @@ const SIZES: Array[int] = [1, 2, 3]
 const TEAM_NAMES: Array[String] = ["Đội Xanh", "Đội Đỏ"]
 
 var screen: String = "status"
+## NET-14 (D-401): kết quả đo [{id, name, state, rtt_ms}], lựa chọn (0 = Tự động), máy đang nối (-1 = chưa).
+var servers: Array[Dictionary] = []
+var choice: int = 0
+var current: int = -1
 var _box: VBoxContainer
 var _center: CenterContainer
 var _message: Label
@@ -30,9 +35,11 @@ func _draw() -> void:
 	UiStyle.panel(self, Rect2((size - BOX) * 0.5, BOX))
 
 
-## Chỉ một dòng chữ (đang nối, lỗi nối, cần đăng nhập…).
+## Một dòng chữ (đang nối, lỗi nối, cần đăng nhập…) + hàng máy chủ khi đã đo (chọn được máy khác ngay).
 func show_status(text: String, error: bool = false) -> void:
 	_begin("status", "Chơi online")
+	if not servers.is_empty():
+		_server_block()
 	_end(text, error)
 
 
@@ -40,20 +47,21 @@ func show_status(text: String, error: bool = false) -> void:
 func show_home(player: String) -> void:
 	_begin("home", "Chơi online")
 	_box.add_child(_label("Bạn: " + player, 26, UiStyle.TEXT, false))
+	_server_block()
 	_box.add_child(_label("Tạo phòng — số người mỗi đội (ô trống là bot)", 22, UiStyle.DIM, false))
 	var row: HBoxContainer = _row()
 	for n: int in SIZES:
 		row.add_child(_button("%d vs %d" % [n, n], {"t": "create", "size": n}, true))
 	_box.add_child(_label("Vào phòng của bạn bè", 22, UiStyle.DIM, false))
 	_code = LineEdit.new()
-	_code.placeholder_text = "Mã phòng (5 số)"
+	_code.placeholder_text = "Mã phòng (%d số)" % RoomLobby.CODE_LEN
 	_code.max_length = RoomLobby.CODE_LEN
 	_code.virtual_keyboard_type = LineEdit.KEYBOARD_TYPE_NUMBER  # D-345
 	_code.custom_minimum_size = Vector2(0, 64)
 	_code.add_theme_font_size_override("font_size", 30)
 	_box.add_child(_code)
 	var join: Button = _button("Vào phòng", {}, true)
-	join.pressed.connect(func() -> void: request.emit({"t": "join", "code": _code.text.strip_edges().to_upper()}))
+	join.pressed.connect(func() -> void: request.emit({"t": "join", "code": _code.text.strip_edges()}))
 	_box.add_child(join)
 	_end("", false)
 
@@ -64,6 +72,8 @@ func show_room(room: Dictionary, me: int, heroes: Array[StringName]) -> void:
 	_begin("room", "Phòng " + String(room.get("code", "")))
 	var n: int = int(room.get("size", 1))
 	_box.add_child(_label("%d vs %d · gửi mã cho bạn bè · ô trống là bot (Thường)" % [n, n], 22, UiStyle.DIM, false))
+	if current >= 0:
+		_box.add_child(_label(server_line(), 22, UiStyle.DIM, false))
 	var mine: Dictionary = {}
 	var taken: Dictionary = {}
 	for m: Dictionary in room.get("members", []):
@@ -92,6 +102,23 @@ func show_room(room: Dictionary, me: int, heroes: Array[StringName]) -> void:
 		_box.add_child(_label("Chờ chủ phòng bắt đầu…", 22, UiStyle.DIM, false))
 	_box.add_child(_button("Rời phòng", {"t": "leave"}, false))
 	_end("", false)
+
+
+## NET-14: "Máy chủ: Singapore · 45 ms" + hàng nút Tự động / từng máy (độ trễ hoặc lỗi), nút đang chọn màu vàng.
+func _server_block() -> void:
+	if current >= 0:
+		_box.add_child(_label(server_line(), 22, UiStyle.DIM, false))
+	var row: HBoxContainer = _row()
+	row.add_child(_button("Tự động", {"t": "server", "id": 0}, choice == 0, 20))
+	for r: Dictionary in servers:
+		row.add_child(_button(RoomServers.label(r), {"t": "server", "id": int(r["id"])}, choice == int(r["id"]), 20))
+
+
+func server_line() -> String:
+	for r: Dictionary in servers:
+		if int(r["id"]) == current:
+			return "Máy chủ: " + RoomServers.label(r)
+	return "Máy chủ: #%d" % current
 
 
 ## "Lăng (Gorran) ★, Minh (chưa chọn)" — ★ = chủ phòng.
@@ -158,13 +185,13 @@ func _label(text: String, size_px: int, color: Color, bold: bool) -> Label:
 
 
 ## Nút gửi `msg` khi bấm ({} = APP tự nối); `gold` = nút chính / đang chọn.
-func _button(text: String, msg: Dictionary, gold: bool) -> Button:
+func _button(text: String, msg: Dictionary, gold: bool, font_px: int = 26) -> Button:
 	var b: Button = Button.new()
 	b.text = text
 	b.custom_minimum_size = Vector2(0, 58)
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	b.add_theme_font_override("font", UiStyle.serif(true))
-	b.add_theme_font_size_override("font_size", 26)
+	b.add_theme_font_size_override("font_size", font_px)
 	b.add_theme_stylebox_override("normal", UiStyle.box(UiStyle.GOLD_DEEP if gold else UiStyle.CARD, UiStyle.GOLD if gold else UiStyle.LINE, 2, 10))
 	b.add_theme_stylebox_override("hover", UiStyle.box(UiStyle.GOLD_DEEP if gold else UiStyle.CARD_HI, UiStyle.GOLD, 2, 10))
 	b.add_theme_stylebox_override("pressed", UiStyle.box(UiStyle.CARD, UiStyle.GOLD, 2, 10))

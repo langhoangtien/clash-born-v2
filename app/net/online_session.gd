@@ -1,10 +1,8 @@
 class_name OnlineSession
 extends RefCounted
-## M9.6 (D-344): một phiên online của máy khách — nối máy chủ phòng (wss://clashborn.quest/play), bắt tay (dấu vân tay
+## M9.6 (D-344): một phiên online của máy khách — nối một máy chủ phòng (NET-13: room_servers.json), bắt tay (dấu vân tay
 ## SIM NET-10 + phiên tài khoản NET-06), chuyển tin sảnh cho menu; nhận lời chào `welcome` → dựng LockstepClient, giữ cấu
 ## hình trận + đơn vị của mình cho màn trận. Sống qua đổi màn (màn trận giữ tham chiếu tĩnh). Không đụng SIM.
-
-const URL: String = "wss://clashborn.quest/play"
 
 var transport: NetTransport
 ## connecting → hello → lobby → game → closed
@@ -21,7 +19,7 @@ var _token: String = ""
 var _version: String = ""
 
 
-## `t` = kênh đã mở (WsTransport.dial(URL) hoặc LoopbackNet trong test).
+## `t` = kênh đã mở / đang mở (WsTransport.dial(url) hoặc LoopbackNet trong test).
 func _init(t: NetTransport, token: String, version: String) -> void:
 	transport = t
 	_token = token
@@ -108,4 +106,4 @@ static func error_text(code: String) -> String:
 		"STARTED": "Phòng đã vào trận", "ALREADY": "Tài khoản này đã ở trong phòng", "TEAM_FULL": "Đội đó đã đủ người",
 		"HERO_TAKEN": "Tướng đã có người chọn", "UNKNOWN_HERO": "Tướng không hợp lệ", "NOT_HOST": "Chỉ chủ phòng làm được",
 		"NOT_READY": "Còn người chưa chọn tướng", "BAD_SIZE": "Không đổi được số người (đang có người ở đội)",
-		"IN_ROOM": "Đang ở trong phòng"}.get(code, "Lỗi " + code)
+		"IN_ROOM": "Đang ở trong phòng", "BUSY": "Máy chủ đang bận — thử lại sau"}.get(code, "Lỗi " + code)
