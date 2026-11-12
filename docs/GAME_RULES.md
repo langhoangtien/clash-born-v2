@@ -1085,7 +1085,8 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 - `BOT-16` (D-94) JUNGLE: không có việc ở lane (không TRADE / KILL / DEFEND_BASE / FARM / PUSH),
   máu ≥ 50% → đánh quái trại rừng phe mình gần nhất (trong 2500) còn quái, chỗ đứng an toàn.
   Không kéo lính.
-- `BOT-11` Không đứng yên ngoài RECOVER, DEAD và lúc kênh về thành. (D-96) Có lệnh đi mà 1 s không nhích quá 20 →
+- `BOT-11` Không đứng yên ngoài RECOVER, DEAD, lúc kênh về thành và (D-394) lúc bị Quyết Đấu / khiêu khích ép (ST-19, ST-20 — bot
+  không ra lệnh được; vd đối thủ đang GHOST thì đứng chờ đúng luật). (D-96) Có lệnh đi mà 1 s không nhích quá 20 →
   bước sang ngang 160 rồi đi tiếp; không đánh được (biến hình, tước vũ khí) mà đang có mục tiêu
   → lùi ra xa mục tiêu 300 (điểm an toàn). (D-353) Đứng chờ ở RALLY: cứ 1,5 s đổi giữa điểm chờ và điểm lùi 150 dọc lane; điểm chờ đã ở
   đầu lane (không lùi dọc lane được) thì lùi 150 về phía hồ máu. (D-380) ESCAPE_TOWER: điểm thoát phải đi thẳng
