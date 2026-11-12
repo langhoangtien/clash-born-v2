@@ -1,0 +1,3 @@
+Use your image generation tool to create ONE new image and save it as a PNG at the path given below (create folders if needed). Do not edit any other file. When finished, reply only with the saved path.
+
+Reference images (open and look at them first): art_inbox/concepts/chuan_brakk/canh_vat/huong1.png (APPROVED direction: hand-painted chunky foliage), assets/textures/style/grass.png and assets/textures/style/rock_face.png (approved hand-painted textures in the game).

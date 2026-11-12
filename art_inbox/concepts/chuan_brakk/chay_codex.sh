@@ -12,4 +12,7 @@ $(cat "$dir/$(basename "$job").txt")"
   codex exec --sandbox workspace-write --skip-git-repo-check -C "$PWD" "$prompt" > "$dir/$(basename "$job").log" 2>&1 &
 done
 wait
-for job in "$@"; do f="art_inbox/concepts/chuan_brakk/$job.png"; [ -f "$f" ] && echo "có $f" || echo "THIẾU $f"; done
+for job in "$@"; do  # ảnh ra = dòng "Output: …" trong prompt
+  f=$(grep -o "Output: [^ ]*\.png" "art_inbox/concepts/chuan_brakk/$job.txt" | head -1 | cut -d" " -f2)
+  [ -f "$f" ] && echo "có $f" || echo "THIẾU $f"
+done
