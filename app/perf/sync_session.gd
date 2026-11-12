@@ -80,11 +80,15 @@ func _process(_delta: float) -> void:
 func _send() -> void:
 	var meta: Dictionary = {"version": Updater.current_name(), "device": OS.get_model_name(),
 		"os": OS.get_name() + " " + OS.get_version(), "arch": Engine.get_architecture_name(), "ms": Time.get_ticks_msec() - _t0,
-		"sim_ms": _sim_usec / 1000}
+		"sim_ms": _sim_usec / 1000, "tick_per_s": roundi(_ticks() * 1e6 / maxf(1.0, _sim_usec))}
 	_data = _check.result(meta)
-	_summary = "Kiểm tra đồng bộ · %s · %s · %d giây trận trong %.1f giây · mã cuối %s" % [meta["version"], meta["device"],
-		_check.seconds.size(), _sim_usec / 1e6, String(_check.seconds[-1]["hash"]).left(16) if not _check.seconds.is_empty() else "-"]
+	_summary = "Kiểm tra đồng bộ · %s · %s · %d giây trận trong %.1f giây (%d tick / giây — tốc độ tua vào lại) · mã cuối %s" % [
+		meta["version"], meta["device"], _check.seconds.size(), _sim_usec / 1e6, meta["tick_per_s"], String(_check.seconds[-1]["hash"]).left(16) if not _check.seconds.is_empty() else "-"]
 	_post()
+
+
+func _ticks() -> int:
+	return _check.seconds.size() * SimClock.TICKS_PER_SECOND
 
 
 ## Gửi (lỗi mạng / máy chủ thì hiện nút Gửi lại — không phải chạy lại cả phút).
