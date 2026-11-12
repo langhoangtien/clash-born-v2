@@ -12,9 +12,7 @@ static func of(world: World) -> PackedByteArray:
 	for e: Entity in world.entities:
 		_hash_entity(ctx, e)
 	for t: int in range(world.shop_stock.size()):
-		var ids: Array = world.shop_stock[t].keys()
-		ids.sort()
-		for id: StringName in ids:
+		for id: StringName in by_text(world.shop_stock[t].keys()):
 			ctx.update(PackedInt64Array([t, id.hash(), world.shop_stock[t][id][0], world.shop_stock[t][id][1]]).to_byte_array())
 	var keys: Array = world.prd_counters.keys()
 	keys.sort()
@@ -31,6 +29,14 @@ static func of(world: World) -> PackedByteArray:
 	for p: Projectile in world.projectiles:
 		ctx.update(PackedFloat64Array([p.source_id, p.target_id, p.position.x, p.position.y, p.request.raw]).to_byte_array())
 	return ctx.finish()
+
+
+## D-381: xếp tên theo chữ. `Array.sort()` trên StringName so địa chỉ bộ nhớ → thứ tự đổi theo lần chạy / máy, mã băm
+## cùng một trạng thái ra khác nhau (NET-04 báo lệch oan).
+static func by_text(names: Array) -> Array:
+	var out: Array = names.duplicate()
+	out.sort_custom(func(a: Variant, b: Variant) -> bool: return str(a) < str(b))
+	return out
 
 
 ## M9.3 (D-336): mã băm riêng một đơn vị (16 byte đầu SHA-256) — so tất định giữa máy, chỉ ra đơn vị lệch.

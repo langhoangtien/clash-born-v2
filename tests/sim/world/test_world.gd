@@ -99,3 +99,13 @@ func test_state_hash_sees_stat_and_health_changes() -> void:
 	var before: PackedByteArray = w.state_hash()
 	a.health -= 1
 	assert_ne(w.state_hash(), before)
+
+
+## Lỗi (D-381): mã băm duyệt khóa kho cửa hàng (StringName) theo `Array.sort()` = theo địa chỉ bộ nhớ, không theo chữ.
+func test_D_30_hash_orders_names_by_text_not_by_memory_address() -> void:
+	var names: Array = []
+	for i: int in range(60):  # tên mới tạo xen kẽ: địa chỉ bộ nhớ không theo thứ tự chữ
+		names.append(StringName("hash_order_%02d" % ((i * 37) % 60)))
+	var sorted: Array = WorldHash.by_text(names)
+	for i: int in range(60):
+		assert_eq(str(sorted[i]), "hash_order_%02d" % i)
