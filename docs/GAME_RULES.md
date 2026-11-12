@@ -626,6 +626,11 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   bán kính), tối thiểu ở mép (f = 1 → mép nhận 0).
 - `EFF-13` Chủ hiệu ứng chết → mọi hiệu ứng bị gỡ (lý do `owner_died`), trừ hiệu ứng có tag
   `passive` (D-56).
+- `EFF-16` (D-384) Trigger **"cứ N lần"** (`every`, biểu thức như EFF-09; rỗng = mỗi lần): mỗi sự kiện khớp vai và điều kiện
+  của trigger (EFF-08) tăng bộ đếm riêng của bản hiệu ứng đó (mỗi trigger một bộ đếm); đủ N thì chạy hành động và đếm lại từ
+  0. Sự kiện không khớp điều kiện không tính; đòn trượt / bị hất (CMB-11, CMB-15) không phải `attack_landed` nên không tính;
+  bị động đang tắt vì HEXED (ST-16) không đếm. Bộ đếm mất cùng bản hiệu ứng (gỡ rồi áp lại thì đếm lại từ 0). Không dùng chung
+  với `chance` hoặc `cooldown` (dữ liệu sai). Bộ đếm nằm trong mã băm World (D-30).
 
 ## DUL — Quyết Đấu (D-135)
 

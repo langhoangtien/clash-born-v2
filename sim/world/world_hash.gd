@@ -74,3 +74,7 @@ static func _hash_entity(ctx: HashingContext, e: Entity) -> void:
 	for inst: EffectInstance in e.effects:
 		ctx.update(PackedInt64Array([inst.serial, inst.def.id.hash(), inst.source_id, inst.stacks, inst.end_tick, inst.next_period_tick, inst.active_tick, inst.source_team]).to_byte_array())
 		ctx.update(PackedFloat64Array([inst.absorb_left]).to_byte_array())
+		var counted: Array = inst.trigger_counts.keys()
+		counted.sort()  # khóa int
+		for k: int in counted:
+			ctx.update(PackedInt64Array([k, inst.trigger_counts[k]]).to_byte_array())  # EFF-16

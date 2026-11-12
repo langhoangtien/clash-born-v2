@@ -126,6 +126,8 @@ func _check_names(res: Resource, where: String) -> void:
 			_fail(where, "sự kiện '%s' không có trong EVT" % res.event)
 		if not RuleCatalog.TRIGGER_CONDITIONS.has(String(res.condition)):
 			_fail(where, "điều kiện '%s' không có" % res.condition)
+		if not res.every.is_empty() and (not res.chance.is_empty() or not res.cooldown.is_empty()):
+			_fail(where, "every không dùng chung với chance / cooldown (EFF-16)")
 	elif res is EffectDef:
 		for event: StringName in res.removed_by:
 			if not RuleCatalog.EVENTS.has(String(event)):
