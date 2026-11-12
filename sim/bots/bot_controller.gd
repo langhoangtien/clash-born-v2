@@ -22,8 +22,8 @@ func run(world: World) -> void:
 		if e.kind != Entity.Kind.HERO or e.bot == null or not e.alive or e.reincarnate_tick >= 0:
 			continue
 		_note_fights(world, e)  # mỗi tick, để không lỡ sự kiện giữa hai lần nghĩ
-		if (world.tick + e.id) % e.bot.think_ticks() != 0:
-			continue
+		if (world.tick + e.id) % e.bot.think_ticks() != 0 or Rules.is_taunted(world, e):
+			continue  # ST-20: bị khiêu khích thì không ra lệnh
 		think(world, e)
 
 

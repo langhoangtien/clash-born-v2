@@ -16,4 +16,5 @@ enum Id {
 	MAGIC_IMMUNE,  # ST-15
 	HEXED,         # ST-16
 	DUELING,       # ST-19 (D-135)
+	TAUNTED,       # ST-20 (D-383)
 }

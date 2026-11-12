@@ -138,6 +138,7 @@ State được tính từ hiệu ứng đang có. Bảng tác động (✓ đư�
 | ST-15 | MAGIC_IMMUNE | ✓ | ✓ | ✓ | đánh thường ✓; chiêu/đồ địch chỉ khi xuyên miễn phép | phép ✗ (trừ nguồn xuyên miễn phép); vật lý ✓; pure ✓ |
 | ST-16 | HEXED | ✓ (tốc cố định `hex_move_speed`) | ✗ | ✗ (kể cả đồ) | ✓ | ✓ |
 | ST-19 | DUELING | chỉ tự đuổi đối thủ (DUL-03) | chỉ đối thủ | ✗ (kể cả đồ) | ✓ | ✓ |
+| ST-20 | TAUNTED | chỉ tự đuổi kẻ khiêu khích | chỉ kẻ khiêu khích | ✗ (kể cả đồ) | ✓ | ✓ |
 
 `ST-09` Kháng hiệu ứng (`status_resistance`) giảm thời lượng các hiệu ứng có tag
 `debuff` (v1 chỉ giảm choáng). Nhiều nguồn **nhân dồn** như Dota (D-167): 1 − Π(1 − vᵢ), vd 10% và
@@ -202,6 +203,26 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 | Lệnh / đạn đang nhắm | Lệnh cũ bị thay bằng đánh đối thủ; đạn đã bay vẫn trúng |
 | Với state khác | Khống chế vẫn tác dụng; đối thủ không đánh được (tàng hình, GHOST…) thì đứng chờ |
 | Mất khi | Một bên chết, hết giờ |
+
+`ST-20` (D-383) TAUNTED (khiêu khích): kẻ khiêu khích là **nguồn** của hiệu ứng mang state này; có nhiều bản thì bản áp
+  sau cùng thắng. Mỗi tick (pha STATE, sau Quyết Đấu) đơn vị bị đặt lệnh đánh kẻ khiêu khích (ngoài tầm thì tự đi tới); không
+  nhận lệnh đi / đánh / chiêu / đồ / về thành (từ chối `TAUNTED`); đang tung chiêu bị hủy (ABL-03), đang về thành bị hủy, lệnh
+  chờ bị bỏ. Công trình và quái boss (JGL-10) không bị khiêu khích (mang hiệu ứng cũng không bị ép). Đang Quyết Đấu thì Quyết
+  Đấu thắng (không ép theo TAUNTED). Là debuff: kháng hiệu ứng rút ngắn (ST-09); thanh tẩy cơ bản không gỡ, chỉ thanh tẩy
+  mạnh gỡ (hiệu ứng khai báo `dispel = STRONG`); chiêu khiêu khích khai báo xuyên miễn phép thì trúng cả đơn vị miễn phép
+  (ST-15). Kẻ khiêu khích chết hoặc rời trận → hiệu ứng bị gỡ (lý do `source_died`). Bot đang bị khiêu khích không ra lệnh
+  (BOT-11 không tính lúc đó vì đơn vị đang đuổi / đánh). Bảng tương tác:
+
+| Hỏi | TAUNTED |
+|---|---|
+| Đi / đánh / chiêu | Chỉ tự đuổi và đánh kẻ khiêu khích; không chiêu, không đồ, không về thành |
+| Địch / đồng minh nhắm được | Như thường |
+| Lệnh / đạn đang nhắm | Lệnh cũ bị thay bằng đánh kẻ khiêu khích; đạn đã bay vẫn trúng mục tiêu cũ |
+| Trụ, lính, quái, bot | Lính, quái thường, hero bị ép; công trình và boss không; bot không ra lệnh |
+| Kỹ năng vùng | Áp bằng chiêu vùng thì trúng như mọi debuff (tàng hình vẫn trúng, ABL-05) |
+| Hiển thị | Biểu tượng hiệu ứng (art_id của hiệu ứng); VIEW không cần sự kiện mới (`effect_applied`) |
+| Với state khác | STUNNED / ROOTED / DISARMED vẫn tác dụng (ST-17); kẻ khiêu khích không đánh được (tàng hình, GHOST, UNTARGETABLE) thì đứng chờ; DUELING thắng TAUNTED; hai khiêu khích → bản áp sau cùng |
+| Mất khi | Hết giờ, kẻ khiêu khích chết, chủ chết, thanh tẩy mạnh |
 
 `ST-17` Kết hợp state: mỗi state áp độc lập, không state nào "đè" state khác trừ khi
   ghi rõ. Ví dụ GHOST + MAGIC_IMMUNE → chỉ còn nhận sát thương pure. INVULNERABLE
@@ -646,7 +667,8 @@ skill_leveled, talent_chosen, dash_finished, projectile_hit, item_used,
 knockback_finished, dispelled, attack_target_changed, mana_burned,
 lethal_damage, reincarnated, recall_started, recall_cancelled, recall_finished, duel_started,
 duel_ended, attack_deflected, teleported, effect_triggered`. `gold_changed` (D-240): hero last hit lính / quái (ECO-01), kẻ gây = hero, đối tượng = con bị hạ, lượng = vàng. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
-`effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `removed` (hành động RemoveEffect), `dispelled`, `owner_died`.
+`effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `removed` (hành động RemoveEffect), `dispelled`, `owner_died`,
+`source_died` (D-383: kẻ khiêu khích chết, ST-20).
 `ability_finished` (D-296) mang điểm chọn `point` (không chọn điểm thì INF) và hướng `direction` của lần tung — chỉ để
 VIEW vẽ hiệu ứng chiêu đúng chỗ, không luật nào đọc.
 `effect_triggered` (D-320): một trigger của hiệu ứng vừa chạy hành động (qua điều kiện, tỉ lệ, hồi chiêu trigger) — kẻ gây =

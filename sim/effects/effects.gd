@@ -46,7 +46,7 @@ static func apply(world: World, owner: Entity, def: EffectDef, source: Entity, v
 	return inst
 
 
-## Gỡ một bản hiệu ứng; `reason` theo EVT: expired, depleted, removed_by_event, dispelled, owner_died.
+## Gỡ một bản hiệu ứng; `reason` theo EVT: expired, depleted, removed_by_event, dispelled, owner_died, source_died.
 static func remove(world: World, owner: Entity, inst: EffectInstance, reason: StringName) -> void:
 	if not owner.effects.has(inst):
 		return

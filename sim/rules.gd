@@ -15,6 +15,30 @@ static func in_attack_range(a: Entity, b: Entity, extra: float = 0.0) -> bool:
 	return edge_distance(a, b) <= a.stats.get_stat(StatId.Id.ATTACK_RANGE) + extra
 
 
+## ST-20 (D-383): kẻ khiêu khích = nguồn của bản hiệu ứng TAUNTED áp sau cùng (null nếu không có).
+static func taunter(world: World, e: Entity) -> Entity:
+	var best: EffectInstance = null
+	for inst: EffectInstance in e.effects:
+		if inst.def.states.has(UnitState.Id.TAUNTED) and (best == null or inst.applied_seq >= best.applied_seq):
+			best = inst
+	return world.find_entity(best.source_id) if best != null else null
+
+
+## ST-20: đang bị ép theo khiêu khích — có state, không phải công trình, không phải quái boss (JGL-10).
+static func is_taunted(world: World, e: Entity) -> bool:
+	return has_state(e, UnitState.Id.TAUNTED) and not is_structure(e) and not is_boss(world, e)
+
+
+## JGL-10: quái của trại boss.
+static func is_boss(world: World, e: Entity) -> bool:
+	if e.kind != Entity.Kind.NEUTRAL or e.camp_index < 0:
+		return false
+	for c: CampState in world.camps:
+		if c.index == e.camp_index:
+			return c.def != null and c.def.is_boss()
+	return false
+
+
 ## STAT-07 (D-382): modifier có điều kiện kiểu đánh (cận chiến = không có đạn bay, như ITM-05).
 static func modifier_applies(m: ModifierDef, e: Entity) -> bool:
 	match m.condition:
@@ -70,12 +94,14 @@ static func can_attack(e: Entity) -> bool:
 
 ## ST-01, 03, 08, 16, 19: được dùng chiêu (cả đồ).
 static func can_cast(e: Entity) -> bool:
-	return e.alive and e.dash == null and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.SILENCED | 1 << UnitState.Id.HEXED | 1 << UnitState.Id.DUELING) == 0
+	return e.alive and e.dash == null and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.SILENCED | 1 << UnitState.Id.HEXED
+		| 1 << UnitState.Id.DUELING | 1 << UnitState.Id.TAUNTED) == 0  # ST-20
 
 
 ## ITM-03/08: dùng đồ — không bị câm lặng chặn; choáng, biến hình, lướt, chết thì không.
 static func can_use_item(e: Entity) -> bool:
-	return e.alive and e.dash == null and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.HEXED | 1 << UnitState.Id.DUELING) == 0  # ST-19
+	return e.alive and e.dash == null and e.states & (1 << UnitState.Id.STUNNED | 1 << UnitState.Id.HEXED | 1 << UnitState.Id.DUELING
+		| 1 << UnitState.Id.TAUNTED) == 0  # ST-19, ST-20
 
 
 ## ST-07, 11: hệ số sát thương nhận theo loại (sau giáp, trước khiên).

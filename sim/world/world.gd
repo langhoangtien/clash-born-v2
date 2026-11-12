@@ -88,6 +88,7 @@ func _init(seed_value: int, p_balance: BalanceSettings) -> void:
 	add_system(StateSystem.new(), Phase.STATE)
 	add_system(RegenSystem.new(), Phase.STATE)
 	add_system(DuelSystem.new(), Phase.STATE)  # D-135
+	add_system(TauntSystem.new(), Phase.STATE)  # D-383: sau Quyết Đấu
 	add_system(StructureController.new(), Phase.CONTROLLER)
 	add_system(DashSystem.new(), Phase.MOVEMENT)  # trước MovementSystem (thêm sau)
 	add_system(KnockbackSystem.new(), Phase.MOVEMENT)
