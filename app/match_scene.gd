@@ -187,6 +187,8 @@ func cycle_speed() -> void:
 
 
 func _before_step() -> void:
+	if OnlineMatch.replaying(online):  # NET-22: đang tua vào lại — không nội suy, không gửi lệnh giữ
+		return
 	units_view.capture_previous()
 	input.flush()
 
@@ -216,7 +218,9 @@ func _setup_audio() -> void:
 	audio.name = "Audio"
 	add_child(audio)
 	audio.setup_match(hero.team, hero.id)
-	runner.stepped.connect(func() -> void: audio.on_step(world))
+	runner.stepped.connect(func() -> void:
+		if not OnlineMatch.replaying(online):  # NET-22: đang tua vào lại — không phát âm thanh cho từng tick đã qua
+			audio.on_step(world))
 	audio.play_music(&"music_match", &"amb_map")
 
 

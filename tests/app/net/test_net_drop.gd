@@ -313,3 +313,16 @@ func test_NET_22_rejoin_replays_history_and_returns_control() -> void:
 	assert_true(checked > 10)
 	assert_eq(room.desyncs, {})
 	assert_false(room.gone.has(7))
+
+
+## NET-22: màn trận bỏ âm thanh / nội suy / lệnh giữ theo tick khi đang tua vào lại, bật lại khi đã kịp.
+func test_NET_22_match_scene_quiet_while_replaying() -> void:
+	assert_false(OnlineMatch.replaying(null), "trận với bot")
+	var o: OnlineSession = OnlineSession.new(NetTransport.new(), "", "")
+	assert_false(OnlineMatch.replaying(o), "chưa vào trận")
+	o.lockstep = LockstepClient.new(NetTransport.new())
+	assert_false(OnlineMatch.replaying(o))
+	o.lockstep.resume_to = 300
+	assert_true(OnlineMatch.replaying(o), "đang tua")
+	o.lockstep.resume_to = -1
+	assert_false(OnlineMatch.replaying(o), "đã kịp")
