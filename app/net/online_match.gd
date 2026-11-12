@@ -70,6 +70,11 @@ static func status(lock: LockstepClient, open: bool, waiting_s: float) -> String
 	return "Online %d ms" % roundi(lock.rtt_ms)
 
 
+## NET-22: đang tua sau khi vào lại — màn trận bỏ âm thanh / nội suy / lệnh giữ theo tick tới khi kịp.
+static func replaying(s: OnlineSession) -> bool:
+	return s != null and s.lockstep != null and s.lockstep.resume_to >= 0
+
+
 ## NET-16: chữ cho một tin `notice` của máy chủ.
 static func notice_text(n: Dictionary) -> String:
 	match String(n.get("kind", "")):

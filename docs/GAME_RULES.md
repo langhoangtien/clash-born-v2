@@ -926,8 +926,10 @@ chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, 
   biên bản trận online; `/api/match` nhận biên bản có `match_key` (bản game cũ) → trả `ignored`, không ghi.
 - `NET-21` (M9.8, D-406) **Trận đang đánh.** Tài khoản có ô trong một trận chưa kết thúc ở máy chủ này: lời chào `hello_ok`
   kèm mã phòng trận đó; bảng Online hiện nút "Vào lại trận đang đánh". Tài khoản đó không tạo / vào phòng khác (`IN_MATCH`)
-  tới khi trận kết thúc hoặc bị hủy (R2 — chống vào nhiều trận rồi thoát phá game; luật riêng, gỡ được). Trận ở máy chủ
-  khác máy đang nối thì không biết (Tự động thường chọn lại đúng máy).
+  tới khi trận kết thúc hoặc bị hủy (R2 — chống vào nhiều trận rồi thoát phá game; luật riêng, gỡ được). Máy khách nhớ mã
+  trận online gần nhất (lúc vào trận / vào lại); mở bảng Online mà máy của mã đó (chữ số đầu — NET-15) đo được nhưng không
+  phải máy sẽ chọn (Tự động hoặc chọn tay) → bắt tay máy đó trước: còn trận → ở lại máy đó, hiện nút Vào lại; không còn
+  (đã kết thúc / hủy) → quên mã, sang máy theo lựa chọn như thường.
 - `NET-22` (M9.8, D-406) **Vào lại.** Máy khách gửi `rejoin` → máy chủ gửi `welcome` như lúc bắt đầu kèm `resume` và tick hiện
   tại T, rồi gửi lại toàn bộ gói lệnh tick 1..T theo từng phần (`history`, mỗi phần tối đa `HISTORY_CHUNK` gói khác rỗng,
   chỉ gửi khi hàng gửi của kết nối còn chỗ), song song với gói lệnh trực tiếp từ T+1. Máy khách dựng World từ cấu hình rồi

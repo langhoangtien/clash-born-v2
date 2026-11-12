@@ -323,3 +323,32 @@ func test_NET_06_room_server_reports_busy() -> void:
 func test_NET_10_protocol_is_3() -> void:
 	assert_eq(NetVersion.PROTOCOL, 3)
 	assert_true(NetVersion.fingerprint().begins_with("3-"))
+
+
+## NET-21 (D-407): game nhớ mã trận online gần nhất — mở bảng thì hỏi máy của trận đó trước (kể cả khi đang chọn tay máy
+## khác): còn trận → ở lại, có nút Vào lại; trận đã hết → quên mã, về máy theo lựa chọn.
+func test_NET_21_remembered_match_server_is_asked_first() -> void:
+	var keep: Array = _signed_in("Bình")
+	var a: Array = _server(1)
+	var b: Array = _server(2)
+	var rooms: Array = [a[0], b[0]]
+	var account: Array = [0]
+	ApiAuth.dev("name:Bình", func(acc: Dictionary) -> void: account[0] = int(acc["id"]))
+	var cfg: MatchConfig = MatchConfig.make(1, [&"gorran", &"myra"] as Array[StringName], [0, 1], BotState.Difficulty.NORMAL, 5)
+	var g: RoomGame = RoomGame.create("234567", cfg, ContentLibrary.load_dir())
+	g.accounts = {1: account[0]}
+	(b[0] as RoomServer)._games["234567"] = g
+	var list: Array[Dictionary] = [{"id": 1, "name": "A", "url": _url(a[1])}, {"id": 2, "name": "B", "url": _url(b[1])}]
+	var m: OnlineMenu = _menu(list, 1)
+	m.save_match("234567")
+	m.connect_servers()
+	assert_true(_pump(rooms, m, 10.0, func() -> bool: return m.session != null and m.session.stage == "lobby"))
+	assert_eq([m.server_id, m.session.live], [2, "234567"], "ở máy của trận, báo trận đang đánh")
+	assert_eq(m.choice, 1, "lựa chọn không đổi")
+	assert_true(m.panel.find_children("*", "Button", true, false).any(func(x: Button) -> bool: return x.text.begins_with("Vào lại")))
+	(b[0] as RoomServer)._games.erase("234567")
+	m.connect_servers()
+	assert_true(_pump(rooms, m, 10.0, func() -> bool: return m.session != null and m.session.stage == "lobby" and m.server_id == 1))
+	assert_eq(m.load_match(), "", "trận đã hết → quên mã")
+	_free(m, rooms)
+	_restore(keep)
