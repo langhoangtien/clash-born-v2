@@ -257,7 +257,7 @@
    "height": 3.1
   },
   "huyet_cu_nhan": {
-   "model": "style/heroes/brakk",
+   "model": "style/heroes/huyet_cu_nhan",
    "rig": "Creature",
    "attack": "attack",
    "cast": "cast",
@@ -271,7 +271,7 @@
    "skill_impact": {
     "1": 0.6
    },
-   "_tam": "D-347: mô hình tạm mượn của brakk (chờ mô hình riêng)"
+   "_ghi_chu": "D-379c: mô hình riêng style mới (Tripo thường 3k + afk.ai, hoạt ảnh như Brakk)"
   },
   "thach_giap": {
    "model": "style/heroes/brakk",

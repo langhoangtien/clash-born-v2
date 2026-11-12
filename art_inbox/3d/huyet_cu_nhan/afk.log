@@ -1,0 +1,22 @@
+(node:817) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:829) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Uploading huyet_cu_nhan_front.glb…
+Queued
+Rigging: waiting for the GPU
+Rigging: placing the joints
+Rigging: fitting the skeleton
+Rigging: painting skin weights
+Rigging: skinning
+Writing the .glb with its animations
+Done in 205 s: 593 animations, 54.5 MB, $0.05 from this month's Lifetime credit. $8.15 of Lifetime credit left this month.
+Keeping the arms out of the body in its animations, on this computer…
+(node:829) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:829) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:829) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Arms kept out of the body in 593 animations in 104.8 s (frames with an arm through it: 30170, now 5320).
+art_inbox/3d/huyet_cu_nhan/huyet_cu_nhan_afk.glb

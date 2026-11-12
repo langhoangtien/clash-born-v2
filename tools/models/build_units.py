@@ -121,6 +121,12 @@ UNITS = {
                          "Idle_Dizzy=stun,Bow Pull Back@0.75-1.25+Bow Release=cast,Dodge_left=skill_1,"
                          "Bow_Draw@1.3-2.07+Bow Release=skill_2,Sprint=sprint",
                          "_leaf", False, ["phong_tien_v4/phong_tien_v4_bow_afk:hand_l"]),
+    # D-379c: Huyết Cự Nhân style mới (tờ 3 góc v2: búi tóc ngắn, râu ngắn, không giáp vai) — Tripo thường 3k + afk.ai,
+    # tay không, hoạt ảnh như Brakk (cùng bộ chiêu đấm / nhảy / thủ / gồng)
+    "huyet_cu_nhan": ("huyet_cu_nhan/huyet_cu_nhan", "heroes/huyet_cu_nhan",
+                      "Fighting Idle=idle,Jog=run,Melee_Hook+Melee_Hook_Rec=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
+                      "Punch_Cross=cast,NinjaJump_Start@0.2-0.96+NinjaJump_Land@0-0.7=skill_1,Defend=skill_2,Power Up=skill_3,"
+                      "Sprint=sprint", True, False),
     # D-307b: tê giác theo style ảnh mẫu người chơi (concept_gen.py từ ảnh mẫu → split_turnaround.py →
     # Tripo multiview → glb_yaw -90 → afk.ai: dragon / horse → fix-stretching)
     # D-309: Người Đá thay rồng (concept_gen theo ảnh mẫu bãi đấu → Tripo → afk.ai human); fix-stretching + drop_loose (tam giác lẻ kéo dài); đòn đánh = đấm móc (đấm đất kéo méo nắm tay)
