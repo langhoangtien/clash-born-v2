@@ -1,0 +1,2 @@
+Draw ONLY the big stone SHIELD of "Thạch Giáp" from art_inbox/concepts/chuan_moi/bang_10_tuong.png (tall slab of carved grey stone with moss and a golden spiral rune), as a separate prop: portrait 1024x1536, plain flat warm-grey background, standing upright, seen straight from the front, filling about 85% of the image height, no character, no hands, no text.
+Output: art_inbox/3d/thach_giap/thach_giap_shield.png

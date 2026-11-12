@@ -122,9 +122,9 @@ UNITS = {
                          "Bow_Draw@1.3-2.07+Bow Release=skill_2,Sprint=sprint",
                          "_leaf", False, ["phong_tien_v4/phong_tien_v4_bow_afk:hand_l"]),
     # D-379c: Huyết Cự Nhân style mới (tờ 3 góc v2: búi tóc ngắn, râu ngắn, không giáp vai) — Tripo thường 3k + afk.ai,
-    # tay không, hoạt ảnh như Brakk (cùng bộ chiêu đấm / nhảy / thủ / gồng)
+    # tay không, hoạt ảnh như Brakk (nhảy / thủ / gồng); đánh thường = Fighting Left Jab cho khác Brakk (người chơi)
     "huyet_cu_nhan": ("huyet_cu_nhan/huyet_cu_nhan", "heroes/huyet_cu_nhan",
-                      "Fighting Idle=idle,Jog=run,Melee_Hook+Melee_Hook_Rec=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
+                      "Fighting Idle=idle,Jog=run,Fighting Left Jab=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
                       "Punch_Cross=cast,NinjaJump_Start@0.2-0.96+NinjaJump_Land@0-0.7=skill_1,Defend=skill_2,Power Up=skill_3,"
                       "Sprint=sprint", True, False),
     # D-307b: tê giác theo style ảnh mẫu người chơi (concept_gen.py từ ảnh mẫu → split_turnaround.py →
