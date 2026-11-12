@@ -21,6 +21,8 @@ static func apply(world: World, owner: Entity, def: EffectDef, source: Entity, v
 	var inst: EffectInstance = null
 	if def.stacking != EffectDef.Stacking.INDEPENDENT:
 		inst = _find(owner, def, source_id)  # EFF-02: nguồn khác → bản khác
+	elif def.max_stacks > 1:
+		_make_room(world, owner, def, source_id)  # EFF-17
 	if inst == null:
 		inst = EffectInstance.new()
 		inst.serial = world.next_serial()
@@ -46,7 +48,7 @@ static func apply(world: World, owner: Entity, def: EffectDef, source: Entity, v
 	return inst
 
 
-## Gỡ một bản hiệu ứng; `reason` theo EVT: expired, depleted, removed_by_event, dispelled, owner_died, source_died.
+## Gỡ một bản hiệu ứng; `reason` theo EVT: expired, depleted, removed_by_event, dispelled, owner_died, source_died, replaced.
 static func remove(world: World, owner: Entity, inst: EffectInstance, reason: StringName) -> void:
 	if not owner.effects.has(inst):
 		return
@@ -114,6 +116,19 @@ static func absorb(world: World, owner: Entity, amount: float) -> float:
 
 static func context(world: World, owner: Entity, inst: EffectInstance) -> ExprContext:
 	return ExprContext.make(owner, world.find_entity(inst.source_id), inst.values)
+
+
+## EFF-17 (D-395): đủ trần bản INDEPENDENT cùng nguồn thì gỡ bản cũ nhất (serial nhỏ nhất) trước khi thêm bản mới.
+static func _make_room(world: World, owner: Entity, def: EffectDef, source_id: int) -> void:
+	var count: int = 0
+	var oldest: EffectInstance = null
+	for i: EffectInstance in owner.effects:
+		if i.def.id == def.id and i.source_id == source_id:
+			count += 1
+			if oldest == null or i.serial < oldest.serial:
+				oldest = i
+	if count >= def.max_stacks:
+		remove(world, owner, oldest, &"replaced")
 
 
 static func _find(owner: Entity, def: EffectDef, source_id: int) -> EffectInstance:

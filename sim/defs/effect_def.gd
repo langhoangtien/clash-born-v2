@@ -8,6 +8,7 @@ enum Dispel { BASIC, STRONG, NONE }  # EFF-07
 ## Rỗng = thời lượng do hành động áp hiệu ứng truyền vào; "0" = vĩnh viễn.
 @export var duration: String
 @export var stacking: Stacking = Stacking.REFRESH
+## STACK: số tầng tối đa. INDEPENDENT (EFF-17, D-395): > 1 là trần số bản cùng nguồn (đủ trần thì thay bản cũ nhất); ≤ 1 = không trần.
 @export var max_stacks: int = 1
 @export var tags: Array[StringName] = []
 @export var dispel: Dispel = Dispel.BASIC

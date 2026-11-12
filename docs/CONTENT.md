@@ -723,7 +723,7 @@ STR 27 (+3,8), AGI 14 (+1,6), INT 15 (+1,8), giáp 2, tốc chạy 265 (chỉ s�
 
 | Chiêu | Hiệu lực | Bậc |
 |---|---|---|
-| Nội tại — Ý Chí Sắt | mỗi đòn đánh trúng +1 tầng (tối đa 16; 2 s, đánh tiếp thì làm mới cả chồng — EFF-01 STACK): mỗi tầng −2% sát thương nhận (cộng dồn qua `damage_taken_multiplier`) và +0,1% máu tối đa hồi mỗi giây | như nhau ở mọi bậc (T3) |
+| Nội tại — Ý Chí Sắt | mỗi đòn đánh trúng +1 tầng (tối đa 16, mỗi tầng hết hạn riêng sau 2 s — EFF-17, TV1): mỗi tầng giảm sát thương nhận (cộng dồn qua `damage_taken_multiplier`) và +0,1% máu tối đa hồi mỗi giây | −1,2 / 1,4 / 1,6 / 1,8 / 2,0% mỗi tầng (TV2) |
 | Q — Khiêu Khích | vùng 300 quanh mình, tung 0,3 s: khiêu khích (ST-20) — xuyên miễn phép, chỉ thanh tẩy mạnh gỡ, kháng hiệu ứng rút ngắn | 1,6–2,4 s, hồi 16–12, mana 80–100 |
 | W — Gồng Sắt | bản thân: +30% tốc chạy, +giáp | +6 / 8 / 10 / 12 / 14 giáp, 3–5 s, hồi 18–14, mana 50–70 |
 | R — Phản Kích (bị động) | cứ 4 đòn đánh trúng mình (không tính công trình, EFF-16) → vật lý `damage + 40% STR` lên kẻ địch trong 300 | 80 / 130 / 180 |

@@ -652,6 +652,22 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
   0. Sự kiện không khớp điều kiện không tính; đòn trượt / bị hất (CMB-11, CMB-15) không phải `attack_landed` nên không tính;
   bị động đang tắt vì HEXED (ST-16) không đếm. Bộ đếm mất cùng bản hiệu ứng (gỡ rồi áp lại thì đếm lại từ 0). Không dùng chung
   với `chance` hoặc `cooldown` (dữ liệu sai). Bộ đếm nằm trong mã băm World (D-30).
+- `EFF-17` (D-395) **Tầng độc lập có trần**: hiệu ứng INDEPENDENT có `max_stacks` > 1 thì mỗi đơn vị giữ tối đa chừng đó bản
+  của cùng hiệu ứng **từ cùng một nguồn** (EFF-02: nguồn khác đếm riêng); mỗi bản hết hạn riêng. Đã đủ trần mà áp thêm thì
+  bản **cũ nhất** (áp sớm nhất) bị gỡ (lý do `replaced`) rồi bản mới được thêm — như Dota, chồng giữ đầy khi cứ áp liên
+  tục và rơi dần từng tầng khi ngừng. `max_stacks` ≤ 1 (mặc định) = không trần như cũ. Mỗi bản là một hiệu ứng riêng: thanh
+  tẩy gỡ từng bản theo `dispel` của nó, chết thì gỡ hết (EFF-13), biến hình không ảnh hưởng (không phải bị động). Mỗi bản
+  nằm trong mã băm World như mọi hiệu ứng.
+
+| Hỏi | Tầng độc lập có trần |
+|---|---|
+| Áp khi chưa đủ trần | Thêm một bản, thời hạn riêng |
+| Áp khi đủ trần | Gỡ bản cũ nhất (`replaced`), thêm bản mới |
+| Nguồn khác | Đếm trần riêng theo nguồn (EFF-02) |
+| Hết hạn | Từng bản một, theo thời điểm áp |
+| Thanh tẩy / chết | Gỡ từng bản theo `dispel`; chết gỡ hết |
+| Modifier | Mỗi bản cộng riêng (STAT-02) |
+| Hiển thị | Mỗi bản phát `effect_applied` / `effect_removed`; VIEW gộp theo id nếu muốn |
 
 ## DUL — Quyết Đấu (D-135)
 
@@ -694,7 +710,7 @@ knockback_finished, dispelled, attack_target_changed, mana_burned,
 lethal_damage, reincarnated, recall_started, recall_cancelled, recall_finished, duel_started,
 duel_ended, attack_deflected, teleported, effect_triggered, extra_attack`. `gold_changed` (D-240): hero last hit lính / quái (ECO-01), kẻ gây = hero, đối tượng = con bị hạ, lượng = vàng. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
 `effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `removed` (hành động RemoveEffect), `dispelled`, `owner_died`,
-`source_died` (D-383: kẻ khiêu khích chết, ST-20).
+`source_died` (D-383: kẻ khiêu khích chết, ST-20), `replaced` (D-395: bản cũ nhất bị thay khi đủ trần, EFF-17).
 `ability_finished` (D-296) mang điểm chọn `point` (không chọn điểm thì INF) và hướng `direction` của lần tung — chỉ để
 VIEW vẽ hiệu ứng chiêu đúng chỗ, không luật nào đọc.
 `effect_triggered` (D-320): một trigger của hiệu ứng vừa chạy hành động (qua điều kiện, tỉ lệ, hồi chiêu trigger) — kẻ gây =
