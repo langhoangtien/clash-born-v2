@@ -295,13 +295,14 @@ func _retreat(world: World, e: Entity) -> void:
 
 
 ## BOT-01: điểm an toàn gần nhất phía nhà (lùi ra khỏi vùng mọi trụ đang đe dọa, rồi về nhà).
+## D-380: chỉ nhận điểm đi thẳng tới được; bị vách chắn thì đi về nhà theo đường tìm được.
 func escape_point(world: World, e: Entity) -> Vector2:
 	var home: Vector2 = world.map.fountain_point(e.team)
 	var nav: MapNavigation = world.navigation(e.radius)
 	var step: Vector2 = (home - e.position).normalized()
 	for d: float in [300.0, 500.0, 700.0, 900.0, 1200.0, 1600.0]:
 		var p: Vector2 = nav.nearest_clear(e.position + step * d)
-		if safe(world, e, p) and not _threatened_by_targeting(world, e, p):
+		if nav.has_line_of_walk(e.position, p) and safe(world, e, p) and not _threatened_by_targeting(world, e, p):
 			return p
 	return home
 

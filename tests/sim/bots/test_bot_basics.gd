@@ -114,3 +114,20 @@ func test_BOT_11_rally_at_lane_start_still_alternates() -> void:
 	var b: Vector2 = c.rally_point(w, bot)
 	assert_true(a.distance_to(b) > 20.0, "hai điểm đứng chờ phải khác nhau: %s / %s" % [a, b])
 	assert_true(BotController.safe(w, bot, a) and BotController.safe(w, bot, b), "BOT-10: cả hai điểm an toàn")
+
+
+## Lỗi (D-380): điểm thoát "lùi thẳng về phía nhà" rơi vào sau một vách → không có đường tới, lệnh đi xong
+## ngay, bot đứng im trong vùng trụ. Toạ độ lấy từ trận brakk:noctis seed 2 phút 27:02.
+func test_BOT_11_escape_point_behind_wall_still_moves() -> void:
+	var w: World = _world()
+	for t: Entity in w.entities:  # trụ đỏ đã đổ trong trận đó
+		if t.kind == Entity.Kind.TOWER and String(t.structure_id) in ["red_mid_t1", "red_mid_t2", "red_mid_t3", "red_bot_t1", "red_bot_t2", "red_top_t1", "red_top_t2"]:
+			t.alive = false
+	var bot: Entity = UnitFactory.hero(w, _lib.heroes[&"brakk"], 0, Vector2(8956.053, 2406.312))
+	MatchSetup.add_bot(w, bot)
+	var start: Vector2 = bot.position
+	assert_false(BotController.safe(w, bot, start), "chỗ đứng trong vùng trụ địch")
+	var p: Vector2 = BotController.new().escape_point(w, bot)
+	assert_false(w.navigation(bot.radius).path(start, p).is_empty(), "BOT-01: điểm thoát phải có đường tới: %s" % p)
+	_steps(w, 60)
+	assert_true(bot.position.distance_to(start) > 100.0, "BOT-11: 2 s phải rời chỗ, mới đi %.0f" % bot.position.distance_to(start))
