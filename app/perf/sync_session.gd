@@ -11,6 +11,7 @@ var _check: SyncCheck
 var _label: Label
 var _upload: PerfUpload
 var _t0: int = 0
+var _sim_usec: int = 0     ## thời gian thật nằm trong SIM (không tính chờ khung hình) — tốc độ tua của máy này (M9.8)
 var _retry: Button
 var _data: Dictionary = {}
 var _summary: String = ""
@@ -67,9 +68,10 @@ func _process(_delta: float) -> void:
 		return
 	if _check.done():
 		return
-	var start: int = Time.get_ticks_msec()
-	while not _check.done() and Time.get_ticks_msec() - start < BUDGET_MS:
+	var start: int = Time.get_ticks_usec()
+	while not _check.done() and Time.get_ticks_usec() - start < BUDGET_MS * 1000:
 		_check.advance(CHUNK)
+	_sim_usec += Time.get_ticks_usec() - start
 	_label.text = "Kiểm tra đồng bộ… %d%%" % int(_check.progress() * 100.0)
 	if _check.done():
 		_send()
@@ -77,10 +79,11 @@ func _process(_delta: float) -> void:
 
 func _send() -> void:
 	var meta: Dictionary = {"version": Updater.current_name(), "device": OS.get_model_name(),
-		"os": OS.get_name() + " " + OS.get_version(), "arch": Engine.get_architecture_name(), "ms": Time.get_ticks_msec() - _t0}
+		"os": OS.get_name() + " " + OS.get_version(), "arch": Engine.get_architecture_name(), "ms": Time.get_ticks_msec() - _t0,
+		"sim_ms": _sim_usec / 1000}
 	_data = _check.result(meta)
-	_summary = "Kiểm tra đồng bộ · %s · %s · %d giây · mã cuối %s" % [meta["version"], meta["device"],
-		_check.seconds.size(), String(_check.seconds[-1]["hash"]).left(16) if not _check.seconds.is_empty() else "-"]
+	_summary = "Kiểm tra đồng bộ · %s · %s · %d giây trận trong %.1f giây · mã cuối %s" % [meta["version"], meta["device"],
+		_check.seconds.size(), _sim_usec / 1e6, String(_check.seconds[-1]["hash"]).left(16) if not _check.seconds.is_empty() else "-"]
 	_post()
 
 
