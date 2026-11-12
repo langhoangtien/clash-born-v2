@@ -1,0 +1,1 @@
+DIRECTION 1 — "hand-painted chunky foliage like Brakk and the tower": trees and bushes are built from a few big rounded leaf clumps, each clump painted with 2–3 tone light/shadow blocks and soft brush texture, thin dark outline, warm-light / cool-shadow like Brakk's armor. Trunk painted wood. Output: art_inbox/concepts/chuan_brakk/canh_vat/huong1.png
