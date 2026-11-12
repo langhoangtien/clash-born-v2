@@ -14,6 +14,7 @@ Câu mở phiên mới (người chơi dán):
   - Test: `GODOT=godot bash tools/run_tests.sh [--filter=X] [--soak]`. Hai dòng `SCRIPT ERROR … call on null` là fixture cố ý, không phải lỗi.
   - `test_bench` thỉnh thoảng đỏ ngay sau `--import` (lỗi texture giả); chạy lại thì xanh.
   - Thêm `class_name` mới thì chạy `godot --headless --path . --import`.
+  - Chụp hình bằng Vulkan trên máy cloud: `apt-get update && apt-get install -y mesa-vulkan-drivers` trước; thiếu thì Godot lặng lẽ rơi về Compatibility (CB-1, D-360).
 - **Bản Android:**
   1. `GODOT=godot bash tools/build_android.sh`
   2. `bash tools/publish_vps.sh "ghi chú"`
