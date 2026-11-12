@@ -27,6 +27,7 @@ var results: Array[Dictionary] = []
 var _order: Array[int] = []       ## Tự động: máy còn lại để thử khi máy đang nối báo BUSY
 var _join_code: String = ""       ## NET-15: vào phòng này ngay khi bắt tay xong
 var _error_shown: bool = false    ## đã báo lỗi bắt tay → tin "mất kết nối" sau đó không đè lên
+var _live_check: bool = false     ## NET-21: đang hỏi máy của trận gần nhất trước máy theo lựa chọn
 var _fingerprint: String = ""
 
 
@@ -95,6 +96,15 @@ func step() -> void:
 
 func _probe_done() -> void:
 	_order = RoomServers.order(results, choice)
+	var live: int = int(RoomServers.for_code(servers, load_match()).get("id", -1))
+	if live >= 0 and RoomServers.by_id(results, live).get("state") == "ok" and (_order.is_empty() or _order[0] != live):
+		var lt: NetTransport = probe.take(live) if probe != null else null
+		if probe != null:
+			probe.close_all()
+			probe = null
+		_live_check = true  # NET-21: máy của trận gần nhất trước
+		_connect(live, lt)
+		return
 	var t: NetTransport = null
 	if not _order.is_empty() and probe != null:
 		t = probe.take(_order[0])
@@ -117,6 +127,15 @@ func _connect(id: int, t: NetTransport = null) -> void:
 	_status("Đang vào máy chủ %s…" % _name(id), false)
 
 
+## NET-21: máy của trận gần nhất không còn trận / không vào được → máy theo lựa chọn như thường.
+func _after_live_check() -> void:
+	_drop_session()
+	if _order.is_empty():
+		_status(RoomServers.failure_text(results, choice), true)
+	else:
+		_connect(_order.pop_front())
+
+
 func _drop_session() -> void:
 	if session != null:
 		session.send({"t": "leave"})
@@ -128,6 +147,13 @@ func _drop_session() -> void:
 func _on_message(msg: Dictionary) -> void:
 	match String(msg.get("t", "")):
 		"hello_ok":
+			if session.live == "" and int(RoomServers.for_code(servers, load_match()).get("id", -1)) == server_id:
+				save_match("")  # NET-21: trận gần nhất đã kết thúc / hủy
+			if _live_check:
+				_live_check = false
+				if session.live == "":
+					_after_live_check()
+					return
 			if _join_code != "":
 				session.send({"t": "join", "code": _join_code})
 				_join_code = ""
@@ -137,10 +163,16 @@ func _on_message(msg: Dictionary) -> void:
 		"error":
 			_on_error(String(msg.get("code", "")), String(msg.get("for", "")))
 		"welcome":
+			save_match(String(session.room.get("code", session.live)))  # NET-21: nhớ trận để vào lại
 			var s: OnlineSession = session
 			session = null  # màn trận giữ phiên từ đây
 			match_ready.emit(s)
 		"closed":
+			if _live_check:
+				_live_check = false
+				session = null
+				_after_live_check()
+				return
 			var was_lobby: bool = panel.screen != "status"
 			session = null
 			_join_code = ""
@@ -151,6 +183,10 @@ func _on_message(msg: Dictionary) -> void:
 func _on_error(code: String, about: String) -> void:
 	if about != "hello":
 		panel.say(OnlineSession.error_text(code), true)
+		return
+	if _live_check:  # máy của trận gần nhất lỗi bắt tay → về máy theo lựa chọn
+		_live_check = false
+		_after_live_check()
 		return
 	if code == "BUSY" and choice == 0 and not _order.is_empty():  # NET-14: Tự động — máy bận coi như hỏng, sang máy kế
 		session.close()
@@ -229,4 +265,17 @@ func save_choice(c: int) -> void:
 	var cfg: ConfigFile = ConfigFile.new()
 	cfg.load(prefs_path)
 	cfg.set_value("online", "server", c)
+	cfg.save(prefs_path)
+
+
+## NET-21: mã trận online gần nhất ("" = không có).
+func load_match() -> String:
+	var cfg: ConfigFile = ConfigFile.new()
+	return String(cfg.get_value("online", "match", "")) if cfg.load(prefs_path) == OK else ""
+
+
+func save_match(code: String) -> void:
+	var cfg: ConfigFile = ConfigFile.new()
+	cfg.load(prefs_path)
+	cfg.set_value("online", "match", code)
 	cfg.save(prefs_path)
