@@ -66,11 +66,12 @@ func update(world: World) -> void:
 ## D-178: cảnh vật decor.py [mô hình, x, z, góc, cỡ, (y m)] gom theo (ô, mô hình), vật liệu theo Terrain3D.
 func _place_decor(items: Array) -> void:
 	var groups: Dictionary[String, Array] = {}
+	var resize: Dictionary = ModelLibrary.scenery()["style"].get("decor_scale", {})  # D-362: chỉ hình, không đổi vị trí
 	for it: Array in items:
 		var key: String = "%d:%d:%s" % [floori(float(it[1]) / CHUNK), floori(float(it[2]) / CHUNK), it[0]]
 		if not groups.has(key):
 			groups[key] = []
-		groups[key].append([Vector2(float(it[1]), float(it[2])), 0, float(it[4]), float(it[3]), 1.0, float(it[5]) if it.size() > 5 else 0.0])
+		groups[key].append([Vector2(float(it[1]), float(it[2])), 0, float(it[4]) * float(resize.get(it[0], 1.0)), float(it[3]), 1.0, float(it[5]) if it.size() > 5 else 0.0])
 	for key: String in groups:
 		var model: String = key.get_slice(":", 2)
 		_multimesh(Terrain3D.MODEL_DIR + model, groups[key], Terrain3D.material_for(model))
