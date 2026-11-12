@@ -8,6 +8,8 @@ extends RefCounted
 ## Hằng số kỹ thuật: biên an toàn khi đánh dấu ô, số vòng ô tìm ô bắt đầu.
 const SAFETY_MARGIN: float = 4.0
 const START_SEARCH_RINGS: int = 3
+## D-389: đoạn thẳng cách mép pixel khoảng trống chừng này (đơn vị pixel) thì coi như chạm cả pixel bên kia (sai số làm tròn).
+const EDGE_SLACK: float = 0.01
 
 var layout: MapLayout
 var grid: AStarGrid2D = AStarGrid2D.new()
@@ -125,11 +127,14 @@ func _terrain_clear_along(a: Vector2, b: Vector2) -> bool:
 		((cell.x + 1 - pa.x) if step.x > 0 else (pa.x - cell.x)) * t_delta.x if d.x != 0.0 else INF,
 		((cell.y + 1 - pa.y) if step.y > 0 else (pa.y - cell.y)) * t_delta.y if d.y != 0.0 else INF)
 	var guard: int = absi(last.x - cell.x) + absi(last.y - cell.y) + 2
+	var t0: float = 0.0
 	while guard > 0:
-		if _pixel_clearance(cell) < agent_radius:
+		var t1: float = minf(minf(t_max.x, t_max.y), 1.0)
+		if not _pixel_and_edges_clear(cell, pa + d * t0, pa + d * t1):
 			return false
 		if cell == last:
 			return true
+		t0 = t1
 		if t_max.x < t_max.y:
 			cell.x += step.x
 			t_max.x += t_delta.x
@@ -137,6 +142,20 @@ func _terrain_clear_along(a: Vector2, b: Vector2) -> bool:
 			cell.y += step.y
 			t_max.y += t_delta.y
 		guard -= 1
+	return true
+
+
+## D-389: đoạn trong pixel `cell` (từ `p` tới `q`, đơn vị pixel) chạy sát mép pixel trong `EDGE_SLACK` thì xét cả pixel
+## bên kia mép — điểm trên đoạn (sai số làm tròn) có thể rơi sang đó, mà `point_is_clear` đọc đúng pixel chứa điểm.
+func _pixel_and_edges_clear(cell: Vector2i, p: Vector2, q: Vector2) -> bool:
+	if _pixel_clearance(cell) < agent_radius:
+		return false
+	var lo: Vector2 = Vector2(minf(p.x, q.x), minf(p.y, q.y)) - Vector2(cell)
+	var hi: Vector2 = Vector2(cell + Vector2i.ONE) - Vector2(maxf(p.x, q.x), maxf(p.y, q.y))
+	for side: Vector2i in [Vector2i(-1, 0) if lo.x < EDGE_SLACK else Vector2i.ZERO, Vector2i(1, 0) if hi.x < EDGE_SLACK else Vector2i.ZERO,
+			Vector2i(0, -1) if lo.y < EDGE_SLACK else Vector2i.ZERO, Vector2i(0, 1) if hi.y < EDGE_SLACK else Vector2i.ZERO]:
+		if side != Vector2i.ZERO and _pixel_clearance(cell + side) < agent_radius:
+			return false
 	return true
 
 
@@ -169,6 +188,31 @@ func path(from: Vector2, to: Vector2) -> PackedVector2Array:
 		if not has_line_of_walk(raw[-1], to):
 			return PackedVector2Array()  # điểm đến chỉ tới được bằng cách cắt góc
 		raw.append(to)
+	return _smooth(raw)
+
+
+## MOV-09 (D-388): như `path`, nhưng `to` đứng được mà không có đường tới đúng điểm (nằm trong ô lưới bị chặn, chỉ tới
+## được bằng cách cắt góc) thì đường tới chỗ gần `to` nhất trong ô đi được gần `to` nhất. Rỗng khi `to` không đứng được
+## hoặc ô đó cũng không tới được.
+func path_near(from: Vector2, to: Vector2) -> PackedVector2Array:
+	var exact: PackedVector2Array = path(from, to)
+	if not exact.is_empty() or not from.is_finite() or not point_is_clear(to):
+		return exact
+	var start: Vector2i = _walkable_cell_near(from, START_SEARCH_RINGS)
+	var end: Vector2i = _walkable_cell_near(to, START_SEARCH_RINGS)
+	if start.x < 0 or end.x < 0:
+		return PackedVector2Array()
+	var cells: PackedVector2Array = grid.get_point_path(start, end)
+	if cells.is_empty():
+		return PackedVector2Array()
+	var raw: PackedVector2Array = PackedVector2Array([from])
+	var first: int = 1 if cells.size() > 1 and has_line_of_walk(from, cells[1]) else 0
+	for i: int in range(first, cells.size()):
+		raw.append(cells[i])
+	var lo: Vector2 = Vector2(end) * cell_size
+	var near: Vector2 = to.clamp(lo, lo + Vector2.ONE * cell_size)  # mọi điểm trong ô đi được đều đứng được (MOV-05)
+	if point_is_clear(near) and has_line_of_walk(raw[-1], near):
+		raw.append(near)
 	return _smooth(raw)
 
 

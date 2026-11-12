@@ -106,14 +106,15 @@ func _try_step(nav: MapNavigation, e: Entity, offset: Vector2) -> bool:
 	return true
 
 
-## MOV-02: điểm đến không đứng được thì lấy điểm đứng được gần nhất.
+## MOV-02: điểm đến không đứng được thì lấy điểm đứng được gần nhất. MOV-09: đứng được mà không tới đúng điểm được
+## thì tới chỗ đi được gần nó nhất.
 func _plan(nav: MapNavigation, e: Entity) -> void:
 	e.path_for = e.order
 	e.path_index = 1
 	var target: Vector2 = e.order.point
 	if not nav.point_is_clear(target):
 		target = nav.nearest_clear(target)
-	e.path = nav.path(e.position, target) if nav.point_is_clear(target) else PackedVector2Array()
+	e.path = nav.path_near(e.position, target) if nav.point_is_clear(target) else PackedVector2Array()
 
 
 func _path_still_walkable(nav: MapNavigation, e: Entity) -> bool:

@@ -848,7 +848,8 @@ chơi và bot (`Rules.pick_attack_target`), nút trên màn hình chỉ gọi h�
   Đơn vị đứng yên cũng bị đẩy (hero len qua được đám lính). Xét từng cặp theo id tăng
   dần. Công trình không bao giờ bị đẩy. Bị đẩy lệch khỏi đường mà không còn đi thẳng
   tới điểm kế tiếp được thì tìm đường lại.
-- `MOV-05` Không bao giờ đi hoặc bị đẩy vào vật cản (INV-01).
+- `MOV-05` Không bao giờ đi hoặc bị đẩy vào vật cản (INV-01). (D-389) "Đi thẳng được" và "đứng được" phải khớp nhau: đoạn
+  thẳng đi thẳng được thì mọi điểm trên nó đứng được, kể cả khi đoạn nằm đúng trên ranh giới ô khoảng trống.
 - `MOV-06` Đi theo hướng (lệnh `MOVE_DIR`, D-42): đi thẳng theo hướng, không tìm đường.
 - `MOV-07` (D-168) Điểm rẽ giữa đường cách tâm đơn vị không quá bán kính thân, mà đi thẳng tới
   điểm sau được, thì coi như đã tới và đi tiếp — hai đơn vị ở hai phía một góc không đẩy nhau kẹt mãi.
@@ -857,6 +858,9 @@ chơi và bot (`Rules.pick_attack_target`), nút trên màn hình chỉ gọi h�
   thì đứng yên tick đó. Lệnh không tự xong; dừng khi có lệnh khác (`STOP`).
 - `MOV-08` (D-274) Lính đường tự xét đẩy tách (MOV-04, lính là bên id nhỏ hơn của cặp) mỗi
   `creep_separation_ticks` tick (2); cặp có hero vẫn đẩy mỗi tick. Lính có thể chồng nhau thêm tối đa chừng đó tick.
+- `MOV-09` (D-388) Điểm đến đứng được nhưng không có đường tới **đúng** điểm đó (nằm trong ô lưới tìm đường bị chặn và
+  chỉ tới được bằng cách cắt góc vật cản) → đi tới chỗ gần điểm đó nhất trong ô đi được gần nó nhất, rồi xong lệnh
+  (MOV-03). Ô đó cũng không tới được → lệnh xong ngay, đứng yên (như MOV-02). Áp cho lệnh MOVE của người chơi lẫn bot.
 
 ## MATCH — Thiết lập trận (D-328, M9.1)
 
