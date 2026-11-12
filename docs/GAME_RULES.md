@@ -1217,7 +1217,9 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
 3. `INV-03` Không lính đường nào vượt mép trước của lane quá 200.
 4. `INV-04` Không đơn vị nào đang đuổi ở xa origin leash quá leash + 100 (D-169: lúc đã quay về mà đường về phải vòng qua vật cản thì không tính).
 5. `INV-05` Không đơn vị nào (trừ state cho phép) đứng yên > 2 s khi không có mục tiêu.
-6. `INV-06` Bot không ở vị trí không an toàn > 1 s (trừ ESCAPE_TOWER, RETREAT).
+6. `INV-06` Bot không ở vị trí không an toàn > 1 s (trừ ESCAPE_TOWER, RETREAT và — D-396 — lúc bị Quyết Đấu /
+   khiêu khích ép, ST-19 / ST-20: lệnh của bot bị từ chối; đồng hồ đếm lại từ 0 khi hết ép, nên hết ép mà còn ở chỗ
+   không an toàn thì phải ra trong 1 s).
 7. `INV-07` Không đơn vị nào nhắm một đơn vị mà đội nó không thấy.
 8. `INV-08` Cùng seed + cùng Command → cùng kết quả.
 

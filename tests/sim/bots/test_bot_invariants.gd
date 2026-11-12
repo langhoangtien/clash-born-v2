@@ -1,6 +1,6 @@
 extends TestCase
 ## M7.3: 3 phút trận thật bot đấu bot — INV-06 (không ở chỗ không an toàn > 1 s, trừ
-## ESCAPE_TOWER / RETREAT) và BOT-11 (không đứng yên > 2 s ngoài RECOVER).
+## ESCAPE_TOWER / RETREAT / bị ép — D-396) và BOT-11 (không đứng yên > 2 s ngoài RECOVER).
 
 const MAP_PATH: String = "res://data/maps/clashborn.tres"
 const Mode := BotState.Mode
@@ -42,7 +42,8 @@ static func run_checks(w: World, minutes: float) -> String:
 				still.erase(e.id)
 				stuck.erase(e.id)
 				continue
-			var exempt: bool = e.bot.mode == Mode.ESCAPE_TOWER or e.bot.mode == Mode.RETREAT
+			var forced: bool = e.duel != null or Rules.is_taunted(w, e)  # D-394 / D-396: bị ép (ST-19, ST-20), bot không ra lệnh được
+			var exempt: bool = e.bot.mode == Mode.ESCAPE_TOWER or e.bot.mode == Mode.RETREAT or forced
 			unsafe[e.id] = 0 if exempt or BotController.safe(w, e, e.position) else unsafe.get(e.id, 0) + 1
 			stuck[e.id] = 0 if BotController.safe(w, e, e.position) else stuck.get(e.id, 0) + 1
 			if stuck[e.id] > 300:
@@ -51,7 +52,7 @@ static func run_checks(w: World, minutes: float) -> String:
 				return "%s INV-06: bot đội %d ở chỗ không an toàn > 1 s (mode %s)" % [MatchHud.clock_text(w.tick), e.team, Mode.keys()[e.bot.mode]]
 			var moved: bool = e.position.distance_to(last.get(e.id, Vector2.INF)) > 0.5
 			var busy: bool = e.attack_phase != Entity.AttackPhase.NONE or e.cast != null or not Rules.can_move(e) or e.recall_until_tick >= 0 \
-				or e.duel != null or Rules.is_taunted(w, e)  # D-394: bị ép (ST-19, ST-20), bot không ra lệnh được
+				or forced
 			still[e.id] = 0 if moved or busy or e.bot.mode == Mode.RECOVER else still.get(e.id, 0) + 1
 			last[e.id] = e.position
 			if still[e.id] > 60:
@@ -81,3 +82,39 @@ func test_BOT_11_attack_approach_blocked_head_on_by_own_creep() -> void:
 ## Trận thật duy_anh:brakk seed 3, trước đây báo "BOT-11 … ESCAPE_TOWER" ở 4:32.
 func test_BOT_11_forced_by_duel_is_exempt() -> void:
 	assert_eq(run_checks(_world(3, &"duy_anh", &"brakk"), 5.0), "", "duy_anh:brakk seed 3")
+
+
+## Lỗi (D-396): Thiết Vệ khiêu khích (ST-20) kéo đối thủ vào tầm trụ — bot bị ép, lệnh bị từ chối; INV-06 miễn lúc bị ép,
+## đếm lại từ 0 khi hết ép. Trận thật tho_san:thiet_ve seed 1 (ca lộ ra lúc 1:03), chạy quá mốc lỗi.
+func test_INV_06_forced_by_taunt_is_exempt() -> void:
+	assert_eq(run_checks(_world(1, &"tho_san", &"thiet_ve"), 2.0), "", "tho_san:thiet_ve seed 1")
+
+
+## D-396: miễn trừ không che lỗi thật — hết khiêu khích mà đang ở chỗ không an toàn thì phải ra trong hạn INV-06 (1 s).
+func test_INV_06_leaves_tower_after_taunt_ends() -> void:
+	var w: World = _world(1, &"tho_san", &"thiet_ve")
+	var was_taunted: Dictionary[int, bool] = {}
+	var since_end: Dictionary[int, int] = {}
+	var forced_unsafe: int = 0
+	var worst: int = 0
+	for t: int in range(SimClock.seconds_to_ticks(120.0)):
+		w.step()
+		for e: Entity in w.entities:
+			if e.bot == null or not e.alive:
+				continue
+			var taunted: bool = Rules.is_taunted(w, e)
+			var safe: bool = BotController.safe(w, e, e.position)
+			if taunted and not safe:
+				forced_unsafe += 1
+			if was_taunted.get(e.id, false) and not taunted and not safe:
+				since_end[e.id] = 0
+			if since_end.has(e.id):
+				if safe:
+					worst = maxi(worst, since_end[e.id])
+					since_end.erase(e.id)
+				else:
+					since_end[e.id] += 1
+					worst = maxi(worst, since_end[e.id])
+			was_taunted[e.id] = taunted
+	assert_true(forced_unsafe > 0, "trận có ca bị ép vào chỗ không an toàn")
+	assert_true(worst <= 30, "hết ép thì ra khỏi chỗ không an toàn trong 1 s (chậm nhất %d tick)" % worst)
