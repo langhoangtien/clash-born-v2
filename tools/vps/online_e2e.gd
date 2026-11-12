@@ -3,8 +3,10 @@ extends SceneTree
 ## (mã bắt đầu bằng id máy — NET-15), B đang chọn tay máy khác vào bằng mã (OnlineMenu nối thẳng máy của mã), đánh
 ## `--play` giây, B rớt → bot đánh thay (NET-16/17), B vào lại (NET-21/22: live, IN_MATCH, tua, trả quyền), so mã băm A/B,
 ## B rớt hẳn → chờ trận kết thúc (A đứng im, bot B đánh) → máy chủ ghi trận (NET-12, kiểm bằng curl ngoài script).
+## `--stay`: nhà chính A còn dưới `--stay-hp` (mặc định 0,35) → B vào lại lần nữa, đánh thẳng nhà chính A tới hết trận;
+## cả hai máy khách phải thấy đội thắng ở cùng tick với nhau (NET-24).
 ##   godot --headless --path . -s tools/vps/online_e2e.gd -- --a=<phiên A> --b=<phiên B> [--host-server=1] [--b-server=2]
-##       [--play=20] [--max-wait=1800] [--servers=<json như app/net/room_servers.json — thử với máy chủ nội bộ>]
+##       [--play=20] [--max-wait=1800] [--stay] [--stay-hp=0.35] [--servers=<json như app/net/room_servers.json — thử với máy chủ nội bộ>]
 ## Phiên thử: POST /api/admin/test_session {name} (mã quản trị); xong thì POST /api/auth/logout từng phiên.
 
 const MAP_PATH: String = "res://data/maps/clashborn.tres"
@@ -25,6 +27,8 @@ var _lib: ContentLibrary
 var _mark: float = 0.0
 var _started: bool = false
 var _join_sent: bool = false
+var _final: bool = false   ## --stay: lần vào lại cuối, B ở lại tới hết trận
+var _core_a: int = -1
 
 
 func _initialize() -> void:
@@ -47,7 +51,7 @@ func _process(delta: float) -> bool:
 		if s != null and s.lockstep != null and s.lockstep.world != null:
 			s.lockstep.pump(now)
 			s.lockstep.advance(delta)
-	var limit: float = float(_args.get("max-wait", "1800")) if _phase == "wait_end" else 60.0
+	var limit: float = float(_args.get("max-wait", "1800")) if _phase in ["wait_end", "finish"] else 60.0
 	if _t > limit:
 		return _fail("hết giờ ở bước %s" % _phase)
 	return call("_" + _phase, now)
@@ -213,6 +217,10 @@ func _catch(_now: float) -> bool:
 				diff += 1
 	print("e2e: mã băm A/B: %d mốc khớp, %d lệch; máy chủ báo lệch A %d, B %d" % [same, diff, _a.lockstep.desync_tick,
 		_b.lockstep.desync_tick])
+	if _final:
+		_go("finish")
+		_mark = -2.0
+		return false
 	_b.close()
 	_b = null
 	_go("wait_end")
@@ -223,8 +231,44 @@ func _wait_end(_now: float) -> bool:
 	var w: World = _a.lockstep.world
 	if int(_t) % 60 == 0 and _t - floorf(_t) < 0.02:
 		print("e2e: chờ hết trận — tick %d" % w.tick)
+	if _args.has("stay") and _core_hp(w) < float(_args.get("stay-hp", "0.35")):
+		print("e2e: nhà chính A còn %.0f%% (tick %d) — B vào lại, ở tới hết trận" % [_core_hp(w) * 100.0, w.tick])
+		_final = true
+		_mark = 0.0
+		_b = OnlineSession.new(WsTransport.dial(_url(int(_args.get("host-server", "1")))), _args["b"], _fp, "0.0.0")
+		_go("rejoin")
+		return false
 	if w.winner < 0:
 		return false
 	print("e2e: trận kết thúc — đội %d thắng, %.0f s trận, mã trận %s-%d" % [w.winner, w.tick / 30.0, _code, _a.config.seed])
 	_a.close()
+	return true
+
+
+## Phần máu còn lại của nhà chính đội A (0..1; đã đổ = 0).
+func _core_hp(w: World) -> float:
+	var hero: Entity = w.find_entity(_a.entity_id)
+	for e: Entity in w.entities:
+		if e.kind == Entity.Kind.CORE and e.team == hero.team:
+			_core_a = e.id
+			return e.health / maxf(1.0, e.stats.get_stat(StatId.Id.MAX_HP))
+	return 0.0
+
+
+## --stay: B đánh thẳng nhà chính A; chờ cả hai máy khách thấy đội thắng.
+func _finish(_now: float) -> bool:
+	var wa: World = _a.lockstep.world
+	var wb: World = _b.lockstep.world
+	if _t - _mark >= 2.0 and wb.find_entity(_b.entity_id) != null:
+		_mark = _t
+		wb.submit(Command.attack(_b.entity_id, _core_a, true))
+	if int(_t) % 30 == 0 and _t - floorf(_t) < 0.02:
+		print("e2e: chờ hết trận — tick A %d, B %d, nhà chính A %.0f%%" % [wa.tick, wb.tick, _core_hp(wa) * 100.0])
+	if wa.winner < 0 or wb.winner < 0:
+		return false
+	print("e2e: trận kết thúc — A thấy đội %d thắng ở tick %d, B thấy đội %d ở tick %d (%s); %.0f s trận; mã trận %s-%d" % [
+		wa.winner, wa.tick, wb.winner, wb.tick, "KHỚP" if wa.winner == wb.winner and wa.tick == wb.tick else "LỆCH",
+		wa.tick / 30.0, _code, _a.config.seed])
+	_a.close()
+	_b.close()
 	return true
