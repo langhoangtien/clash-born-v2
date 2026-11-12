@@ -161,3 +161,42 @@ func test_NET_10_fingerprint_covers_content() -> void:
 	q.values[&"damage"][0] -= 1.0  # resource nạp bằng load() dùng chung cả lần chạy test: trả lại
 	assert_ne(changed, before, "đổi sát thương Q → khác dấu")
 	assert_eq(NetVersion.content_text(lib), before)
+
+
+## NET-10 (D-400): dấu vân tay không phụ thuộc thứ tự cấp phát StringName — `Array.sort()` trên StringName xếp theo địa
+## chỉ bộ nhớ (khác nhau giữa các lần chạy / các máy), nên khóa Dictionary và id nội dung phải xếp theo chữ.
+func test_NET_10_fingerprint_text_sorts_names_as_text() -> void:
+	var d: Dictionary = {}
+	var expected: PackedStringArray = []
+	for i: int in range(8, 0, -1):  # tạo ngược bảng chữ cái: tên mới cấp phát sau nằm ở địa chỉ khác thứ tự chữ
+		d[StringName("fp_key_%d_%d" % [i, Time.get_ticks_usec()])] = i
+	var names: Array = d.keys().map(func(k: Variant) -> String: return String(k))
+	names.sort()
+	for n: String in names:
+		expected.append("%s:%d" % [n, d[StringName(n)]])
+	assert_eq(NetVersion._value_text(d, 0), "{" + ",".join(expected) + "}")
+	var lib: ContentLibrary = ContentLibrary.new()
+	for i: int in range(8, 0, -1):
+		var item: ItemDef = ItemDef.new()
+		lib.items[StringName("fp_item_%d_%d" % [i, Time.get_ticks_usec()])] = item
+	var ids: Array = lib.items.keys().map(func(k: Variant) -> String: return String(k))
+	ids.sort()
+	var lines: PackedStringArray = NetVersion.content_text(lib).split("\n")
+	assert_eq(lines.size(), 8)
+	for i: int in ids.size():
+		assert_true(lines[i].begins_with(ids[i] + "{"), "dòng %d: %s" % [i, lines[i].left(40)])
+
+
+## NET-11: không nối được máy chủ phòng (cổng không ai nghe) → phiên báo `closed` một lần, không gửi hello.
+func test_NET_11_unreachable_server_reports_closed() -> void:
+	var o: OnlineSession = OnlineSession.new(WsTransport.dial("ws://127.0.0.1:9"), "name:An", "v")
+	var seen: Array[Dictionary] = []
+	var end: int = Time.get_ticks_msec() + 5000
+	while Time.get_ticks_msec() < end and seen.is_empty():
+		OS.delay_msec(5)
+		o.transport.receive()  # WebSocketPeer chỉ đổi trạng thái khi được poll
+		seen.append_array(o.poll())
+	assert_eq(seen.size(), 1)
+	assert_eq(String(seen[0].get("t", "")) if not seen.is_empty() else "", "closed")
+	assert_eq(o.stage, "closed")
+	assert_true(o.poll().is_empty(), "chỉ báo một lần")
