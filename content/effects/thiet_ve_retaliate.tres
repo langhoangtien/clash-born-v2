@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_x"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="2_x"]
+[ext_resource type="Script" path="res://sim/actions/area_action.gd" id="3_x"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_x"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="5_x"]
+
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("2_x")
+amount = "damage + str_ratio * self.strength"
+
+[sub_resource type="Resource" id="S2"]
+script = ExtResource("3_x")
+radius = "radius"
+target = 0
+actions = Array[ExtResource("1_x")]([SubResource("S1")])
+
+[sub_resource type="Resource" id="T1"]
+script = ExtResource("4_x")
+event = &"attack_landed"
+role = 1
+condition = &"target_not_structure"
+every = "hits"
+actions = Array[ExtResource("1_x")]([SubResource("S2")])
+
+[resource]
+script = ExtResource("5_x")
+duration = "0"
+tags = Array[StringName]([&"passive"])
+dispel = 2
+triggers = Array[ExtResource("4_x")]([SubResource("T1")])
+id = &"thiet_ve_retaliate"
+art_id = &"thiet_ve_r"

@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="HeroDef" format=3]
+
+[ext_resource type="Resource" path="res://content/abilities/thiet_ve_innate.tres" id="1_inn"]
+[ext_resource type="Resource" path="res://content/abilities/thiet_ve_q.tres" id="2_q"]
+[ext_resource type="Resource" path="res://content/abilities/thiet_ve_r.tres" id="3_r"]
+[ext_resource type="Script" path="res://sim/defs/hero_def.gd" id="4_hero"]
+[ext_resource type="Script" path="res://sim/defs/combat_stats_def.gd" id="5_stats"]
+[ext_resource type="Resource" path="res://content/abilities/thiet_ve_w.tres" id="6_w"]
+
+[sub_resource type="Resource" id="ST"]
+script = ExtResource("5_stats")
+base_hp = 70.0
+base_mana = 220.0
+base_hp_regen = 0.75
+base_damage = 62.0
+physical_armor = 2.0
+base_attack_time = 1.7
+attack_point = 0.4
+attack_range = 150.0
+movement_speed = 265.0
+vision_range = 1200.0
+collision_radius = 34.0
+
+[resource]
+script = ExtResource("4_hero")
+base_strength = 27.0
+base_agility = 14.0
+base_intelligence = 15.0
+strength_growth = 3.8
+agility_growth = 1.6
+intelligence_growth = 1.8
+stats = SubResource("ST")
+innate = ExtResource("1_inn")
+q = ExtResource("2_q")
+w = ExtResource("6_w")
+r = ExtResource("3_r")
+bot_skill_order = Array[int]([0, 4, 0, 1, 0, 2, 0, 1, 0, 1, 2, 1, 1, 4, 4, 2, 4, 4, 3, 3])
+bot_talent_priority = Array[int]([3, 2, 1])
+bot_item_build = Array[StringName]([&"bracer", &"boots_guard", &"giant_heart", &"assault_plate", &"black_king_bar", &"resolute_armor", &"satanic", &"battle_axe"])
+id = &"thiet_ve"
+display_name = "Thiết Vệ · Khiên Sắt"
+art_id = &"thiet_ve"

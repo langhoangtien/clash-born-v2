@@ -18,7 +18,7 @@ func test_content_has_no_errors() -> void:
 	assert_true(errs.is_empty(), "\n".join(errs))
 
 
-const HEROES: Array[StringName] = [&"brakk", &"myra", &"noctis", &"vexa", &"gorran", &"duy_anh", &"huyet_cu_nhan", &"phong_tien", &"tho_san", &"thach_giap"]
+const HEROES: Array[StringName] = [&"brakk", &"myra", &"noctis", &"vexa", &"gorran", &"duy_anh", &"huyet_cu_nhan", &"phong_tien", &"tho_san", &"thach_giap", &"thiet_ve"]
 
 
 func test_six_heroes_and_items() -> void:

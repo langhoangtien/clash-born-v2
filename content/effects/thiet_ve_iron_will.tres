@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="EffectDef" format=3]
+
+[ext_resource type="Resource" path="res://content/effects/thiet_ve_iron_stack.tres" id="1_x"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_x"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_x"]
+[ext_resource type="Script" path="res://sim/defs/trigger_def.gd" id="4_x"]
+[ext_resource type="Script" path="res://sim/defs/effect_def.gd" id="5_x"]
+
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("3_x")
+effect = ExtResource("1_x")
+duration = "stack_time"
+target = 0
+
+[sub_resource type="Resource" id="T1"]
+script = ExtResource("4_x")
+event = &"attack_landed"
+actions = Array[ExtResource("2_x")]([SubResource("S1")])
+
+[resource]
+script = ExtResource("5_x")
+duration = "0"
+tags = Array[StringName]([&"passive"])
+dispel = 2
+triggers = Array[ExtResource("4_x")]([SubResource("T1")])
+id = &"thiet_ve_iron_will"
+art_id = &"thiet_ve_innate"
