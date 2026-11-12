@@ -156,12 +156,17 @@ func step_tick() -> void:
 		_hashes.erase(tick - HASH_KEEP * LockstepClient.HASH_EVERY)
 
 
+## NET-24: trận kết thúc — gửi nốt nhật ký cho người đang vào lại trước tin `end` (máy chủ ngừng chạy tick sau đó).
+func flush_backfill() -> void:
+	_send_backfill(true)
+
+
 ## NET-22: gửi tiếp nhật ký cho người vào lại khi hàng gửi còn chỗ: {history, from, to, c: [[tick, gói]…]} — tick trong
-## from..to không có trong c là gói rỗng.
-func _send_backfill() -> void:
+## from..to không có trong c là gói rỗng. `force`: gửi hết bất kể hàng gửi (NET-24 — trận kết thúc).
+func _send_backfill(force: bool = false) -> void:
 	for id: int in _backfill.keys():
 		var b: Array = _backfill[id]
-		while int(b[1]) <= int(b[2]) and peers[id].buffered() < BACKFILL_BUFFER:
+		while int(b[1]) <= int(b[2]) and (force or peers[id].buffered() < BACKFILL_BUFFER):
 			var part: Array = []
 			var i: int = b[0]
 			while i < log.size() and int(log[i][0]) <= int(b[2]) and part.size() < history_chunk:

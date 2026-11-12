@@ -261,6 +261,7 @@ func _run_game(code: String, delta: float) -> void:
 	if state == "won":
 		if report.is_valid():  # NET-12 (ST.5): máy chủ ghi trận
 			report.call(g.payload())
+		g.room.flush_backfill()  # NET-24: người đang vào lại nhận đủ gói trước `end`
 		for id: int in g.room.peers:
 			_send(id, {"t": "end", "winner": g.room.world.winner})
 			_conns[id].merge({"stage": "lobby", "code": ""}, true)
