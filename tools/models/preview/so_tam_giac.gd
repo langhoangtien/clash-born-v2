@@ -3,9 +3,12 @@ extends SceneTree
 ## một hoạt ảnh, góc trận hoặc góc cận; dây cung D-349 theo `--strings` (JSON: tên file không đuôi → cấu hình bow_string).
 ## xvfb-run -a godot --path . --rendering-method mobile --rendering-driver vulkan --resolution 1280x720 --fixed-fps 30
 ##   --write-movie out.avi --quit-after 90 -s tools/models/preview/so_tam_giac.gd --
-##   --models=a.glb,b.glb --labels=A,B --anim=run --view=game|near [--strings=x.json] [--height=1.3] [--yaw=-20]
+##   --models=a.glb,b.glb --labels=A,B --anim=run --view=game|near [--strings=x.json] [--height=1.3] [--yaw=-20] [--follow]
 
 var _labels: PackedStringArray = []
+var _cam: Camera3D
+var _follow: Skeleton3D  ## --follow: camera theo xương hông (hoạt ảnh có dời gốc)
+var _cam_offset: Vector3
 
 
 func _init() -> void:
@@ -37,6 +40,7 @@ func _go() -> void:
 	for i: int in models.size():
 		_place(world, models[i], i, models.size(), gap, float(o["height"]), String(o["anim"]), strings, float(o["yaw"]))
 	var cam: Camera3D = Camera3D.new()
+	_cam = cam
 	world.add_child(cam)
 	var w: float = models.size() * gap
 	if o["view"] == "game":  # góc camera trận (MatchView3D: lệch (0, 11.5, 11), fov 40) thu theo bề ngang hàng
@@ -45,8 +49,11 @@ func _go() -> void:
 		cam.look_at(Vector3(0, 0.6, 0))
 	else:
 		cam.fov = 30.0
-		cam.position = Vector3(0, 1.0, (maxf(w, 2.4) * 0.5 + 0.6) / tan(deg_to_rad(25.5)))  # nửa góc ngang ở khung 16:9, fov dọc 30
+		cam.position = Vector3(0, 1.0, (maxf(w, 1.7) * 0.5 + 0.6) / tan(deg_to_rad(25.5)))  # nửa góc ngang ở khung 16:9, fov dọc 30
 		cam.look_at(Vector3(0, 0.75, 0))
+	if o.has("follow"):
+		_follow = world.find_children("*", "Skeleton3D", true, false)[0]
+		_cam_offset = cam.position
 
 
 func _place(world: Node3D, path: String, i: int, n: int, gap: float, h: float, anim: String, strings: Dictionary, yaw: float) -> void:
@@ -71,5 +78,13 @@ func _place(world: Node3D, path: String, i: int, n: int, gap: float, h: float, a
 	l.outline_size = 12
 	l.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	l.no_depth_test = true
-	l.position = m.position + Vector3(0, h + 0.3, 0)
+	l.position = m.position + Vector3(0, h + 0.12, 0)
 	world.add_child(l)
+
+
+func _process(_delta: float) -> bool:
+	if _follow != null:
+		var hips: int = _follow.find_bone("mixamorig_Hips")
+		var p: Vector3 = (_follow.global_transform * _follow.get_bone_global_pose(maxi(hips, 0))).origin
+		_cam.position = Vector3(p.x, 0, p.z) + _cam_offset
+	return false
