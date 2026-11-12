@@ -170,3 +170,36 @@ func test_NET_19_empty_match_kept_then_cancelled() -> void:
 	s.tick(0.6)
 	assert_false(s._games.has("111111"), "hết hạn → hủy")
 	s.free()
+
+
+## NET-17 (lệnh thật SET_CONTROL, CMD-07): người rớt → bot đánh thay trên máy còn lại và bản SIM máy chủ, cùng mã băm.
+func test_NET_17_set_control_bot_takes_over_on_all_machines() -> void:
+	var h: Dictionary = _setup()
+	var room: LockstepRoom = h["room"]
+	room.takeover = Command.set_control
+	h["silent"] = [1]
+	_run(h, 20.0)
+	var hero: int = h["heroes"][1]
+	var c0: LockstepClient = h["clients"][0]
+	assert_true(room.world.find_entity(hero).bot != null, "máy chủ: bot đánh thay")
+	assert_true(c0.world.find_entity(hero).bot != null, "máy còn lại: bot đánh thay")
+	var spawn: Vector2 = (h["clients"][1] as LockstepClient).world.find_entity(hero).position
+	assert_true(room.world.find_entity(hero).position.distance_to(spawn) > 200.0, "bot cho hero đi")
+	var common: Array = c0.hashes.keys().filter(func(t: int) -> bool: return room._hashes.has(t))
+	assert_true(common.size() >= 10)
+	for t: int in common:
+		assert_eq(c0.hashes[t], room._hashes[t], "tick %d" % t)
+	assert_eq(room.desyncs, {})
+
+
+## NET-17 / NET-03: máy khách tự gửi SET_CONTROL (kể cả cho hero của mình) → máy chủ bỏ.
+func test_NET_17_client_cannot_send_set_control() -> void:
+	var h: Dictionary = _setup()
+	var room: LockstepRoom = h["room"]
+	var c0: LockstepClient = h["clients"][0]
+	_run(h, 0.5)
+	c0.world.submit(Command.set_control(h["heroes"][0], true))
+	_run(h, 1.0)
+	assert_eq(room.dropped, 1, "bị bỏ")
+	assert_true(room.world.find_entity(h["heroes"][0]).bot == null)
+	assert_true(c0.world.find_entity(h["heroes"][0]).bot == null)

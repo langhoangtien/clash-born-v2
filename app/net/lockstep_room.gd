@@ -10,6 +10,8 @@ extends RefCounted
 const MAX_COMMANDS_PER_S: int = 30
 const HASH_KEEP: int = 40          ## số mốc mã băm giữ lại để so (40 × 30 tick = 40 giây)
 const DROP_AFTER_S: int = 5        ## NET-16: im lặng chừng này giây = rớt (máy khách ping mỗi giây)
+## NET-17: lệnh chỉ máy chủ phát — máy khách gửi lên thì bỏ (NET-03).
+const SERVER_ONLY: Array[Command.Type] = [Command.Type.SET_CONTROL]
 
 var world: World
 var tick: int = 0
@@ -84,7 +86,7 @@ func _handle(id: int, msg: Dictionary) -> void:
 ## NET-02 / NET-03: kiểm quyền + dạng + nhịp, rồi xếp vào tick thực thi.
 func _command(id: int, msg: Dictionary) -> void:
 	var c: Command = NetCodec.command_from(msg.get("c"))
-	if c == null or c.entity_id != seats.get(id, -1) or not _allow(id):
+	if c == null or c.entity_id != seats.get(id, -1) or c.type in SERVER_ONLY or not _allow(id):
 		dropped += 1
 		return
 	var want: Variant = msg.get("want")

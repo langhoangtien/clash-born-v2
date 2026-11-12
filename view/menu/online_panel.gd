@@ -9,6 +9,7 @@ signal request(msg: Dictionary)
 signal closed
 
 const BOX: Vector2 = Vector2(900, 900)
+const HEADER: float = 80.0  ## dải đầu khung của UiStyle.panel
 const SIZES: Array[int] = [1, 2, 3]
 const TEAM_NAMES: Array[String] = ["Đội Xanh", "Đội Đỏ"]
 
@@ -71,9 +72,10 @@ func show_room(room: Dictionary, me: int, heroes: Array[StringName]) -> void:
 	var host: bool = int(room.get("host", -1)) == me
 	_begin("room", "Phòng " + String(room.get("code", "")))
 	var n: int = int(room.get("size", 1))
-	_box.add_child(_label("%d vs %d · gửi mã cho bạn bè · ô trống là bot (Thường)" % [n, n], 22, UiStyle.DIM, false))
-	if current >= 0:
-		_box.add_child(_label(server_line(), 22, UiStyle.DIM, false))
+	var line: String = "%d vs %d · gửi mã cho bạn bè · ô trống là bot (Thường)" % [n, n]
+	if current >= 0:  # NET-14: chung dòng — thêm dòng thì tiêu đề đè dải đầu khung (3v3)
+		line += " · " + server_line().trim_prefix("Máy chủ: ")
+	_box.add_child(_label(line, 22, UiStyle.DIM, false))
 	var mine: Dictionary = {}
 	var taken: Dictionary = {}
 	for m: Dictionary in room.get("members", []):
@@ -149,6 +151,7 @@ func _begin(s: String, title: String) -> void:
 	_center = CenterContainer.new()
 	add_child(_center)
 	_center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_center.offset_top = HEADER  # căn giữa phần dưới dải đầu khung (UiStyle.panel) — màn phòng 3v3 cao, tiêu đề không đè dải
 	_box = VBoxContainer.new()
 	_box.add_theme_constant_override("separation", 14)
 	_box.custom_minimum_size = Vector2(BOX.x - 96, 0)

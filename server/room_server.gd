@@ -238,6 +238,7 @@ func _start_game(lobby: RoomLobby) -> void:
 	var units: Array[Entity] = MatchSetup.build(world, _lib, cfg)
 	var room: LockstepRoom = LockstepRoom.new(world)
 	room.on_drop = _on_drop.bind(lobby.code)
+	room.takeover = Command.set_control  # NET-17: bot Thường đánh thay người rớt (CMD-07)
 	var wire: Dictionary = NetCodec.config_to(cfg)
 	for peer: int in made["seats"]:
 		var slot: int = int(made["seats"][peer])
