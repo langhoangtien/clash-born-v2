@@ -122,3 +122,17 @@ func test_D_339_change_password_screens() -> void:
 	_press(p, "Đổi mật khẩu")
 	assert_eq(p.screen, "password_set", "chỉ Google: không hỏi mật khẩu cũ")
 	p.free()
+
+
+## NET-12 (D-405): ô người đã rớt giữa trận online (bot đánh thay) → lịch sử ghi "(đã rời)" — ở dòng kết quả của mình và
+## cạnh người đó trong đội hình.
+func test_NET_12_history_marks_left_players() -> void:
+	var m: Dictionary = {"won": false, "left": true, "hero": "gorran", "kills": 1, "deaths": 2, "assists": 3, "mode": "1v1",
+		"duration_s": 61, "allies": [{"hero": "gorran", "me": true, "left": true, "kills": 1, "deaths": 2, "assists": 3}],
+		"enemies": [{"hero": "myra", "name": "Bình", "left": true, "kills": 0, "deaths": 1, "assists": 0}]}
+	var l: Array[String] = MatchHistoryList.lines(m)
+	assert_true(l[0].begins_with("Thua (đã rời) · "), l[0])
+	assert_true(l[1].contains("(đã rời)"), l[1])
+	assert_true(l[2].contains("(Bình, đã rời)"), l[2])
+	m.erase("left")
+	assert_false(MatchHistoryList.lines(m)[0].contains("đã rời"))

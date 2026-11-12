@@ -28,7 +28,7 @@ func show_matches(matches: Array) -> void:
 ## Chữ của một trận (cũng dùng trong test): [kết quả, đội mình, đội địch] — trận cũ chưa có đội thì chỉ dòng đầu.
 static func lines(m: Dictionary) -> Array[String]:
 	var dur: int = int(m.get("duration_s", 0))
-	var out: Array[String] = ["%s · %s · %d/%d/%d · %s · %d:%02d" % ["Thắng" if m.get("won") else "Thua", _hero(m.get("hero", "")),
+	var out: Array[String] = ["%s · %s · %d/%d/%d · %s · %d:%02d" % [("Thắng" if m.get("won") else "Thua") + (" (đã rời)" if m.get("left", false) else ""), _hero(m.get("hero", "")),
 		m.get("kills", 0), m.get("deaths", 0), m.get("assists", 0), m.get("mode", ""), dur / 60, dur % 60]]
 	if m.has("allies"):
 		out.append("Đội mình: " + _team(m["allies"]))
@@ -40,12 +40,15 @@ static func _team(players: Array) -> String:
 	var parts: PackedStringArray = []
 	for p: Dictionary in players:
 		var who: String = _hero(p.get("hero", ""))
+		var gone: String = ", đã rời" if p.get("left", false) else ""  # NET-12 (D-405): rớt giữa trận, bot đánh thay
 		if p.get("me", false):
-			who = "★ " + who
+			who = "★ " + who + (" (đã rời)" if gone != "" else "")
 		elif p.get("bot", false):
 			who += " (bot)"
 		elif String(p.get("name", "")) != "":
-			who += " (%s)" % p["name"]
+			who += " (%s%s)" % [p["name"], gone]
+		elif gone != "":
+			who += " (đã rời)"
 		parts.append("%s %d/%d/%d" % [who, p.get("kills", 0), p.get("deaths", 0), p.get("assists", 0)])
 	return " · ".join(parts)
 
