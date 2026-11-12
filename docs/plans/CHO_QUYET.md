@@ -32,7 +32,7 @@ Trả lời gọn theo mã, vd `N1 ok, N2 B, M1 ok`. "Đề nghị" = phương �
 | R6 | Vào lại trận bằng cách tua lại toàn bộ lệnh (1–3 phút trên điện thoại, đang đo); chỉ làm "ảnh chụp trạng thái" nếu quá chậm | Duyệt | |
 | R7 | Tách "tìm trận tự động" và "5v5" khỏi M9.8 thành việc riêng | Duyệt | |
 
-## Đợt 2 tướng mới (kế hoạch CB-2, `docs/plans/D-381_dot_2.md`) — chưa gấp
+## Đợt 2 tướng mới (kế hoạch CB-2, `docs/plans/D-382_dot_2.md`) — chưa gấp
 
 | Mã | Câu hỏi | Đề nghị | Trả lời |
 |---|---|---|---|
