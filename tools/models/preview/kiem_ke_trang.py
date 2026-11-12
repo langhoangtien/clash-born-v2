@@ -65,7 +65,22 @@ def make_images():
     for i, f in enumerate(tex):
         sheet.paste(Image.open(f).convert("RGB").resize((256, 256), Image.LANCZOS), ((i % 5) * 260 + 2, (i // 5) * 260 + 2))
     sheet.save(os.path.join(OUT, "sheet_ground.webp"), quality=82)
+    make_trials()
     return {"items": len(items), "status": len(status), "sprites": len(sprites), "ui": len(ui), "ground": len(tex)}
+
+
+def make_trials():
+    """D-361: ảnh bản thử chuẩn cảnh vật (thu_canh_vat/) và khung icon (thu_icon/)."""
+    cv = os.path.join(KK, "thu_canh_vat")
+    for v in ["goc", "A", "B"]:
+        Image.open(os.path.join(cv, "hang_tuong_%s.jpg" % v)).convert("RGB").crop((0, 150, 1920, 1010)).resize((1280, 573), Image.LANCZOS).save(os.path.join(OUT, "thu_hang_%s.webp" % v), quality=78)
+        Image.open(os.path.join(cv, "tran_020s_%s.jpg" % v)).convert("RGB").crop((0, 250, 1920, 820)).resize((1280, 380), Image.LANCZOS).save(os.path.join(OUT, "thu_base_%s.webp" % v), quality=78)
+        row = Image.new("RGB", (4 * 280, 325))
+        for i, m in enumerate(["pine_l", "bush_a", "rock_low", "plant_orange"]):
+            row.paste(Image.open(os.path.join(cv, "phong", "%s_%s.png" % (m, v))).convert("RGB").crop((40, 150, 600, 800)).resize((280, 325), Image.LANCZOS), (i * 280, 0))
+        row.save(os.path.join(OUT, "thu_phong_%s.webp" % v), quality=80)
+    for f in glob.glob(os.path.join(KK, "thu_icon", "*.png")):
+        Image.open(f).convert("RGB").save(os.path.join(OUT, "thu_" + os.path.basename(f)[:-4] + ".webp"), quality=86)
 
 
 def e(s):
