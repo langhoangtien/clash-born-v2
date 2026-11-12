@@ -715,7 +715,7 @@ khác: đẩy ra xa người dùng. Địch kháng phép không bị đẩy. Bot
 
 1900 vàng = Rìu Khổng Lồ (900) + Lưỡi Nhanh (900) + phí ghép 100. +12 AGI, +10 STR; **chỉ tướng đánh xa**: +140 tầm đánh
 (modifier `condition = owner_is_ranged`). Tướng cận chiến mua được, nhận STR / AGI nhưng không nhận tầm. Bot: chưa tướng nào
-lên món này (`bot_item_build` không đổi). Biểu tượng: tạm mượn của Rìu Khổng Lồ (`art_id = ogre_axe`) tới khi CB-1 vẽ `dragon_lance`.
+lên món này (`bot_item_build` không đổi). Biểu tượng: `dragon_lance.png` là bản chép tạm của Rìu Khổng Lồ (CB-1 thay).
 
 ### Thiết Vệ · Khiên Sắt (tank STR, cận chiến 150 — D-385, đợt 2)
 
@@ -730,7 +730,7 @@ STR 27 (+3,8), AGI 14 (+1,6), INT 15 (+1,8), giáp 2, tốc chạy 265 (chỉ s�
 
 Talent: Q II khiêu khích +0,5 s · W II +4 giáp · R II cứ 3 đòn (thay vì 4).
 Bot: Q DISABLE khi có hero địch trong bán kính / TEAMFIGHT khi trúng ≥ 2; W ESCAPE khi máu < 30% / ENGAGE trước khi áp sát.
-Lên đồ như Thạch Giáp. Hình (icon, chân dung, mô hình, VFX): chờ CB-1, tạm mượn Thạch Giáp.
+Lên đồ như Thạch Giáp. Hình (icon, chân dung, mô hình, VFX): bản mượn Thạch Giáp (danh sách cuối `docs/plans/D-382_dot_2.md`), CB-1 thay.
 
 ### Pháo Thủ · Súng Bom (AGI, đánh xa 500 — D-387, đợt 2)
 
@@ -745,4 +745,4 @@ STR 16 (+1,8), AGI 22 (+3,0), INT 16 (+1,6), BAT 1,7, đạn 1400, tốc chạy 
 
 Talent: Q II bán kính +100 · W II tỉ lệ +10% · R II sát thương +200.
 Bot: Q POKE khi hero địch trong tầm (dự đoán vị trí); R FINISH khi máu hero địch < sát thương chiêu.
-Lên đồ như Phong Tiễn. Hình (icon, chân dung, mô hình, VFX): chờ CB-1.
+Lên đồ như Phong Tiễn. Hình (icon, chân dung, mô hình, VFX): bản mượn Phong Tiễn (danh sách cuối `docs/plans/D-382_dot_2.md`), CB-1 thay.

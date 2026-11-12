@@ -28,4 +28,4 @@ components = Array[StringName]([&"ogre_axe", &"blade_alacrity"])
 modifiers = Array[ExtResource("1_x")]([SubResource("S1"), SubResource("S2"), SubResource("S3")])
 id = &"dragon_lance"
 display_name = "Thương Rồng"
-art_id = &"ogre_axe"
+art_id = &"dragon_lance"
