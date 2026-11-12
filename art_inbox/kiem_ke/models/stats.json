@@ -1,0 +1,925 @@
+[
+ {
+  "anims": 11,
+  "bones": 23,
+  "borrowed": "",
+  "frame": 2.0,
+  "group": "hero",
+  "height": 1.2,
+  "id": "duy_anh",
+  "model": "style/heroes/duy_anh",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 3406,
+  "vertex_color": false
+ },
+ {
+  "anims": 11,
+  "bones": 23,
+  "borrowed": "",
+  "frame": 2.0,
+  "group": "hero",
+  "height": 1.25,
+  "id": "brakk",
+  "model": "style/heroes/brakk",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 3071,
+  "vertex_color": false
+ },
+ {
+  "anims": 13,
+  "bones": 23,
+  "borrowed": "",
+  "frame": 2.0,
+  "group": "hero",
+  "height": 1.4,
+  "id": "gorran",
+  "model": "style/heroes/gorran",
+  "placed": 0,
+  "tex": [
+   "1024×1024",
+   "39×1",
+   "19×1",
+   "40×1"
+  ],
+  "tris": 3636,
+  "vertex_color": false
+ },
+ {
+  "anims": 11,
+  "bones": 23,
+  "borrowed": "",
+  "frame": 2.0,
+  "group": "hero",
+  "height": 1.3,
+  "id": "myra",
+  "model": "style/heroes/myra",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 2506,
+  "vertex_color": false
+ },
+ {
+  "anims": 11,
+  "bones": 23,
+  "borrowed": "",
+  "frame": 2.0,
+  "group": "hero",
+  "height": 1.3,
+  "id": "vexa",
+  "model": "style/heroes/vexa",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 2475,
+  "vertex_color": false
+ },
+ {
+  "anims": 13,
+  "bones": 23,
+  "borrowed": "",
+  "frame": 2.0,
+  "group": "hero",
+  "height": 1.2,
+  "id": "noctis",
+  "model": "style/heroes/noctis",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 3490,
+  "vertex_color": false
+ },
+ {
+  "anims": 6,
+  "bones": 23,
+  "borrowed": "",
+  "frame": 2.0,
+  "group": "creep",
+  "height": 0.85,
+  "id": "creep_melee",
+  "model": "style/units/creep_melee",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 1484,
+  "vertex_color": false
+ },
+ {
+  "anims": 6,
+  "bones": 23,
+  "borrowed": "",
+  "frame": 2.0,
+  "group": "creep",
+  "height": 0.85,
+  "id": "creep_ranged",
+  "model": "style/units/creep_ranged",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 1556,
+  "vertex_color": false
+ },
+ {
+  "anims": 5,
+  "bones": 6,
+  "borrowed": "",
+  "frame": 2.0,
+  "group": "creep",
+  "height": 1.0,
+  "id": "creep_siege",
+  "model": "style/units/creep_siege",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 2484,
+  "vertex_color": false
+ },
+ {
+  "anims": 6,
+  "bones": 23,
+  "borrowed": "",
+  "frame": 2.0,
+  "group": "creature",
+  "height": 1.15,
+  "id": "neutral_shaman",
+  "model": "style/creatures/shaman",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 2083,
+  "vertex_color": false
+ },
+ {
+  "anims": 5,
+  "bones": 49,
+  "borrowed": "",
+  "frame": 2.0,
+  "group": "creature",
+  "height": 1.3,
+  "id": "neutral_bear",
+  "model": "style/creatures/bear",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 2707,
+  "vertex_color": false
+ },
+ {
+  "anims": 5,
+  "bones": 49,
+  "borrowed": "",
+  "frame": 2.0,
+  "group": "creature",
+  "height": 0.95,
+  "id": "neutral_wolf",
+  "model": "style/creatures/wolf",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 2466,
+  "vertex_color": false
+ },
+ {
+  "anims": 6,
+  "bones": 23,
+  "borrowed": "",
+  "frame": 2.0,
+  "group": "creature",
+  "height": 1.7,
+  "id": "neutral_buffalo",
+  "model": "style/creatures/golem",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 2044,
+  "vertex_color": false
+ },
+ {
+  "anims": 5,
+  "bones": 56,
+  "borrowed": "",
+  "frame": 2.0,
+  "group": "creature",
+  "height": 1.3,
+  "id": "rhino",
+  "model": "style/creatures/rhino",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 2647,
+  "vertex_color": false
+ },
+ {
+  "anims": 5,
+  "bones": 56,
+  "borrowed": "",
+  "frame": 2.0,
+  "group": "creature",
+  "height": 0.75,
+  "id": "rhino_small",
+  "model": "style/creatures/rhino",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 2647,
+  "vertex_color": false
+ },
+ {
+  "anims": 6,
+  "bones": 23,
+  "borrowed": "",
+  "frame": 4.2,
+  "group": "boss",
+  "height": 3.1,
+  "id": "golem_moss",
+  "model": "style/creatures/golem_moss",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 2817,
+  "vertex_color": false
+ },
+ {
+  "anims": 6,
+  "bones": 23,
+  "borrowed": "",
+  "frame": 4.2,
+  "group": "boss",
+  "height": 3.1,
+  "id": "golem_lava",
+  "model": "style/creatures/golem_lava",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 2963,
+  "vertex_color": false
+ },
+ {
+  "anims": 11,
+  "bones": 23,
+  "borrowed": "D-347: mô hình tạm mượn của brakk (chờ mô hình riêng)",
+  "frame": 2.0,
+  "group": "hero",
+  "height": 1.5,
+  "id": "huyet_cu_nhan",
+  "model": "style/heroes/brakk",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 3071,
+  "vertex_color": false
+ },
+ {
+  "anims": 11,
+  "bones": 23,
+  "borrowed": "D-347: mô hình tạm mượn của brakk (chờ mô hình riêng)",
+  "frame": 2.0,
+  "group": "hero",
+  "height": 1.35,
+  "id": "thach_giap",
+  "model": "style/heroes/brakk",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 3071,
+  "vertex_color": false
+ },
+ {
+  "anims": 10,
+  "bones": 23,
+  "borrowed": "",
+  "frame": 2.0,
+  "group": "hero",
+  "height": 1.3,
+  "id": "phong_tien",
+  "model": "style/heroes/phong_tien",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 3085,
+  "vertex_color": false
+ },
+ {
+  "anims": 11,
+  "bones": 23,
+  "borrowed": "D-347: mô hình tạm mượn của duy_anh (chờ mô hình riêng)",
+  "frame": 2.0,
+  "group": "hero",
+  "height": 1.25,
+  "id": "tho_san",
+  "model": "style/heroes/duy_anh",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 3406,
+  "vertex_color": false
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.0,
+  "group": "structure",
+  "height": 2.55,
+  "id": "tower_t1_blue",
+  "model": "style/structures/tower",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 2486,
+  "vertex_color": false
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.0,
+  "group": "structure",
+  "height": 2.55,
+  "id": "tower_t1_red",
+  "model": "style/structures/tower",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 2486,
+  "vertex_color": false
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.0,
+  "group": "structure",
+  "height": 3.3,
+  "id": "tower_t4_blue",
+  "model": "style/structures/tower_core",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 2500,
+  "vertex_color": false
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.0,
+  "group": "structure",
+  "height": 3.3,
+  "id": "tower_t4_red",
+  "model": "style/structures/tower_core",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 2500,
+  "vertex_color": false
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.0,
+  "group": "structure",
+  "height": 3.6,
+  "id": "core_blue",
+  "model": "style/structures/core",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 3000,
+  "vertex_color": false
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.0,
+  "group": "structure",
+  "height": 3.6,
+  "id": "core_red",
+  "model": "style/structures/core",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 3000,
+  "vertex_color": false
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.0,
+  "group": "structure",
+  "height": 1.6,
+  "id": "shop",
+  "model": "style/structures/secret_shop",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 1995,
+  "vertex_color": false
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.0,
+  "group": "structure",
+  "height": 1.3,
+  "id": "rubble",
+  "model": "style/structures/tower_rubble",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 1492,
+  "vertex_color": false
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.0,
+  "group": "structure",
+  "height": 1.5,
+  "id": "fountain",
+  "model": "style/structures/fountain",
+  "placed": 0,
+  "tex": [
+   "1024×1024"
+  ],
+  "tris": 2500,
+  "vertex_color": false
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 2.8,
+  "group": "scenery",
+  "height": 0.46,
+  "id": "bones",
+  "model": "style/bones",
+  "placed": 15,
+  "tex": [],
+  "tris": 308,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 2.8,
+  "group": "scenery",
+  "height": 0.64,
+  "id": "boulder_a",
+  "model": "style/boulder_a",
+  "placed": 29,
+  "tex": [],
+  "tris": 80,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 1.4,
+  "group": "scenery",
+  "height": 0.67,
+  "id": "boulder_b",
+  "model": "style/boulder_b",
+  "placed": 35,
+  "tex": [],
+  "tris": 80,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 2.8,
+  "group": "scenery",
+  "height": 0.97,
+  "id": "bush_a",
+  "model": "style/bush_a",
+  "placed": 0,
+  "tex": [],
+  "tris": 76,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 2.8,
+  "group": "scenery",
+  "height": 0.95,
+  "id": "bush_b",
+  "model": "style/bush_b",
+  "placed": 0,
+  "tex": [],
+  "tris": 66,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 2.8,
+  "group": "scenery",
+  "height": 1.15,
+  "id": "bush_c",
+  "model": "style/bush_c",
+  "placed": 0,
+  "tex": [],
+  "tris": 84,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 2.8,
+  "group": "scenery",
+  "height": 0.65,
+  "id": "campfire",
+  "model": "style/campfire",
+  "placed": 6,
+  "tex": [],
+  "tris": 284,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 2.8,
+  "group": "scenery",
+  "height": 2.02,
+  "id": "crystals",
+  "model": "style/crystals",
+  "placed": 8,
+  "tex": [],
+  "tris": 110,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 2.8,
+  "group": "scenery",
+  "height": 0.36,
+  "id": "flowers",
+  "model": "style/flowers",
+  "placed": 48,
+  "tex": [],
+  "tris": 78,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 1.4,
+  "group": "scenery",
+  "height": 0.41,
+  "id": "grass_tuft",
+  "model": "style/grass_tuft",
+  "placed": 342,
+  "tex": [],
+  "tris": 8,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 1.4,
+  "group": "scenery",
+  "height": 0.0,
+  "id": "lily",
+  "model": "style/lily",
+  "placed": 16,
+  "tex": [],
+  "tris": 8,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.4,
+  "group": "scenery",
+  "height": 0.65,
+  "id": "log",
+  "model": "style/log",
+  "placed": 18,
+  "tex": [],
+  "tris": 44,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 1.4,
+  "group": "scenery",
+  "height": 0.56,
+  "id": "mushrooms",
+  "model": "style/mushrooms",
+  "placed": 6,
+  "tex": [],
+  "tris": 400,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.4,
+  "group": "scenery",
+  "height": 1.2,
+  "id": "parapet",
+  "model": "style/parapet",
+  "placed": 314,
+  "tex": [],
+  "tris": 132,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.4,
+  "group": "scenery",
+  "height": 5.56,
+  "id": "pine_l",
+  "model": "style/pine_l",
+  "placed": 86,
+  "tex": [],
+  "tris": 178,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.4,
+  "group": "scenery",
+  "height": 4.21,
+  "id": "pine_m",
+  "model": "style/pine_m",
+  "placed": 47,
+  "tex": [],
+  "tris": 150,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.4,
+  "group": "scenery",
+  "height": 2.77,
+  "id": "pine_s",
+  "model": "style/pine_s",
+  "placed": 15,
+  "tex": [],
+  "tris": 122,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 2.8,
+  "group": "scenery",
+  "height": 0.19,
+  "id": "plant_green",
+  "model": "style/plant_green",
+  "placed": 103,
+  "tex": [],
+  "tris": 14,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 2.8,
+  "group": "scenery",
+  "height": 0.19,
+  "id": "plant_orange",
+  "model": "style/plant_orange",
+  "placed": 137,
+  "tex": [],
+  "tris": 14,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 2.8,
+  "group": "scenery",
+  "height": 1.29,
+  "id": "reeds",
+  "model": "style/reeds",
+  "placed": 176,
+  "tex": [],
+  "tris": 15,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 2.8,
+  "group": "scenery",
+  "height": 1.19,
+  "id": "rock_low",
+  "model": "style/rock_low",
+  "placed": 291,
+  "tex": [],
+  "tris": 48,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 1.4,
+  "group": "scenery",
+  "height": 0.48,
+  "id": "rock_small",
+  "model": "style/rock_small",
+  "placed": 133,
+  "tex": [],
+  "tris": 48,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 2.8,
+  "group": "scenery",
+  "height": 2.54,
+  "id": "rock_tall",
+  "model": "style/rock_tall",
+  "placed": 238,
+  "tex": [],
+  "tris": 46,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.4,
+  "group": "scenery",
+  "height": 1.93,
+  "id": "rock_wide",
+  "model": "style/rock_wide",
+  "placed": 226,
+  "tex": [],
+  "tris": 46,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.4,
+  "group": "scenery",
+  "height": 0.65,
+  "id": "stump",
+  "model": "style/stump",
+  "placed": 23,
+  "tex": [],
+  "tris": 236,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 2.8,
+  "group": "scenery",
+  "height": 2.5,
+  "id": "totem",
+  "model": "style/totem",
+  "placed": 6,
+  "tex": [],
+  "tris": 122,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.4,
+  "group": "scenery",
+  "height": 3.52,
+  "id": "tree_autumn",
+  "model": "style/tree_autumn",
+  "placed": 48,
+  "tex": [],
+  "tris": 150,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 6.4,
+  "group": "scenery",
+  "height": 3.23,
+  "id": "tree_round",
+  "model": "style/tree_round",
+  "placed": 8,
+  "tex": [],
+  "tris": 150,
+  "vertex_color": true
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 1.0,
+  "group": "fx",
+  "height": 0.6,
+  "id": "hex_frog",
+  "model": "style/fx/hex_frog",
+  "placed": 0,
+  "tex": [
+   "2048×2048"
+  ],
+  "tris": 1498,
+  "vertex_color": false
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 1.0,
+  "group": "fx",
+  "height": 0.6,
+  "id": "siege_bolt",
+  "model": "style/fx/siege_bolt",
+  "placed": 0,
+  "tex": [
+   "256×256"
+  ],
+  "tris": 200,
+  "vertex_color": false
+ },
+ {
+  "anims": 0,
+  "bones": 0,
+  "borrowed": "",
+  "frame": 1.0,
+  "group": "fx",
+  "height": 0.6,
+  "id": "siege_rock",
+  "model": "style/fx/siege_rock",
+  "placed": 0,
+  "tex": [
+   "256×256"
+  ],
+  "tris": 300,
+  "vertex_color": false
+ }
+]

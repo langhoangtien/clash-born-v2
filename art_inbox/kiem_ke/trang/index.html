@@ -1,0 +1,648 @@
+<title>Clashborn — Kiểm kê hình</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap">
+<style>
+/* Bố cục: một cột đọc từ trên xuống — tóm tắt, ảnh trong trận, rồi từng nhóm asset là lưới thẻ ảnh + nhãn trạng thái. */
+:root {
+  --bg: #eceee9; --surface: #f8f9f5; --tile: #3a3e3c; --fg: #1f2421; --muted: #5b635d; --line: #cfd4cb;
+  --accent: #9a6a14; --accent-soft: #f0e2bf;
+  --dat: #23683a; --dat-bg: #d5ecd9; --lech: #8a4b00; --lech-bg: #fbe2bd; --muon: #3d4f9c; --muon-bg: #dde2f7; --chua: #5b635d; --chua-bg: #e0e3de;
+  --display: "Baloo 2", "Be Vietnam Pro", system-ui, sans-serif; --text: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #171a18; --surface: #212523; --tile: #2c302e; --fg: #e8ebe5; --muted: #a2aaa3; --line: #3a403c;
+  --accent: #e2b24a; --accent-soft: #3b3220;
+  --dat: #8fd6a2; --dat-bg: #1f3a28; --lech: #f2bb6b; --lech-bg: #45300f; --muon: #aab6f5; --muon-bg: #283057; --chua: #a2aaa3; --chua-bg: #30352f;
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #171a18; --surface: #212523; --tile: #2c302e; --fg: #e8ebe5; --muted: #a2aaa3; --line: #3a403c;
+  --accent: #e2b24a; --accent-soft: #3b3220;
+  --dat: #8fd6a2; --dat-bg: #1f3a28; --lech: #f2bb6b; --lech-bg: #45300f; --muon: #aab6f5; --muon-bg: #283057; --chua: #a2aaa3; --chua-bg: #30352f;
+  color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 400 15px/1.55 var(--text); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 40px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(30px, 6vw, 44px); font-weight: 700; }
+h2 { font-size: 26px; font-weight: 700; }
+h3 { font-size: 18px; font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+h3.sub { margin-top: 8px; color: var(--muted); font-size: 16px; letter-spacing: .02em; }
+p { margin: 0; max-width: 68ch; }
+code { font: 500 12px/1 ui-monospace, Menlo, monospace; color: var(--muted); }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+header { display: flex; flex-direction: column; gap: 10px; }
+.lede { color: var(--muted); }
+section { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 64px; }
+.pill { font: 600 12px/1 var(--text); padding: 5px 9px; border-radius: 999px; white-space: nowrap; }
+.pill.dat { background: var(--dat-bg); color: var(--dat); } .pill.lech { background: var(--lech-bg); color: var(--lech); }
+.pill.muon { background: var(--muon-bg); color: var(--muon); } .pill.chua { background: var(--chua-bg); color: var(--chua); }
+.tally { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.tally div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.tally b { font: 700 30px/1 var(--display); font-variant-numeric: tabular-nums; }
+.findings { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; max-width: 76ch; }
+nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 10px; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+nav a { color: var(--fg); text-decoration: none; font-weight: 500; font-size: 14px; }
+nav a:hover, nav a:focus-visible { color: var(--accent); }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.filters button { font: 600 12px/1 var(--text); padding: 7px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; }
+.filters button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.grid.small { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+.grid.heroes { grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.card .shots { display: flex; background: #8c9188; }
+.card .shots img { display: block; width: 100%; min-width: 0; flex: 1; aspect-ratio: 392 / 455; object-fit: cover; }
+.card.hero .shots img { width: 50%; }
+.card .body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.card .meta { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.card p { font-size: 14px; }
+.card.wide { grid-column: 1 / -1; }
+.sheet { background: var(--tile); padding: 8px; }
+.sheet img { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+.icons { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+.icons img { display: block; width: 100%; height: auto; border-radius: 6px; }
+.icons .cap { display: grid; grid-template-columns: repeat(6, 1fr); font-size: 11px; color: var(--muted); text-align: center; }
+.n { font: 500 13px/1 var(--text); color: var(--muted); }
+figure { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+figure img { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); }
+figcaption { font-size: 14px; color: var(--muted); max-width: 76ch; }
+.shots2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 14px; }
+.cands { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 14px; }
+.cand { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.cand img { width: 132px; height: 132px; object-fit: cover; object-position: 0 0; border-radius: 8px; background: var(--tile); }
+.cand ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.note { background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; font-size: 14px; }
+footer { color: var(--muted); font-size: 13px; }
+</style>
+<div class="wrap">
+<header>
+  <span class="eyebrow">CB-1 Art chuẩn · D-360 · 12/11/2026</span>
+  <h1>Clashborn — Kiểm kê hình</h1>
+  <p class="lede">Mọi mô hình 3D, chân dung và icon đang có trong game, chụp cùng một góc, cùng ánh sáng trận, cùng tỉ lệ trong mỗi nhóm. Chưa sửa asset nào. Trang này để chọn tướng chuẩn trước khi viết chuẩn hình.</p>
+  <p class="note"><strong>Cách đọc nhãn.</strong> Game chưa có chuẩn hình, nên “Đạt” ở đây nghĩa là cùng họ với phần đông asset đã duyệt: trụ, lính, Brakk — khối mập 3–4 đầu, sơn tay mịn, viền vàng. “Lệch” là khác họ đó, không phải xấu. Nếu chọn tướng chuẩn theo hướng người lớn mảnh (Phong Tiễn) thì nhãn của các tướng đảo lại.</p>
+</header>
+
+<section id="tom-tat">
+  <h2>Tóm tắt</h2>
+  <div class="tally">
+    <div><b>39</b><span class="pill dat">Đạt</span></div>
+    <div><b>34</b><span class="pill lech">Lệch</span></div>
+    <div><b>3</b><span class="pill muon">Mượn tạm</span></div>
+    <div><b>0</b><span class="pill chua">Chưa có</span></div>
+  </div>
+  <ol class="findings">
+    <li><strong>Tướng chia hai họ tỉ lệ.</strong> Brakk, Noctis, Duy Anh, Gorran là khối mập 3–4,5 đầu. Myra, Vexa, Phong Tiễn là người lớn mảnh 6–6,5 đầu (D-304). Đây là nguồn chính của cảm giác “mỗi tướng một kiểu”. Ở góc camera trận, họ mảnh nhỏ và khó đọc hơn rõ rệt.</li>
+    <li><strong>Cây, bụi, hoa lá là màu phẳng không vân</strong>, trong khi đá có vân vẽ tay và mặt đất vẽ tay. Lá cam (<code>plant_orange</code>) và cây thu là vật nổi nhất màn hình, lấn cả tướng.</li>
+    <li><strong>Quái rừng là họ thứ ba</strong>: low-poly mặt phẳng kiểu gấp giấy (gấu, sói, tê giác), khác cách sơn mịn của tướng và lính. Gấu, sói, tê giác có 49–56 xương, gấp đôi tướng.</li>
+    <li><strong>Chân dung có ba kiểu</strong>: Duy Anh (ô vuông nền tối, mặt em bé), Myra / Vexa / Noctis (anime chibi nét mảnh), Brakk / Gorran và 4 tướng mới (bán thân hoạt hình nét dày).</li>
+    <li><strong>Icon chiêu có hai đời</strong>: 6 tướng đầu viền mảnh, mảng phẳng, hình nhỏ trong khung; 4 tướng mới khung vàng dày, hình lấp đầy, tô bóng nhiều lớp. Icon trạng thái là hình phẳng kiểu emoji, khác cả hai.</li>
+    <li><strong>Phần đã đồng bộ</strong>: công trình (trụ, nhà chính, fountain), lính, mặt đất và nước, icon trang bị. Số tam giác và cỡ ảnh màu cũng đều: tướng 2,5–3,6 nghìn tam giác, 23 xương, ảnh màu 1024.</li>
+  </ol>
+</section>
+
+<nav aria-label="Mục">
+  <a href="#trong-tran">Trong trận</a><a href="#tuong">Tướng</a><a href="#linh">Lính</a><a href="#quai">Quái rừng</a><a href="#cong-trinh">Công trình</a><a href="#canh-vat">Cảnh vật</a><a href="#icon">Icon</a><a href="#ung-vien">Ứng viên</a>
+  <div class="filters" role="group" aria-label="Lọc theo trạng thái">
+    <button type="button" id="f-all" data-f="" aria-pressed="true">Tất cả</button>
+    <button type="button" id="f-dat" data-f="dat" aria-pressed="false">Đạt</button>
+    <button type="button" id="f-lech" data-f="lech" aria-pressed="false">Lệch</button>
+    <button type="button" id="f-muon" data-f="muon" aria-pressed="false">Mượn tạm</button>
+  </div>
+</nav>
+
+<section id="trong-tran">
+  <h2>Trong trận, góc camera thật</h2>
+  <figure><img src="hang_tuong.webp" alt="Mười tướng xếp hàng dọc lane giữa, chụp ở góc camera trận">
+    <figcaption>Cả 10 tướng xếp dọc lane giữa (SIM dừng). Từ dưới lên: Thạch Giáp và Huyết Cự Nhân (mượn Brakk), Myra, Noctis, Vexa, Gorran, Phong Tiễn, Thợ Săn (mượn Duy Anh), Brakk, Duy Anh. Phong Tiễn ở giữa nhỏ hẳn so với Gorran và Brakk hai bên; lá cam và cây thu bắt mắt hơn tướng.</figcaption></figure>
+  <div class="shots2">
+    <figure><img loading="lazy" src="tran_020s.webp" alt="Trận 3v3 ở giây 20: Phong Tiễn rời trụ"><figcaption>0:20 — trụ, đá lát base, thông và vách đá. Trụ và mặt đất cùng cách sơn; thông màu phẳng.</figcaption></figure>
+    <figure><img loading="lazy" src="tran_130s.webp" alt="Trận 3v3 ở phút 2:10: giao tranh lính ở lane giữa"><figcaption>2:10 — giao tranh lính. Lính đọc được nhờ khối mập và màu phe; Phong Tiễn mảnh, lẫn vào cỏ.</figcaption></figure>
+  </div>
+  <p class="lede">Ảnh chụp bằng trình vẽ Mobile (Vulkan) như trên điện thoại, 1920 × 1080, trận 3v3 bot, tua ×4.</p>
+</section>
+
+<section id="tuong">
+  <h2>Tướng</h2>
+  <p class="lede">Khung ảnh cao 2 m cho mọi tướng, lính và quái thường, nên so được cỡ với nhau. Mỗi tướng hai góc, tư thế đứng. Dưới mỗi tướng là chân dung và icon chiêu; ô “Thân 2D” trống ở 4 tướng mới vì bản 3D không dùng ảnh thân.</p>
+  <div class="grid heroes"><article class="card hero" data-st="dat">
+<div class="shots"><img loading="lazy" src="hero__brakk.webp" alt="Brakk · Thiết Quyền"><img loading="lazy" src="hero__brakk_b.webp" alt="Brakk · Thiết Quyền, góc thứ hai"></div>
+<div class="body"><h3>Brakk · Thiết Quyền <span class="pill dat">Đạt</span></h3>
+<p class="meta">3.071 tam giác · 23 xương · 11 hoạt ảnh · ảnh màu 1024×1024 · cao 1,25 m</p>
+<p class="meta">Nguồn: Codex vẽ tờ 3 góc → Tripo → afk.ai gắn xương · <code>brakk</code></p>
+<p>~3,5 đầu, khối mập chắc, mảng màu lớn (xám thép + cam), viền vàng cùng họ với trụ và xe công thành. Trong trận đọc rõ nhất dàn.</p>
+<div class="icons" data-st="dat"><img loading="lazy" src="icon_brakk.webp" alt="Chân dung và icon chiêu của Brakk · Thiết Quyền">
+<div class="cap"><span>Chân dung</span><span>Thân 2D</span><span>Nội tại</span><span>Q</span><span>W</span><span>R</span></div>
+<p><strong>Chân dung, icon</strong> <span class="pill dat">Đạt</span> Chân dung bán thân hoạt hình phương Tây, nét dày — là mẫu đã dùng để vẽ 4 tướng mới. Icon chiêu đời đầu: viền mảnh, mảng phẳng.</p></div>
+</div></article>
+<article class="card hero" data-st="dat">
+<div class="shots"><img loading="lazy" src="hero__gorran.webp" alt="Gorran · Giả Kim"><img loading="lazy" src="hero__gorran_b.webp" alt="Gorran · Giả Kim, góc thứ hai"></div>
+<div class="body"><h3>Gorran · Giả Kim <span class="pill dat">Đạt</span></h3>
+<p class="meta">3.636 tam giác · 23 xương · 13 hoạt ảnh · ảnh màu 1024×1024 · cao 1,4 m</p>
+<p class="meta">Nguồn: Codex vẽ tờ 3 góc → Tripo → afk.ai gắn xương · <code>gorran</code></p>
+<p>~4,5 đầu, vai rộng. Chi tiết nhiều nhất (dây đai, bình thuốc, hai kiếm) mà vẫn đọc được. Da xanh lá bão hòa hơn bảng màu chung một bậc. Có da đỏ Cuồng Hóa riêng.</p>
+<div class="icons" data-st="dat"><img loading="lazy" src="icon_gorran.webp" alt="Chân dung và icon chiêu của Gorran · Giả Kim">
+<div class="cap"><span>Chân dung</span><span>Thân 2D</span><span>Nội tại</span><span>Q</span><span>W</span><span>R</span></div>
+<p><strong>Chân dung, icon</strong> <span class="pill dat">Đạt</span> Chân dung cùng kiểu Brakk. Icon W nhỏ hơn hẳn các icon khác (khung thu vào), cần vẽ lại cho bằng cỡ.</p></div>
+</div></article>
+<article class="card hero" data-st="dat">
+<div class="shots"><img loading="lazy" src="hero__noctis.webp" alt="Noctis · Sát Ảnh"><img loading="lazy" src="hero__noctis_b.webp" alt="Noctis · Sát Ảnh, góc thứ hai"></div>
+<div class="body"><h3>Noctis · Sát Ảnh <span class="pill dat">Đạt</span></h3>
+<p class="meta">3.490 tam giác · 23 xương · 13 hoạt ảnh · ảnh màu 1024×1024 · cao 1,2 m</p>
+<p class="meta">Nguồn: Codex vẽ tờ 3 góc → Tripo → afk.ai gắn xương · <code>noctis</code></p>
+<p>~3,5 đầu, khối mập như Brakk. Tông tím đen hơi tối trên nền cỏ sẫm; điểm xanh ngọc nhỏ khó thấy ở góc camera trận.</p>
+<div class="icons" data-st="lech"><img loading="lazy" src="icon_noctis.webp" alt="Chân dung và icon chiêu của Noctis · Sát Ảnh">
+<div class="cap"><span>Chân dung</span><span>Thân 2D</span><span>Nội tại</span><span>Q</span><span>W</span><span>R</span></div>
+<p><strong>Chân dung, icon</strong> <span class="pill lech">Lệch</span> Chân dung anime chibi nét mảnh, tối. Icon chiêu đời đầu, mảng phẳng.</p></div>
+</div></article>
+<article class="card hero" data-st="lech">
+<div class="shots"><img loading="lazy" src="hero__duy_anh.webp" alt="Duy Anh · Hiệp Sĩ"><img loading="lazy" src="hero__duy_anh_b.webp" alt="Duy Anh · Hiệp Sĩ, góc thứ hai"></div>
+<div class="body"><h3>Duy Anh · Hiệp Sĩ <span class="pill lech">Lệch</span></h3>
+<p class="meta">3.406 tam giác · 23 xương · 11 hoạt ảnh · ảnh màu 1024×1024 · cao 1,2 m</p>
+<p class="meta">Nguồn: Codex vẽ tờ 3 góc → Tripo → afk.ai gắn xương · <code>duy_anh</code></p>
+<p>Chibi ~3 đầu, đầu to nhất dàn, mắt to kiểu em bé. Khối mập, viền vàng hợp với lính và trụ, nhưng mặt trẻ con lệch hẳn Brakk / Gorran. Ảnh màu sáng, bão hòa cao.</p>
+<div class="icons" data-st="lech"><img loading="lazy" src="icon_duy_anh.webp" alt="Chân dung và icon chiêu của Duy Anh · Hiệp Sĩ">
+<div class="cap"><span>Chân dung</span><span>Thân 2D</span><span>Nội tại</span><span>Q</span><span>W</span><span>R</span></div>
+<p><strong>Chân dung, icon</strong> <span class="pill lech">Lệch</span> Chân dung ô vuông có nền tối, mặt em bé — khác hẳn 9 tướng còn lại (bán thân nền trong). Icon chiêu viền mảnh, hình nhỏ trong khung; 2 icon có vẽ cả nhân vật.</p></div>
+</div></article>
+<article class="card hero" data-st="lech">
+<div class="shots"><img loading="lazy" src="hero__myra.webp" alt="Myra · Pháp sư"><img loading="lazy" src="hero__myra_b.webp" alt="Myra · Pháp sư, góc thứ hai"></div>
+<div class="body"><h3>Myra · Pháp sư <span class="pill lech">Lệch</span></h3>
+<p class="meta">2.506 tam giác · 23 xương · 11 hoạt ảnh · ảnh màu 1024×1024 · cao 1,3 m</p>
+<p class="meta">Nguồn: Codex vẽ tờ 3 góc → Tripo → afk.ai gắn xương · <code>myra</code></p>
+<p>~6,5 đầu, người mảnh, mặt kiểu anime (D-304: tỉ lệ người lớn). Đứng cạnh Brakk như hai game khác nhau. Trong trận nhỏ, trắng dễ chìm vào đá lát.</p>
+<div class="icons" data-st="lech"><img loading="lazy" src="icon_myra.webp" alt="Chân dung và icon chiêu của Myra · Pháp sư">
+<div class="cap"><span>Chân dung</span><span>Thân 2D</span><span>Nội tại</span><span>Q</span><span>W</span><span>R</span></div>
+<p><strong>Chân dung, icon</strong> <span class="pill lech">Lệch</span> Chân dung kiểu anime chibi nét mảnh — khác họ Brakk. Icon chiêu đã vẽ lại tông băng (D-302), đồng bộ với nhau.</p></div>
+</div></article>
+<article class="card hero" data-st="lech">
+<div class="shots"><img loading="lazy" src="hero__vexa.webp" alt="Vexa · Phù Thủy"><img loading="lazy" src="hero__vexa_b.webp" alt="Vexa · Phù Thủy, góc thứ hai"></div>
+<div class="body"><h3>Vexa · Phù Thủy <span class="pill lech">Lệch</span></h3>
+<p class="meta">2.475 tam giác · 23 xương · 11 hoạt ảnh · ảnh màu 1024×1024 · cao 1,3 m</p>
+<p class="meta">Nguồn: Codex vẽ tờ 3 góc → Tripo → afk.ai gắn xương · <code>vexa</code></p>
+<p>~6 đầu, tay chân mảnh. Mũ to cứu được bóng dáng nên trong trận vẫn nhận ra. Tông tím nâu trầm, ít viền vàng.</p>
+<div class="icons" data-st="lech"><img loading="lazy" src="icon_vexa.webp" alt="Chân dung và icon chiêu của Vexa · Phù Thủy">
+<div class="cap"><span>Chân dung</span><span>Thân 2D</span><span>Nội tại</span><span>Q</span><span>W</span><span>R</span></div>
+<p><strong>Chân dung, icon</strong> <span class="pill lech">Lệch</span> Chân dung anime chibi, rất nhiều chi tiết nhỏ, ở cỡ HUD thành mảng rối. Icon chiêu dùng hình người xám — kiểu riêng, không tướng nào khác có.</p></div>
+</div></article>
+<article class="card hero" data-st="lech">
+<div class="shots"><img loading="lazy" src="hero__phong_tien.webp" alt="Phong Tiễn · Cung Gió"><img loading="lazy" src="hero__phong_tien_b.webp" alt="Phong Tiễn · Cung Gió, góc thứ hai"></div>
+<div class="body"><h3>Phong Tiễn · Cung Gió <span class="pill lech">Lệch</span></h3>
+<p class="meta">3.085 tam giác · 23 xương · 10 hoạt ảnh · ảnh màu 1024×1024 · cao 1,3 m</p>
+<p class="meta">Nguồn: Codex vẽ tờ 3 góc → Tripo → afk.ai gắn xương · <code>phong_tien</code></p>
+<p>~6,5 đầu, mảnh nhất dàn; trong trận là tướng nhỏ và khó đọc nhất. Bù lại quy trình mới nhất và sạch nhất (D-348): hoạt ảnh riêng cho từng chiêu, dây cung vẽ bằng code.</p>
+<div class="icons" data-st="dat"><img loading="lazy" src="icon_phong_tien.webp" alt="Chân dung và icon chiêu của Phong Tiễn · Cung Gió">
+<div class="cap"><span>Chân dung</span><span>Thân 2D</span><span>Nội tại</span><span>Q</span><span>W</span><span>R</span></div>
+<p><strong>Chân dung, icon</strong> <span class="pill dat">Đạt</span> Chân dung theo chuẩn Brakk (D-347). Icon chiêu đời mới: khung vàng dày, hình lấp đầy khung, tô bóng nhiều lớp — đẹp hơn nhưng lệch đời đầu.</p></div>
+</div></article>
+<article class="card hero" data-st="muon">
+<div class="shots"><img loading="lazy" src="hero__huyet_cu_nhan.webp" alt="Huyết Cự Nhân · Khổng Lồ"><img loading="lazy" src="hero__huyet_cu_nhan_b.webp" alt="Huyết Cự Nhân · Khổng Lồ, góc thứ hai"></div>
+<div class="body"><h3>Huyết Cự Nhân · Khổng Lồ <span class="pill muon">Mượn tạm</span></h3>
+<p class="meta">3.071 tam giác · 23 xương · 11 hoạt ảnh · ảnh màu 1024×1024 · cao 1,5 m</p>
+<p class="meta">Nguồn: Codex vẽ tờ 3 góc → Tripo → afk.ai gắn xương · <code>huyet_cu_nhan</code></p>
+<p>Đang mượn mô hình Brakk, phóng cao 1,5. Chưa có mô hình riêng — đang dừng chờ chuẩn.</p>
+<div class="icons" data-st="dat"><img loading="lazy" src="icon_huyet_cu_nhan.webp" alt="Chân dung và icon chiêu của Huyết Cự Nhân · Khổng Lồ">
+<div class="cap"><span>Chân dung</span><span>Thân 2D</span><span>Nội tại</span><span>Q</span><span>W</span><span>R</span></div>
+<p><strong>Chân dung, icon</strong> <span class="pill dat">Đạt</span> Chân dung theo chuẩn Brakk. Icon đời mới, bốn icon cùng tông đỏ nên khó phân biệt Q / W / R khi liếc nhanh.</p></div>
+</div></article>
+<article class="card hero" data-st="muon">
+<div class="shots"><img loading="lazy" src="hero__thach_giap.webp" alt="Thạch Giáp · Khiên Đá"><img loading="lazy" src="hero__thach_giap_b.webp" alt="Thạch Giáp · Khiên Đá, góc thứ hai"></div>
+<div class="body"><h3>Thạch Giáp · Khiên Đá <span class="pill muon">Mượn tạm</span></h3>
+<p class="meta">3.071 tam giác · 23 xương · 11 hoạt ảnh · ảnh màu 1024×1024 · cao 1,35 m</p>
+<p class="meta">Nguồn: Codex vẽ tờ 3 góc → Tripo → afk.ai gắn xương · <code>thach_giap</code></p>
+<p>Đang mượn mô hình Brakk, cao 1,35. Chưa có mô hình riêng — đang dừng chờ chuẩn.</p>
+<div class="icons" data-st="dat"><img loading="lazy" src="icon_thach_giap.webp" alt="Chân dung và icon chiêu của Thạch Giáp · Khiên Đá">
+<div class="cap"><span>Chân dung</span><span>Thân 2D</span><span>Nội tại</span><span>Q</span><span>W</span><span>R</span></div>
+<p><strong>Chân dung, icon</strong> <span class="pill dat">Đạt</span> Chân dung theo chuẩn Brakk. Icon đời mới; icon R vẽ lại mặt nhân vật.</p></div>
+</div></article>
+<article class="card hero" data-st="muon">
+<div class="shots"><img loading="lazy" src="hero__tho_san.webp" alt="Thợ Săn · Bắt Lẻ"><img loading="lazy" src="hero__tho_san_b.webp" alt="Thợ Săn · Bắt Lẻ, góc thứ hai"></div>
+<div class="body"><h3>Thợ Săn · Bắt Lẻ <span class="pill muon">Mượn tạm</span></h3>
+<p class="meta">3.406 tam giác · 23 xương · 11 hoạt ảnh · ảnh màu 1024×1024 · cao 1,25 m</p>
+<p class="meta">Nguồn: Codex vẽ tờ 3 góc → Tripo → afk.ai gắn xương · <code>tho_san</code></p>
+<p>Đang mượn mô hình Duy Anh, cao 1,25. Chưa có mô hình riêng — đang dừng chờ chuẩn.</p>
+<div class="icons" data-st="dat"><img loading="lazy" src="icon_tho_san.webp" alt="Chân dung và icon chiêu của Thợ Săn · Bắt Lẻ">
+<div class="cap"><span>Chân dung</span><span>Thân 2D</span><span>Nội tại</span><span>Q</span><span>W</span><span>R</span></div>
+<p><strong>Chân dung, icon</strong> <span class="pill dat">Đạt</span> Chân dung theo chuẩn Brakk. Icon đời mới, tông đỏ đen.</p></div>
+</div></article></div>
+</section>
+
+<section id="linh">
+  <h2>Lính</h2>
+  <div class="grid"><article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="creep__creep_melee.webp" alt="Lính cận chiến"></div>
+<div class="body"><h3>Lính cận chiến <span class="pill dat">Đạt</span></h3>
+<p class="meta">1.484 tam giác · 23 xương · 6 hoạt ảnh · ảnh màu 1024×1024 · cao 0,85 m</p>
+<p class="meta">Nguồn: Tripo → afk.ai · <code>creep_melee</code></p>
+<p>~2,5 đầu, khối mập, màu phe rõ (khiên + áo). Cùng họ Brakk.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="creep__creep_ranged.webp" alt="Lính đánh xa"></div>
+<div class="body"><h3>Lính đánh xa <span class="pill dat">Đạt</span></h3>
+<p class="meta">1.556 tam giác · 23 xương · 6 hoạt ảnh · ảnh màu 1024×1024 · cao 0,85 m</p>
+<p class="meta">Nguồn: Tripo → afk.ai · <code>creep_ranged</code></p>
+<p>~2,5 đầu, áo trùm màu phe. Ít chi tiết hơn lính cận chiến nhưng cùng họ.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="creep__creep_siege.webp" alt="Xe công thành"></div>
+<div class="body"><h3>Xe công thành <span class="pill dat">Đạt</span></h3>
+<p class="meta">2.484 tam giác · 6 xương · 5 hoạt ảnh · ảnh màu 1024×1024 · cao 1,0 m</p>
+<p class="meta">Nguồn: Tripo → afk.ai · <code>creep_siege</code></p>
+<p>Sơn tay mịn, viền vàng dày, cùng bộ với trụ. Chỉ 6 xương (xương cứng tự làm bằng Blender). Bão hòa cao hơn lính bộ.</p>
+</div></article></div>
+</section>
+
+<section id="quai">
+  <h2>Quái rừng</h2>
+  <p class="lede">Quái thường chụp khung 2 m như tướng; hai golem boss khung 4,2 m.</p>
+  <div class="grid"><article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="creature__neutral_shaman.webp" alt="Pháp sư rừng"></div>
+<div class="body"><h3>Pháp sư rừng <span class="pill lech">Lệch</span></h3>
+<p class="meta">2.083 tam giác · 23 xương · 6 hoạt ảnh · ảnh màu 1024×1024 · cao 1,15 m</p>
+<p class="meta">Nguồn: Tripo → afk.ai · <code>neutral_shaman</code></p>
+<p>Mặt phẳng góc cạnh (low-poly thấy rõ từng mặt), gần như không có chi tiết mặt. Khác cách sơn mịn của tướng và lính.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="creature__neutral_bear.webp" alt="Gấu"></div>
+<div class="body"><h3>Gấu <span class="pill lech">Lệch</span></h3>
+<p class="meta">2.707 tam giác · 49 xương · 5 hoạt ảnh · ảnh màu 1024×1024 · cao 1,3 m</p>
+<p class="meta">Nguồn: Tripo → afk.ai · <code>neutral_bear</code></p>
+<p>Low-poly mặt phẳng kiểu gấp giấy, cam bão hòa mạnh, rune sáng. Là họ hình riêng của quái rừng (D-307b) — cần quyết giữ họ này hay kéo về họ tướng. 49 xương, gấp đôi tướng.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="creature__neutral_wolf.webp" alt="Sói"></div>
+<div class="body"><h3>Sói <span class="pill lech">Lệch</span></h3>
+<p class="meta">2.466 tam giác · 49 xương · 5 hoạt ảnh · ảnh màu 1024×1024 · cao 0,95 m</p>
+<p class="meta">Nguồn: Tripo → afk.ai · <code>neutral_wolf</code></p>
+<p>Low-poly mặt phẳng, xám lạnh. Cùng họ với gấu, khác họ tướng. 49 xương.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="creature__neutral_buffalo.webp" alt="Golem đá (trại lớn)"></div>
+<div class="body"><h3>Golem đá (trại lớn) <span class="pill lech">Lệch</span></h3>
+<p class="meta">2.044 tam giác · 23 xương · 6 hoạt ảnh · ảnh màu 1024×1024 · cao 1,7 m</p>
+<p class="meta">Nguồn: Tripo → afk.ai · <code>neutral_buffalo</code></p>
+<p>Golem đá mặt phẳng, rêu vàng chanh. Hợp với đá cảnh vật hơn là với tướng.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="creature__rhino.webp" alt="Tê giác đá"></div>
+<div class="body"><h3>Tê giác đá <span class="pill lech">Lệch</span></h3>
+<p class="meta">2.647 tam giác · 56 xương · 5 hoạt ảnh · ảnh màu 1024×1024 · cao 1,3 m</p>
+<p class="meta">Nguồn: Tripo → afk.ai · <code>rhino</code></p>
+<p>Đá low-poly + rêu, theo ảnh mẫu người chơi (D-307b). Chi tiết dày hơn gấu / sói. 56 xương — nhiều nhất game.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="creature__rhino_small.webp" alt="Tê giác đá con"></div>
+<div class="body"><h3>Tê giác đá con <span class="pill lech">Lệch</span></h3>
+<p class="meta">2.647 tam giác · 56 xương · 5 hoạt ảnh · ảnh màu 1024×1024 · cao 0,75 m</p>
+<p class="meta">Nguồn: Tripo → afk.ai · <code>rhino_small</code></p>
+<p>Cùng mô hình tê giác, thu nhỏ 0,75.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="boss__golem_moss.webp" alt="Golem Rêu (boss)"></div>
+<div class="body"><h3>Golem Rêu (boss) <span class="pill lech">Lệch</span></h3>
+<p class="meta">2.817 tam giác · 23 xương · 6 hoạt ảnh · ảnh màu 1024×1024 · cao 3,1 m</p>
+<p class="meta">Nguồn: Tripo → afk.ai · <code>golem_moss</code></p>
+<p>Đá khối + rune, sơn mịn hơn gấu / sói — nằm giữa hai họ. Cao 3,1 m, đọc tốt.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="boss__golem_lava.webp" alt="Golem Dung Nham (boss)"></div>
+<div class="body"><h3>Golem Dung Nham (boss) <span class="pill lech">Lệch</span></h3>
+<p class="meta">2.963 tam giác · 23 xương · 6 hoạt ảnh · ảnh màu 1024×1024 · cao 3,1 m</p>
+<p class="meta">Nguồn: Tripo → afk.ai · <code>golem_lava</code></p>
+<p>Như Golem Rêu, tông nâu đen + khe dung nham. Tối, dễ chìm vào vách đá.</p>
+</div></article></div>
+</section>
+
+<section id="cong-trinh">
+  <h2>Công trình và vật bay</h2>
+  <p class="lede">Công trình khung 6 m; ếch và đạn khung 1,6 m.</p>
+  <div class="grid"><article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="structure__tower_t1_blue.webp" alt="Trụ T1–T3 · xanh"></div>
+<div class="body"><h3>Trụ T1–T3 · xanh <span class="pill dat">Đạt</span></h3>
+<p class="meta">2.486 tam giác · ảnh màu 1024×1024 · cao 2,55 m</p>
+<p class="meta">Nguồn: Codex vẽ concept → Tripo · <code>tower_t1_blue</code></p>
+<p>Sơn tay mịn, đá be ấm, viền vàng, pha lê phe. Bộ công trình đồng bộ với nhau; đá be ấm lệch nhẹ với đá xám lạnh của cảnh vật (đã ghi ở D-312).</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="structure__tower_t1_red.webp" alt="Trụ T1–T3 · đỏ"></div>
+<div class="body"><h3>Trụ T1–T3 · đỏ <span class="pill dat">Đạt</span></h3>
+<p class="meta">2.486 tam giác · ảnh màu 1024×1024 · cao 2,55 m</p>
+<p class="meta">Nguồn: Codex vẽ concept → Tripo · <code>tower_t1_red</code></p>
+<p>Như bản xanh, đổi ảnh màu theo phe.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="structure__tower_t4_blue.webp" alt="Trụ T4 · xanh"></div>
+<div class="body"><h3>Trụ T4 · xanh <span class="pill dat">Đạt</span></h3>
+<p class="meta">2.500 tam giác · ảnh màu 1024×1024 · cao 3,3 m</p>
+<p class="meta">Nguồn: Codex vẽ concept → Tripo · <code>tower_t4_blue</code></p>
+<p>Cùng bộ với trụ T1, thêm vành vàng và cột nhỏ.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="structure__tower_t4_red.webp" alt="Trụ T4 · đỏ"></div>
+<div class="body"><h3>Trụ T4 · đỏ <span class="pill dat">Đạt</span></h3>
+<p class="meta">2.500 tam giác · ảnh màu 1024×1024 · cao 3,3 m</p>
+<p class="meta">Nguồn: Codex vẽ concept → Tripo · <code>tower_t4_red</code></p>
+<p>Như bản xanh.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="structure__core_blue.webp" alt="Nhà chính · xanh"></div>
+<div class="body"><h3>Nhà chính · xanh <span class="pill dat">Đạt</span></h3>
+<p class="meta">3.000 tam giác · ảnh màu 1024×1024 · cao 3,6 m</p>
+<p class="meta">Nguồn: Codex vẽ concept → Tripo · <code>core_blue</code></p>
+<p>Cùng bộ: đá be, viền vàng, cờ phe. Pha lê lớn một màu phẳng, ít chi tiết so với phần đế.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="structure__core_red.webp" alt="Nhà chính · đỏ"></div>
+<div class="body"><h3>Nhà chính · đỏ <span class="pill dat">Đạt</span></h3>
+<p class="meta">3.000 tam giác · ảnh màu 1024×1024 · cao 3,6 m</p>
+<p class="meta">Nguồn: Codex vẽ concept → Tripo · <code>core_red</code></p>
+<p>Như bản xanh.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="structure__shop.webp" alt="Cửa hàng ẩn"></div>
+<div class="body"><h3>Cửa hàng ẩn <span class="pill dat">Đạt</span></h3>
+<p class="meta">1.995 tam giác · ảnh màu 1024×1024 · cao 1,6 m</p>
+<p class="meta">Nguồn: Codex vẽ concept → Tripo · <code>shop</code></p>
+<p>Gỗ nâu + mái đỏ rượu, sơn mịn. Không có viền vàng nên hơi rời bộ công trình, nhưng cùng cách sơn.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="structure__rubble.webp" alt="Trụ đổ"></div>
+<div class="body"><h3>Trụ đổ <span class="pill dat">Đạt</span></h3>
+<p class="meta">1.492 tam giác · ảnh màu 1024×1024 · cao 1,3 m</p>
+<p class="meta">Nguồn: Codex vẽ concept → Tripo · <code>rubble</code></p>
+<p>Cùng bộ với trụ.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="structure__fountain.webp" alt="Fountain"></div>
+<div class="body"><h3>Fountain <span class="pill dat">Đạt</span></h3>
+<p class="meta">2.500 tam giác · ảnh màu 1024×1024 · cao 1,5 m</p>
+<p class="meta">Nguồn: Codex vẽ concept → Tripo · <code>fountain</code></p>
+<p>Cùng bộ với trụ và nhà chính.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="fx__hex_frog.webp" alt="Ếch (hóa ếch)"></div>
+<div class="body"><h3>Ếch (hóa ếch) <span class="pill dat">Đạt</span></h3>
+<p class="meta">1.498 tam giác · ảnh màu 2048×2048 · cao 0,6 m</p>
+<p class="meta">Nguồn: Tripo · <code>hex_frog</code></p>
+<p>Sơn mịn kiểu hoạt hình. Ảnh màu 2048 — gấp đôi mọi mô hình khác, nên hạ về 1024.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="fx__siege_bolt.webp" alt="Đạn xe công thành"></div>
+<div class="body"><h3>Đạn xe công thành <span class="pill lech">Lệch</span></h3>
+<p class="meta">200 tam giác · ảnh màu 256×256 · cao 0,6 m</p>
+<p class="meta">Nguồn: Tripo · <code>siege_bolt</code></p>
+<p>Khối xanh phẳng, ảnh màu 256 nhòe. Bay nhanh nên ít ai nhìn kỹ.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="fx__siege_rock.webp" alt="Đá trụ bắn"></div>
+<div class="body"><h3>Đá trụ bắn <span class="pill dat">Đạt</span></h3>
+<p class="meta">300 tam giác · ảnh màu 256×256 · cao 0,6 m</p>
+<p class="meta">Nguồn: Tripo · <code>siege_rock</code></p>
+<p>Đá + lõi màu phe. Ảnh màu 256 đủ dùng vì bay nhanh.</p>
+</div></article></div>
+</section>
+
+<section id="canh-vat">
+  <h2>Cảnh vật</h2>
+  <p class="lede">28 mô hình dựng bằng code Blender, chụp với đúng vật liệu của trận, cỡ bằng cỡ thường đặt trên map. Khung 1,4 m, 2,8 m hoặc 6,4 m tùy vật.</p>
+  <h3 class="sub">Đá và tường</h3><div class="grid small"><article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="scenery__boulder_a.webp" alt="boulder_a"></div>
+<div class="body"><h3>boulder_a <span class="pill dat">Đạt</span></h3>
+<p class="meta">80 tam giác · màu đỉnh, không ảnh · đặt 29 chỗ · cao 0,64 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>boulder_a</code></p>
+<p>Vân đá + mảng rêu. Hợp bộ đá.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="scenery__boulder_b.webp" alt="boulder_b"></div>
+<div class="body"><h3>boulder_b <span class="pill dat">Đạt</span></h3>
+<p class="meta">80 tam giác · màu đỉnh, không ảnh · đặt 35 chỗ · cao 0,67 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>boulder_b</code></p>
+<p>Như boulder_a.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="scenery__parapet.webp" alt="parapet"></div>
+<div class="body"><h3>parapet <span class="pill dat">Đạt</span></h3>
+<p class="meta">132 tam giác · màu đỉnh, không ảnh · đặt 314 chỗ · cao 1,2 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>parapet</code></p>
+<p>Vân tường đá vẽ tay, cùng tông đá chung.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="scenery__rock_low.webp" alt="rock_low"></div>
+<div class="body"><h3>rock_low <span class="pill dat">Đạt</span></h3>
+<p class="meta">48 tam giác · màu đỉnh, không ảnh · đặt 291 chỗ · cao 1,19 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>rock_low</code></p>
+<p>Có vân đá vẽ tay phủ lên (rock_face) — hợp với mặt đất vẽ tay.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="scenery__rock_small.webp" alt="rock_small"></div>
+<div class="body"><h3>rock_small <span class="pill dat">Đạt</span></h3>
+<p class="meta">48 tam giác · màu đỉnh, không ảnh · đặt 133 chỗ · cao 0,48 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>rock_small</code></p>
+<p>Như rock_low.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="scenery__rock_tall.webp" alt="rock_tall"></div>
+<div class="body"><h3>rock_tall <span class="pill dat">Đạt</span></h3>
+<p class="meta">46 tam giác · màu đỉnh, không ảnh · đặt 238 chỗ · cao 2,54 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>rock_tall</code></p>
+<p>Như rock_low.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="scenery__rock_wide.webp" alt="rock_wide"></div>
+<div class="body"><h3>rock_wide <span class="pill dat">Đạt</span></h3>
+<p class="meta">46 tam giác · màu đỉnh, không ảnh · đặt 226 chỗ · cao 1,93 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>rock_wide</code></p>
+<p>Như rock_low.</p>
+</div></article></div>
+<h3 class="sub">Cây</h3><div class="grid small"><article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="scenery__pine_l.webp" alt="pine_l"></div>
+<div class="body"><h3>pine_l <span class="pill lech">Lệch</span></h3>
+<p class="meta">178 tam giác · màu đỉnh, không ảnh · đặt 86 chỗ · cao 5,56 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>pine_l</code></p>
+<p>Mỗi mặt một màu phẳng, không vân. Đứng cạnh đá có vân và đất vẽ tay thì trông như bộ asset khác. To nhất cảnh (5,6 m).</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="scenery__pine_m.webp" alt="pine_m"></div>
+<div class="body"><h3>pine_m <span class="pill lech">Lệch</span></h3>
+<p class="meta">150 tam giác · màu đỉnh, không ảnh · đặt 47 chỗ · cao 4,21 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>pine_m</code></p>
+<p>Như pine_l.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="scenery__pine_s.webp" alt="pine_s"></div>
+<div class="body"><h3>pine_s <span class="pill lech">Lệch</span></h3>
+<p class="meta">122 tam giác · màu đỉnh, không ảnh · đặt 15 chỗ · cao 2,77 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>pine_s</code></p>
+<p>Như pine_l.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="scenery__tree_autumn.webp" alt="tree_autumn"></div>
+<div class="body"><h3>tree_autumn <span class="pill lech">Lệch</span></h3>
+<p class="meta">150 tam giác · màu đỉnh, không ảnh · đặt 48 chỗ · cao 3,52 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>tree_autumn</code></p>
+<p>Tán cam phẳng, bão hòa mạnh, không vân — vật nổi nhất màn hình, lấn cả tướng.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="scenery__tree_round.webp" alt="tree_round"></div>
+<div class="body"><h3>tree_round <span class="pill lech">Lệch</span></h3>
+<p class="meta">150 tam giác · màu đỉnh, không ảnh · đặt 8 chỗ · cao 3,23 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>tree_round</code></p>
+<p>Tán xanh phẳng, không vân.</p>
+</div></article></div>
+<h3 class="sub">Cỏ, bụi, hoa</h3><div class="grid small"><article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="scenery__bush_a.webp" alt="bush_a"></div>
+<div class="body"><h3>bush_a <span class="pill lech">Lệch</span></h3>
+<p class="meta">76 tam giác · màu đỉnh, không ảnh · cao 0,97 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>bush_a</code></p>
+<p>Chùm tam giác nhọn sẫm màu, phẳng. Che tướng đúng luật bụi cỏ nhưng nét gai nhọn khác mọi thứ còn lại.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="scenery__bush_b.webp" alt="bush_b"></div>
+<div class="body"><h3>bush_b <span class="pill lech">Lệch</span></h3>
+<p class="meta">66 tam giác · màu đỉnh, không ảnh · cao 0,95 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>bush_b</code></p>
+<p>Như bush_a.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="scenery__bush_c.webp" alt="bush_c"></div>
+<div class="body"><h3>bush_c <span class="pill lech">Lệch</span></h3>
+<p class="meta">84 tam giác · màu đỉnh, không ảnh · cao 1,15 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>bush_c</code></p>
+<p>Như bush_a.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="scenery__flowers.webp" alt="flowers"></div>
+<div class="body"><h3>flowers <span class="pill lech">Lệch</span></h3>
+<p class="meta">78 tam giác · màu đỉnh, không ảnh · đặt 48 chỗ · cao 0,36 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>flowers</code></p>
+<p>Lá phẳng to, hoa trắng tam giác.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="scenery__grass_tuft.webp" alt="grass_tuft"></div>
+<div class="body"><h3>grass_tuft <span class="pill lech">Lệch</span></h3>
+<p class="meta">8 tam giác · màu đỉnh, không ảnh · đặt 342 chỗ · cao 0,41 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>grass_tuft</code></p>
+<p>8 tam giác, lá nhọn phẳng. Nhỏ nên ít hại, nhưng rải 342 chỗ.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="scenery__lily.webp" alt="lily"></div>
+<div class="body"><h3>lily <span class="pill dat">Đạt</span></h3>
+<p class="meta">8 tam giác · màu đỉnh, không ảnh · đặt 16 chỗ · cao 0,0 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>lily</code></p>
+<p>Lá súng phẳng trên mặt nước, nhỏ, hợp nước.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="scenery__mushrooms.webp" alt="mushrooms"></div>
+<div class="body"><h3>mushrooms <span class="pill lech">Lệch</span></h3>
+<p class="meta">400 tam giác · màu đỉnh, không ảnh · đặt 6 chỗ · cao 0,56 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>mushrooms</code></p>
+<p>Đỏ gắt, chấm trắng tam giác. Chi tiết nhiều nhất bộ cảnh (400 tam giác) mà chỉ đặt 6 chỗ.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="scenery__plant_green.webp" alt="plant_green"></div>
+<div class="body"><h3>plant_green <span class="pill lech">Lệch</span></h3>
+<p class="meta">14 tam giác · màu đỉnh, không ảnh · đặt 103 chỗ · cao 0,19 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>plant_green</code></p>
+<p>Như plant_orange, màu xanh nõn.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="scenery__plant_orange.webp" alt="plant_orange"></div>
+<div class="body"><h3>plant_orange <span class="pill lech">Lệch</span></h3>
+<p class="meta">14 tam giác · màu đỉnh, không ảnh · đặt 137 chỗ · cao 0,19 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>plant_orange</code></p>
+<p>14 tam giác, lá cam phẳng to bằng nửa tướng. Lệch nặng nhất trong cảnh vật: màu gắt, không vân, tranh chỗ với tướng.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="scenery__reeds.webp" alt="reeds"></div>
+<div class="body"><h3>reeds <span class="pill lech">Lệch</span></h3>
+<p class="meta">15 tam giác · màu đỉnh, không ảnh · đặt 176 chỗ · cao 1,29 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>reeds</code></p>
+<p>Lá dài phẳng, cao 1,3 m — ngang tướng, che tướng ở mép sông.</p>
+</div></article></div>
+<h3 class="sub">Vật trang trí</h3><div class="grid small"><article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="scenery__bones.webp" alt="bones"></div>
+<div class="body"><h3>bones <span class="pill dat">Đạt</span></h3>
+<p class="meta">308 tam giác · màu đỉnh, không ảnh · đặt 15 chỗ · cao 0,46 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>bones</code></p>
+<p>Xương trắng ngà, khối đơn giản.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="scenery__campfire.webp" alt="campfire"></div>
+<div class="body"><h3>campfire <span class="pill dat">Đạt</span></h3>
+<p class="meta">284 tam giác · màu đỉnh, không ảnh · đặt 6 chỗ · cao 0,65 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>campfire</code></p>
+<p>Đá + củi, lửa vẽ bằng shader trong trận.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="scenery__crystals.webp" alt="crystals"></div>
+<div class="body"><h3>crystals <span class="pill dat">Đạt</span></h3>
+<p class="meta">110 tam giác · màu đỉnh, không ảnh · đặt 8 chỗ · cao 2,02 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>crystals</code></p>
+<p>Pha lê xanh, hợp pha lê trụ.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="scenery__log.webp" alt="log"></div>
+<div class="body"><h3>log <span class="pill dat">Đạt</span></h3>
+<p class="meta">44 tam giác · màu đỉnh, không ảnh · đặt 18 chỗ · cao 0,65 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>log</code></p>
+<p>Gỗ + rêu, khối đơn giản, ổn.</p>
+</div></article>
+<article class="card" data-st="dat">
+<div class="shots"><img loading="lazy" src="scenery__stump.webp" alt="stump"></div>
+<div class="body"><h3>stump <span class="pill dat">Đạt</span></h3>
+<p class="meta">236 tam giác · màu đỉnh, không ảnh · đặt 23 chỗ · cao 0,65 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>stump</code></p>
+<p>Gỗ có vòng năm, ổn.</p>
+</div></article>
+<article class="card" data-st="lech">
+<div class="shots"><img loading="lazy" src="scenery__totem.webp" alt="totem"></div>
+<div class="body"><h3>totem <span class="pill lech">Lệch</span></h3>
+<p class="meta">122 tam giác · màu đỉnh, không ảnh · đặt 6 chỗ · cao 2,5 m</p>
+<p class="meta">Nguồn: Blender dựng bằng code (style_kit.py), màu đỉnh · <code>totem</code></p>
+<p>Cột gỗ phẳng, gai trắng, ô xanh / đỏ gắt. Rời bộ.</p>
+</div></article></div>
+  <h3 class="sub">Mặt đất</h3>
+  <div class="grid"><article class="card wide" data-st="dat"><div class="sheet"><img loading="lazy" src="sheet_ground.webp" alt="Mặt đất, nước, vách"></div><div class="body"><h3>Mặt đất, nước, vách <span class="n">10</span> <span class="pill dat">Đạt</span></h3><p>Codex vẽ tay, 1024 × 1024, lặp liền. Một bộ thống nhất: cỏ nét cọ, đất lane, đá lát, đáy sông, vách. Đây là phần đồng bộ nhất của game — nên lấy làm mốc cho cảnh vật.</p></div></article></div>
+</section>
+
+<section id="icon">
+  <h2>Icon và ảnh 2D khác</h2>
+  <p class="lede">Chân dung và icon chiêu nằm trong thẻ của từng tướng ở trên.</p>
+  <div class="grid"><article class="card wide" data-st="dat"><div class="sheet"><img loading="lazy" src="sheet_items.webp" alt="Icon trang bị"></div><div class="body"><h3>Icon trang bị <span class="n">94</span> <span class="pill dat">Đạt</span></h3><p>Codex, 256 × 256. Đồng bộ với nhau: vật thể nền trong, nét dày, tô bóng mịn. Khác icon chiêu ở chỗ không có khung tròn (phiếu yêu cầu ghi khung tròn viền vàng đồng). Trong shop và ô đồ nằm trên nền tối nên vẫn ổn.</p></div></article><article class="card wide" data-st="lech"><div class="sheet"><img loading="lazy" src="sheet_status.webp" alt="Icon trạng thái"></div><div class="body"><h3>Icon trạng thái <span class="n">16</span> <span class="pill lech">Lệch</span></h3><p>64 × 64, hình phẳng một màu kiểu emoji (ma, ếch, bông tuyết, môi gạch). Khác hẳn cách tô bóng của icon chiêu và đồ. Nhỏ trên thanh máu nên đọc được, nhưng phóng to ở bảng mô tả thì lộ.</p></div></article><article class="card wide" data-st="lech"><div class="sheet"><img loading="lazy" src="sheet_sprites.webp" alt="Ảnh 2D đơn vị (minimap, HUD)"></div><div class="body"><h3>Ảnh 2D đơn vị (minimap, HUD) <span class="n">16</span> <span class="pill lech">Lệch</span></h3><p>Codex. Lính và trụ 2D khớp mô hình 3D. Ảnh từ thời trận còn vẽ 2D. Ba ảnh quái rừng (đá rêu) không còn giống mô hình 3D đang dùng (gấu cam, golem xám); tê giác và hai golem boss không có ảnh 2D. Chỗ nào còn dùng thì vẽ lại, không thì gỡ.</p></div></article><article class="card wide" data-st="dat"><div class="sheet"><img loading="lazy" src="sheet_ui.webp" alt="Nút đánh và về thành"></div><div class="body"><h3>Nút đánh và về thành <span class="n">4</span> <span class="pill dat">Đạt</span></h3><p>Hình trắng phẳng đặt trên nút tròn xanh — nhất quán với nhau.</p></div></article></div>
+</section>
+
+<section id="ung-vien">
+  <h2>Ba ứng viên tướng chuẩn</h2>
+  <p class="lede">Đánh giá của CB-1. Người chơi nhìn rồi quyết.</p>
+  <div class="cands">
+    <div class="cand"><img src="icon_brakk.webp" alt="Chân dung Brakk"><h3>1 · Brakk</h3><ul>
+      <li>Cùng họ với thứ đã đồng bộ nhất: trụ, nhà chính, lính, xe công thành.</li>
+      <li>Đọc rõ nhất ở góc camera trận: khối mập, mảng màu lớn, bóng dáng riêng.</li>
+      <li>Chân dung Brakk đã là mẫu cho 4 tướng mới (D-347), nên chọn Brakk thì chân dung không phải làm lại.</li>
+      <li>Giá phải trả: Myra, Vexa, Phong Tiễn phải dựng lại theo tỉ lệ mập, ngược D-304.</li></ul></div>
+    <div class="cand"><img src="icon_gorran.webp" alt="Chân dung Gorran"><h3>2 · Gorran</h3><ul>
+      <li>Tỉ lệ ~4,5 đầu nằm giữa hai họ: đủ to để đọc trong trận, đủ dài để tay chân diễn hoạt ảnh chiêu.</li>
+      <li>Mức chi tiết cao nhất mà vẫn sạch; đã có đủ da đổi theo hiệu ứng, vũ khí rút ra, vệt chém.</li>
+      <li>Hai họ còn lại đều phải chỉnh, nhưng mỗi bên chỉnh ít hơn.</li>
+      <li>Giá phải trả: Gorran là orc cơ bắp, khó suy ra tỉ lệ cho tướng nữ nhỏ người; cần thêm một tướng nữ làm mẫu đôi.</li></ul></div>
+    <div class="cand"><img src="icon_phong_tien.webp" alt="Chân dung Phong Tiễn"><h3>3 · Phong Tiễn</h3><ul>
+      <li>Quy trình mới nhất, ghi lại đầy đủ (D-348), đã được chọn làm tướng chuẩn về quy trình.</li>
+      <li>Giữ đúng hướng “người lớn, không chibi” của D-304; Myra và Vexa không phải làm lại.</li>
+      <li>Tay chân dài nên hoạt ảnh bắn cung, lướt nhìn đẹp ở góc cận.</li>
+      <li>Giá phải trả: nhỏ và khó đọc nhất ở góc camera trận; lính, trụ, Brakk, Noctis, Duy Anh, Gorran thành lệch — khối lượng làm lại lớn nhất. Nếu chọn, nên phóng to tướng hoặc kéo camera gần.</li></ul></div>
+  </div>
+  <p class="note"><strong>Đề xuất của CB-1: Brakk</strong>, vì ít phải làm lại nhất và đọc tốt nhất trên điện thoại. Nếu người chơi muốn giữ dáng người lớn, chọn Gorran làm mức giữa thay vì Phong Tiễn.</p>
+</section>
+
+<footer>Ảnh nguồn và số đo: <code>art_inbox/kiem_ke/</code> trên nhánh <code>cb-1-art</code>. Tỉ lệ đầu–thân ước lượng bằng mắt trên ảnh phòng chụp.</footer>
+</div>
+<script>
+(function () {
+  var buttons = document.querySelectorAll('.filters button');
+  function apply(f) {
+    document.querySelectorAll('.card').forEach(function (c) { c.hidden = !!f && c.dataset.st !== f; });
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.f === f)); });
+  }
+  buttons.forEach(function (b) { b.addEventListener('click', function () { apply(b.dataset.f); }); });
+})();
+</script>

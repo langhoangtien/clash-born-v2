@@ -1,0 +1,196 @@
+<title>Clashborn — Kiểm kê hình</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap">
+<style>
+/* Bố cục: một cột đọc từ trên xuống — tóm tắt, ảnh trong trận, rồi từng nhóm asset là lưới thẻ ảnh + nhãn trạng thái. */
+:root {
+  --bg: #eceee9; --surface: #f8f9f5; --tile: #3a3e3c; --fg: #1f2421; --muted: #5b635d; --line: #cfd4cb;
+  --accent: #9a6a14; --accent-soft: #f0e2bf;
+  --dat: #23683a; --dat-bg: #d5ecd9; --lech: #8a4b00; --lech-bg: #fbe2bd; --muon: #3d4f9c; --muon-bg: #dde2f7; --chua: #5b635d; --chua-bg: #e0e3de;
+  --display: "Baloo 2", "Be Vietnam Pro", system-ui, sans-serif; --text: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #171a18; --surface: #212523; --tile: #2c302e; --fg: #e8ebe5; --muted: #a2aaa3; --line: #3a403c;
+  --accent: #e2b24a; --accent-soft: #3b3220;
+  --dat: #8fd6a2; --dat-bg: #1f3a28; --lech: #f2bb6b; --lech-bg: #45300f; --muon: #aab6f5; --muon-bg: #283057; --chua: #a2aaa3; --chua-bg: #30352f;
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #171a18; --surface: #212523; --tile: #2c302e; --fg: #e8ebe5; --muted: #a2aaa3; --line: #3a403c;
+  --accent: #e2b24a; --accent-soft: #3b3220;
+  --dat: #8fd6a2; --dat-bg: #1f3a28; --lech: #f2bb6b; --lech-bg: #45300f; --muon: #aab6f5; --muon-bg: #283057; --chua: #a2aaa3; --chua-bg: #30352f;
+  color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 400 15px/1.55 var(--text); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 40px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(30px, 6vw, 44px); font-weight: 700; }
+h2 { font-size: 26px; font-weight: 700; }
+h3 { font-size: 18px; font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+h3.sub { margin-top: 8px; color: var(--muted); font-size: 16px; letter-spacing: .02em; }
+p { margin: 0; max-width: 68ch; }
+code { font: 500 12px/1 ui-monospace, Menlo, monospace; color: var(--muted); }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+header { display: flex; flex-direction: column; gap: 10px; }
+.lede { color: var(--muted); }
+section { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 64px; }
+.pill { font: 600 12px/1 var(--text); padding: 5px 9px; border-radius: 999px; white-space: nowrap; }
+.pill.dat { background: var(--dat-bg); color: var(--dat); } .pill.lech { background: var(--lech-bg); color: var(--lech); }
+.pill.muon { background: var(--muon-bg); color: var(--muon); } .pill.chua { background: var(--chua-bg); color: var(--chua); }
+.tally { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.tally div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.tally b { font: 700 30px/1 var(--display); font-variant-numeric: tabular-nums; }
+.findings { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; max-width: 76ch; }
+nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 10px; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+nav a { color: var(--fg); text-decoration: none; font-weight: 500; font-size: 14px; }
+nav a:hover, nav a:focus-visible { color: var(--accent); }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.filters button { font: 600 12px/1 var(--text); padding: 7px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; }
+.filters button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.grid.small { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+.grid.heroes { grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.card .shots { display: flex; background: #8c9188; }
+.card .shots img { display: block; width: 100%; min-width: 0; flex: 1; aspect-ratio: 392 / 455; object-fit: cover; }
+.card.hero .shots img { width: 50%; }
+.card .body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.card .meta { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.card p { font-size: 14px; }
+.card.wide { grid-column: 1 / -1; }
+.sheet { background: var(--tile); padding: 8px; }
+.sheet img { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+.icons { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+.icons img { display: block; width: 100%; height: auto; border-radius: 6px; }
+.icons .cap { display: grid; grid-template-columns: repeat(6, 1fr); font-size: 11px; color: var(--muted); text-align: center; }
+.n { font: 500 13px/1 var(--text); color: var(--muted); }
+figure { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+figure img { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); }
+figcaption { font-size: 14px; color: var(--muted); max-width: 76ch; }
+.shots2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 14px; }
+.cands { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 14px; }
+.cand { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.cand img { width: 132px; height: 132px; object-fit: cover; object-position: 0 0; border-radius: 8px; background: var(--tile); }
+.cand ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.note { background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; font-size: 14px; }
+footer { color: var(--muted); font-size: 13px; }
+</style>
+<div class="wrap">
+<header>
+  <span class="eyebrow">CB-1 Art chuẩn · D-360 · 12/11/2026</span>
+  <h1>Clashborn — Kiểm kê hình</h1>
+  <p class="lede">Mọi mô hình 3D, chân dung và icon đang có trong game, chụp cùng một góc, cùng ánh sáng trận, cùng tỉ lệ trong mỗi nhóm. Chưa sửa asset nào. Trang này để chọn tướng chuẩn trước khi viết chuẩn hình.</p>
+  <p class="note"><strong>Cách đọc nhãn.</strong> Game chưa có chuẩn hình, nên “Đạt” ở đây nghĩa là cùng họ với phần đông asset đã duyệt: trụ, lính, Brakk — khối mập 3–4 đầu, sơn tay mịn, viền vàng. “Lệch” là khác họ đó, không phải xấu. Nếu chọn tướng chuẩn theo hướng người lớn mảnh (Phong Tiễn) thì nhãn của các tướng đảo lại.</p>
+</header>
+
+<section id="tom-tat">
+  <h2>Tóm tắt</h2>
+  <div class="tally">
+    <div><b>{{n_dat}}</b><span class="pill dat">Đạt</span></div>
+    <div><b>{{n_lech}}</b><span class="pill lech">Lệch</span></div>
+    <div><b>{{n_muon}}</b><span class="pill muon">Mượn tạm</span></div>
+    <div><b>{{n_chua}}</b><span class="pill chua">Chưa có</span></div>
+  </div>
+  <ol class="findings">
+    <li><strong>Tướng chia hai họ tỉ lệ.</strong> Brakk, Noctis, Duy Anh, Gorran là khối mập 3–4,5 đầu. Myra, Vexa, Phong Tiễn là người lớn mảnh 6–6,5 đầu (D-304). Đây là nguồn chính của cảm giác “mỗi tướng một kiểu”. Ở góc camera trận, họ mảnh nhỏ và khó đọc hơn rõ rệt.</li>
+    <li><strong>Cây, bụi, hoa lá là màu phẳng không vân</strong>, trong khi đá có vân vẽ tay và mặt đất vẽ tay. Lá cam (<code>plant_orange</code>) và cây thu là vật nổi nhất màn hình, lấn cả tướng.</li>
+    <li><strong>Quái rừng là họ thứ ba</strong>: low-poly mặt phẳng kiểu gấp giấy (gấu, sói, tê giác), khác cách sơn mịn của tướng và lính. Gấu, sói, tê giác có 49–56 xương, gấp đôi tướng.</li>
+    <li><strong>Chân dung có ba kiểu</strong>: Duy Anh (ô vuông nền tối, mặt em bé), Myra / Vexa / Noctis (anime chibi nét mảnh), Brakk / Gorran và 4 tướng mới (bán thân hoạt hình nét dày).</li>
+    <li><strong>Icon chiêu có hai đời</strong>: 6 tướng đầu viền mảnh, mảng phẳng, hình nhỏ trong khung; 4 tướng mới khung vàng dày, hình lấp đầy, tô bóng nhiều lớp. Icon trạng thái là hình phẳng kiểu emoji, khác cả hai.</li>
+    <li><strong>Phần đã đồng bộ</strong>: công trình (trụ, nhà chính, fountain), lính, mặt đất và nước, icon trang bị. Số tam giác và cỡ ảnh màu cũng đều: tướng 2,5–3,6 nghìn tam giác, 23 xương, ảnh màu 1024.</li>
+  </ol>
+</section>
+
+<nav aria-label="Mục">
+  <a href="#trong-tran">Trong trận</a><a href="#tuong">Tướng</a><a href="#linh">Lính</a><a href="#quai">Quái rừng</a><a href="#cong-trinh">Công trình</a><a href="#canh-vat">Cảnh vật</a><a href="#icon">Icon</a><a href="#ung-vien">Ứng viên</a>
+  <div class="filters" role="group" aria-label="Lọc theo trạng thái">
+    <button type="button" id="f-all" data-f="" aria-pressed="true">Tất cả</button>
+    <button type="button" id="f-dat" data-f="dat" aria-pressed="false">Đạt</button>
+    <button type="button" id="f-lech" data-f="lech" aria-pressed="false">Lệch</button>
+    <button type="button" id="f-muon" data-f="muon" aria-pressed="false">Mượn tạm</button>
+  </div>
+</nav>
+
+<section id="trong-tran">
+  <h2>Trong trận, góc camera thật</h2>
+  <figure><img src="hang_tuong.webp" alt="Mười tướng xếp hàng dọc lane giữa, chụp ở góc camera trận">
+    <figcaption>Cả 10 tướng xếp dọc lane giữa (SIM dừng). Từ dưới lên: Thạch Giáp và Huyết Cự Nhân (mượn Brakk), Myra, Noctis, Vexa, Gorran, Phong Tiễn, Thợ Săn (mượn Duy Anh), Brakk, Duy Anh. Phong Tiễn ở giữa nhỏ hẳn so với Gorran và Brakk hai bên; lá cam và cây thu bắt mắt hơn tướng.</figcaption></figure>
+  <div class="shots2">
+    <figure><img loading="lazy" src="tran_020s.webp" alt="Trận 3v3 ở giây 20: Phong Tiễn rời trụ"><figcaption>0:20 — trụ, đá lát base, thông và vách đá. Trụ và mặt đất cùng cách sơn; thông màu phẳng.</figcaption></figure>
+    <figure><img loading="lazy" src="tran_130s.webp" alt="Trận 3v3 ở phút 2:10: giao tranh lính ở lane giữa"><figcaption>2:10 — giao tranh lính. Lính đọc được nhờ khối mập và màu phe; Phong Tiễn mảnh, lẫn vào cỏ.</figcaption></figure>
+  </div>
+  <p class="lede">Ảnh chụp bằng trình vẽ Mobile (Vulkan) như trên điện thoại, 1920 × 1080, trận 3v3 bot, tua ×4.</p>
+</section>
+
+<section id="tuong">
+  <h2>Tướng</h2>
+  <p class="lede">Khung ảnh cao 2 m cho mọi tướng, lính và quái thường, nên so được cỡ với nhau. Mỗi tướng hai góc, tư thế đứng. Dưới mỗi tướng là chân dung và icon chiêu; ô “Thân 2D” trống ở 4 tướng mới vì bản 3D không dùng ảnh thân.</p>
+  <div class="grid heroes">{{tuong}}</div>
+</section>
+
+<section id="linh">
+  <h2>Lính</h2>
+  <div class="grid">{{linh}}</div>
+</section>
+
+<section id="quai">
+  <h2>Quái rừng</h2>
+  <p class="lede">Quái thường chụp khung 2 m như tướng; hai golem boss khung 4,2 m.</p>
+  <div class="grid">{{quai}}</div>
+</section>
+
+<section id="cong-trinh">
+  <h2>Công trình và vật bay</h2>
+  <p class="lede">Công trình khung 6 m; ếch và đạn khung 1,6 m.</p>
+  <div class="grid">{{congtrinh}}</div>
+</section>
+
+<section id="canh-vat">
+  <h2>Cảnh vật</h2>
+  <p class="lede">28 mô hình dựng bằng code Blender, chụp với đúng vật liệu của trận, cỡ bằng cỡ thường đặt trên map. Khung 1,4 m, 2,8 m hoặc 6,4 m tùy vật.</p>
+  {{canhvat}}
+  <h3 class="sub">Mặt đất</h3>
+  <div class="grid">{{sheet_ground}}</div>
+</section>
+
+<section id="icon">
+  <h2>Icon và ảnh 2D khác</h2>
+  <p class="lede">Chân dung và icon chiêu nằm trong thẻ của từng tướng ở trên.</p>
+  <div class="grid">{{sheet_items}}{{sheet_status}}{{sheet_sprites}}{{sheet_ui}}</div>
+</section>
+
+<section id="ung-vien">
+  <h2>Ba ứng viên tướng chuẩn</h2>
+  <p class="lede">Đánh giá của CB-1. Người chơi nhìn rồi quyết.</p>
+  <div class="cands">
+    <div class="cand"><img src="icon_brakk.webp" alt="Chân dung Brakk"><h3>1 · Brakk</h3><ul>
+      <li>Cùng họ với thứ đã đồng bộ nhất: trụ, nhà chính, lính, xe công thành.</li>
+      <li>Đọc rõ nhất ở góc camera trận: khối mập, mảng màu lớn, bóng dáng riêng.</li>
+      <li>Chân dung Brakk đã là mẫu cho 4 tướng mới (D-347), nên chọn Brakk thì chân dung không phải làm lại.</li>
+      <li>Giá phải trả: Myra, Vexa, Phong Tiễn phải dựng lại theo tỉ lệ mập, ngược D-304.</li></ul></div>
+    <div class="cand"><img src="icon_gorran.webp" alt="Chân dung Gorran"><h3>2 · Gorran</h3><ul>
+      <li>Tỉ lệ ~4,5 đầu nằm giữa hai họ: đủ to để đọc trong trận, đủ dài để tay chân diễn hoạt ảnh chiêu.</li>
+      <li>Mức chi tiết cao nhất mà vẫn sạch; đã có đủ da đổi theo hiệu ứng, vũ khí rút ra, vệt chém.</li>
+      <li>Hai họ còn lại đều phải chỉnh, nhưng mỗi bên chỉnh ít hơn.</li>
+      <li>Giá phải trả: Gorran là orc cơ bắp, khó suy ra tỉ lệ cho tướng nữ nhỏ người; cần thêm một tướng nữ làm mẫu đôi.</li></ul></div>
+    <div class="cand"><img src="icon_phong_tien.webp" alt="Chân dung Phong Tiễn"><h3>3 · Phong Tiễn</h3><ul>
+      <li>Quy trình mới nhất, ghi lại đầy đủ (D-348), đã được chọn làm tướng chuẩn về quy trình.</li>
+      <li>Giữ đúng hướng “người lớn, không chibi” của D-304; Myra và Vexa không phải làm lại.</li>
+      <li>Tay chân dài nên hoạt ảnh bắn cung, lướt nhìn đẹp ở góc cận.</li>
+      <li>Giá phải trả: nhỏ và khó đọc nhất ở góc camera trận; lính, trụ, Brakk, Noctis, Duy Anh, Gorran thành lệch — khối lượng làm lại lớn nhất. Nếu chọn, nên phóng to tướng hoặc kéo camera gần.</li></ul></div>
+  </div>
+  <p class="note"><strong>Đề xuất của CB-1: Brakk</strong>, vì ít phải làm lại nhất và đọc tốt nhất trên điện thoại. Nếu người chơi muốn giữ dáng người lớn, chọn Gorran làm mức giữa thay vì Phong Tiễn.</p>
+</section>
+
+<footer>Ảnh nguồn và số đo: <code>art_inbox/kiem_ke/</code> trên nhánh <code>cb-1-art</code>. Tỉ lệ đầu–thân ước lượng bằng mắt trên ảnh phòng chụp.</footer>
+</div>
+<script>
+(function () {
+  var buttons = document.querySelectorAll('.filters button');
+  function apply(f) {
+    document.querySelectorAll('.card').forEach(function (c) { c.hidden = !!f && c.dataset.st !== f; });
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.f === f)); });
+  }
+  buttons.forEach(function (b) { b.addEventListener('click', function () { apply(b.dataset.f); }); });
+})();
+</script>
