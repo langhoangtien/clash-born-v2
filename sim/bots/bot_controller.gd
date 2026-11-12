@@ -273,6 +273,9 @@ func _attack(world: World, e: Entity, t: Entity) -> void:
 	var b: BotState = e.bot
 	if (b.mode == Mode.TRADE or b.mode == Mode.KILL) and not b.chase_origin.is_finite():
 		b.chase_origin = e.position  # DEF-08
+	if _stuck(world, e):  # D-391 (BOT-11): đi tới mục tiêu mà kẹt giữa đơn vị đi ngược chiều → bước tránh sang ngang
+		_sidestep(world, e, t.position)
+		return
 	var busy: bool = e.order.type == Order.Type.ATTACK and not e.order.finished and e.order.target_id == t.id
 	if busy:
 		return
@@ -373,9 +376,7 @@ func _safe_back(world: World, e: Entity, p: Vector2) -> Vector2:
 func _go(world: World, e: Entity, point: Vector2) -> void:
 	var b: BotState = e.bot
 	if _stuck(world, e):  # D-96: kẹt giữa đơn vị đi ngược chiều → bước tránh sang ngang
-		var side: Vector2 = (point - e.position).normalized().orthogonal() * (1.0 if (world.tick / 30) % 2 == 0 else -1.0)
-		b.goal = world.navigation(e.radius).nearest_clear(e.position + side * 160.0)
-		world.submit(Command.move_to(e.id, b.goal))
+		_sidestep(world, e, point)
 		return
 	if e.position.distance_to(point) <= ARRIVE * 0.5 and e.order.type != Order.Type.MOVE:
 		b.goal = point
@@ -388,15 +389,30 @@ func _go(world: World, e: Entity, point: Vector2) -> void:
 	world.submit(Command.move_to(e.id, point))
 
 
-## Đang có lệnh đi mà gần như không nhích trong 1 s.
+## D-96: bước sang ngang 160 so với hướng tới `point`, đổi bên mỗi 30 tick.
+func _sidestep(world: World, e: Entity, point: Vector2) -> void:
+	var side: Vector2 = (point - e.position).normalized().orthogonal() * (1.0 if (world.tick / 30) % 2 == 0 else -1.0)
+	e.bot.goal = world.navigation(e.radius).nearest_clear(e.position + side * 160.0)
+	world.submit(Command.move_to(e.id, e.bot.goal))
+
+
+## Đang có lệnh đi (hoặc lệnh đánh còn đang đi tới mục tiêu, D-391) mà gần như không nhích trong 1 s.
 func _stuck(world: World, e: Entity) -> bool:
 	var b: BotState = e.bot
-	var moving: bool = e.order.type == Order.Type.MOVE and not e.order.finished
+	var moving: bool = (e.order.type == Order.Type.MOVE or _approaching(world, e)) and not e.order.finished
 	if not moving or e.position.distance_to(b.last_pos) > 20.0:
 		b.last_pos = e.position
 		b.last_pos_tick = world.tick
 		return false
 	return world.tick - b.last_pos_tick >= 30
+
+
+## Lệnh đánh mà mục tiêu chưa vào tầm, chưa vung tay — đơn vị đang đi tới.
+static func _approaching(world: World, e: Entity) -> bool:
+	if e.order.type != Order.Type.ATTACK or e.attack_phase != Entity.AttackPhase.NONE:
+		return false
+	var t: Entity = world.find_entity(e.order.target_id)
+	return t != null and not Rules.in_attack_range(e, t)
 
 
 func _hold(world: World, e: Entity) -> void:
