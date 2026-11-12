@@ -19,6 +19,8 @@ var chase_origin: Vector2 = Vector2.INF
 var trade_until_tick: int = -1
 ## Tick gần nhất bị trúng sát thương (điều kiện `taking_damage`).
 var last_hurt_tick: int = -1000
+## D-392: tick gần nhất bị hero địch đánh thường trúng (điều kiện attacked_by_enemy_hero).
+var last_hero_hit_tick: int = -1000
 ## BOT-18: đang hơn (siege) ở lần nghĩ gần nhất.
 var ahead: bool = false
 ## D-96: vị trí và tick lần cuối thấy bot nhích đi (phát hiện kẹt).

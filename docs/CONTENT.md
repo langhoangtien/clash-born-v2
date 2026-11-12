@@ -402,6 +402,7 @@ liệu, bot chỉ có logic cho từng **loại** (GAME_RULES BOT-13):
 | Vexa Q | DISABLE | Hero địch trong tầm, ưu tiên khi nó đang áp sát |
 | Vexa W | ESCAPE / POKE | Hero địch quá gần, hoặc trúng được nhiều kẻ địch |
 | Vexa R | DISABLE | Hero địch có ≥ 1 hiệu ứng có lợi gỡ được, hoặc đang bỏ chạy (`enemy_has_purgeable_buff_or_fleeing`) |
+| Phong Tiễn Q | SELF_DEFENSE / ESCAPE | (D-392) Vừa bị hero địch **đánh thường** trúng (`attacked_by_enemy_hero` — phép, lính, trụ không tính), hoặc máu < 30% |
 | Đồ (D-95) | theo món | Gậy Hồn Ma, Giáp Bất Khuất: máu < 70% và đang nhận sát thương; Bùa Thanh Tẩy: có debuff gỡ được; Gậy Lốc Xoáy: ESCAPE khi máu < 30% / DISABLE khi hero địch trong tầm; Lưỡi Hái: hero địch trong tầm; Lưỡi Ẩn Thân: ENGAGE khi chuẩn bị áp sát / ESCAPE khi máu < 30% |
 
 Thứ tự lên đồ của bot (`bot_item_build`, D-95; dữ liệu trong `content/heroes/*.tres` là bản đúng). D-164: mỗi tướng thêm 2 món cuối trận sau 6 món chính — Brakk: Giáp Thần Công, Trượng Hắc Vương; Duy Anh: Kiếm Huyết Ma, Giáp Thần Công; Gorran: Kiếm Huyết Ma, Trượng Hắc Vương; Myra: Ngọc Thời Không, Áo Choàng Hiền Giả; Vexa: Hoa Câm Lặng, Ngọc Thời Không; Noctis: Đại Đao Thần, Kiếm Huyết Ma. Đầy ô thì bot bán món đầu trận (< 1000 vàng) để mua tiếp (BOT-22).

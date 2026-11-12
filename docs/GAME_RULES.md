@@ -1059,6 +1059,14 @@ Bot gửi Command giống người chơi, chỉ dùng `Rules.is_safe_for_hero` �
   i đi với loại thứ i; một loại thì mọi điều kiện phải đúng (`predict_position`,
   `prefer_engaging_enemy`, `prefer_same_target` chỉ là gợi ý). Tên điều kiện: RuleCatalog
   .BOT_CONDITIONS. SELF_DEFENSE luôn cần vừa bị trúng sát thương trong 2 s; POKE giữ ≥ 40% mana.
+  (D-392) Điều kiện `attacked_by_enemy_hero`: vừa bị **hero địch đánh thường trúng** (sự kiện `attack_landed`, kẻ đánh là
+  hero phe khác) trong 1 s — sát thương phép, độc, lính, trụ không tính. Dùng cho chiêu chỉ có ích trước đòn đánh thường
+  (né đòn).
+- `BOT-23` (D-393) Không đứng trước lính địch khi không có lính đỡ: ở FARM và TRADE (cả đánh trả BOT-04 lẫn chủ động cấu
+  BOT-17), chỗ đứng đánh `p` bị **lộ** khi có ít nhất một lính đường địch đang thấy (BOT-12) mà `p` cách nó không quá tầm
+  đánh của nó + bán kính hai bên + `bot_creep_danger_margin`, trong khi số lính đường phe bot còn sống trong
+  `bot_creep_cover_radius` quanh `p` ít hơn `bot_creep_cover`. Chỗ lộ: FARM bỏ mục tiêu đó, TRADE không vào (bot chọn state
+  kế tiếp theo bảng). Không áp KILL, DEFEND_BASE, PUSH, JUNGLE, ESCAPE_TOWER, RETREAT.
 - `BOT-22` (D-164) Bán đồ đầu trận khi đầy ô: cả 6 ô có đồ và món kế tiếp theo `bot_item_build`
   (SHOP-10) chưa có, mua nó bị từ chối chỉ vì hết ô (INVENTORY_FULL) hoặc thiếu vàng (NOT_ENOUGH_GOLD).
   Món được bán: giá (`cost`) < `bot_sell_max_cost`, không phải thành phần (kể cả sâu) của món kế
