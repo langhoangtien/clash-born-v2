@@ -58,15 +58,7 @@ Chạy nhiều luồng song song (`&` … `wait`), mỗi ảnh khoảng 2–4 ph
 
 ## 4. Việc tiếp theo (theo thứ tự)
 
-0. **Phong Tiễn chạy, cung lệch vào chân — CHỜ NGƯỜI CHƠI CHỌN (D-351):**
-   - Đã gửi video `art_inbox/3d/phong_tien/preview/phong_tien_run_options.mp4` (A hiện tại / B giơ cung ngang vai / C cung sát
-     người / D tay ngắm; ba góc nhìn). Tư thế đứng không đổi. Game chưa đổi.
-   - Người chơi chọn xong: sửa dòng `phong_tien` trong `tools/models/build_units.py`, `Run_Female=run` thành
-     B `Run_Female&Bow_Walk#clavicle_l=run` / C `Run_Female&Idle_Torch#clavicle_l=run` / D `Run_Female&Bow_Aim_Idle#clavicle_l=run`
-     → `python3 -I tools/models/build_units.py phong_tien` → quay trong trận → bản Android mới.
-   - Công cụ: `tools/models/glb_overlay.py` (ghép nhánh xương), `tools/models/preview/anim_compare.gd` (quay cạnh nhau),
-     `tools/models/preview/bow_clearance.gd` (đo hở cung ↔ chân). Các script `.local/` cũ đã mất theo máy — đừng tìm.
-     GLB 593 hoạt ảnh nạp thẳng vào Godot rất chậm (> 10 phút): luôn lọc bằng `glb_anims.py --keep` trước.
+0. **Phong Tiễn chạy — ĐÓNG (D-351):** người chơi xem 4 phương án, chọn A = giữ nguyên hiện tại. Không làm gì thêm.
 1. **Ảnh toàn thân 4 tướng đợt 1 — ĐÃ GỬI bảng `_bang_duyet_than.png`, CHỜ DUYỆT** (kèm `thach_giap_body_v2.png`: Thạch Giáp bỏ áo choàng dài cho dễ dựng 3D; Thợ Săn còn rìu đeo hông + mũ sói — hỏi người chơi có giữ không). Phong Tiễn ĐÃ XONG 3D (chuẩn D-348); còn Huyết Cự Nhân, Thợ Săn, Thạch Giáp — làm y quy trình mục 5.
    - Người chơi yêu cầu: *gửi ảnh thân để duyệt trước lúc làm 3D*.
    - Ảnh ở `art_inbox/concepts/body/<id>_body.png`; nếu thiếu thì vẽ lại bằng Codex, theo đúng chân dung đã duyệt, mặt trước, tư thế chữ A, nền trắng.
