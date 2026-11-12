@@ -15,7 +15,7 @@ Trả lời gọn theo mã, vd `N1 ok, N2 B, M1 ok`. "Đề nghị" = phương �
 | Mã | Câu hỏi | Đề nghị | Trả lời |
 |---|---|---|---|
 | M1 | Bấm đi tới điểm đứng được nhưng không có đường tới đúng điểm (sát mép vách) → hiện nhân vật không nhích. Luật mới MOV-09: đi tới ô đi được gần điểm đó nhất | Duyệt | Duyệt — đi tới ô đi được gần điểm đó nhất |
-| P1 | Giảm Phong Tiễn: tốc chạy 290 → 270, hoặc Q né 3 s → 2 s, hoặc cả hai | Chờ số liệu ma trận của CB-2 | |
+| P1 | Giảm Phong Tiễn? Ma trận 216 trận (hiện tại / tốc 270 / Q né 2 s / cả hai, SIM 23dabc5): tổng thắng-thua-chưa xong 27/16/11 · 27/18/9 · 26/17/11 · 28/16/10 — cả ba phương án gần như không đổi bên thắng ở cặp nào; Gorran và Duy Anh thắng 6/6 ở mọi bản, Noctis và Vexa thua 6/6 ở mọi bản; tốc 270 làm cặp Myra từ 2/4 thành 0/6 | **Giữ nguyên** 290 và Q 3 s; CB-2 tìm nguyên nhân thật của các cặp 6/0 (có thể là lỗi bot) | |
 | A1 | Tướng chuẩn về style (bảng kiểm kê: https://claude.ai/artifact/B8Dux87FGphzoHgvuHkyJ4). Tướng đang chia hai họ tỉ lệ: mập 3–4,5 đầu (Brakk, Noctis, Duy Anh, Gorran) và mảnh 6–6,5 đầu (Myra, Vexa, Phong Tiễn). Chọn: **Brakk** (mập; dựng lại 3 tướng mảnh) / **Gorran** (giữa hai họ; chỉnh cả hai bên, mỗi bên ít hơn) / **Phong Tiễn** (mảnh; làm lại nhiều nhất, khó đọc nhất trong trận) | CB-1 đề nghị Brakk | |
 | A2 | Mức tam giác chuẩn cho tướng (3k / 6k / 12k, giữ xương ngón tay) | Chờ video thử của CB-1 | |
 | A4 | Cảnh vật (ảnh trước / sau ở mục "Đề xuất chuẩn" của trang kiểm kê): **PA1** lá cây về phía đá-đất — lá có vân nét cọ, tông trầm, tướng và lính nổi hơn (chưa đo fps trên máy thật) / **PA2** đá về phía lá — đá bỏ vân, nhẹ máy nhất nhưng lệch với mặt đất, vách, trụ | PA1 | |

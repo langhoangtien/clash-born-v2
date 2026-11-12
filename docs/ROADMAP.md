@@ -148,6 +148,8 @@ không làm hình thật cho thứ lối chơi còn đang đổi.
 - **Cân bằng Phong Tiễn (chờ bảng ba phương án của CB-2 rồi người chơi chọn, câu P1):** ma trận 54 trận trọn (9 tướng × 2 phía × 3
   seed, SIM 23dabc5): thắng sạch Brakk, Noctis, Vexa, Thợ Săn (6/6; Noctis / Vexa ~13 phút); Myra 2–4; thua sạch Gorran, Duy Anh
   (0/6); Huyết Cự Nhân 1 thắng + 5 trận 40 phút chưa xong; Thạch Giáp 6 trận chưa xong. Tổng 27 / 16 / 11. Không lỗi bot nào.
+  Ba phương án giảm (tốc 270 / Q né 2 s / cả hai, 54 trận mỗi bản): 27/18/9 · 26/17/11 · 28/16/10 — không đổi bên thắng ở cặp nào
+  → CB-2 đề nghị giữ nguyên, đang tìm nguyên nhân các cặp 6/0 (Gorran, Duy Anh thắng; Noctis, Vexa thua).
 - ~~MOV-09~~ đã làm (D-388, kèm D-389 sửa `has_line_of_walk` ở mép pixel).
 - ~~Online 1v1 (D-30)~~ → thay bằng M9 (3v3 online, D-328).
 
