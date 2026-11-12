@@ -2,7 +2,7 @@
 # Clashborn — cập nhật VPS CHỈ CHẠY MÁY CHỦ PHÒNG (D-352, VPS Singapore) bằng một lệnh. Chạy bằng root:
 #   sudo bash /srv/clashborn/repo/tools/vps/update_rooms.sh
 # Chạy lại bao nhiêu lần cũng được: kéo code, chép sang /srv/clashborn/rooms, import, cài service (khi khác), khởi động
-# lại, chờ cổng 8790, ghi commit + dấu vân tay vào /srv/clashborn/rooms_deployed (hiện ở https://sg.clashborn.quest/rooms-health).
+# lại, chờ cổng 8790, ghi commit + dấu vân tay + cách ghi trận vào /srv/clashborn/rooms_deployed (hiện ở https://sg.clashborn.quest/rooms-health).
 # Cài lần đầu (Godot, nginx, chứng chỉ): docs/VPS_TASKS.md V-015. Không đụng nginx.
 set -euo pipefail
 ROOT=/srv/clashborn
@@ -36,14 +36,18 @@ if ! cmp -s "$REPO/tools/vps/clashborn-rooms-sg.service" "$SERVICE"; then
   systemctl enable clashborn-rooms
   echo "   đã cài service máy chủ phòng"
 fi
+START="$(date '+%Y-%m-%d %H:%M:%S')"
 systemctl restart clashborn-rooms
 for i in $(seq 1 30); do
   sleep 1
   if ss -ltn | grep -q '127.0.0.1:8790'; then echo "   máy chủ phòng nghe 127.0.0.1:8790"; break; fi
   [ "$i" -eq 30 ] && { echo "Máy chủ phòng không lên:"; journalctl -u clashborn-rooms -n 40 --no-pager; exit 1; }
 done
-LINE="$(journalctl -u clashborn-rooms -n 20 --no-pager | grep 'room_server' | tail -n 1 || true)"
-echo "$COMMIT ${LINE##*room_server: }" > "$ROOT/rooms_deployed"
+# Hai dòng khởi động của lần chạy này (main.gd): "nghe cổng … máy … dấu vân tay …" + dòng ghi trận online — gộp một dòng.
+sleep 1
+LINE="$(journalctl -u clashborn-rooms --since "$START" --no-pager -o cat | grep '^room_server: ' | head -n 2 \
+  | sed 's/^room_server: //' | paste -sd '|' - | sed 's/|/ · /g' || true)"
+echo "$COMMIT $LINE" > "$ROOT/rooms_deployed"
 chmod 644 "$ROOT/rooms_deployed"
 echo "XONG: máy chủ phòng chạy commit $COMMIT"
 echo "   $LINE"
