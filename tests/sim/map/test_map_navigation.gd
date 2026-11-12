@@ -141,3 +141,18 @@ func test_MAP_01_JGL_01_camp_units_can_leave_their_camp() -> void:
 			var home: Vector2 = nav.nearest_clear(_map.camp_points[i])
 			var goal: Vector2 = nav.nearest_clear(_map.world_size() * 0.5)
 			assert_false(nav.path(home, goal).is_empty(), "%s (%s, thân %.0f) ra khỏi trại được" % [_map.camp_ids[i], u.id, r])
+
+
+## Lỗi (D-389): đoạn thẳng nằm đúng trên ranh giới hai hàng pixel khoảng trống (y = 457 × 18,4). Kiểm tầm đi chỉ
+## xét một hàng, còn điểm trên đoạn (sai số làm tròn) rơi vào hàng bên kia hẹp hơn → đi theo đường bị chặn (MOV-05).
+func test_MOV_05_line_on_pixel_boundary_agrees_with_point_checks() -> void:
+	var a: Vector2 = Vector2(2029.679, 8408.8)
+	var b: Vector2 = Vector2(1895.2, 8408.8)
+	assert_true(_nav.point_is_clear(a) and _nav.point_is_clear(b))
+	if not _nav.has_line_of_walk(a, b):
+		return  # bảo thủ: không đi thẳng được thì tìm đường vòng — đúng
+	for i: int in range(41):
+		var p: Vector2 = a.lerp(b, i / 40.0)
+		assert_true(_nav.point_is_clear(p), "đi thẳng được thì mọi điểm trên đoạn phải đứng được: %s" % p)
+		if not _nav.point_is_clear(p):
+			return
