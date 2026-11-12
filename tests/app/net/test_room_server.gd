@@ -134,3 +134,37 @@ func test_NET_10_wrong_version_and_bad_login_rejected() -> void:
 	assert_true(_pump(s, [a, b], 3.0, func() -> bool: return a.ws.closed() and b.ws.closed()), "máy chủ đóng kết nối")
 	s.stop()
 	s.free()
+
+
+## NET-16 (D-402): qua WebSocket thật — B đóng kết nối giữa trận → máy chủ coi B rớt ngay, báo A tên B, trận A chạy tiếp.
+func test_NET_16_closed_connection_in_match_notifies_others() -> void:
+	var made: Array = _server()
+	var s: RoomServer = made[0]
+	var a: Client = _client(made[1])
+	var b: Client = _client(made[1])
+	assert_true(_pump(s, [a, b], 5.0, func() -> bool: return a.ws.is_open() and b.ws.is_open()))
+	_hello(a, "An", s.fingerprint)
+	_hello(b, "Bình", s.fingerprint)
+	assert_true(_pump(s, [a, b], 5.0, func() -> bool: return not _last(a, "hello_ok").is_empty() and not _last(b, "hello_ok").is_empty()))
+	a.ws.send({"t": "create", "size": 1})
+	assert_true(_pump(s, [a, b], 3.0, func() -> bool: return not _last(a, "lobby").is_empty()))
+	var code: String = _last(a, "lobby")["room"]["code"]
+	b.ws.send({"t": "join", "code": code})
+	a.ws.send({"t": "pick", "hero": "gorran"})
+	b.ws.send({"t": "pick", "hero": "myra"})
+	_pump(s, [a, b], 1.0)
+	a.ws.send({"t": "start"})
+	assert_true(_pump(s, [a, b], 10.0, func() -> bool: return a.lock != null and b.lock != null), "vào trận")
+	_pump(s, [a, b], 1.0)
+	b.ws.close()
+	var room: LockstepRoom = s._games[code]["room"]
+	assert_true(_pump(s, [a], 3.0, func() -> bool: return not a.lock.notices.is_empty()), "A nhận thông báo")
+	if not a.lock.notices.is_empty():
+		assert_eq(OnlineMatch.notice_text(a.lock.notices[0]), "Bình mất kết nối — bot đánh thay")
+	assert_eq(room.gone.size(), 1, "ô của B giữ lại")
+	var before: int = a.lock.last_tick
+	_pump(s, [a], 1.0)
+	assert_true(a.lock.last_tick > before, "trận A chạy tiếp")
+	a.ws.close()
+	s.stop()
+	s.queue_free()
