@@ -915,7 +915,7 @@ chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, 
   tướng (tướng người khác đã chọn bị khóa), chủ phòng đổi số người và bắt đầu. Vào trận: màn trận dựng World từ cấu hình
   máy chủ gửi, điều khiển đơn vị máy chủ giao; tick chạy theo gói lệnh (NET-01), không tăng tốc, không có nút Test (không
   phải trận thử). HUD hiện "Online <RTT> ms", đứng chờ gói ≥ 0,5 s thì "đang chờ mạng…", mất kết nối / lệch thì báo. Rời màn
-  trận (Esc, Thoát, về menu) = ngắt kết nối; người rời đứng yên tới khi có M9.7.
+  trận (Esc, Thoát, về menu) = ngắt kết nối = rớt (NET-16).
 - `NET-12` (D-344) Trận online: mọi máy có người gửi biên bản (Clashborn Stats) kèm `match_key` = mã phòng + seed và `you`
   = ô của máy gửi. Máy chủ thống kê: khóa đã có → chỉ gắn tài khoản vào ô `you` (ô người, chưa ai nhận), không đếm thêm
   trận; chưa có → ghi trận, chỉ ô `you` gắn tài khoản người gửi. Lịch sử mỗi người có trận đó, đối thủ là người hiện tên.
@@ -939,7 +939,20 @@ chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, 
   máy nào trong danh sách → "Không có phòng này", không nối đi đâu. Chữ số đầu là máy đang nối → vào phòng như cũ. Là máy
   khác → rời máy đang nối, nối thẳng máy đó (bỏ qua đo, kể cả khi đang chọn tay máy khác; lựa chọn đã nhớ không đổi), bắt tay
   xong thì vào phòng; máy đó không nối được / lỗi bắt tay → báo kèm tên máy.
-- (M9.7) Rớt mạng quá lâu → bot đánh thay bằng lệnh đổi quyền điều khiển trong luồng lệnh (luật viết khi làm).
+- `NET-16` (M9.7, D-402) **Rớt.** Trong trận, máy chủ coi một người là rớt khi kết nối của người đó đóng (kể cả chủ động
+  thoát — Esc / Thoát / về menu), hoặc `DROP_AFTER_S` (5) giây liền máy chủ không nhận tin nào của người đó (máy khách ping
+  mỗi giây nên im lặng = mất mạng); đếm bằng tick của máy chủ. Rớt rồi: máy chủ thôi gửi gói lệnh cho kết nối đó và đóng
+  nó; ô của người đó vẫn giữ (để vào lại — M9.8). Mọi máy còn lại hiện "<tên> mất kết nối — bot đánh thay".
+- `NET-17` (M9.7, D-402) **Bot đánh thay.** Tick kế sau khi rớt, máy chủ chèn vào gói lệnh lệnh `SET_CONTROL` (hero của ô
+  đó → bot độ khó Thường, đường theo ô); mọi máy, kể cả bản SIM của máy chủ, áp ở pha COMMAND tick đó (NET-01) — bảng tương
+  tác ở phần CMD. Chỉ máy chủ phát lệnh này: máy khách gửi `SET_CONTROL` → bỏ (NET-03).
+- `NET-18` (M9.8) **Trả quyền.** Người rớt vào lại và đã đuổi kịp trận → máy chủ chèn `SET_CONTROL` trả hero cho người.
+- `NET-19` (M9.7, D-402) **Trận không còn người.** Mọi người chơi đều rớt → máy chủ chạy tiếp trận (bot đánh cả) tối đa
+  `EMPTY_KEEP_S` (60) giây để có người vào lại; hết hạn vẫn không ai → hủy trận, không tính thống kê. Trận kết thúc bình
+  thường thì ô do bot đánh thay vẫn tính thắng / thua cho tài khoản của ô đó.
+- `NET-20` (M9.7, D-402) **Lệch.** Mã băm của một máy khác bản của máy chủ (NET-04) → máy chủ gửi `desync` cho máy đó, ghi
+  nhật ký (phòng, tick, tài khoản) rồi coi máy đó là rớt (NET-16 → NET-17). Máy lệch tự gửi báo cáo lệch (kiểu `sync`, mã
+  S-xxxx, kèm mã phòng, tick lệch, chuỗi mã băm đã gửi, mã băm từng đơn vị lúc đó) và hiện "lệch trận — đã báo lỗi".
 
 ## CMD — Lệnh (Command)
 

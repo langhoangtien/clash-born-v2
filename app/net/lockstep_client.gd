@@ -35,6 +35,8 @@ var _acc: float = 0.0             ## thời gian đã trôi chưa chạy thành 
 var max_backlog: int = 0
 var desync_tick: int = -1         ## tick lệch đầu tiên máy chủ báo (-1 = chưa)
 var hashes: Dictionary[int, String] = {}  ## mã băm đã gửi (chẩn đoán)
+## NET-16 (D-402): tin `notice` của máy chủ (người rớt…) chờ HUD hiện.
+var notices: Array[Dictionary] = []
 ## M9.6: APP móc vào trước / sau mỗi tick (màn trận: chụp vị trí nội suy, gửi lệnh đang giữ; âm thanh).
 var on_before: Callable = Callable()
 var on_after: Callable = Callable()
@@ -92,6 +94,8 @@ func handle(msg: Dictionary) -> bool:
 		"desync":
 			if desync_tick < 0:
 				desync_tick = int(msg.get("n", -1))
+		"notice":
+			notices.append(msg)
 		_:
 			return false
 	return true

@@ -10,6 +10,7 @@ extends Node
 const HELLO_TIMEOUT_S: float = 10.0
 const CLOSE_AFTER_S: float = 0.5  ## đóng sau khi báo lỗi — để tin lỗi kịp đi
 const MAX_CONNECTIONS: int = 200
+const EMPTY_KEEP_S: float = 60.0  ## NET-19: trận không còn người chạy tiếp chừng này giây (cho vào lại) rồi hủy
 const MAX_PROBES: int = 5  ## NET-14: tin probe tối đa mỗi kết nối (máy khách gửi ServerProbe.PROBE_ROUNDS)
 const MAP_PATH: String = "res://data/maps/clashborn.tres"
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
@@ -18,6 +19,7 @@ const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
 var auth: Callable
 ## NET-15 (D-401): id của máy này trong danh sách máy chủ (app/net/room_servers.json) — chữ số đầu mọi mã phòng nó phát.
 var server_id: int = 1
+var empty_keep_s: float = EMPTY_KEEP_S
 var fingerprint: String = ""
 var heroes: Array[StringName] = []
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -235,6 +237,7 @@ func _start_game(lobby: RoomLobby) -> void:
 	world.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
 	var units: Array[Entity] = MatchSetup.build(world, _lib, cfg)
 	var room: LockstepRoom = LockstepRoom.new(world)
+	room.on_drop = _on_drop.bind(lobby.code)
 	var wire: Dictionary = NetCodec.config_to(cfg)
 	for peer: int in made["seats"]:
 		var slot: int = int(made["seats"][peer])
@@ -256,11 +259,28 @@ func _run_game(code: String, delta: float) -> void:
 		g["acc"] = float(g["acc"]) - SimClock.TICK_SECONDS
 		room.step_tick()
 		steps += 1
-	if room.world.winner >= 0 or room.peers.is_empty():
+	g["empty"] = float(g.get("empty", 0.0)) + delta if room.peers.is_empty() else 0.0
+	if room.world.winner >= 0:
 		for id: int in room.peers:
 			_send(id, {"t": "end", "winner": room.world.winner})
 			_conns[id].merge({"stage": "lobby", "code": ""}, true)
 		_games.erase(code)
+	elif float(g["empty"]) >= empty_keep_s:  # NET-19: không ai vào lại → hủy, không tính thống kê
+		print("room_server: phòng %s hủy — không còn người chơi (tick %d)" % [code, room.tick])
+		_games.erase(code)
+
+
+## NET-16 / NET-20: báo người còn lại; im lặng / lệch thì đóng kết nối (đóng rồi thì thôi).
+func _on_drop(peer: int, _entity: int, reason: String, code: String) -> void:
+	var room: LockstepRoom = _games[code]["room"] if _games.has(code) else null
+	var c: Dictionary = _conns.get(peer, {})
+	print("room_server: phòng %s — %s (tài khoản %d) rớt: %s, tick %d" % [code, c.get("name", "?"), int(c.get("account", -1)),
+		reason, room.tick if room != null else -1])
+	if room != null:
+		for id: int in room.peers:
+			_send(id, {"t": "notice", "kind": "dropped", "name": String(c.get("name", "?"))})
+	if reason != "closed" and not c.is_empty():
+		_close_soon(peer)
 
 
 func _drop(id: int) -> void:
@@ -268,5 +288,5 @@ func _drop(id: int) -> void:
 	if _lobbies.has(code):
 		_leave(id)
 	if _games.has(code):
-		(_games[code]["room"] as LockstepRoom).remove_peer(id)
+		(_games[code]["room"] as LockstepRoom).drop_peer(id, "closed")
 	_conns.erase(id)
