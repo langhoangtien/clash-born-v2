@@ -1,0 +1,71 @@
+{
+ "phong_tien_v2_3k": {
+  "bone": "hand_l",
+  "tips": [
+   [
+    0.0253,
+    0.0004,
+    0.3006
+   ],
+   [
+    0.039,
+    0.033,
+    -0.2916
+   ]
+  ],
+  "pull_bone": "hand_r",
+  "release": {
+   "attack": 0.6,
+   "skill_2": 0.6,
+   "cast": 0.6
+  },
+  "max_pull": 1.1,
+  "color": "#efe6cf"
+ },
+ "phong_tien_v2_6k": {
+  "bone": "hand_l",
+  "tips": [
+   [
+    0.0509,
+    0.0006,
+    0.2974
+   ],
+   [
+    0.0158,
+    0.0349,
+    -0.2939
+   ]
+  ],
+  "pull_bone": "hand_r",
+  "release": {
+   "attack": 0.6,
+   "skill_2": 0.6,
+   "cast": 0.6
+  },
+  "max_pull": 1.1,
+  "color": "#efe6cf"
+ },
+ "phong_tien": {
+  "bone": "hand_l",
+  "tips": [
+   [
+    -0.038,
+    -0.0095,
+    0.2835
+   ],
+   [
+    0.1156,
+    0.0353,
+    -0.2715
+   ]
+  ],
+  "pull_bone": "hand_r",
+  "release": {
+   "attack": 0.6,
+   "skill_2": 0.6,
+   "cast": 0.6
+  },
+  "max_pull": 1.1,
+  "color": "#efe6cf"
+ }
+}

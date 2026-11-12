@@ -4,6 +4,9 @@ extends SceneTree
 ##   `--lineup`: dừng SIM, xếp cả 10 tướng thành hàng giữa map rồi chụp một ảnh.
 ## xvfb-run -a godot --path . --rendering-method mobile --rendering-driver vulkan --resolution 1920x1080
 ##   -s tools/models/preview/kiem_ke_tran.gd -- --out=art_inbox/kiem_ke/tran [--lineup] [--variant=A|B] [--tag=_a] [--first=brakk]
+## D-367: `--swap=<glb>` thay mô hình Phong Tiễn bằng bản thử (chỉ trong lần chạy, không ghi file; `--strings=<json>` +
+## `--key=<tên>`: dây cung của bản thử); `--swap-all`: mọi tướng dùng mô hình đó (đo cảnh 6 tướng mức cao nhất);
+## `--hold=<khung>` chờ trước khi chụp (để quay video); `--measure=<khung>`: sau khi xếp hàng, đo thời gian khung trung bình + số tam giác vẽ, in ra rồi thoát.
 ## D-361: `--variant` thay vật liệu cảnh vật bằng bản thử (thu_vat_lieu.gd); `--tag` nối vào tên ảnh; hàng tướng có thêm 4 lính.
 
 const Trial: GDScript = preload("res://tools/models/preview/thu_vat_lieu.gd")
@@ -19,6 +22,15 @@ var _out: String = ""
 var _lineup: bool = false
 var _variant: String = ""
 var _tag: String = ""
+var _swap: String = ""
+var _swap_all: bool = false
+var _strings: String = ""
+var _key: String = ""
+var _measure: int = 0
+var _hold: int = 12  ## khung chờ trước khi chụp hàng tướng (quay video: --hold=120)
+var _times: PackedFloat64Array = []
+var _prims: int = 0
+var _last_us: int = 0
 var _first: StringName = &""  ## tướng người chơi (ô 0); đổi chỗ với tướng đang ở ô đó
 var _speed: int = 4
 var _at: Array[int] = []
@@ -36,12 +48,23 @@ func _initialize() -> void:
 			"variant": _variant = kv[1]
 			"tag": _tag = kv[1]
 			"first": _first = StringName(kv[1])
+			"swap": _swap = kv[1]
+			"swap-all": _swap_all = true
+			"strings": _strings = kv[1]
+			"key": _key = kv[1]
+			"measure": _measure = int(kv[1])
+			"hold": _hold = int(kv[1])
 			"speed": _speed = int(kv[1])
 			"at": at = kv[1]
 	for s: String in at.split(","):
 		_at.append(SimClock.seconds_to_ticks(float(s)))
 	DirAccess.make_dir_recursive_absolute(_out)
 	var script: GDScript = load(SCENE.get_basename() + ".gd") as GDScript
+	if _swap != "":
+		_inject()
+	if _measure > 0:
+		Engine.max_fps = 0
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	var teams: Array[StringName] = TEAMS.duplicate()
 	if _first != &"" and teams.has(_first):
 		teams[teams.find(_first)] = teams[0]
@@ -69,8 +92,10 @@ func _process(_delta: float) -> bool:
 		return false
 	if _lineup:
 		_settle += 1
-		if _settle < 12:
+		if _settle < _hold:
 			return false
+		if _measure > 0:
+			return _sample()
 		_shot("hang_tuong")
 		return true
 	if w.tick >= _at[0]:
@@ -116,3 +141,44 @@ func _restyle() -> void:
 		var m: Material = Trial.material_for(Trial.model_of(mmi.multimesh.mesh), _variant)
 		if m != null:
 			mmi.material_override = m
+
+
+## D-367: đặt bản thử vào bộ nhớ đệm của ModelLibrary trước khi dựng đơn vị (không đổi file nào).
+func _inject() -> void:
+	var doc: GLTFDocument = GLTFDocument.new()
+	var st: GLTFState = GLTFState.new()
+	doc.append_from_file(_swap, st)
+	var packed: PackedScene = PackedScene.new()
+	packed.pack(doc.generate_scene(st))
+	var units: Dictionary = ModelLibrary.config()["units"]
+	var ids: Array = [&"phong_tien"]
+	if _swap_all:
+		ids = TEAMS + OTHERS
+	var cfg: Dictionary = {}
+	if _strings != "":
+		cfg = (JSON.parse_string(FileAccess.get_file_as_string(_strings)) as Dictionary).get(_key, {})
+	for id: StringName in ids:
+		var u: Dictionary = units[String(id)]
+		ModelLibrary._scenes[String(u["model"]) + ".glb"] = packed
+		u["height"] = units["phong_tien"]["height"] if _swap_all else u["height"]
+		u.erase("effect_looks")
+		if not cfg.is_empty():
+			u["bow_string"] = cfg
+
+
+## D-367: đo `_measure` khung (thời gian thật giữa hai khung, tam giác vẽ) rồi in một dòng.
+func _sample() -> bool:
+	var now: int = Time.get_ticks_usec()
+	if _last_us > 0:
+		_times.append((now - _last_us) / 1000.0)
+	_last_us = now
+	_prims = maxi(_prims, int(Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)))
+	if _times.size() < _measure:
+		return false
+	var sorted: PackedFloat64Array = _times.duplicate()
+	sorted.sort()
+	var sum: float = 0.0
+	for t: float in _times:
+		sum += t
+	print("do_khung%s: %.2f ms/khung (trung vị %.2f), %.1f fps, %d tam giác / khung" % [_tag, sum / _times.size(), sorted[sorted.size() / 2], 1000.0 * _times.size() / sum, _prims])
+	return true
