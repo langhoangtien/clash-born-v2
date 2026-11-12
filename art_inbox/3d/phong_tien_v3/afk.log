@@ -1,0 +1,21 @@
+(node:458) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:470) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Uploading phong_tien_v3_front.glb…
+Queued
+Rigging: waiting for the GPU
+Rigging: placing the joints
+Rigging: painting skin weights
+Rigging: skinning
+Writing the .glb with its animations
+Done in 176 s: 593 animations, 54.8 MB, $0.05 from this month's Lifetime credit. $8.25 of Lifetime credit left this month.
+Keeping the arms out of the body in its animations, on this computer…
+(node:470) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:470) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:470) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Arms kept out of the body in 593 animations in 22.7 s (frames with an arm through it: 20895, now 1099).
+art_inbox/3d/phong_tien_v3/phong_tien_v3_afk.glb

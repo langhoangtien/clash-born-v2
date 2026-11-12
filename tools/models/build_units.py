@@ -94,6 +94,12 @@ UNITS = {
                          "Idle_Dizzy=stun,Bow Pull Back@0.75-1.25+Bow Release=cast,Dodge_left=skill_1,"
                          "Bow_Draw@1.3-2.07+Bow Release=skill_2,Sprint=sprint",
                          "_leaf", False, ["phong_tien_v2/f12000/phong_tien_v2_bow_nostring_hand:hand_l"]),
+    # D-372: Phong Tiễn style mới (D-370, người chơi chọn 6k + ngón tay)
+    "phong_tien_v3": ("phong_tien_v3/phong_tien_v3", "heroes/phong_tien",
+                         "Bow_Casual=idle,Run_Female=run,Bow Pull Back@0.5-1.25+Bow Release=attack,Hit_Chest=hit,Death_B=death,"
+                         "Idle_Dizzy=stun,Bow Pull Back@0.75-1.25+Bow Release=cast,Dodge_left=skill_1,"
+                         "Bow_Draw@1.3-2.07+Bow Release=skill_2,Sprint=sprint",
+                         "_leaf", False, ["phong_tien_v3/phong_tien_v3_bow_nostring_hand:hand_l"]),
     # D-307b: tê giác theo style ảnh mẫu người chơi (concept_gen.py từ ảnh mẫu → split_turnaround.py →
     # Tripo multiview → glb_yaw -90 → afk.ai: dragon / horse → fix-stretching)
     # D-309: Người Đá thay rồng (concept_gen theo ảnh mẫu bãi đấu → Tripo → afk.ai human); fix-stretching + drop_loose (tam giác lẻ kéo dài); đòn đánh = đấm móc (đấm đất kéo méo nắm tay)
@@ -134,7 +140,7 @@ def main():
         i = args.index("--out")
         out_dir = args[i + 1]
         del args[i:i + 2]
-    for name in args or [n for n in UNITS if not n.startswith("phong_tien_v2")]:  # bản thử chỉ dựng khi gọi tên
+    for name in args or [n for n in UNITS if not n.startswith("phong_tien_v")]:  # bản thử chỉ dựng khi gọi tên
         build(name, out_dir)
 
 

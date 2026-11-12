@@ -30,6 +30,7 @@ var _strings: String = ""
 var _key: String = ""
 var _measure: int = 0
 var _sample_kind: String = ""
+var _swap_height: float = 0.0  ## --swap-height: chiều cao thử cho bản thay (0 = giữ)
 var _cutouts: String = ""
 var _cut_scale: float = 1.0
 var _hold: int = 12  ## khung chờ trước khi chụp hàng tướng (quay video: --hold=120)
@@ -61,6 +62,7 @@ func _initialize() -> void:
 			"hold": _hold = int(kv[1])
 			"sample": _sample_kind = kv[1]
 			"cutouts": _cutouts = kv[1]
+			"swap-height": _swap_height = float(kv[1])
 			"cut-scale": _cut_scale = float(kv[1])
 			"speed": _speed = int(kv[1])
 			"at": at = kv[1]
@@ -180,6 +182,8 @@ func _inject() -> void:
 		u.erase("effect_looks")
 		if not cfg.is_empty():
 			u["bow_string"] = cfg
+		if _swap_height > 0.0:
+			u["height"] = _swap_height
 
 
 ## D-367: đo `_measure` khung (thời gian thật giữa hai khung, tam giác vẽ) rồi in một dòng.
