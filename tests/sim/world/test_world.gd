@@ -109,3 +109,17 @@ func test_D_30_hash_orders_names_by_text_not_by_memory_address() -> void:
 	var sorted: Array = WorldHash.by_text(names)
 	for i: int in range(60):
 		assert_eq(str(sorted[i]), "hash_order_%02d" % i)
+
+
+## D-390: thêm hệ thống trong lúc đang chạy tick (SET_CONTROL gắn BotController ở pha COMMAND) không làm đổi danh sách
+## đang duyệt; hệ thống mới chạy từ tick sau, mỗi tick đúng một lần.
+func test_D_30_system_added_mid_tick_runs_from_next_tick_once() -> void:
+	var w: World = _world(1)
+	var log: Array[int] = []
+	w.add_system(preload("res://tests/sim/world/adder_system.gd").new(log), World.Phase.COMMAND)
+	w.add_system(Recorder.new(World.Phase.MOVEMENT, log), World.Phase.MOVEMENT)
+	w.step()
+	assert_eq(log, [World.Phase.MOVEMENT] as Array[int], "tick đầu: hệ thống mới chưa chạy")
+	log.clear()
+	w.step()
+	assert_eq(log, [World.Phase.CONTROLLER, World.Phase.MOVEMENT] as Array[int], "tick sau: chạy đúng pha, một lần")

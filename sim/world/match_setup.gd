@@ -84,10 +84,17 @@ static func spawn_heroes(world: World, library: ContentLibrary, config: MatchCon
 		var at: Vector2 = spawn_point(world, s.team, s.index, config.team_size, def.stats.collision_radius)
 		var e: Entity = UnitFactory.hero(world, def, s.team, at)
 		e.spawn_point = at
+		e.slot_index = s.index
 		if s.is_bot:
-			add_bot(world, e, s.difficulty).lane = world.balance.bot_lane_order[s.index % world.balance.bot_lane_order.size()]
+			add_bot(world, e, s.difficulty).lane = lane_for(world, e)
 		out.append(e)
 	return out
+
+
+## Đường của bot theo ô của hero (bot_lane_order).
+static func lane_for(world: World, e: Entity) -> String:
+	var order: PackedStringArray = world.balance.bot_lane_order
+	return order[maxi(e.slot_index, 0) % order.size()]
 
 
 ## MATCH-03: ô 0 ở fountain; ô k ≥ 1 cách `hero_spawn_spread` theo góc chia đều, đẩy vào chỗ đứng được gần nhất.

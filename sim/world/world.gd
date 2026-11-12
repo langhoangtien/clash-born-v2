@@ -77,6 +77,7 @@ var mid_tick: bool = false
 var remote_sink: Callable = Callable()
 var _in_tick: bool = false
 var _systems: Array[Array] = []  # [phase, thứ tự đăng ký, SimSystem]
+var _systems_later: Array[Array] = []  # [phase, SimSystem] thêm trong lúc đang chạy tick
 
 
 func _init(seed_value: int, p_balance: BalanceSettings) -> void:
@@ -102,14 +103,17 @@ func _init(seed_value: int, p_balance: BalanceSettings) -> void:
 
 
 func add_system(system: SimSystem, phase: Phase) -> void:
+	if _in_tick:
+		_systems_later.append([phase, system])  # D-390: không đổi danh sách đang duyệt; chạy từ tick sau
+		return
 	_systems.append([phase, _systems.size(), system])
 	_systems.sort_custom(func(a: Array, b: Array) -> bool: return a[0] < b[0] or (a[0] == b[0] and a[1] < b[1]))
 
 
-## Đã có hệ thống thuộc lớp `script` chưa.
+## Đã có hệ thống thuộc lớp `script` chưa (tính cả hệ thống chờ thêm sau tick).
 func has_system(script: Script) -> bool:
-	for entry: Array in _systems:
-		if (entry[2] as Object).get_script() == script:
+	for entry: Array in _systems + _systems_later:
+		if (entry[-1] as Object).get_script() == script:
 			return true
 	return false
 
@@ -247,6 +251,10 @@ func _run_systems(first_half: bool) -> void:
 		if (int(entry[0]) <= Phase.CONTROLLER) == first_half:
 			(entry[2] as SimSystem).run(self)
 	_in_tick = false
+	var later: Array[Array] = _systems_later
+	_systems_later = []
+	for entry: Array in later:
+		add_system(entry[1], entry[0])
 
 
 ## Băm toàn bộ trạng thái để so hai lần chạy (test phát lại, D-30) — WorldHash.

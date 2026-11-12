@@ -14,6 +14,10 @@ func run(world: World) -> void:
 		if command.reject_reason != Command.Reject.NONE:
 			world.rejected_commands.append(command)
 			continue
+		if command.type == Command.Type.SET_CONTROL:
+			BotControl.apply(world, unit, command.mode == 1)  # NET-17 / NET-18: đổi quyền, không phải hành động của hero
+			world.command_log.append(command)
+			continue
 		if command.type == Command.Type.BUY or command.type == Command.Type.SELL:
 			if command.type == Command.Type.BUY:
 				Shop.buy(world, unit, command.item_id)  # SHOP-01
@@ -75,6 +79,8 @@ func _clamped_point(unit: Entity, command: Command) -> Vector2:
 func _check(world: World, command: Command, unit: Entity) -> Command.Reject:
 	if unit == null:
 		return Command.Reject.UNKNOWN_UNIT
+	if command.type == Command.Type.SET_CONTROL:  # D-390: không bị chặn bởi chết / khống chế / Quyết Đấu / về thành
+		return Command.Reject.NONE if unit.kind == Entity.Kind.HERO else Command.Reject.BAD_TARGET
 	if not unit.alive and not command.type in [Command.Type.LEVEL_UP, Command.Type.CHOOSE_TALENT, Command.Type.BUY, Command.Type.SELL,
 			Command.Type.CHEAT_GOLD, Command.Type.CHEAT_LEVEL]:
 		return Command.Reject.UNIT_DEAD  # cộng điểm được cả khi đang chờ hồi sinh
