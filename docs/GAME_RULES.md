@@ -298,6 +298,27 @@ Bảng tương tác (ARCHITECTURE mục 7) của INVISIBLE / REVEALED / UNTARGET
 - `CMB-17` (D-206) Tầm đệm khi vung: bắt đầu vung tay cần mục tiêu trong tầm đánh (CMB-01); đã vung
   thì chỉ hủy khi khoảng cách mép > tầm đánh + `attack_range_buffer` (150). Mục tiêu vừa chạy ra khỏi
   tầm vẫn ăn đòn đang vung. Áp cho mọi đơn vị (hero, lính, quái, trụ).
+- `CMB-18` (D-386) **Đòn đánh phụ** (kiểu "bắn 2 phát"): hiệu ứng khai báo `extra_attack_chance` (biểu thức, PRD RNG-01,
+  mỗi nguồn một bộ PRD) và `extra_attack_delay` (giây). Khi một đòn đánh **chính** ra (hết vung tay, CMB-06), xét các nguồn:
+  nguồn nào trúng thì lấy nguồn có tỉ lệ cao nhất (như chí mạng CMB-07) — mỗi đòn chính tối đa **một** đòn phụ. Sau `delay`
+  giây đánh thêm một đòn đánh thường đầy đủ vào **cùng mục tiêu**: tính né / chí mạng riêng, có hiệu ứng đòn đánh (bash, hút
+  máu, `attack_landed`…), đánh xa thì bắn đạn bay; không cần vung tay, không tốn hồi đòn; đòn phụ không sinh đòn phụ. Phát
+  sự kiện `extra_attack` (kẻ đánh, mục tiêu) lúc đánh để VIEW diễn hoạt. Đang chờ thì (T4) **hủy** khi: kẻ đánh chết hoặc không
+  đánh được (STUNNED, DISARMED, HEXED, GHOST…; ST-01/04/11/16), mục tiêu chết hoặc không nhắm được nữa, khoảng cách mép > tầm
+  đánh + `attack_range_buffer` (CMB-17). Đổi lệnh trong lúc chờ thì vẫn đánh (đòn chính đã ra). Lên công trình: có (CMB-04).
+  Bảng tương tác:
+
+| Hỏi | Đòn đánh phụ |
+|---|---|
+| Kẻ đánh bị khống chế / chết trong lúc chờ | Hủy (T4) |
+| Mục tiêu chết / không nhắm được / ra quá tầm + đệm | Hủy (T4) |
+| Đổi lệnh trong lúc chờ | Vẫn đánh |
+| Né, chí mạng, hiệu ứng đòn đánh | Tính riêng như đòn thường |
+| Hồi đòn, vung tay | Không tốn, không cần |
+| Nhiều nguồn | Một đòn phụ, tỉ lệ cao nhất trong các nguồn trúng |
+| Đòn phụ sinh đòn phụ | Không |
+| Công trình | Có (hệ số CMB-04) |
+| Hiển thị | Sự kiện `extra_attack` |
 - `CMB-07` Chí mạng là **thay đổi đòn đánh**, không phải sát thương thêm: tung xúc xắc
   khi bắt đầu vung tay (để hoạt ảnh biết trước); nếu nhiều nguồn cùng trúng, lấy hệ
   số cao nhất; chỉ nhân sát thương vật lý của chính đòn đánh, không nhân sát thương
@@ -671,7 +692,7 @@ kill_credited, structure_destroyed, unit_spawned, gold_changed, level_up,
 skill_leveled, talent_chosen, dash_finished, projectile_hit, item_used,
 knockback_finished, dispelled, attack_target_changed, mana_burned,
 lethal_damage, reincarnated, recall_started, recall_cancelled, recall_finished, duel_started,
-duel_ended, attack_deflected, teleported, effect_triggered`. `gold_changed` (D-240): hero last hit lính / quái (ECO-01), kẻ gây = hero, đối tượng = con bị hạ, lượng = vàng. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
+duel_ended, attack_deflected, teleported, effect_triggered, extra_attack`. `gold_changed` (D-240): hero last hit lính / quái (ECO-01), kẻ gây = hero, đối tượng = con bị hạ, lượng = vàng. `duel_ended` mang lý do `won` (kẻ gây = người thắng) hoặc `timeout`.
 `effect_removed` mang lý do: `expired`, `depleted`, `removed_by_event`, `removed` (hành động RemoveEffect), `dispelled`, `owner_died`,
 `source_died` (D-383: kẻ khiêu khích chết, ST-20).
 `ability_finished` (D-296) mang điểm chọn `point` (không chọn điểm thì INF) và hướng `direction` của lần tung — chỉ để

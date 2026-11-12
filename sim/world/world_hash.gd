@@ -69,6 +69,8 @@ static func _hash_entity(ctx: HashingContext, e: Entity) -> void:
 		ctx.update(PackedFloat64Array([e.dash.target_id, e.dash.speed, e.dash.source_id]).to_byte_array())
 	if e.bot != null:
 		ctx.update(PackedFloat64Array([e.bot.mode, e.bot.target_id, e.bot.goal.x, e.bot.goal.y, e.bot.chase_origin.x, e.bot.chase_origin.y, e.bot.trade_until_tick, e.bot.last_hurt_tick, e.bot.upgrades_done, e.bot.last_pos.x, e.bot.last_pos.y, e.bot.last_pos_tick, int(e.bot.ahead), e.bot.last_hero_hit_tick]).to_byte_array())
+	if e.pending_attack != null:
+		ctx.update(PackedInt64Array([e.pending_attack.tick, e.pending_attack.target_id]).to_byte_array())  # CMB-18
 	if e.cast != null:
 		ctx.update(PackedInt64Array([e.cast.ability.slot, e.cast.release_tick, e.cast.target_id]).to_byte_array())
 	for inst: EffectInstance in e.effects:
