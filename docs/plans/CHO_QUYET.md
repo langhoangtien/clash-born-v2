@@ -54,4 +54,5 @@ Trả lời gọn theo mã, vd `N1 ok, N2 B, M1 ok`. "Đề nghị" = phương �
 | TV2 | Nội tại đang có số cố định nên 5 điểm nâng nội tại không có tác dụng. Cho tăng theo bậc: giảm sát thương mỗi tầng 1,2 / 1,4 / 1,6 / 1,8 / 2,0% (chỉ là số), hoặc trần tầng 8 / 10 / 12 / 14 / 16 (cần cơ chế mới) | Theo % mỗi tầng | |
 | TV3 | W chưa có số hồi chiêu / mana: đặt hồi 18–14 s, mana 50–70 | Duyệt | |
 | TV4 | Talent chưa có: Q II khiêu khích +0,5 s; W II +4 giáp; R II cứ 3 đòn thay vì 4 | Duyệt | |
+| PH1 | Pháo Thủ — số đặt tạm (D-387): mana Q 70–90, mana R 100 / 125 / 150; talent Q II +100 bán kính, W II +10% tỉ lệ bắn kép, R II +200 sát thương; lên đồ như Phong Tiễn | Duyệt | |
 
