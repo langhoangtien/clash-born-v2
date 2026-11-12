@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="1_x"]
+[ext_resource type="Script" path="res://sim/defs/value_change_def.gd" id="2_x"]
+[ext_resource type="Script" path="res://sim/actions/damage_action.gd" id="3_x"]
+[ext_resource type="Script" path="res://sim/defs/talent_def.gd" id="4_x"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="5_x"]
+
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("3_x")
+amount = "damage"
+
+[sub_resource type="Resource" id="S2"]
+script = ExtResource("2_x")
+value_name = &"damage"
+amount = 200.0
+
+[sub_resource type="Resource" id="S3"]
+script = ExtResource("4_x")
+id = &"phao_thu_r_ii"
+display_name = "Đạn Xuyên"
+description = "Sát thương +200"
+value_changes = Array[ExtResource("2_x")]([SubResource("S2")])
+
+[resource]
+script = ExtResource("5_x")
+description = "Ngắm 2 s rồi bắn một kẻ địch ở xa (tầm 1600 / 1900 / 2200): sát thương vật lý 300 / 475 / 650. Bị ngắt trong lúc ngắm thì hủy (ABL-03)."
+slot = 3
+targeting = 2
+values = Dictionary[StringName, PackedFloat32Array]({
+&"cast_range": PackedFloat32Array(1600, 1900, 2200),
+&"cooldown": PackedFloat32Array(60, 50, 40),
+&"damage": PackedFloat32Array(300, 475, 650),
+&"mana": PackedFloat32Array(100, 125, 150)
+})
+cast_time = "2"
+on_cast = Array[ExtResource("1_x")]([SubResource("S1")])
+talent = SubResource("S3")
+bot_usages = Array[int]([2])
+bot_conditions = Array[StringName]([&"enemy_hp_below_damage"])
+id = &"phao_thu_r"
+display_name = "Phát Bắn Tỉa"
+art_id = &"phao_thu_r"

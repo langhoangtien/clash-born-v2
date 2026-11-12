@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="AbilityDef" format=3]
+
+[ext_resource type="Resource" path="res://content/effects/phao_thu_long_barrel.tres" id="1_x"]
+[ext_resource type="Script" path="res://sim/actions/action_def.gd" id="2_x"]
+[ext_resource type="Script" path="res://sim/actions/apply_effect_action.gd" id="3_x"]
+[ext_resource type="Script" path="res://sim/defs/ability_def.gd" id="4_x"]
+
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("3_x")
+effect = ExtResource("1_x")
+target = 0
+
+[resource]
+script = ExtResource("4_x")
+description = "Bị động: +30 / 60 / 90 / 120 / 150 tầm đánh."
+slot = 0
+targeting = 0
+values = Dictionary[StringName, PackedFloat32Array]({
+&"range_bonus": PackedFloat32Array(30, 60, 90, 120, 150)
+})
+on_learn = Array[ExtResource("2_x")]([SubResource("S1")])
+id = &"phao_thu_innate"
+display_name = "Nòng Dài"
+art_id = &"phao_thu_innate"

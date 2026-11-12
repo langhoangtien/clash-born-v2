@@ -18,11 +18,11 @@ func test_content_has_no_errors() -> void:
 	assert_true(errs.is_empty(), "\n".join(errs))
 
 
-const HEROES: Array[StringName] = [&"brakk", &"myra", &"noctis", &"vexa", &"gorran", &"duy_anh", &"huyet_cu_nhan", &"phong_tien", &"tho_san", &"thach_giap", &"thiet_ve"]
+const HEROES: Array[StringName] = [&"brakk", &"myra", &"noctis", &"vexa", &"gorran", &"duy_anh", &"huyet_cu_nhan", &"phong_tien", &"tho_san", &"thach_giap", &"thiet_ve", &"phao_thu"]
 
 
 func test_six_heroes_and_items() -> void:
-	assert_eq(_lib.heroes.size(), HEROES.size(), "D-347: đợt 1 thêm 4 tướng")
+	assert_eq(_lib.heroes.size(), HEROES.size(), "D-347: đợt 1 thêm 4 tướng; D-385 / D-387: đợt 2 thêm Thiết Vệ, Pháo Thủ")
 	for id: StringName in HEROES:
 		assert_true(_lib.heroes.has(id), "có hero " + id)
 	for id: StringName in [&"ghost_scepter", &"resolute_armor", &"frost_orb", &"reveal_dust", &"cyclone_staff",

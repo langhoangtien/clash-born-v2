@@ -731,3 +731,18 @@ STR 27 (+3,8), AGI 14 (+1,6), INT 15 (+1,8), giáp 2, tốc chạy 265 (chỉ s�
 Talent: Q II khiêu khích +0,5 s · W II +4 giáp · R II cứ 3 đòn (thay vì 4).
 Bot: Q DISABLE khi có hero địch trong bán kính / TEAMFIGHT khi trúng ≥ 2; W ESCAPE khi máu < 30% / ENGAGE trước khi áp sát.
 Lên đồ như Thạch Giáp. Hình (icon, chân dung, mô hình, VFX): chờ CB-1, tạm mượn Thạch Giáp.
+
+### Pháo Thủ · Súng Bom (AGI, đánh xa 500 — D-387, đợt 2)
+
+STR 16 (+1,8), AGI 22 (+3,0), INT 16 (+1,6), BAT 1,7, đạn 1400, tốc chạy 265.
+
+| Chiêu | Hiệu lực | Bậc |
+|---|---|---|
+| Nội tại — Nòng Dài | +tầm đánh | +30 / 60 / 90 / 120 / 150 |
+| Q — Lựu Đạn | điểm (tầm 700), vùng 275, tung 0,3 s: phép + chậm 25% trong 3 s | 70–230, hồi 12–8, mana 70–90 |
+| W — Bắn Kép (bị động) | mỗi đòn đánh có tỉ lệ (PRD) bắn thêm một phát sau 0,15 s vào cùng mục tiêu (CMB-18) | 20 / 25 / 30 / 35 / 40% |
+| R — Phát Bắn Tỉa | một kẻ địch (tầm 1600 / 1900 / 2200), ngắm 2 s (bị ngắt thì hủy, ABL-03): vật lý | 300 / 475 / 650, hồi 60 / 50 / 40, mana 100–150 |
+
+Talent: Q II bán kính +100 · W II tỉ lệ +10% · R II sát thương +200.
+Bot: Q POKE khi hero địch trong tầm (dự đoán vị trí); R FINISH khi máu hero địch < sát thương chiêu.
+Lên đồ như Phong Tiễn. Hình (icon, chân dung, mô hình, VFX): chờ CB-1.
