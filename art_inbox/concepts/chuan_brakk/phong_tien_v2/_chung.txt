@@ -1,0 +1,8 @@
+Use your image generation tool to create ONE new image and save it as a PNG at the path given below (create folders if needed). Do not edit any other file. When finished, reply only with the saved path.
+
+Reference images (open and look at them first):
+- APPROVED DESIGN to follow exactly: art_inbox/concepts/chuan_brakk/phong_tien/pa3.png (female archer "Phong Tiễn", ~3.5 heads tall, Brakk-style light armor)
+- LAYOUT reference for a turnaround sheet: art_inbox/10_units_v2/phong_tien/phong_tien_sheet.png (front | side | back, plain light grey background, A-pose)
+- STYLE reference: art_inbox/03_heroes/brakk_sheet.png
+
+Keep the approved design identical: same face, brown high ponytail with teal-and-cream feathers and the teal spiral hair clip, teal-green eyes, teal short shoulder capelet with round teal clasp, cream tunic ending mid-thigh with brown belt and gold buckle, brown leggings, ONE grey rounded shoulder pauldron with gold rim and teal gem on her right shoulder only if pa3 shows it there (follow pa3), grey forearm guards with gold rim, brown fingerless gloves, grey knee guards with gold rim, big grey-and-brown boots, quiver of teal-fletched arrows on her BACK. Proportions ~3.5 heads exactly as pa3. Bold dark outline, flat cel shading 2–3 tones.

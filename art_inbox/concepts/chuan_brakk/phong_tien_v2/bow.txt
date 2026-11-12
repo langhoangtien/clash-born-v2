@@ -1,0 +1,2 @@
+Make ONLY her BOW, as a separate prop, portrait 1024x1536, plain flat light grey background (#e6e6e8), no character, no hands, no arrows, no text. The bow from pa3 (wood limbs with teal wrapping, gold tips, small round teal gem at the grip, cream-white panels), standing upright, seen straight from the side so its full curve is visible, centered, filling about 85% of the image height. Bowstring: one thin straight line. Same bold outline and cel shading as the character.
+Output: art_inbox/3d/phong_tien_v2/phong_tien_v2_bow.png
