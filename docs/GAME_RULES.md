@@ -921,7 +921,8 @@ chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, 
   (mọi ô người lúc bắt đầu trận, kể cả người đã rớt) và danh sách ô `left` (người đã rớt lúc kết thúc), gửi máy chủ thống
   kê bằng mã bí mật riêng của máy chủ phòng (`rooms_token`, chỉ có quyền ghi trận). Lỗi mạng / máy chủ → thử lại 3 lần (sau
   1 / 5 / 30 giây), vẫn hỏng → ghi nguyên biên bản vào nhật ký máy chủ phòng. Trùng `match_key` → không đếm lại. Ô người đã
-  rớt (bot đánh thay — NET-17) vẫn tính thắng / thua cho tài khoản đó; trang lịch sử ghi "(đã rời)". Trận hủy (NET-19) không
+  rớt (bot đánh thay — NET-17) vẫn là ô người trong biên bản (`bot: false` — D-409) và tính thắng / thua cho tài khoản đó;
+  trang lịch sử ghi "(đã rời)". Trận hủy (NET-19) không
   gửi. Số bản game trong biên bản = số bản người tạo phòng gửi trong `hello` (`app`; không có → `0.0.0`). Máy khách không gửi
   biên bản trận online; `/api/match` nhận biên bản có `match_key` (bản game cũ) → trả `ignored`, không ghi.
 - `NET-21` (M9.8, D-406) **Trận đang đánh.** Tài khoản có ô trong một trận chưa kết thúc ở máy chủ này: lời chào `hello_ok`
