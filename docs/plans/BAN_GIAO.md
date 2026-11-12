@@ -4,6 +4,8 @@ Câu mở phiên mới (người chơi dán):
 
 > Đọc AGENTS.md rồi docs/plans/BAN_GIAO.md, làm theo mục "Việc tiếp theo". Nhánh `thu-asset-tu-lam`.
 
+> **Từ 2026-11-12 (D-354): đọc `docs/plans/PHAN_CONG.md` — việc chia cho các phiên CB-0…CB-3, phiên này (CB-0) điều phối.**
+
 ## 1. Làm việc thế nào (đã quen ở phiên trước)
 
 - Nhánh **`thu-asset-tu-lam`**. Codex và phiên VPS cũng đẩy lên nhánh này, nên **luôn `git pull --rebase` trước khi đẩy**.
