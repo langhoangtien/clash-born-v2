@@ -112,5 +112,5 @@ video xem trước gửi người chơi. Tránh áo choàng / vạt dài (khó d
   - Ảnh chuẩn DUY NHẤT `art_inbox/icons/goc/brakk_portrait.png` (bản trong `assets/art` đã có khung).
   - Chỉ đầu + vai, đầu khoảng 40–45% khung, nhìn 3/4 sang phải, viền đậm, nền trong suốt.
 - **Icon chiêu:** vẽ phần hình tròn, không tự vẽ khung (công cụ đóng: nội tại viền bạc, Q / W viền vàng, R viền vàng đôi).
-- **Tướng mới / vẽ lại (D-354, người chơi 2026-11-12):** chuẩn style = Brakk; Codex vẽ concept trước → người chơi duyệt → mới dựng 3D;
+- **Tướng mới / vẽ lại (người chơi 2026-11-12, đổi lần 2):** chuẩn style = ảnh mẫu `art_inbox/concepts/chuan_moi/ref_nguoi_choi.png` (bán tả thực vẽ tay kiểu MOBA điện thoại, ~6 đầu, bớt vạt áo dài / áo choàng) — KHÔNG còn là Brakk-chibi; Codex vẽ concept trước → người chơi duyệt → mới dựng 3D;
   từng tướng một. Ảnh toàn thân: mặt trước, chữ A, thấy cả bàn chân, nền trắng.
