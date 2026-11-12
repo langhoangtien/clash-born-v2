@@ -2,8 +2,9 @@ extends SceneTree
 ## D-360: chụp kiểm kê mô hình — mỗi mô hình một ảnh "phòng chụp" (cùng góc, cùng ánh sáng trận Look3D, cùng tỉ lệ
 ## trong nhóm) + số đo (tam giác, xương, hoạt ảnh, cỡ ảnh màu) ghi ra `stats.json`. Cần cửa sổ:
 ##   xvfb-run -a godot --path . --rendering-method mobile --rendering-driver vulkan --resolution 640x800
-##     -s tools/models/preview/kiem_ke.gd -- --out=art_inbox/kiem_ke/models [--yaw=-28] [--only=hero]
+##     -s tools/models/preview/kiem_ke.gd -- --out=art_inbox/kiem_ke/models [--yaw=-28] [--only=hero] [--variant=A|B]
 
+const Trial: GDScript = preload("res://tools/models/preview/thu_vat_lieu.gd")
 const STYLE_DIR: String = "res://assets/models/style/"
 const BACKDROP: Color = Color("#8c9188")  ## nền xám trung tính để so bảng màu
 const WAIT_FRAMES: int = 4
@@ -23,6 +24,7 @@ var _frames: int = 0
 var _decor_scale: Dictionary = {}
 var _yaw: float = -28.0  ## quay 3/4 về bên phải camera
 var _only: String = ""
+var _variant: String = ""  ## D-361: vật liệu bản thử cho cảnh vật
 
 
 func _initialize() -> void:
@@ -32,6 +34,7 @@ func _initialize() -> void:
 			"out": _out = kv[1]
 			"yaw": _yaw = float(kv[1])
 			"only": _only = kv[1]
+			"variant": _variant = kv[1]
 	DirAccess.make_dir_recursive_absolute(_out)
 	var world: Node3D = Node3D.new()
 	root.add_child(world)
@@ -167,7 +170,8 @@ func _kit(item: Dictionary) -> Node3D:
 	var k: float = scales[scales.size() / 2]
 	for mi: MeshInstance3D in n.find_children("*", "MeshInstance3D", true, false):
 		ModelLibrary.use_vertex_colors(mi.mesh)
-		mi.material_override = Terrain3D.material_for(id)
+		var trial: Material = Trial.material_for(id, _variant)
+		mi.material_override = trial if trial != null else Terrain3D.material_for(id)
 	holder.add_child(n)
 	var box: AABB = ModelLibrary.bounds(n)
 	n.scale = Vector3.ONE * k

@@ -72,6 +72,13 @@ figcaption { font-size: 14px; color: var(--muted); max-width: 76ch; }
 .cand { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
 .cand img { width: 132px; height: 132px; object-fit: cover; object-position: 0 0; border-radius: 8px; background: var(--tile); }
 .cand ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 14px; }
+.opt { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.opt.pick { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.opt img { display: block; width: 100%; height: auto; border-radius: 8px; }
+.opt ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.opt .tag { font: 600 12px/1 var(--text); color: var(--accent); letter-spacing: .06em; text-transform: uppercase; }
+.rules { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; max-width: 76ch; }
 .note { background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; font-size: 14px; }
 footer { color: var(--muted); font-size: 13px; }
 </style>
@@ -102,7 +109,7 @@ footer { color: var(--muted); font-size: 13px; }
 </section>
 
 <nav aria-label="Mục">
-  <a href="#trong-tran">Trong trận</a><a href="#tuong">Tướng</a><a href="#linh">Lính</a><a href="#quai">Quái rừng</a><a href="#cong-trinh">Công trình</a><a href="#canh-vat">Cảnh vật</a><a href="#icon">Icon</a><a href="#ung-vien">Ứng viên</a>
+  <a href="#trong-tran">Trong trận</a><a href="#tuong">Tướng</a><a href="#linh">Lính</a><a href="#quai">Quái rừng</a><a href="#cong-trinh">Công trình</a><a href="#canh-vat">Cảnh vật</a><a href="#icon">Icon</a><a href="#ung-vien">Ứng viên</a><a href="#de-xuat">Đề xuất chuẩn</a>
   <div class="filters" role="group" aria-label="Lọc theo trạng thái">
     <button type="button" id="f-all" data-f="" aria-pressed="true">Tất cả</button>
     <button type="button" id="f-dat" data-f="dat" aria-pressed="false">Đạt</button>
@@ -180,6 +187,59 @@ footer { color: var(--muted); font-size: 13px; }
       <li>Giá phải trả: nhỏ và khó đọc nhất ở góc camera trận; lính, trụ, Brakk, Noctis, Duy Anh, Gorran thành lệch — khối lượng làm lại lớn nhất. Nếu chọn, nên phóng to tướng hoặc kéo camera gần.</li></ul></div>
   </div>
   <p class="note"><strong>Đề xuất của CB-1: Brakk</strong>, vì ít phải làm lại nhất và đọc tốt nhất trên điện thoại. Nếu người chơi muốn giữ dáng người lớn, chọn Gorran làm mức giữa thay vì Phong Tiễn.</p>
+</section>
+
+<section id="de-xuat">
+  <h2>Đề xuất chuẩn</h2>
+  <p class="lede">Hai nhóm lệch không phụ thuộc việc chọn tướng chuẩn. Mỗi nhóm hai phương án, dựng thử bằng code trên asset đang có. Chưa có gì vào game; người chơi nhìn rồi chọn.</p>
+
+  <h3 class="sub">A · Cảnh vật: lá phẳng cạnh đá có vân</h3>
+  <p class="lede">Thử trên cả map bằng cách đổi vật liệu, không sửa mô hình. Mỗi cột: hàng tướng và lính ở lane giữa, khu trụ đầu, rồi bốn món đại diện trong phòng chụp (thông, bụi, đá, lá cam).</p>
+  <div class="opts">
+    <div class="opt"><span class="tag">Hiện tại</span>
+      <img loading="lazy" src="thu_hang_goc.webp" alt="Hiện tại: hàng tướng ở lane giữa"><img loading="lazy" src="thu_base_goc.webp" alt="Hiện tại: khu trụ đầu"><img loading="lazy" src="thu_phong_goc.webp" alt="Hiện tại: thông, bụi, đá, lá cam">
+      <ul><li>Lá cam và cây thu là thứ sáng, gắt nhất màn hình.</li><li>Đá có vân vẽ tay; cây, bụi, lá là mảng màu phẳng.</li></ul></div>
+    <div class="opt pick"><span class="tag">Phương án 1 · lá về phía đá và đất</span>
+      <img loading="lazy" src="thu_hang_A.webp" alt="Phương án 1: hàng tướng ở lane giữa"><img loading="lazy" src="thu_base_A.webp" alt="Phương án 1: khu trụ đầu"><img loading="lazy" src="thu_phong_A.webp" alt="Phương án 1: thông, bụi, đá, lá cam">
+      <ul><li>Cây, bụi, cỏ, lau, hoa lá có vân nét cọ và tông trầm: bão hòa còn 72%, sáng 86%, pha 20% về màu ô-liu của cỏ.</li>
+      <li>Tướng và lính nổi hơn hẳn vì cảnh vật lùi xuống; lá cam thành màu đất son, hết tranh chỗ.</li>
+      <li>Việc phải làm: một shader + một ảnh vân lá (bản thử mượn ảnh cỏ sẫm; bản thật nên nhờ Codex vẽ một ảnh vân lá riêng). Áp cho 13 mô hình, không dựng lại mô hình nào.</li>
+      <li>Giá: mỗi điểm ảnh lá đọc thêm một ảnh, như đá đang làm. Phải đo fps trên máy tính bảng trước khi chốt.</li></ul></div>
+    <div class="opt"><span class="tag">Phương án 2 · đá về phía lá</span>
+      <img loading="lazy" src="thu_hang_B.webp" alt="Phương án 2: hàng tướng ở lane giữa"><img loading="lazy" src="thu_base_B.webp" alt="Phương án 2: khu trụ đầu"><img loading="lazy" src="thu_phong_B.webp" alt="Phương án 2: thông, bụi, đá, lá cam">
+      <ul><li>Đá, tảng, lan can bỏ vân, chỉ còn mảng phẳng như cây.</li>
+      <li>Nhẹ máy nhất (bớt một lần đọc ảnh), cảnh vật thành một bộ low-poly thống nhất.</li>
+      <li>Nhưng đá phẳng lại lệch với mặt đất, vách vực và trụ đều vẽ tay; lá cam vẫn gắt. Muốn trọn bộ phải làm phẳng cả mặt đất — đi ngược những gì đã duyệt ở D-310, D-312.</li></ul></div>
+  </div>
+  <p class="note"><strong>Đề xuất của CB-1: phương án 1.</strong> Mặt đất vẽ tay là phần đồng bộ nhất của game và đã được duyệt nhiều lần; kéo lá về phía nó rẻ hơn kéo mọi thứ khác về phía lá. Kèm theo: thu nhỏ lá cam và lá xanh (hiện to bằng nửa tướng) — việc này cần duyệt riêng vì đổi dữ liệu rải cảnh.</p>
+
+  <h3 class="sub">B · Icon chiêu, trạng thái, chân dung</h3>
+  <p class="lede">Đo trên file: icon 6 tướng đầu chỉ lấp 84% ô (bán kính 107 / 128), icon 4 tướng mới lấp 98% (125 / 128). Phần lớn cảm giác “hai đời” đến từ cỡ hình này, sửa được bằng code mà không vẽ lại. Bộ quy tắc khung đề xuất:</p>
+  <ol class="rules">
+    <li><strong>Cỡ:</strong> ô 256 × 256, hình tròn bán kính 125 (lấp 98%), tâm ở giữa ô.</li>
+    <li><strong>Khung do công cụ vẽ</strong> đè lên phần hình, không để công cụ vẽ ảnh tự vẽ khung — icon mới không thể lệch khung nữa.</li>
+    <li><strong>Màu viền theo loại:</strong> nội tại viền bạc; chiêu chủ động Q, W viền vàng; chiêu cuối R viền vàng đôi.</li>
+    <li><strong>Trạng thái:</strong> hình hiện có đặt trên đĩa tối, viền mảnh đỏ cho bất lợi, lục cho có lợi.</li>
+    <li><strong>Chân dung:</strong> bán thân nền trong; mọi chỗ hiển thị đặt trong đĩa tối viền vàng. Duy Anh hết là ô vuông duy nhất.</li>
+  </ol>
+  <p class="lede">Ba hàng dưới ráp bằng code từ icon đang có. Trái: Brakk (đời đầu) và Phong Tiễn (đời mới) — nội tại, Q, W, R — kèm bốn icon trạng thái. Phải: mười chân dung.</p>
+  <div class="opts">
+    <div class="opt"><span class="tag">Hiện tại</span>
+      <img loading="lazy" src="thu_icon_truoc.webp" alt="Hiện tại: icon Brakk, Phong Tiễn và trạng thái"><img loading="lazy" src="thu_chan_dung_truoc.webp" alt="Hiện tại: mười chân dung">
+      <ul><li>Brakk nhỏ hơn Phong Tiễn một vòng; trạng thái không khung; chân dung Duy Anh là ô vuông có nền.</li></ul></div>
+    <div class="opt pick"><span class="tag">Phương án 1 · khung dày kiểu đời mới</span>
+      <img loading="lazy" src="thu_icon_pa1.webp" alt="Phương án 1: icon sau khi đóng khung dày"><img loading="lazy" src="thu_chan_dung_pa1.webp" alt="Phương án 1: chân dung trong khung dày">
+      <ul><li>Viền 11 / 125 (9% bán kính), R viền đôi.</li>
+      <li>Không phải vẽ lại icon nào để đồng bộ khung: công cụ đóng khung lại cả 40 icon chiêu, 16 trạng thái, 10 chân dung.</li>
+      <li>Còn lệch về nét vẽ: 24 icon của 6 tướng đầu là mảng phẳng, 16 icon mới tô bóng nhiều lớp. Muốn khớp hẳn thì vẽ lại 24 icon đó, làm dần được.</li></ul></div>
+    <div class="opt"><span class="tag">Phương án 2 · viền mảnh kiểu đời đầu</span>
+      <img loading="lazy" src="thu_icon_pa2.webp" alt="Phương án 2: icon sau khi đóng viền mảnh"><img loading="lazy" src="thu_chan_dung_pa2.webp" alt="Phương án 2: chân dung viền mảnh">
+      <ul><li>Viền 6 / 125 (5%), R không viền đôi; hình to hơn một chút.</li>
+      <li>Cũng không phải vẽ lại để đồng bộ khung.</li>
+      <li>Hợp với nét phẳng đời đầu, nên nếu muốn khớp hẳn thì vẽ lại 16 icon của 4 tướng mới cho phẳng bớt — tức là bỏ bộ icon mới nhất, đẹp hơn.</li>
+      <li>Viền mảnh khó phân biệt nội tại / chủ động / chiêu cuối ở cỡ nút trên điện thoại.</li></ul></div>
+  </div>
+  <p class="note"><strong>Đề xuất của CB-1: phương án 1.</strong> Dù chọn phương án nào, chân dung vẫn cần vẽ lại 4 cái theo kiểu Brakk (Duy Anh, Myra, Vexa, Noctis) — khung chỉ che được nền, không che được nét vẽ. Icon trạng thái giữ hình hiện có được (0 vẽ lại); muốn tô bóng cho hợp icon chiêu thì vẽ lại 16.</p>
 </section>
 
 <footer>Ảnh nguồn và số đo: <code>art_inbox/kiem_ke/</code> trên nhánh <code>cb-1-art</code>. Tỉ lệ đầu–thân ước lượng bằng mắt trên ảnh phòng chụp.</footer>
