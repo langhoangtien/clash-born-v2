@@ -14,6 +14,7 @@ const SIZES: Array[int] = [1, 2, 3]
 const TEAM_NAMES: Array[String] = ["Đội Xanh", "Đội Đỏ"]
 
 var screen: String = "status"
+static var _names: Dictionary = {}  ## id tướng → tên hiện (nạp một lần)
 ## NET-14 (D-401): kết quả đo [{id, name, state, rtt_ms}], lựa chọn (0 = Tự động), máy đang nối (-1 = chưa).
 var servers: Array[Dictionary] = []
 var choice: int = 0
@@ -94,10 +95,12 @@ func show_room(room: Dictionary, me: int, heroes: Array[StringName]) -> void:
 			row.add_child(_button("%dv%d" % [k, k], {"t": "size", "size": k}, k == n))
 	_box.add_child(_label("Chọn tướng", 22, UiStyle.DIM, false))
 	var grid: GridContainer = GridContainer.new()
-	grid.columns = 3
+	grid.columns = 4  # 10 tướng: 3 hàng — 3 cột thì 4 hàng, nút Đóng chạm mép khung
 	_box.add_child(grid)
-	for h: StringName in heroes:
-		var b: Button = _button(String(h).capitalize(), {"t": "pick", "hero": String(h)}, String(mine.get("hero", "")) == String(h))
+	var order: Array[StringName] = heroes.duplicate()
+	order.sort_custom(func(a: StringName, b: StringName) -> bool: return hero_name(String(a)) < hero_name(String(b)))
+	for h: StringName in order:
+		var b: Button = _button(hero_name(String(h)), {"t": "pick", "hero": String(h)}, String(mine.get("hero", "")) == String(h), 22)
 		b.disabled = taken.get(String(h), false)
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		grid.add_child(b)
@@ -126,13 +129,22 @@ func server_line() -> String:
 	return "Máy chủ: #%d" % current
 
 
+## Tên hiện của tướng (phần trước " · " của HeroDef.display_name, như màn chọn tướng); không có thì id.
+static func hero_name(id: String) -> String:
+	if _names.is_empty():
+		var lib: ContentLibrary = ContentLibrary.load_dir()
+		for k: StringName in lib.heroes:
+			_names[String(k)] = String(lib.heroes[k].display_name).get_slice(" · ", 0)
+	return String(_names.get(id, id.capitalize()))
+
+
 ## "Lăng (Gorran) ★, Minh (chưa chọn)" — ★ = chủ phòng.
 static func team_line(room: Dictionary, team: int) -> String:
 	var parts: PackedStringArray = []
 	for m: Dictionary in room.get("members", []):
 		if int(m.get("team", 0)) == team:
 			var hero: String = String(m.get("hero", ""))
-			parts.append("%s (%s)%s" % [m.get("name", "?"), hero.capitalize() if hero != "" else "chưa chọn",
+			parts.append("%s (%s)%s" % [m.get("name", "?"), hero_name(hero) if hero != "" else "chưa chọn",
 				" ★" if int(m.get("id", -1)) == int(room.get("host", -2)) else ""])
 	var free: int = int(room.get("size", 1)) - parts.size()
 	for i: int in maxi(free, 0):

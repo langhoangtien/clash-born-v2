@@ -213,3 +213,22 @@ func test_NET_10_sim_source_hash_follows_content_not_line_endings() -> void:
 	assert_ne(with_file, before, "thêm / đổi file SIM → khác")
 	assert_eq(crlf, with_file, "CRLF giống LF")
 	assert_eq(SimSource.compute(), before)
+
+
+## NET-11: nút tướng trong phòng dùng tên hiện có dấu (HeroDef.display_name), đủ mọi tướng, xếp theo tên.
+func test_NET_11_room_hero_buttons_use_display_names() -> void:
+	var lib: ContentLibrary = ContentLibrary.load_dir()
+	var heroes: Array[StringName] = []
+	for id: StringName in lib.heroes:
+		heroes.append(id)
+	assert_eq(OnlinePanel.hero_name("huyet_cu_nhan"), String(lib.heroes[&"huyet_cu_nhan"].display_name).get_slice(" · ", 0))
+	var p: OnlinePanel = OnlinePanel.new()
+	p.show_room({"code": "123456", "size": 3, "host": 1, "members": [{"id": 1, "name": "An", "team": 0, "hero": "phong_tien"}]}, 1, heroes)
+	var grid: GridContainer = p.find_children("*", "GridContainer", true, false)[0]
+	var texts: Array = grid.get_children().map(func(b: Button) -> String: return b.text)
+	assert_eq(texts.size(), lib.heroes.size(), "đủ mọi tướng")
+	var sorted: Array = texts.duplicate()
+	sorted.sort()
+	assert_eq(texts, sorted, "xếp theo tên")
+	assert_true(texts.has(OnlinePanel.hero_name("phong_tien")) and not texts.has("Phong Tien"), str(texts))
+	p.free()
