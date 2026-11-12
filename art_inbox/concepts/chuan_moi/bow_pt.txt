@@ -1,0 +1,2 @@
+Draw ONLY Phong Tiễn's bow from art_inbox/concepts/chuan_moi/phong_tien.png (wood recurve limbs with teal wrapping, cream tips, wrapped grip), as a separate prop: portrait 1024x1536, plain flat warm-grey background, standing upright, seen exactly from the side so the full curve shows, filling about 85% of the image height, one thin straight bowstring, no hands, no arrows, no text.
+Output: art_inbox/3d/phong_tien_v3/phong_tien_v3_bow.png

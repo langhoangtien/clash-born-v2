@@ -10,6 +10,7 @@ extends SceneTree
 ## mẫu tree_clump / bush_clump — để so trước / sau cùng chỗ (không đổi dữ liệu map). `--hold=<khung>` chờ trước khi chụp (để quay video); `--measure=<khung>`: sau khi xếp hàng, đo thời gian khung trung bình + số tam giác vẽ, in ra rồi thoát.
 ## D-361: `--variant` thay vật liệu cảnh vật bằng bản thử (thu_vat_lieu.gd); `--tag` nối vào tên ảnh; hàng tướng có thêm 4 lính.
 
+const Concept: GDScript = preload("res://tools/models/preview/dat_concept.gd")
 const Trial: GDScript = preload("res://tools/models/preview/thu_vat_lieu.gd")
 const SCENE: String = "res://app/match_scene.tscn"
 const TEAMS: Array[StringName] = [&"phong_tien", &"brakk", &"myra", &"noctis", &"vexa", &"gorran"]
@@ -29,6 +30,8 @@ var _strings: String = ""
 var _key: String = ""
 var _measure: int = 0
 var _sample_kind: String = ""
+var _cutouts: String = ""
+var _cut_scale: float = 1.0
 var _hold: int = 12  ## khung chờ trước khi chụp hàng tướng (quay video: --hold=120)
 var _times: PackedFloat64Array = []
 var _prims: int = 0
@@ -57,6 +60,8 @@ func _initialize() -> void:
 			"measure": _measure = int(kv[1])
 			"hold": _hold = int(kv[1])
 			"sample": _sample_kind = kv[1]
+			"cutouts": _cutouts = kv[1]
+			"cut-scale": _cut_scale = float(kv[1])
 			"speed": _speed = int(kv[1])
 			"at": at = kv[1]
 	for s: String in at.split(","):
@@ -131,6 +136,12 @@ func _line_up(w: World) -> void:
 		heroes[i].facing = Vector2.DOWN
 	if _sample_kind != "":
 		_plant(center + LANE_SHIFT)
+	if _cutouts != "":
+		var across: Vector2 = Vector2(LANE_DIR.y, -LANE_DIR.x)
+		var row: Vector2 = center + LANE_SHIFT - across * 230.0
+		var ids: PackedStringArray = PackedStringArray(["huyet_cu_nhan", "thach_giap", "myra", "noctis", "vexa", "gorran", "phong_tien", "tho_san", "brakk", "duy_anh"])
+		Concept.place(_scene.get("view_3d") as Node3D, _cutouts, ids, row, LANE_DIR, GAP, _cut_scale)
+		Concept.tower(_scene.get("view_3d") as Node3D, row - LANE_DIR * (GAP * 6.0) - across * 60.0)
 	for i: int in 4:  # lính để so độ nổi với cảnh vật
 		var def: UnitDef = load("res://content/units/creep_%s.tres" % ("ranged" if i == 3 else "melee")) as UnitDef
 		var c: Entity = UnitFactory.unit(w, def, Entity.Kind.LANE_CREEP, i % 2, center + LANE_SHIFT + Vector2(160 + i * 70, 190 + i * 30))
