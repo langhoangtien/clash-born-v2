@@ -149,7 +149,10 @@ không làm hình thật cho thứ lối chơi còn đang đổi.
   seed, SIM 23dabc5): thắng sạch Brakk, Noctis, Vexa, Thợ Săn (6/6; Noctis / Vexa ~13 phút); Myra 2–4; thua sạch Gorran, Duy Anh
   (0/6); Huyết Cự Nhân 1 thắng + 5 trận 40 phút chưa xong; Thạch Giáp 6 trận chưa xong. Tổng 27 / 16 / 11. Không lỗi bot nào.
   Ba phương án giảm (tốc 270 / Q né 2 s / cả hai, 54 trận mỗi bản): 27/18/9 · 26/17/11 · 28/16/10 — không đổi bên thắng ở cặp nào
-  → CB-2 đề nghị giữ nguyên, đang tìm nguyên nhân các cặp 6/0 (Gorran, Duy Anh thắng; Noctis, Vexa thua).
+  → CB-2 đề nghị giữ nguyên. Điều tra diễn biến 5 trận: cả bốn cặp 6/0 là khắc chế theo bộ chiêu (Gorran: độc tầm 800–900 + R hồi máu;
+  Duy Anh: W chém quạt không né được + Quyết Đấu, lăn cầu tuyết từ sớm; Noctis cận chiến bị thả diều; Vexa tầm 550, farm kém, chết vì
+  lính). Hai thử nghiệm sửa cách bot dùng chiêu (Q Phong Tiễn, Q Noctis) không đổi bên thắng. Đang chạy ma trận Duy Anh × mọi tướng
+  (việc "Cân bằng Duy Anh").
 - ~~MOV-09~~ đã làm (D-388, kèm D-389 sửa `has_line_of_walk` ở mép pixel).
 - ~~Online 1v1 (D-30)~~ → thay bằng M9 (3v3 online, D-328).
 
