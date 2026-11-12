@@ -8,6 +8,7 @@ var transport: NetTransport
 ## connecting → hello → lobby → game → closed
 var stage: String = "connecting"
 var name: String = ""                  ## tên trong game máy chủ báo
+var live: String = ""                  ## NET-21: mã trận đang đánh của tài khoản ở máy này ("" = không có)
 var peer_id: int = -1
 var heroes: Array[StringName] = []     ## tướng máy chủ cho chọn
 var room: Dictionary = {}              ## trạng thái phòng mới nhất ({} = chưa ở phòng)
@@ -56,6 +57,7 @@ func _take(msg: Dictionary) -> bool:
 			stage = "lobby"
 			peer_id = int(msg.get("peer", -1))
 			name = String(msg.get("name", ""))
+			live = String(msg.get("live", ""))
 			heroes.clear()
 			for h: Variant in msg.get("heroes", []):
 				heroes.append(StringName(String(h)))
@@ -68,6 +70,8 @@ func _take(msg: Dictionary) -> bool:
 			lockstep = LockstepClient.new(transport)
 			lockstep.input_delay = int(msg.get("delay", 3))
 			lockstep.peer_id = int(msg.get("peer", peer_id))
+			if msg.get("resume", false) == true:  # NET-22: vào lại — tua tới tick hiện tại của máy chủ
+				lockstep.resume_to = int(msg.get("tick", 0))
 			stage = "game"
 		"error", "end":
 			pass
@@ -104,4 +108,5 @@ static func error_text(code: String) -> String:
 		"STARTED": "Phòng đã vào trận", "ALREADY": "Tài khoản này đã ở trong phòng", "TEAM_FULL": "Đội đó đã đủ người",
 		"HERO_TAKEN": "Tướng đã có người chọn", "UNKNOWN_HERO": "Tướng không hợp lệ", "NOT_HOST": "Chỉ chủ phòng làm được",
 		"NOT_READY": "Còn người chưa chọn tướng", "BAD_SIZE": "Không đổi được số người (đang có người ở đội)",
-		"IN_ROOM": "Đang ở trong phòng", "BUSY": "Máy chủ đang bận — thử lại sau"}.get(code, "Lỗi " + code)
+		"IN_ROOM": "Đang ở trong phòng", "BUSY": "Máy chủ đang bận — thử lại sau",
+		"IN_MATCH": "Bạn còn trận đang đánh — bấm Vào lại trận"}.get(code, "Lỗi " + code)

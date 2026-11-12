@@ -20,3 +20,8 @@ func is_open() -> bool:
 
 func close() -> void:
 	pass
+
+
+## NET-22: số byte đang chờ gửi (máy chủ gửi nhật ký từng phần khi còn chỗ). Mạng giả: 0.
+func buffered() -> int:
+	return 0

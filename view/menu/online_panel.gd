@@ -45,9 +45,12 @@ func show_status(text: String, error: bool = false) -> void:
 
 
 ## Đã nối: tạo phòng hoặc vào bằng mã.
-func show_home(player: String) -> void:
+## `live` = mã trận đang đánh của tài khoản (NET-21: chỉ được vào lại trận đó).
+func show_home(player: String, live: String = "") -> void:
 	_begin("home", "Chơi online")
 	_box.add_child(_label("Bạn: " + player, 26, UiStyle.TEXT, false))
+	if live != "":
+		_box.add_child(_button("Vào lại trận đang đánh (phòng %s)" % live, {"t": "rejoin"}, true))
 	_server_block()
 	_box.add_child(_label("Tạo phòng — số người mỗi đội (ô trống là bot)", 22, UiStyle.DIM, false))
 	var row: HBoxContainer = _row()

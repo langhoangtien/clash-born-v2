@@ -64,6 +64,8 @@ func _client_tick(c: Client, now: float, dt: float) -> void:
 			c.lock.attach(w, int(m["delay"]), int(m["peer"]))
 			c.lock.clock = now
 			c.hero = int(m["entity"])
+			if m.get("resume", false) == true:  # NET-22
+				c.lock.resume_to = int(m["tick"])
 	if c.lock != null:
 		c.lock.advance(dt)
 		if randi() % 20 == 0:
@@ -106,7 +108,7 @@ func test_M9_5_two_clients_lobby_then_lockstep_over_websocket() -> void:
 	assert_true(_pump(s, [a, b], 10.0, func() -> bool: return a.lock != null and b.lock != null), "cả hai vào trận")
 	assert_eq(_last(a, "welcome")["config"]["slots"].map(func(x: Array) -> String: return x[2]), ["gorran", "myra"])
 	_pump(s, [a, b], 3.0)
-	var room: LockstepRoom = s._games[code]["room"]
+	var room: LockstepRoom = s._games[code].room
 	assert_true(room.tick >= 80, "máy chủ giữ nhịp (%d tick)" % room.tick)
 	var compared: int = 0
 	for c: Client in [a, b]:
@@ -157,7 +159,7 @@ func test_NET_16_closed_connection_in_match_notifies_others() -> void:
 	assert_true(_pump(s, [a, b], 10.0, func() -> bool: return a.lock != null and b.lock != null), "vào trận")
 	_pump(s, [a, b], 1.0)
 	b.ws.close()
-	var room: LockstepRoom = s._games[code]["room"]
+	var room: LockstepRoom = s._games[code].room
 	assert_true(_pump(s, [a], 3.0, func() -> bool: return not a.lock.notices.is_empty()), "A nhận thông báo")
 	if not a.lock.notices.is_empty():
 		assert_eq(OnlineMatch.notice_text(a.lock.notices[0]), "Bình mất kết nối — bot đánh thay")
@@ -166,5 +168,73 @@ func test_NET_16_closed_connection_in_match_notifies_others() -> void:
 	_pump(s, [a], 1.0)
 	assert_true(a.lock.last_tick > before, "trận A chạy tiếp")
 	a.ws.close()
+	s.stop()
+	s.queue_free()
+
+
+
+## Hai máy khách vào trận 1v1 (A chủ phòng cầm Gorran, B cầm Myra). Trả mã phòng.
+func _start_1v1(s: RoomServer, a: Client, b: Client) -> String:
+	assert_true(_pump(s, [a, b], 5.0, func() -> bool: return a.ws.is_open() and b.ws.is_open()))
+	_hello(a, "An", s.fingerprint)
+	_hello(b, "Bình", s.fingerprint)
+	assert_true(_pump(s, [a, b], 5.0, func() -> bool: return not _last(a, "hello_ok").is_empty() and not _last(b, "hello_ok").is_empty()))
+	a.ws.send({"t": "create", "size": 1})
+	assert_true(_pump(s, [a, b], 3.0, func() -> bool: return not _last(a, "lobby").is_empty()))
+	var code: String = _last(a, "lobby")["room"]["code"]
+	b.ws.send({"t": "join", "code": code})
+	a.ws.send({"t": "pick", "hero": "gorran"})
+	b.ws.send({"t": "pick", "hero": "myra"})
+	_pump(s, [a, b], 1.0)
+	a.ws.send({"t": "start"})
+	assert_true(_pump(s, [a, b], 10.0, func() -> bool: return a.lock != null and b.lock != null), "vào trận")
+	return code
+
+
+## M9.8 (D-406) qua WebSocket thật: B rớt → bot; B nối lại: hello_ok báo trận đang đánh (NET-21), không tạo phòng khác
+## (IN_MATCH), vào lại → tua nhật ký, kịp → trả quyền (NET-18), A thấy "đã vào lại", ba bản SIM cùng mã băm; vào lại lần
+## nữa khi kết nối cũ còn → kết nối cũ bị thay (NET-23).
+func test_NET_22_rejoin_over_websocket() -> void:
+	var made: Array = _server()
+	var s: RoomServer = made[0]
+	var a: Client = _client(made[1])
+	var b: Client = _client(made[1])
+	var code: String = _start_1v1(s, a, b)
+	var hero_b: int = b.hero
+	_pump(s, [a, b], 2.0)
+	b.ws.close()
+	assert_true(_pump(s, [a], 3.0, func() -> bool: return a.lock.world.find_entity(hero_b).bot != null), "bot đánh thay B")
+	_pump(s, [a], 3.0)
+	var b2: Client = _client(made[1])
+	assert_true(_pump(s, [a, b2], 5.0, func() -> bool: return b2.ws.is_open()))
+	_hello(b2, "Bình", s.fingerprint)
+	assert_true(_pump(s, [a, b2], 5.0, func() -> bool: return not _last(b2, "hello_ok").is_empty()))
+	assert_eq(_last(b2, "hello_ok").get("live"), code, "NET-21: báo trận đang đánh")
+	assert_eq(_last(a, "hello_ok").get("live"), "", "lúc A bắt tay chưa có trận")
+	b2.ws.send({"t": "create", "size": 1})
+	assert_true(_pump(s, [a, b2], 3.0, func() -> bool: return _last(b2, "error").get("code") == "IN_MATCH"), "R2: không tạo phòng khác")
+	b2.ws.send({"t": "rejoin"})
+	assert_true(_pump(s, [a, b2], 30.0, func() -> bool: return b2.lock != null and b2.lock.resume_to < 0), "tua kịp")
+	assert_true(_pump(s, [a, b2], 5.0, func() -> bool: return a.lock.world.find_entity(hero_b).bot == null), "NET-18: trả quyền")
+	assert_true(a.lock.notices.any(func(n: Dictionary) -> bool: return OnlineMatch.notice_text(n) == "Bình đã vào lại"))
+	_pump(s, [a, b2], 2.0)
+	var room: LockstepRoom = s._games[code].room
+	var checked: int = 0
+	for n: int in room._hashes:
+		for c: LockstepClient in [a.lock, b2.lock]:
+			if c.hashes.has(n):
+				assert_eq(c.hashes[n], room._hashes[n], "tick %d" % n)
+				checked += 1
+	assert_true(checked > 4, "có mốc chung (%d)" % checked)
+	assert_eq(room.desyncs, {})
+	var b3: Client = _client(made[1])
+	assert_true(_pump(s, [a, b2, b3], 5.0, func() -> bool: return b3.ws.is_open()))
+	_hello(b3, "Bình", s.fingerprint)
+	assert_true(_pump(s, [a, b2, b3], 5.0, func() -> bool: return not _last(b3, "hello_ok").is_empty()))
+	b3.ws.send({"t": "rejoin"})
+	assert_true(_pump(s, [a, b2, b3], 5.0, func() -> bool: return b2.ws.closed() and b3.lock != null), "NET-23: kết nối cũ bị thay")
+	assert_eq(room.peers.size(), 2)
+	for c: Client in [a, b2, b3]:
+		c.ws.close()
 	s.stop()
 	s.queue_free()

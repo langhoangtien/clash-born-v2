@@ -92,7 +92,7 @@ func test_NET_11_online_session_room_to_lockstep_match() -> void:
 		var q: AbilityInstance = Abilities.of(r.world.find_entity(a.entity_id), AbilityDef.Slot.Q)
 		assert_eq(q.rank, 1, "nâng chiêu qua mạng")
 		assert_true(q.ready_tick > r.world.tick, "tung chiêu qua mạng: đang hồi chiêu ở cả hai máy (D-345)")
-	var room: LockstepRoom = s._games[key]["room"]
+	var room: LockstepRoom = s._games[key].room
 	assert_eq(room.desyncs.size(), 0, "không lệch")
 	assert_true(OnlineMatch.status(a.lockstep, true, 0.0).begins_with("Online "), OnlineMatch.status(a.lockstep, true, 0.0))
 	a.close()

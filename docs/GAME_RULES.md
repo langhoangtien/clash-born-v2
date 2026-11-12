@@ -924,6 +924,17 @@ chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, 
   rớt (bot đánh thay — NET-17) vẫn tính thắng / thua cho tài khoản đó; trang lịch sử ghi "(đã rời)". Trận hủy (NET-19) không
   gửi. Số bản game trong biên bản = số bản người tạo phòng gửi trong `hello` (`app`; không có → `0.0.0`). Máy khách không gửi
   biên bản trận online; `/api/match` nhận biên bản có `match_key` (bản game cũ) → trả `ignored`, không ghi.
+- `NET-21` (M9.8, D-406) **Trận đang đánh.** Tài khoản có ô trong một trận chưa kết thúc ở máy chủ này: lời chào `hello_ok`
+  kèm mã phòng trận đó; bảng Online hiện nút "Vào lại trận đang đánh". Tài khoản đó không tạo / vào phòng khác (`IN_MATCH`)
+  tới khi trận kết thúc hoặc bị hủy (R2 — chống vào nhiều trận rồi thoát phá game; luật riêng, gỡ được). Trận ở máy chủ
+  khác máy đang nối thì không biết (Tự động thường chọn lại đúng máy).
+- `NET-22` (M9.8, D-406) **Vào lại.** Máy khách gửi `rejoin` → máy chủ gửi `welcome` như lúc bắt đầu kèm `resume` và tick hiện
+  tại T, rồi gửi lại toàn bộ gói lệnh tick 1..T theo từng phần (`history`, mỗi phần tối đa `HISTORY_CHUNK` gói khác rỗng,
+  chỉ gửi khi hàng gửi của kết nối còn chỗ), song song với gói lệnh trực tiếp từ T+1. Máy khách dựng World từ cấu hình rồi
+  tua (chạy tick không chờ nhịp, giới hạn thời gian mỗi khung), HUD hiện "Đang vào lại trận… N%"; tới tick T và hàng gói
+  chờ ngắn lại thì gửi `caught_up` → NET-18. Vào lại được tới hết trận (hoặc hủy — NET-19).
+- `NET-23` (M9.8, D-406) **Một kết nối mỗi tài khoản trong trận.** Tài khoản vào lại trong khi kết nối cũ của nó vẫn ở
+  trận (chưa bị coi là rớt) → máy chủ coi kết nối cũ là rớt (lý do `replaced`), đóng nó, rồi cho kết nối mới vào lại.
 - `NET-13` (D-401) **Nhiều máy chủ phòng.** Danh sách là dữ liệu (`app/net/room_servers.json`): mỗi máy một id 1–9 (một
   chữ số, không trùng), tên hiện cho người chơi, địa chỉ `wss://…/play`. Hiện: 1 = Singapore, 2 = máy chính. Thêm máy = thêm
   một dòng; quá 9 máy là việc sau (mã phòng phải dài hơn — NET-15).
@@ -951,7 +962,8 @@ chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, 
 - `NET-17` (M9.7, D-402) **Bot đánh thay.** Tick kế sau khi rớt, máy chủ chèn vào gói lệnh lệnh `SET_CONTROL` (hero của ô
   đó → bot độ khó Thường, đường theo ô); mọi máy, kể cả bản SIM của máy chủ, áp ở pha COMMAND tick đó (NET-01) — bảng tương
   tác ở phần CMD. Chỉ máy chủ phát lệnh này: máy khách gửi `SET_CONTROL` → bỏ (NET-03).
-- `NET-18` (M9.8) **Trả quyền.** Người rớt vào lại và đã đuổi kịp trận → máy chủ chèn `SET_CONTROL` trả hero cho người.
+- `NET-18` (M9.8, D-406) **Trả quyền.** Người rớt vào lại và đã đuổi kịp trận (NET-22) → máy chủ chèn `SET_CONTROL` trả
+  hero cho người ở tick kế; mọi máy hiện "<tên> đã vào lại". Trước lúc đó máy chủ bỏ mọi lệnh của người đó (bot vẫn đánh).
 - `NET-19` (M9.7, D-402) **Trận không còn người.** Mọi người chơi đều rớt → máy chủ chạy tiếp trận (bot đánh cả) tối đa
   `EMPTY_KEEP_S` (60) giây để có người vào lại; hết hạn vẫn không ai → hủy trận, không tính thống kê. Trận kết thúc bình
   thường thì ô do bot đánh thay vẫn tính thắng / thua cho tài khoản của ô đó.

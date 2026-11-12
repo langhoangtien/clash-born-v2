@@ -196,7 +196,7 @@ func _join(code: String) -> void:
 func _show_lobby() -> void:
 	_panel_servers()
 	if session.room.is_empty():
-		panel.show_home(session.name)
+		panel.show_home(session.name, session.live)
 	else:
 		panel.show_room(session.room, session.peer_id, session.heroes)
 
