@@ -131,3 +131,25 @@ func test_BOT_11_escape_point_behind_wall_still_moves() -> void:
 	assert_false(w.navigation(bot.radius).path(start, p).is_empty(), "BOT-01: điểm thoát phải có đường tới: %s" % p)
 	_steps(w, 60)
 	assert_true(bot.position.distance_to(start) > 100.0, "BOT-11: 2 s phải rời chỗ, mới đi %.0f" % bot.position.distance_to(start))
+
+
+## Lỗi (D-397): bot đứng ở điểm lùi, đợt lính lùi lại đúng một bước nên điểm đứng chờ mới trùng chỗ đang đứng →
+## cả một nhịp không có lệnh đi, bot đứng im > 2 s (trận phao_thu:brakk seed 2 phút 18:37, mode RALLY).
+func test_BOT_11_rally_point_shifted_onto_spot_still_moves() -> void:
+	var w: World = _world()
+	var route: LaneRoute = LaneRoute.of(w, "MID", 1)
+	var creep: Entity = UnitFactory.unit(w, _lib.units[&"creep_melee"], Entity.Kind.LANE_CREEP, 1, route.point_at(3000.0))
+	creep.lane = "MID"
+	var bot: Entity = _bot(w, route.point_at(2000.0))
+	var c: BotController = BotController.new()
+	var step: int = SimClock.seconds_to_ticks(BotController.RALLY_STEP_SECONDS)
+	w.tick = step  # nhịp lùi: tới điểm lùi
+	var back: Vector2 = c.rally_point(w, bot)
+	bot.position = back
+	w.tick = step + 1
+	c.rally_point(w, bot)
+	creep.position = route.point_at(route.progress_of(creep.position) - BotController.RALLY_STEP_BACK)  # lính lùi một bước
+	w.tick = 2 * step  # nhịp đứng: điểm đứng chờ mới ≈ chỗ đang đứng
+	var next: Vector2 = c.rally_point(w, bot)
+	assert_true(next.distance_to(bot.position) > BotController.ARRIVE * 0.5, "BOT-11: nhịp mới phải có chỗ đi tới: %s / %s" % [next, bot.position])
+	assert_true(BotController.safe(w, bot, next), "BOT-10")

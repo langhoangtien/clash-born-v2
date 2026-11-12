@@ -28,6 +28,9 @@ var last_pos: Vector2 = Vector2.INF
 var last_pos_tick: int = 0
 ## BOT-14: số lần nâng điểm đã làm theo bot_skill_order.
 var upgrades_done: int = 0
+## D-397: nhịp đi qua lại của RALLY (BOT-11) đang chạy và chỗ bot đứng lúc nhịp bắt đầu.
+var rally_phase: int = -1
+var rally_from: Vector2 = Vector2.INF
 
 
 ## Số tick giữa hai lần bot “nghĩ” (độ trễ phản xạ).
