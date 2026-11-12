@@ -309,21 +309,10 @@
     "color": "#bff2e6",
     "size": 0.55
    },
-   "_ghi_chu": "D-347: chuẩn tướng mới — Tripo 3 góc + cung riêng gắn tay trái, afk.ai human; đánh = kéo + buông cung (điểm buông 0,6)",
+   "_ghi_chu": "D-347: chuẩn tướng mới — Tripo 3 góc + cung riêng gắn tay trái, afk.ai human; đánh = kéo + buông cung (điểm buông 0,6). D-375: mô hình style mới (D-372, 6k + ngón tay) — bản afk.ai để người chơi xem ở thẻ Mô hình",
    "bow_string": {
     "bone": "hand_l",
-    "tips": [
-     [
-      -0.038,
-      -0.0095,
-      0.2835
-     ],
-     [
-      0.1156,
-      0.0353,
-      -0.2715
-     ]
-    ],
+    "tips": [[0.0239, 0.0097, 0.2872], [0.0496, 0.0376, -0.2829]],
     "pull_bone": "hand_r",
     "release": {
      "attack": 0.6,
@@ -388,7 +377,7 @@
     "color": "#bff2e6",
     "size": 0.55
    },
-   "_ghi_chu": "D-347: chuẩn tướng mới — Tripo 3 góc + cung riêng gắn tay trái, afk.ai human; đánh = kéo + buông cung (điểm buông 0,6)",
+   "_ghi_chu": "D-347: chuẩn tướng mới — Tripo 3 góc + cung riêng gắn tay trái, afk.ai human; đánh = kéo + buông cung (điểm buông 0,6). D-375: mô hình style mới (D-372, 6k + ngón tay) — bản afk.ai để người chơi xem ở thẻ Mô hình",
    "bow_string": {
     "bone": "hand_l",
     "tips": [
