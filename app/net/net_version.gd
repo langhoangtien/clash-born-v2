@@ -35,9 +35,7 @@ static func balance_text(b: BalanceSettings) -> String:
 static func content_text(lib: ContentLibrary) -> String:
 	var parts: PackedStringArray = []
 	for group: Dictionary in [lib.heroes, lib.abilities, lib.effects, lib.items, lib.units, lib.camps]:
-		var ids: Array = group.keys()
-		ids.sort()
-		for id: StringName in ids:
+		for id: StringName in _by_text(group.keys()):
 			parts.append("%s{%s}" % [id, resource_text(group[id])])
 	return "\n".join(parts)
 
@@ -62,7 +60,13 @@ static func _value_text(v: Variant, depth: int) -> String:
 	if v is Array:
 		return "[" + ",".join(PackedStringArray((v as Array).map(func(x: Variant) -> String: return _value_text(x, depth)))) + "]"
 	if v is Dictionary:
-		var keys: Array = (v as Dictionary).keys()
-		keys.sort()
-		return "{" + ",".join(PackedStringArray(keys.map(func(k: Variant) -> String: return "%s:%s" % [k, _value_text(v[k], depth)]))) + "}"
+		return "{" + ",".join(PackedStringArray(_by_text((v as Dictionary).keys()).map(func(k: Variant) -> String: return "%s:%s" % [k, _value_text(v[k], depth)]))) + "}"
 	return var_to_str(v)
+
+
+## D-400: xếp tên theo chữ. `Array.sort()` trên StringName so địa chỉ bộ nhớ → thứ tự đổi theo lần chạy / máy, dấu vân
+## tay cùng một bản game ra khác nhau (máy khách bị VERSION oan).
+static func _by_text(names: Array) -> Array:
+	var out: Array = names.duplicate()
+	out.sort_custom(func(a: Variant, b: Variant) -> bool: return str(a) < str(b))
+	return out
