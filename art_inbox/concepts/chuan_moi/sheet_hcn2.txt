@@ -1,0 +1,7 @@
+Redraw the CHARACTER TURNAROUND SHEET art_inbox/3d/huyet_cu_nhan/huyet_cu_nhan_sheet.png (open it first) as a new version of the same hero "Huyết Cự Nhân" (Blood Giant), same style, same red skin, same muscular giant build, same layout (front / side facing LEFT / back, A-pose, open empty hands, plain flat warm-grey background, no text, no floor shadow, landscape 1536x1024), with these changes:
+- HAIR: a SHORT tight topknot bun on the back of the head; NO long braid down the back.
+- BEARD: SHORT thick beard close to the jaw; NO braided beard hanging on the chest.
+- REMOVE the spiked shoulder pauldron completely (both shoulders bare) — he must NOT look like any existing game character with one big shoulder pad.
+- Give him his own identity instead: a few dark tribal blood-red war-paint stripes on chest and arms, thick leather-and-iron wrist wraps on both forearms (symmetric), a wide studded leather belt with a bone-and-fang ornament, short ragged loincloth above the knee, iron ankle bands, bare big feet.
+Every detail must match across the three views.
+Output: art_inbox/3d/huyet_cu_nhan/huyet_cu_nhan_sheet_v2.png
