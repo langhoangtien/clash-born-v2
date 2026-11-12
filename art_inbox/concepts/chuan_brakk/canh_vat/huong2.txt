@@ -1,0 +1,1 @@
+DIRECTION 2 — "flat low-poly kept, but muted with bold outline": keep the faceted low-poly shapes (pine-like or round tree, spiky bush), flat colour per facet with no texture, but in deep muted greens / olive / earthy orange, and a bold dark outline around every vegetation silhouette like the heroes' outline. Output: art_inbox/concepts/chuan_brakk/canh_vat/huong2.png
