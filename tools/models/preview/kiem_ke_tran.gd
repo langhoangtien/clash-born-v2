@@ -6,7 +6,8 @@ extends SceneTree
 ##   -s tools/models/preview/kiem_ke_tran.gd -- --out=art_inbox/kiem_ke/tran [--lineup] [--variant=A|B] [--tag=_a] [--first=brakk]
 ## D-367: `--swap=<glb>` thay mô hình Phong Tiễn bằng bản thử (chỉ trong lần chạy, không ghi file; `--strings=<json>` +
 ## `--key=<tên>`: dây cung của bản thử); `--swap-all`: mọi tướng dùng mô hình đó (đo cảnh 6 tướng mức cao nhất);
-## `--hold=<khung>` chờ trước khi chụp (để quay video); `--measure=<khung>`: sau khi xếp hàng, đo thời gian khung trung bình + số tam giác vẽ, in ra rồi thoát.
+## `--sample=old|new` (D-368, chỉ với --lineup): đặt một cụm 2 cây + 2 bụi quanh hàng tướng — `old` cây / bụi hiện có, `new`
+## mẫu tree_clump / bush_clump — để so trước / sau cùng chỗ (không đổi dữ liệu map). `--hold=<khung>` chờ trước khi chụp (để quay video); `--measure=<khung>`: sau khi xếp hàng, đo thời gian khung trung bình + số tam giác vẽ, in ra rồi thoát.
 ## D-361: `--variant` thay vật liệu cảnh vật bằng bản thử (thu_vat_lieu.gd); `--tag` nối vào tên ảnh; hàng tướng có thêm 4 lính.
 
 const Trial: GDScript = preload("res://tools/models/preview/thu_vat_lieu.gd")
@@ -27,6 +28,7 @@ var _swap_all: bool = false
 var _strings: String = ""
 var _key: String = ""
 var _measure: int = 0
+var _sample_kind: String = ""
 var _hold: int = 12  ## khung chờ trước khi chụp hàng tướng (quay video: --hold=120)
 var _times: PackedFloat64Array = []
 var _prims: int = 0
@@ -54,6 +56,7 @@ func _initialize() -> void:
 			"key": _key = kv[1]
 			"measure": _measure = int(kv[1])
 			"hold": _hold = int(kv[1])
+			"sample": _sample_kind = kv[1]
 			"speed": _speed = int(kv[1])
 			"at": at = kv[1]
 	for s: String in at.split(","):
@@ -126,6 +129,8 @@ func _line_up(w: World) -> void:
 	for i: int in n:
 		heroes[i].position = center + LANE_SHIFT + LANE_DIR * ((i - n / 2) * GAP)
 		heroes[i].facing = Vector2.DOWN
+	if _sample_kind != "":
+		_plant(center + LANE_SHIFT)
 	for i: int in 4:  # lính để so độ nổi với cảnh vật
 		var def: UnitDef = load("res://content/units/creep_%s.tres" % ("ranged" if i == 3 else "melee")) as UnitDef
 		var c: Entity = UnitFactory.unit(w, def, Entity.Kind.LANE_CREEP, i % 2, center + LANE_SHIFT + Vector2(160 + i * 70, 190 + i * 30))
@@ -182,3 +187,20 @@ func _sample() -> bool:
 		sum += t
 	print("do_khung%s: %.2f ms/khung (trung vị %.2f), %.1f fps, %d tam giác / khung" % [_tag, sum / _times.size(), sorted[sorted.size() / 2], 1000.0 * _times.size() / sum, _prims])
 	return true
+
+
+## D-368: cụm cây / bụi thử quanh hàng tướng (px thế giới tính từ giữa hàng, dọc LANE_DIR / vuông góc), cùng chỗ cho cả hai bộ.
+func _plant(at: Vector2) -> void:
+	var across: Vector2 = Vector2(LANE_DIR.y, -LANE_DIR.x)
+	var spots: Array = [["tree", -120.0, -420.0], ["bush", 60.0, 250.0], ["tree", 360.0, 380.0], ["bush", -430.0, -260.0]]
+	var models: Dictionary = {"old": {"tree": "tree_round", "bush": "bush_a"}, "new": {"tree": "tree_clump", "bush": "bush_clump"}}
+	var parent: Node3D = (_scene.get("view_3d") as Node3D)
+	for s: Array in spots:
+		var name: String = models[_sample_kind][s[0]]
+		var n: Node3D = ModelLibrary.static_scene("style/" + name).instantiate() as Node3D
+		for mi: MeshInstance3D in n.find_children("*", "MeshInstance3D", true, false):
+			ModelLibrary.use_vertex_colors(mi.mesh)
+			mi.material_override = Terrain3D.material_for(name)
+		var p: Vector2 = at + LANE_DIR * float(s[1]) + across * float(s[2])
+		n.position = Vector3(p.x, 0, p.y) * MatchView3D.S
+		parent.add_child(n)
