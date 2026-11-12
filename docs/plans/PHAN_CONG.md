@@ -31,4 +31,8 @@
 9. **Đổi `sim/`, `content/`, `data/maps/` hoặc `app/net/net_codec.gd` (D-403):** chạy `godot --headless --path . -s tools/vps/sim_source.gd`
    rồi commit `app/net/sim_source.json` cùng thay đổi (test `test_NET_10_sim_source_file_is_current` đỏ nếu quên). Gộp nhánh mà file
    này xung đột → chạy lại lệnh đó. Dấu vân tay NET-10 giờ đổi theo mọi thay đổi code luật / nội dung.
+10. **Giữ `thu-asset-tu-lam` khớp bản game đang phát hành cho tới khi cả hai máy chủ đã lên bản đó (CB-0):** script cập nhật máy chủ kéo đầu
+    nhánh này, nên từ lúc đăng bản tới lúc V-0xx của cả hai máy xong, CB-0 KHÔNG gộp thay đổi đổi dấu vân tay (`sim/`, `content/`,
+    `data/maps/`, `net_codec`). Thay đổi chỉ hình / tài liệu / công cụ gộp được. Sau đó gộp bình thường; máy chủ chỉ cập nhật khi CB-0
+    ghi việc V-0xx kèm bản game mới.
 
