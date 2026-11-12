@@ -79,6 +79,11 @@ figcaption { font-size: 14px; color: var(--muted); max-width: 76ch; }
 .opt ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
 .opt .tag { font: 600 12px/1 var(--text); color: var(--accent); letter-spacing: .06em; text-transform: uppercase; }
 .rules { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; max-width: 76ch; }
+video { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); background: #000; }
+.tbl { overflow-x: auto; }
+.tbl table { border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; min-width: 520px; }
+.tbl th, .tbl td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+.tbl th { font-weight: 600; color: var(--muted); }
 .note { background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; font-size: 14px; }
 footer { color: var(--muted); font-size: 13px; }
 </style>
@@ -109,7 +114,7 @@ footer { color: var(--muted); font-size: 13px; }
 </section>
 
 <nav aria-label="Mục">
-  <a href="#trong-tran">Trong trận</a><a href="#tuong">Tướng</a><a href="#linh">Lính</a><a href="#quai">Quái rừng</a><a href="#cong-trinh">Công trình</a><a href="#canh-vat">Cảnh vật</a><a href="#icon">Icon</a><a href="#ung-vien">Ứng viên</a><a href="#concept">Concept chờ duyệt</a><a href="#de-xuat">Đề xuất chuẩn</a>
+  <a href="#trong-tran">Trong trận</a><a href="#tuong">Tướng</a><a href="#linh">Lính</a><a href="#quai">Quái rừng</a><a href="#cong-trinh">Công trình</a><a href="#canh-vat">Cảnh vật</a><a href="#icon">Icon</a><a href="#ung-vien">Ứng viên</a><a href="#phong-tien-3d">Phong Tiễn 3D</a><a href="#concept">Concept chờ duyệt</a><a href="#de-xuat">Đề xuất chuẩn</a>
   <div class="filters" role="group" aria-label="Lọc theo trạng thái">
     <button type="button" id="f-all" data-f="" aria-pressed="true">Tất cả</button>
     <button type="button" id="f-dat" data-f="dat" aria-pressed="false">Đạt</button>
@@ -187,6 +192,27 @@ footer { color: var(--muted); font-size: 13px; }
       <li>Giá phải trả: nhỏ và khó đọc nhất ở góc camera trận; lính, trụ, Brakk, Noctis, Duy Anh, Gorran thành lệch — khối lượng làm lại lớn nhất. Nếu chọn, nên phóng to tướng hoặc kéo camera gần.</li></ul></div>
   </div>
   <p class="note"><strong>Đề xuất của CB-1: Brakk</strong>, vì ít phải làm lại nhất và đọc tốt nhất trên điện thoại. Nếu người chơi muốn giữ dáng người lớn, chọn Gorran làm mức giữa thay vì Phong Tiễn.</p>
+</section>
+
+<section id="phong-tien-3d">
+  <h2>Phong Tiễn PA3 — dựng 3D và thử số tam giác</h2>
+  <p class="lede">Người chơi chọn PA3. Đây là bản thử, chưa thay vào game. Xem xong chọn mức tam giác; 12k chưa có vì hết credit Tripo.</p>
+  <figure><img loading="lazy" src="pt_v2_sheet.webp" alt="Tờ ba góc Phong Tiễn PA3: trước, ngang, sau">
+    <figcaption>Tờ 3 góc Codex vẽ theo PA3 (trước / ngang / sau, tay không) — đầu vào cho Tripo. Cung vẽ riêng.</figcaption></figure>
+  <figure><video controls playsinline muted preload="metadata" src="pt_so_tam_giac.mp4"></video>
+    <figcaption>Ba bản cạnh nhau, 18 giây: góc trận ở đúng cỡ trong trận (đứng, chạy, bắn), rồi góc cận (đứng, chạy, bắn). Trái: bản hiện tại · giữa: PA3 3,7k · phải: PA3 6,6k có xương ngón tay.</figcaption></figure>
+  <figure><video controls playsinline muted preload="metadata" src="pt_trong_tran.mp4"></video>
+    <figcaption>Trong trận thật, đứng cạnh Brakk, Duy Anh, Gorran và lính (Phong Tiễn ở giữa khung).</figcaption></figure>
+  <div class="tbl"><table>
+    <thead><tr><th>Bản</th><th>Tam giác</th><th>Xương</th><th>Dung lượng</th><th>Cả 10 tướng dùng bản này</th></tr></thead>
+    <tbody>
+      <tr><td>Hiện tại</td><td>3.085</td><td>23</td><td>0,94 MB</td><td>150 ms / khung · 70k tam giác</td></tr>
+      <tr><td>PA3 3k</td><td>3.653</td><td>23</td><td>0,93 MB</td><td>148–152 ms · 76k</td></tr>
+      <tr><td>PA3 6k + ngón tay</td><td>6.601</td><td>53</td><td>1,32 MB</td><td>154–155 ms · 105k</td></tr>
+      <tr><td>PA3 12k + ngón tay</td><td colspan="4">Chưa dựng — Tripo hết credit (cần nạp khoảng 40)</td></tr>
+    </tbody></table></div>
+  <p class="lede">Đo trên máy cloud vẽ bằng CPU, nên chỉ so tương đối: 6k chậm hơn bản hiện tại khoảng 2–3% khi cả 10 tướng trên màn hình. Phải đo lại trên MatePad trước khi chốt. Bản 3k là chính lưới 6k giảm tam giác, nên khác nhau chỉ do số tam giác.</p>
+  <p class="note"><strong>Đề xuất của CB-1: 6k có ngón tay</strong>, nếu đo trên MatePad vẫn giữ được khung hình. Ở góc trận hai bản gần như giống nhau; khác ở góc cận (màn chọn tướng, mặt, giáp, nắm cung) và ngón tay ôm cung tự nhiên hơn. Nếu MatePad tụt khung rõ, dùng 3k.</p>
 </section>
 
 <section id="concept">
