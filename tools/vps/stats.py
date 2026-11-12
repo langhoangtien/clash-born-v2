@@ -38,8 +38,9 @@ CREATE INDEX IF NOT EXISTS items_match ON items (match_id);
 CREATE INDEX IF NOT EXISTS buys_match ON buys (match_id);
 """
 # D-334: ô người chơi gắn tài khoản (lịch sử trận, ban → xóa trận); cột thêm sau khi VPS đã có dữ liệu.
-COLUMNS = {"players": [("account_id", "INTEGER")], "matches": [("match_key", "TEXT")]}  # D-344: khóa trận online
-MATCH_KEY = re.compile(r"^[A-Z0-9]{5}-\d{1,10}$")  # mã phòng: chữ + số (cũ) hoặc chỉ số (D-345)
+# D-344: khóa trận online; D-405 (ST.5): ô người đã rớt lúc kết thúc (bot đánh thay — NET-17).
+COLUMNS = {"players": [("account_id", "INTEGER"), ("left", "INTEGER")], "matches": [("match_key", "TEXT")]}
+MATCH_KEY = re.compile(r"^\d{6}-\d{1,10}$")  # NET-15 (D-401): mã phòng 6 chữ số - seed
 HISTORY = 20
 
 
@@ -95,20 +96,36 @@ def check(rec) -> dict:
         raise ValueError("mỗi đội phải đủ người")
     if len({p["hero"] for p in out["players"]}) != 2 * n:
         raise ValueError("trùng tướng (MATCH-02)")
-    return _online(rec, out)
+    return out
 
 
-def _online(rec: dict, out: dict) -> dict:
-    """NET-12 (D-344): trận online — `match_key` (mã phòng-seed) để gộp biên bản các máy, `you` = ô của máy gửi."""
-    key, you = rec.get("match_key"), rec.get("you")
-    if key is None and you is None:
-        return out
+def online_from_game(rec) -> bool:
+    """NET-12 (D-405): biên bản trận online do máy khách gửi (bản game cũ) — máy chủ phòng đã ghi trận này, bỏ qua."""
+    return isinstance(rec, dict) and "match_key" in rec
+
+
+def check_room(body) -> dict:
+    """NET-12 (ST.5, D-405): biên bản của máy chủ phòng {record, match_key, accounts: [[ô, tài khoản]…], left: [ô…]}."""
+    if not isinstance(body, dict):
+        raise ValueError("cần object")
+    out = check(body.get("record"))
+    key, owners, left = body.get("match_key"), body.get("accounts"), body.get("left")
     if not isinstance(key, str) or not MATCH_KEY.match(key):
         raise ValueError("match_key không hợp lệ")
-    you = _int(you, 0, len(out["players"]) - 1, "you")
-    if out["players"][you]["bot"]:
-        raise ValueError("you không hợp lệ")
-    out["match_key"], out["you"] = key, you
+    if not isinstance(owners, list) or not isinstance(left, list):
+        raise ValueError("accounts / left không hợp lệ")
+    out["owners"] = {}
+    for pair in owners:
+        if not isinstance(pair, list) or len(pair) != 2:
+            raise ValueError("accounts không hợp lệ")
+        i = _int(pair[0], 0, len(out["players"]) - 1, "ô")
+        if out["players"][i]["bot"]:
+            raise ValueError("ô bot không có tài khoản")
+        out["owners"][i] = _int(pair[1], 1, 2 ** 62, "tài khoản")
+    out["left"] = {_int(i, 0, len(out["players"]) - 1, "ô rời") for i in left}
+    if not out["left"] <= set(out["owners"]):
+        raise ValueError("ô rời phải là ô người")
+    out["match_key"] = key
     return out
 
 
@@ -148,33 +165,39 @@ def save(root: str, recs: list, source: str, account: int = -1) -> dict:
         con = _db(root)
         try:
             for r in recs:
-                ids.append(_insert(con, r, source, account))
+                owners = {i: account for i, p in enumerate(r["players"]) if not p["bot"]} if account >= 0 else {}
+                ids.append(_insert(con, r, source, owners, set()))
             con.commit()
         finally:
             con.close()
     return {"ids": ids}
 
 
-def _insert(con: sqlite3.Connection, r: dict, source: str, account: int) -> int:
-    if "match_key" in r:  # NET-12: máy thứ hai gửi cùng trận online → chỉ gắn tài khoản vào ô của nó, không đếm lại
-        row = con.execute("SELECT id FROM matches WHERE match_key = ?", (r["match_key"],)).fetchone()
-        if row is not None:
-            me = r["players"][r["you"]]
-            if account >= 0:
-                con.execute("UPDATE players SET account_id = ? WHERE match_id = ? AND team = ? AND slot = ? AND bot = 0 "
-                            "AND account_id IS NULL", (account, row[0], me["team"], me["slot"]))
-            return row[0]
+def save_room(root: str, r: dict) -> dict:
+    """NET-12 (ST.5): biên bản máy chủ phòng (check_room) — trùng match_key (gửi lại sau lỗi mạng) → không ghi lại."""
+    with _lock:
+        con = _db(root)
+        try:
+            row = con.execute("SELECT id FROM matches WHERE match_key = ?", (r["match_key"],)).fetchone()
+            if row is not None:
+                return {"ids": [row[0]], "duplicate": True}
+            mid = _insert(con, r, "room", r["owners"], r["left"])
+            con.commit()
+        finally:
+            con.close()
+    return {"ids": [mid]}
+
+
+def _insert(con: sqlite3.Connection, r: dict, source: str, owners: dict, left: set) -> int:
     cur = con.execute("INSERT INTO matches (received, source, version, mode, kind, duration_s, winner, match_key) "
                       "VALUES (?,?,?,?,?,?,?,?)", (time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), source, r["version"],
                                                    r["mode"], r["kind"], r["duration_s"], r["winner"], r.get("match_key")))
     mid = cur.lastrowid
     for i, p in enumerate(r["players"]):
         key = (mid, p["team"], p["slot"], p["hero"])
-        mine = not p["bot"] and r.get("you", i) == i  # trận online: chỉ ô của máy gửi
-        owner = account if account >= 0 and mine else None
         con.execute("INSERT INTO players (match_id, team, slot, hero, bot, won, kills, deaths, assists, level, gold, last_hits, "
-                    "account_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", key + (int(p["bot"]), int(p["won"]), p["kills"],
-                    p["deaths"], p["assists"], p["level"], p["gold"], p["last_hits"], owner))
+                    "account_id, left) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", key + (int(p["bot"]), int(p["won"]), p["kills"],
+                    p["deaths"], p["assists"], p["level"], p["gold"], p["last_hits"], owners.get(i), int(i in left)))
         for item in p["items"]:
             con.execute("INSERT INTO items VALUES (?,?,?,?,?,?)", key + (item, int(p["won"])))
         for order, (t, item) in enumerate(p["buys"]):
@@ -265,14 +288,14 @@ def _rate(rows: list, key: str) -> list:
 def history(root: str, account: int, limit: int = HISTORY) -> list:
     """Trận gần nhất của tài khoản: tướng, kết quả, K/D/A, cấp, đồ cuối trận."""
     rows = _read(root, "SELECT m.id, m.received, m.version, m.mode, m.kind, m.duration_s, p.team, p.slot, p.hero, p.won, "
-                 "p.kills, p.deaths, p.assists, p.level, p.last_hits FROM players p JOIN matches m ON m.id = p.match_id "
+                 "p.kills, p.deaths, p.assists, p.level, p.last_hits, p.left FROM players p JOIN matches m ON m.id = p.match_id "
                  "WHERE p.account_id = ? ORDER BY m.id DESC LIMIT ?", [account, limit])
     out = []
-    for mid, at, ver, mode, kind, dur, team, slot, hero_id, won, k, d, a, lv, lh in rows:
+    for mid, at, ver, mode, kind, dur, team, slot, hero_id, won, k, d, a, lv, lh, gone in rows:
         its = [i for (i,) in _read(root, "SELECT item FROM items WHERE match_id = ? AND team = ? AND slot = ?", [mid, team, slot])]
         row = {"match": mid, "at": at, "version": ver, "mode": mode, "kind": kind, "duration_s": round(dur, 1),
                "hero": hero_id, "won": bool(won), "kills": k, "deaths": d, "assists": a, "level": lv, "last_hits": lh,
-               "items": its, "allies": [], "enemies": []}
+               "items": its, "left": bool(gone), "allies": [], "enemies": []}
         for p in _lineup(root, mid, team, slot):  # D-343: cả hai đội
             row["allies" if p.pop("team") == team else "enemies"].append(p)
         out.append(row)
@@ -281,14 +304,14 @@ def history(root: str, account: int, limit: int = HISTORY) -> list:
 
 def _lineup(root: str, mid: int, my_team: int, my_slot: int) -> list:
     """Mọi ô của trận theo đội / ô: tướng, bot, tên trong game (không email; bị ban thì ẩn), K/D/A, cấp, đồ cuối trận."""
-    rows = _read(root, "SELECT p.team, p.slot, p.hero, p.bot, p.kills, p.deaths, p.assists, p.level, a.name, a.banned "
+    rows = _read(root, "SELECT p.team, p.slot, p.hero, p.bot, p.kills, p.deaths, p.assists, p.level, a.name, a.banned, p.left "
                  "FROM players p LEFT JOIN accounts a ON a.id = p.account_id WHERE p.match_id = ? ORDER BY p.team, p.slot", [mid])
     items = {}
     for t, sl, it in _read(root, "SELECT team, slot, item FROM items WHERE match_id = ?", [mid]):
         items.setdefault((t, sl), []).append(it)
     return [{"team": t, "hero": h, "bot": bool(b), "name": (n or "") if not banned else "", "me": (t, sl) == (my_team, my_slot),
-             "kills": k, "deaths": d, "assists": a, "level": lv, "items": items.get((t, sl), [])}
-            for t, sl, h, b, k, d, a, lv, n, banned in rows]
+             "kills": k, "deaths": d, "assists": a, "level": lv, "items": items.get((t, sl), []), "left": bool(gone)}
+            for t, sl, h, b, k, d, a, lv, n, banned, gone in rows]
 
 
 def player(root: str, name: str) -> dict:

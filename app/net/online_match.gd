@@ -1,9 +1,9 @@
 class_name OnlineMatch
 extends Label
 ## M9.6 (D-344): phần online của màn trận — nối World với LockstepClient của phiên (lệnh người chơi đi qua máy chủ, tick
-## chạy theo gói lệnh NET-01), dòng trạng thái mạng trên HUD (RTT, chờ mạng, mất kết nối, lệch), thêm khóa trận vào biên
-## bản (NET-12), rời trận thì đóng kết nối. M9.7 (D-402): thông báo của máy chủ (người rớt — NET-16), máy chủ báo lệch thì
-## tự gửi báo cáo lệch một lần (NET-20). Màn trận chỉ gọi `attach` / `tag` / `leave`.
+## chạy theo gói lệnh NET-01), dòng trạng thái mạng trên HUD (RTT, chờ mạng, mất kết nối, lệch), rời trận thì đóng kết
+## nối (biên bản trận online do máy chủ phòng ghi — NET-12). M9.7 (D-402): thông báo của máy chủ (người rớt — NET-16), máy chủ báo lệch thì
+## tự gửi báo cáo lệch một lần (NET-20). Màn trận chỉ gọi `attach` / `leave`.
 
 const STALL_SHOW_S: float = 0.5   ## đứng chờ gói lâu chừng này mới báo "chờ mạng"
 const NOTICE_S: float = 5.0       ## thông báo (người rớt…) hiện chừng này giây
@@ -82,13 +82,6 @@ func _send_report(lock: LockstepClient) -> void:
 	var r: Dictionary = DesyncReport.build(lock, String(session.room.get("code", "")))
 	_upload.send(&"sync", "", r["summary"], r["data"], func(ok: bool, message: String) -> void:
 		_report = "— đã báo lỗi (%s)" % message if ok else "— gửi báo lỗi không được")
-
-
-## NET-12 (D-344): biên bản trận online — khóa trận (mã phòng + seed) để máy chủ gộp các máy gửi, ô của mình.
-static func tag(record: Dictionary, s: OnlineSession) -> Dictionary:
-	record["match_key"] = s.match_key()
-	record["you"] = s.slot
-	return record
 
 
 ## Rời trận / màn trận đóng: ngắt kết nối = rớt (NET-16) → bot đánh thay (NET-17).

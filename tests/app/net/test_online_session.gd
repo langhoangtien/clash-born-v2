@@ -71,8 +71,6 @@ func test_NET_11_online_session_room_to_lockstep_match() -> void:
 	var key: String = String(a.room["code"])
 	a.send({"t": "start"})
 	assert_true(_pump(s, [a, b], none, 10.0, func() -> bool: return a.stage == "game" and b.stage == "game"), "cả hai nhận lời chào")
-	assert_eq(a.match_key(), "%s-%d" % [key, a.config.seed], "NET-12: mã phòng + seed")
-	assert_eq(a.match_key(), b.match_key(), "hai máy cùng khóa trận")
 	var runners: Dictionary = {a: _enter(a), b: _enter(b)}
 	var ra: SimRunner = runners[a]
 	var hero: Entity = ra.world.find_entity(a.entity_id)
@@ -103,18 +101,12 @@ func test_NET_11_online_session_room_to_lockstep_match() -> void:
 	s.free()
 
 
-func test_NET_11_status_text_and_record_tag() -> void:
+func test_NET_11_status_text() -> void:
 	var lock: LockstepClient = LockstepClient.new(NetTransport.new())
 	lock.rtt_ms = 87.4
 	assert_eq(OnlineMatch.status(lock, true, 0.1), "Online 87 ms")
 	assert_eq(OnlineMatch.status(lock, true, 0.8), "Online 87 ms — đang chờ mạng…")
 	assert_true(OnlineMatch.status(lock, false, 0.0).contains("mất kết nối"))
-	var o: OnlineSession = OnlineSession.new(NetTransport.new(), "", "")
-	o.room = {"code": "QP33Z"}
-	o.config = MatchConfig.duel(&"gorran", &"myra", BotState.Difficulty.NORMAL, 777)
-	o.slot = 1
-	var rec: Dictionary = OnlineMatch.tag({"players": []}, o)
-	assert_eq([rec["match_key"], rec["you"]], ["QP33Z-777", 1])
 	assert_eq(OnlineSession.error_text("HERO_TAKEN"), "Tướng đã có người chọn")
 
 

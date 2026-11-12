@@ -17,20 +17,23 @@ var slot: int = -1
 var lockstep: LockstepClient
 var _token: String = ""
 var _version: String = ""
+var _app: String = ""
 
 
 ## `t` = kênh đã mở / đang mở (WsTransport.dial(url) hoặc LoopbackNet trong test).
-func _init(t: NetTransport, token: String, version: String) -> void:
+## `app` = số bản game (NET-12: máy chủ ghi vào biên bản trận).
+func _init(t: NetTransport, token: String, version: String, app: String = "") -> void:
 	transport = t
 	_token = token
 	_version = version
+	_app = app
 
 
 ## Gọi mỗi khung khi chưa vào trận. Trả các tin cho menu (hello_ok, lobby, error, welcome, closed).
 func poll() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	if stage == "connecting" and transport.is_open():
-		transport.send({"t": "hello", "v": _version, "token": _token})
+		transport.send({"t": "hello", "v": _version, "token": _token, "app": _app})
 		stage = "hello"
 	elif stage == "connecting" and transport.has_method("closed") and transport.call("closed"):
 		stage = "closed"  # không nối được (mạng / máy chủ tắt)
@@ -92,11 +95,6 @@ func me() -> Dictionary:
 		if int(m.get("id", -1)) == peer_id:
 			return m
 	return {}
-
-
-## ST (D-344): khóa trận online để máy chủ thống kê gộp biên bản các máy gửi (mã phòng + seed).
-func match_key() -> String:
-	return "%s-%d" % [String(room.get("code", "")), config.seed if config != null else 0]
 
 
 ## Câu tiếng Việt cho mã lỗi của máy chủ phòng.

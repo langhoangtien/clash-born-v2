@@ -15,6 +15,9 @@ class ServerCase(unittest.TestCase):
         upload_server.TOKEN_FILE = os.path.join(self.tmp.name, "token")
         with open(upload_server.TOKEN_FILE, "w") as f:
             f.write("bi-mat\n")
+        upload_server.ROOMS_TOKEN_FILE = os.path.join(self.tmp.name, "rooms_token")  # ST.5 (D-405)
+        with open(upload_server.ROOMS_TOKEN_FILE, "w") as f:
+            f.write("phong-bi-mat\n")
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), upload_server.Handler)
         self.url = "http://127.0.0.1:%d" % self.server.server_address[1]
         threading.Thread(target=self.server.serve_forever, daemon=True).start()

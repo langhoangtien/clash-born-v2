@@ -10,7 +10,7 @@ Group=clashborn
 WorkingDirectory=/srv/clashborn/rooms
 Environment=HOME=/srv/clashborn/rooms/home
 Environment=XDG_DATA_HOME=/srv/clashborn/rooms/home/.local/share
-ExecStart=/opt/godot/godot --headless --path /srv/clashborn/rooms -s server/main.gd -- --server-id=2 --port=8790 --api=http://127.0.0.1:8787
+ExecStart=/opt/godot/godot --headless --path /srv/clashborn/rooms -s server/main.gd -- --server-id=2 --rooms-token=/etc/clashborn/rooms_token --port=8790 --api=http://127.0.0.1:8787
 Restart=always
 RestartSec=3
 NoNewPrivileges=true

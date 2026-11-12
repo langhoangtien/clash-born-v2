@@ -23,6 +23,16 @@ rm -rf "$REPO/tools/vps/__pycache__"
 echo "== 3. Thư mục"
 install -d -o clashborn -g clashborn "$ROOT/www" "$ROOT/incoming" "$ROOT/reports" "$ROOT/stats" "$ROOT/rejected"
 
+# D-405 (ST.5): mã riêng của máy chủ phòng để ghi trận online (/api/room_match) — sinh một lần, KHÔNG in ra. Máy chủ phòng
+# Singapore cần CÙNG giá trị: người chơi tự chép sang (docs/VPS_TASKS.md), không qua chat.
+ROOMS_TOKEN=/etc/clashborn/rooms_token
+if [ ! -s "$ROOMS_TOKEN" ]; then
+  ( umask 027 && openssl rand -hex 32 > "$ROOMS_TOKEN" )
+  chown root:clashborn "$ROOMS_TOKEN"
+  chmod 640 "$ROOMS_TOKEN"
+  echo "   đã sinh $ROOMS_TOKEN (chép sang máy chủ phòng Singapore — không dán vào chat)"
+fi
+
 echo "== 4. Service"
 if ! cmp -s "$REPO/tools/vps/clashborn-upload.service" "$SERVICE"; then
   install -m 644 "$REPO/tools/vps/clashborn-upload.service" "$SERVICE"

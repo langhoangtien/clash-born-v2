@@ -169,10 +169,9 @@ func _show_result() -> void:
 	$Hud.add_child(result)
 	result.show_result(world, hero)
 	# ST.1, D-339; D-341: gắn vào gốc cây — bấm về menu ngay không hủy yêu cầu gửi
-	var record: Dictionary = MatchRecord.of(world, config, Updater.current_name())
 	if online != null:
-		OnlineMatch.tag(record, online)  # NET-12
-	if not MatchUpload.send(get_tree().root, record, result.set_stats_note):
+		result.set_stats_note("Thống kê: máy chủ phòng ghi trận online", false)  # NET-12 (ST.5, D-405)
+	elif not MatchUpload.send(get_tree().root, MatchRecord.of(world, config, Updater.current_name()), result.set_stats_note):
 		result.set_stats_note("Thống kê: trận thử / đo hiệu năng — không tính", false)
 	result.replay_pressed.connect(func() -> void:
 		get_tree().change_scene_to_file(MENU_SCENE) if online != null else get_tree().reload_current_scene())

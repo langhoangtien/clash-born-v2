@@ -916,9 +916,14 @@ chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, 
   máy chủ gửi, điều khiển đơn vị máy chủ giao; tick chạy theo gói lệnh (NET-01), không tăng tốc, không có nút Test (không
   phải trận thử). HUD hiện "Online <RTT> ms", đứng chờ gói ≥ 0,5 s thì "đang chờ mạng…", mất kết nối / lệch thì báo. Rời màn
   trận (Esc, Thoát, về menu) = ngắt kết nối = rớt (NET-16).
-- `NET-12` (D-344) Trận online: mọi máy có người gửi biên bản (Clashborn Stats) kèm `match_key` = mã phòng + seed và `you`
-  = ô của máy gửi. Máy chủ thống kê: khóa đã có → chỉ gắn tài khoản vào ô `you` (ô người, chưa ai nhận), không đếm thêm
-  trận; chưa có → ghi trận, chỉ ô `you` gắn tài khoản người gửi. Lịch sử mỗi người có trận đó, đối thủ là người hiện tên.
+- `NET-12` (ST.5, D-405 — thay cách gộp biên bản hai máy của D-344) **Máy chủ phòng ghi trận online.** Trận có đội thắng →
+  máy chủ phòng dựng biên bản từ bản SIM của chính nó (MatchRecord), kèm `match_key` = mã phòng-seed, bảng ô → tài khoản
+  (mọi ô người lúc bắt đầu trận, kể cả người đã rớt) và danh sách ô `left` (người đã rớt lúc kết thúc), gửi máy chủ thống
+  kê bằng mã bí mật riêng của máy chủ phòng (`rooms_token`, chỉ có quyền ghi trận). Lỗi mạng / máy chủ → thử lại 3 lần (sau
+  1 / 5 / 30 giây), vẫn hỏng → ghi nguyên biên bản vào nhật ký máy chủ phòng. Trùng `match_key` → không đếm lại. Ô người đã
+  rớt (bot đánh thay — NET-17) vẫn tính thắng / thua cho tài khoản đó; trang lịch sử ghi "(đã rời)". Trận hủy (NET-19) không
+  gửi. Số bản game trong biên bản = số bản người tạo phòng gửi trong `hello` (`app`; không có → `0.0.0`). Máy khách không gửi
+  biên bản trận online; `/api/match` nhận biên bản có `match_key` (bản game cũ) → trả `ignored`, không ghi.
 - `NET-13` (D-401) **Nhiều máy chủ phòng.** Danh sách là dữ liệu (`app/net/room_servers.json`): mỗi máy một id 1–9 (một
   chữ số, không trùng), tên hiện cho người chơi, địa chỉ `wss://…/play`. Hiện: 1 = Singapore, 2 = máy chính. Thêm máy = thêm
   một dòng; quá 9 máy là việc sau (mã phòng phải dài hơn — NET-15).

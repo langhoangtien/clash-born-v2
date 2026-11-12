@@ -20,6 +20,8 @@ var auth: Callable
 ## NET-15 (D-401): id của máy này trong danh sách máy chủ (app/net/room_servers.json) — chữ số đầu mọi mã phòng nó phát.
 var server_id: int = 1
 var empty_keep_s: float = EMPTY_KEEP_S
+## NET-12 (ST.5): func(payload: Dictionary) — gửi biên bản trận có đội thắng (main.gd: MatchReport.send; trống = không ghi).
+var report: Callable = Callable()
 var fingerprint: String = ""
 var heroes: Array[StringName] = []
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -115,7 +117,7 @@ func _handle(id: int, msg: Dictionary) -> void:
 				_error(id, "VERSION", "hello")
 				_close_soon(id)
 				return
-			_conns[id]["stage"] = "auth"
+			_conns[id].merge({"stage": "auth", "app": String(msg.get("app", "")).left(16)}, true)  # NET-12: số bản game
 			auth.call(String(msg.get("token", "")), func(account: Dictionary) -> void: _authed(id, account))
 		"lobby":
 			_lobby_message(id, t, msg)
@@ -240,14 +242,17 @@ func _start_game(lobby: RoomLobby) -> void:
 	room.on_drop = _on_drop.bind(lobby.code)
 	room.takeover = Command.set_control  # NET-17: bot Thường đánh thay người rớt (CMD-07)
 	var wire: Dictionary = NetCodec.config_to(cfg)
+	var accounts: Dictionary = {}
 	for peer: int in made["seats"]:
 		var slot: int = int(made["seats"][peer])
+		accounts[slot] = int(_conns[peer]["account"])
 		room.add_peer(peer, _conns[peer]["ws"], units[slot].id)
 		_conns[peer]["stage"] = "game"
 		_send(peer, {"t": "welcome", "config": wire, "peer": peer, "slot": slot, "entity": units[slot].id,
 			"delay": room.input_delay})
 	_lobbies.erase(lobby.code)
-	_games[lobby.code] = {"room": room, "acc": 0.0}
+	_games[lobby.code] = {"room": room, "acc": 0.0, "cfg": cfg, "accounts": accounts, "slots": made["seats"],
+		"app": String(_conns[lobby.host].get("app", ""))}
 
 
 func _run_game(code: String, delta: float) -> void:
@@ -262,6 +267,8 @@ func _run_game(code: String, delta: float) -> void:
 		steps += 1
 	g["empty"] = float(g.get("empty", 0.0)) + delta if room.peers.is_empty() else 0.0
 	if room.world.winner >= 0:
+		if report.is_valid():  # NET-12 (ST.5): máy chủ ghi trận
+			report.call(MatchReport.payload(room, g["cfg"], code, g["accounts"], g["slots"], g["app"]))
 		for id: int in room.peers:
 			_send(id, {"t": "end", "winner": room.world.winner})
 			_conns[id].merge({"stage": "lobby", "code": ""}, true)

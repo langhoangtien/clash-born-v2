@@ -168,25 +168,47 @@ class AdminTest(AccountCase):
         self.assertEqual(len(page["matches"][0]["allies"]), 3, "trang công khai cũng có cả hai đội")
 
 
-    def test_NET_12_online_match_two_uploads_one_match(self) -> None:
+    def _room(self, body, token="phong-bi-mat"):
+        return self.req("POST", "/api/room_match", body, token=token)
+
+    def test_NET_12_room_server_records_online_match(self) -> None:
+        """ST.5 (D-405): máy chủ phòng gửi một biên bản (mã riêng), gắn tài khoản mọi ô người, cờ đã rời; trùng khóa không đếm."""
         a = self.signup("an@gmail.com")
         self.auth("name", {"name": "Anh"}, session=a)
         b = self.signup("binh@gmail.com")
         self.auth("name", {"name": "Binh"}, session=b)
+        ida = self.req("GET", "/api/auth/me", session=a)[1]["id"]
+        idb = self.req("GET", "/api/auth/me", session=b)[1]["id"]
         rec = record(0, heroes=("gorran", "myra"), kind="pvp")
         rec["players"][1]["bot"] = False
-        rec["match_key"] = "QP33Z-12345"
-        for who, you in ((a, 0), (b, 1)):
-            sent = dict(rec, you=you)
-            self.assertEqual(self.req("POST", "/api/match", sent, session=who)[0], 200)
-        self.assertEqual(self.req("GET", "/api/stats/summary")[1]["matches"], 1, "hai máy gửi cùng trận: đếm một")
+        body = {"record": rec, "match_key": "148203-12345", "accounts": [[0, ida], [1, idb]], "left": [1]}
+        self.assertEqual(self._room(body, token=None)[0], 401, "cần mã")
+        self.assertEqual(self._room(body, token="bi-mat")[0], 401, "mã quản trị không thay được mã máy chủ phòng")
+        code, out = self._room(body)
+        self.assertEqual(code, 200, out)
+        code, again = self._room(body)
+        self.assertEqual((code, again.get("duplicate")), (200, True), "gửi lại sau lỗi mạng: không đếm đôi")
+        self.assertEqual(self.req("GET", "/api/stats/summary")[1]["matches"], 1)
         ha = self.req("GET", "/api/auth/history", session=a)[1]["matches"]
         hb = self.req("GET", "/api/auth/history", session=b)[1]["matches"]
-        self.assertEqual((ha[0]["hero"], ha[0]["won"], hb[0]["hero"], hb[0]["won"]), ("gorran", True, "myra", False))
-        self.assertEqual([p["name"] for p in hb[0]["enemies"]], ["Anh"], "đối thủ là người: hiện tên")
-        bad = dict(rec, you=5)
-        self.assertEqual(self.req("POST", "/api/match", bad)[0], 400)
-        self.assertEqual(self.req("POST", "/api/match", dict(rec, you=0, match_key="x"))[0], 400)
+        self.assertEqual((ha[0]["hero"], ha[0]["won"], ha[0]["left"]), ("gorran", True, False))
+        self.assertEqual((hb[0]["hero"], hb[0]["won"], hb[0]["left"]), ("myra", False, True), "R4: đã rời vẫn tính thua")
+        self.assertEqual([(p["name"], p["left"]) for p in ha[0]["enemies"]], [("Binh", True)], "đối thủ: tên + đã rời")
+
+    def test_NET_12_room_match_rejects_bad_slots(self) -> None:
+        rec = record(0, heroes=("gorran", "myra"), kind="pvb")
+        for bad in ({"accounts": [[1, 5]], "left": []}, {"accounts": [[0, 5]], "left": [1]}, {"accounts": [[9, 5]], "left": []},
+                    {"accounts": [[0, -1]], "left": []}, {"accounts": "x", "left": []}):
+            body = dict(bad, record=rec, match_key="148203-1")
+            self.assertEqual(self._room(body)[0], 400, str(bad))
+        self.assertEqual(self._room({"record": rec, "match_key": "x", "accounts": [], "left": []})[0], 400, "khóa sai")
+
+    def test_NET_12_client_online_record_ignored(self) -> None:
+        """Bản game cũ vẫn gửi biên bản trận online (match_key + you) → bỏ qua, không ghi (máy chủ phòng đã ghi)."""
+        rec = dict(record(0, kind="pvp"), match_key="QP33Z-12345", you=0)
+        code, out = self.req("POST", "/api/match", rec)
+        self.assertEqual((code, out.get("ignored")), (200, True))
+        self.assertEqual(self.req("GET", "/api/stats/summary")[1]["matches"], 0)
 
 
 if __name__ == "__main__":
