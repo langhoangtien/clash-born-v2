@@ -1004,7 +1004,9 @@ chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, 
 - `NET-22` (M9.8, D-406) **Vào lại.** Máy khách gửi `rejoin` → máy chủ gửi `welcome` như lúc bắt đầu kèm `resume` và tick hiện
   tại T, rồi gửi lại toàn bộ gói lệnh tick 1..T theo từng phần (`history`, mỗi phần tối đa `HISTORY_CHUNK` gói khác rỗng,
   chỉ gửi khi hàng gửi của kết nối còn chỗ), song song với gói lệnh trực tiếp từ T+1. Máy khách dựng World từ cấu hình rồi
-  tua (chạy tick không chờ nhịp, giới hạn thời gian mỗi khung), HUD hiện "Đang vào lại trận… N%"; tới tick T và hàng gói
+  tua (chạy tick không chờ nhịp, giới hạn thời gian mỗi khung — D-410), màn trận che cảnh trận (không vẽ / không cập nhật
+  3D, 2D, HUD; chỉ còn "Đang vào lại trận… N%" và nút Cài đặt — D-411), tua xong hiện lại đúng theo World lúc đó (không
+  nội suy từ vị trí cũ, không có xác của đơn vị chết lúc tua); tới tick T và hàng gói
   chờ ngắn lại thì gửi `caught_up` → NET-18. Vào lại được tới hết trận (hoặc hủy — NET-19).
 - `NET-23` (M9.8, D-406) **Một kết nối mỗi tài khoản trong trận.** Tài khoản vào lại trong khi kết nối cũ của nó vẫn ở
   trận (chưa bị coi là rớt) → máy chủ coi kết nối cũ là rớt (lý do `replaced`), đóng nó, rồi cho kết nối mới vào lại.

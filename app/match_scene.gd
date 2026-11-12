@@ -45,6 +45,7 @@ var shop: ShopPanel
 var view_3d: MatchView3D
 var loading: MatchLoading  # D-260: làm nóng shader lúc vào trận
 var settings: SettingsControl
+var replay: ReplayScreen  # NET-22 (D-411): che cảnh trận lúc tua vào lại
 
 
 func _ready() -> void:
@@ -119,6 +120,9 @@ func _ready() -> void:
 	match_hud.hero = hero
 	hud.text = HELP
 	hud.visible = not OS.has_feature("mobile")  # D-144: phím tắt chỉ có ích trên máy tính
+	if online != null:
+		replay = ReplayScreen.make($Hud, [map_view, units_view, view_3d, aim_indicator], [$Hud/OnlineStatus, settings.panel],
+			units_view, view_3d, hero)
 
 
 func _process(delta: float) -> void:
@@ -134,6 +138,8 @@ func _process(delta: float) -> void:
 func tick_frame(delta: float) -> void:
 	if loading == null or not loading.busy():
 		runner.advance(delta)
+		if replay != null and replay.hold(OnlineMatch.replaying(online)):
+			return
 	elif online != null:
 		runner.receive(delta)  # online: vẫn nhận gói lệnh lúc đang nạp màn
 	units_view.alpha = runner.alpha()
