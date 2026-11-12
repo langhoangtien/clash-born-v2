@@ -1,0 +1,9 @@
+Use your image generation tool to create ONE new image and save it as a PNG at the path given below (create folders if needed). Do not edit any other file. When finished, reply only with the saved path.
+
+Reference images (open and look at them first):
+- STYLE + PROPORTION reference (the game's chosen standard hero): art_inbox/icons/goc/brakk_portrait.png, art_inbox/03_heroes/brakk_sheet.png, art_inbox/03_heroes/brakk_body.png, art_inbox/kiem_ke/models/hero__brakk.png (3D model in game)
+- CHARACTER IDENTITY reference (keep who she is): art_inbox/concepts/phong_tien_portrait.png, art_inbox/concepts/body/phong_tien_body.png
+
+Task: redesign the female archer hero "Phong Tiễn" (Wind Archer) so she belongs to the SAME art family as Brakk: stylized chunky mobile-MOBA hero, bold dark outlines, flat cel shading with 2–3 tones, big readable shapes, large hands and boots, simplified details, hand-painted look. Keep her identity: brown hair in a high ponytail with teal-and-cream feathers, teal-green eyes, teal + cream + brown leather palette with small gold accents, SHORT shoulder capelet (no long cloak, no long coat tails, no long skirt flaps), fitted tunic ending mid-thigh, quiver of arrows on the back, light leather bracers.
+
+Layout: plain pure white background. Character full body, FRONT view, standing in a relaxed A-pose, arms angled down and away from the body, hands EMPTY and open, both feet fully visible, centered on the left two-thirds of the image. On the right third, her BOW drawn separately, standing upright, not touching her, same style (chunky readable shapes, wood + teal wrapping + small gold trim, bowstring thin). No text, no labels, no ground shadow, no other characters, no background scenery.

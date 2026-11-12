@@ -1,0 +1,11 @@
+Use your image generation tool to create ONE new image and save it as a PNG at the path given below (create folders if needed). Do not edit any other file. When finished, reply only with the saved path.
+
+Reference images (open and look at them first):
+- The game as it looks now, from the real match camera: art_inbox/kiem_ke/la_nho/hang_tuong_sau.jpg and art_inbox/kiem_ke/tran/tran_020s.jpg
+- Ground textures that are APPROVED and must stay (hand-painted): assets/textures/style/grass.png, assets/textures/style/lane_dirt.png, assets/textures/style/rock_face.png
+- Approved structure style (tower): art_inbox/kiem_ke/models/structure__tower_t1_blue.png
+- The standard hero, Brakk: art_inbox/kiem_ke/models/hero__brakk.png and art_inbox/icons/goc/brakk_portrait.png
+
+Problem to solve: in the game, rocks have hand-painted texture and the ground is hand-painted, but trees, bushes and leafy plants are flat single-colour low-poly facets, so they look like a different asset pack and the bright orange/green leaves pop more than the heroes.
+
+Task: paint a small game scene concept (NOT a real screenshot, no UI, no text) seen from the game's real camera: three-quarter top-down, looking down about 45–50 degrees, like a mobile MOBA (Brakk at the scale he has in the game, small in frame). The scene contains exactly: hand-painted grass ground with a dirt lane crossing it (match the reference textures), ONE tree, ONE bush, ONE grey rock (match the approved rock texture), a few small leafy ground plants, and Brakk standing on the dirt lane. Light from top-left. Heroes must read more clearly than the vegetation: vegetation slightly less saturated than heroes, no neon colours. Landscape 1536x1024.
