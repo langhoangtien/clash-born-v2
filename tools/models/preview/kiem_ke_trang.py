@@ -79,6 +79,12 @@ def make_trials():
         for i, m in enumerate(["pine_l", "bush_a", "rock_low", "plant_orange"]):
             row.paste(Image.open(os.path.join(cv, "phong", "%s_%s.png" % (m, v))).convert("RGB").crop((40, 150, 600, 800)).resize((280, 325), Image.LANCZOS), (i * 280, 0))
         row.save(os.path.join(OUT, "thu_phong_%s.webp" % v), quality=80)
+    cb = os.path.join(ROOT, "art_inbox", "concepts", "chuan_brakk")  # D-364: concept chờ duyệt
+    im = Image.open(os.path.join(cb, "phong_tien", "bang_so_sanh.png")).convert("RGB")
+    im.resize((1600, round(im.height * 1600 / im.width)), Image.LANCZOS).save(os.path.join(OUT, "cc_pt_bang.webp"), quality=84)
+    for k in (1, 2, 3):
+        Image.open(os.path.join(cb, "phong_tien", "pa%d.png" % k)).convert("RGB").resize((683, 1024), Image.LANCZOS).save(os.path.join(OUT, "cc_pt_pa%d.webp" % k), quality=84)
+        Image.open(os.path.join(cb, "canh_vat", "huong%d.png" % k)).convert("RGB").resize((1200, 800), Image.LANCZOS).save(os.path.join(OUT, "cc_cv_%d.webp" % k), quality=82)
     for f in glob.glob(os.path.join(KK, "thu_icon", "*.png")):
         Image.open(f).convert("RGB").save(os.path.join(OUT, "thu_" + os.path.basename(f)[:-4] + ".webp"), quality=86)
 
