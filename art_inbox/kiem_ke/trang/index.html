@@ -648,23 +648,23 @@ footer { color: var(--muted); font-size: 13px; }
 
 <section id="phong-tien-3d">
   <h2>Phong Tiễn PA3 — dựng 3D và thử số tam giác</h2>
-  <p class="lede">Người chơi chọn PA3. Đây là bản thử, chưa thay vào game. Xem xong chọn mức tam giác; 12k chưa có vì hết credit Tripo.</p>
+  <p class="lede">Người chơi chọn PA3. Đây là bản thử, chưa thay vào game. Xem xong chọn mức tam giác.</p>
   <figure><img loading="lazy" src="pt_v2_sheet.webp" alt="Tờ ba góc Phong Tiễn PA3: trước, ngang, sau">
     <figcaption>Tờ 3 góc Codex vẽ theo PA3 (trước / ngang / sau, tay không) — đầu vào cho Tripo. Cung vẽ riêng.</figcaption></figure>
   <figure><video controls playsinline muted preload="metadata" src="pt_so_tam_giac.mp4"></video>
-    <figcaption>Ba bản cạnh nhau, 18 giây: góc trận ở đúng cỡ trong trận (đứng, chạy, bắn), rồi góc cận (đứng, chạy, bắn). Trái: bản hiện tại · giữa: PA3 3,7k · phải: PA3 6,6k có xương ngón tay.</figcaption></figure>
+    <figcaption>Ba bản cạnh nhau, 18 giây: góc trận ở đúng cỡ trong trận (đứng, chạy, bắn), rồi góc cận (đứng, chạy, bắn). Từ trái: bản hiện tại · PA3 3,7k · PA3 6,6k có xương ngón tay · PA3 11,5k có xương ngón tay.</figcaption></figure>
   <figure><video controls playsinline muted preload="metadata" src="pt_trong_tran.mp4"></video>
-    <figcaption>Trong trận thật, đứng cạnh Brakk, Duy Anh, Gorran và lính (Phong Tiễn ở giữa khung).</figcaption></figure>
+    <figcaption>Trong trận thật, đứng cạnh Brakk, Duy Anh, Gorran và lính (Phong Tiễn ở giữa mỗi ô): trên trái hiện tại, trên phải 3,7k, dưới trái 6,6k, dưới phải 11,5k.</figcaption></figure>
   <div class="tbl"><table>
     <thead><tr><th>Bản</th><th>Tam giác</th><th>Xương</th><th>Dung lượng</th><th>Cả 10 tướng dùng bản này</th></tr></thead>
     <tbody>
-      <tr><td>Hiện tại</td><td>3.085</td><td>23</td><td>0,94 MB</td><td>150 ms / khung · 70k tam giác</td></tr>
-      <tr><td>PA3 3k</td><td>3.653</td><td>23</td><td>0,93 MB</td><td>148–152 ms · 76k</td></tr>
-      <tr><td>PA3 6k + ngón tay</td><td>6.601</td><td>53</td><td>1,32 MB</td><td>154–155 ms · 105k</td></tr>
-      <tr><td>PA3 12k + ngón tay</td><td colspan="4">Chưa dựng — Tripo hết credit (cần nạp khoảng 40)</td></tr>
+      <tr><td>Hiện tại</td><td>3.085</td><td>23</td><td>0,94 MB</td><td>155 ms / khung · 70k tam giác</td></tr>
+      <tr><td>PA3 3k</td><td>3.653</td><td>23</td><td>0,93 MB</td><td>155–157 ms · 76k</td></tr>
+      <tr><td>PA3 6k + ngón tay</td><td>6.601</td><td>53</td><td>1,32 MB</td><td>158–161 ms · 105k</td></tr>
+      <tr><td>PA3 12k + ngón tay</td><td>11.457</td><td>53</td><td>1,55 MB</td><td>165–166 ms · 154k</td></tr>
     </tbody></table></div>
-  <p class="lede">Đo trên máy cloud vẽ bằng CPU, nên chỉ so tương đối: 6k chậm hơn bản hiện tại khoảng 2–3% khi cả 10 tướng trên màn hình. Phải đo lại trên MatePad trước khi chốt. Bản 3k là chính lưới 6k giảm tam giác, nên khác nhau chỉ do số tam giác.</p>
-  <p class="note"><strong>Đề xuất của CB-1: 6k có ngón tay</strong>, nếu đo trên MatePad vẫn giữ được khung hình. Ở góc trận hai bản gần như giống nhau; khác ở góc cận (màn chọn tướng, mặt, giáp, nắm cung) và ngón tay ôm cung tự nhiên hơn. Nếu MatePad tụt khung rõ, dùng 3k.</p>
+  <p class="lede">Đo trên máy cloud vẽ bằng CPU, nên chỉ so tương đối: khi cả 10 tướng trên màn hình, 6k chậm hơn bản hiện tại khoảng 2–3%, 12k khoảng 6–7%. Phải đo lại trên MatePad trước khi chốt. Bản 3k là chính lưới 6k giảm tam giác. Bản 12k Tripo dựng có tấm sàn dính chân (1.184 tam giác) — đã cắt trước khi gắn xương, còn 10,8k thân + cung.</p>
+  <p class="note"><strong>Đề xuất của CB-1: 6k có ngón tay</strong>, nếu đo trên MatePad vẫn giữ được khung hình. Ở góc trận ba bản PA3 gần như giống nhau; 12k gần như không hơn 6k mà chậm gấp đôi phần tăng. 6k hơn 3k ở góc cận (màn chọn tướng, mặt, giáp, nắm cung) và ngón tay ôm cung tự nhiên hơn. Nếu MatePad tụt khung rõ, dùng 3k.</p>
 </section>
 
 <section id="concept">

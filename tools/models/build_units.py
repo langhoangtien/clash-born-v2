@@ -78,7 +78,7 @@ UNITS = {
                    "Bow_Draw@1.3-2.07+Bow Release=skill_2,Sprint=sprint",
                    True, False, ["phong_tien/phong_tien_bow_hand:hand_l"]),
     # D-367: Phong Tiễn PA3 (D-364, D-366) — bản thử số tam giác (A2), chỉ dựng với --out art_inbox/3d/phong_tien_v2;
-    # 6k GIỮ xương ngón tay (fingers = False), 3k = giảm tam giác chính lưới 6k (decimate.py) rồi gắn xương lại, bỏ ngón
+    # 6k / 12k GIỮ xương ngón tay (fingers = False), 3k = giảm tam giác chính lưới 6k (decimate.py) rồi gắn xương lại, bỏ ngón
     "phong_tien_v2_3k": ("phong_tien_v2/f3000/phong_tien_v2", "heroes/phong_tien",
                          "Bow_Casual=idle,Run_Female=run,Bow Pull Back@0.5-1.25+Bow Release=attack,Hit_Chest=hit,Death_B=death,"
                          "Idle_Dizzy=stun,Bow Pull Back@0.75-1.25+Bow Release=cast,Dodge_left=skill_1,"
@@ -89,6 +89,11 @@ UNITS = {
                          "Idle_Dizzy=stun,Bow Pull Back@0.75-1.25+Bow Release=cast,Dodge_left=skill_1,"
                          "Bow_Draw@1.3-2.07+Bow Release=skill_2,Sprint=sprint",
                          "_leaf", False, ["phong_tien_v2/f6000/phong_tien_v2_bow_nostring_hand:hand_l"]),
+    "phong_tien_v2_12k": ("phong_tien_v2/f12000/phong_tien_v2", "heroes/phong_tien",
+                         "Bow_Casual=idle,Run_Female=run,Bow Pull Back@0.5-1.25+Bow Release=attack,Hit_Chest=hit,Death_B=death,"
+                         "Idle_Dizzy=stun,Bow Pull Back@0.75-1.25+Bow Release=cast,Dodge_left=skill_1,"
+                         "Bow_Draw@1.3-2.07+Bow Release=skill_2,Sprint=sprint",
+                         "_leaf", False, ["phong_tien_v2/f12000/phong_tien_v2_bow_nostring_hand:hand_l"]),
     # D-307b: tê giác theo style ảnh mẫu người chơi (concept_gen.py từ ảnh mẫu → split_turnaround.py →
     # Tripo multiview → glb_yaw -90 → afk.ai: dragon / horse → fix-stretching)
     # D-309: Người Đá thay rồng (concept_gen theo ảnh mẫu bãi đấu → Tripo → afk.ai human); fix-stretching + drop_loose (tam giác lẻ kéo dài); đòn đánh = đấm móc (đấm đất kéo méo nắm tay)

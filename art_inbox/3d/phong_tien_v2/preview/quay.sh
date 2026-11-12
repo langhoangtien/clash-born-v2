@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# D-367: quay video so sánh mức tam giác (so_tam_giac.gd): 2 góc × 3 hoạt ảnh × 3 giây → so_tam_giac.mp4
+# D-367: quay video so sánh mức tam giác (so_tam_giac.gd): 2 góc × 3 hoạt ảnh × 3 giây, 4 bản → so_tam_giac.mp4
 cd "$(dirname "$0")/../../../.." || exit 1
 D=art_inbox/3d/phong_tien_v2
-M="res://assets/models/style/heroes/phong_tien.glb,res://$D/game/phong_tien_v2_3k.glb,res://$D/game/phong_tien_v2_6k.glb"
-L="Hiện tại 3.1k,PA3 3.7k,PA3 6.6k + ngón tay"
+M="res://assets/models/style/heroes/phong_tien.glb,res://$D/game/phong_tien_v2_3k.glb,res://$D/game/phong_tien_v2_6k.glb,res://$D/game/phong_tien_v2_12k.glb"
+L="Hiện tại 3.1k,PA3 3.7k,PA3 6.6k + ngón,PA3 11.5k + ngón"
 T=$(mktemp -d)
 n=0
 for view in game near; do for anim in idle run attack; do
