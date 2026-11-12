@@ -963,6 +963,14 @@ Người chơi, bot và controller (lính, trụ, quái) đều điều khiển 
   đòn thường, xong thì lệnh xong), `CAST(ô, mục tiêu | điểm | hướng)` — dùng kỹ năng (ABL-02,
   ABL-15). Đánh, dùng chiêu, mua đồ thêm ở
   mốc của chúng.
+- `CMD-07` (D-390, M9.7) `SET_CONTROL(hero, mode)` — **chỉ máy chủ phòng phát** (NET-17 / NET-18; máy khách gửi lên bị bỏ ở
+  phía mạng). Đổi quyền điều khiển, không phải hành động của hero: không bị chặn bởi `UNIT_DEAD`, khống chế, `IN_DUEL`, kênh
+  về thành; không hủy kênh về thành, không gỡ trạng thái / hiệu ứng. Không phải hero → `BAD_TARGET`.
+  - `mode` 1 (bot đánh thay): gắn bot độ khó Thường, đường theo ô của hero như lúc dựng trận (`bot_lane_order`); hủy lệnh đi
+    đang giữ (MOVE / MOVE_DIR, cả lệnh chờ) để bot ra lệnh mới; World chưa có BotController thì thêm (chạy từ tick sau).
+  - `mode` 0 (trả người): gỡ bot, hero dừng như `STOP` (đang tung chiêu / lướt thì dừng sau khi xong) chờ lệnh người.
+  - Lặp đúng chế độ hiện tại: không đổi gì. Nhiều lệnh cùng tick áp theo thứ tự (CMD-01).
+  - (D-390) Hệ thống thêm vào World trong lúc đang chạy tick chạy từ tick sau, mỗi tick đúng một lần.
 
 - `CMD-06` (D-138; D-332: **chỉ trong trận thử** MATCH-06 — trận thường từ chối `PRACTICE_ONLY`) Lệnh thử nghiệm (nút **Test** trong trận, kiểu chế độ luyện tập Liên Quân):
   `CHEAT_GOLD(hero, vàng)` cộng vàng; `CHEAT_LEVEL(hero, số cấp)` cộng đúng lượng XP từng cấp (điểm

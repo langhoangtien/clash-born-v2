@@ -4,7 +4,7 @@ extends RefCounted
 ## trực tiếp; CommandSystem kiểm tra rồi mới thành Order (CMD-01..05).
 
 enum Type { MOVE_TO, MOVE_DIR, STOP, ATTACK, ATTACK_AUTO, CAST, LEVEL_UP, CHOOSE_TALENT, BUY, SELL, RECALL,
-	CHEAT_GOLD, CHEAT_LEVEL }
+	CHEAT_GOLD, CHEAT_LEVEL, SET_CONTROL }  # SET_CONTROL (D-390) ở cuối: NetCodec gửi số thứ tự
 enum Reject { NONE, UNKNOWN_UNIT, POINT_OUTSIDE_MAP, BAD_DIRECTION, BAD_TARGET, UNIT_DEAD,
 	NOT_LEARNED, ON_COOLDOWN, NO_MANA, CANNOT_CAST, NO_SKILL_POINT, CANNOT_LEVEL,
 	CANNOT_CHOOSE_TALENT, BAD_ITEM, NOT_ENOUGH_GOLD, INVENTORY_FULL, NOT_IN_SHOP, NOT_YET, SOLD_OUT, OUT_OF_STOCK, IN_DUEL,
@@ -157,4 +157,13 @@ static func sell(id: int, index: int) -> Command:
 	c.type = Type.SELL
 	c.entity_id = id
 	c.slot = index
+	return c
+
+
+## NET-17 / NET-18 (D-390): chỉ máy chủ phòng phát. `mode` 1 = bot đánh thay (độ khó Thường, R1), 0 = trả quyền cho người.
+static func set_control(id: int, bot: bool) -> Command:
+	var c: Command = Command.new()
+	c.type = Type.SET_CONTROL
+	c.entity_id = id
+	c.mode = 1 if bot else 0
 	return c
