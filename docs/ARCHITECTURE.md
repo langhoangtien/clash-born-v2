@@ -58,6 +58,8 @@ clashborn_v2/
                            SpatialGrid (tra đơn vị gần), StatBlock, StatModifier, StatId,
                            UnitState; EffectContainer ở M3
     systems/               mỗi file một hệ thống, chạy theo thứ tự cố định
+                           (TauntSystem — D-383, ST-20: pha STATE ngay sau DuelSystem; ghi lệnh của đơn vị bị khiêu khích,
+                           gỡ hiệu ứng TAUNTED khi kẻ khiêu khích chết)
     abilities/             Abilities (kỹ năng trên đơn vị, giá trị theo cấp), AbilityInstance, CastState
     effects/               Effects (áp/gỡ), EffectInstance, ExprEval (EFF-09), ActionRunner, AreaShapes (tròn / chữ nhật /
                            quạt), Duels + DuelState (Quyết Đấu, DUL — DuelSystem ở systems/)
