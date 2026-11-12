@@ -36,8 +36,11 @@ var max_backlog: int = 0
 var desync_tick: int = -1         ## tick lệch đầu tiên máy chủ báo (-1 = chưa)
 var hashes: Dictionary[int, String] = {}  ## mã băm đã gửi (chẩn đoán)
 ## NET-22 (M9.8): đang tua tới tick này sau khi vào lại (-1 = không tua); thời gian chạy SIM tối đa mỗi khung khi tua.
+## 50 ms (D-410): lúc tua màn trận không nội suy / không âm thanh / không nhận lệnh, chỉ chữ "Đang vào lại… N%" cần đổi —
+## ~15–20 khung / giây là đủ; phần lớn khung cho SIM (đo trên máy cloud, vẽ giả 10 ms / khung: 24 ms → 223 tick / giây,
+## 60 ms → 280). Tăng nữa lợi ít (SIM ~3,5 ms / tick là trần) mà chữ tiến độ giật.
 var resume_to: int = -1
-var catch_up_ms: float = 24.0
+var catch_up_ms: float = 50.0
 ## NET-16 (D-402): tin `notice` của máy chủ (người rớt…) chờ HUD hiện.
 var notices: Array[Dictionary] = []
 ## NET-24 (D-409): máy chủ đã báo `end` (trận có đội thắng, không còn gói tick mới) → chạy hết gói đã nhận, bỏ đệm.
