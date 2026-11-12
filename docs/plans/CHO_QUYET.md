@@ -45,3 +45,13 @@ Trả lời gọn theo mã, vd `N1 ok, N2 B, M1 ok`. "Đề nghị" = phương �
 | T3 | Thiết Vệ nội tại "hồi 0,1% máu": hiểu là mỗi tầng +0,1% máu tối đa / giây (16 tầng = 1,6% / s); "−2% sát thương nhận" cộng dồn (16 tầng = −32%) | Duyệt cách hiểu này? | Duyệt cách hiểu đó |
 | T4 | Pháo Thủ bắn phát thứ hai: khi người bắn bị choáng / mục tiêu chết / ra khỏi tầm trong lúc chờ → hủy (Dota thì vẫn bắn) | Hủy | Hủy |
 | T5 | Bộ số đề xuất của Thiết Vệ và Pháo Thủ (trong file kế hoạch) | Xem file rồi duyệt / sửa | Duyệt bộ số đề xuất |
+
+## Thiết Vệ — chỗ Claude đặt tạm, cần người chơi xem (D-385, chưa gộp)
+
+| Mã | Câu hỏi | Đề nghị | Trả lời |
+|---|---|---|---|
+| TV1 | Nội tại "mỗi tầng 2 s": đang làm là đánh tiếp thì làm mới CẢ chồng 2 s, ngừng đánh 2 s thì mất hết 16 tầng. Muốn mỗi tầng hết hạn riêng thì là cơ chế mới | Giữ cách đang làm | |
+| TV2 | Nội tại đang có số cố định nên 5 điểm nâng nội tại không có tác dụng. Cho tăng theo bậc: giảm sát thương mỗi tầng 1,2 / 1,4 / 1,6 / 1,8 / 2,0% (chỉ là số), hoặc trần tầng 8 / 10 / 12 / 14 / 16 (cần cơ chế mới) | Theo % mỗi tầng | |
+| TV3 | W chưa có số hồi chiêu / mana: đặt hồi 18–14 s, mana 50–70 | Duyệt | |
+| TV4 | Talent chưa có: Q II khiêu khích +0,5 s; W II +4 giáp; R II cứ 3 đòn thay vì 4 | Duyệt | |
+
