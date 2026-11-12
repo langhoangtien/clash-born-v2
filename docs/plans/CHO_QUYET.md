@@ -18,6 +18,9 @@ Trả lời gọn theo mã, vd `N1 ok, N2 B, M1 ok`. "Đề nghị" = phương �
 | P1 | Giảm Phong Tiễn: tốc chạy 290 → 270, hoặc Q né 3 s → 2 s, hoặc cả hai | Chờ số liệu ma trận của CB-2 | |
 | A1 | Tướng chuẩn về style (bảng kiểm kê: https://claude.ai/artifact/B8Dux87FGphzoHgvuHkyJ4). Tướng đang chia hai họ tỉ lệ: mập 3–4,5 đầu (Brakk, Noctis, Duy Anh, Gorran) và mảnh 6–6,5 đầu (Myra, Vexa, Phong Tiễn). Chọn: **Brakk** (mập; dựng lại 3 tướng mảnh) / **Gorran** (giữa hai họ; chỉnh cả hai bên, mỗi bên ít hơn) / **Phong Tiễn** (mảnh; làm lại nhiều nhất, khó đọc nhất trong trận) | CB-1 đề nghị Brakk | |
 | A2 | Mức tam giác chuẩn cho tướng (3k / 6k / 12k, giữ xương ngón tay) | Chờ video thử của CB-1 | |
+| A4 | Cảnh vật (ảnh trước / sau ở mục "Đề xuất chuẩn" của trang kiểm kê): **PA1** lá cây về phía đá-đất — lá có vân nét cọ, tông trầm, tướng và lính nổi hơn (chưa đo fps trên máy thật) / **PA2** đá về phía lá — đá bỏ vân, nhẹ máy nhất nhưng lệch với mặt đất, vách, trụ | PA1 | |
+| A5 | Khung icon: **PA1** khung dày, chiêu cuối viền đôi (về sau vẽ lại dần 24 icon của 6 tướng đầu) / **PA2** viền mảnh (vẽ lại 16 icon của 4 tướng mới). Cả hai: đóng khung lại toàn bộ bằng công cụ, vẽ lại 4 chân dung (Duy Anh, Myra, Vexa, Noctis) | PA1 | |
+| A6 | Thu nhỏ lá cam / lá xanh (đang to bằng nửa tướng) | Có | |
 | A3 | Thạch Giáp: bản có áo choàng hay bản `thach_giap_body_v2.png` bỏ áo choàng; Thợ Săn giữ rìu đeo hông + mũ sói không | Bản bỏ áo choàng | |
 
 ## Online: rớt mạng / vào lại (kế hoạch CB-3, `docs/plans/M9_7_M9_8.md`)
