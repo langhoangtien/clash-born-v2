@@ -710,3 +710,9 @@ Talent: Q II bán kính +100 · W II giảm thêm 15% · R II +1,5 s.
 2200 vàng = Gậy Phù Thủy + Nhẫn Hồi Phục + công ghép. +10 INT, +2 hồi máu. Chủ động (hồi 19 s, tầm 750): đẩy một đơn vị
 600 trong 0,4 s (bị dời thì choáng, dừng khi chạm vách / rừng / thân trụ). Lên bản thân: lao theo hướng đang nhìn. Lên người
 khác: đẩy ra xa người dùng. Địch kháng phép không bị đẩy. Bot: ESCAPE khi máu < 30% (tự đẩy).
+
+### Thương Rồng (đồ, D-382 — kiểu Dragon Lance, cơ chế STAT-07)
+
+1900 vàng = Rìu Khổng Lồ (900) + Lưỡi Nhanh (900) + phí ghép 100. +12 AGI, +10 STR; **chỉ tướng đánh xa**: +140 tầm đánh
+(modifier `condition = owner_is_ranged`). Tướng cận chiến mua được, nhận STR / AGI nhưng không nhận tầm. Bot: chưa tướng nào
+lên món này (`bot_item_build` không đổi). Biểu tượng: tạm mượn của Rìu Khổng Lồ (`art_id = ogre_axe`) tới khi CB-1 vẽ `dragon_lance`.

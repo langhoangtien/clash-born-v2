@@ -15,6 +15,16 @@ static func in_attack_range(a: Entity, b: Entity, extra: float = 0.0) -> bool:
 	return edge_distance(a, b) <= a.stats.get_stat(StatId.Id.ATTACK_RANGE) + extra
 
 
+## STAT-07 (D-382): modifier có điều kiện kiểu đánh (cận chiến = không có đạn bay, như ITM-05).
+static func modifier_applies(m: ModifierDef, e: Entity) -> bool:
+	match m.condition:
+		&"owner_is_melee":
+			return e.projectile_speed <= 0.0
+		&"owner_is_ranged":
+			return e.projectile_speed > 0.0
+	return true
+
+
 static func is_structure(e: Entity) -> bool:
 	return e.kind == Entity.Kind.TOWER or e.kind == Entity.Kind.CORE
 

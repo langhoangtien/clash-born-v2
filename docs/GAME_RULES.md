@@ -111,6 +111,12 @@ giờ nhân hệ số với nhau.
 trước (STAT-04) rồi mới tới chỉ số dẫn xuất nên không vòng. Chỉ dùng với ADD; không áp lên chính thuộc tính (dữ liệu kiểm).
 Ví dụ: "+7 máu mỗi STR" (`max_hp`, ADD, 7, strength), "tốc đánh thêm = 60% AGI" (`attack_speed`, ADD, 0,6 ×
 `attack_speed_per_agility`, agility).
+
+`STAT-07` (D-382) **Modifier có điều kiện kiểu đánh** (`condition` = rỗng / `owner_is_melee` / `owner_is_ranged`): không thoả
+điều kiện thì modifier **không được thêm** vào chỉ số của đơn vị; các modifier khác của cùng món đồ / hiệu ứng vẫn áp. Kiểu
+đánh phân như ITM-05 (không có đạn bay = cận chiến). Xét lúc thêm (mua đồ, áp hiệu ứng) vì kiểu đánh không đổi trong trận —
+có cơ chế đổi kiểu đánh sau này thì phải sửa luật này. Tên điều kiện: RuleCatalog.MODIFIER_CONDITIONS; tên lạ thì dữ liệu sai.
+Ví dụ Thương Rồng: +140 tầm đánh `owner_is_ranged` — tướng cận mua được, nhận STR / AGI nhưng không nhận tầm.
 ---
 
 ## ST — Trạng thái

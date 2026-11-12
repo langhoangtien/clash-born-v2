@@ -12,3 +12,5 @@ enum Op { ADD, MULTIPLY, OVERRIDE }
 ## STAT-06 (D-347): "" = số cố định; strength / agility / intelligence = `value` là lượng MỖI điểm thuộc tính đó, nhân với
 ## thuộc tính hiện tại mỗi lần tính lại chỉ số (lên cấp, thêm đồ đổi theo). Chỉ ADD, không lên chính thuộc tính.
 @export var per_attribute: StringName
+## STAT-07 (D-382): "" = luôn áp; `owner_is_melee` / `owner_is_ranged` = chỉ áp cho đơn vị đánh cận / đánh xa (như ITM-05).
+@export var condition: StringName

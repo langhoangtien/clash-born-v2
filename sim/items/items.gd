@@ -42,6 +42,8 @@ static func give(world: World, e: Entity, def: ItemDef) -> int:
 		it.ability = a
 	list[index] = it
 	for m: ModifierDef in def.modifiers:
+		if not Rules.modifier_applies(m, e):
+			continue  # STAT-07
 		var ctx: ExprContext = ExprContext.make(e, e, {})
 		var sm: StatModifier = StatModifier.make(StatId.from_name(m.stat), m.op, ExprEval.evaluate(m.value, ctx), it.serial, m.unique_group, index + 1)
 		sm.per_attribute = StatId.from_name(m.per_attribute) if m.per_attribute != &"" else -1  # STAT-06

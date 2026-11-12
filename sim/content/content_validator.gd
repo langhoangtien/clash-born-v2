@@ -117,6 +117,8 @@ func _check_expr(expr: String, where: String, names: Variant) -> void:
 func _check_names(res: Resource, where: String) -> void:
 	if res is ModifierDef and not RuleCatalog.STATS.has(String(res.stat)):
 		_fail(where, "chỉ số '%s' không có trong STAT-01" % res.stat)
+	if res is ModifierDef and not RuleCatalog.MODIFIER_CONDITIONS.has(String(res.condition)):
+		_fail(where, "điều kiện modifier '%s' không có (STAT-07)" % res.condition)
 	if res is ModifierDef and per_attribute_error(res) != "":
 		_fail(where, per_attribute_error(res))
 	elif res is TriggerDef:

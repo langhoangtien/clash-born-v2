@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_x"]
+[ext_resource type="Script" path="res://sim/defs/item_def.gd" id="2_x"]
+
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("1_x")
+stat = &"agility"
+value = "12"
+
+[sub_resource type="Resource" id="S2"]
+script = ExtResource("1_x")
+stat = &"strength"
+value = "10"
+
+[sub_resource type="Resource" id="S3"]
+script = ExtResource("1_x")
+stat = &"attack_range"
+value = "140"
+condition = &"owner_is_ranged"
+
+[resource]
+script = ExtResource("2_x")
+category = 0
+description = "Chỉ tướng đánh xa: +140 tầm đánh (STAT-07). Tướng cận chiến mua được, nhận STR / AGI nhưng không nhận tầm."
+cost = 1900
+components = Array[StringName]([&"ogre_axe", &"blade_alacrity"])
+modifiers = Array[ExtResource("1_x")]([SubResource("S1"), SubResource("S2"), SubResource("S3")])
+id = &"dragon_lance"
+display_name = "Thương Rồng"
+art_id = &"ogre_axe"

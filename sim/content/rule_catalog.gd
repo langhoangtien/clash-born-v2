@@ -50,6 +50,9 @@ const BOT_CONDITIONS: PackedStringArray = [
 ]
 
 ## EFF-02, ST-09, ST-16…: tag hiệu ứng có ý nghĩa trong luật.
+## STAT-07 (D-382): điều kiện của modifier.
+const MODIFIER_CONDITIONS: PackedStringArray = ["", "owner_is_melee", "owner_is_ranged"]
+
 const EFFECT_TAGS: PackedStringArray = ["debuff", "buff", "passive", "dispellable"]
 
 

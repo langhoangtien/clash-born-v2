@@ -157,6 +157,8 @@ static func _apply_modifiers(owner: Entity, inst: EffectInstance) -> void:
 	var ctx: ExprContext = ExprContext.make(owner, owner, inst.values)
 	owner.stats.remove_source(inst.serial)
 	for m: ModifierDef in inst.def.modifiers:
+		if not Rules.modifier_applies(m, owner):
+			continue  # STAT-07
 		var stat: int = StatId.from_name(m.stat)
 		var value: float = ExprEval.evaluate(m.value, ctx)
 		if m.op == ModifierDef.Op.ADD:
