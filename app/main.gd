@@ -13,6 +13,7 @@ const PLAYABLE: Array[StringName] = [&"brakk", &"myra", &"noctis", &"vexa", &"go
 var shell: MenuShell
 var home: HomePage
 var play: PlayPage
+var heroes: HeroesPage
 var account: MenuAccount
 var audio: AudioView
 ## Mở màn `path` (test thay để ghi lại thay vì đổi màn thật).
@@ -58,6 +59,11 @@ func _setup_pages(previews: Array[HeroPreview]) -> void:
 	play.back_pressed.connect(shell.back)
 	play.start_pressed.connect(_start)
 	play.map_pressed.connect(func() -> void: change_scene.call(MAP_VIEWER))
+	heroes = HeroesPage.new()
+	heroes.setup(previews)
+	shell.add_page(&"heroes", heroes)
+	heroes.try_pressed.connect(func(id: StringName) -> void:  # Thử tướng: trận thử 1v1 với bot (MATCH-06)
+		_start(id, PLAYABLE[1] if id == PLAYABLE[0] else PLAYABLE[0], BotState.Difficulty.NORMAL, 1, true))
 
 
 ## M9.6 (D-344): Chơi online — bảng phòng (OnlinePanel) + phiên mạng (OnlineMenu); máy chủ chào vào trận → màn trận online.

@@ -115,3 +115,30 @@ func test_D_123_preview_stats_skills_talents() -> void:
 	assert_eq(p.skill_rows().size(), 4, "nội tại + Q W R")
 	assert_eq(p.talents().size(), 3)
 	assert_true(p.growth_text().contains("3.51"), "chỉ số mỗi cấp")
+
+
+## Trang Tướng: lọc theo thuộc tính, thẻ Chiêu / Chỉ số / Talent, Thử tướng → trận thử 1v1 với tướng đó.
+func test_D_413_heroes_page_filter_tabs_and_try() -> void:
+	var scene: GDScript = load("res://app/match_scene.gd")
+	var keep: MatchConfig = scene.get("config")
+	var m: Node = _main()
+	m.shell.open(&"heroes")
+	var page: HeroesPage = m.heroes
+	page.press_at(page.filter_rect(3).get_center())
+	assert_true(page.shown().all(func(i: int) -> bool: return page.previews[i].def.primary_attribute == 3), "lọc Trí tuệ")
+	assert_true(page.shown().has(page.selected), "tướng đang chọn nằm trong danh sách lọc")
+	page.press_at(page.filter_rect(0).get_center())
+	assert_eq(page.shown().size(), page.previews.size(), "Tất cả")
+	page.press_at(page.cell_rect(4).get_center())
+	assert_eq(page.model_view.hero_id, page.previews[4].def.id, "khung 3D theo tướng đang chọn")
+	page.press_at(page.tab_rect(2).get_center())
+	assert_eq(page.tab, HeroDetail.Tab.TALENTS)
+	page.press_at(page.try_rect().get_center())
+	var cfg: MatchConfig = scene.get("config")
+	assert_eq((m.get_meta("opened") as Array).back(), m.MATCH_SCENE)
+	assert_true(cfg.practice, "Thử tướng = trận thử")
+	assert_eq(cfg.slots.filter(func(x: MatchSlot) -> bool: return not x.is_bot)[0].hero_id, page.previews[4].def.id)
+	m.shell.open(&"home")
+	assert_eq(page.model_view.stage.actor, null, "rời trang Tướng → gỡ mô hình")
+	m.free()
+	scene.set("config", keep)
