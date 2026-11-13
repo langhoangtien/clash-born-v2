@@ -20,6 +20,22 @@ func _config() -> MatchConfig:
 	return (load("res://app/match_scene.gd") as GDScript).get("config")
 
 
+func test_D_413_top_bar_switches_pages() -> void:
+	var m: Node = _main()
+	var shell: MenuShell = m.shell
+	assert_eq(shell.current, &"home", "mở menu → Trang chủ")
+	for key: StringName in shell.pages:
+		shell.open(key)
+		for other: StringName in shell.pages:
+			assert_eq(shell.pages[other].visible, other == key, "%s mở → chỉ trang %s hiện" % [key, key])
+	for i: int in MenuShell.TABS.size():
+		shell.press_at(shell.tab_rect(i).get_center())
+		assert_eq(shell.current, MenuShell.TABS[i])
+	shell.press_at(shell.gear_rect().get_center())
+	assert_eq(shell.current, &"settings", "⚙ → Cài đặt")
+	m.free()
+
+
 func test_D_413_play_button_back_and_account() -> void:
 	var m: Node = _main()
 	var shell: MenuShell = m.shell

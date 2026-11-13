@@ -15,6 +15,7 @@ var home: HomePage
 var play: PlayPage
 var heroes: HeroesPage
 var items: ItemsPage
+var settings: SettingsPage
 var account: MenuAccount
 var audio: AudioView
 ## Mở màn `path` (test thay để ghi lại thay vì đổi màn thật).
@@ -36,6 +37,10 @@ func _ready() -> void:
 	add_child(audio)
 	audio.play_music(&"music_menu")
 	account = MenuAccount.attach(self, shell, home)  # D-333 / D-413
+	settings.account_pressed.connect(account.open)
+	account.client.changed.connect(func() -> void:
+		settings.account_name = shell.account_name
+		settings.queue_redraw())
 	_setup_online()
 	var updater: Updater = Updater.new()  # D-148: tự kiểm tra bản mới (Android)
 	updater.name = "Updater"
@@ -68,6 +73,15 @@ func _setup_pages(previews: Array[HeroPreview], library: ContentLibrary) -> void
 	items = ItemsPage.new()
 	items.setup(library)
 	shell.add_page(&"items", items)
+	settings = SettingsPage.new()
+	settings.version_text = Updater.current_name()  # D-267
+	shell.add_page(&"settings", settings)
+	settings.sync_pressed.connect(func() -> void: SyncSession.open(self))  # D-336: M9.3 tất định điện thoại ↔ máy chủ
+	settings.bench_pressed.connect(func() -> void:  # D-272: Benchmark A/B — cảnh cố định, hai tướng do bot
+		BenchSession.requested = true
+		var bench: MatchConfig = MatchConfig.duel(BenchSession.HERO, BenchSession.FOE)  # seed cố định: so sánh được
+		bench.practice = true  # MATCH-06: đo hiệu năng — không tính thống kê
+		_open(bench))
 
 
 ## M9.6 (D-344): Chơi online — bảng phòng (OnlinePanel) + phiên mạng (OnlineMenu); máy chủ chào vào trận → màn trận online.

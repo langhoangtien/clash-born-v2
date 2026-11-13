@@ -89,7 +89,9 @@ clashborn_v2/
     ui/                    UiStyle (phông, màu, khung, nút, xu), UiGlyphs (icon nét) — D-130; UiBake: ảnh dựng sẵn
                            cho nút tròn / chấm / vòng (gộp lệnh vẽ, D-290; PNG trong assets/ui/baked/ do
                            tools/ui/bake_orbs.gd dựng). HUD vẽ theo lớp HudLayer, mỗi lớp có cổng vẽ lại riêng (D-290)
-    menu/                  HeroSelect, HeroDetail, HeroPreview (màn chọn tướng), GraphicsSetting (mức đồ họa, D-157)
+    menu/                  MenuShell (thanh trên + trang, D-413), HomePage, PlayPage (chọn chế độ), HeroesPage
+                           (+ HeroModelView / HeroStage3D, HeroDetail, HeroPreview), ItemsPage (+ ItemsDetail),
+                           SettingsPage (+ painter), GraphicsSetting (mức đồ họa, D-157), OnlinePanel, AccountPanel
     audio/                 SoundLibrary (res://assets/audio/<id>.ogg, thiếu → im lặng), AudioCues
                            (sự kiện tick → tiếng, lọc sương mù), AudioView (phát, nhạc) — D-114
     hud/                   TouchJoystick (joystick ảo; tên VirtualJoystick trùng lớp có sẵn của Godot 4.7),
