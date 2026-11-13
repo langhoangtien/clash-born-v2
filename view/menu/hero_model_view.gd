@@ -110,8 +110,11 @@ func view_rect() -> Rect2:
 	return Rect2(Vector2.ZERO, Vector2(size.x, maxf(0.0, size.y - BAR_H - 8.0)))
 
 
+## Nút hoạt ảnh: rộng BUTTON_W, khung hẹp thì co cho vừa một hàng.
 func button_rect(i: int) -> Rect2:
-	return Rect2(Vector2(i * (BUTTON_W + BUTTON_GAP), size.y - BAR_H), Vector2(BUTTON_W, BAR_H))
+	var n: int = maxi(1, animations.size())
+	var w: float = minf(BUTTON_W, (size.x - BUTTON_GAP * (n - 1)) / n)
+	return Rect2(Vector2(i * (w + BUTTON_GAP), size.y - BAR_H), Vector2(w, BAR_H))
 
 
 func _process(delta: float) -> void:

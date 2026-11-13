@@ -12,7 +12,7 @@ static var online: OnlineSession
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
 const SPEEDS: Array[int] = [1, 2, 4, 8]
 const MENU_SCENE: String = "res://app/main.tscn"
-const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · 4–9 dùng đồ · H về thành · B shop · M tiếng · Esc"
+const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · 4–9 dùng đồ · H về thành · B shop · M âm thanh (không tắt nhạc) · Esc"
 
 @onready var map_view: MapView = $MapView
 @onready var units_view: UnitsView = $UnitsView
@@ -191,7 +191,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_B:
 		shop.toggle()  # D-81: bảng shop tạm
 	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_M:
-		settings.apply(&"sound")  # D-114, D-183
+		settings.apply(&"sfx")  # D-414: phím M = bật / tắt Âm thanh (tiếng động), nhạc giữ nguyên
 	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and skills.handle_key(event, _world_point(get_viewport().get_mouse_position())):
 		pass
 	elif event is InputEventKey and event.pressed and (event as InputEventKey).keycode == KEY_ESCAPE:
@@ -256,7 +256,7 @@ func _setup_test_panel() -> void:
 			c.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		diag.read_viewport(get_viewport())
 	FrameProbe.attach(self, world, view_3d)  # D-261: đo thời gian từng phần mỗi khung
-	settings = SettingsControl.attach($Hud, true, audio, config.practice)
+	settings = SettingsControl.attach($Hud, config.practice)
 	settings.hud = match_hud
 	settings.tools = tools
 	settings.quit = func() -> void: get_tree().change_scene_to_file(MENU_SCENE)

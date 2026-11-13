@@ -1,23 +1,23 @@
 extends TestCase
-## D-412: khung xem mô hình 3D ở màn chọn tướng (thẻ Mô hình) — đúng một mô hình + AnimationPlayer, vuốt xoay (quán tính,
+## D-412: khung xem mô hình 3D (trang Tướng — D-413) — đúng một mô hình + AnimationPlayer, vuốt xoay (quán tính,
 ## không tự xoay khi đang chạm), phóng to trong giới hạn, chạm đúp về góc cũ, nút hoạt ảnh phát đúng tên theo cấu hình,
 ## hoạt ảnh một lần xong về Đứng, đổi tướng / đổi thẻ giải phóng mô hình cũ, duyệt mọi tướng trong content/heroes.
 
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
 
 
-func _select() -> HeroSelect:
+func _select() -> HeroesPage:
 	var lib: ContentLibrary = ContentLibrary.load_dir()
-	var heroes: Array[HeroDef] = []
+	var list: Array[HeroPreview] = []
 	var ids: Array = lib.heroes.keys()
 	ids.sort_custom(func(a: StringName, b: StringName) -> bool: return String(a) < String(b))
 	for id: StringName in ids:
-		heroes.append(lib.heroes[id])
-	var s: HeroSelect = HeroSelect.new()
+		list.append(HeroPreview.of(lib.heroes[id], load(BALANCE_PATH) as BalanceSettings))
+	var s: HeroesPage = HeroesPage.new()
+	s.setup(list)
 	(Engine.get_main_loop() as SceneTree).root.add_child(s)
-	s.size = Vector2(1920, 1080)
-	s.setup(heroes, load(BALANCE_PATH) as BalanceSettings)
-	s.press_at(s.tab_rect(HeroDetail.Tab.MODEL).get_center())
+	s.size = Vector2(1920, 984)
+	s._sync_model()
 	return s
 
 
@@ -34,21 +34,20 @@ func _touch(v: HeroModelView, at: Vector2, pressed: bool, double: bool = false) 
 
 
 func test_D_412_one_model_with_animation_player() -> void:
-	var s: HeroSelect = _select()
+	var s: HeroesPage = _select()
 	var v: HeroModelView = s.model_view
-	assert_true(v.visible, "thẻ Mô hình mở → khung 3D hiện")
+	assert_true(v.is_visible_in_tree(), "trang Tướng hiện → khung 3D hiện")
 	assert_eq(_actors(v).size(), 1, "đúng một mô hình")
 	assert_true(v.stage.anim != null, "có AnimationPlayer")
 	assert_eq(v.playing, &"idle", "mặc định Đứng")
 	assert_eq(String(v.stage.anim.current_animation), "idle")
-	s.press_at(s.tab_rect(HeroDetail.Tab.SKILLS).get_center())
-	assert_false(v.visible)
-	assert_eq(_actors(v).size(), 0, "đổi thẻ → gỡ mô hình")
+	s.visible = false
+	assert_eq(_actors(v).size(), 0, "rời trang Tướng → gỡ mô hình")
 	s.free()
 
 
 func test_D_412_drag_turns_with_inertia_zoom_and_double_tap_reset() -> void:
-	var s: HeroSelect = _select()
+	var s: HeroesPage = _select()
 	var v: HeroModelView = s.model_view
 	var yaw0: float = v.stage.yaw
 	var mid: Vector2 = v.view_rect().get_center()
@@ -81,9 +80,9 @@ func test_D_412_drag_turns_with_inertia_zoom_and_double_tap_reset() -> void:
 
 
 func test_D_412_buttons_play_configured_animations_then_back_to_idle() -> void:
-	var s: HeroSelect = _select()
+	var s: HeroesPage = _select()
 	var v: HeroModelView = s.model_view
-	s.press_at(s.card_rect(s.previews.map(func(p: HeroPreview) -> StringName: return p.def.id).find(&"gorran")).get_center())
+	s.press_at(s.cell_rect(s.previews.map(func(p: HeroPreview) -> StringName: return p.def.id).find(&"gorran")).get_center())
 	assert_eq(v.hero_id, &"gorran")
 	var keys: Array = v.animations.map(func(a: Array) -> StringName: return a[0])
 	for k: StringName in [&"idle", &"run", &"attack", &"q", &"w", &"r", &"stun", &"death"]:
@@ -100,13 +99,13 @@ func test_D_412_buttons_play_configured_animations_then_back_to_idle() -> void:
 
 
 func test_D_412_every_hero_builds_and_old_model_is_freed() -> void:
-	var s: HeroSelect = _select()
+	var s: HeroesPage = _select()
 	var v: HeroModelView = s.model_view
 	var slowest: float = 0.0
 	for i: int in s.previews.size():
 		var old: WeakRef = weakref(v.stage.actor)
 		var t0: int = Time.get_ticks_usec()
-		s.press_at(s.card_rect(i).get_center())
+		s.press_at(s.cell_rect(i).get_center())
 		slowest = maxf(slowest, (Time.get_ticks_usec() - t0) / 1000.0)
 		var id: StringName = s.previews[i].def.id
 		assert_eq(v.hero_id, id)

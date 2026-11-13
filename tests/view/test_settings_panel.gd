@@ -1,12 +1,11 @@
 extends TestCase
-## D-183: bảng Cài đặt (kiểu Liên Quân) — trong trận mở bằng nút bánh răng, có âm thanh, đồ họa, FPS, công cụ
-## thử, thoát trận; ở menu chỉ âm thanh, đồ họa, FPS. Bảng chỉ báo lựa chọn (`action`); APP áp. Không dừng trận.
+## D-183: bảng Cài đặt trong trận (kiểu Liên Quân) — mở bằng nút bánh răng, có Nhạc, Âm thanh (D-414: riêng), đồ họa,
+## FPS, công cụ thử, thoát trận. Bảng chỉ báo lựa chọn (`action`); APP áp. Không dừng trận. Menu: trang Cài đặt (D-413).
 
 
-func _panel(in_match: bool) -> SettingsPanel:
+func _panel(_in_match: bool = true) -> SettingsPanel:
 	var p: SettingsPanel = SettingsPanel.new()
 	p.size = Vector2(1920, 1080)
-	p.in_match = in_match
 	return p
 
 
@@ -24,19 +23,14 @@ func test_D_183_gear_opens_and_rows_report_action() -> void:
 	p.free()
 
 
-func test_D_183_rows_in_match_and_menu() -> void:
+func test_D_183_rows_in_match() -> void:
 	var m: SettingsPanel = _panel(true)
-	assert_eq(m.rows(), [&"sound", &"graphics", &"fps", &"quit"] as Array[StringName],
-		"MATCH-06: trận thường không có công cụ thử")
+	assert_eq(m.rows(), [&"music", &"sfx", &"graphics", &"fps", &"quit"] as Array[StringName],
+		"MATCH-06: trận thường không có công cụ thử; D-414: Nhạc và Âm thanh hai hàng riêng")
 	m.practice = true
-	assert_eq(m.rows(), [&"sound", &"graphics", &"fps", &"test", &"diag", &"perf_export", &"quit"] as Array[StringName],
+	assert_eq(m.rows(), [&"music", &"sfx", &"graphics", &"fps", &"test", &"diag", &"perf_export", &"quit"] as Array[StringName],
 		"trận thử: bảng Test, chẩn đoán, xuất log")
-	var menu: SettingsPanel = _panel(false)
-	assert_eq(menu.rows(), [&"sound", &"graphics", &"fps", &"perf_log", &"bench", &"sync"] as Array[StringName],
-		"menu không có công cụ thử / thoát trận; D-272: đo hiệu năng tự động; D-336: kiểm tra đồng bộ")
-	assert_false(menu.gear_rect().has_area(), "menu tự có nút Cài đặt, không vẽ bánh răng")
 	m.free()
-	menu.free()
 
 
 func test_D_183_closed_panel_ignores_rows() -> void:
