@@ -68,5 +68,5 @@ Trả lời gọn theo mã, vd `N1 ok, N2 B, M1 ok`. "Đề nghị" = phương �
 
 | Mã | Câu hỏi | Đề nghị | Trả lời |
 |---|---|---|---|
-| D1 | Giảm Duy Anh theo gói Q4 (thắng 32, thua 17, 5 trận quá 40 phút = 59%): Sức mạnh mỗi cấp 4,5 → 2,5; W phần cộng theo sát thương đánh 80% → 50%, hồi 7 → 10 s; Quyết Đấu thời gian đấu 3 / 4 / 5 s → 1,8 / 2,4 / 3 s (phần còn lại giữ). Kèm: bot Duy Anh nâng Q trước, W ở cấp 4 như các tướng khác. Gói nhẹ hơn: Q2 (STR 3,0 + tốc đánh / phản trong lúc đấu giảm một nửa) = 70%; Q1 (STR 3,0 + Quyết Đấu ngắn 40%) = 76% | Q4 | |
+| D1 | Giảm Duy Anh theo gói Q4 (thắng 32, thua 17, 5 trận quá 40 phút = 59%): Sức mạnh mỗi cấp 4,5 → 2,5; W phần cộng theo sát thương đánh 80% → 50%, hồi 7 → 10 s; Quyết Đấu thời gian đấu 3 / 4 / 5 s → 1,8 / 2,4 / 3 s (phần còn lại giữ). Kèm: bot Duy Anh nâng Q trước, W ở cấp 4 như các tướng khác. Gói nhẹ hơn: Q2 (STR 3,0 + tốc đánh / phản trong lúc đấu giảm một nửa) = 70%; Q1 (STR 3,0 + Quyết Đấu ngắn 40%) = 76% | Q4 | **KHÔNG ĐỔI** (2026-11-13). Người chơi: Duy Anh thắng vì bộ chiêu khắc đúng thói quen của bot (bot máu thấp thì chạy về, Quyết Đấu bắt được); người chơi thật đánh tướng nào cũng thắng Duy Anh trừ Vexa. Không dùng 1v1 bot đấu bot để tăng / giảm sức tướng |
 
