@@ -171,7 +171,7 @@ func _lobby_message(id: int, t: String, msg: Dictionary) -> void:
 		"pick":
 			err = lobby.pick(id, StringName(String(msg.get("hero", ""))), heroes)
 		"size":
-			err = lobby.set_size(id, int(msg.get("size", 3)))
+			err = lobby.set_size(id, int(msg.get("size", RoomLobby.MAX_TEAM_SIZE)))
 		"start":
 			err = lobby.can_start(id)
 			if err == "":
@@ -192,7 +192,7 @@ func _create_or_join(id: int, t: String, msg: Dictionary) -> String:
 	if _live(int(_conns[id]["account"])) != "":  # NET-21 (R2): còn trận đang đánh → chỉ được vào lại trận đó
 		return "IN_MATCH"
 	if t == "create":
-		var lobby: RoomLobby = RoomLobby.new(_new_code(), int(msg.get("size", 3)))
+		var lobby: RoomLobby = RoomLobby.new(_new_code(), int(msg.get("size", RoomLobby.MAX_TEAM_SIZE)))
 		_lobbies[lobby.code] = lobby
 		return _enter(id, lobby)
 	var found: RoomLobby = _lobbies.get(String(msg.get("code", "")).to_upper().strip_edges())

@@ -1,6 +1,6 @@
 extends TestCase
 ## D-413: menu mới — khung điều hướng (Trang chủ · Tướng · Trang bị · Cài đặt), nút CHƠI → Chọn chế độ → BẮT ĐẦU cho
-## từng chế độ (đấu bot 1v1 / 3v3, trận thử 1v1 / 3v3, Online mở bảng phòng), Quay lại; Trang chủ: Bản cập nhật, Trận
+## từng chế độ (D-356: 5v5 › Chơi ngay, 1v1 › Đấu bot; Phòng bạn bè / Đấu bạn mở bảng phòng), Quay lại; Trang chủ: Bản cập nhật, Trận
 ## gần đây. Dùng màn menu thật (app/main.tscn), việc đổi màn được ghi lại thay vì đổi thật.
 
 const MAIN: String = "res://app/main.tscn"
@@ -50,19 +50,17 @@ func test_D_413_play_button_back_and_account() -> void:
 	m.free()
 
 
-## Mỗi chế độ: chọn tướng, đối thủ (1v1), độ khó → BẮT ĐẦU → mở màn trận với đúng cấu hình (MATCH-01..06).
-func test_D_413_play_flow_starts_match_for_each_mode() -> void:
+## D-356: 5v5 › Chơi ngay (9 bot) và 1v1 › Đấu bot: chọn tướng, đối thủ (1v1), độ khó → BẮT ĐẦU → màn trận đúng cấu hình.
+func test_D_356_play_flow_starts_match_for_each_mode() -> void:
 	var scene: GDScript = load("res://app/match_scene.gd")
 	var keep: MatchConfig = scene.get("config")  # biến tĩnh của màn trận — trả lại sau test (test khác dựng màn trận)
 	var m: Node = _main()
 	var play: PlayPage = m.play
-	var cases: Array = [[PlayPage.Mode.BOT_1V1, 1, false, 0], [PlayPage.Mode.BOT_3V3, 3, false, 0],
-		[PlayPage.Mode.PRACTICE, 1, true, 0], [PlayPage.Mode.PRACTICE, 3, true, 1]]
-	for c: Array in cases:
+	assert_eq(play.mode, PlayPage.Mode.FIVE, "mặc định 5v5")
+	for c: Array in [[PlayPage.Mode.FIVE, 5], [PlayPage.Mode.ONE, 1]]:
 		m.shell.open(&"play")
-		play.press_at(play.mode_rect(c[0]).get_center())
-		if c[0] == PlayPage.Mode.PRACTICE:
-			play.press_at(play.size_rect(c[3]).get_center())
+		play.press_at(play.action_rect(c[0], 0).get_center())
+		assert_eq(play.mode, c[0])
 		play.press_at(play.hero_rect(4).get_center())
 		if play.picks_bot():
 			play.press_at(play.bot_rect(1).get_center())
@@ -70,12 +68,14 @@ func test_D_413_play_flow_starts_match_for_each_mode() -> void:
 		play.press_at(play.start_rect().get_center())
 		var cfg: MatchConfig = _config()
 		assert_eq((m.get_meta("opened") as Array).back(), m.MATCH_SCENE, "BẮT ĐẦU → màn trận")
-		assert_eq(cfg.team_size, c[1], "chế độ %d: số người mỗi đội" % c[0])
+		assert_eq(cfg.team_size, c[1], "số người mỗi đội")
+		assert_eq(cfg.slots.size(), 2 * c[1])
 		var human: Array = cfg.slots.filter(func(x: MatchSlot) -> bool: return not x.is_bot)
 		var bots: Array = cfg.slots.filter(func(x: MatchSlot) -> bool: return x.is_bot)
-		assert_eq(human.size(), 1, "một người chơi")
+		assert_eq(human.size(), 1, "một người chơi, còn lại bot")
 		assert_eq(human[0].hero_id, m.PLAYABLE[4], "tướng người chơi")
-		assert_eq(cfg.practice, c[2] or PerfSettings.enabled(), "trận thử (MATCH-06)")
+		assert_eq(cfg.practice, PerfSettings.enabled(), "không phải trận thử (Trận thử chỉ còn ở Thử tướng)")
+		assert_eq(cfg.validate(ContentLibrary.load_dir()), "", "không trùng tướng (MATCH-02)")
 		if c[1] == 1:
 			assert_eq(bots[0].hero_id, m.PLAYABLE[1], "đối thủ bot đã chọn")
 		assert_true(bots.all(func(x: MatchSlot) -> bool: return x.difficulty == BotState.Difficulty.HARD), "độ khó Khó")
@@ -87,23 +87,26 @@ func test_D_413_online_and_map_from_play() -> void:
 	var m: Node = _main()
 	var play: PlayPage = m.play
 	m.shell.open(&"play")
-	play.press_at(play.mode_rect(PlayPage.Mode.ONLINE).get_center())
-	assert_true((m.get_node("OnlinePanel") as Control).visible, "Online → bảng phòng Online")
-	assert_ne(play.mode, PlayPage.Mode.ONLINE, "Online không phải chế độ đấu bot")
+	for c: Array in [[PlayPage.Mode.FIVE, 5], [PlayPage.Mode.ONE, 1]]:
+		(m.get_node("OnlinePanel") as Control).visible = false
+		play.press_at(play.action_rect(c[0], 1).get_center())
+		assert_true((m.get_node("OnlinePanel") as Control).visible, "Phòng bạn bè / Đấu bạn → bảng Online")
+		assert_eq((m.get_node("OnlinePanel") as OnlinePanel).preferred_size, c[1], "cỡ phòng gợi ý theo chế độ")
 	play.press_at(play.map_rect().get_center())
 	assert_eq((m.get_meta("opened") as Array).back(), m.MAP_VIEWER, "Xem map")
 	m.free()
 
 
-## MATCH-02: bot 1v1 không bao giờ trùng tướng người chơi; 3v3 không chọn đối thủ.
-func test_MATCH_02_bot_never_same_hero_and_hidden_in_3v3() -> void:
+## MATCH-02: bot 1v1 không bao giờ trùng tướng người chơi; 5v5 không chọn đối thủ.
+func test_MATCH_02_bot_never_same_hero_and_hidden_in_5v5() -> void:
 	var m: Node = _main()
 	var play: PlayPage = m.play
+	play.press_at(play.action_rect(PlayPage.Mode.ONE, 0).get_center())
 	play.press_at(play.bot_rect(2).get_center())
 	play.press_at(play.hero_rect(2).get_center())
 	assert_ne(play.bot, play.selected, "chọn đúng tướng của bot → bot đổi sang tướng khác")
-	play.press_at(play.mode_rect(PlayPage.Mode.BOT_3V3).get_center())
-	assert_false(play.picks_bot(), "3v3: đồng đội và đối thủ ngẫu nhiên")
+	play.press_at(play.mode_rect(PlayPage.Mode.FIVE).get_center())
+	assert_false(play.picks_bot(), "5v5: đồng đội và đối thủ ngẫu nhiên")
 	m.free()
 
 

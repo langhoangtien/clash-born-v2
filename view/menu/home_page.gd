@@ -1,6 +1,6 @@
 class_name HomePage
 extends Control
-## D-413: Trang chủ — ảnh nền toàn màn, tên game + "MOBA chiến thuật 3v3", nút lớn CHƠI (mở Chọn chế độ), hai thẻ: Bản cập
+## D-413: Trang chủ — ảnh nền toàn màn, tên game + "MOBA chiến thuật 5v5", nút lớn CHƠI (mở Chọn chế độ), hai thẻ: Bản cập
 ## nhật (bản đang chạy + ghi chú bản mới nhất nếu đã hỏi được version.json) và Trận gần đây (trận mới nhất trong lịch sử
 ## tài khoản; chưa đăng nhập / chưa có trận thì ẩn). Chỉ báo bấm qua tín hiệu; APP đặt chữ.
 
@@ -64,7 +64,7 @@ func _draw() -> void:
 	var at: Vector2 = Vector2(MARGIN + 20, 210)
 	draw_string(UiStyle.serif(true), at + Vector2(4, 6), "CLASHBORN", HORIZONTAL_ALIGNMENT_LEFT, -1, 112, Color(0, 0, 0, 0.6))
 	draw_string(UiStyle.serif(true), at, "CLASHBORN", HORIZONTAL_ALIGNMENT_LEFT, -1, 112, UiStyle.GOLD)
-	draw_string(UiStyle.serif(), at + Vector2(10, 62), "— MOBA CHIẾN THUẬT 3V3 —", HORIZONTAL_ALIGNMENT_LEFT, -1, 34, UiStyle.TEXT)
+	draw_string(UiStyle.serif(), at + Vector2(10, 62), "— MOBA CHIẾN THUẬT 5V5 —", HORIZONTAL_ALIGNMENT_LEFT, -1, 34, UiStyle.TEXT)
 	UiStyle.button(self, play_rect(), &"gold", "CHƠI", "", 72)
 	_card(update_rect(), "Bản cập nhật", version_text, notes_text)
 	if not recent.is_empty():

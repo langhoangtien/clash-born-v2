@@ -167,6 +167,7 @@ offline với bot trước (M9.1–M9.2), chứng minh SIM tất định giữa 
 | M9.7 Rớt mạng: bot đánh thay hero của người rớt (lệnh đổi quyền điều khiển trong luồng lệnh — mọi máy giống nhau); lệch mã băm → báo lỗi kèm nhật ký lên máy chủ | Test; chơi thử rút mạng giữa trận |
 | M9.8 (sau) Vào lại trận đang đánh: ảnh chụp World hoặc tua nhanh nhật ký; tìm trận tự động; 5v5 | — |
 | M9.9 (sau, quyết khi có số đo điện thoại — D-411) Vào lại bằng ảnh chụp World thay vì tua từ tick 1: máy chủ gửi trạng thái World ở tick T (cơ chế mới — luật + bảng tương tác + quyết định riêng, mã băm phải khớp sau khi nạp). Số đo hiện có: tua ~250 tick / giây có vẽ (máy cloud, llvmpipe), ~300 không vẽ; máy tính bảng BTKR-W09 ước ~200 → vào lại phút 13 ≈ 2 phút. Lấy `tick_per_s` trong báo cáo `sync` từ vài điện thoại rồi mới quyết | Vào lại ở phút 15 trên điện thoại yếu nhất đang hỗ trợ ≤ ~10 giây |
+| M9.10 (việc riêng kế tiếp — D-356 / D-415) Tìm trận tự động 5v5: hàng chờ trên máy chủ phòng, ghép người theo máy / độ trễ, thiếu người thì bot; nút 5v5 › Chơi ngay dùng nó thay cho trận trong máy | Hai máy khách bấm Chơi ngay cùng lúc vào cùng một trận 5v5 (ô còn lại là bot) |
 
 ## ACC — Tài khoản (trước bản online) — D-333
 

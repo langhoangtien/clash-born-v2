@@ -6,10 +6,10 @@ extends RefCounted
 
 const CODE_CHARS: String = "0123456789"  ## D-345: chỉ số — nhập nhanh bằng bàn phím số
 const CODE_LEN: int = 6  ## NET-15 (D-401): chữ số đầu = id máy chủ tạo phòng
-const MAX_TEAM_SIZE: int = 3  ## NET-07: 6 tướng, không trùng (MATCH-02)
+const MAX_TEAM_SIZE: int = 5  ## NET-07 (D-356): 10 tướng, không trùng (MATCH-02)
 
 var code: String
-var team_size: int = 3
+var team_size: int = 5
 var host: int = -1
 var members: Array[int] = []                 ## theo thứ tự vào phòng
 var info: Dictionary[int, Dictionary] = {}   ## mã → {account, name, team, hero}
