@@ -20,6 +20,7 @@ var selected: int = 0
 var filter: int = 0
 var tab: HeroDetail.Tab = HeroDetail.Tab.SKILLS
 var model_view: HeroModelView
+var list_scroll: ScrollArea = ScrollArea.make(true)  ## danh sách dài (thêm tướng) cuộn dọc
 
 
 func setup(list: Array[HeroPreview]) -> void:
@@ -46,7 +47,9 @@ func filter_rect(i: int) -> Rect2:
 
 
 func cell_rect(k: int) -> Rect2:
-	return Rect2(Vector2(PAD + 6 + (k % COLUMNS) * (CELL.x + 10), 140 + (k / COLUMNS) * (CELL.y + 10)), CELL)
+	list_scroll.rect = Rect2(Vector2(PAD + 6, 140), Vector2(COLUMNS * (CELL.x + 10) - 10, size.y - 140 - PAD - 16))
+	list_scroll.content = ceili(shown().size() / float(COLUMNS)) * (CELL.y + 10) - 10
+	return Rect2(list_scroll.shift(Vector2(PAD + 6 + (k % COLUMNS) * (CELL.x + 10), 140 + (k / COLUMNS) * (CELL.y + 10))), CELL)
 
 
 func right_w() -> float:
@@ -81,12 +84,13 @@ func press_at(at: Vector2) -> void:
 	for i: int in FILTERS.size():
 		if filter_rect(i).has_point(at):
 			filter = i
+			list_scroll.offset = 0.0
 			var list: Array[int] = shown()
 			if not list.is_empty() and not list.has(selected):
 				selected = list[0]
 	var list: Array[int] = shown()
 	for k: int in list.size():
-		if cell_rect(k).has_point(at):
+		if cell_rect(k).has_point(at) and list_scroll.shows(cell_rect(k)):
 			selected = list[k]
 	for i: int in TABS.size():
 		if tab_rect(i).has_point(at):
@@ -98,6 +102,11 @@ func press_at(at: Vector2) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
+	cell_rect(0)  # cập nhật khung cuộn
+	if list_scroll.handle(event):
+		queue_redraw()
+		accept_event()
+		return
 	var at: Vector2 = Taps.press_position(event)  # D-102
 	if at.is_finite():
 		press_at(at)
@@ -124,7 +133,9 @@ func _draw() -> void:
 		UiStyle.button(self, filter_rect(i), &"gold" if i == filter else &"ghost", FILTERS[i], "", 17)
 	var list: Array[int] = shown()
 	for k: int in list.size():
-		_cell(cell_rect(k), previews[list[k]], list[k] == selected)
+		if list_scroll.shows(cell_rect(k)):
+			_cell(cell_rect(k), previews[list[k]], list[k] == selected)
+	list_scroll.draw_bar(self)
 	if previews.is_empty():
 		return
 	var p: HeroPreview = previews[selected]

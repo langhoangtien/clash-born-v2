@@ -52,19 +52,7 @@ func _ready() -> void:
 	UnitSprite.clear_cache()  # D-149: id đơn vị dùng lại giữa các trận
 	if online != null:
 		config = online.config  # NET-08: cấu hình máy chủ gửi — mọi máy dựng cùng một World
-	world = World.new(config.seed, load(BALANCE_PATH) as BalanceSettings)  # MATCH-05
-	world.map = map_view.layout
-	world.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
-	var library: ContentLibrary = ContentLibrary.load_dir()
-	for def: GameDef in library.units.values() + library.heroes.values():
-		ArtLibrary.texture(def.art_id)  # nạp sẵn hình lúc vào trận, không để lần xuất hiện đầu bị giật
-	ArtLibrary.load_ahead(ArtLibrary.content_ids(library))  # D-269: icon đồ / chiêu / buff nạp ngầm
-	for e: Entity in MatchSetup.build(world, library, config):
-		if hero == null and e.bot == null and (online == null or e.id == online.entity_id):
-			hero = e
-		elif bot_unit == null and e.team == 1:
-			bot_unit = e
-	hero_def = hero.hero_def
+	_build_world()
 	units_view.world = world
 	units_view.viewer_team = hero.team
 	minimap = Minimap.new()
@@ -82,37 +70,7 @@ func _ready() -> void:
 	camera.position = hero.position
 	_setup_3d()
 	_setup_test_panel()  # sau 3D: bảng chẩn đoán D-179 cần view_3d
-	skills.world = world
-	skills.hero = hero
-	skills.input = input
-	skills.buttons = skill_buttons
-	skills.indicator = aim_indicator
-	skills.talents = talent_panel
-	var item_buttons: ItemButtons = ItemButtons.new()
-	item_buttons.name = "ItemButtons"
-	$Hud.add_child(item_buttons)
-	item_buttons.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	skills.items = item_buttons
-	shop = ShopPanel.new()
-	shop.name = "ShopPanel"
-	$Hud.add_child(shop)
-	shop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	shop.world = world
-	shop.z_index = 10  # D-115: bảng shop / tỷ số vẽ trên cụm nút điều khiển
-	shop.hero = hero
-	shop.buy_pressed.connect(func(id: StringName) -> void: world.submit(Command.buy(hero.id, id)))  # SHOP-01
-	shop.sell_pressed.connect(func(i: int) -> void: world.submit(Command.sell(hero.id, i)))  # SHOP-05
-	shop.build = BuildPresets.load_build(hero_def.id)  # D-120: bộ đồ soạn sẵn của tướng này
-	shop.build_changed.connect(func(b: Array[StringName]) -> void: BuildPresets.save_build(hero_def.id, _build_done + b))
-	var info: InfoPanels = InfoPanels.new()
-	info.name = "InfoPanels"
-	$Hud.add_child(info)
-	info.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	info.world = world
-	info.z_index = 10
-	info.hero = hero
-	info.level_pressed.connect(skills.level_up)  # D-253: nâng chiêu / chọn talent ngay trong bảng thông số
-	info.talent_pressed.connect(func(slot: int) -> void: world.submit(Command.choose_talent(hero.id, slot)))
+	MatchPanels.attach(self)  # nút chiêu / đồ, shop, bảng thông số
 	skills.connect_signals()
 	match_hud.world = world
 	buff_bar.world = world
@@ -123,6 +81,23 @@ func _ready() -> void:
 	if online != null:
 		replay = ReplayScreen.make($Hud, [map_view, units_view, view_3d, aim_indicator], [$Hud/OnlineStatus, settings.panel],
 			units_view, view_3d, hero)
+
+
+## World theo cấu hình trận (MATCH-05), nạp sẵn hình, chọn hero người chơi (online: đơn vị máy chủ giao) và bot đối thủ đầu.
+func _build_world() -> void:
+	world = World.new(config.seed, load(BALANCE_PATH) as BalanceSettings)  # MATCH-05
+	world.map = map_view.layout
+	world.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
+	var library: ContentLibrary = ContentLibrary.load_dir()
+	for def: GameDef in library.units.values() + library.heroes.values():
+		ArtLibrary.texture(def.art_id)  # nạp sẵn hình lúc vào trận, không để lần xuất hiện đầu bị giật
+	ArtLibrary.load_ahead(ArtLibrary.content_ids(library))  # D-269: icon đồ / chiêu / buff nạp ngầm
+	for e: Entity in MatchSetup.build(world, library, config):
+		if hero == null and e.bot == null and (online == null or e.id == online.entity_id):
+			hero = e
+		elif bot_unit == null and e.team == 1:
+			bot_unit = e
+	hero_def = hero.hero_def
 
 
 func _process(delta: float) -> void:

@@ -6,10 +6,10 @@ const VERSION_TEXT: String = "Clashborn v2"
 const MAP_VIEWER: String = "res://app/map_viewer.tscn"
 const MATCH_SCENE: String = "res://app/match_scene.tscn"
 const BALANCE_PATH: String = "res://content/balance/balance_settings.tres"
-## Tướng chơi được, theo thứ tự hiện trên menu.
-const PLAYABLE: Array[StringName] = [&"brakk", &"myra", &"noctis", &"vexa", &"gorran", &"duy_anh", &"huyet_cu_nhan",
-	&"phong_tien", &"tho_san", &"thach_giap"]  # D-347: đợt 1 tướng mới
 
+## Tướng chơi được: mọi tướng trong content/heroes (ContentLibrary), theo tên hiện — thêm tướng là có trên menu (D-413;
+## trước đây là danh sách gõ tay, thiếu Thiết Vệ / Pháo Thủ).
+var playable: Array[StringName] = []
 var shell: MenuShell
 var home: HomePage
 var play: PlayPage
@@ -24,8 +24,9 @@ var change_scene: Callable = func(path: String) -> void: get_tree().change_scene
 
 func _ready() -> void:
 	var library: ContentLibrary = ContentLibrary.load_dir()
+	playable = roster(library)
 	var previews: Array[HeroPreview] = []
-	for id: StringName in PLAYABLE:
+	for id: StringName in playable:
 		previews.append(HeroPreview.of(library.heroes[id], load(BALANCE_PATH) as BalanceSettings))
 	shell = MenuShell.new()
 	shell.name = "MenuShell"
@@ -72,7 +73,7 @@ func _setup_pages(previews: Array[HeroPreview], library: ContentLibrary) -> void
 	heroes.setup(previews)
 	shell.add_page(&"heroes", heroes)
 	heroes.try_pressed.connect(func(id: StringName) -> void:  # Thử tướng: trận thử 1v1 với bot (MATCH-06)
-		_start(id, PLAYABLE[1] if id == PLAYABLE[0] else PLAYABLE[0], BotState.Difficulty.NORMAL, 1, true))
+		_start(id, playable[1] if id == playable[0] else playable[0], BotState.Difficulty.NORMAL, 1, true))
 	items = ItemsPage.new()
 	items.setup(library)
 	shell.add_page(&"items", items)
@@ -122,7 +123,7 @@ func _start(id: StringName, bot_id: StringName, difficulty: int, team_size: int,
 
 ## Người chơi cầm `id`; các ô còn lại tướng ngẫu nhiên không trùng (MATCH-02).
 func _team_picks(id: StringName, team_size: int) -> Array[StringName]:
-	var others: Array[StringName] = PLAYABLE.filter(func(h: StringName) -> bool: return h != id)
+	var others: Array[StringName] = playable.filter(func(h: StringName) -> bool: return h != id)
 	others.shuffle()
 	var heroes: Array[StringName] = [id]
 	heroes.append_array(others.slice(0, 2 * team_size - 1))
@@ -137,3 +138,12 @@ func _open(config: MatchConfig) -> void:
 	var scene: GDScript = preload("res://app/match_scene.gd")
 	scene.config = config
 	change_scene.call(MATCH_SCENE)
+
+
+## Mọi tướng trong thư viện, theo tên hiện (phần trước " · ").
+static func roster(library: ContentLibrary) -> Array[StringName]:
+	var ids: Array[StringName] = []
+	ids.assign(library.heroes.keys())
+	var name_of: Callable = func(id: StringName) -> String: return library.heroes[id].display_name.get_slice(" · ", 0)
+	ids.sort_custom(func(a: StringName, b: StringName) -> bool: return name_of.call(a) < name_of.call(b))
+	return ids
