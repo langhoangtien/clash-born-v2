@@ -22,12 +22,15 @@ const PAD: float = 40.0
 const CELL: Vector2 = Vector2(132, 164)
 const COLUMNS: int = 6
 const BOT_SIZE: float = 72.0
+const GRID_ROWS: int = 2  ## hàng tướng nhìn thấy; nhiều tướng hơn thì cuộn dọc (hàng đối thủ cuộn ngang)
 
 var previews: Array[HeroPreview] = []
 var mode: Mode = Mode.FIVE
 var selected: int = 0
 var bot: int = 1
 var difficulty: int = 1
+var grid_scroll: ScrollArea = ScrollArea.make(true)
+var bot_scroll: ScrollArea = ScrollArea.make(false)
 
 
 func setup(list: Array[HeroPreview]) -> void:
@@ -61,11 +64,21 @@ func columns() -> int:
 
 
 func hero_rect(i: int) -> Rect2:
-	return Rect2(Vector2(right_x() + (i % columns()) * (CELL.x + 12), 84 + (i / columns()) * (CELL.y + 12)), CELL)
+	_layout()
+	return Rect2(grid_scroll.shift(Vector2(right_x() + (i % columns()) * (CELL.x + 12), 84 + (i / columns()) * (CELL.y + 12))), CELL)
 
 
 func options_y() -> float:
-	return hero_rect(previews.size() - 1).end.y + 40.0 if not previews.is_empty() else 120.0
+	return 84.0 + GRID_ROWS * (CELL.y + 12) + 28.0
+
+
+## Khung nhìn + độ dài nội dung của hai vùng cuộn theo cỡ trang và số tướng.
+func _layout() -> void:
+	grid_scroll.rect = Rect2(Vector2(right_x(), 84), Vector2(columns() * (CELL.x + 12), GRID_ROWS * (CELL.y + 12) - 12))
+	grid_scroll.content = ceili(previews.size() / float(columns())) * (CELL.y + 12) - 12
+	var x: float = right_x() + 200
+	bot_scroll.rect = Rect2(Vector2(x, options_y()), Vector2(size.x - PAD - 40 - x, BOT_SIZE))
+	bot_scroll.content = previews.size() * (BOT_SIZE + 8) - 8
 
 
 func team_size() -> int:
@@ -78,7 +91,8 @@ func picks_bot() -> bool:
 
 
 func bot_rect(i: int) -> Rect2:
-	return Rect2(Vector2(right_x() + 200 + i * (BOT_SIZE + 8), options_y()), Vector2(BOT_SIZE, BOT_SIZE))
+	_layout()
+	return Rect2(bot_scroll.shift(Vector2(right_x() + 200 + i * (BOT_SIZE + 8), options_y())), Vector2(BOT_SIZE, BOT_SIZE))
 
 
 func diff_rect(i: int) -> Rect2:
@@ -113,9 +127,9 @@ func press_at(at: Vector2) -> void:
 
 func _press_options(at: Vector2) -> void:
 	for i: int in previews.size():
-		if hero_rect(i).has_point(at):
+		if hero_rect(i).has_point(at) and grid_scroll.shows(hero_rect(i)):
 			selected = i
-		if picks_bot() and bot_rect(i).has_point(at):
+		if picks_bot() and bot_rect(i).has_point(at) and bot_scroll.shows(bot_rect(i)):
 			bot = i
 	for i: int in DIFF_NAMES.size():
 		if diff_rect(i).has_point(at):
@@ -123,6 +137,11 @@ func _press_options(at: Vector2) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
+	_layout()
+	if grid_scroll.handle(event) or (picks_bot() and bot_scroll.handle(event)):
+		queue_redraw()
+		accept_event()
+		return
 	var at: Vector2 = Taps.press_position(event)  # D-102
 	if at.is_finite():
 		press_at(at)
@@ -144,13 +163,18 @@ func _draw() -> void:
 		HORIZONTAL_ALIGNMENT_LEFT, -1, 32, UiStyle.GOLD)
 	for i: int in previews.size():
 		_hero(i)
+	grid_scroll.draw_bar(self)
 	_options()
+	if picks_bot():
+		bot_scroll.draw_bar(self)
 	UiStyle.button(self, map_rect(), &"blue", "Xem map", "", 28)
 	UiStyle.button(self, start_rect(), &"gold", "BẮT ĐẦU", "", 50)
 
 
 func _hero(i: int) -> void:
 	var r: Rect2 = hero_rect(i)
+	if not grid_scroll.shows(r):
+		return
 	UiStyle.card(self, r, i == selected)
 	HeroDetail.portrait(self, previews[i], Rect2(r.position + Vector2(10, 8), Vector2(r.size.x - 20, r.size.x - 20)), i == selected)
 	UiStyle.text_center(self, UiStyle.serif(true), Vector2(r.get_center().x, r.end.y - 16),
@@ -163,6 +187,8 @@ func _options() -> void:
 		draw_string(UiStyle.serif(), Vector2(right_x(), y + 46), "Đối thủ (bot)", HORIZONTAL_ALIGNMENT_LEFT, -1, 26, UiStyle.DIM)
 		for i: int in previews.size():
 			var r: Rect2 = bot_rect(i)
+			if not bot_scroll.shows(r):
+				continue
 			draw_style_box(UiStyle.box(UiStyle.CARD, UiStyle.GOLD if i == bot else UiStyle.LINE, 3 if i == bot else 1, 8), r)
 			HeroDetail.portrait(self, previews[i], r.grow(-3), i == bot)
 	var dy: float = diff_rect(0).position.y

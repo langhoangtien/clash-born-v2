@@ -73,11 +73,11 @@ func test_D_356_play_flow_starts_match_for_each_mode() -> void:
 		var human: Array = cfg.slots.filter(func(x: MatchSlot) -> bool: return not x.is_bot)
 		var bots: Array = cfg.slots.filter(func(x: MatchSlot) -> bool: return x.is_bot)
 		assert_eq(human.size(), 1, "một người chơi, còn lại bot")
-		assert_eq(human[0].hero_id, m.PLAYABLE[4], "tướng người chơi")
+		assert_eq(human[0].hero_id, m.playable[4], "tướng người chơi")
 		assert_eq(cfg.practice, PerfSettings.enabled(), "không phải trận thử (Trận thử chỉ còn ở Thử tướng)")
 		assert_eq(cfg.validate(ContentLibrary.load_dir()), "", "không trùng tướng (MATCH-02)")
 		if c[1] == 1:
-			assert_eq(bots[0].hero_id, m.PLAYABLE[1], "đối thủ bot đã chọn")
+			assert_eq(bots[0].hero_id, m.playable[1], "đối thủ bot đã chọn")
 		assert_true(bots.all(func(x: MatchSlot) -> bool: return x.difficulty == BotState.Difficulty.HARD), "độ khó Khó")
 	m.free()
 	scene.set("config", keep)
@@ -187,3 +187,51 @@ func test_D_413_items_page_categories_search_select() -> void:
 	assert_eq(page.scroll, page.max_scroll(), "cuộn tới cuối lưới")
 	assert_true(page.max_scroll() > 0.0, "95 món: lưới phải cuộn")
 	m.free()
+
+
+## Lỗi D-413: menu chỉ hiện 10 tướng (danh sách gõ tay) — phải đủ mọi tướng trong content/heroes, ở trang Tướng và Chọn chế độ.
+func test_D_413_every_hero_in_content_is_listed() -> void:
+	var m: Node = _main()
+	var lib: ContentLibrary = ContentLibrary.load_dir()
+	var want: Array = lib.heroes.keys()
+	assert_eq(m.playable.size(), want.size(), "đủ %d tướng" % want.size())
+	for id: StringName in want:
+		assert_true(m.playable.has(id), "có %s" % id)
+	assert_eq(m.heroes.previews.size(), want.size(), "trang Tướng")
+	assert_eq(m.play.previews.size(), want.size(), "Chọn chế độ")
+	assert_true(m.playable.has(&"thiet_ve") and m.playable.has(&"phao_thu"), "Thiết Vệ, Pháo Thủ")
+	m.free()
+
+
+## Nhiều tướng (người chơi sẽ thêm ~10): lưới tướng / hàng đối thủ / danh sách trang Tướng cuộn được, chỉ bấm được ô đang hiện.
+func test_D_413_hero_grids_scroll_when_many() -> void:
+	var lib: ContentLibrary = ContentLibrary.load_dir()
+	var many: Array[HeroPreview] = []
+	for k: int in 3:
+		for id: StringName in lib.heroes:
+			many.append(HeroPreview.of(lib.heroes[id], load("res://content/balance/balance_settings.tres") as BalanceSettings))
+	var play: PlayPage = PlayPage.new()
+	play.size = Vector2(1920, 984)
+	play.setup(many)
+	play.mode = PlayPage.Mode.ONE
+	var last: int = many.size() - 1
+	assert_false(play.grid_scroll.shows(play.hero_rect(last)), "tướng cuối ngoài khung lúc đầu")
+	play.press_at(play.hero_rect(last).get_center())
+	assert_ne(play.selected, last, "ô ngoài khung không bấm được")
+	play.grid_scroll.scroll_by(100000.0)
+	assert_true(play.grid_scroll.shows(play.hero_rect(last)), "cuộn tới cuối thấy tướng cuối")
+	play.press_at(play.hero_rect(last).get_center())
+	assert_eq(play.selected, last)
+	assert_true(play.bot_scroll.max_offset() > 0.0, "hàng đối thủ cuộn ngang")
+	var d: InputEventScreenDrag = InputEventScreenDrag.new()
+	d.position = play.bot_scroll.rect.get_center()
+	d.relative = Vector2(-300, 0)
+	play._gui_input(d)
+	assert_near(play.bot_scroll.offset, 300.0, 0.1, "vuốt ngang cuộn hàng đối thủ")
+	play.free()
+	var page: HeroesPage = HeroesPage.new()
+	page.size = Vector2(1920, 984)
+	page.setup(many)
+	page.cell_rect(0)
+	assert_true(page.list_scroll.max_offset() > 0.0, "danh sách trang Tướng cuộn dọc")
+	page.free()
