@@ -142,3 +142,29 @@ func test_D_413_heroes_page_filter_tabs_and_try() -> void:
 	assert_eq(page.model_view.stage.actor, null, "rời trang Tướng → gỡ mô hình")
 	m.free()
 	scene.set("config", keep)
+
+
+## Trang Trang bị: danh mục đúng như cửa hàng, ô tìm, chọn món → chi tiết; cuộn lưới.
+func test_D_413_items_page_categories_search_select() -> void:
+	var m: Node = _main()
+	m.shell.open(&"items")
+	var page: ItemsPage = m.items
+	var lib: ContentLibrary = ContentLibrary.load_dir()
+	assert_eq(page.shown().size(), lib.items.size(), "Tất cả = mọi món trong content/items")
+	page.press_at(page.tab_rect(ShopPanel.Tab.ATTACK).get_center())
+	assert_true(page.shown().all(func(d: ItemDef) -> bool: return d.category == ItemDef.Category.ATTACK), "Tấn công")
+	page.press_at(page.tab_rect(ShopPanel.Tab.SECRET).get_center())
+	assert_true(page.shown().all(func(d: ItemDef) -> bool: return d.shop == ItemDef.ShopKind.SECRET), "Shop ẩn")
+	page.press_at(page.tab_rect(ShopPanel.Tab.ALL).get_center())
+	var some: ItemDef = lib.items.values().filter(func(d: ItemDef) -> bool: return not d.components.is_empty())[0]
+	page.search.text = some.display_name.substr(0, 6)
+	page.search.text_changed.emit(page.search.text)
+	assert_true(page.shown().has(some), "tìm theo tên")
+	assert_true(page.shown().size() < lib.items.size())
+	page.press_at(page.cell_rect(page.shown().find(some)).get_center())
+	assert_eq(page.selected, some, "chạm ô → chi tiết món")
+	page.search.text_changed.emit("")
+	page.scroll_by(100000.0)
+	assert_eq(page.scroll, page.max_scroll(), "cuộn tới cuối lưới")
+	assert_true(page.max_scroll() > 0.0, "95 món: lưới phải cuộn")
+	m.free()

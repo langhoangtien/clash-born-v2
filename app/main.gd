@@ -14,6 +14,7 @@ var shell: MenuShell
 var home: HomePage
 var play: PlayPage
 var heroes: HeroesPage
+var items: ItemsPage
 var account: MenuAccount
 var audio: AudioView
 ## Mở màn `path` (test thay để ghi lại thay vì đổi màn thật).
@@ -29,7 +30,7 @@ func _ready() -> void:
 	shell.name = "MenuShell"
 	add_child(shell)
 	shell.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_setup_pages(previews)
+	_setup_pages(previews, library)
 	audio = AudioView.new()  # D-114: nhạc menu (Safari phát sau lần chạm đầu tiên)
 	audio.name = "Audio"
 	add_child(audio)
@@ -47,7 +48,7 @@ func _ready() -> void:
 	print(VERSION_TEXT + " ready")
 
 
-func _setup_pages(previews: Array[HeroPreview]) -> void:
+func _setup_pages(previews: Array[HeroPreview], library: ContentLibrary) -> void:
 	home = HomePage.new()
 	home.version_text = "Phiên bản " + (Updater.current_name() if Updater.current_name() != "" else "chạy từ editor")
 	home.notes_text = "Chạm để xem cập nhật" if Updater.enabled() else ""
@@ -64,6 +65,9 @@ func _setup_pages(previews: Array[HeroPreview]) -> void:
 	shell.add_page(&"heroes", heroes)
 	heroes.try_pressed.connect(func(id: StringName) -> void:  # Thử tướng: trận thử 1v1 với bot (MATCH-06)
 		_start(id, PLAYABLE[1] if id == PLAYABLE[0] else PLAYABLE[0], BotState.Difficulty.NORMAL, 1, true))
+	items = ItemsPage.new()
+	items.setup(library)
+	shell.add_page(&"items", items)
 
 
 ## M9.6 (D-344): Chơi online — bảng phòng (OnlinePanel) + phiên mạng (OnlineMenu); máy chủ chào vào trận → màn trận online.
