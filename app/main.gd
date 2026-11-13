@@ -46,6 +46,9 @@ func _ready() -> void:
 	updater.name = "Updater"
 	add_child(updater)
 	updater.attach(shell)
+	home.update_pressed.connect(func() -> void:  # thẻ Bản cập nhật: có bản mới thì tải như nút Cập nhật (D-148)
+		if updater.button.visible:
+			updater.button.pressed.emit())
 	updater.checked.connect(func(latest: Dictionary) -> void:
 		home.notes_text = "Mới nhất %s: %s" % [latest.get("name", ""), latest.get("notes", "")]
 		home.queue_redraw())
