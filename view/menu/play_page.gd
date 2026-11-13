@@ -1,19 +1,21 @@
 class_name PlayPage
 extends Control
-## D-413: Chọn chế độ (mở từ nút CHƠI ở Trang chủ) — trái: Đấu bot 1v1 · Đấu bot 3v3 · Online · Trận thử; phải: lưới tướng
-## gọn + lựa chọn riêng của chế độ (đối thủ bot khi 1v1, độ khó, xem map; Trận thử chọn thêm 1v1 / 3v3 — MATCH-06) → BẮT
-## ĐẦU. Online mở bảng Online hiện có. Chỉ báo lựa chọn qua tín hiệu; APP mở trận.
+## D-413 + D-356 (người chơi chốt: giao diện chỉ còn 5v5 mặc định và 1v1): Chọn chế độ (mở từ nút CHƠI) — trái hai thẻ lớn:
+## 5v5 [Chơi ngay · Phòng bạn bè] và 1v1 [Đấu bot · Đấu bạn]. Chơi ngay / Đấu bot → phải: lưới tướng + độ khó + xem map
+## (1v1 thêm đối thủ bot — MATCH-02) → BẮT ĐẦU (5v5 chưa có tìm trận tự động: chạy trong máy, 9 ô còn lại là bot). Phòng bạn
+## bè / Đấu bạn → bảng Online (phòng theo mã, cỡ tương ứng). Trận thử chỉ còn ở nút "Thử tướng" (trang Tướng).
 
 signal start_pressed(hero_id: StringName, bot_id: StringName, difficulty: int, team_size: int, practice: bool)
-signal online_pressed
+signal online_pressed(team_size: int)
 signal map_pressed
 signal back_pressed
 
-enum Mode { BOT_1V1, BOT_3V3, ONLINE, PRACTICE }
+enum Mode { FIVE, ONE }
 
-const MODE_NAMES: Array[String] = ["Đấu bot 1v1", "Đấu bot 3v3", "Online", "Trận thử"]
-const MODE_SUBS: Array[String] = ["Bạn và một bot đối thủ", "Đồng đội và đối thủ là bot", "Phòng theo mã, chơi với người",
-	"Không tính thống kê · có bảng Test"]
+const MODE_NAMES: Array[String] = ["5v5", "1v1"]
+const MODE_SIZES: Array[int] = [5, 1]
+const MODE_SUBS: Array[String] = ["Mỗi đội 5 tướng · ô trống là bot", "Đối đầu một chọi một"]
+const ACTIONS: Array[Array] = [["Chơi ngay", "Phòng bạn bè"], ["Đấu bot", "Đấu bạn"]]
 const DIFF_NAMES: Array[String] = ["Dễ", "Thường", "Khó"]
 const LEFT_W: float = 460.0
 const PAD: float = 40.0
@@ -22,12 +24,10 @@ const COLUMNS: int = 6
 const BOT_SIZE: float = 72.0
 
 var previews: Array[HeroPreview] = []
-var mode: Mode = Mode.BOT_1V1
+var mode: Mode = Mode.FIVE
 var selected: int = 0
 var bot: int = 1
 var difficulty: int = 1
-## Trận thử: 1v1 hay 3v3.
-var practice_size: int = 1
 
 
 func setup(list: Array[HeroPreview]) -> void:
@@ -42,7 +42,13 @@ func back_rect() -> Rect2:
 
 
 func mode_rect(i: int) -> Rect2:
-	return Rect2(Vector2(PAD, 120 + i * 150), Vector2(LEFT_W - PAD, 132))
+	return Rect2(Vector2(PAD, 120 + i * 330), Vector2(LEFT_W - PAD, 300))
+
+
+## Nút trong thẻ chế độ `i`: j = 0 chơi với bot trong máy, 1 phòng bạn bè (Online).
+func action_rect(i: int, j: int) -> Rect2:
+	var r: Rect2 = mode_rect(i)
+	return Rect2(Vector2(r.position.x + 24, r.position.y + 150 + j * 72), Vector2(r.size.x - 48, 60))
 
 
 func right_x() -> float:
@@ -63,10 +69,10 @@ func options_y() -> float:
 
 
 func team_size() -> int:
-	return [1, 3, 1, practice_size][mode]
+	return MODE_SIZES[mode]
 
 
-## Đối thủ bot chỉ chọn được khi 1v1 (3v3: đồng đội và đối thủ ngẫu nhiên — MATCH-02).
+## Đối thủ bot chỉ chọn được khi 1v1 (5v5: đồng đội và đối thủ ngẫu nhiên, không trùng — MATCH-02).
 func picks_bot() -> bool:
 	return team_size() == 1
 
@@ -77,10 +83,6 @@ func bot_rect(i: int) -> Rect2:
 
 func diff_rect(i: int) -> Rect2:
 	return Rect2(Vector2(right_x() + 200 + i * 132, options_y() + (BOT_SIZE + 28 if picks_bot() else 0.0)), Vector2(120, 64))
-
-
-func size_rect(i: int) -> Rect2:
-	return Rect2(Vector2(diff_rect(2).end.x + 60 + i * 132, diff_rect(0).position.y), Vector2(120, 64))
 
 
 func map_rect() -> Rect2:
@@ -95,18 +97,17 @@ func press_at(at: Vector2) -> void:
 	if back_rect().has_point(at):
 		back_pressed.emit()
 	for i: int in MODE_NAMES.size():
-		if mode_rect(i).has_point(at):
-			if i == Mode.ONLINE:
-				online_pressed.emit()
-			else:
-				mode = i as Mode
+		if action_rect(i, 1).has_point(at):
+			online_pressed.emit(MODE_SIZES[i])
+		elif mode_rect(i).has_point(at):
+			mode = i as Mode
 	_press_options(at)
 	if bot == selected and previews.size() > 1:  # MATCH-02: không trùng tướng với đối thủ
 		bot = (selected + 1) % previews.size()
 	if map_rect().has_point(at):
 		map_pressed.emit()
 	if start_rect().has_point(at) and not previews.is_empty():
-		start_pressed.emit(previews[selected].def.id, previews[bot].def.id, difficulty, team_size(), mode == Mode.PRACTICE)
+		start_pressed.emit(previews[selected].def.id, previews[bot].def.id, difficulty, team_size(), false)
 	queue_redraw()
 
 
@@ -119,9 +120,6 @@ func _press_options(at: Vector2) -> void:
 	for i: int in DIFF_NAMES.size():
 		if diff_rect(i).has_point(at):
 			difficulty = i
-	for i: int in 2:
-		if mode == Mode.PRACTICE and size_rect(i).has_point(at):
-			practice_size = [1, 3][i]
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -136,11 +134,14 @@ func _draw() -> void:
 	for i: int in MODE_NAMES.size():
 		var r: Rect2 = mode_rect(i)
 		UiStyle.card(self, r, i == mode)
-		draw_string(UiStyle.serif(true), r.position + Vector2(28, 58), MODE_NAMES[i], HORIZONTAL_ALIGNMENT_LEFT, -1, 36,
+		draw_string(UiStyle.serif(true), r.position + Vector2(28, 84), MODE_NAMES[i], HORIZONTAL_ALIGNMENT_LEFT, -1, 72,
 			UiStyle.GOLD if i == mode else UiStyle.TEXT)
-		draw_string(UiStyle.sans(), r.position + Vector2(28, 100), MODE_SUBS[i], HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 40, 21, UiStyle.DIM)
+		draw_string(UiStyle.sans(), r.position + Vector2(30, 124), MODE_SUBS[i], HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 40, 21, UiStyle.DIM)
+		for j: int in 2:
+			UiStyle.button(self, action_rect(i, j), &"gold" if i == mode and j == 0 else (&"blue" if j == 1 else &"ghost"), ACTIONS[i][j], "", 26)
 	UiStyle.panel(self, Rect2(Vector2(right_x() - 20, 24), Vector2(size.x - right_x() - PAD + 20, size.y - 48)))
-	draw_string(UiStyle.serif(true), Vector2(right_x(), 66), "Chọn tướng — " + MODE_NAMES[mode], HORIZONTAL_ALIGNMENT_LEFT, -1, 32, UiStyle.GOLD)
+	draw_string(UiStyle.serif(true), Vector2(right_x(), 66), "Chọn tướng — %s · %s" % [MODE_NAMES[mode], ACTIONS[mode][0]],
+		HORIZONTAL_ALIGNMENT_LEFT, -1, 32, UiStyle.GOLD)
 	for i: int in previews.size():
 		_hero(i)
 	_options()
@@ -168,7 +169,3 @@ func _options() -> void:
 	draw_string(UiStyle.serif(), Vector2(right_x(), dy + 42), "Độ khó bot", HORIZONTAL_ALIGNMENT_LEFT, -1, 26, UiStyle.DIM)
 	for i: int in DIFF_NAMES.size():
 		UiStyle.button(self, diff_rect(i), &"gold" if i == difficulty else &"ghost", DIFF_NAMES[i], "", 26)
-	if mode == Mode.PRACTICE:
-		for i: int in 2:
-			var n: int = [1, 3][i]
-			UiStyle.button(self, size_rect(i), &"gold" if n == practice_size else &"ghost", "%d vs %d" % [n, n], "", 26)

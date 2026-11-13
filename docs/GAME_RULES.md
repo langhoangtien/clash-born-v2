@@ -973,7 +973,8 @@ chơi đi qua mạng. Tham số mạng (độ trễ lệnh, nhịp so mã băm, 
   ("phiên hết hạn"); API trả 429 / 5xx, không nối được hoặc quá hạn → thử lại 2 lần cách 1 giây, vẫn hỏng → `BUSY` ("Máy
   chủ đang bận — thử lại sau"; không phải lỗi phiên, máy khách không đăng xuất).
 - `NET-07` (M9.5) **Phòng** có mã 6 chữ số (NET-15; D-345: chỉ số, nhập bằng bàn phím số; trước D-401 là 5 chữ số). Người tạo là chủ phòng, chọn số người mỗi
-  đội (1–3 khi còn 6 tướng — MATCH-02). Tối đa 2 × số người mỗi đội người trong phòng.
+  đội (1–5 — D-356: 10 tướng, không trùng, MATCH-02; giao diện chỉ mời 5v5 và 1v1). Tối đa 2 × số người mỗi đội người
+  trong phòng; ô trống là bot đi đường theo `bot_lane_order` của ô.
 - `NET-08` Trong phòng mỗi người chọn đội (đội còn chỗ) và tướng chưa ai trong phòng chọn (MATCH-02). Chủ phòng bấm bắt đầu
   khi mọi người đã chọn tướng; ô trống → bot độ khó Thường, tướng ngẫu nhiên trong số còn lại. Máy chủ chọn seed.
 - `NET-09` Trước khi trận bắt đầu: người rời phòng thì giải phóng ô / tướng; chủ phòng rời → người vào sớm nhất còn lại làm

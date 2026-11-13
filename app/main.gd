@@ -98,7 +98,9 @@ func _setup_online() -> void:
 	menu.name = "Online"
 	add_child(menu)
 	menu.attach(panel)
-	play.online_pressed.connect(menu.open)
+	play.online_pressed.connect(func(size: int) -> void:  # D-356: Phòng bạn bè (5v5) / Đấu bạn (1v1)
+		panel.preferred_size = size
+		menu.open())
 	menu.match_ready.connect(func(s: OnlineSession) -> void:
 		var scene: GDScript = preload("res://app/match_scene.gd")
 		scene.online = s
