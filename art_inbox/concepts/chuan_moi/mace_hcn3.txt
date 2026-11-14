@@ -1,0 +1,2 @@
+Draw ONLY the MACE of "Huyết Cự Nhân" from art_inbox/3d/huyet_cu_nhan/huyet_cu_nhan_mau_v3.png (open it first): long dark leather-wrapped wooden handle with small bronze end caps, big faceted grey iron head (polyhedron, no spikes). Separate prop, portrait 1024x1536, plain flat light warm-grey background, standing upright with the head at the TOP, seen straight from the side, filling about 85% of the image height, no hands, no character, no text.
+Output: art_inbox/3d/huyet_cu_nhan/huyet_cu_nhan_mace.png

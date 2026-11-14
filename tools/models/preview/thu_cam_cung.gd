@@ -3,7 +3,7 @@ extends SceneTree
 ## cung gắn BoneAttachment3D, đánh số để chọn. Hướng: cung ở tư thế chuẩn (dài theo y, dây ở −x, mỏng theo z) rồi xoay
 ## `ROTS[i]` trong hệ xương.
 ## xvfb-run -a godot --path . --resolution 1920x1080 -s tools/models/preview/thu_cam_cung.gd --
-##   --body=x.glb --bow=cung_chuẩn.glb --bone=mixamorig_LeftHand (Godot đổi ":" thành "_") --anim="standing aim overdraw" --time=1.6 --out=ảnh.png
+##   [--grip=0.5] --body=x.glb --bow=cung_chuẩn.glb --bone=mixamorig_LeftHand (Godot đổi ":" thành "_") --anim="standing aim overdraw" --time=1.6 --out=ảnh.png
 
 var _out: String = ""
 var _frames: int = 0
@@ -61,7 +61,9 @@ func _one(world: Node3D, o: Dictionary, r: Vector3, i: int) -> void:
 	att.add_child(pivot)
 	var k: float = float(o["size"]) * tall / box.size.y
 	bow.scale = Vector3.ONE * k
-	bow.position = -box.get_center() * k
+	var hold: Vector3 = box.get_center()
+	hold.y = box.position.y + box.size.y * float(o.get("grip", "0.5"))  # chỗ nắm dọc trục y (vũ khí cán dài: gần đáy)
+	bow.position = -hold * k
 	pivot.add_child(bow)
 	var l: Label3D = Label3D.new()
 	l.text = "%d (%d,%d,%d)" % [i, r.x, r.y, r.z]

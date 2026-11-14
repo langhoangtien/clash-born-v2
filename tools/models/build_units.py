@@ -121,12 +121,14 @@ UNITS = {
                          "Idle_Dizzy=stun,Bow Pull Back@0.75-1.25+Bow Release=cast,Dodge_left=skill_1,"
                          "Bow_Draw@1.3-2.07+Bow Release=skill_2,Sprint=sprint",
                          "_leaf", False, ["phong_tien_v4/phong_tien_v4_bow_afk:hand_l"]),
-    # D-379c: Huyết Cự Nhân style mới (tờ 3 góc v2: búi tóc ngắn, râu ngắn, không giáp vai) — Tripo thường 3k + afk.ai,
-    # tay không, hoạt ảnh như Brakk (nhảy / thủ / gồng); đánh thường = Fighting Left Jab cho khác Brakk (người chơi)
-    "huyet_cu_nhan": ("huyet_cu_nhan/huyet_cu_nhan", "heroes/huyet_cu_nhan",
-                      "Fighting Idle=idle,Jog=run,Fighting Left Jab=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
-                      "Punch_Cross=cast,NinjaJump_Start@0.2-0.96+NinjaJump_Land@0-0.7=skill_1,Defend=skill_2,Power Up=skill_3,"
-                      "Sprint=sprint", True, False),
+    # D-379e: Huyết Cự Nhân theo mẫu người chơi (sừng, vết dung nham, xích, giáp vai trái, chùy) — Tripo thường 3k + chùy
+    # Tripo 500 riêng gắn hand_r (place_prop rot 90,0,0 như kiếm Duy Anh); đánh = đập chùy qua đầu, Q = Smash (đập đất),
+    # R = nhảy dậm (Đại Địa Chấn); đứng / chạy kiểu cầm vũ khí cho chùy khỏi quét qua mặt
+    "huyet_cu_nhan": ("huyet_cu_nhan/v3/hcn3", "heroes/huyet_cu_nhan",
+                      "Idle_Sword=idle,Sword_Run=run,Axe_Downward~@0.6-2.2=attack,Hit_Chest=hit,Death_B=death,Idle Hurt=stun,"
+                      "Smash@0-1.5=cast,Smash=skill_1,Axe_Block=skill_2,"
+                      "NinjaJump_Start@0.2-0.96+NinjaJump_Land@0-0.7=skill_3,Sword_Run@0-0.67=sprint",
+                      True, False, ["huyet_cu_nhan/v3/hcn3_mace_hand:hand_r"]),
     # D-307b: tê giác theo style ảnh mẫu người chơi (concept_gen.py từ ảnh mẫu → split_turnaround.py →
     # Tripo multiview → glb_yaw -90 → afk.ai: dragon / horse → fix-stretching)
     # D-309: Người Đá thay rồng (concept_gen theo ảnh mẫu bãi đấu → Tripo → afk.ai human); fix-stretching + drop_loose (tam giác lẻ kéo dài); đòn đánh = đấm móc (đấm đất kéo méo nắm tay)

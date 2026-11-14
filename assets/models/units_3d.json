@@ -261,7 +261,7 @@
    "rig": "Creature",
    "attack": "attack",
    "cast": "cast",
-   "impact": 0.51,
+   "impact": 0.69,
    "height": 1.5,
    "skills": {
     "1": "skill_1",
@@ -269,9 +269,9 @@
     "3": "skill_3"
    },
    "skill_impact": {
-    "1": 0.6
+    "1": 0.27
    },
-   "_ghi_chu": "D-379c: mô hình riêng style mới (Tripo thường 3k + afk.ai, hoạt ảnh như Brakk); đánh thường Fighting Left Jab, điểm trúng 0,51 (tay vươn xa nhất)"
+   "_ghi_chu": "D-379e: mẫu người chơi (sừng, dung nham, xích, giáp vai trái) + chùy gắn tay phải; đánh = đập chùy qua đầu (điểm trúng 0,69 = tay thấp nhất), Q Smash (0,27)"
   },
   "thach_giap": {
    "model": "style/heroes/brakk",
