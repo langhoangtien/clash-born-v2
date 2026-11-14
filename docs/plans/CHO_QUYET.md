@@ -64,3 +64,9 @@ Trả lời gọn theo mã, vd `N1 ok, N2 B, M1 ok`. "Đề nghị" = phương �
 | C2 | Cây / bụi / lá: **hướng 1** khối lá vẽ tay có mảng sáng tối (cần mô hình + ảnh màu mới) / **hướng 2** giữ phẳng, tông trầm + viền đậm (rẻ nhất) / **hướng 3** khối tròn mượt (nhẹ, hơi trơn) | Hướng 1; làm mẫu 1 cây + 1 bụi trong trận để duyệt trước khi thay hàng loạt | Theo đề nghị: **hướng 1**, làm mẫu 1 cây + 1 bụi trong trận trước |
 | B2 | Luật bot mới: bot không dùng chiêu ép đánh tay đôi (Quyết Đấu của Duy Anh) lên tướng đang ở dạng hồn ma / không đánh thường được — hiện bot Duy Anh Quyết Đấu một Brakk đang bật Gậy Hồn Ma, hai bên đứng nhìn nhau vài giây | Duyệt | **KHÔNG làm** — người chơi: Quyết Đấu lên tướng dạng hồn ma vẫn có ích (giữ chân không cho chạy về để đồng đội gây sát thương phép) |
 
+## Cân bằng Duy Anh (CB-2, ma trận bot đấu bot 54 trận / gói; hiện tại thắng 54 / 0)
+
+| Mã | Câu hỏi | Đề nghị | Trả lời |
+|---|---|---|---|
+| D1 | Giảm Duy Anh theo gói Q4 (thắng 32, thua 17, 5 trận quá 40 phút = 59%): Sức mạnh mỗi cấp 4,5 → 2,5; W phần cộng theo sát thương đánh 80% → 50%, hồi 7 → 10 s; Quyết Đấu thời gian đấu 3 / 4 / 5 s → 1,8 / 2,4 / 3 s (phần còn lại giữ). Kèm: bot Duy Anh nâng Q trước, W ở cấp 4 như các tướng khác. Gói nhẹ hơn: Q2 (STR 3,0 + tốc đánh / phản trong lúc đấu giảm một nửa) = 70%; Q1 (STR 3,0 + Quyết Đấu ngắn 40%) = 76% | Q4 | **KHÔNG ĐỔI** (2026-11-13). Người chơi: Duy Anh thắng vì bộ chiêu khắc đúng thói quen của bot (bot máu thấp thì chạy về, Quyết Đấu bắt được); người chơi thật đánh tướng nào cũng thắng Duy Anh trừ Vexa. Không dùng 1v1 bot đấu bot để tăng / giảm sức tướng |
+

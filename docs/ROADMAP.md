@@ -145,15 +145,7 @@ không làm hình thật cho thứ lối chơi còn đang đổi.
   đứng được nhưng không có đường tới đúng điểm → lệnh MOVE xong ngay, đơn vị không nhích (cả khi người chơi bấm sát mép vách).
 - M9.5–M9.6: dấu vân tay SIM không ổn định (xếp StringName theo địa chỉ bộ nhớ) đã sửa ở D-400 (CB-3); cùng loại lỗi trong
   `sim/world/world_hash.gd` đang giao CB-2.
-- **Cân bằng Phong Tiễn (chờ bảng ba phương án của CB-2 rồi người chơi chọn, câu P1):** ma trận 54 trận trọn (9 tướng × 2 phía × 3
-  seed, SIM 23dabc5): thắng sạch Brakk, Noctis, Vexa, Thợ Săn (6/6; Noctis / Vexa ~13 phút); Myra 2–4; thua sạch Gorran, Duy Anh
-  (0/6); Huyết Cự Nhân 1 thắng + 5 trận 40 phút chưa xong; Thạch Giáp 6 trận chưa xong. Tổng 27 / 16 / 11. Không lỗi bot nào.
-  Ba phương án giảm (tốc 270 / Q né 2 s / cả hai, 54 trận mỗi bản): 27/18/9 · 26/17/11 · 28/16/10 — không đổi bên thắng ở cặp nào
-  → CB-2 đề nghị giữ nguyên. Điều tra diễn biến 5 trận: cả bốn cặp 6/0 là khắc chế theo bộ chiêu (Gorran: độc tầm 800–900 + R hồi máu;
-  Duy Anh: W chém quạt không né được + Quyết Đấu, lăn cầu tuyết từ sớm; Noctis cận chiến bị thả diều; Vexa tầm 550, farm kém, chết vì
-  lính). Hai thử nghiệm sửa cách bot dùng chiêu (Q Phong Tiễn, Q Noctis) không đổi bên thắng. Ma trận Duy Anh × 9 tướng (54 trận, SIM 96060d4): **Duy Anh thắng 52, thua 0** (2 trận dừng vì lỗi BOT-11 đã sửa ở D-391) —
-  hạ gục trước phút 2 ở 21 / 54 trận, dẫn 2–3 cấp ở phút 6, 4–7 cấp ở phút 12. Nguồn: W chém quạt bậc đầu, STR +4,5 / cấp, hồi máu
-  Quyết Đấu. CB-2 đang chạy ba phương án số (W yếu bậc đầu / STR +3,5 / cả hai) → câu D1.
+- ~~Cân bằng Phong Tiễn / Duy Anh bằng ma trận bot~~ — ĐÓNG, không đổi số (D-355: không tăng / giảm sức tướng theo 1v1 bot đấu bot; ma trận bot chỉ để tìm lỗi).
 - ~~MOV-09~~ đã làm (D-388, kèm D-389 sửa `has_line_of_walk` ở mép pixel).
 - ~~Online 1v1 (D-30)~~ → thay bằng M9 (3v3 online, D-328).
 
@@ -175,6 +167,7 @@ offline với bot trước (M9.1–M9.2), chứng minh SIM tất định giữa 
 | M9.7 Rớt mạng: bot đánh thay hero của người rớt (lệnh đổi quyền điều khiển trong luồng lệnh — mọi máy giống nhau); lệch mã băm → báo lỗi kèm nhật ký lên máy chủ | Test; chơi thử rút mạng giữa trận |
 | M9.8 (sau) Vào lại trận đang đánh: ảnh chụp World hoặc tua nhanh nhật ký; tìm trận tự động; 5v5 | — |
 | M9.9 (sau, quyết khi có số đo điện thoại — D-411) Vào lại bằng ảnh chụp World thay vì tua từ tick 1: máy chủ gửi trạng thái World ở tick T (cơ chế mới — luật + bảng tương tác + quyết định riêng, mã băm phải khớp sau khi nạp). Số đo hiện có: tua ~250 tick / giây có vẽ (máy cloud, llvmpipe), ~300 không vẽ; máy tính bảng BTKR-W09 ước ~200 → vào lại phút 13 ≈ 2 phút. Lấy `tick_per_s` trong báo cáo `sync` từ vài điện thoại rồi mới quyết | Vào lại ở phút 15 trên điện thoại yếu nhất đang hỗ trợ ≤ ~10 giây |
+| M9.10 (việc riêng kế tiếp — D-356 / D-415) Tìm trận tự động 5v5: hàng chờ trên máy chủ phòng, ghép người theo máy / độ trễ, thiếu người thì bot; nút 5v5 › Chơi ngay dùng nó thay cho trận trong máy | Hai máy khách bấm Chơi ngay cùng lúc vào cùng một trận 5v5 (ô còn lại là bot) |
 
 ## ACC — Tài khoản (trước bản online) — D-333
 

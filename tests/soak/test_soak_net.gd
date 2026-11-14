@@ -77,3 +77,23 @@ func test_NET_22_rejoin_soak_no_desync() -> void:
 		assert_true(c.world.find_entity(h["heroes"][1]).bot == null, "seed %d: cầm lại hero" % k)
 		assert_true(room.tick - c.world.tick <= 15, "theo kịp máy chủ")
 		print("  seed %d: vào lại ở tick %d, kịp sau %d tick máy chủ, trận tới tick %d, không lệch" % [k, t0, caught, room.tick])
+
+
+## D-356 soak: trận 5v5 qua mạng giả (RTT 80 ± 20 ms, mất 2 %) — 2 người (ô đầu mỗi đội) + 8 bot, 60 giây trận, 10 tướng
+## không trùng: không máy nào lệch, mọi mốc mã băm khớp máy chủ.
+func test_D_356_five_v_five_network_soak_no_desync() -> void:
+	var lock: Object = Lock.new()
+	var ten: Array[StringName] = [&"brakk", &"myra", &"vexa", &"noctis", &"gorran", &"duy_anh", &"huyet_cu_nhan", &"phong_tien",
+		&"tho_san", &"thach_giap"]
+	var humans: Array[int] = [0, 5]
+	var cfg: MatchConfig = MatchConfig.make(5, ten, humans, BotState.Difficulty.NORMAL, 57)
+	assert_eq(cfg.validate(ContentLibrary.load_dir()), "")
+	var h: Dictionary = lock._setup(80.0, 20.0, 0.02, 211, cfg, humans)
+	var t0: int = Time.get_ticks_msec()
+	lock._run(h, 60.0)
+	var room: LockstepRoom = h["room"]
+	assert_eq(room.tick, 1800)
+	assert_eq(room.desyncs.size(), 0, "5v5: không lệch")
+	assert_true(lock._same_hashes(h) >= 2 * LockstepRoom.HASH_KEEP - 2, "mọi mốc máy chủ còn giữ (HASH_KEEP) đều khớp ở cả hai máy khách")
+	assert_eq(room.world.entities.filter(func(e: Entity) -> bool: return e.kind == Entity.Kind.HERO).size(), 10)
+	print("  5v5 mạng giả 60 s trận (3 bản SIM) trong %.1f s" % ((Time.get_ticks_msec() - t0) / 1000.0))

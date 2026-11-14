@@ -10,9 +10,12 @@ signal closed
 
 const BOX: Vector2 = Vector2(900, 900)
 const HEADER: float = 80.0  ## dải đầu khung của UiStyle.panel
-const SIZES: Array[int] = [1, 2, 3]
+## D-356: giao diện chỉ còn 5v5 (mặc định) và 1v1 (SIM vẫn nhận 1–5 người mỗi đội).
+const SIZES: Array[int] = [5, 1]
 const TEAM_NAMES: Array[String] = ["Đội Xanh", "Đội Đỏ"]
 
+## D-356: cỡ phòng gợi ý khi mở từ Chọn chế độ (5v5 › Phòng bạn bè = 5, 1v1 › Đấu bạn = 1) — nút tạo phòng đó màu vàng.
+var preferred_size: int = 5
 var screen: String = "status"
 static var _names: Dictionary = {}  ## id tướng → tên hiện (nạp một lần)
 ## NET-14 (D-401): kết quả đo [{id, name, state, rtt_ms}], lựa chọn (0 = Tự động), máy đang nối (-1 = chưa).
@@ -56,7 +59,7 @@ func show_home(player: String, live: String = "") -> void:
 	_box.add_child(_label("Tạo phòng — số người mỗi đội (ô trống là bot)", 22, UiStyle.DIM, false))
 	var row: HBoxContainer = _row()
 	for n: int in SIZES:
-		row.add_child(_button("%d vs %d" % [n, n], {"t": "create", "size": n}, true))
+		row.add_child(_button("%d vs %d" % [n, n], {"t": "create", "size": n}, n == preferred_size))
 	_box.add_child(_label("Vào phòng của bạn bè", 22, UiStyle.DIM, false))
 	_code = LineEdit.new()
 	_code.placeholder_text = "Mã phòng (%d số)" % RoomLobby.CODE_LEN

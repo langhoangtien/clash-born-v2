@@ -3,9 +3,8 @@ extends Node
 ## VIEW (D-114): phát tiếng do AudioCues chọn, nhạc nền và tiếng nền map.
 ## - Nhỏ dần theo khoảng cách tới camera, quá xa thì bỏ.
 ## - Chống ồn: tối đa VOICES tiếng cùng lúc, cùng một tiếng cách nhau ít nhất MIN_GAP_MS.
-## - Chế độ tiếng (Bật / Tắt nhạc / Tắt hết) lưu ở user://settings.cfg.
-
-enum Mode { ALL, NO_MUSIC, MUTE }
+## - D-414: nhạc nền ở bus Nhạc, tiếng động / tiếng nền / giao diện ở bus Âm thanh — bật / tắt và âm lượng từng bus do
+##   AudioSettings giữ (thay chế độ gộp Bật / Tắt nhạc / Tắt hết của D-114).
 
 const VOICES: int = 12
 const MIN_GAP_MS: int = 70
@@ -19,10 +18,6 @@ const FAR_DB: float = -22.0
 const GROUP_DB: Dictionary[StringName, float] = {&"sfx": 0.0, &"ui": -2.0, &"vo": 2.0}
 const MUSIC_DB: float = -6.0
 const AMB_DB: float = -2.0
-const SETTINGS_PATH: String = "user://settings.cfg"
-const MODE_NAMES: Array[String] = ["Tiếng: Bật", "Nhạc: Tắt", "Tiếng: Tắt"]
-
-static var mode: int = -1
 
 ## Tâm camera; tiếng có vị trí tính khoảng cách từ đây.
 var listener: Vector2 = Vector2.ZERO
@@ -36,15 +31,19 @@ var _amb: AudioStreamPlayer
 
 
 func _ready() -> void:
-	load_mode()
+	AudioSettings.ensure()
 	for i: int in range(VOICES):
-		var p: AudioStreamPlayer = AudioStreamPlayer.new()
-		add_child(p)
-		_players.append(p)
-	_music = AudioStreamPlayer.new()
-	add_child(_music)
-	_amb = AudioStreamPlayer.new()
-	add_child(_amb)
+		_players.append(_player(AudioSettings.SFX_BUS))
+	_music = _player(AudioSettings.MUSIC_BUS)
+	_amb = _player(AudioSettings.SFX_BUS)
+
+
+func _player(bus: String) -> AudioStreamPlayer:
+	var p: AudioStreamPlayer = AudioStreamPlayer.new()
+	AudioSettings.bus_index(bus)
+	p.bus = StringName(bus)
+	add_child(p)
+	return p
 
 
 func setup_match(team: int, hero_id: int) -> void:
@@ -60,7 +59,7 @@ func on_step(world: World) -> void:
 	for c: AudioCues.Cue in cues.collect(world):  # luôn đọc để giữ trạng thái (chuỗi hạ gục…)
 		if c.stop:
 			_stop_loop(c.key)
-		elif mode != Mode.MUTE:
+		elif AudioSettings.sfx_on:  # D-414: tắt âm thanh → khỏi chiếm giọng (bus cũng đang tắt)
 			_play(c)
 	if world.winner >= 0:
 		_amb.stop()
@@ -68,28 +67,8 @@ func on_step(world: World) -> void:
 
 
 func play_music(id: StringName, amb_id: StringName = &"") -> void:
-	_start(_music, id, MUSIC_DB, mode == Mode.ALL)
-	_start(_amb, amb_id, AMB_DB, mode != Mode.MUTE)
-
-
-func cycle_mode() -> void:
-	mode = (mode + 1) % MODE_NAMES.size()
-	var cfg: ConfigFile = ConfigFile.new()
-	cfg.load(SETTINGS_PATH)
-	cfg.set_value("audio", "mode", mode)
-	cfg.save(SETTINGS_PATH)
-	_music.stream_paused = mode != Mode.ALL
-	_amb.stream_paused = mode == Mode.MUTE
-	if mode == Mode.MUTE:
-		for p: AudioStreamPlayer in _players:
-			p.stop()
-
-
-static func load_mode() -> void:
-	if mode >= 0:
-		return
-	var cfg: ConfigFile = ConfigFile.new()
-	mode = int(cfg.get_value("audio", "mode", Mode.ALL)) if cfg.load(SETTINGS_PATH) == OK else Mode.ALL
+	_start(_music, id, MUSIC_DB)
+	_start(_amb, amb_id, AMB_DB)
 
 
 ## Độ lớn (dB) của tiếng tại `at` khi camera ở `listener`; NAN = quá xa, không phát.
@@ -142,7 +121,7 @@ func _stop_loop(key: int) -> void:
 		_loops.erase(key)
 
 
-func _start(p: AudioStreamPlayer, id: StringName, db: float, audible: bool) -> void:
+func _start(p: AudioStreamPlayer, id: StringName, db: float) -> void:
 	var s: AudioStream = SoundLibrary.stream(id)
 	if s == null:
 		p.stop()
@@ -150,4 +129,3 @@ func _start(p: AudioStreamPlayer, id: StringName, db: float, audible: bool) -> v
 	p.stream = s
 	p.volume_db = db
 	p.play()
-	p.stream_paused = not audible

@@ -12,7 +12,7 @@ static var online: OnlineSession
 const ATTACK_KEYS: Array[Key] = [KEY_J, KEY_K, KEY_L]
 const SPEEDS: Array[int] = [1, 2, 4, 8]
 const MENU_SCENE: String = "res://app/main.tscn"
-const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · 4–9 dùng đồ · H về thành · B shop · M tiếng · Esc"
+const HELP: String = "J đánh · K lính · L trụ · 1/2/3 chiêu (nhắm theo chuột) · Ctrl+1..4 cộng điểm · WASD đi · chuột phải: đi tới / khóa · F tốc độ · 4–9 dùng đồ · H về thành · B shop · M âm thanh (không tắt nhạc) · Esc"
 
 @onready var map_view: MapView = $MapView
 @onready var units_view: UnitsView = $UnitsView
@@ -52,19 +52,7 @@ func _ready() -> void:
 	UnitSprite.clear_cache()  # D-149: id đơn vị dùng lại giữa các trận
 	if online != null:
 		config = online.config  # NET-08: cấu hình máy chủ gửi — mọi máy dựng cùng một World
-	world = World.new(config.seed, load(BALANCE_PATH) as BalanceSettings)  # MATCH-05
-	world.map = map_view.layout
-	world.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
-	var library: ContentLibrary = ContentLibrary.load_dir()
-	for def: GameDef in library.units.values() + library.heroes.values():
-		ArtLibrary.texture(def.art_id)  # nạp sẵn hình lúc vào trận, không để lần xuất hiện đầu bị giật
-	ArtLibrary.load_ahead(ArtLibrary.content_ids(library))  # D-269: icon đồ / chiêu / buff nạp ngầm
-	for e: Entity in MatchSetup.build(world, library, config):
-		if hero == null and e.bot == null and (online == null or e.id == online.entity_id):
-			hero = e
-		elif bot_unit == null and e.team == 1:
-			bot_unit = e
-	hero_def = hero.hero_def
+	_build_world()
 	units_view.world = world
 	units_view.viewer_team = hero.team
 	minimap = Minimap.new()
@@ -82,37 +70,7 @@ func _ready() -> void:
 	camera.position = hero.position
 	_setup_3d()
 	_setup_test_panel()  # sau 3D: bảng chẩn đoán D-179 cần view_3d
-	skills.world = world
-	skills.hero = hero
-	skills.input = input
-	skills.buttons = skill_buttons
-	skills.indicator = aim_indicator
-	skills.talents = talent_panel
-	var item_buttons: ItemButtons = ItemButtons.new()
-	item_buttons.name = "ItemButtons"
-	$Hud.add_child(item_buttons)
-	item_buttons.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	skills.items = item_buttons
-	shop = ShopPanel.new()
-	shop.name = "ShopPanel"
-	$Hud.add_child(shop)
-	shop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	shop.world = world
-	shop.z_index = 10  # D-115: bảng shop / tỷ số vẽ trên cụm nút điều khiển
-	shop.hero = hero
-	shop.buy_pressed.connect(func(id: StringName) -> void: world.submit(Command.buy(hero.id, id)))  # SHOP-01
-	shop.sell_pressed.connect(func(i: int) -> void: world.submit(Command.sell(hero.id, i)))  # SHOP-05
-	shop.build = BuildPresets.load_build(hero_def.id)  # D-120: bộ đồ soạn sẵn của tướng này
-	shop.build_changed.connect(func(b: Array[StringName]) -> void: BuildPresets.save_build(hero_def.id, _build_done + b))
-	var info: InfoPanels = InfoPanels.new()
-	info.name = "InfoPanels"
-	$Hud.add_child(info)
-	info.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	info.world = world
-	info.z_index = 10
-	info.hero = hero
-	info.level_pressed.connect(skills.level_up)  # D-253: nâng chiêu / chọn talent ngay trong bảng thông số
-	info.talent_pressed.connect(func(slot: int) -> void: world.submit(Command.choose_talent(hero.id, slot)))
+	MatchPanels.attach(self)  # nút chiêu / đồ, shop, bảng thông số
 	skills.connect_signals()
 	match_hud.world = world
 	buff_bar.world = world
@@ -123,6 +81,23 @@ func _ready() -> void:
 	if online != null:
 		replay = ReplayScreen.make($Hud, [map_view, units_view, view_3d, aim_indicator], [$Hud/OnlineStatus, settings.panel],
 			units_view, view_3d, hero)
+
+
+## World theo cấu hình trận (MATCH-05), nạp sẵn hình, chọn hero người chơi (online: đơn vị máy chủ giao) và bot đối thủ đầu.
+func _build_world() -> void:
+	world = World.new(config.seed, load(BALANCE_PATH) as BalanceSettings)  # MATCH-05
+	world.map = map_view.layout
+	world.add_system(MovementSystem.new(), World.Phase.MOVEMENT)
+	var library: ContentLibrary = ContentLibrary.load_dir()
+	for def: GameDef in library.units.values() + library.heroes.values():
+		ArtLibrary.texture(def.art_id)  # nạp sẵn hình lúc vào trận, không để lần xuất hiện đầu bị giật
+	ArtLibrary.load_ahead(ArtLibrary.content_ids(library))  # D-269: icon đồ / chiêu / buff nạp ngầm
+	for e: Entity in MatchSetup.build(world, library, config):
+		if hero == null and e.bot == null and (online == null or e.id == online.entity_id):
+			hero = e
+		elif bot_unit == null and e.team == 1:
+			bot_unit = e
+	hero_def = hero.hero_def
 
 
 func _process(delta: float) -> void:
@@ -191,7 +166,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_B:
 		shop.toggle()  # D-81: bảng shop tạm
 	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_M:
-		settings.apply(&"sound")  # D-114, D-183
+		settings.apply(&"sfx")  # D-414: phím M = bật / tắt Âm thanh (tiếng động), nhạc giữ nguyên
 	elif event is InputEventKey and event.pressed and not (event as InputEventKey).echo and skills.handle_key(event, _world_point(get_viewport().get_mouse_position())):
 		pass
 	elif event is InputEventKey and event.pressed and (event as InputEventKey).keycode == KEY_ESCAPE:
@@ -256,7 +231,7 @@ func _setup_test_panel() -> void:
 			c.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		diag.read_viewport(get_viewport())
 	FrameProbe.attach(self, world, view_3d)  # D-261: đo thời gian từng phần mỗi khung
-	settings = SettingsControl.attach($Hud, true, audio, config.practice)
+	settings = SettingsControl.attach($Hud, config.practice)
 	settings.hud = match_hud
 	settings.tools = tools
 	settings.quit = func() -> void: get_tree().change_scene_to_file(MENU_SCENE)

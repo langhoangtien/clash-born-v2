@@ -1,9 +1,9 @@
 class_name SettingsPanel
 extends Control
-## Bảng Cài đặt (D-183, kiểu Liên Quân). Trong trận: nút bánh răng góc trên phải mở bảng — âm thanh, đồ họa,
-## hiện FPS, công cụ thử (bảng Test, bảng Chẩn đoán), thoát trận; không dừng trận. Ở menu: APP mở bảng bằng
-## nút Cài đặt của màn chọn tướng — chỉ âm thanh, đồ họa, FPS. Chỉ báo hàng được bấm qua `action`; APP áp và
-## đặt chữ giá trị (`values`).
+## Bảng Cài đặt trong trận (D-183, kiểu Liên Quân): nút bánh răng góc trên phải mở bảng — Nhạc, Âm thanh (D-414: hai
+## công tắc riêng), đồ họa, hiện FPS, công cụ thử (bảng Test, bảng Chẩn đoán, xuất log — chỉ trận thử), thoát trận; không
+## dừng trận. Menu dùng trang Cài đặt riêng (SettingsPage, D-413). Chỉ báo hàng được bấm qua `action`; APP áp và đặt chữ
+## giá trị (`values`).
 
 signal action(what: StringName)
 
@@ -13,35 +13,29 @@ const ROW_GAP: float = 14.0
 ## D-267: chiều cao dòng phiên bản dưới hàng cuối.
 const VERSION_H: float = 44.0
 const LABELS: Dictionary[StringName, String] = {
-	&"sound": "Âm thanh", &"graphics": "Đồ họa", &"fps": "Hiện FPS", &"test": "Bảng Test (thử)",
-	&"diag": "Chẩn đoán FPS (thử)", &"quit": "Thoát trận", &"perf_log": "Ghi log hiệu năng",
-	&"perf_export": "Xuất log hiệu năng", &"bench": "Đo hiệu năng tự động", &"sync": "Kiểm tra đồng bộ (online)",
+	&"music": "Nhạc", &"sfx": "Âm thanh (phím M)", &"graphics": "Đồ họa", &"fps": "Hiện FPS", &"test": "Bảng Test (thử)",
+	&"diag": "Chẩn đoán FPS (thử)", &"quit": "Thoát trận", &"perf_export": "Xuất log hiệu năng",
 }
 
 var open: bool = false
-## true: trong trận (có bánh răng, công cụ thử, thoát trận).
-var in_match: bool = true
 ## MATCH-06 (D-332): trận thử — mới có công cụ thử (Test, Chẩn đoán, xuất log).
 var practice: bool = false
-## Chữ giá trị bên phải mỗi hàng (APP đặt), vd {&"sound": "Bật"}.
+## Chữ giá trị bên phải mỗi hàng (APP đặt), vd {&"music": "Bật"}.
 var values: Dictionary[StringName, String] = {}
 ## D-267: tên bản đang chạy (APP đặt, vd "0.1.449"); rỗng = chạy từ editor.
 var version_text: String = ""
 
 
 func rows() -> Array[StringName]:
-	var out: Array[StringName] = [&"sound", &"graphics", &"fps"]
-	if in_match:
-		if practice:  # MATCH-06: công cụ thử chỉ trong trận thử
-			out.append_array([&"test", &"diag", &"perf_export"] as Array[StringName])
-		out.append(&"quit")
-	else:
-		out.append_array([&"perf_log", &"bench", &"sync"] as Array[StringName])  # D-268 / D-272 / D-336: ở menu
+	var out: Array[StringName] = [&"music", &"sfx", &"graphics", &"fps"]
+	if practice:  # MATCH-06: công cụ thử chỉ trong trận thử
+		out.append_array([&"test", &"diag", &"perf_export"] as Array[StringName])
+	out.append(&"quit")
 	return out
 
 
 func gear_rect() -> Rect2:
-	return Rect2(size.x - GEAR_SIZE - 16, 14, GEAR_SIZE, GEAR_SIZE) if in_match else Rect2()
+	return Rect2(size.x - GEAR_SIZE - 16, 14, GEAR_SIZE, GEAR_SIZE)
 
 
 func panel_rect() -> Rect2:
@@ -87,8 +81,7 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _draw() -> void:
-	if in_match:
-		_gear(gear_rect())
+	_gear(gear_rect())
 	if not open:
 		return
 	draw_rect(Rect2(Vector2.ZERO, size), Color(0, 0, 0, 0.45))

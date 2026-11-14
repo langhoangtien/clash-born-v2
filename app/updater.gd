@@ -10,6 +10,9 @@ const SITES: Array[String] = ["https://clashborn.quest/", "https://langhoangtien
 const BUILD_INFO: String = "res://app/build.json"
 const PRESETS: String = "res://export_presets.cfg"
 
+## D-413: đã đọc được version.json (bản mới nhất: code, name, notes…).
+signal checked(latest: Dictionary)
+
 var button: Button
 var _http: HTTPRequest
 var _apk_path: String = ""
@@ -70,7 +73,7 @@ static func enabled() -> bool:
 	return OS.get_name() == "Android"
 
 
-## Gắn vào `parent` (màn chọn tướng): nút nằm góc trên phải, ẩn tới khi có bản mới.
+## Gắn vào `parent` (menu): nút nằm góc trên phải, ẩn tới khi có bản mới.
 func attach(parent: Control) -> void:
 	button = Button.new()
 	button.visible = false
@@ -84,8 +87,8 @@ func attach(parent: Control) -> void:
 	button.anchor_right = 1.0
 	button.offset_left = -460.0
 	button.offset_right = -20.0
-	button.offset_top = 16.0
-	button.offset_bottom = 80.0
+	button.offset_top = MenuShell.BAR_H + 16.0  # D-413: dưới thanh trên của menu
+	button.offset_bottom = MenuShell.BAR_H + 80.0
 	_http = HTTPRequest.new()
 	add_child(_http)
 	if enabled():
@@ -111,6 +114,7 @@ func _on_version(result: int, code: int, _headers: PackedStringArray, body: Pack
 	if result != HTTPRequest.RESULT_SUCCESS or not data is Dictionary:
 		_next_site()
 		return
+	checked.emit(data)  # D-413: thẻ Bản cập nhật ở Trang chủ hiện ghi chú bản mới nhất
 	if is_newer(data, current_code()):
 		_latest = data
 		button.text = "Có bản mới %s · Cập nhật" % data.get("name", "")

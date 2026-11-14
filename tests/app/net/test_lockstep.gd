@@ -23,15 +23,17 @@ func _world(cfg: MatchConfig) -> World:
 
 
 ## {net, room, clients, heroes (id đơn vị của từng người)}.
-func _setup(rtt: float, jitter: float, loss: float, seed_value: int = 7) -> Dictionary:
-	var cfg: MatchConfig = MatchConfig.make(3, SIX, HUMANS, BotState.Difficulty.NORMAL, 31)
+## `match_cfg` / `humans`: trận khác 3v3 (vd soak 5v5 — D-356); mặc định 3v3, người ở ô 0 và 3.
+func _setup(rtt: float, jitter: float, loss: float, seed_value: int = 7, match_cfg: MatchConfig = null,
+		humans: Array[int] = HUMANS) -> Dictionary:
+	var cfg: MatchConfig = match_cfg if match_cfg != null else MatchConfig.make(3, SIX, HUMANS, BotState.Difficulty.NORMAL, 31)
 	var net: LoopbackNet = LoopbackNet.new(seed_value)
 	var room: LockstepRoom = LockstepRoom.new(_world(cfg))
 	var clients: Array[LockstepClient] = []
 	var heroes: Array[int] = []
-	for k: int in HUMANS.size():
+	for k: int in humans.size():
 		var w: World = _world(cfg)
-		var hero: int = w.entities.filter(func(e: Entity) -> bool: return e.kind == Entity.Kind.HERO)[HUMANS[k]].id
+		var hero: int = w.entities.filter(func(e: Entity) -> bool: return e.kind == Entity.Kind.HERO)[humans[k]].id
 		var ends: Array = net.link(rtt, jitter, loss)
 		room.add_peer(k, ends[1], hero)
 		var c: LockstepClient = LockstepClient.new(ends[0])
