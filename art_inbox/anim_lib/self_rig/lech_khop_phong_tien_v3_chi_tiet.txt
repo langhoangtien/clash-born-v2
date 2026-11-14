@@ -1,0 +1,28 @@
+  root         lệch   2.7 cm  trục   0.0°
+  pelvis       lệch   3.0 cm  trục   0.0°
+  spine_01     lệch   2.5 cm  trục   0.0°
+  thigh_l      lệch   9.1 cm  trục  14.5°
+  thigh_r      lệch   8.7 cm  trục  14.5°
+  spine_02     lệch   2.8 cm  trục   0.0°
+  calf_l       lệch   2.1 cm  trục   4.9°
+  calf_r       lệch   2.3 cm  trục   4.9°
+  spine_03     lệch   0.6 cm  trục   0.0°
+  foot_l       lệch   1.6 cm  trục   8.4°
+  foot_r       lệch   1.8 cm  trục   8.4°
+  neck_01      lệch   2.2 cm  trục   0.0°
+  clavicle_l   lệch   7.6 cm  trục  20.1°
+  clavicle_r   lệch   7.7 cm  trục  21.8°
+  ball_l       lệch   3.8 cm  trục  21.6°
+  ball_r       lệch   3.7 cm  trục  35.3°
+  head         lệch   6.3 cm  trục   0.0°
+  upperarm_l   lệch   6.6 cm  trục  20.8°
+  upperarm_r   lệch   6.5 cm  trục  20.6°
+  ball_leaf_l  lệch   3.8 cm  trục  21.6°
+  ball_leaf_r  lệch   4.8 cm  trục  35.3°
+  head_leaf    lệch  13.5 cm  trục   0.0°
+  lowerarm_l   lệch   3.0 cm  trục   5.6°
+  lowerarm_r   lệch   3.3 cm  trục   5.2°
+  hand_l       lệch   1.7 cm  trục   5.6°
+  hand_r       lệch   2.0 cm  trục   5.2°
+thân+tay+chân: lệch khớp TB 4.4 cm (max 13.5), trục TB 10.6° (max 35.3)
+ngón tay: lệch khớp TB 2.7 cm (max 4.8), trục TB 16.2° (max 33.6)

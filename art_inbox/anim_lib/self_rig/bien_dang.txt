@@ -1,0 +1,10 @@
+| hoạt ảnh | afk_gan_anims.glb: giãn đỉnh / lật / lún tam giác | tu_gan_anims.glb: giãn đỉnh / lật / lún tam giác |
+| Idle_A | 67 / 64 / 4 | 0 / 19 / 5 |
+| Run | 136 / 147 / 20 | 11 / 70 / 29 |
+| Bow Pull Back | 177 / 152 / 34 | 41 / 88 / 14 |
+| Bow Release | 151 / 78 / 6 | 40 / 66 / 10 |
+| Dodge_left | 185 / 158 / 35 | 16 / 136 / 28 |
+| Hit_Chest | 73 / 74 / 6 | 2 / 22 / 14 |
+| Idle_Dizzy | 113 / 127 / 24 | 21 / 42 / 9 |
+| Death_A | 204 / 272 / 62 | 35 / 69 / 25 |
+(đỉnh sau gộp: [2983, 2983], tam giác: [5992, 5992])
