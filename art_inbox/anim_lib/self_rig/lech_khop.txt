@@ -1,0 +1,12 @@
+== phong_tien_v3
+thân+tay+chân: lệch khớp TB 4.4 cm (max 13.5), trục TB 10.6° (max 35.3)
+ngón tay: lệch khớp TB 2.7 cm (max 4.8), trục TB 16.2° (max 33.6)
+== phong_tien_cu
+thân+tay+chân: lệch khớp TB 6.3 cm (max 25.3), trục TB 16.4° (max 86.9)
+ngón tay: lệch khớp TB 4.8 cm (max 13.4), trục TB 42.2° (max 85.2)
+== noctis
+thân+tay+chân: lệch khớp TB 4.7 cm (max 11.5), trục TB 10.4° (max 47.0)
+ngón tay: lệch khớp TB 5.6 cm (max 11.9), trục TB 47.5° (max 80.6)
+== gorran
+thân+tay+chân: lệch khớp TB 12.9 cm (max 36.7), trục TB 13.9° (max 43.3)
+ngón tay: lệch khớp TB 8.7 cm (max 18.8), trục TB 43.9° (max 93.8)
